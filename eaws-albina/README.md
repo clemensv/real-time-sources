@@ -28,6 +28,10 @@ See [EVENTS.md](EVENTS.md) for the full event schema documentation.
 
 See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions and environment variable reference.
 
+## Fabric notebook hosting
+
+This source ships a Fabric notebook (`notebook/eaws-albina-feed.ipynb`) that runs the bridge on a Fabric schedule with `--once` semantics. Deploy via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Local Development
 
 ```bash

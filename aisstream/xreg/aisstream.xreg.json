@@ -462,7 +462,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "PositionReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -536,7 +536,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "ShipStaticData",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -573,7 +573,7 @@
                       "C",
                       "D"
                     ],
-                    "name": "document",
+                    "name": "Dimension",
                     "properties": {
                       "A": {
                         "type": "int32"
@@ -600,7 +600,7 @@
                       "Hour",
                       "Minute"
                     ],
-                    "name": "document",
+                    "name": "Eta",
                     "properties": {
                       "Month": {
                         "type": "int32"
@@ -651,7 +651,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "StandardClassBPositionReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -742,7 +742,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "ExtendedClassBPositionReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -797,7 +797,7 @@
                       "C",
                       "D"
                     ],
-                    "name": "document",
+                    "name": "Dimension",
                     "properties": {
                       "A": {
                         "type": "int32"
@@ -851,7 +851,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "AidsToNavigationReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -888,7 +888,7 @@
                       "C",
                       "D"
                     ],
-                    "name": "document",
+                    "name": "Dimension",
                     "properties": {
                       "A": {
                         "type": "int32"
@@ -952,7 +952,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "StaticDataReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -978,7 +978,7 @@
                       "Valid",
                       "Name"
                     ],
-                    "name": "document",
+                    "name": "ReportA",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -993,7 +993,7 @@
                     "required": [
                       "Valid"
                     ],
-                    "name": "document",
+                    "name": "ReportB",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -1021,7 +1021,7 @@
                           "C",
                           "D"
                         ],
-                        "name": "document",
+                        "name": "Dimension",
                         "properties": {
                           "A": {
                             "type": "int32"
@@ -1068,7 +1068,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "BaseStationReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1145,7 +1145,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "SafetyBroadcastMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1188,7 +1188,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "StandardSearchAndRescueAircraftReport",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1270,7 +1270,7 @@
                   "Latitude",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "LongRangeAisBroadcastMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1332,7 +1332,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "AddressedSafetyMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1382,7 +1382,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "AddressedBinaryMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1415,7 +1415,7 @@
                       "DesignatedAreaCode",
                       "FunctionIdentifier"
                     ],
-                    "name": "document",
+                    "name": "ApplicationID",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -1452,7 +1452,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "AssignedModeCommand",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1496,7 +1496,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "BinaryAcknowledge",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1540,7 +1540,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "BinaryBroadcastMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1564,7 +1564,7 @@
                       "DesignatedAreaCode",
                       "FunctionIdentifier"
                     ],
-                    "name": "document",
+                    "name": "ApplicationID",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -1601,7 +1601,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "ChannelManagement",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1638,7 +1638,7 @@
                       "Longitude2",
                       "Latitude2"
                     ],
-                    "name": "document",
+                    "name": "Area",
                     "properties": {
                       "Longitude1": {
                         "type": "double"
@@ -1660,7 +1660,7 @@
                       "AddressStation1",
                       "AddressStation2"
                     ],
-                    "name": "document",
+                    "name": "Unicast",
                     "properties": {
                       "AddressStation1": {
                         "type": "int32"
@@ -1712,7 +1712,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "CoordinatedUTCInquiry",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1756,7 +1756,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "DataLinkManagementMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1800,7 +1800,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "GnssBroadcastBinaryMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1850,7 +1850,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "GroupAssignmentCommand",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1921,7 +1921,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "Interrogation",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -1946,7 +1946,7 @@
                       "MessageID",
                       "SlotOffset"
                     ],
-                    "name": "document",
+                    "name": "Station1Msg1",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -1969,7 +1969,7 @@
                       "MessageID",
                       "SlotOffset"
                     ],
-                    "name": "document",
+                    "name": "Station1Msg2",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -1993,7 +1993,7 @@
                       "MessageID",
                       "SlotOffset"
                     ],
-                    "name": "document",
+                    "name": "Station2",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -2036,7 +2036,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "MultiSlotBinaryMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -2069,7 +2069,7 @@
                       "DesignatedAreaCode",
                       "FunctionIdentifier"
                     ],
-                    "name": "document",
+                    "name": "ApplicationID",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -2115,7 +2115,7 @@
                   "UserID",
                   "Valid"
                 ],
-                "name": "document",
+                "name": "SingleSlotBinaryMessage",
                 "properties": {
                   "MessageID": {
                     "type": "int32"
@@ -2148,7 +2148,7 @@
                       "DesignatedAreaCode",
                       "FunctionIdentifier"
                     ],
-                    "name": "document",
+                    "name": "ApplicationID",
                     "properties": {
                       "Valid": {
                         "type": "boolean"
@@ -2166,2311 +2166,6 @@
                   }
                 },
                 "$id": "https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage"
-              }
-            }
-          }
-        }
-      }
-    },
-    "IO.AISstream.avro": {
-      "schemas": {
-        "IO.AISstream.PositionReport": {
-          "name": "PositionReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "NavigationalStatus",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "RateOfTurn",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Sog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Cog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "TrueHeading",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Timestamp",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "SpecialManoeuvreIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationState",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.ShipStaticData": {
-          "name": "ShipStaticData",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "AisVersion",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ImoNumber",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CallSign",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Name",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Type",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Dimension",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "FixType",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Eta",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "MaximumStaticDraught",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Destination",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Dte",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.StandardClassBPositionReport": {
-          "name": "StandardClassBPositionReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Sog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Cog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "TrueHeading",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Timestamp",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ClassBUnit",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ClassBDisplay",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ClassBDsc",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ClassBBand",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ClassBMsg22",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "AssignedMode",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationStateIsItdma",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationState",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.ExtendedClassBPositionReport": {
-          "name": "ExtendedClassBPositionReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Sog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Cog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "TrueHeading",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Timestamp",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Name",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Type",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Dimension",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "FixType",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Dte",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "AssignedMode",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare3",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.AidsToNavigationReport": {
-          "name": "AidsToNavigationReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Type",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Name",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Dimension",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Fixtype",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Timestamp",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "OffPosition",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "AtoN",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "VirtualAtoN",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "AssignedMode",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "NameExtension",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.StaticDataReport": {
-          "name": "StaticDataReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Reserved",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PartNumber",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ReportA",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ReportB",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.BaseStationReport": {
-          "name": "BaseStationReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "UtcYear",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UtcMonth",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UtcDay",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UtcHour",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UtcMinute",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UtcSecond",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "FixType",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "LongRangeEnable",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationState",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.SafetyBroadcastMessage": {
-          "name": "SafetyBroadcastMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Text",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.StandardSearchAndRescueAircraftReport": {
-          "name": "StandardSearchAndRescueAircraftReport",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Altitude",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Sog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Cog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Timestamp",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "AltFromBaro",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Dte",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "AssignedMode",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationStateIsItdma",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationState",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.LongRangeAisBroadcastMessage": {
-          "name": "LongRangeAisBroadcastMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "PositionAccuracy",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Raim",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "NavigationalStatus",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "Sog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Cog",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "PositionLatency",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.AddressedSafetyMessage": {
-          "name": "AddressedSafetyMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Sequenceinteger",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "DestinationID",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Retransmission",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Text",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.AddressedBinaryMessage": {
-          "name": "AddressedBinaryMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Sequenceinteger",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "DestinationID",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Retransmission",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ApplicationID",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "BinaryData",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.AssignedModeCommand": {
-          "name": "AssignedModeCommand",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Commands",
-                    "type": [
-                      "null",
-                      {
-                        "type": "map",
-                        "values": "string"
-                      }
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.BinaryAcknowledge": {
-          "name": "BinaryAcknowledge",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Destinations",
-                    "type": [
-                      "null",
-                      {
-                        "type": "map",
-                        "values": "string"
-                      }
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.BinaryBroadcastMessage": {
-          "name": "BinaryBroadcastMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ApplicationID",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "BinaryData",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.ChannelManagement": {
-          "name": "ChannelManagement",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ChannelA",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ChannelB",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "TxRxMode",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "LowPower",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Area",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Unicast",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "IsAddressed",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "BwA",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "BwB",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "TransitionalZoneSize",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare4",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.CoordinatedUTCInquiry": {
-          "name": "CoordinatedUTCInquiry",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "DestinationID",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.DataLinkManagementMessage": {
-          "name": "DataLinkManagementMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Data",
-                    "type": [
-                      "null",
-                      {
-                        "type": "map",
-                        "values": "string"
-                      }
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.GnssBroadcastBinaryMessage": {
-          "name": "GnssBroadcastBinaryMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Latitude",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Data",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.GroupAssignmentCommand": {
-          "name": "GroupAssignmentCommand",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude1",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Latitude1",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Longitude2",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Latitude2",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "StationType",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ShipType",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "TxRxMode",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ReportingInterval",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "QuietTime",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare3",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.Interrogation": {
-          "name": "Interrogation",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Station1Msg1",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Station1Msg2",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Station2",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.MultiSlotBinaryMessage": {
-          "name": "MultiSlotBinaryMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "DestinationIDValid",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ApplicationIDValid",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "DestinationID",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare1",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ApplicationID",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Payload",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare2",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationStateIsItdma",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "CommunicationState",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "IO.AISstream.SingleSlotBinaryMessage": {
-          "name": "SingleSlotBinaryMessage",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "fields": [
-                  {
-                    "name": "MessageID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "RepeatIndicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "UserID",
-                    "type": "int"
-                  },
-                  {
-                    "name": "Valid",
-                    "type": "boolean"
-                  },
-                  {
-                    "name": "DestinationIDValid",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ApplicationIDValid",
-                    "type": [
-                      "null",
-                      "boolean"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "DestinationID",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Spare",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "ApplicationID",
-                    "type": [
-                      "null",
-                      "object"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "Payload",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
               }
             }
           }

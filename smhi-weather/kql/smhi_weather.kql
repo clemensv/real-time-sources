@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['SE.Gov.SMHI.Weather.Station'] (
    [station_id]: string,
    [name]: string,
    [owner]: string,
@@ -41,9 +41,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.\"}";
+.alter table ['SE.Gov.SMHI.Weather.Station'] docstring "{\"description\": \"Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['SE.Gov.SMHI.Weather.Station'] column-docstrings (
    [station_id]: "{\"description\": \"SMHI numeric station identifier, unique within the SMHI observation network.\"}",
    [name]: "{\"description\": \"Human-readable station name as assigned by SMHI, e.g. 'Abisko Aut' or 'Stockholm-Arlanda'.\"}",
    [owner]: "{\"description\": \"Organization or entity that owns and operates the station, e.g. 'SMHI' or 'Polarforskningssekretariatet'.\"}",
@@ -59,7 +59,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['SE.Gov.SMHI.Weather.Station'] ingestion json mapping "SE.Gov.SMHI.Weather.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -78,7 +78,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['SE.Gov.SMHI.Weather.Station'] ingestion json mapping "SE.Gov.SMHI.Weather.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,13 +97,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['SE.Gov.SMHI.Weather.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['SE.Gov.SMHI.Weather.StationLatest'] on table ['SE.Gov.SMHI.Weather.Station'] {
+    ['SE.Gov.SMHI.Weather.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['SE.Gov.SMHI.Weather.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -114,7 +114,7 @@
 }]
 ```
 
-.create-merge table [WeatherObservation] (
+.create-merge table ['SE.Gov.SMHI.Weather.WeatherObservation'] (
    [station_id]: string,
    [station_name]: string,
    [observation_time]: datetime,
@@ -141,9 +141,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherObservation] docstring "{\"description\": \"Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.\"}";
+.alter table ['SE.Gov.SMHI.Weather.WeatherObservation'] docstring "{\"description\": \"Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.\"}";
 
-.alter table [WeatherObservation] column-docstrings (
+.alter table ['SE.Gov.SMHI.Weather.WeatherObservation'] column-docstrings (
    [station_id]: "{\"description\": \"SMHI station identifier for the reporting station.\"}",
    [station_name]: "{\"description\": \"Human-readable name of the reporting station.\"}",
    [observation_time]: "{\"description\": \"Timestamp of the observation in UTC, derived from the SMHI epoch millisecond value.\"}",
@@ -170,7 +170,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+.create-or-alter table ['SE.Gov.SMHI.Weather.WeatherObservation'] ingestion json mapping "SE.Gov.SMHI.Weather.WeatherObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -200,7 +200,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+.create-or-alter table ['SE.Gov.SMHI.Weather.WeatherObservation'] ingestion json mapping "SE.Gov.SMHI.Weather.WeatherObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -230,13 +230,13 @@
 ]
 ```
 
-.drop materialized-view WeatherObservationLatest ifexists;
+.drop materialized-view ['SE.Gov.SMHI.Weather.WeatherObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
-    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['SE.Gov.SMHI.Weather.WeatherObservationLatest'] on table ['SE.Gov.SMHI.Weather.WeatherObservation'] {
+    ['SE.Gov.SMHI.Weather.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherObservation] policy update
+.alter table ['SE.Gov.SMHI.Weather.WeatherObservation'] policy update
 ```
 [{
   "IsEnabled": true,

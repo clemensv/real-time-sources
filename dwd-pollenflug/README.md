@@ -34,6 +34,7 @@ Intensity values range from 0 (no load) to 3 (high load) with intermediate half-
 - **Deduplication**: Tracks the `last_update` timestamp to avoid reprocessing unchanged data.
 - **Kafka Integration**: Sends forecasts to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: Can run as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (`--once` single-cycle execution).
 
 ## Installation
 

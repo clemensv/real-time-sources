@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Sources - Guided Setup Hybrid</title>
+<style>
+  :root {
+    --fabric-purple: #742774;
+    --fabric-magenta: #b4009e;
+    --azure-blue: #0078d4;
+    --bg: #f6f4f8;
+    --surface: #ffffff;
+    --surface-alt: #faf9fb;
+    --text: #2f2435;
+    --text-secondary: #665a6d;
+    --border: #e7dfea;
+    --shadow: 0 10px 30px rgba(72, 35, 77, 0.08);
+    --radius: 10px;
+    --success-bg: #e8f5e9;
+    --success-text: #2e7d32;
+    --info-bg: #e7f3ff;
+    --info-text: #005a9e;
+    --warn-bg: #fff6dd;
+    --warn-text: #996f00;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(180deg, #fbf9fc 0%, var(--bg) 100%);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  a { color: var(--azure-blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .hero {
+    background: linear-gradient(135deg, var(--fabric-purple), var(--fabric-magenta));
+    color: #fff;
+    padding: 64px 32px 72px;
+  }
+  .hero-inner,
+  .content,
+  .summary-strip,
+  .footer-inner { max-width: 1380px; margin: 0 auto; }
+  .hero-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    margin-bottom: 22px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hero-logo svg { width: 24px; height: 24px; }
+  .hero h1 {
+    font-size: 44px;
+    line-height: 1.12;
+    margin-bottom: 14px;
+    max-width: 840px;
+  }
+  .hero p {
+    font-size: 20px;
+    max-width: 880px;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 28px;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.22);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .hero-btn:hover { transform: translateY(-1px); text-decoration: none; }
+  .hero-btn.primary {
+    background: #fff;
+    color: var(--fabric-purple);
+    border-color: #fff;
+  }
+  .hero-btn.secondary {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+  }
+  .summary-strip {
+    margin-top: -28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .summary-card {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .summary-card strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .summary-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .summary-card .mini-list {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .summary-card .mini-list span {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #f1edf4;
+  }
+  .content {
+    padding: 34px 32px 60px;
+  }
+  .section-header {
+    margin-bottom: 18px;
+  }
+  .section-header h2 {
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    max-width: 940px;
+  }
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .search-box {
+    flex: 1;
+    min-width: 280px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .filter-btn {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-secondary);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .filter-btn.active {
+    background: var(--info-bg);
+    border-color: #b7daf9;
+    color: var(--info-text);
+  }
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fcfbfd;
+    color: var(--text-secondary);
+    text-align: left;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 14px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr.data-row {
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  tbody tr.data-row:hover {
+    background: #fcfbfd;
+  }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0ecf2;
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tr.group-row td {
+    background: #f5f0f7;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--fabric-purple);
+    border-bottom-color: var(--border);
+  }
+  .source-cell {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .source-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f2ecf4;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .source-title { font-weight: 800; font-size: 14px; }
+  .source-sub { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+  .badge-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge.success { background: var(--success-bg); color: var(--success-text); }
+  .badge.info { background: var(--info-bg); color: var(--info-text); }
+  .badge.warn { background: var(--warn-bg); color: var(--warn-text); }
+  .badge.neutral { background: #f1edf4; color: var(--text-secondary); }
+  .detail-row { display: none; }
+  .detail-row.open { display: table-row; }
+  .detail-cell {
+    padding: 0;
+    background: #fcfbfd;
+  }
+  .detail-panel {
+    padding: 18px 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-top {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .detail-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .detail-card h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: var(--fabric-purple);
+  }
+  .detail-card p,
+  .detail-card li {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .detail-card ul {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+  .detail-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-secondary);
+    border-radius: 9px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--fabric-purple);
+    border-color: var(--fabric-purple);
+    color: #fff;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 14px;
+  }
+  .code-block {
+    background: #1c1620;
+    color: #eadcf0;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Cascadia Code', Consolas, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+    min-height: 120px;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #d0c4d6;
+    border-radius: 7px;
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.18); }
+  .checklist {
+    display: grid;
+    gap: 8px;
+  }
+  .checklist div {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .asset-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .asset {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .asset strong {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .asset span {
+    font-size: 12px;
+    color: var(--text-secondary);
+    word-break: break-word;
+  }
+  .launcher-shell {
+    padding: 0 32px 28px;
+  }
+  .launcher-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 0.95fr;
+    gap: 14px;
+  }
+  .launcher-panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .launcher-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .step-card {
+    border: 1px solid var(--border);
+    background: #fbf8fd;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .step-card strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .step-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .callout-list {
+    display: grid;
+    gap: 10px;
+  }
+  .callout-item {
+    border: 1px solid var(--border);
+    background: #fcfbfd;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .callout-item strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .callout-item p,
+  .callout-item li {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .callout-item ul {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+  .footer {
+    border-top: 1px solid var(--border);
+    background: #fff;
+  }
+  .footer-inner {
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  @media (max-width: 1100px) {
+    .summary-strip,
+    .launcher-grid,
+    .launcher-steps,
+    .detail-top,
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 780px) {
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 17px; }
+    .content { padding: 24px 14px 48px; }
+    .hero { padding: 48px 16px 62px; }
+    .summary-strip { margin-left: 14px; margin-right: 14px; }
+    .launcher-shell { padding-left: 14px; padding-right: 14px; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tr.data-row { border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; border-bottom: none; }
+    tr.group-row td { border-bottom: 1px solid var(--border); }
+    .detail-row .detail-cell { padding: 0; }
+  }
+</style>
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-logo">
+        <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.18)"/><path d="M10 12h8v8h-8zM22 12h8v8h-8zM10 22h8v8h-8zM22 22h8v8h-8z" fill="#fff"/></svg>
+        <span>Microsoft Fabric · Guided Setup Mockup</span>
+      </div>
+      <h1>Real-time data sources — ready to stream into Fabric with a setup pack per bridge</h1>
+      <p>This mockup assumes every bridge ships a complete automation bundle: ACI deployment template, Fabric bootstrap script, Event Stream wiring values, KQL database bootstrap, validation queries, and a downloadable setup pack that gets you to first rows fast.</p>
+      <div class="hero-actions">
+        <a href="#catalog" class="hero-btn primary">Browse Setup Catalog</a>
+        <a href="#launcher-flow" class="hero-btn secondary">See Cloud Shell Flow</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="summary-strip" id="how-this-helps">
+    <div class="summary-card">
+      <strong>Recommended Quick Path</strong>
+      <p>Answer a few questions in the page, copy one Cloud Shell launcher, and let it deploy the bridge in ACI plus the Fabric-side objects in one guided run.</p>
+    </div>
+    <div class="summary-card">
+      <strong>What The Mockup Assumes</strong>
+      <div class="mini-list">
+        <span>Launcher payload</span>
+        <span>Bootstrap script</span>
+        <span>Event Stream config</span>
+        <span>KQL bundle</span>
+        <span>Validation pack</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <strong>Fastest Outcome</strong>
+      <p>One pasted command, no hunting for table names or mappings, and a clear fallback only if Eventstream connection artifacts still require a portal confirmation.</p>
+    </div>
+    <div class="summary-card">
+      <strong>Fabric Support</strong>
+      <p>The automation story is now plausible because Fabric APIs cover workspaces, Eventhouse, KQL Database, and Eventstream creation. The remaining risk is connection-level wiring.</p>
+    </div>
+  </div>
+
+  <section class="launcher-shell" id="launcher-flow">
+    <div class="launcher-grid">
+      <div class="launcher-panel">
+        <div class="section-header" style="padding:0; margin-bottom:0;">
+          <h2>One-Paste Cloud Shell Launcher</h2>
+          <p>The web UI collects the small amount of tenant-specific context we cannot know in advance, then generates a short command for Azure Cloud Shell. Cloud Shell becomes the orchestration runtime; ACI hosts the bridge; Fabric hosts Eventstream, Eventhouse, and the KQL database.</p>
+        </div>
+        <div class="launcher-steps">
+          <div class="step-card">
+            <strong>1. Ask only setup-critical questions</strong>
+            <p>Workspace name or id, Azure subscription, resource group, region, source choice, and whether the user wants a new or existing Event Hub namespace.</p>
+          </div>
+          <div class="step-card">
+            <strong>2. Generate a short-lived launcher</strong>
+            <p>The page creates a signed payload URL so the pasted command stays short while the detailed per-source configuration lives in JSON, not in the clipboard.</p>
+          </div>
+          <div class="step-card">
+            <strong>3. Paste into shell.azure.com</strong>
+            <p>Cloud Shell resolves Azure and Fabric context, deploys the ACI template, creates the Fabric items, applies KQL, and emits a setup pack plus validation queries.</p>
+          </div>
+          <div class="step-card">
+            <strong>4. Fall back only when needed</strong>
+            <p>If Eventstream still needs a connection-specific id or mapping name, the launcher pauses with exact paste values instead of leaving the operator to reverse-engineer them.</p>
+          </div>
+        </div>
+        <div class="detail-grid" style="margin-top:14px;">
+          <div class="code-block">Invoke-RestMethod 'https://setup.example/launch.ps1?payloadUrl=https%3A%2F%2Fsetup.example%2Fp%2Fbluesky-fabric-7f3b.json' | Invoke-Expression</div>
+          <div class="checklist">
+            <div><strong>Why the payload URL matters</strong><br>It keeps the user-visible command stable while allowing the backend to emit source-specific ACI parameters, KQL bundles, Eventstream definitions, and validation queries.</div>
+            <div><strong>What runs where</strong><br>Cloud Shell orchestrates. Azure Container Instances run the feeder. Fabric stores and routes the stream. The browser only gathers inputs and renders status.</div>
+            <div><strong>Why not embed Cloud Shell</strong><br>The supported experience is to send people to Azure surfaces such as shell.azure.com or the Azure portal, not to host a general-purpose Cloud Shell terminal inside an arbitrary site.</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout-list">
+        <div class="callout-item">
+          <strong>Why this is feasible now</strong>
+          <ul>
+            <li>Fabric APIs can list workspaces so the launcher can validate the target workspace early.</li>
+            <li>Fabric can create Eventhouse and KQL Database items, so schema bootstrap can become scripted instead of doc-driven.</li>
+            <li>Eventstream creation also has an API and definition format, so topology generation is no longer just a design sketch.</li>
+          </ul>
+        </div>
+        <div class="callout-item">
+          <strong>What the repo already has</strong>
+          <p>ACI coverage is the strongest current asset because most bridges already ship Azure deployment templates. KQL coverage exists but is still incomplete, which is why the mockup assumes generated bundles per bridge.</p>
+        </div>
+        <div class="callout-item">
+          <strong>Main open integration risk</strong>
+          <p>Eventstream definitions still need connection-level values such as connection names, mapping rule names, or data connection ids. If those cannot be derived or created cleanly by API, the launcher should degrade into an exact guided handoff instead of pretending full automation exists.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="content">
+    <div class="section-header">
+      <h2>Guided Setup Catalog</h2>
+      <p>The intro is intentionally high-level and reassuring; the catalog is intentionally operational. Each row expands into a full setup drawer with the fastest path, Fabric-native path, bootstrap commands, generated assets, and validation queries as if the repo already shipped them for every bridge.</p>
+    </div>
+
+    <div class="toolbar">
+      <input id="searchInput" class="search-box" type="search" placeholder="Search sources, countries, or setup details" oninput="renderTable()">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" data-filter="water" onclick="setFilter('water', this)">Water</button>
+      <button class="filter-btn" data-filter="maritime" onclick="setFilter('maritime', this)">Maritime</button>
+      <button class="filter-btn" data-filter="weather" onclick="setFilter('weather', this)">Weather</button>
+      <button class="filter-btn" data-filter="transport" onclick="setFilter('transport', this)">Transport</button>
+      <button class="filter-btn" data-filter="energy" onclick="setFilter('energy', this)">Energy</button>
+      <button class="filter-btn" data-filter="seismology" onclick="setFilter('seismology', this)">Seismology</button>
+      <button class="filter-btn" data-filter="social" onclick="setFilter('social', this)">Social</button>
+    </div>
+
+    <div class="table-wrap" id="catalog">
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Coverage</th>
+            <th>Data</th>
+            <th>Update</th>
+            <th>Shortest Working Path</th>
+            <th>Automation</th>
+          </tr>
+        </thead>
+        <tbody id="catalogBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Mockup only. This page intentionally presents a future state where every bridge has a complete setup bundle.</span>
+      <span><a href="https://github.com/clemensv/real-time-sources">GitHub</a> · <a href="https://github.com/clemensv/real-time-sources/blob/main/DATABASE.md">DATABASE.md</a></span>
+    </div>
+  </footer>
+
+<script>
+const groups = [
+  { id: 'water', label: 'Water & Hydrology', icon: '💧' },
+  { id: 'maritime', label: 'Maritime & Vessel Tracking', icon: '🚢' },
+  { id: 'weather', label: 'Weather & Space', icon: '⛈️' },
+  { id: 'transport', label: 'Transportation', icon: '✈️' },
+  { id: 'energy', label: 'Energy', icon: '⚡' },
+  { id: 'seismology', label: 'Seismology', icon: '🌍' },
+  { id: 'social', label: 'Social & Media', icon: '📡' }
+];
+
+const sourceData = [
+  { id:'noaa', group:'water', icon:'🌊', name:'NOAA Tides & Currents', coverage:'United States', flags:'🇺🇸', data:'Water level, currents', cadence:'Every 6 min', volume:'Low', auth:'None', topic:'noaa', kqlScript:'noaa/kql/noaa.kql', container:'noaa/CONTAINER.md', events:'noaa/EVENTS.md', description:'Water level and current data from 3,000+ US stations.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1 -> Get Data', validation:'NOAATides | summarize count() by bin(___time, 5m)' },
+  { id:'noaa-ndbc', group:'water', icon:'🔵', name:'NOAA NDBC', coverage:'United States coastal', flags:'🇺🇸', data:'Buoy observations', cadence:'Every 5 min', volume:'Low', auth:'None', topic:'noaa-ndbc', kqlScript:'noaa-ndbc/kql/noaa_ndbc.kql', container:'noaa-ndbc/CONTAINER.md', events:'noaa-ndbc/EVENTS.md', description:'Buoy observations across US waters.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1 -> validation query', validation:'BuoyObservations | summarize stations=dcount(stationId)' },
+  { id:'pegelonline', group:'water', icon:'🇩🇪', name:'Pegelonline', coverage:'Germany', flags:'🇩🇪', data:'Water level, current', cadence:'Every 15 min', volume:'Low', auth:'None', topic:'pegelonline', kqlScript:'pegelonline/kql/pegelonline.kql', container:'pegelonline/CONTAINER.md', events:'pegelonline/EVENTS.md', description:'German federal waterways water levels from WSV.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'WaterLevelsLatest | take 20' },
+  { id:'usgs-iv', group:'water', icon:'📊', name:'USGS Instantaneous Values', coverage:'United States', flags:'🇺🇸', data:'Water quality, quantity', cadence:'Every 15 min', volume:'Low', auth:'None', topic:'usgs-iv', kqlScript:'usgs-iv/kql/usgs_iv.kql', container:'usgs-iv/CONTAINER.md', events:'usgs-iv/EVENTS.md', description:'Water quality and quantity data from USGS.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'USGSInstantaneousValues | summarize count() by parameterCode' },
+  { id:'chmi-hydro', group:'water', icon:'🇨🇿', name:'CHMI Hydro', coverage:'Czechia', flags:'🇨🇿', data:'Water level, discharge, temperature', cadence:'Every 10 min', volume:'Low', auth:'None', topic:'chmi-hydro', kqlScript:'chmi-hydro/kql/chmi_hydro.kql', container:'chmi-hydro/CONTAINER.md', events:'chmi-hydro/EVENTS.md', description:'Czech hydrological observations from ČHMÚ.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'CHMIHydroLatest | summarize max(___time)' },
+  { id:'imgw-hydro', group:'water', icon:'🇵🇱', name:'IMGW Hydro', coverage:'Poland', flags:'🇵🇱', data:'Hydrological observations', cadence:'Every 10 min', volume:'Low', auth:'None', topic:'imgw-hydro', kqlScript:'imgw-hydro/kql/imgw_hydro.kql', container:'imgw-hydro/CONTAINER.md', events:'imgw-hydro/EVENTS.md', description:'Polish hydrological observations from IMGW-PIB.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'IMGWHydro | summarize count() by stationId' },
+  { id:'smhi-hydro', group:'water', icon:'🇸🇪', name:'SMHI Hydro', coverage:'Sweden', flags:'🇸🇪', data:'Discharge data', cadence:'Every 15 min', volume:'Low', auth:'None', topic:'smhi-hydro', kqlScript:'smhi-hydro/kql/smhi_hydro.kql', container:'smhi-hydro/CONTAINER.md', events:'smhi-hydro/EVENTS.md', description:'Swedish hydrological observations from SMHI.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'SMHIDischargeLatest | take 20' },
+  { id:'hubeau-hydrometrie', group:'water', icon:'🇫🇷', name:'Hub\'Eau Hydrometrie', coverage:'France', flags:'🇫🇷', data:'Water level, flow', cadence:'Every 10 min', volume:'Moderate', auth:'None', topic:'hubeau-hydrometrie', kqlScript:'hubeau-hydrometrie/kql/hubeau_hydrometrie.kql', container:'hubeau-hydrometrie/CONTAINER.md', events:'hubeau-hydrometrie/EVENTS.md', description:'French hydrometric observations from 6,300 stations.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'HubEauHydro | summarize stations=dcount(stationCode)' },
+  { id:'rws-waterwebservices', group:'water', icon:'🇳🇱', name:'RWS Waterwebservices', coverage:'Netherlands', flags:'🇳🇱', data:'Water observations', cadence:'Every 10 min', volume:'Low', auth:'None', topic:'rws-waterwebservices', kqlScript:'rws-waterwebservices/kql/rws_waterwebservices.kql', container:'rws-waterwebservices/CONTAINER.md', events:'rws-waterwebservices/EVENTS.md', description:'Dutch water observations from Rijkswaterstaat.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'RWSWaterLatest | take 20' },
+  { id:'uk-ea-flood-monitoring', group:'water', icon:'🇬🇧', name:'UK EA Flood Monitoring', coverage:'England', flags:'🇬🇧', data:'Flood, river observations', cadence:'Every 15 min', volume:'Moderate', auth:'None', topic:'uk-ea-flood-monitoring', kqlScript:'uk-ea-flood-monitoring/kql/uk_ea_flood_monitoring.kql', container:'uk-ea-flood-monitoring/CONTAINER.md', events:'uk-ea-flood-monitoring/EVENTS.md', description:'English flood and river data.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'FloodStationsLatest | summarize count()' },
+  { id:'waterinfo-vmm', group:'water', icon:'🇧🇪', name:'Waterinfo VMM', coverage:'Flanders', flags:'🇧🇪', data:'Water observations', cadence:'Every 15 min', volume:'Low', auth:'None', topic:'waterinfo-vmm', kqlScript:'waterinfo-vmm/kql/waterinfo_vmm.kql', container:'waterinfo-vmm/CONTAINER.md', events:'waterinfo-vmm/EVENTS.md', description:'Flemish water observations.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'WaterinfoVMMLatest | take 20' },
+  { id:'german-waters', group:'water', icon:'🇩🇪', name:'German Waters', coverage:'Germany', flags:'🇩🇪', data:'Water levels, discharge', cadence:'Every 15 min', volume:'Moderate', auth:'None', topic:'german-waters', kqlScript:'german-waters/kql/german_waters.kql', container:'german-waters/README.md', events:'german-waters/EVENTS.md', description:'Aggregated German state water observations.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'GermanWatersLatest | summarize states=dcount(sourceState)' },
+
+  { id:'aisstream', group:'maritime', icon:'📡', name:'AISStream', coverage:'Global coastal', flags:'🌍', data:'AIS vessel tracking', cadence:'Real-time', volume:'High', auth:'AISStream API key', topic:'aisstream', kqlScript:'aisstream/kql/aisstream.kql', container:'aisstream/CONTAINER.md', events:'aisstream/EVENTS.md', description:'Global AIS vessel tracking from shore-based coverage.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'AISPositionsLatest | summarize vessels=dcount(mmsi)' },
+  { id:'kystverket-ais', group:'maritime', icon:'🇳🇴', name:'Kystverket AIS', coverage:'Norway', flags:'🇳🇴', data:'AIS vessel tracking', cadence:'Real-time', volume:'High', auth:'None', topic:'kystverket-ais', kqlScript:'kystverket-ais/kql/ais.kql', container:'kystverket-ais/CONTAINER.md', events:'kystverket-ais/EVENTS.md', description:'Norwegian raw AIS stream from 50+ stations.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'AISDynamicLatest | summarize count() by bin(___time, 10m)' },
+  { id:'digitraffic-maritime', group:'maritime', icon:'🇫🇮', name:'Digitraffic Maritime', coverage:'Finland / Baltic Sea', flags:'🇫🇮', data:'AIS vessel tracking', cadence:'Real-time', volume:'High', auth:'None', topic:'digitraffic-maritime', kqlScript:'digitraffic-maritime/kql/digitraffic_maritime.kql', container:'digitraffic-maritime/CONTAINER.md', events:'digitraffic-maritime/EVENTS.md', description:'Finnish AIS vessel tracking from Digitraffic Marine.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'DigitrafficMaritimeLatest | summarize count()' },
+
+  { id:'dwd', group:'weather', icon:'🌤️', name:'DWD', coverage:'Germany', flags:'🇩🇪', data:'Weather observations, alerts', cadence:'Every 10 min', volume:'Moderate', auth:'None', topic:'dwd', kqlScript:'dwd/kql/dwd.kql', container:'dwd/CONTAINER.md', events:'dwd/EVENTS.md', description:'German weather observations and CAP alerts.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'DWDWeatherLatest | summarize stations=dcount(stationId)' },
+  { id:'noaa-nws', group:'weather', icon:'⚠️', name:'NOAA NWS', coverage:'United States', flags:'🇺🇸', data:'Weather alerts', cadence:'Every 60 sec', volume:'Low', auth:'None', topic:'noaa-nws', kqlScript:'noaa-nws/kql/noaa_nws.kql', container:'noaa-nws/CONTAINER.md', events:'noaa-nws/EVENTS.md', description:'Active weather alerts from the US National Weather Service.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'WeatherAlertsLatest | summarize count() by severity' },
+  { id:'noaa-goes', group:'weather', icon:'☀️', name:'NOAA GOES / SWPC', coverage:'Global', flags:'🌍', data:'Space weather, alerts', cadence:'Every 60 sec', volume:'Low', auth:'None', topic:'noaa-goes', kqlScript:'noaa-goes/kql/noaa_goes.kql', container:'noaa-goes/CONTAINER.md', events:'noaa-goes/EVENTS.md', description:'Space weather alerts and solar wind data.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'SpaceWeatherLatest | take 20' },
+
+  { id:'gtfs', group:'transport', icon:'🚌', name:'GTFS Realtime', coverage:'Global', flags:'🌍', data:'Transit positions, trips, alerts', cadence:'Varies', volume:'High', auth:'Feed-specific', topic:'gtfs', kqlScript:'gtfs/kql/gtfs.kql', container:'gtfs/CONTAINER.md', events:'gtfs/EVENTS.md', description:'Transit realtime data from agencies worldwide.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'VehiclesLatest | summarize agencies=dcount(___source)' },
+  { id:'mode-s', group:'transport', icon:'✈️', name:'Mode-S', coverage:'Local receiver', flags:'📍', data:'ADS-B aircraft telemetry', cadence:'Every 60 sec', volume:'Moderate', auth:'Receiver endpoint', topic:'mode-s', kqlScript:'mode-s/kql/mode_s.kql', container:'mode-s/CONTAINER.md', events:'mode-s/EVENTS.md', description:'ADS-B and Mode-S aircraft telemetry.', quick:'ACI template or Docker -> Event Hub -> bootstrap-fabric.ps1', validation:'AircraftLatest | summarize aircraft=dcount(hex)' },
+
+  { id:'entsoe', group:'energy', icon:'⚡', name:'ENTSO-E', coverage:'Europe', flags:'🇪🇺', data:'Electricity market data', cadence:'Varies', volume:'Moderate', auth:'ENTSO-E API key', topic:'entsoe', kqlScript:'entsoe/kql/entsoe.kql', container:'entsoe/CONTAINER.md', events:'entsoe/EVENTS.md', description:'European electricity market data.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'ENTSOELatest | summarize areas=dcount(biddingZone)' },
+
+  { id:'usgs-earthquakes', group:'seismology', icon:'🌋', name:'USGS Earthquakes', coverage:'Global', flags:'🌍', data:'Seismic events', cadence:'Every 60 sec', volume:'Low', auth:'None', topic:'usgs-earthquakes', kqlScript:'usgs-earthquakes/kql/usgs_earthquakes.kql', container:'usgs-earthquakes/CONTAINER.md', events:'usgs-earthquakes/EVENTS.md', description:'Global earthquake events with deduplication.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'EarthquakesLatest | summarize max(magnitude)' },
+
+  { id:'bluesky', group:'social', icon:'🦋', name:'Bluesky Firehose', coverage:'Global', flags:'🌍', data:'Posts, likes, follows', cadence:'Real-time', volume:'High', auth:'None', topic:'bluesky', kqlScript:'bluesky/kql/bluesky.kql', container:'bluesky/CONTAINER.md', events:'bluesky/EVENTS.md', description:'AT Protocol social events from Bluesky.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'PostsLatest | summarize count() by collection' },
+  { id:'rss', group:'social', icon:'📰', name:'RSS Feeds', coverage:'Global', flags:'🌍', data:'News and blog posts', cadence:'Configurable', volume:'Variable', auth:'None', topic:'rss', kqlScript:'rss/kql/feeds.kql', container:'rss/CONTAINER.md', events:'rss/EVENTS.md', description:'RSS feeds and OPML-based feed ingestion.', quick:'ACI template -> Event Hub -> bootstrap-fabric.ps1', validation:'FeedItemsLatest | summarize feeds=dcount(feed)' }
+];
+
+let activeFilter = 'all';
+let openRowId = null;
+
+function setFilter(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(button => button.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function filteredSources() {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  return sourceData.filter(source => {
+    const inFilter = activeFilter === 'all' || source.group === activeFilter;
+    const haystack = [source.name, source.coverage, source.data, source.description, source.quick, source.topic].join(' ').toLowerCase();
+    const inSearch = !query || haystack.includes(query);
+    return inFilter && inSearch;
+  });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('catalogBody');
+  const filtered = filteredSources();
+  const byGroup = groups.map(group => ({ ...group, items: filtered.filter(item => item.group === group.id) })).filter(group => group.items.length > 0);
+
+  tbody.innerHTML = byGroup.map(group => {
+    const rows = group.items.map(source => renderSourceRow(source)).join('');
+    return `<tr class="group-row"><td colspan="6">${group.icon} ${group.label}</td></tr>${rows}`;
+  }).join('') || `<tr class="group-row"><td colspan="6">No matching sources</td></tr>`;
+
+  if (openRowId) {
+    const detail = document.getElementById(`detail-${openRowId}`);
+    if (detail) detail.classList.add('open');
+  }
+}
+
+function renderSourceRow(source) {
+  const automationBadges = `
+    <div class="badge-line">
+      <span class="badge success">ACI Ready</span>
+      <span class="badge success">Fabric Ready</span>
+      <span class="badge success">KQL Ready</span>
+      <span class="badge info">Validation Pack</span>
+    </div>`;
+
+  return `
+    <tr class="data-row" onclick="toggleRow('${source.id}')">
+      <td>
+        <div class="source-cell">
+          <span class="source-icon">${source.icon}</span>
+          <div>
+            <div class="source-title">${source.name}</div>
+            <div class="source-sub">${source.description}</div>
+          </div>
+        </div>
+      </td>
+      <td>${source.flags} ${source.coverage}</td>
+      <td>${source.data}</td>
+      <td>${source.cadence}</td>
+      <td>${source.quick}</td>
+      <td>${automationBadges}</td>
+    </tr>
+    <tr id="detail-${source.id}" class="detail-row">
+      <td colspan="6" class="detail-cell">${renderDetailPanel(source)}</td>
+    </tr>`;
+}
+
+function renderDetailPanel(source) {
+  const launcherScript = `Invoke-RestMethod 'https://setup.example/launch.ps1?payloadUrl=https%3A%2F%2Fsetup.example%2Fp%2F${source.id}-fabric-7f3b.json' | Invoke-Expression`;
+  const bootstrapScript = `.\\tools\\bootstrap-fabric.ps1 -Source ${source.id} -ClusterUri https://myeventhouse.kusto.data.microsoft.com -DatabaseName realtime -EventHubNamespace mynamespace -EventHubName ${source.topic} -CreateFabricIngestionPack -RunValidation`;
+  const aciScript = `.\\tools\\deploy-bridge-aci.ps1 -Source ${source.id} -ConnectionString '<eventhub-connection-string>' -ResourceGroup rg-realtime -Location westeurope`;
+  const dockerScript = `docker run \\
+  -e KAFKA_BOOTSTRAP_SERVERS=<namespace>.servicebus.windows.net:9093 \\
+  -e KAFKA_TOPIC=${source.topic} \\
+  -e SASL_USERNAME='$ConnectionString' \\
+  -e SASL_PASSWORD='<connection-string>' \\
+  ghcr.io/clemensv/real-time-sources/${source.id}`;
+  const fabricPasteValues = `Source bridge: ${source.name}
+Destination table: ${toPascal(source.topic)}Raw
+Typed tables: ${toPascal(source.topic)} + ${toPascal(source.topic)}Latest
+Input mapping: _cloudevents_dispatch_json
+Recommended start time: 2 hours before first bridge run
+Validation query: ${source.validation}`;
+
+  return `
+    <div class="detail-panel">
+      <div class="detail-top">
+        <div class="detail-card">
+          <h3>Fastest Path To Working Data</h3>
+          <ul>
+            <li>1. Generate the source-specific Cloud Shell launcher from the web page.</li>
+            <li>2. Paste it into Cloud Shell so it can deploy ACI, run ${source.kqlScript}, and create the Fabric-side objects.</li>
+            <li>3. If full Eventstream wiring still needs confirmation, use the generated paste values below and then run the validation query.</li>
+          </ul>
+        </div>
+        <div class="detail-card">
+          <h3>Source Profile</h3>
+          <ul>
+            <li>Coverage: ${source.coverage}</li>
+            <li>Cadence: ${source.cadence}</li>
+            <li>Volume: ${source.volume}</li>
+            <li>Auth: ${source.auth}</li>
+            <li>Kafka topic: ${source.topic}</li>
+          </ul>
+        </div>
+        <div class="detail-card">
+          <h3>Fabric Setup Pack Includes</h3>
+          <ul>
+            <li>Short-lived launcher payload</li>
+            <li>Bootstrap PowerShell wrapper</li>
+            <li>Resolved KQL script bundle</li>
+            <li>Ingestion config JSON</li>
+            <li>Validation KQL snippets</li>
+            <li>One-page operator checklist</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="detail-tabs">
+        <button class="tab-btn active" data-panel="launcher-${source.id}" onclick="activateTab(event, 'launcher-${source.id}')">Cloud Shell Launcher</button>
+        <button class="tab-btn" data-panel="aci-${source.id}" onclick="activateTab(event, 'aci-${source.id}')">ACI Deployment</button>
+        <button class="tab-btn" data-panel="docker-${source.id}" onclick="activateTab(event, 'docker-${source.id}')">Local Docker</button>
+      </div>
+
+      <div class="tab-panel active" id="launcher-${source.id}">
+        <div class="detail-grid">
+          <div class="code-block"><button class="copy-btn" onclick="copyBlock(event)">Copy</button>${launcherScript}</div>
+          <div class="checklist">
+            <div><strong>Launcher output</strong><br>Deploys the bridge to ACI, runs the generated Fabric bootstrap wrapper, creates typed tables, latest-state views, dispatch mappings, validation queries, and a downloadable setup pack zip.</div>
+            <div><strong>Fallback values if manual confirmation is needed</strong><br>${fabricPasteValues.replace(/\n/g, '<br>')}</div>
+            <div><strong>Why the launcher stays short</strong><br>The pasted command points to a short-lived payload URL instead of embedding subscription ids, workspace ids, and per-source Eventstream definitions inline.</div>
+            <div><strong>Success condition</strong><br>The first validation query returns rows within one polling interval or within 2 minutes for streaming sources.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="aci-${source.id}">
+        <div class="detail-grid">
+          <div class="code-block"><button class="copy-btn" onclick="copyBlock(event)">Copy</button>${aciScript}</div>
+          <div class="checklist">
+            <div><strong>What this deploys</strong><br>Container group, env vars, connection string wiring, restart policy, and Log Analytics integration.</div>
+            <div><strong>Portal shortcut</strong><br>Deploy to Azure badge opens a prefilled template page for ${source.name}.</div>
+            <div><strong>After deployment</strong><br>Run the bootstrap script to provision Eventhouse structures before wiring ingestion.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="docker-${source.id}">
+        <div class="detail-grid">
+          <div class="code-block"><button class="copy-btn" onclick="copyBlock(event)">Copy</button>${dockerScript}</div>
+          <div class="checklist">
+            <div><strong>Local operator path</strong><br>Best for quick trials, local demos, and debugging feed-specific authentication or topic wiring.</div>
+            <div><strong>Expected artifact names</strong><br>${toPascal(source.topic)}Raw table, ${toPascal(source.topic)}Latest view, ${source.id}.validation.kql, ${source.id}.setup-pack.zip.</div>
+            <div><strong>Recommended next step</strong><br>Switch to ACI once the feed and schema look correct in Fabric.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="asset-grid">
+        <div class="asset"><strong>Launcher Payload</strong><span>tools/generated/${source.id}.launcher.payload.json</span></div>
+        <div class="asset"><strong>Bootstrap Script</strong><span>tools/generated/${source.id}.fabric.bootstrap.ps1</span></div>
+        <div class="asset"><strong>Fabric Ingestion Pack</strong><span>tools/generated/${source.id}.fabric.ingestion.json</span></div>
+        <div class="asset"><strong>KQL Bundle</strong><span>${source.kqlScript}</span></div>
+        <div class="asset"><strong>Validation Queries</strong><span>tools/generated/${source.id}.validation.kql</span></div>
+        <div class="asset"><strong>Operator Checklist</strong><span>tools/generated/${source.id}.runbook.md</span></div>
+        <div class="asset"><strong>Setup Pack Zip</strong><span>tmp/${source.id}.setup-pack.zip</span></div>
+        <div class="asset"><strong>Container Docs</strong><span>${source.container}</span></div>
+        <div class="asset"><strong>Event Schema Docs</strong><span>${source.events}</span></div>
+      </div>
+    </div>`;
+}
+
+function toggleRow(id) {
+  document.querySelectorAll('.detail-row').forEach(row => {
+    if (row.id !== `detail-${id}`) row.classList.remove('open');
+  });
+  const row = document.getElementById(`detail-${id}`);
+  if (!row) return;
+  const isOpen = row.classList.contains('open');
+  row.classList.toggle('open', !isOpen);
+  openRowId = isOpen ? null : id;
+}
+
+function activateTab(event, panelId) {
+  event.stopPropagation();
+  const button = event.currentTarget;
+  const wrapper = button.closest('.detail-panel');
+  wrapper.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  wrapper.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+  button.classList.add('active');
+  wrapper.querySelector(`#${panelId}`).classList.add('active');
+}
+
+function copyBlock(event) {
+  event.stopPropagation();
+  const button = event.currentTarget;
+  const text = button.parentElement.textContent.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text);
+  button.textContent = 'Copied';
+  setTimeout(() => { button.textContent = 'Copy'; }, 1200);
+}
+
+function toPascal(value) {
+  return value
+    .split(/[^a-zA-Z0-9]/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+}
+
+renderTable();
+</script>
+</body>
+</html>

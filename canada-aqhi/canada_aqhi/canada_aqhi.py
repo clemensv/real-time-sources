@@ -10,6 +10,7 @@ import os
 import sys
 import time
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Iterable, Optional, Sequence
 
@@ -67,6 +68,7 @@ FORECAST_LABELS = {
     4: "Tomorrow Night",
 }
 DEFAULT_REFERENCE_REFRESH_INTERVAL = 24 * 60 * 60
+DEFAULT_MAX_COMMUNITIES = 0
 MAX_OBSERVATION_IDS = 50000
 MAX_FORECAST_IDS = 20000
 DEFAULT_HTTP_RETRY_TOTAL = 3
@@ -241,13 +243,14 @@ class CanadaAQHIBridge:
         return math.sqrt((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2)
 
     def fetch_json(self, url: str, **kwargs: Any) -> Any:
-        response = self.session.get(url, timeout=60, **kwargs)
+        timeout = kwargs.pop("timeout", 30)
+        response = self.session.get(url, timeout=timeout, **kwargs)
         response.raise_for_status()
         return response.json()
 
-    def fetch_text(self, url: str) -> Optional[str]:
+    def fetch_text(self, url: str, *, timeout: int = 15) -> Optional[str]:
         try:
-            response = self.session.get(url, timeout=60)
+            response = self.session.get(url, timeout=timeout)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -337,14 +340,46 @@ class CanadaAQHIBridge:
             entry["forecast_url"] = canonicalize_feed_url(properties.get("path_to_current_forecast"))
         return merged
 
-    def load_reference_catalogs(self, selected_provinces: set[str]) -> dict[str, dict[str, Any]]:
-        """Load and enrich AQHI community metadata."""
+    def load_reference_catalogs(
+        self,
+        selected_provinces: set[str],
+        *,
+        max_communities: int = 0,
+    ) -> dict[str, dict[str, Any]]:
+        """Load and enrich AQHI community metadata.
+
+        ``max_communities`` (when > 0) lets the caller cap the result so the
+        method can early-exit once enough entries are filtered, avoiding the
+        expensive per-community geolocator round-trips for the rest of the
+        catalog. Items whose URLs already pin a single selected province are
+        preferred so the cap can be reached without any geolocator call.
+        """
         community_geojson = self.fetch_json(COMMUNITY_GEOJSON_URL)
         station_geojson = self.fetch_json(STATION_GEOJSON_URL)
         communities = self.merge_community_catalogs(community_geojson, station_geojson)
         filtered: dict[str, dict[str, Any]] = {}
 
-        for cgndb_code, entry in communities.items():
+        def _priority(item: tuple[str, dict[str, Any]]) -> tuple[int, str]:
+            cgndb_code, entry = item
+            if cgndb_code in self.province_cache:
+                if self.province_cache[cgndb_code] in selected_provinces:
+                    return (0, cgndb_code)
+                return (3, cgndb_code)
+            candidates = (
+                province_candidates_for_feed(entry.get("observation_url"))
+                or province_candidates_for_feed(entry.get("forecast_url"))
+            )
+            if len(candidates) == 1 and next(iter(candidates)) in selected_provinces:
+                return (0, cgndb_code)
+            if candidates and candidates.isdisjoint(selected_provinces):
+                return (4, cgndb_code)
+            if candidates and not candidates.isdisjoint(selected_provinces):
+                return (1, cgndb_code)
+            return (2, cgndb_code)
+
+        ordered_items = sorted(communities.items(), key=_priority)
+
+        for cgndb_code, entry in ordered_items:
             province = self.province_cache.get(cgndb_code)
             candidate_provinces = (
                 province_candidates_for_feed(entry.get("observation_url"))
@@ -365,6 +400,8 @@ class CanadaAQHIBridge:
                 continue
             entry["province"] = province
             filtered[cgndb_code] = entry
+            if max_communities > 0 and len(filtered) >= max_communities:
+                break
 
         self.communities = filtered
         return filtered
@@ -401,7 +438,10 @@ class CanadaAQHIBridge:
 
         for forecast_node in root.findall("forecastGroup/forecast"):
             period_id = int(forecast_node.attrib["periodID"])
-            label = FORECAST_LABELS.get(period_id, "")
+            label = FORECAST_LABELS.get(period_id)
+            if label is None:
+                LOGGER.warning("Skipping unsupported AQHI forecast periodID=%s", period_id)
+                continue
             aqhi_text = forecast_node.findtext("airQualityHealthIndex", default="").strip()
             aqhi_value = int(aqhi_text) if aqhi_text else None
             periods.append(
@@ -471,11 +511,12 @@ class CanadaAQHIBridge:
         communities: Iterable[dict[str, Any]],
     ) -> int:
         sent = 0
-        for entry in communities:
-            observation_url = entry.get("observation_url")
-            if not observation_url:
-                continue
-            xml_text = self.fetch_text(observation_url)
+        entries = [e for e in communities if e.get("observation_url")]
+        if not entries:
+            return 0
+        with ThreadPoolExecutor(max_workers=min(16, len(entries))) as pool:
+            xml_texts = list(pool.map(lambda e: self.fetch_text(e["observation_url"]), entries))
+        for entry, xml_text in zip(entries, xml_texts):
             if not xml_text:
                 continue
             parsed = self.parse_observation_xml(xml_text)
@@ -506,11 +547,12 @@ class CanadaAQHIBridge:
         communities: Iterable[dict[str, Any]],
     ) -> int:
         sent = 0
-        for entry in communities:
-            forecast_url = entry.get("forecast_url")
-            if not forecast_url:
-                continue
-            xml_text = self.fetch_text(forecast_url)
+        entries = [e for e in communities if e.get("forecast_url")]
+        if not entries:
+            return 0
+        with ThreadPoolExecutor(max_workers=min(16, len(entries))) as pool:
+            xml_texts = list(pool.map(lambda e: self.fetch_text(e["forecast_url"]), entries))
+        for entry, xml_text in zip(entries, xml_texts):
             if not xml_text:
                 continue
             parsed = self.parse_forecast_xml(xml_text)
@@ -542,11 +584,27 @@ class CanadaAQHIBridge:
         producer.producer.flush()
         return sent
 
+    @staticmethod
+    def limit_communities(
+        communities: dict[str, dict[str, Any]],
+        max_communities: int = DEFAULT_MAX_COMMUNITIES,
+    ) -> dict[str, dict[str, Any]]:
+        """Return a stable subset of communities when an opt-in cap is configured."""
+        if max_communities <= 0 or len(communities) <= max_communities:
+            return communities
+
+        ordered_keys = sorted(
+            communities,
+            key=lambda key: (communities[key]["province"], communities[key]["community_name"]),
+        )
+        return {key: communities[key] for key in ordered_keys[:max_communities]}
+
     def poll_once(
         self,
         producer: CaGcWeatherAqhiEventProducer,
         selected_provinces: set[str],
         reference_refresh_interval: int = DEFAULT_REFERENCE_REFRESH_INTERVAL,
+        max_communities: int = DEFAULT_MAX_COMMUNITIES,
     ) -> dict[str, int]:
         """Run one reference/observation/forecast cycle."""
         now = datetime.now(timezone.utc)
@@ -560,13 +618,19 @@ class CanadaAQHIBridge:
         reference_count = 0
         if needs_reference_refresh:
             try:
-                communities = self.load_reference_catalogs(selected_provinces)
+                communities = self.load_reference_catalogs(
+                    selected_provinces, max_communities=max_communities
+                )
+                communities = self.limit_communities(communities, max_communities=max_communities)
+                self.communities = communities
                 reference_count = self.emit_reference_data(producer, communities)
             except requests.RequestException as exc:
                 if communities:
                     LOGGER.warning("Community refresh failed; continuing with cached metadata: %s", exc)
                 else:
                     raise
+        else:
+            communities = self.limit_communities(communities, max_communities=max_communities)
 
         ordered_communities = [communities[key] for key in sorted(communities)]
         observation_count = self.emit_observations(producer, ordered_communities)
@@ -661,6 +725,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
         help="Reference refresh interval in seconds",
     )
     feed_parser.add_argument(
+        "--max-communities",
+        type=int,
+        default=int(os.getenv("MAX_COMMUNITIES", str(DEFAULT_MAX_COMMUNITIES))),
+        help="Optional cap on emitted communities; 0 disables the limit",
+    )
+    feed_parser.add_argument(
         "--state-file",
         type=str,
         default=os.getenv("STATE_FILE", os.path.expanduser("~/.canada_aqhi_state.json")),
@@ -671,6 +741,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
         type=str,
         default=os.getenv("PROVINCES", ",".join(PROVINCES)),
         help="Comma-separated province/territory codes to emit",
+    )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
     )
 
     list_parser = subparsers.add_parser("list", help="List AQHI communities known to the bridge")
@@ -723,6 +799,7 @@ def main() -> None:
                 aqhi_producer,
                 selected_provinces,
                 reference_refresh_interval=args.reference_refresh_interval,
+                max_communities=args.max_communities,
             )
             LOGGER.info(
                 "Sent %d community, %d observation, and %d forecast events",
@@ -735,6 +812,9 @@ def main() -> None:
             break
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.error("Error during AQHI poll cycle: %s", exc)
+        if args.once:
+            LOGGER.info("--once mode: exiting after first polling cycle")
+            break
         time.sleep(args.polling_interval)
 
     producer.flush()

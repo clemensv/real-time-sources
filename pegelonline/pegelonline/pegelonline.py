@@ -124,7 +124,7 @@ class PegelOnlineAPI:
             config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
-    async def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
+    async def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '', once: bool = False) -> None:
         """Feed stations and send updates as CloudEvents."""
         previous_readings: Dict[str, List[Dict[str, Any]]] = _load_state(state_file)
 
@@ -187,6 +187,9 @@ class PegelOnlineAPI:
                 effective_polling_interval = max(0, polling_interval-(end_time - start_time).total_seconds())
                 logging.info("Sent %s current measurements in %s seconds. Now waiting until %s.", count, (end_time - start_time).total_seconds(), (datetime.now(timezone.utc) + timedelta(seconds=effective_polling_interval)).isoformat())
                 _save_state(state_file, previous_readings)
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_polling_interval > 0:
                     time.sleep(effective_polling_interval)
             except KeyboardInterrupt:
@@ -248,6 +251,9 @@ def main() -> None:
                              help='Polling interval in seconds', default=polling_interval_default)
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE', os.path.expanduser('~/.pegelonline_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -294,7 +300,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        asyncio.run(api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file))
+        asyncio.run(api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file, args.once))
     else:
         parser.print_help()
 

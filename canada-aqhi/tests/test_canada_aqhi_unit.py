@@ -181,6 +181,16 @@ class TestXMLParsing:
         assert parsed["periods"][3]["forecast_date"] == "20260409"
         assert parsed["periods"][3]["aqhi_category"] == "Moderate"
 
+    def test_parse_forecast_xml_skips_unsupported_periods(self):
+        xml_text = FORECAST_XML.replace(
+            "</forecastGroup>",
+            '<forecast periodID="5"><period forecastName="Later" lang="EN">Friday</period><airQualityHealthIndex>4</airQualityHealthIndex></forecast></forecastGroup>',
+        )
+
+        parsed = CanadaAQHIBridge.parse_forecast_xml(xml_text)
+
+        assert [period["forecast_period"] for period in parsed["periods"]] == [1, 2, 3, 4]
+
 
 @pytest.mark.unit
 class TestCatalogMerging:
@@ -281,6 +291,55 @@ class TestCatalogMerging:
         assert filtered["FAFFD"]["province"] == "ON"
         assert geolocation_calls == []
 
+    def test_load_reference_catalogs_honors_max_communities_early_exit(self, monkeypatch):
+        # Build 30 ON-feed stations; assert load_reference_catalogs stops at the cap
+        # so we don't iterate (and potentially geolocate) the entire catalog.
+        community_features = []
+        station_features = []
+        for i in range(30):
+            cgndb = f"ON{i:03d}"
+            community_features.append({
+                "properties": {
+                    "Latitude": "44.0",
+                    "Longitude": "-79.0",
+                    "cgndb_key": cgndb,
+                    "region_name_en": f"Town{i}",
+                }
+            })
+            station_features.append({
+                "properties": {
+                    "cgndb": cgndb,
+                    "name": {"en": f"Town{i}", "fr": f"Town{i}"},
+                    "path_to_current_observation": f"http://dd.weather.gc.ca/air_quality/aqhi/ont/observation/realtime/xml/AQ_OBS_{cgndb}_CURRENT.xml",
+                    "path_to_current_forecast": f"http://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/realtime/xml/AQ_FCST_{cgndb}_CURRENT.xml",
+                }
+            })
+        communities = {"features": community_features}
+        stations = {"features": station_features}
+
+        bridge = CanadaAQHIBridge()
+
+        def fake_fetch_json(url, **kwargs):
+            if url == COMMUNITY_GEOJSON_URL:
+                return communities
+            if url == STATION_GEOJSON_URL:
+                return stations
+            raise AssertionError(f"unexpected url {url}")
+
+        geolocation_calls: list[str] = []
+
+        def fake_resolve_province_code(cgndb_code, latitude, longitude):
+            geolocation_calls.append(cgndb_code)
+            return "ON"
+
+        monkeypatch.setattr(bridge, "fetch_json", fake_fetch_json)
+        monkeypatch.setattr(bridge, "resolve_province_code", fake_resolve_province_code)
+
+        filtered = bridge.load_reference_catalogs({"ON"}, max_communities=10)
+
+        assert len(filtered) == 10
+        assert geolocation_calls == []  # URL-pinned to a single selected province → no geolocator calls
+
     def test_poll_once_uses_cached_communities_when_refresh_fails(self):
         bridge = CanadaAQHIBridge()
         bridge.communities = {
@@ -304,3 +363,57 @@ class TestCatalogMerging:
         assert counts == {"communities": 0, "observations": 1, "forecasts": 2}
         bridge.emit_observations.assert_called_once()
         bridge.emit_forecasts.assert_called_once()
+
+    def test_limit_communities_returns_stable_sorted_prefix(self):
+        communities = {
+            "AADCE": {"province": "NL", "community_name": "Burin"},
+            "FAFFD": {"province": "ON", "community_name": "Barrie"},
+            "FALIF": {"province": "ON", "community_name": "Belleville"},
+        }
+
+        limited = CanadaAQHIBridge.limit_communities(communities, max_communities=2)
+
+        assert list(limited) == ["AADCE", "FAFFD"]
+
+    def test_poll_once_limits_reference_and_telemetry_to_max_communities(self):
+        bridge = CanadaAQHIBridge()
+        bridge.load_reference_catalogs = Mock(
+            return_value={
+                "FALIF": {
+                    "province": "ON",
+                    "community_name": "Belleville",
+                    "cgndb_code": "FALIF",
+                    "observation_url": "https://example.test/belleville-observation.xml",
+                    "forecast_url": "https://example.test/belleville-forecast.xml",
+                },
+                "AADCE": {
+                    "province": "NL",
+                    "community_name": "Burin",
+                    "cgndb_code": "AADCE",
+                    "observation_url": "https://example.test/burin-observation.xml",
+                    "forecast_url": "https://example.test/burin-forecast.xml",
+                },
+                "FAFFD": {
+                    "province": "ON",
+                    "community_name": "Barrie",
+                    "cgndb_code": "FAFFD",
+                    "observation_url": "https://example.test/barrie-observation.xml",
+                    "forecast_url": "https://example.test/barrie-forecast.xml",
+                },
+            }
+        )
+        bridge.emit_reference_data = Mock(return_value=2)
+        bridge.emit_observations = Mock(return_value=2)
+        bridge.emit_forecasts = Mock(return_value=8)
+        bridge.save_state = Mock()
+        producer = Mock()
+
+        counts = bridge.poll_once(producer, {"NL", "ON"}, max_communities=2)
+
+        assert counts == {"communities": 2, "observations": 2, "forecasts": 8}
+        limited = bridge.emit_reference_data.call_args.args[1]
+        assert list(limited) == ["AADCE", "FAFFD"]
+        observed = bridge.emit_observations.call_args.args[1]
+        assert [entry["community_name"] for entry in observed] == ["Burin", "Barrie"]
+        forecasted = bridge.emit_forecasts.call_args.args[1]
+        assert [entry["community_name"] for entry in forecasted] == ["Burin", "Barrie"]

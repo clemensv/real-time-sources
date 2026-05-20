@@ -383,6 +383,7 @@ class SensorCommunityAPI:
         sasl_password: str | None = None,
         polling_interval: int = 300,
         kafka_enable_tls: bool | None = None,
+        once: bool = False,
     ) -> None:
         """Start the continuous polling loop."""
         kafka_config = self.build_kafka_config(
@@ -417,6 +418,9 @@ class SensorCommunityAPI:
                     result.sensor_reading_count,
                     elapsed,
                 )
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if wait_time > 0:
                     time.sleep(wait_time)
             except KeyboardInterrupt:
@@ -424,6 +428,9 @@ class SensorCommunityAPI:
                 break
             except Exception as exc:  # pylint: disable=broad-except
                 logging.error("Polling cycle failed: %s", exc)
+                if once:
+                    logging.info("--once mode: exiting after failed first cycle")
+                    break
                 time.sleep(polling_interval)
         producer.flush()
 
@@ -504,6 +511,12 @@ def main() -> None:
         default=os.getenv("KAFKA_ENABLE_TLS"),
         help="Set to false to force PLAINTEXT for plain Kafka bootstrap servers",
     )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").strip().lower() in {"1", "true", "yes", "on"},
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
 
@@ -530,4 +543,5 @@ def main() -> None:
         sasl_password=args.sasl_password,
         polling_interval=args.polling_interval,
         kafka_enable_tls=kafka_enable_tls,
+        once=args.once,
     )

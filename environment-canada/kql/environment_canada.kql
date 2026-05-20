@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['ca.gov.eccc.weather.Station'] (
    [msc_id]: string,
    [name]: string,
    [iata_id]: string,
@@ -44,9 +44,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference data for an Environment Canada SWOB weather station. Stations are identified by their MSC ID (Meteorological Service of Canada identifier) and include WMO synoptic IDs where available.\"}";
+.alter table ['ca.gov.eccc.weather.Station'] docstring "{\"description\": \"Reference data for an Environment Canada SWOB weather station. Stations are identified by their MSC ID (Meteorological Service of Canada identifier) and include WMO synoptic IDs where available.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['ca.gov.eccc.weather.Station'] column-docstrings (
    [msc_id]: "{\"description\": \"MSC station identifier (Meteorological Service of Canada ID), also known as Climate ID. Used as Kafka key.\"}",
    [name]: "{\"description\": \"Station name as listed in the SWOB station registry, e.g. 'TORONTO PEARSON INTL A', 'VANCOUVER INTL A'.\"}",
    [iata_id]: "{\"description\": \"IATA station code, e.g. 'CYYZ' for Toronto Pearson.\"}",
@@ -65,7 +65,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['ca.gov.eccc.weather.Station'] ingestion json mapping "ca.gov.eccc.weather.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,7 +87,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['ca.gov.eccc.weather.Station'] ingestion json mapping "ca.gov.eccc.weather.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -109,13 +109,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['ca.gov.eccc.weather.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ca.gov.eccc.weather.StationLatest'] on table ['ca.gov.eccc.weather.Station'] {
+    ['ca.gov.eccc.weather.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['ca.gov.eccc.weather.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -126,7 +126,7 @@
 }]
 ```
 
-.create-merge table [WeatherObservation] (
+.create-merge table ['ca.gov.eccc.weather.WeatherObservation'] (
    [msc_id]: string,
    [station_name]: string,
    [observation_time]: datetime,
@@ -156,9 +156,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherObservation] docstring "{\"description\": \"Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.\"}";
+.alter table ['ca.gov.eccc.weather.WeatherObservation'] docstring "{\"description\": \"Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.\"}";
 
-.alter table [WeatherObservation] column-docstrings (
+.alter table ['ca.gov.eccc.weather.WeatherObservation'] column-docstrings (
    [msc_id]: "{\"description\": \"MSC station identifier.\"}",
    [station_name]: "{\"description\": \"Station name from the SWOB record.\"}",
    [observation_time]: "{\"description\": \"Observation timestamp in UTC from the obs_date_tm field.\"}",
@@ -188,7 +188,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+.create-or-alter table ['ca.gov.eccc.weather.WeatherObservation'] ingestion json mapping "ca.gov.eccc.weather.WeatherObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -221,7 +221,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+.create-or-alter table ['ca.gov.eccc.weather.WeatherObservation'] ingestion json mapping "ca.gov.eccc.weather.WeatherObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -254,13 +254,13 @@
 ]
 ```
 
-.drop materialized-view WeatherObservationLatest ifexists;
+.drop materialized-view ['ca.gov.eccc.weather.WeatherObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
-    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ca.gov.eccc.weather.WeatherObservationLatest'] on table ['ca.gov.eccc.weather.WeatherObservation'] {
+    ['ca.gov.eccc.weather.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherObservation] policy update
+.alter table ['ca.gov.eccc.weather.WeatherObservation'] policy update
 ```
 [{
   "IsEnabled": true,

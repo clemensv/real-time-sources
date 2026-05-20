@@ -243,3 +243,106 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+
+.create-merge table [NWSForecastZone] (
+    [zone_id]: string,
+    [zone_type]: string,
+    [name]: string,
+    [state]: string,
+    [forecast_office_url]: string,
+    [grid_identifier]: string,
+    [awips_location_identifier]: string,
+    [cwa_ids]: dynamic,
+    [forecast_office_urls]: dynamic,
+    [time_zones]: dynamic,
+    [observation_station_ids]: dynamic,
+    [radar_station]: string,
+    [effective_date]: datetime,
+    [expiration_date]: datetime,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view NWSForecastZoneLatest ifexists;
+
+.create materialized-view with (backfill=true) NWSForecastZoneLatest on table NWSForecastZone {
+    NWSForecastZone | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [NWSForecastZone] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'Microsoft.OpenData.US.NOAA.NWS.ForecastZone') | project['zone_id'] = tostring(data.['zone_id']),['zone_type'] = tostring(data.['zone_type']),['name'] = tostring(data.['name']),['state'] = tostring(data.['state']),['forecast_office_url'] = tostring(data.['forecast_office_url']),['grid_identifier'] = tostring(data.['grid_identifier']),['awips_location_identifier'] = tostring(data.['awips_location_identifier']),['cwa_ids'] = todynamic(data.['cwa_ids']),['forecast_office_urls'] = todynamic(data.['forecast_office_urls']),['time_zones'] = todynamic(data.['time_zones']),['observation_station_ids'] = todynamic(data.['observation_station_ids']),['radar_station'] = tostring(data.['radar_station']),['effective_date'] = todatetime(data.['effective_date']),['expiration_date'] = todatetime(data.['expiration_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [NWSLandZoneForecast] (
+    [zone_id]: string,
+    [updated]: datetime,
+    [periods]: dynamic,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view NWSLandZoneForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) NWSLandZoneForecastLatest on table NWSLandZoneForecast {
+    NWSLandZoneForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [NWSLandZoneForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['updated'] = todatetime(data.['updated']),['periods'] = todynamic(data.['periods']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [NWSMarineZoneForecast] (
+    [zone_id]: string,
+    [zone_name]: string,
+    [product_title]: string,
+    [office_name]: string,
+    [issued_at_text]: string,
+    [expires_text]: string,
+    [wmo_header]: string,
+    [bulletin_awips_id]: string,
+    [synopsis]: string,
+    [periods]: dynamic,
+    [bulletin_text]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view NWSMarineZoneForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) NWSMarineZoneForecastLatest on table NWSMarineZoneForecast {
+    NWSMarineZoneForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [NWSMarineZoneForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['zone_name'] = tostring(data.['zone_name']),['product_title'] = tostring(data.['product_title']),['office_name'] = tostring(data.['office_name']),['issued_at_text'] = tostring(data.['issued_at_text']),['expires_text'] = tostring(data.['expires_text']),['wmo_header'] = tostring(data.['wmo_header']),['bulletin_awips_id'] = tostring(data.['bulletin_awips_id']),['synopsis'] = tostring(data.['synopsis']),['periods'] = todynamic(data.['periods']),['bulletin_text'] = tostring(data.['bulletin_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

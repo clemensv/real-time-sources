@@ -403,6 +403,7 @@ def feed(args):
 
     polling_interval = int(args.polling_interval or os.environ.get("POLLING_INTERVAL", "120"))
     region_filter = args.region_filter or os.environ.get("REGION_FILTER", "")
+    once = bool(getattr(args, "once", False)) or os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes")
 
     producer = Producer(kafka_config)
     traffic_ep = UsWaWsdotTrafficEventProducer(producer, kafka_topic)
@@ -534,6 +535,11 @@ def feed(args):
     # Initial: emit reference data + first round of telemetry
     total = _poll_and_emit(is_initial=True, emit_reference=True)
     logging.info("Initial batch: %d total events", total)
+    producer.flush()
+
+    if once:
+        logging.info("--once mode: exiting after first polling cycle")
+        return
 
     # Polling loop
     last_reference_time = datetime.now(timezone.utc)
@@ -570,6 +576,13 @@ def main():
     feed_parser.add_argument("--access-code", help="WSDOT API access code")
     feed_parser.add_argument("--polling-interval", type=int, default=120, help="Polling interval in seconds")
     feed_parser.add_argument("--region-filter", help="Comma-separated WSDOT regions for traffic flow")
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). "
+             "Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     if args.command == "feed":

@@ -12,7 +12,7 @@ import datetime
 from typing import Dict, List, Optional, Set, Tuple
 import argparse
 import requests
-from eaws_albina_producer_data import AvalancheBulletin, MaxDangerRatingenum
+from eaws_albina_producer_data import AvalancheBulletin, AvalancheRegion, MaxDangerRatingenum
 from eaws_albina_producer_kafka_producer.producer import (
     OrgEAWSALBINABulletinsEventProducer,
 )
@@ -217,12 +217,46 @@ class AlbinaPoller:
         self.save_state(state)
         return total_sent
 
-    def poll_and_send(self):
-        """Main loop: poll today and yesterday, sleep, repeat."""
+    def emit_region_catalog(self) -> int:
+        """Emit one AvalancheRegion reference event per configured region.
+
+        Called at bridge startup so downstream consumers always have the
+        regional context, even outside the avalanche season when no daily
+        bulletins are published. Follows the GTFS-style pattern of preloading
+        reference data before entering the polling loop.
+        """
+        now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        count = 0
+        for region in self.regions:
+            ref = AvalancheRegion(
+                region_id=region,
+                lang=self.lang,
+                configured_at=now,
+                bulletin_base_url=BASE_URL,
+            )
+            self.producer.send_org_eaws_albina_avalanche_region(
+                region, ref, flush_producer=False
+            )
+            count += 1
+        if count > 0:
+            self.kafka_producer.flush()
+        return count
+
+    def poll_and_send(self, once: bool = False):
+        """Emit region catalog once, then poll today and yesterday.
+
+        When ``once`` is True the loop runs exactly one polling cycle and
+        returns, which is the execution model used by the Fabric notebook
+        scheduler. Otherwise it runs forever, sleeping ``POLL_INTERVAL_SECONDS``
+        between cycles.
+        """
         print(f"Starting EAWS ALBINA Avalanche Bulletin poller, polling every {POLL_INTERVAL_SECONDS}s")
         print(f"  Regions: {self.regions}")
         print(f"  Language: {self.lang}")
         print(f"  Kafka topic: {self.kafka_topic}")
+
+        ref_count = self.emit_region_catalog()
+        print(f"Emitted {ref_count} AvalancheRegion reference event(s) at startup")
 
         while True:
             try:
@@ -235,6 +269,10 @@ class AlbinaPoller:
                         print(f"Sent {count} bulletin event(s) for {date_str}")
             except Exception as e:
                 print(f"Error in polling loop: {e}")
+
+            if once:
+                print("--once mode: exiting after first polling cycle")
+                return
 
             time.sleep(POLL_INTERVAL_SECONDS)
 
@@ -287,6 +325,12 @@ def main():
         help="Comma-separated region codes (default: AT-07,IT-32-BZ,IT-32-TN,AT-02)",
     )
     parser.add_argument("--lang", type=str, default="en", help="Language code (default: en)")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
 
@@ -347,7 +391,7 @@ def main():
         regions=regions,
         lang=lang,
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

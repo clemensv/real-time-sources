@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['au.gov.bom.Station'] (
    [station_wmo]: int,
    [name]: string,
    [product_id]: string,
@@ -40,9 +40,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility.\"}";
+.alter table ['au.gov.bom.Station'] docstring "{\"description\": \"Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['au.gov.bom.Station'] column-docstrings (
    [station_wmo]: "{\"description\": \"WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products.\"}",
    [name]: "{\"description\": \"Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'.\"}",
    [product_id]: "{\"description\": \"BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations.\"}",
@@ -57,7 +57,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['au.gov.bom.Station'] ingestion json mapping "au.gov.bom.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -75,7 +75,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['au.gov.bom.Station'] ingestion json mapping "au.gov.bom.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -93,13 +93,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['au.gov.bom.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['au.gov.bom.StationLatest'] on table ['au.gov.bom.Station'] {
+    ['au.gov.bom.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['au.gov.bom.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -110,7 +110,7 @@
 }]
 ```
 
-.create-merge table [WeatherObservation] (
+.create-merge table ['au.gov.bom.WeatherObservation'] (
    [station_wmo]: int,
    [station_name]: string,
    [observation_time_utc]: datetime,
@@ -149,9 +149,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherObservation] docstring "{\"description\": \"Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.\"}";
+.alter table ['au.gov.bom.WeatherObservation'] docstring "{\"description\": \"Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.\"}";
 
-.alter table [WeatherObservation] column-docstrings (
+.alter table ['au.gov.bom.WeatherObservation'] column-docstrings (
    [station_wmo]: "{\"description\": \"WMO station number identifying the reporting station.\"}",
    [station_name]: "{\"description\": \"Human-readable name of the reporting station.\"}",
    [observation_time_utc]: "{\"description\": \"Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format.\"}",
@@ -190,7 +190,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+.create-or-alter table ['au.gov.bom.WeatherObservation'] ingestion json mapping "au.gov.bom.WeatherObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -232,7 +232,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+.create-or-alter table ['au.gov.bom.WeatherObservation'] ingestion json mapping "au.gov.bom.WeatherObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -274,13 +274,13 @@
 ]
 ```
 
-.drop materialized-view WeatherObservationLatest ifexists;
+.drop materialized-view ['au.gov.bom.WeatherObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
-    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['au.gov.bom.WeatherObservationLatest'] on table ['au.gov.bom.WeatherObservation'] {
+    ['au.gov.bom.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherObservation] policy update
+.alter table ['au.gov.bom.WeatherObservation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -291,7 +291,7 @@
 }]
 ```
 
-.create-merge table [WarningBulletin] (
+.create-merge table ['au.gov.bom.WarningBulletin'] (
    [warning_id]: string,
    [warning_url]: string,
    [feed_url]: string,
@@ -308,9 +308,9 @@
    [___subject]: string
 );
 
-.alter table [WarningBulletin] docstring "{\"description\": \"Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.\"}";
+.alter table ['au.gov.bom.WarningBulletin'] docstring "{\"description\": \"Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.\"}";
 
-.alter table [WarningBulletin] column-docstrings (
+.alter table ['au.gov.bom.WarningBulletin'] column-docstrings (
    [warning_id]: "{\"description\": \"Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'.\"}",
    [warning_url]: "{\"description\": \"Absolute BOM URL of the warning product page linked from the RSS item.\"}",
    [feed_url]: "{\"description\": \"Absolute BOM RSS feed URL that published this warning item.\"}",
@@ -327,7 +327,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WarningBulletin] ingestion json mapping "WarningBulletin_json_flat"
+.create-or-alter table ['au.gov.bom.WarningBulletin'] ingestion json mapping "au.gov.bom.WarningBulletin_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -347,7 +347,7 @@
 ]
 ```
 
-.create-or-alter table [WarningBulletin] ingestion json mapping "WarningBulletin_json_ce_structured"
+.create-or-alter table ['au.gov.bom.WarningBulletin'] ingestion json mapping "au.gov.bom.WarningBulletin_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -367,13 +367,13 @@
 ]
 ```
 
-.drop materialized-view WarningBulletinLatest ifexists;
+.drop materialized-view ['au.gov.bom.WarningBulletinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WarningBulletinLatest on table WarningBulletin {
-    WarningBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['au.gov.bom.WarningBulletinLatest'] on table ['au.gov.bom.WarningBulletin'] {
+    ['au.gov.bom.WarningBulletin'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WarningBulletin] policy update
+.alter table ['au.gov.bom.WarningBulletin'] policy update
 ```
 [{
   "IsEnabled": true,

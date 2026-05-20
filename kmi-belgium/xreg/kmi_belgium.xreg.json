@@ -1,0 +1,221 @@
+{
+  "endpoints": {
+    "BE.Gov.KMI.Weather.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "kmi-belgium",
+          "key": "{station_code}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/BE.Gov.KMI.Weather"]
+    }
+  },
+  "messagegroups": {
+    "BE.Gov.KMI.Weather": {
+      "messages": {
+        "BE.Gov.KMI.Weather.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {"value": "BE.Gov.KMI.Weather.Station"},
+            "source": {"value": "https://opendata.meteo.be"},
+            "subject": {"value": "{station_code}", "type": "uritemplate"}
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.Station"
+        },
+        "BE.Gov.KMI.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {"value": "BE.Gov.KMI.Weather.WeatherObservation"},
+            "source": {"value": "https://opendata.meteo.be"},
+            "subject": {"value": "{station_code}", "type": "uritemplate"}
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.WeatherObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "BE.Gov.KMI.Weather.jstruct": {
+      "schemas": {
+        "BE.Gov.KMI.Weather.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/Station",
+                "type": "object",
+                "name": "Station",
+                "description": "Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.",
+                "required": ["station_code", "latitude", "longitude"],
+                "properties": {
+                  "station_code": {
+                    "type": "string",
+                    "description": "KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network."
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "BE.Gov.KMI.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/WeatherObservation",
+                "type": "object",
+                "name": "WeatherObservation",
+                "description": "Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.",
+                "required": ["station_code", "observation_time"],
+                "properties": {
+                  "station_code": {
+                    "type": "string",
+                    "description": "KMI/RMI automatic weather station code from the `code` property of the reporting observation feature."
+                  },
+                  "observation_time": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC from the feature property `timestamp`."
+                  },
+                  "precip_quantity": {
+                    "type": ["double", "null"],
+                    "description": "Precipitation quantity reported for the 10-minute observation period.",
+                    "unit": "mm",
+                    "symbol": "mm"
+                  },
+                  "temp_dry_shelter_avg": {
+                    "type": ["double", "null"],
+                    "description": "Average air temperature measured in the 2 m dry shelter during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "temp_grass_pt100_avg": {
+                    "type": ["double", "null"],
+                    "description": "Average grass-level temperature measured by the Pt100 sensor during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "temp_soil_avg": {
+                    "type": ["double", "null"],
+                    "description": "Average soil surface temperature during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "temp_soil_avg_5cm": {
+                    "type": ["double", "null"],
+                    "description": "Average soil temperature measured at 5 cm depth during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "temp_soil_avg_10cm": {
+                    "type": ["double", "null"],
+                    "description": "Average soil temperature measured at 10 cm depth during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "temp_soil_avg_20cm": {
+                    "type": ["double", "null"],
+                    "description": "Average soil temperature measured at 20 cm depth during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "temp_soil_avg_50cm": {
+                    "type": ["double", "null"],
+                    "description": "Average soil temperature measured at 50 cm depth during the observation period.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "wind_speed_10m": {
+                    "type": ["double", "null"],
+                    "description": "Wind speed measured at 10 m above ground level.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "wind_speed_avg_30m": {
+                    "type": ["double", "null"],
+                    "description": "Average wind speed measured at 30 m above ground level.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "wind_direction": {
+                    "type": ["double", "null"],
+                    "description": "Wind direction in degrees from which the wind is blowing.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "wind_gusts_speed": {
+                    "type": ["double", "null"],
+                    "description": "Maximum wind gust speed observed during the 10-minute period.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "humidity_rel_shelter_avg": {
+                    "type": ["double", "null"],
+                    "description": "Average relative humidity measured in the shelter during the observation period.",
+                    "unit": "percent",
+                    "symbol": "%"
+                  },
+                  "pressure": {
+                    "type": ["double", "null"],
+                    "description": "Station-level atmospheric pressure reported by the automatic weather station.",
+                    "unit": "hPa",
+                    "symbol": "hPa"
+                  },
+                  "sun_duration": {
+                    "type": ["double", "null"],
+                    "description": "Sunshine duration accumulated during the 10-minute observation period.",
+                    "unit": "min",
+                    "symbol": "min"
+                  },
+                  "short_wave_from_sky_avg": {
+                    "type": ["double", "null"],
+                    "description": "Average downward shortwave radiation from the sky during the observation period.",
+                    "unit": "W/m2",
+                    "symbol": "W/m²"
+                  },
+                  "sun_int_avg": {
+                    "type": ["double", "null"],
+                    "description": "Average direct sunshine intensity during the observation period.",
+                    "unit": "W/m2",
+                    "symbol": "W/m²"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

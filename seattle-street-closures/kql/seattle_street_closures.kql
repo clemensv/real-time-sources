@@ -1,0 +1,160 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['us.wa.seattle.streetclosures.StreetClosure'] (
+   [closure_id]: string,
+   [permit_number]: string,
+   [permit_type]: string,
+   [project_name]: string,
+   [project_description]: string,
+   [start_date]: string,
+   [end_date]: string,
+   [sunday]: string,
+   [monday]: string,
+   [tuesday]: string,
+   [wednesday]: string,
+   [thursday]: string,
+   [friday]: string,
+   [saturday]: string,
+   [street_on]: string,
+   [street_from]: string,
+   [street_to]: string,
+   [segkey]: string,
+   [geometry_json]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] docstring "{\"description\": \"Street closure row from the Seattle Department of Transportation street closures dataset, describing one closed street segment and its active occurrence window.\"}";
+
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] column-docstrings (
+   [closure_id]: "{\"description\": \"Derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date.\"}",
+   [permit_number]: "{\"description\": \"Identifier for the permit record granting authorization to close the street.\"}",
+   [permit_type]: "{\"description\": \"Type of permit, such as Block Party, Play Street, Farmers Market, or Temporary Activation.\"}",
+   [project_name]: "{\"description\": \"Short title used by Seattle to quickly identify the closure permit.\"}",
+   [project_description]: "{\"description\": \"Longer description of the permit, including issuance notes and closure details.\"}",
+   [start_date]: "{\"description\": \"Date on which the closure event begins, normalized to YYYY-MM-DD.\"}",
+   [end_date]: "{\"description\": \"Date on which the closure event ends, normalized to YYYY-MM-DD.\"}",
+   [sunday]: "{\"description\": \"Time period, if any, during which the closure occurs on Sundays between the start and end dates.\"}",
+   [monday]: "{\"description\": \"Time period, if any, during which the closure occurs on Mondays between the start and end dates.\"}",
+   [tuesday]: "{\"description\": \"Time period, if any, during which the closure occurs on Tuesdays between the start and end dates.\"}",
+   [wednesday]: "{\"description\": \"Time period, if any, during which the closure occurs on Wednesdays between the start and end dates.\"}",
+   [thursday]: "{\"description\": \"Time period, if any, during which the closure occurs on Thursdays between the start and end dates.\"}",
+   [friday]: "{\"description\": \"Time period, if any, during which the closure occurs on Fridays between the start and end dates.\"}",
+   [saturday]: "{\"description\": \"Time period, if any, during which the closure occurs on Saturdays between the start and end dates.\"}",
+   [street_on]: "{\"description\": \"Street name of the closed street segment.\"}",
+   [street_from]: "{\"description\": \"Name of the intersecting street at the low end of the closed segment.\"}",
+   [street_to]: "{\"description\": \"Name of the intersecting street at the high end of the closed segment.\"}",
+   [segkey]: "{\"description\": \"Identifier for the street segment that is closed.\"}",
+   [geometry_json]: "{\"description\": \"Serialized GeoJSON LineString geometry for the closed street block.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.seattle.streetclosures.StreetClosure'] ingestion json mapping "us.wa.seattle.streetclosures.StreetClosure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "closure_id", "path": "$.closure_id"},
+  {"column": "permit_number", "path": "$.permit_number"},
+  {"column": "permit_type", "path": "$.permit_type"},
+  {"column": "project_name", "path": "$.project_name"},
+  {"column": "project_description", "path": "$.project_description"},
+  {"column": "start_date", "path": "$.start_date"},
+  {"column": "end_date", "path": "$.end_date"},
+  {"column": "sunday", "path": "$.sunday"},
+  {"column": "monday", "path": "$.monday"},
+  {"column": "tuesday", "path": "$.tuesday"},
+  {"column": "wednesday", "path": "$.wednesday"},
+  {"column": "thursday", "path": "$.thursday"},
+  {"column": "friday", "path": "$.friday"},
+  {"column": "saturday", "path": "$.saturday"},
+  {"column": "street_on", "path": "$.street_on"},
+  {"column": "street_from", "path": "$.street_from"},
+  {"column": "street_to", "path": "$.street_to"},
+  {"column": "segkey", "path": "$.segkey"},
+  {"column": "geometry_json", "path": "$.geometry_json"},
+]
+```
+
+.create-or-alter table ['us.wa.seattle.streetclosures.StreetClosure'] ingestion json mapping "us.wa.seattle.streetclosures.StreetClosure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "closure_id", "path": "$.data.closure_id"},
+  {"column": "permit_number", "path": "$.data.permit_number"},
+  {"column": "permit_type", "path": "$.data.permit_type"},
+  {"column": "project_name", "path": "$.data.project_name"},
+  {"column": "project_description", "path": "$.data.project_description"},
+  {"column": "start_date", "path": "$.data.start_date"},
+  {"column": "end_date", "path": "$.data.end_date"},
+  {"column": "sunday", "path": "$.data.sunday"},
+  {"column": "monday", "path": "$.data.monday"},
+  {"column": "tuesday", "path": "$.data.tuesday"},
+  {"column": "wednesday", "path": "$.data.wednesday"},
+  {"column": "thursday", "path": "$.data.thursday"},
+  {"column": "friday", "path": "$.data.friday"},
+  {"column": "saturday", "path": "$.data.saturday"},
+  {"column": "street_on", "path": "$.data.street_on"},
+  {"column": "street_from", "path": "$.data.street_from"},
+  {"column": "street_to", "path": "$.data.street_to"},
+  {"column": "segkey", "path": "$.data.segkey"},
+  {"column": "geometry_json", "path": "$.data.geometry_json"},
+]
+```
+
+.drop materialized-view ['us.wa.seattle.streetclosures.StreetClosureLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.seattle.streetclosures.StreetClosureLatest'] on table ['us.wa.seattle.streetclosures.StreetClosure'] {
+    ['us.wa.seattle.streetclosures.StreetClosure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.WA.Seattle.StreetClosures.StreetClosure') | project['closure_id'] = tostring(data.['closure_id']),['permit_number'] = tostring(data.['permit_number']),['permit_type'] = tostring(data.['permit_type']),['project_name'] = tostring(data.['project_name']),['project_description'] = tostring(data.['project_description']),['start_date'] = tostring(data.['start_date']),['end_date'] = tostring(data.['end_date']),['sunday'] = tostring(data.['sunday']),['monday'] = tostring(data.['monday']),['tuesday'] = tostring(data.['tuesday']),['wednesday'] = tostring(data.['wednesday']),['thursday'] = tostring(data.['thursday']),['friday'] = tostring(data.['friday']),['saturday'] = tostring(data.['saturday']),['street_on'] = tostring(data.['street_on']),['street_from'] = tostring(data.['street_from']),['street_to'] = tostring(data.['street_to']),['segkey'] = tostring(data.['segkey']),['geometry_json'] = tostring(data.['geometry_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -397,8 +397,15 @@ def main():
                         help="ENTSO-E bidding zone (default: DE-LU)")
     parser.add_argument('--last-polled-file', type=str,
                         help="State file for deduplication")
+    parser.add_argument('--once', action='store_true',
+                        help="Run a single polling cycle and exit (for scheduled/notebook hosting)")
 
     args = parser.parse_args()
+
+    if not args.once:
+        once_env = os.getenv('ONCE_MODE', '').strip().lower()
+        if once_env in ('1', 'true', 'yes'):
+            args.once = True
 
     if not args.connection_string:
         args.connection_string = os.getenv('CONNECTION_STRING')
@@ -453,7 +460,7 @@ def main():
         bidding_zone=args.bidding_zone,
         last_polled_file=args.last_polled_file,
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

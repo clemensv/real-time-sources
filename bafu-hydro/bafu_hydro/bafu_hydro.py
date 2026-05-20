@@ -117,7 +117,7 @@ def send_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer) -> 
             latitude=details.get('lat', 0.0),
             longitude=details.get('lon', 0.0),
         )
-        producer.send_ch_bafu_hydrology_station(data=station_data, flush_producer=False)
+        producer.send_ch_bafu_hydrology_station(_station_id=station_id, data=station_data, flush_producer=False)
         sent_count += 1
 
     producer.producer.flush()
@@ -190,7 +190,7 @@ def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer,
             water_temperature_unit='C',
             water_temperature_timestamp=temp_ts_str,
         )
-        producer.send_ch_bafu_hydrology_water_level_observation(data=obs_data, flush_producer=False)
+        producer.send_ch_bafu_hydrology_water_level_observation(_station_id=station_id, data=obs_data, flush_producer=False)
         sent_count += 1
         previous_readings[reading_key] = wl_ts_str or q_ts_str or temp_ts_str
 
@@ -208,7 +208,10 @@ def main():
     parser.add_argument('--state-file', type=str,
                         default=os.environ.get('STATE_FILE', os.path.expanduser('~/.bafu_hydro_state.json')))
     subparsers = parser.add_subparsers(dest='command')
-    subparsers.add_parser('feed', help='Feed data to Kafka')
+    feed_parser = subparsers.add_parser('feed', help='Feed data to Kafka')
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
     subparsers.add_parser('list', help='List all stations')
 
     args = parser.parse_args()
@@ -253,6 +256,9 @@ def main():
                 logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if getattr(args, 'once', False):
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()

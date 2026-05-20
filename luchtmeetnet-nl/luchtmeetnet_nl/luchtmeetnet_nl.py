@@ -287,6 +287,7 @@ class LuchtmeetnetAPI:
         state_file: str = "",
         station_refresh_interval: int = 24,
         station_limit: int | None = None,
+        once: bool = False,
     ) -> None:
         """Run the reference-data emission and telemetry polling loop."""
         state = _load_state(state_file)
@@ -328,6 +329,9 @@ class LuchtmeetnetAPI:
                     sleep_for,
                 )
                 poll_count += 1
+                if once:
+                    LOGGER.info("--once mode: exiting after first polling cycle")
+                    break
                 if sleep_for:
                     time.sleep(sleep_for)
             except KeyboardInterrupt:
@@ -418,6 +422,12 @@ def main() -> None:
         default=int(os.getenv("STATION_LIMIT", "0")) or None,
         help="Optional cap on the number of stations to poll, mainly for testing and fair-use throttling",
     )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     if args.command != "feed":
@@ -455,4 +465,5 @@ def main() -> None:
         state_file=args.state_file,
         station_refresh_interval=args.station_refresh_interval,
         station_limit=args.station_limit,
+        once=args.once,
     )

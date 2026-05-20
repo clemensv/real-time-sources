@@ -1,0 +1,168 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['org.ligo.gracedb.Superevent'] (
+   [superevent_id]: string,
+   [category]: string,
+   [created]: string,
+   [t_start]: real,
+   [t_0]: real,
+   [t_end]: real,
+   [far]: real,
+   [time_coinc_far]: real,
+   [space_coinc_far]: real,
+   [labels_json]: string,
+   [preferred_event_id]: string,
+   [pipeline]: string,
+   [group]: string,
+   [instruments]: string,
+   [gw_id]: string,
+   [submitter]: string,
+   [em_type]: string,
+   [search]: string,
+   [far_is_upper_limit]: bool,
+   [nevents]: int,
+   [self_uri]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.ligo.gracedb.Superevent'] docstring "{\"description\": \"A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a single candidate and carries significance, classification, and alert-lifecycle metadata.\"}";
+
+.alter table ['org.ligo.gracedb.Superevent'] column-docstrings (
+   [superevent_id]: "{\"description\": \"Unique identifier for the superevent assigned by GraceDB, e.g. 'S240414a' for production events or 'MS260408x' for MDC (mock data challenge) events.\"}",
+   [category]: "{\"description\": \"Category of the superevent. 'Production' for real observing-run candidates, 'MDC' for mock data challenge injections, 'Test' for engineering/test events.\"}",
+   [created]: "{\"description\": \"ISO-8601 UTC timestamp when the superevent was first created in GraceDB, e.g. '2026-04-08 23:59:34 UTC'.\"}",
+   [t_start]: "{\"description\": \"GPS time (seconds since 1980-01-06T00:00:00 UTC) marking the start of the superevent time window.\"}",
+   [t_0]: "{\"description\": \"GPS time (seconds since 1980-01-06T00:00:00 UTC) of the central trigger time for this superevent.\"}",
+   [t_end]: "{\"description\": \"GPS time (seconds since 1980-01-06T00:00:00 UTC) marking the end of the superevent time window.\"}",
+   [far]: "{\"description\": \"False alarm rate in Hz. Lower values indicate a more significant event. For example, 1e-14 Hz corresponds to roughly one false alarm per 3 million years.\"}",
+   [time_coinc_far]: "{\"description\": \"Time-coincidence false alarm rate in Hz from the RAVEN pipeline, representing the probability of a temporal coincidence with an external trigger. Null if no external coincidence was evaluated.\"}",
+   [space_coinc_far]: "{\"description\": \"Space-and-time-coincidence false alarm rate in Hz from the RAVEN pipeline, incorporating both temporal and spatial overlap with an external trigger. Null if no external coincidence was evaluated.\"}",
+   [labels_json]: "{\"description\": \"JSON-encoded array of label strings attached to this superevent, e.g. '[\\\"EM_READY\\\",\\\"GCN_PRELIM_SENT\\\",\\\"SKYMAP_READY\\\"]'. Labels track alert lifecycle: EM_READY (electromagnetic follow-up viable), GCN_PRELIM_SENT (GCN preliminary notice sent), SKYMAP_READY (sky localization map available), EMBRIGHT_READY (source classification available), PASTRO_READY (probability of astrophysical origin available), ADVOK/ADVNO (advocate approval/rejection), SIGNIF_LOCKED (significance frozen), DQR_REQUEST (data quality review requested), HIGH_PROFILE (high-profile candidate), RAVEN_ALERT (external trigger coincidence found).\"}",
+   [preferred_event_id]: "{\"description\": \"GraceDB event ID of the preferred pipeline event (the best detection) associated with this superevent, e.g. 'M632680'. Null if no preferred event has been selected.\"}",
+   [pipeline]: "{\"description\": \"Name of the detection pipeline that produced the preferred event, e.g. 'gstlal', 'MBTAOnline', 'SPIIR', 'PyCBC'. Null if no preferred event has been set.\"}",
+   [group]: "{\"description\": \"Physics group of the preferred event: 'CBC' (compact binary coalescence), 'Burst' (unmodeled transient), or 'Test'. Null if no preferred event has been set.\"}",
+   [instruments]: "{\"description\": \"Comma-separated list of detector instruments that contributed to the preferred event, e.g. 'H1,L1,V1' for LIGO Hanford, LIGO Livingston, and Virgo. Null if no preferred event has been set.\"}",
+   [gw_id]: "{\"description\": \"Official gravitational wave event name assigned after confirmation, e.g. 'GW200115'. Null if the event has not been confirmed or named.\"}",
+   [submitter]: "{\"description\": \"Username or service account that submitted the superevent to GraceDB, e.g. 'read-cvmfs-emfollow'.\"}",
+   [em_type]: "{\"description\": \"Identifier of the associated electromagnetic event from an external trigger (e.g. a Fermi GBM or Swift trigger ID). Null if no external EM association exists.\"}",
+   [search]: "{\"description\": \"Search type of the preferred event: 'AllSky' (standard all-sky search), 'MDC' (mock data challenge), 'BBH' (binary black hole targeted), 'EarlyWarning' (pre-merger alert). Null if no preferred event has been set.\"}",
+   [far_is_upper_limit]: "{\"description\": \"Whether the reported FAR value is an upper limit rather than an exact estimate. True indicates the actual false alarm rate may be lower. Null if no preferred event has been set.\"}",
+   [nevents]: "{\"description\": \"Number of pipeline events aggregated into this superevent. Null if the preferred event data is not available.\"}",
+   [self_uri]: "{\"description\": \"HATEOAS self link for the superevent resource in the GraceDB REST API, e.g. 'https://gracedb.ligo.org/api/superevents/MS260408x/'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.ligo.gracedb.Superevent'] ingestion json mapping "org.ligo.gracedb.Superevent_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "superevent_id", "path": "$.superevent_id"},
+  {"column": "category", "path": "$.category"},
+  {"column": "created", "path": "$.created"},
+  {"column": "t_start", "path": "$.t_start"},
+  {"column": "t_0", "path": "$.t_0"},
+  {"column": "t_end", "path": "$.t_end"},
+  {"column": "far", "path": "$.far"},
+  {"column": "time_coinc_far", "path": "$.time_coinc_far"},
+  {"column": "space_coinc_far", "path": "$.space_coinc_far"},
+  {"column": "labels_json", "path": "$.labels_json"},
+  {"column": "preferred_event_id", "path": "$.preferred_event_id"},
+  {"column": "pipeline", "path": "$.pipeline"},
+  {"column": "group", "path": "$.group"},
+  {"column": "instruments", "path": "$.instruments"},
+  {"column": "gw_id", "path": "$.gw_id"},
+  {"column": "submitter", "path": "$.submitter"},
+  {"column": "em_type", "path": "$.em_type"},
+  {"column": "search", "path": "$.search"},
+  {"column": "far_is_upper_limit", "path": "$.far_is_upper_limit"},
+  {"column": "nevents", "path": "$.nevents"},
+  {"column": "self_uri", "path": "$.self_uri"},
+]
+```
+
+.create-or-alter table ['org.ligo.gracedb.Superevent'] ingestion json mapping "org.ligo.gracedb.Superevent_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "superevent_id", "path": "$.data.superevent_id"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "created", "path": "$.data.created"},
+  {"column": "t_start", "path": "$.data.t_start"},
+  {"column": "t_0", "path": "$.data.t_0"},
+  {"column": "t_end", "path": "$.data.t_end"},
+  {"column": "far", "path": "$.data.far"},
+  {"column": "time_coinc_far", "path": "$.data.time_coinc_far"},
+  {"column": "space_coinc_far", "path": "$.data.space_coinc_far"},
+  {"column": "labels_json", "path": "$.data.labels_json"},
+  {"column": "preferred_event_id", "path": "$.data.preferred_event_id"},
+  {"column": "pipeline", "path": "$.data.pipeline"},
+  {"column": "group", "path": "$.data.group"},
+  {"column": "instruments", "path": "$.data.instruments"},
+  {"column": "gw_id", "path": "$.data.gw_id"},
+  {"column": "submitter", "path": "$.data.submitter"},
+  {"column": "em_type", "path": "$.data.em_type"},
+  {"column": "search", "path": "$.data.search"},
+  {"column": "far_is_upper_limit", "path": "$.data.far_is_upper_limit"},
+  {"column": "nevents", "path": "$.data.nevents"},
+  {"column": "self_uri", "path": "$.data.self_uri"},
+]
+```
+
+.drop materialized-view ['org.ligo.gracedb.SupereventLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.ligo.gracedb.SupereventLatest'] on table ['org.ligo.gracedb.Superevent'] {
+    ['org.ligo.gracedb.Superevent'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.ligo.gracedb.Superevent'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.ligo.gracedb.Superevent') | project['superevent_id'] = tostring(data.['superevent_id']),['category'] = tostring(data.['category']),['created'] = tostring(data.['created']),['t_start'] = toreal(data.['t_start']),['t_0'] = toreal(data.['t_0']),['t_end'] = toreal(data.['t_end']),['far'] = toreal(data.['far']),['time_coinc_far'] = toreal(data.['time_coinc_far']),['space_coinc_far'] = toreal(data.['space_coinc_far']),['labels_json'] = tostring(data.['labels_json']),['preferred_event_id'] = tostring(data.['preferred_event_id']),['pipeline'] = tostring(data.['pipeline']),['group'] = tostring(data.['group']),['instruments'] = tostring(data.['instruments']),['gw_id'] = tostring(data.['gw_id']),['submitter'] = tostring(data.['submitter']),['em_type'] = tostring(data.['em_type']),['search'] = tostring(data.['search']),['far_is_upper_limit'] = tobool(data.['far_is_upper_limit']),['nevents'] = toint(data.['nevents']),['self_uri'] = tostring(data.['self_uri']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

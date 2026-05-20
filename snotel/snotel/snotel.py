@@ -384,14 +384,19 @@ class SnotelPoller:
                      total, len(station_triplets))
         return total
 
-    def run(self, station_triplets: List[str]) -> None:
+    def run(self, station_triplets: List[str], once: bool = False,
+            polling_interval: int = POLL_INTERVAL_SECONDS) -> None:
         """
-        Main run loop: emit reference data, then poll continuously.
+        Main run loop: emit reference data, then poll.
 
         Args:
             station_triplets: The list of station triplets to monitor.
+            once: If True, exit after a single polling cycle. Useful for
+                  scheduled execution in Fabric notebooks.
+            polling_interval: Seconds to wait between polling cycles.
         """
-        logger.info("Starting SNOTEL bridge with %d stations", len(station_triplets))
+        logger.info("Starting SNOTEL bridge with %d stations (once=%s)",
+                    len(station_triplets), once)
         self.emit_station_reference(station_triplets)
 
         while True:
@@ -399,7 +404,10 @@ class SnotelPoller:
                 self.poll_all(station_triplets)
             except Exception as e:
                 logger.error("Error during poll cycle: %s", e)
-            time.sleep(POLL_INTERVAL_SECONDS)
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
+            time.sleep(polling_interval)
 
 
 def main():
@@ -410,6 +418,10 @@ def main():
     feed_parser = subparsers.add_parser("feed", help="Start polling SNOTEL stations")
     feed_parser.add_argument("--stations", nargs="*",
                              help="Station triplets to poll (default: built-in set)")
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                                  'Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -450,8 +462,16 @@ def main():
     station_triplets = args.stations if args.stations else DEFAULT_STATION_TRIPLETS
     state_file = os.environ.get("STATE_FILE", "snotel_state.json")
 
+    polling_interval = POLL_INTERVAL_SECONDS
+    if os.environ.get("POLLING_INTERVAL"):
+        try:
+            polling_interval = int(os.environ["POLLING_INTERVAL"])
+        except ValueError:
+            logger.warning("Invalid POLLING_INTERVAL env var; using default %d",
+                           POLL_INTERVAL_SECONDS)
+
     log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
     logging.getLogger().setLevel(getattr(logging, log_level, logging.INFO))
 
     poller = SnotelPoller(kafka_config, kafka_topic, state_file)
-    poller.run(station_triplets)
+    poller.run(station_triplets, once=args.once, polling_interval=polling_interval)

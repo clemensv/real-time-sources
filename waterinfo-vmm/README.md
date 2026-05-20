@@ -56,6 +56,13 @@ See [EVENTS.md](EVENTS.md) for the CloudEvents message definitions.
 
 See [CONTAINER.md](CONTAINER.md) for Docker container deployment info.
 
+## Fabric notebook hosting
+
+This source can also be hosted as a scheduled Fabric notebook (per-cycle
+single execution against a bound Lakehouse + Event Stream). See
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+and the bundled notebook at [`notebook/waterinfo-vmm-feed.ipynb`](notebook/waterinfo-vmm-feed.ipynb).
+
 ## API Reference
 
 - **Base URL**: `https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS`

@@ -28,6 +28,14 @@ See [EVENTS.md](EVENTS.md) for the event schema documentation.
 
 See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
 
+## Fabric notebook hosting
+
+This source can also run as a scheduled **Fabric notebook** instead of an
+Azure Container Instance — see
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+and the per-source notebook at
+[`notebook/cdec-reservoirs-feed.ipynb`](notebook/cdec-reservoirs-feed.ipynb).
+
 ## Development
 
 ```shell

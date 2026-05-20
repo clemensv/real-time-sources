@@ -20,6 +20,9 @@ RESOLUTION_MAP = {
     "PT30M": timedelta(minutes=30),
     "PT60M": timedelta(hours=1),
     "P1D": timedelta(days=1),
+    "P7D": timedelta(days=7),
+    "P1M": timedelta(days=30),
+    "P1Y": timedelta(days=365),
 }
 
 

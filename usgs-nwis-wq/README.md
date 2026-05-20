@@ -32,7 +32,7 @@ cd real-time-sources/usgs-nwis-wq
 pip install .
 ```
 
-For container deployment, see [CONTAINER.md](CONTAINER.md).
+For container deployment, see [CONTAINER.md](CONTAINER.md). For Fabric notebook hosting (scheduled single-cycle runs in a Microsoft Fabric workspace), see [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
 
 ## Usage
 

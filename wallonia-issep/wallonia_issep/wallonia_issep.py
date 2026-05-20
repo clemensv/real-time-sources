@@ -387,7 +387,7 @@ def main() -> None:
     feed_parser = subparsers.add_parser("feed", help="Poll ISSeP and emit CloudEvents to Kafka")
     feed_parser.add_argument("--connection-string", type=str, default=os.getenv("CONNECTION_STRING"))
     feed_parser.add_argument("--kafka-bootstrap-servers", type=str, default=os.getenv("KAFKA_BOOTSTRAP_SERVERS"))
-    feed_parser.add_argument("--kafka-topic", type=str, default=os.getenv("KAFKA_TOPIC", WalloniaISsePAPI.DEFAULT_TOPIC))
+    feed_parser.add_argument("--kafka-topic", type=str, default=os.getenv("KAFKA_TOPIC"))
     feed_parser.add_argument("--sasl-username", type=str, default=os.getenv("SASL_USERNAME"))
     feed_parser.add_argument("--sasl-password", type=str, default=os.getenv("SASL_PASSWORD"))
     feed_parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "600")))

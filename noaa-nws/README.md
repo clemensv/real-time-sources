@@ -10,6 +10,7 @@
 - **Deduplication**: Tracks seen alert IDs in a state file to avoid reprocessing.
 - **Kafka Integration**: Send weather alerts to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: A Fabric notebook (`notebook/noaa-nws-feed.ipynb`) is provided for scheduled single-cycle execution inside Microsoft Fabric via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
 
 ## Installation
 

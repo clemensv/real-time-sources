@@ -1,0 +1,233 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['np.gov.bipad.hydrology.RiverStation'] (
+   [station_id]: string,
+   [title]: string,
+   [basin]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [elevation]: int,
+   [danger_level]: real,
+   [warning_level]: real,
+   [description]: string,
+   [data_source]: string,
+   [province]: int,
+   [district]: int,
+   [municipality]: int,
+   [ward]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['np.gov.bipad.hydrology.RiverStation'] docstring "{\"description\": \"Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.\"}";
+
+.alter table ['np.gov.bipad.hydrology.RiverStation'] column-docstrings (
+   [station_id]: "{\"description\": \"Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.\"}",
+   [title]: "{\"description\": \"Human-readable name of the river station, typically in the format 'River at Location' (e.g. 'Babai at Chepang').\"}",
+   [basin]: "{\"description\": \"Name of the river basin the station belongs to (e.g. 'Bagmati', 'Narayani', 'Koshi', 'Karnali', 'Mahakali', 'Babai').\"}",
+   [latitude]: "{\"description\": \"Latitude coordinate of the station in WGS84 decimal degrees, extracted from the GeoJSON point geometry.\"}",
+   [longitude]: "{\"description\": \"Longitude coordinate of the station in WGS84 decimal degrees, extracted from the GeoJSON point geometry.\"}",
+   [elevation]: "{\"description\": \"Elevation of the station in meters above sea level, as reported by the BIPAD portal. Null when not available.\"}",
+   [danger_level]: "{\"description\": \"Configured danger water level threshold in meters for the station. Water levels above this indicate a danger condition. Null when not configured.\"}",
+   [warning_level]: "{\"description\": \"Configured warning water level threshold in meters for the station. Water levels above this indicate a warning condition. Null when not configured.\"}",
+   [description]: "{\"description\": \"Free-text description of the station, may include historical notes, relocation history, or elevation corrections. Null when not provided.\"}",
+   [data_source]: "{\"description\": \"Origin system providing the station data, typically 'hydrology.gov.np' for Nepal Department of Hydrology and Meteorology stations.\"}",
+   [province]: "{\"description\": \"Nepal province administrative code for the station location. Null when not assigned.\"}",
+   [district]: "{\"description\": \"Nepal district administrative code for the station location. Null when not assigned.\"}",
+   [municipality]: "{\"description\": \"Nepal municipality or rural municipality administrative code for the station location. Null when not assigned.\"}",
+   [ward]: "{\"description\": \"Nepal ward-level administrative code for the station location. Null when not assigned.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['np.gov.bipad.hydrology.RiverStation'] ingestion json mapping "np.gov.bipad.hydrology.RiverStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "basin", "path": "$.basin"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "elevation", "path": "$.elevation"},
+  {"column": "danger_level", "path": "$.danger_level"},
+  {"column": "warning_level", "path": "$.warning_level"},
+  {"column": "description", "path": "$.description"},
+  {"column": "data_source", "path": "$.data_source"},
+  {"column": "province", "path": "$.province"},
+  {"column": "district", "path": "$.district"},
+  {"column": "municipality", "path": "$.municipality"},
+  {"column": "ward", "path": "$.ward"},
+]
+```
+
+.create-or-alter table ['np.gov.bipad.hydrology.RiverStation'] ingestion json mapping "np.gov.bipad.hydrology.RiverStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "basin", "path": "$.data.basin"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "elevation", "path": "$.data.elevation"},
+  {"column": "danger_level", "path": "$.data.danger_level"},
+  {"column": "warning_level", "path": "$.data.warning_level"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "data_source", "path": "$.data.data_source"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "district", "path": "$.data.district"},
+  {"column": "municipality", "path": "$.data.municipality"},
+  {"column": "ward", "path": "$.data.ward"},
+]
+```
+
+.drop materialized-view ['np.gov.bipad.hydrology.RiverStationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['np.gov.bipad.hydrology.RiverStationLatest'] on table ['np.gov.bipad.hydrology.RiverStation'] {
+    ['np.gov.bipad.hydrology.RiverStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['np.gov.bipad.hydrology.RiverStation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'np.gov.bipad.hydrology.RiverStation') | project['station_id'] = tostring(data.['station_id']),['title'] = tostring(data.['title']),['basin'] = tostring(data.['basin']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toint(data.['elevation']),['danger_level'] = toreal(data.['danger_level']),['warning_level'] = toreal(data.['warning_level']),['description'] = tostring(data.['description']),['data_source'] = tostring(data.['data_source']),['province'] = toint(data.['province']),['district'] = toint(data.['district']),['municipality'] = toint(data.['municipality']),['ward'] = toint(data.['ward']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['np.gov.bipad.hydrology.WaterLevelReading'] (
+   [station_id]: string,
+   [title]: string,
+   [basin]: string,
+   [water_level]: real,
+   [danger_level]: real,
+   [warning_level]: real,
+   [status]: string,
+   [trend]: string,
+   [water_level_on]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['np.gov.bipad.hydrology.WaterLevelReading'] docstring "{\"description\": \"Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.\"}";
+
+.alter table ['np.gov.bipad.hydrology.WaterLevelReading'] column-docstrings (
+   [station_id]: "{\"description\": \"Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.\"}",
+   [title]: "{\"description\": \"Human-readable name of the river station at the time of the reading.\"}",
+   [basin]: "{\"description\": \"Name of the river basin the station belongs to at the time of the reading.\"}",
+   [water_level]: "{\"description\": \"Current water level at the station in meters. Null when the station has no current reading available.\"}",
+   [danger_level]: "{\"description\": \"Configured danger water level threshold in meters. Null when not configured.\"}",
+   [warning_level]: "{\"description\": \"Configured warning water level threshold in meters. Null when not configured.\"}",
+   [status]: "{\"description\": \"Current alert status of the station relative to configured thresholds. Known values: 'BELOW WARNING LEVEL', 'WARNING', 'DANGER'.\"}",
+   [trend]: "{\"description\": \"Direction of water level change. Known values: 'STEADY', 'RISING', 'FALLING'.\"}",
+   [water_level_on]: "{\"description\": \"ISO 8601 timestamp of when the water level was measured, in Nepal Standard Time (+05:45).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['np.gov.bipad.hydrology.WaterLevelReading'] ingestion json mapping "np.gov.bipad.hydrology.WaterLevelReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "basin", "path": "$.basin"},
+  {"column": "water_level", "path": "$.water_level"},
+  {"column": "danger_level", "path": "$.danger_level"},
+  {"column": "warning_level", "path": "$.warning_level"},
+  {"column": "status", "path": "$.status"},
+  {"column": "trend", "path": "$.trend"},
+  {"column": "water_level_on", "path": "$.water_level_on"},
+]
+```
+
+.create-or-alter table ['np.gov.bipad.hydrology.WaterLevelReading'] ingestion json mapping "np.gov.bipad.hydrology.WaterLevelReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "basin", "path": "$.data.basin"},
+  {"column": "water_level", "path": "$.data.water_level"},
+  {"column": "danger_level", "path": "$.data.danger_level"},
+  {"column": "warning_level", "path": "$.data.warning_level"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "trend", "path": "$.data.trend"},
+  {"column": "water_level_on", "path": "$.data.water_level_on"},
+]
+```
+
+.drop materialized-view ['np.gov.bipad.hydrology.WaterLevelReadingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['np.gov.bipad.hydrology.WaterLevelReadingLatest'] on table ['np.gov.bipad.hydrology.WaterLevelReading'] {
+    ['np.gov.bipad.hydrology.WaterLevelReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['np.gov.bipad.hydrology.WaterLevelReading'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'np.gov.bipad.hydrology.WaterLevelReading') | project['station_id'] = tostring(data.['station_id']),['title'] = tostring(data.['title']),['basin'] = tostring(data.['basin']),['water_level'] = toreal(data.['water_level']),['danger_level'] = toreal(data.['danger_level']),['warning_level'] = toreal(data.['warning_level']),['status'] = tostring(data.['status']),['trend'] = tostring(data.['trend']),['water_level_on'] = tostring(data.['water_level_on']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

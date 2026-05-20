@@ -1,0 +1,116 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['gov.ca.water.cdec.ReservoirReading'] (
+   [station_id]: string,
+   [sensor_num]: int,
+   [sensor_type]: string,
+   [value]: real,
+   [units]: string,
+   [date]: string,
+   [dur_code]: string,
+   [data_flag]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['gov.ca.water.cdec.ReservoirReading'] docstring "{\"description\": \"A single sensor reading from a CDEC reservoir station. The California Data Exchange Center (CDEC) publishes hourly and sub-hourly observations for over 2,600 stations across California. Each reading captures one measurement for a specific station, sensor type, and timestamp.\"}";
+
+.alter table ['gov.ca.water.cdec.ReservoirReading'] column-docstrings (
+   [station_id]: "{\"description\": \"Three-letter CDEC station identifier (e.g. SHA for Shasta Dam, ORO for Oroville Dam, FOL for Folsom Dam). This is the primary key for the monitoring station and is immutable.\"}",
+   [sensor_num]: "{\"description\": \"CDEC numeric sensor identifier. Standard sensor numbers: 15=STORAGE (acre-feet), 6=RESERVOIR ELEVATION (feet), 76=INFLOW (cubic feet per second), 23=OUTFLOW (cubic feet per second), 1=RIVER STAGE (feet).\"}",
+   [sensor_type]: "{\"description\": \"Human-readable sensor type label as returned by the CDEC API (e.g. 'STORAGE', 'RES ELE', 'INFLOW', 'OUTFLOW', 'STAGE').\"}",
+   [value]: "{\"description\": \"Observed measurement value in the units specified by the 'units' field. Null when no observation is available or when the upstream reports the sentinel value -9999.\"}",
+   [units]: "{\"description\": \"Engineering units of the measurement as reported by CDEC (e.g. 'AF' for acre-feet, 'FEET' for feet, 'CFS' for cubic feet per second).\"}",
+   [date]: "{\"description\": \"Observation timestamp as reported by CDEC in PST (Pacific Standard Time, UTC-8). Format from the API is 'YYYY-M-D H:MM' and is normalized to ISO 8601 format 'YYYY-MM-DDTHH:MM:SS-08:00'. CDEC always reports in PST regardless of daylight saving time.\"}",
+   [dur_code]: "{\"description\": \"Duration code indicating the measurement interval. 'H' for hourly observations, 'D' for daily observations, 'E' for event-based (15-minute or irregular).\"}",
+   [data_flag]: "{\"description\": \"Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['gov.ca.water.cdec.ReservoirReading'] ingestion json mapping "gov.ca.water.cdec.ReservoirReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "sensor_num", "path": "$.sensor_num"},
+  {"column": "sensor_type", "path": "$.sensor_type"},
+  {"column": "value", "path": "$.value"},
+  {"column": "units", "path": "$.units"},
+  {"column": "date", "path": "$.date"},
+  {"column": "dur_code", "path": "$.dur_code"},
+  {"column": "data_flag", "path": "$.data_flag"},
+]
+```
+
+.create-or-alter table ['gov.ca.water.cdec.ReservoirReading'] ingestion json mapping "gov.ca.water.cdec.ReservoirReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "sensor_num", "path": "$.data.sensor_num"},
+  {"column": "sensor_type", "path": "$.data.sensor_type"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "units", "path": "$.data.units"},
+  {"column": "date", "path": "$.data.date"},
+  {"column": "dur_code", "path": "$.data.dur_code"},
+  {"column": "data_flag", "path": "$.data.data_flag"},
+]
+```
+
+.drop materialized-view ['gov.ca.water.cdec.ReservoirReadingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['gov.ca.water.cdec.ReservoirReadingLatest'] on table ['gov.ca.water.cdec.ReservoirReading'] {
+    ['gov.ca.water.cdec.ReservoirReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['gov.ca.water.cdec.ReservoirReading'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.ca.water.cdec.ReservoirReading') | project['station_id'] = tostring(data.['station_id']),['sensor_num'] = toint(data.['sensor_num']),['sensor_type'] = tostring(data.['sensor_type']),['value'] = toreal(data.['value']),['units'] = tostring(data.['units']),['date'] = tostring(data.['date']),['dur_code'] = tostring(data.['dur_code']),['data_flag'] = tostring(data.['data_flag']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

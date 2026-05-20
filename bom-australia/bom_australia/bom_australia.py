@@ -8,8 +8,10 @@ import time
 import typing
 import logging
 import re
+import threading
 import xml.etree.ElementTree as ET
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from email.utils import parsedate_to_datetime
 from datetime import datetime, timezone
 from confluent_kafka import Producer
@@ -23,28 +25,51 @@ logger = logging.getLogger(__name__)
 BOM_BASE_URL = "http://reg.bom.gov.au/fwo"
 BOM_STATIONS_URL = "http://www.bom.gov.au/climate/data/lists_by_element/stations.txt"
 
-# Mapping from state abbreviation (in stations.txt) to BOM product ID prefix
+# Per-state "all observations" landing pages. Each lists every station that
+# currently publishes 30-minute observations, paired with the correct product
+# code. This is the authoritative source for (product_id, wmo) tuples — the
+# climate stations.txt list contains many stations that do not have any 30-min
+# observation product, which produces 404s when probed blindly.
+STATE_OBSERVATION_PAGES = {
+    "NSW": "http://www.bom.gov.au/nsw/observations/nswall.shtml",
+    "VIC": "http://www.bom.gov.au/vic/observations/vicall.shtml",
+    "QLD": "http://www.bom.gov.au/qld/observations/qldall.shtml",
+    "WA": "http://www.bom.gov.au/wa/observations/waall.shtml",
+    "SA": "http://www.bom.gov.au/sa/observations/saall.shtml",
+    "TAS": "http://www.bom.gov.au/tas/observations/tasall.shtml",
+    "NT": "http://www.bom.gov.au/nt/observations/ntall.shtml",
+    "ACT": "http://www.bom.gov.au/act/observations/canberra.shtml",
+}
+
+# Matches the per-station observation links on the state pages, e.g.
+# "products/IDW60801/IDW60801.94610.shtml" -> ("IDW60801", "94610").
+STATION_LINK_PATTERN = re.compile(
+    r"products/(ID[A-Z]\d{5})/(?:ID[A-Z]\d{5})\.(\d+)\.shtml"
+)
+
+# Mapping from state abbreviation (in stations.txt) to BOM product ID prefix.
+# Retained as a last-resort fallback if the state listing scrape fails.
 STATE_TO_PRODUCT = {
-    "NSW": "IDN60901",
-    "VIC": "IDV60901",
-    "QLD": "IDQ60901",
-    "WA": "IDW60901",
-    "SA": "IDS60901",
-    "TAS": "IDT60901",
-    "NT": "IDD60901",
-    "ANT": "IDT60901",  # Antarctic stations routed through Tasmania product
+    "NSW": "IDN60801",
+    "VIC": "IDV60801",
+    "QLD": "IDQ60801",
+    "WA": "IDW60801",
+    "SA": "IDS60801",
+    "TAS": "IDT60801",
+    "NT": "IDD60801",
+    "ANT": "IDT60801",  # Antarctic stations routed through Tasmania product
 }
 
 # Fallback capital-city stations used only when station discovery fails
 FALLBACK_STATIONS = [
-    ("IDN60901", 94767),   # Sydney Airport, NSW
-    ("IDV60901", 94866),   # Melbourne Airport, VIC
-    ("IDQ60901", 94576),   # Brisbane Airport, QLD
-    ("IDW60901", 94610),   # Perth Airport, WA
-    ("IDS60901", 94648),   # Adelaide (West Terrace), SA
-    ("IDT60901", 94970),   # Hobart Airport, TAS
-    ("IDD60901", 94120),   # Darwin Airport, NT
-    ("IDC60901", 94926),   # Canberra Airport, ACT
+    ("IDN60801", 94767),   # Sydney Airport, NSW
+    ("IDV60801", 94866),   # Melbourne Airport, VIC
+    ("IDQ60801", 94576),   # Brisbane Airport, QLD
+    ("IDW60801", 94610),   # Perth Airport, WA
+    ("IDS60801", 94648),   # Adelaide (West Terrace), SA
+    ("IDT60801", 94970),   # Hobart Airport, TAS
+    ("IDD60801", 94120),   # Darwin Airport, NT
+    ("IDN60903", 94926),   # Canberra Airport, ACT
 ]
 
 WARNING_FEEDS = [
@@ -65,30 +90,78 @@ WARNING_TITLE_PATTERN = re.compile(
 class BOMAustraliaAPI:
     """Client for the BOM weather observation JSON feeds."""
 
-    def __init__(self, base_url: str = BOM_BASE_URL, polling_interval: int = 600):
+    def __init__(self, base_url: str = BOM_BASE_URL, polling_interval: int = 600, fetch_workers: int = 12):
         self.base_url = base_url
         self.polling_interval = polling_interval
+        self.fetch_workers = max(1, fetch_workers)
         self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "real-time-sources-bom-bridge/1.0"})
+        # BOM copyright/etiquette page asks bots to identify themselves.
+        self.session.headers.update({
+            "User-Agent": "real-time-sources-bom-bridge/1.0 (+https://github.com/clemensv/real-time-sources)"
+        })
 
     def discover_stations(self, state_filter: typing.Optional[str] = None) -> list[tuple[str, int]]:
-        """Discover active BOM stations from the bureau station list.
+        """Discover active BOM observing stations.
 
-        Downloads the fixed-width stations.txt and returns (product_id, wmo_id) pairs
-        for all active stations that have a WMO number. Optionally filters by state.
+        Scrapes each per-state "all observations" page (e.g. ``nswall.shtml``)
+        and extracts the (product_id, wmo_id) pair for every station that
+        currently publishes a 30-minute observation product. Falls back to the
+        climate stations.txt list and finally a hard-coded capital-city set if
+        the per-state scrape fails for every state.
         """
+        allowed_states: typing.Optional[set[str]] = None
+        if state_filter:
+            allowed_states = {s.strip().upper() for s in state_filter.split(",") if s.strip()}
+
+        seen: set[tuple[str, int]] = set()
+        stations: list[tuple[str, int]] = []
+
+        for state, page_url in STATE_OBSERVATION_PAGES.items():
+            if allowed_states and state not in allowed_states:
+                continue
+            try:
+                response = self.session.get(page_url, timeout=30)
+                response.raise_for_status()
+            except Exception as e:
+                logger.warning("Could not fetch %s station listing %s: %s", state, page_url, e)
+                continue
+            matches = STATION_LINK_PATTERN.findall(response.text)
+            state_count = 0
+            for product_id, wmo_str in matches:
+                try:
+                    wmo_id = int(wmo_str)
+                except ValueError:
+                    continue
+                pair = (product_id, wmo_id)
+                if pair in seen:
+                    continue
+                seen.add(pair)
+                stations.append(pair)
+                state_count += 1
+            logger.info("Discovered %d %s observing stations from %s", state_count, state, page_url)
+
+        if stations:
+            logger.info("Discovered %d total observing stations across %d states",
+                        len(stations), len(STATE_OBSERVATION_PAGES) if not allowed_states else len(allowed_states))
+            return stations
+
+        logger.warning("State listing scrape returned no stations; falling back to climate stations.txt")
+        legacy = self._discover_from_climate_list(allowed_states)
+        if legacy:
+            return legacy
+        logger.warning("Climate stations.txt fallback empty; using hard-coded capital-city list")
+        return FALLBACK_STATIONS
+
+    def _discover_from_climate_list(self, allowed_states: typing.Optional[set[str]]) -> list[tuple[str, int]]:
+        """Legacy discovery path that parses the climate stations.txt list."""
         try:
             response = self.session.get(BOM_STATIONS_URL, timeout=60)
             response.raise_for_status()
         except Exception as e:
-            logger.warning("Station discovery failed, using fallback list: %s", e)
-            return FALLBACK_STATIONS
+            logger.warning("Climate station discovery failed: %s", e)
+            return []
 
         stations: list[tuple[str, int]] = []
-        allowed_states = None
-        if state_filter:
-            allowed_states = {s.strip().upper() for s in state_filter.split(",")}
-
         lines = response.text.strip().split("\n")
         for line in lines[4:]:  # skip header rows
             if len(line) < 131:
@@ -98,34 +171,28 @@ class BOMAustraliaAPI:
                 wmo_str = line[130:].strip().replace("\r", "")
                 state = line[105:110].strip()
 
-                # Active = end year is empty/.. or >= current year - 1
                 is_active = (end_year in ("", "..") or
                              (end_year.isdigit() and int(end_year) >= 2025))
                 has_wmo = wmo_str not in ("", "..") and wmo_str.isdigit()
 
                 if not is_active or not has_wmo:
                     continue
-
                 if allowed_states and state not in allowed_states:
                     continue
-
                 product_id = STATE_TO_PRODUCT.get(state)
                 if not product_id:
                     continue
-
                 stations.append((product_id, int(wmo_str)))
             except (ValueError, IndexError):
                 continue
-
-        if not stations:
-            logger.warning("No stations discovered, using fallback list")
-            return FALLBACK_STATIONS
-
-        logger.info("Discovered %d active stations with WMO numbers", len(stations))
         return stations
 
     def get_station_observations(self, product_id: str, wmo_id: int) -> dict:
-        """Fetch the 72-hour observation product for a single station."""
+        """Fetch the 72-hour observation product for a single station.
+
+        Raises ``requests.HTTPError`` on non-2xx responses (callers may treat
+        404s as benign — not every (product, wmo) tuple has a live product).
+        """
         url = f"{self.base_url}/{product_id}/{product_id}.{wmo_id}.json"
         response = self.session.get(url, timeout=30)
         response.raise_for_status()
@@ -392,12 +459,33 @@ def _parse_station_list(station_csv: str) -> list[tuple[str, int]]:
     return stations
 
 
+def _is_http_404(exc: Exception) -> bool:
+    response = getattr(exc, "response", None)
+    return bool(response is not None and getattr(response, "status_code", None) == 404)
+
+
 def send_stations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer, station_list: list[tuple[str, int]]) -> int:
-    """Fetch and emit station reference data for all configured stations."""
-    sent = 0
-    for product_id, wmo_id in station_list:
+    """Fetch and emit station reference data for all configured stations.
+
+    Fetches are parallelized across a thread pool because the per-station 72-h
+    product is one HTTP round-trip per station and the inventory exceeds 900
+    stations nationwide. ``confluent_kafka.Producer.produce`` is thread-safe so
+    we emit directly from worker threads.
+    """
+    sent_counter = {"n": 0}
+    sent_lock = threading.Lock()
+
+    def _process(item: tuple[str, int]) -> None:
+        product_id, wmo_id = item
         try:
             obs_data = api.get_station_observations(product_id, wmo_id)
+        except Exception as e:
+            if _is_http_404(e):
+                logger.debug("Station product not published for %s/%d (404)", product_id, wmo_id)
+            else:
+                logger.warning("Failed to fetch station %s/%d: %s", product_id, wmo_id, e)
+            return
+        try:
             station = api.parse_station(product_id, obs_data)
             if station:
                 producer.send_au_gov_bom_weather_station(
@@ -405,41 +493,67 @@ def send_stations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer, 
                     station,
                     flush_producer=False,
                 )
-                sent += 1
+                with sent_lock:
+                    sent_counter["n"] += 1
         except Exception as e:
-            logger.warning("Failed to fetch station %s/%d: %s", product_id, wmo_id, e)
+            logger.warning("Failed to emit station %s/%d: %s", product_id, wmo_id, e)
+
+    with ThreadPoolExecutor(max_workers=api.fetch_workers) as pool:
+        list(pool.map(_process, station_list))
+
     producer.producer.flush()
-    logger.info("Sent %d station reference events", sent)
-    return sent
+    logger.info("Sent %d station reference events", sent_counter["n"])
+    return sent_counter["n"]
 
 
 def feed_observations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProducer,
                       station_list: list[tuple[str, int]], previous_readings: dict) -> int:
-    """Fetch latest observations for all stations and emit new ones."""
-    sent = 0
-    for product_id, wmo_id in station_list:
+    """Fetch latest observations for all stations and emit new ones.
+
+    Per-station fetches run in parallel; dedup state mutation is serialized
+    behind a lock so writes from worker threads don't race.
+    """
+    sent_counter = {"n": 0}
+    state_lock = threading.Lock()
+
+    def _process(item: tuple[str, int]) -> None:
+        product_id, wmo_id = item
         try:
             obs_data = api.get_station_observations(product_id, wmo_id)
-            records = obs_data.get("observations", {}).get("data", [])
-            if not records:
-                continue
-            # Only emit the latest observation (sort_order == 0)
-            latest = records[0]
-            obs = api.parse_observation(latest)
-            if obs:
-                reading_key = f"{obs.station_wmo}:{obs.observation_time_utc}"
-                if reading_key not in previous_readings:
-                    producer.send_au_gov_bom_weather_weather_observation(
-                        str(obs.station_wmo),
-                        obs,
-                        flush_producer=False,
-                    )
-                    sent += 1
-                    previous_readings[reading_key] = obs.observation_time_utc
         except Exception as e:
-            logger.warning("Failed to fetch observations for %s/%d: %s", product_id, wmo_id, e)
+            if _is_http_404(e):
+                logger.debug("Observation product missing for %s/%d (404)", product_id, wmo_id)
+            else:
+                logger.warning("Failed to fetch observations for %s/%d: %s", product_id, wmo_id, e)
+            return
+        records = obs_data.get("observations", {}).get("data", [])
+        if not records:
+            return
+        latest = records[0]
+        obs = api.parse_observation(latest)
+        if not obs:
+            return
+        reading_key = f"{obs.station_wmo}:{obs.observation_time_utc}"
+        with state_lock:
+            if reading_key in previous_readings:
+                return
+            previous_readings[reading_key] = obs.observation_time_utc
+        try:
+            producer.send_au_gov_bom_weather_weather_observation(
+                str(obs.station_wmo),
+                obs,
+                flush_producer=False,
+            )
+            with state_lock:
+                sent_counter["n"] += 1
+        except Exception as e:
+            logger.warning("Failed to emit observation for %s/%d: %s", product_id, wmo_id, e)
+
+    with ThreadPoolExecutor(max_workers=api.fetch_workers) as pool:
+        list(pool.map(_process, station_list))
+
     producer.producer.flush()
-    return sent
+    return sent_counter["n"]
 
 
 def feed_warnings(api: BOMAustraliaAPI, producer: AUGovBOMWarningEventProducer,
@@ -474,6 +588,8 @@ def main():
     parser.add_argument("--topic", required=False, help="Kafka topic", default=os.environ.get("KAFKA_TOPIC") or None)
     parser.add_argument("--polling-interval", type=int, default=int(os.environ.get("POLLING_INTERVAL", "600")),
                         help="Polling interval in seconds (default: 600)")
+    parser.add_argument("--fetch-workers", type=int, default=int(os.environ.get("BOM_FETCH_WORKERS", "12")),
+                        help="Concurrent HTTP fetch workers for per-station product downloads (default: 12)")
     parser.add_argument("--state-file", type=str,
                         default=os.environ.get("STATE_FILE", os.path.expanduser("~/.bom_australia_state.json")))
     parser.add_argument("--stations", type=str, default=os.environ.get("BOM_STATIONS", ""),
@@ -482,13 +598,16 @@ def main():
                         help="Comma-separated state abbreviations to filter (e.g. NSW,VIC)")
     parser.add_argument("--warning-feeds", type=str, default=os.environ.get("BOM_WARNING_FEEDS", ""),
                         help="Comma-separated BOM warning RSS feed URLs or /fwo/... feed paths")
+    parser.add_argument("--once", action="store_true",
+                        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+                        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List configured stations")
     subparsers.add_parser("feed", help="Feed data to Kafka")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
 
-    api = BOMAustraliaAPI(polling_interval=args.polling_interval)
+    api = BOMAustraliaAPI(polling_interval=args.polling_interval, fetch_workers=args.fetch_workers)
     if args.stations:
         station_list = _parse_station_list(args.stations)
     else:
@@ -539,6 +658,9 @@ def main():
                 logger.info("Sent %d observation events and %d warning events", observation_count, warning_count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if args.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()

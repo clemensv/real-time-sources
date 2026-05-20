@@ -17,6 +17,9 @@ minutes.
 - **Parameters**: Water Level, Flow, Rainfall, Wind, Temperature
 - **Update Frequency**: Every 15 minutes
 - **Data Format**: JSON (Linked Data)
+- **Fabric notebook hosting**: deploy as a scheduled Fabric notebook with
+  [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+  (uses `notebook/uk-ea-flood-monitoring-feed.ipynb`).
 
 ## Installation
 

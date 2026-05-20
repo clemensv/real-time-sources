@@ -24,3 +24,9 @@
 
 mode-s/kql/aircraft.csv
 /tmp/
+
+# Poetry lock files (generated; not used by Docker builds)
+**/poetry.lock
+**/.playwright-mcp/
+gracedb/.venv/
+energy-charts/.venv/

@@ -518,9 +518,10 @@ class NdwPoller:
         logger.info("Emitted %d situation events (of %d situations)", count, len(records))
         return count
 
-    def run_forever(self) -> None:
-        """Main polling loop."""
-        logger.info("Starting NDW Netherlands traffic poller (interval=%ds)", self.poll_interval)
+    def run_forever(self, once: bool = False) -> None:
+        """Main polling loop. If ``once`` is True, exit after a single cycle."""
+        logger.info("Starting NDW Netherlands traffic poller (interval=%ds, once=%s)",
+                    self.poll_interval, once)
         # Force first situation poll
         self._last_situation_poll = 0
         while True:
@@ -529,6 +530,9 @@ class NdwPoller:
                 logger.info("Poll cycle complete: speed=%d, traveltime=%d, situation=%d", s, t, sit)
             except Exception:
                 logger.exception("Error during poll cycle")
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                return
             time.sleep(self.poll_interval)
 
 
@@ -542,6 +546,13 @@ def main() -> None:
     parser.add_argument("--situations-topic", default=None, help="Kafka topic for situations")
     parser.add_argument("--poll-interval", type=int, default=None, help="Poll interval in seconds")
     parser.add_argument("--state-file", default=None, help="Path to state file for dedup")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). "
+             "Useful for scheduled execution in Fabric notebooks.",
+    )
     args = parser.parse_args()
 
     connection_string = os.environ.get("CONNECTION_STRING", "")
@@ -575,7 +586,7 @@ def main() -> None:
 
     state = StateManager(state_file)
     poller = NdwPoller(measurements_prod, situations_prod, state, poll_interval)
-    poller.run_forever()
+    poller.run_forever(once=args.once)
 
 
 if __name__ == "__main__":

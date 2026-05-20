@@ -1,0 +1,136 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['AU.Gov.Emergency.Wildfires.FireIncident'] (
+   [incident_id]: string,
+   [state]: string,
+   [title]: string,
+   [alert_level]: string,
+   [status]: string,
+   [location]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [size_hectares]: real,
+   [type]: string,
+   [responsible_agency]: string,
+   [updated]: datetime,
+   [source_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] docstring "{\"description\": \"Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services: NSW Rural Fire Service (GeoJSON major-incidents feed), VicEmergency (GeoJSON all-hazards feed filtered to fire events), and Queensland Fire Department (GeoJSON bushfire-alert feed). Each record represents a single active fire incident with its alert level, location, size, and responsible agency.\"}";
+
+.alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] column-docstrings (
+   [incident_id]: "{\"description\": \"Stable identifier for the fire incident, derived from the source system. NSW: numeric incident ID extracted from the RFS GUID URL. VIC: numeric sourceId from the VicEmergency feed. QLD: alphanumeric UniqueID from the QFD feed (e.g. 'IF39-5661721').\"}",
+   [state]: "{\"description\": \"Australian state abbreviation indicating which emergency service reported this incident. One of 'NSW' (New South Wales Rural Fire Service), 'VIC' (VicEmergency / Country Fire Authority / Fire Rescue Victoria), or 'QLD' (Queensland Fire Department).\"}",
+   [title]: "{\"description\": \"Human-readable title or headline for the incident as provided by the source agency. NSW: location-based title from the RFS feed (e.g. '(GWYDIR HWY), MATHESON'). VIC: warning name or sourceTitle from VicEmergency. QLD: WarningTitle from the QFD feed.\"}",
+   [alert_level]: "{\"description\": \"Fire danger alert level as classified by the issuing agency. Common values across states: 'Advice' (fire is under control or low threat), 'Watch and Act' (conditions are changing, prepare to leave), 'Emergency Warning' (immediate danger, take action now). NSW uses 'category' field, VIC uses 'action' or category1, QLD uses 'WarningLevel'.\"}",
+   [status]: "{\"description\": \"Current operational status of the incident as reported by the source agency. NSW: extracted from the HTML description field (e.g. 'Under control', 'Being controlled', 'Out of control'). VIC: status field from VicEmergency (e.g. 'Unknown', 'Safe'). QLD: not typically provided, may be null.\"}",
+   [location]: "{\"description\": \"Human-readable location description for the incident. NSW: full location string extracted from the HTML description (e.g. 'B76 (GWYDIR HWY), MATHESON 2370'). VIC: locality names from the location field. QLD: derived from the WarningTitle or Header text.\"}",
+   [latitude]: "{\"description\": \"Latitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry. Negative values indicate Southern Hemisphere.\"}",
+   [longitude]: "{\"description\": \"Longitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry.\"}",
+   [size_hectares]: "{\"description\": \"Estimated area of the fire in hectares as reported by the source agency. NSW: extracted from the SIZE field in the HTML description. VIC: parsed from sizeFmt if available. QLD: not typically provided, may be null.\"}",
+   [type]: "{\"description\": \"Classification of the fire type as reported by the source agency. NSW: extracted from the TYPE field in the HTML description (e.g. 'Bush Fire', 'Grass Fire', 'Hazard Reduction'). VIC: event field from the CAP envelope (e.g. 'Grass Fire', 'Scrub Fire', 'Bush Fire'). QLD: derived from CallToAction text.\"}",
+   [responsible_agency]: "{\"description\": \"Name of the fire-fighting agency responsible for the incident. NSW: extracted from RESPONSIBLE AGENCY in the HTML description (e.g. 'Rural Fire Service', 'Fire and Rescue NSW'). VIC: senderName from the CAP envelope (e.g. 'Country Fire Authority', 'Fire Rescue Victoria'). QLD: defaults to 'Queensland Fire Department'.\"}",
+   [updated]: "{\"description\": \"Timestamp when the incident record was last updated by the source agency, in ISO 8601 format with UTC timezone. NSW: parsed from the UPDATED field in the HTML description or pubDate. VIC: 'updated' field from the VicEmergency feed. QLD: parsed from the WarningTitle date reference or current fetch time.\"}",
+   [source_url]: "{\"description\": \"URL pointing to the original incident details or the source feed. NSW: GUID permalink from the RFS feed (e.g. 'https://incidents.rfs.nsw.gov.au/api/v1/incidents/653509'). VIC: constructed URL to the VicEmergency warning page. QLD: static URL of the QFD bushfire alert feed.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] ingestion json mapping "AU.Gov.Emergency.Wildfires.FireIncident_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "incident_id", "path": "$.incident_id"},
+  {"column": "state", "path": "$.state"},
+  {"column": "title", "path": "$.title"},
+  {"column": "alert_level", "path": "$.alert_level"},
+  {"column": "status", "path": "$.status"},
+  {"column": "location", "path": "$.location"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "size_hectares", "path": "$.size_hectares"},
+  {"column": "type", "path": "$.type"},
+  {"column": "responsible_agency", "path": "$.responsible_agency"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "source_url", "path": "$.source_url"},
+]
+```
+
+.create-or-alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] ingestion json mapping "AU.Gov.Emergency.Wildfires.FireIncident_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "incident_id", "path": "$.data.incident_id"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "alert_level", "path": "$.data.alert_level"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "location", "path": "$.data.location"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "size_hectares", "path": "$.data.size_hectares"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "responsible_agency", "path": "$.data.responsible_agency"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "source_url", "path": "$.data.source_url"},
+]
+```
+
+.drop materialized-view ['AU.Gov.Emergency.Wildfires.FireIncidentLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['AU.Gov.Emergency.Wildfires.FireIncidentLatest'] on table ['AU.Gov.Emergency.Wildfires.FireIncident'] {
+    ['AU.Gov.Emergency.Wildfires.FireIncident'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'AU.Gov.Emergency.Wildfires.FireIncident') | project['incident_id'] = tostring(data.['incident_id']),['state'] = tostring(data.['state']),['title'] = tostring(data.['title']),['alert_level'] = tostring(data.['alert_level']),['status'] = tostring(data.['status']),['location'] = tostring(data.['location']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['size_hectares'] = toreal(data.['size_hectares']),['type'] = tostring(data.['type']),['responsible_agency'] = tostring(data.['responsible_agency']),['updated'] = todatetime(data.['updated']),['source_url'] = tostring(data.['source_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

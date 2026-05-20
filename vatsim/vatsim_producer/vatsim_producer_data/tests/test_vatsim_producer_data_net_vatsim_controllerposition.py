@@ -9,7 +9,6 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from vatsim_producer_data.net.vatsim.controllerposition import ControllerPosition
-import datetime
 
 
 class Test_ControllerPosition(unittest.TestCase):
@@ -29,13 +28,13 @@ class Test_ControllerPosition(unittest.TestCase):
         Create instance of ControllerPosition for testing
         """
         instance = ControllerPosition(
-            cid=int(96),
-            callsign='tfygfqbbjihqwwqlqavw',
-            frequency='gqgsvxnzbdfvftsokubo',
-            facility=int(37),
-            rating=int(52),
-            text_atis='nsqunpjlzysdfpjpwkpu',
-            last_updated=datetime.datetime.now(datetime.timezone.utc)
+            cid=int(5),
+            callsign='hzqaewqdagipdkqmffwh',
+            frequency='qtzbqwhdvefzpfdirngs',
+            facility=int(89),
+            rating=int(71),
+            text_atis='dyqxdkpkncqlrpzknaow',
+            last_updated='psuwsyhglupvxfgrvaxv'
         )
         return instance
 
@@ -44,7 +43,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = int(96)
+        test_value = int(5)
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -52,7 +51,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'tfygfqbbjihqwwqlqavw'
+        test_value = 'hzqaewqdagipdkqmffwh'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -60,7 +59,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test frequency property
         """
-        test_value = 'gqgsvxnzbdfvftsokubo'
+        test_value = 'qtzbqwhdvefzpfdirngs'
         self.instance.frequency = test_value
         self.assertEqual(self.instance.frequency, test_value)
     
@@ -68,7 +67,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test facility property
         """
-        test_value = int(37)
+        test_value = int(89)
         self.instance.facility = test_value
         self.assertEqual(self.instance.facility, test_value)
     
@@ -76,7 +75,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test rating property
         """
-        test_value = int(52)
+        test_value = int(71)
         self.instance.rating = test_value
         self.assertEqual(self.instance.rating, test_value)
     
@@ -84,7 +83,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test text_atis property
         """
-        test_value = 'nsqunpjlzysdfpjpwkpu'
+        test_value = 'dyqxdkpkncqlrpzknaow'
         self.instance.text_atis = test_value
         self.assertEqual(self.instance.text_atis, test_value)
     
@@ -92,7 +91,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test last_updated property
         """
-        test_value = datetime.datetime.now(datetime.timezone.utc)
+        test_value = 'psuwsyhglupvxfgrvaxv'
         self.instance.last_updated = test_value
         self.assertEqual(self.instance.last_updated, test_value)
     

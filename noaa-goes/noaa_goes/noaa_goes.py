@@ -178,7 +178,7 @@ class SWPCPoller:
         except (ValueError, TypeError):
             return None
 
-    def poll_and_send(self):
+    def poll_and_send(self, once: bool = False):
         logger.info("Starting SWPC Space Weather poller, polling every %ds", self.POLL_INTERVAL_SECONDS)
         logger.info("  Kafka topic: %s", self.kafka_topic)
 
@@ -206,6 +206,10 @@ class SWPCPoller:
 
             except Exception as e:
                 logger.error("Error in polling loop: %s", e)
+
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
 
             time.sleep(self.POLL_INTERVAL_SECONDS)
 
@@ -464,6 +468,10 @@ def main():
                         help="Password for SASL PLAIN authentication")
     parser.add_argument('--connection-string', type=str,
                         help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
+    parser.add_argument('--once', action='store_true',
+                        default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                             'Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
@@ -472,6 +480,8 @@ def main():
         args.connection_string = os.getenv('CONNECTION_STRING')
     if not args.last_polled_file:
         args.last_polled_file = os.getenv('SWPC_LAST_POLLED_FILE')
+        if not args.last_polled_file:
+            args.last_polled_file = os.getenv('STATE_FILE')
         if not args.last_polled_file:
             args.last_polled_file = os.path.expanduser('~/.swpc_last_polled.json')
 
@@ -512,7 +522,7 @@ def main():
         kafka_topic=kafka_topic,
         last_polled_file=args.last_polled_file
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

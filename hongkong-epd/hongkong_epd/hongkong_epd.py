@@ -265,6 +265,12 @@ def main():
         type=str,
         default=os.environ.get("STATE_FILE", os.path.expanduser("~/.hongkong_epd_state.json")),
     )
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List AQHI stations")
     subparsers.add_parser("feed", help="Feed data to Kafka")
@@ -299,6 +305,9 @@ def main():
             logger.info("Sent %d AQHI reading events", count)
         except Exception as exc:  # pragma: no cover - runtime safety
             logger.error("Error fetching/sending AQHI data: %s", exc)
+        if args.once:
+            logger.info("--once mode: exiting after first polling cycle")
+            break
         time.sleep(args.polling_interval)
 
 

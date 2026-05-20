@@ -1,6 +1,6 @@
 
 
-# Aisstream-producer Kafka Producer# Aisstream-producer Event Dispatcher for Apache Kafka
+# Aisstream_producer Kafka Producer# Aisstream_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from aisstream-producer import IOAISstreamProducer```python
+from aisstream_producer import IOAISstreamProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

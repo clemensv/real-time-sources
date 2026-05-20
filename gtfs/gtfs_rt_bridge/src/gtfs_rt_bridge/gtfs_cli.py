@@ -13,7 +13,8 @@ import time
 import json
 import argparse
 import logging
-from typing import Any, Dict, List, Tuple
+import threading
+from typing import Any, Dict, Generator, Iterable, List, Tuple
 from datetime import datetime, timedelta, timezone
 from tempfile import TemporaryDirectory
 import uuid
@@ -135,15 +136,16 @@ def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[Li
 
     if etag and os.path.exists(schedule_file_path):
         request_headers["If-None-Match"] = etag
-    response = requests.get(gtfs_url, headers={**request_headers,  "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
+    response = requests.get(gtfs_url, headers={**request_headers,  "User-Agent": "gtfs-rt-cli/0.1"}, timeout=300, stream=True)
     if response.status_code == 304:
         return etag, schedule_file_path
     etag = response.headers.get("ETag")
     response.raise_for_status()
-    # write the binary file to the cache directory
-
+    # stream the binary file to the cache directory in chunks to avoid
+    # holding the entire response (potentially hundreds of MB) in memory
     with open(schedule_file_path, "wb") as f:
-        f.write(response.content)
+        for chunk in response.iter_content(chunk_size=1024 * 1024):
+            f.write(chunk)
     return etag, schedule_file_path
 
 
@@ -153,10 +155,14 @@ def calculate_file_hashes(schedule_file_path: str):
     with ZipFile(schedule_file_path) as schedule_zip:
         for file_name in schedule_zip.namelist():
             if file_name.endswith('.txt'):
+                h = hashlib.sha256()
                 with schedule_zip.open(file_name) as f:
-                    file_content = f.read()
-                    file_hash = hashlib.sha256(file_content).hexdigest()
-                    hashes[file_name] = file_hash
+                    while True:
+                        chunk = f.read(65536)
+                        if not chunk:
+                            break
+                        h.update(chunk)
+                hashes[file_name] = h.hexdigest()
     return hashes
 
 
@@ -189,6 +195,17 @@ def read_schedule_file_contents(schedule_file_path: str, file_name: str) -> List
             # f is a byte stream, so decode it to utf-8
             reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'))
             return [row for row in reader]
+
+
+def iter_schedule_file_contents(schedule_file_path: str, file_name: str) -> Generator[Dict[str, Any], None, None]:
+    """Yields rows one at a time from a CSV inside the schedule ZIP, avoiding
+    full materialization of very large files like stop_times.txt."""
+    with ZipFile(schedule_file_path) as schedule_zip:
+        if file_name not in schedule_zip.namelist():
+            return
+        with schedule_zip.open(file_name, "r") as f:
+            reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8'))
+            yield from reader
 
 
 hashes_vehicles: Dict[str, int] = {}
@@ -240,7 +257,11 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
                     logger.debug("Skipping vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
                     continue
             logger.debug("Sending vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
-            producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
+            try:
+                producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
+            except Exception as e:
+                logger.warning("Skipping oversized vehicle position %s: %s", vehicle.vehicle.id, e)
+                continue
             hashes_vehicles[vehicle.vehicle.id] = hash_vph
         elif entity.trip_update and entity.trip_update.trip and entity.trip_update.trip.trip_id:
             trip_update=map_trip_update(entity)
@@ -257,7 +278,11 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
                     logger.debug("Skipping trip update: %s, %s", trip_update.trip.trip_id, entity.id)
                     continue
             logger.debug("Sending trip update: %s, %s", trip_update.trip.trip_id, entity.id)
-            producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
+            try:
+                producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
+            except Exception as e:
+                logger.warning("Skipping oversized trip update %s: %s", trip_update.trip.trip_id, e)
+                continue
             hashes_trip[trip_update.trip.trip_id] = hash_tuh
         elif entity.alert and len(entity.alert.header_text.translation) > 0:
             alert=map_alert(entity)
@@ -272,359 +297,392 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
                     logger.debug("Skipping alert: %s, %s", alert.header_text, entity.id)
                     continue
             logger.debug("Sending alert: %s, %s", alert.header_text, entity.id)
-            producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
+            try:
+                producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
+            except Exception as e:
+                logger.warning("Skipping oversized alert %s: %s", entity.id, e)
+                continue
             hashes_alert[hash_sah] = hash_sah
     producer_client.producer.flush()
 
 
-def map_agency(rows: List[Dict[str, Any]]) -> List[Agency]:
-    """Maps the rows from the agency.txt file to a list of Agency objects"""
-    return [Agency(
-        agencyId=row.get("agency_id"),
-        agencyName=row.get("agency_name"),
-        agencyUrl=row.get("agency_url"),
-        agencyTimezone=row.get("agency_timezone"),
-        agencyLang=row.get("agency_lang"),
-        agencyPhone=row.get("agency_phone"),
-        agencyFareUrl=row.get("agency_fare_url"),
-        agencyEmail=row.get("agency_email")
-    ) for row in rows]
+def map_agency(rows: Iterable[Dict[str, Any]]) -> Generator[Agency, None, None]:
+    """Maps the rows from the agency.txt file to Agency objects"""
+    for row in rows:
+        yield Agency(
+            agencyId=row.get("agency_id"),
+            agencyName=row.get("agency_name"),
+            agencyUrl=row.get("agency_url"),
+            agencyTimezone=row.get("agency_timezone"),
+            agencyLang=row.get("agency_lang"),
+            agencyPhone=row.get("agency_phone"),
+            agencyFareUrl=row.get("agency_fare_url"),
+            agencyEmail=row.get("agency_email")
+        )
 
 
-def map_areas(rows: List[Dict[str, Any]]) -> List[Areas]:
-    """Maps the rows from the areas.txt file to a list of Areas objects"""
-    return [Areas(
-        areaId=row.get("area_id"),
-        areaName=row.get("area_name"),
-        areaDesc=row.get("area_desc"),
-        areaUrl=row.get("area_url"),
-    ) for row in rows]
+def map_areas(rows: Iterable[Dict[str, Any]]) -> Generator[Areas, None, None]:
+    """Maps the rows from the areas.txt file to Areas objects"""
+    for row in rows:
+        yield Areas(
+            areaId=row.get("area_id"),
+            areaName=row.get("area_name"),
+            areaDesc=row.get("area_desc"),
+            areaUrl=row.get("area_url"),
+        )
 
 
-def map_attributions(rows: List[Dict[str, Any]]) -> List[Attributions]:
-    """Maps the rows from the attributions.txt file to a list of Attributions objects"""
-    return [Attributions(
-        attributionId=row.get("attribution_id", row.get("trip_id", uuid.uuid4().hex)),
-        agencyId=row.get("agency_id"),
-        routeId=row.get("route_id"),
-        tripId=row.get("trip_id"),
-        organizationName=row.get("organization_name"),
-        isProducer=int(row.get("is_producer")) if row.get("is_producer") else 0,
-        isOperator=int(row.get("is_operator")) if row.get("is_operator") else 0,
-        isAuthority=int(row.get("is_authority")) if row.get("is_authority") else 0,
-        attributionUrl=row.get("attribution_url"),
-        attributionEmail=row.get("attribution_email"),
-        attributionPhone=row.get("attribution_phone")
-    ) for row in rows]
+def map_attributions(rows: Iterable[Dict[str, Any]]) -> Generator[Attributions, None, None]:
+    """Maps the rows from the attributions.txt file to Attributions objects"""
+    for row in rows:
+        yield Attributions(
+            attributionId=row.get("attribution_id", row.get("trip_id", uuid.uuid4().hex)),
+            agencyId=row.get("agency_id"),
+            routeId=row.get("route_id"),
+            tripId=row.get("trip_id"),
+            organizationName=row.get("organization_name"),
+            isProducer=int(row.get("is_producer")) if row.get("is_producer") else 0,
+            isOperator=int(row.get("is_operator")) if row.get("is_operator") else 0,
+            isAuthority=int(row.get("is_authority")) if row.get("is_authority") else 0,
+            attributionUrl=row.get("attribution_url"),
+            attributionEmail=row.get("attribution_email"),
+            attributionPhone=row.get("attribution_phone")
+        )
 
 
-def map_booking_rules(rows: List[Dict[str, Any]]) -> List[BookingRules]:
-    """Maps the rows from the booking_rules.txt file to a list of BookingRules objects"""
-    return [BookingRules(
-        bookingRuleId=row.get("booking_rule_id"),
-        bookingRuleName=row.get("booking_rule_name"),
-        bookingRuleDesc=row.get("booking_rule_desc"),
-        bookingRuleUrl=row.get("booking_rule_url")
-    ) for row in rows]
+def map_booking_rules(rows: Iterable[Dict[str, Any]]) -> Generator[BookingRules, None, None]:
+    """Maps the rows from the booking_rules.txt file to BookingRules objects"""
+    for row in rows:
+        yield BookingRules(
+            bookingRuleId=row.get("booking_rule_id"),
+            bookingRuleName=row.get("booking_rule_name"),
+            bookingRuleDesc=row.get("booking_rule_desc"),
+            bookingRuleUrl=row.get("booking_rule_url")
+        )
 
 
-def map_fare_attributes(rows: List[Dict[str, Any]]) -> List[FareAttributes]:
-    """Maps the rows from the fare_attributes.txt file to a list of FareAttributes objects"""
-    return [FareAttributes(
-        fareId=row.get("fare_id"),
-        price=float(row.get("price")) if row.get("price") else 0,
-        currencyType=row.get("currency_type"),
-        paymentMethod=int(row.get("payment_method")) if row.get("payment_method") else 0,
-        transfers=int(row.get("transfers")) if row.get("transfers") else 0,
-        agencyId=row.get("agency_id"),
-        transferDuration=int(row.get("transfer_duration")) if row.get("transfer_duration") else 0
-    ) for row in rows]
+def map_fare_attributes(rows: Iterable[Dict[str, Any]]) -> Generator[FareAttributes, None, None]:
+    """Maps the rows from the fare_attributes.txt file to FareAttributes objects"""
+    for row in rows:
+        yield FareAttributes(
+            fareId=row.get("fare_id"),
+            price=float(row.get("price")) if row.get("price") else 0,
+            currencyType=row.get("currency_type"),
+            paymentMethod=int(row.get("payment_method")) if row.get("payment_method") else 0,
+            transfers=int(row.get("transfers")) if row.get("transfers") else 0,
+            agencyId=row.get("agency_id"),
+            transferDuration=int(row.get("transfer_duration")) if row.get("transfer_duration") else 0
+        )
 
 
-def map_fare_leg_rules(rows: List[Dict[str, Any]]) -> List[FareLegRules]:
-    """Maps the rows from the fare_leg_rules.txt file to a list of FareLegRules objects"""
-    return [FareLegRules(
-        fareLegRuleId=row.get("fare_leg_rule_id"),
-        fareProductId=row.get("fare_product_id"),
-        legGroupId=row.get("leg_group_id"),
-        networkId=row.get("network_id"),
-        fromAreaId=row.get("from_area_id"),
-        toAreaId=row.get("to_area_id")
-    ) for row in rows]
+def map_fare_leg_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareLegRules, None, None]:
+    """Maps the rows from the fare_leg_rules.txt file to FareLegRules objects"""
+    for row in rows:
+        yield FareLegRules(
+            fareLegRuleId=row.get("fare_leg_rule_id"),
+            fareProductId=row.get("fare_product_id"),
+            legGroupId=row.get("leg_group_id"),
+            networkId=row.get("network_id"),
+            fromAreaId=row.get("from_area_id"),
+            toAreaId=row.get("to_area_id")
+        )
 
 
-def map_fare_media(rows: List[Dict[str, Any]]) -> List[FareMedia]:
-    """Maps the rows from the fare_media.txt file to a list of FareMedia objects"""
-    return [FareMedia(
-        fareMediaId=row.get("fare_media_id"),
-        fareMediaName=row.get("fare_media_name"),
-        fareMediaDesc=row.get("fare_media_desc"),
-        fareMediaUrl=row.get("fare_media_url")
-    ) for row in rows]
+def map_fare_media(rows: Iterable[Dict[str, Any]]) -> Generator[FareMedia, None, None]:
+    """Maps the rows from the fare_media.txt file to FareMedia objects"""
+    for row in rows:
+        yield FareMedia(
+            fareMediaId=row.get("fare_media_id"),
+            fareMediaName=row.get("fare_media_name"),
+            fareMediaDesc=row.get("fare_media_desc"),
+            fareMediaUrl=row.get("fare_media_url")
+        )
 
 
-def map_fare_products(rows: List[Dict[str, Any]]) -> List[FareProducts]:
-    """Maps the rows from the fare_products.txt file to a list of FareProducts objects"""
-    return [FareProducts(
-        fareProductId=row.get("fare_product_id"),
-        fareProductName=row.get("fare_product_name"),
-        fareProductDesc=row.get("fare_product_desc"),
-        fareProductUrl=row.get("fare_product_url")
-    ) for row in rows]
+def map_fare_products(rows: Iterable[Dict[str, Any]]) -> Generator[FareProducts, None, None]:
+    """Maps the rows from the fare_products.txt file to FareProducts objects"""
+    for row in rows:
+        yield FareProducts(
+            fareProductId=row.get("fare_product_id"),
+            fareProductName=row.get("fare_product_name"),
+            fareProductDesc=row.get("fare_product_desc"),
+            fareProductUrl=row.get("fare_product_url")
+        )
 
 
-def map_fare_rules(rows: List[Dict[str, Any]]) -> List[FareRules]:
-    """Maps the rows from the fare_rules.txt file to a list of FareRules objects"""
-    return [FareRules(
-        fareId=row.get("fare_id"),
-        routeId=row.get("route_id"),
-        originId=row.get("origin_id"),
-        destinationId=row.get("destination_id"),
-        containsId=row.get("contains_id")
-    ) for row in rows]
+def map_fare_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareRules, None, None]:
+    """Maps the rows from the fare_rules.txt file to FareRules objects"""
+    for row in rows:
+        yield FareRules(
+            fareId=row.get("fare_id"),
+            routeId=row.get("route_id"),
+            originId=row.get("origin_id"),
+            destinationId=row.get("destination_id"),
+            containsId=row.get("contains_id")
+        )
 
 
-def map_fare_transfer_rules(rows: List[Dict[str, Any]]) -> List[FareTransferRules]:
-    """Maps the rows from the fare_transfer_rules.txt file to a list of FareTransferRules objects"""
-    return [FareTransferRules(
-        fareTransferRuleId=row.get("fare_transfer_rule_id"),
-        fareProductId=row.get("fare_product_id"),
-        transferCount=int(row.get("transfer_count")) if row.get("transfer_count") else 0,
-        fromLegGroupId=row.get("from_leg_group_id"),
-        toLegGroupId=row.get("to_leg_group_id"),
-        duration=int(row.get("duration")) if row.get("duration") else 0,
-        durationType=row.get("duration_type")
-    ) for row in rows]
+def map_fare_transfer_rules(rows: Iterable[Dict[str, Any]]) -> Generator[FareTransferRules, None, None]:
+    """Maps the rows from the fare_transfer_rules.txt file to FareTransferRules objects"""
+    for row in rows:
+        yield FareTransferRules(
+            fareTransferRuleId=row.get("fare_transfer_rule_id"),
+            fareProductId=row.get("fare_product_id"),
+            transferCount=int(row.get("transfer_count")) if row.get("transfer_count") else 0,
+            fromLegGroupId=row.get("from_leg_group_id"),
+            toLegGroupId=row.get("to_leg_group_id"),
+            duration=int(row.get("duration")) if row.get("duration") else 0,
+            durationType=row.get("duration_type")
+        )
 
 
-def map_feed_info(rows: List[Dict[str, Any]]) -> List[FeedInfo]:
-    """Maps the rows from the feed_info.txt file to a list of FeedInfo objects"""
-    return [FeedInfo(
-        feedPublisherName=row.get("feed_publisher_name"),
-        feedPublisherUrl=row.get("feed_publisher_url"),
-        feedLang=row.get("feed_lang"),
-        defaultLang=row.get("default_lang"),
-        feedStartDate=row.get("feed_start_date"),
-        feedEndDate=row.get("feed_end_date"),
-        feedVersion=row.get("feed_version"),
-        feedContactEmail=row.get("feed_contact_email"),
-        feedContactUrl=row.get("feed_contact_url")
-    ) for row in rows]
+def map_feed_info(rows: Iterable[Dict[str, Any]]) -> Generator[FeedInfo, None, None]:
+    """Maps the rows from the feed_info.txt file to FeedInfo objects"""
+    for row in rows:
+        yield FeedInfo(
+            feedPublisherName=row.get("feed_publisher_name"),
+            feedPublisherUrl=row.get("feed_publisher_url"),
+            feedLang=row.get("feed_lang"),
+            defaultLang=row.get("default_lang"),
+            feedStartDate=row.get("feed_start_date"),
+            feedEndDate=row.get("feed_end_date"),
+            feedVersion=row.get("feed_version"),
+            feedContactEmail=row.get("feed_contact_email"),
+            feedContactUrl=row.get("feed_contact_url")
+        )
 
 
-def map_frequencies(rows: List[Dict[str, Any]]) -> List[Frequencies]:
-    """Maps the rows from the frequencies.txt file to a list of Frequencies objects"""
-    return [Frequencies(
-        tripId=row.get("trip_id"),
-        startTime=row.get("start_time"),
-        endTime=row.get("end_time"),
-        headwaySecs=int(row.get("headway_secs")) if row.get("headway_secs") else 0,
-        exactTimes=int(row.get("exact_times")) if row.get("exact_times") else 0
-    ) for row in rows]
+def map_frequencies(rows: Iterable[Dict[str, Any]]) -> Generator[Frequencies, None, None]:
+    """Maps the rows from the frequencies.txt file to Frequencies objects"""
+    for row in rows:
+        yield Frequencies(
+            tripId=row.get("trip_id"),
+            startTime=row.get("start_time"),
+            endTime=row.get("end_time"),
+            headwaySecs=int(row.get("headway_secs")) if row.get("headway_secs") else 0,
+            exactTimes=int(row.get("exact_times")) if row.get("exact_times") else 0
+        )
 
 
-def map_levels(rows: List[Dict[str, Any]]) -> List[Levels]:
-    """Maps the rows from the levels.txt file to a list of Levels objects"""
-    return [Levels(
-        levelId=row.get("level_id"),
-        levelIndex=float(row.get("level_index")) if row.get("level_index") else 0,
-        levelName=row.get("level_name")
-    ) for row in rows]
+def map_levels(rows: Iterable[Dict[str, Any]]) -> Generator[Levels, None, None]:
+    """Maps the rows from the levels.txt file to Levels objects"""
+    for row in rows:
+        yield Levels(
+            levelId=row.get("level_id"),
+            levelIndex=float(row.get("level_index")) if row.get("level_index") else 0,
+            levelName=row.get("level_name")
+        )
 
 
-def map_location_groups(rows: List[Dict[str, Any]]) -> List[LocationGroups]:
-    """Maps the rows from the location_groups.txt file to a list of LocationGroups objects"""
-    return [LocationGroups(
-        locationGroupId=row.get("location_group_id"),
-        locationGroupName=row.get("location_group_name"),
-        locationGroupDesc=row.get("location_group_desc"),
-        locationGroupUrl=row.get("location_group_url")
-    ) for row in rows]
+def map_location_groups(rows: Iterable[Dict[str, Any]]) -> Generator[LocationGroups, None, None]:
+    """Maps the rows from the location_groups.txt file to LocationGroups objects"""
+    for row in rows:
+        yield LocationGroups(
+            locationGroupId=row.get("location_group_id"),
+            locationGroupName=row.get("location_group_name"),
+            locationGroupDesc=row.get("location_group_desc"),
+            locationGroupUrl=row.get("location_group_url")
+        )
 
 
-def map_location_group_stores(rows: List[Dict[str, Any]]) -> List[LocationGroupStores]:
-    """Maps the rows from the location_group_stores.txt file to a list of LocationGroupStores objects"""
-    return [LocationGroupStores(
-        locationGroupStoreId=row.get("location_group_store_id"),
-        locationGroupId=row.get("location_group_id"),
-        storeId=row.get("store_id")
-    ) for row in rows]
+def map_location_group_stores(rows: Iterable[Dict[str, Any]]) -> Generator[LocationGroupStores, None, None]:
+    """Maps the rows from the location_group_stores.txt file to LocationGroupStores objects"""
+    for row in rows:
+        yield LocationGroupStores(
+            locationGroupStoreId=row.get("location_group_store_id"),
+            locationGroupId=row.get("location_group_id"),
+            storeId=row.get("store_id")
+        )
 
 
-def map_networks(rows: List[Dict[str, Any]]) -> List[Networks]:
-    """Maps the rows from the networks.txt file to a list of Networks objects"""
-    return [Networks(
-        networkId=row.get("network_id"),
-        networkName=row.get("network_name"),
-        networkDesc=row.get("network_desc"),
-        networkUrl=row.get("network_url")
-    ) for row in rows]
+def map_networks(rows: Iterable[Dict[str, Any]]) -> Generator[Networks, None, None]:
+    """Maps the rows from the networks.txt file to Networks objects"""
+    for row in rows:
+        yield Networks(
+            networkId=row.get("network_id"),
+            networkName=row.get("network_name"),
+            networkDesc=row.get("network_desc"),
+            networkUrl=row.get("network_url")
+        )
 
 
-def map_pathways(rows: List[Dict[str, Any]]) -> List[Pathways]:
-    """Maps the rows from the pathways.txt file to a list of Pathways objects"""
-    return [Pathways(
-        pathwayId=row.get("pathway_id"),
-        fromStopId=row.get("from_stop_id"),
-        toStopId=row.get("to_stop_id"),
-        pathwayMode=int(row.get("pathway_mode")) if row.get("pathway_mode") else 0,
-        isBidirectional=int(row.get("is_bidirectional")) if row.get("is_bidirectional") else 0,
-        length=float(row.get("length")) if row.get("length") else 0,
-        traversalTime=int(row.get("traversal_time")) if row.get("traversal_time") else 0,
-        stairCount=int(row.get("stair_count")) if row.get("stair_count") else 0,
-        maxSlope=float(row.get("max_slope")) if row.get("max_slope") else 0,
-        minWidth=float(row.get("min_width")) if row.get("min_width") else 0,
-        signpostedAs=row.get("signposted_as"),
-        reversedSignpostedAs=row.get("reversed_signposted_as")
-    ) for row in rows]
+def map_pathways(rows: Iterable[Dict[str, Any]]) -> Generator[Pathways, None, None]:
+    """Maps the rows from the pathways.txt file to Pathways objects"""
+    for row in rows:
+        yield Pathways(
+            pathwayId=row.get("pathway_id"),
+            fromStopId=row.get("from_stop_id"),
+            toStopId=row.get("to_stop_id"),
+            pathwayMode=int(row.get("pathway_mode")) if row.get("pathway_mode") else 0,
+            isBidirectional=int(row.get("is_bidirectional")) if row.get("is_bidirectional") else 0,
+            length=float(row.get("length")) if row.get("length") else 0,
+            traversalTime=int(row.get("traversal_time")) if row.get("traversal_time") else 0,
+            stairCount=int(row.get("stair_count")) if row.get("stair_count") else 0,
+            maxSlope=float(row.get("max_slope")) if row.get("max_slope") else 0,
+            minWidth=float(row.get("min_width")) if row.get("min_width") else 0,
+            signpostedAs=row.get("signposted_as"),
+            reversedSignpostedAs=row.get("reversed_signposted_as")
+        )
 
 
-def map_route_networks(rows: List[Dict[str, Any]]) -> List[RouteNetworks]:
-    """Maps the rows from the route_networks.txt file to a list of RouteNetworks objects"""
-    return [RouteNetworks(
-        routeNetworkId=row.get("route_network_id"),
-        routeId=row.get("route_id"),
-        networkId=row.get("network_id")
-    ) for row in rows]
+def map_route_networks(rows: Iterable[Dict[str, Any]]) -> Generator[RouteNetworks, None, None]:
+    """Maps the rows from the route_networks.txt file to RouteNetworks objects"""
+    for row in rows:
+        yield RouteNetworks(
+            routeNetworkId=row.get("route_network_id"),
+            routeId=row.get("route_id"),
+            networkId=row.get("network_id")
+        )
 
 
-def map_routes(rows: List[Dict[str, Any]]) -> List[Routes]:
-    """Maps the rows from the routes.txt file to a list of Routes objects"""
-    return [Routes(
-        routeId=row.get("route_id"),
-        agencyId=row.get("agency_id"),
-        routeShortName=row.get("route_short_name"),
-        routeLongName=row.get("route_long_name"),
-        routeDesc=row.get("route_desc"),
-        routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(
-            "route_type") and (int(row.get("route_type")) < 12) else RouteType.OTHER,
-        routeUrl=row.get("route_url"),
-        routeColor=row.get("route_color"),
-        routeTextColor=row.get("route_text_color"),
-        routeSortOrder=int(row.get("route_sort_order")) if row.get("route_sort_order") else 0,
-        continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(
-            "continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
-        continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(
-            "continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
-        networkId=row.get("network_id")
-    ) for row in rows]
+def map_routes(rows: Iterable[Dict[str, Any]]) -> Generator[Routes, None, None]:
+    """Maps the rows from the routes.txt file to Routes objects"""
+    for row in rows:
+        yield Routes(
+            routeId=row.get("route_id"),
+            agencyId=row.get("agency_id"),
+            routeShortName=row.get("route_short_name"),
+            routeLongName=row.get("route_long_name"),
+            routeDesc=row.get("route_desc"),
+            routeType=RouteType.from_ordinal(row.get("route_type")) if row.get(
+                "route_type") and (int(row.get("route_type")) < 12) else RouteType.OTHER,
+            routeUrl=row.get("route_url"),
+            routeColor=row.get("route_color"),
+            routeTextColor=row.get("route_text_color"),
+            routeSortOrder=int(row.get("route_sort_order")) if row.get("route_sort_order") else 0,
+            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get(
+                "continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
+            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get(
+                "continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
+            networkId=row.get("network_id")
+        )
 
 
-def map_shapes(rows: List[Dict[str, Any]]) -> List[Shapes]:
-    """Maps the rows from the shapes.txt file to a list of Shapes objects"""
-    return [Shapes(
-        shapeId=row.get("shape_id"),
-        shapePtLat=float(row.get("shape_pt_lat")) if row.get("shape_pt_lat") else 0,
-        shapePtLon=float(row.get("shape_pt_lon")) if row.get("shape_pt_lon") else 0,
-        shapePtSequence=int(row.get("shape_pt_sequence")) if row.get("shape_pt_sequence") else 0,
-        shapeDistTraveled=float(row.get("shape_dist_traveled")) if row.get("shape_dist_traveled") else 0
-    ) for row in rows]
+def map_shapes(rows: Iterable[Dict[str, Any]]) -> Generator[Shapes, None, None]:
+    """Maps the rows from the shapes.txt file to Shapes objects"""
+    for row in rows:
+        yield Shapes(
+            shapeId=row.get("shape_id"),
+            shapePtLat=float(row.get("shape_pt_lat")) if row.get("shape_pt_lat") else 0,
+            shapePtLon=float(row.get("shape_pt_lon")) if row.get("shape_pt_lon") else 0,
+            shapePtSequence=int(row.get("shape_pt_sequence")) if row.get("shape_pt_sequence") else 0,
+            shapeDistTraveled=float(row.get("shape_dist_traveled")) if row.get("shape_dist_traveled") else 0
+        )
 
 
-def map_stop_areas(rows: List[Dict[str, Any]]) -> List[StopAreas]:
-    """Maps the rows from the stop_areas.txt file to a list of StopAreas objects"""
-    return [StopAreas(
-        stopAreaId=row.get("stop_area_id"),
-        areaId=row.get("area_id"),
-        stopId=row.get("stop_id"),
-    ) for row in rows]
+def map_stop_areas(rows: Iterable[Dict[str, Any]]) -> Generator[StopAreas, None, None]:
+    """Maps the rows from the stop_areas.txt file to StopAreas objects"""
+    for row in rows:
+        yield StopAreas(
+            stopAreaId=row.get("stop_area_id"),
+            areaId=row.get("area_id"),
+            stopId=row.get("stop_id"),
+        )
 
 
-def map_stops(rows: List[Dict[str, Any]]) -> List[Stops]:
-    """Maps the rows from the stops.txt file to a list of Stops objects"""
-    return [Stops(
-        stopId=row.get("stop_id"),
-        stopCode=row.get("stop_code"),
-        stopName=row.get("stop_name"),
-        stopDesc=row.get("stop_desc"),
-        stopLat=float(row.get("stop_lat")) if row.get("stop_lat") else 0,
-        stopLon=float(row.get("stop_lon")) if row.get("stop_lon") else 0,
-        zoneId=row.get("zone_id"),
-        stopUrl=row.get("stop_url"),
-        locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,
-        parentStation=row.get("parent_station"),
-        stopTimezone=row.get("stop_timezone"),
-        wheelchairBoarding=WheelchairBoarding.from_ordinal(row.get("wheelchair_boarding")) if row.get("wheelchair_boarding") else WheelchairBoarding.NO_INFO,
-        levelId=row.get("level_id"),
-        platformCode=row.get("platform_code"),
-        ttsStopName=row.get("tts_stop_name"),
-    ) for row in rows]
+def map_stops(rows: Iterable[Dict[str, Any]]) -> Generator[Stops, None, None]:
+    """Maps the rows from the stops.txt file to Stops objects"""
+    for row in rows:
+        yield Stops(
+            stopId=row.get("stop_id"),
+            stopCode=row.get("stop_code"),
+            stopName=row.get("stop_name"),
+            stopDesc=row.get("stop_desc"),
+            stopLat=float(row.get("stop_lat")) if row.get("stop_lat") else 0,
+            stopLon=float(row.get("stop_lon")) if row.get("stop_lon") else 0,
+            zoneId=row.get("zone_id"),
+            stopUrl=row.get("stop_url"),
+            locationType=LocationType.from_ordinal(row.get("location_type")) if row.get("location_type") else LocationType.STOP,
+            parentStation=row.get("parent_station"),
+            stopTimezone=row.get("stop_timezone"),
+            wheelchairBoarding=WheelchairBoarding.from_ordinal(row.get("wheelchair_boarding")) if row.get("wheelchair_boarding") else WheelchairBoarding.NO_INFO,
+            levelId=row.get("level_id"),
+            platformCode=row.get("platform_code"),
+            ttsStopName=row.get("tts_stop_name"),
+        )
 
 
-def map_stop_times(rows: List[Dict[str, Any]]) -> List[StopTimes]:
-    """Maps the rows from the stop_times.txt file to a list of StopTimes objects"""
-    return [StopTimes(
-        tripId=row.get("trip_id"),
-        arrivalTime=row.get("arrival_time"),
-        departureTime=row.get("departure_time"),
-        stopId=row.get("stop_id"),
-        stopSequence=int(row.get("stop_sequence")) if row.get("stop_sequence") else 0,
-        stopHeadsign=row.get("stop_headsign"),
-        pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,
-        dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,
-        continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get("continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
-        continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get("continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
-        shapeDistTraveled=row.get("shape_dist_traveled"),
-        timepoint=Timepoint.from_ordinal(row.get("timepoint")) if row.get("timepoint") else Timepoint.EXACT
-    ) for row in rows]
+def map_stop_times(rows: Iterable[Dict[str, Any]]) -> Generator[StopTimes, None, None]:
+    """Maps the rows from the stop_times.txt file to StopTimes objects"""
+    for row in rows:
+        yield StopTimes(
+            tripId=row.get("trip_id"),
+            arrivalTime=row.get("arrival_time"),
+            departureTime=row.get("departure_time"),
+            stopId=row.get("stop_id"),
+            stopSequence=int(row.get("stop_sequence")) if row.get("stop_sequence") else 0,
+            stopHeadsign=row.get("stop_headsign"),
+            pickupType=PickupType.from_ordinal(row.get("pickup_type")) if row.get("pickup_type") else PickupType.REGULAR,
+            dropOffType=DropOffType.from_ordinal(row.get("drop_off_type")) if row.get("drop_off_type") else DropOffType.REGULAR,
+            continuousPickup=ContinuousPickup.from_ordinal(row.get("continuous_pickup")) if row.get("continuous_pickup") else ContinuousPickup.NO_CONTINUOUS_STOPPING,
+            continuousDropOff=ContinuousDropOff.from_ordinal(row.get("continuous_drop_off")) if row.get("continuous_drop_off") else ContinuousDropOff.NO_CONTINUOUS_STOPPING,
+            shapeDistTraveled=row.get("shape_dist_traveled"),
+            timepoint=Timepoint.from_ordinal(row.get("timepoint")) if row.get("timepoint") else Timepoint.EXACT
+        )
 
 
-def map_timeframes(rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> List[Timeframes]:
-    """Maps the rows from the timeframes.txt file to a list of Timeframes objects"""
-    return [Timeframes(
-        timeframeGroupId=row.get("timeframe_group_id"),
-        startTime=row.get("start_time"),
-        endTime=row.get("end_time"),
-        serviceDates=next(iter([Calendar(
-            serviceId=calendarRow.get("service_id"),
-            startDate=calendarRow.get("start_date"),
-            endDate=calendarRow.get("end_date"),
-            monday=ServiceAvailability.from_ordinal(calendarRow.get("monday")) if calendarRow.get(
-                "monday") else ServiceAvailability.NO_SERVICE,
-            tuesday=ServiceAvailability.from_ordinal(calendarRow.get("tuesday")) if calendarRow.get(
-                "tuesday") else ServiceAvailability.NO_SERVICE,
-            wednesday=ServiceAvailability.from_ordinal(calendarRow.get("wednesday")) if calendarRow.get(
-                "wednesday") else ServiceAvailability.NO_SERVICE,
-            thursday=ServiceAvailability.from_ordinal(calendarRow.get("thursday")) if calendarRow.get(
-                "thursday") else ServiceAvailability.NO_SERVICE,
-            friday=ServiceAvailability.from_ordinal(calendarRow.get("friday")) if calendarRow.get(
-                "friday") else ServiceAvailability.NO_SERVICE,
-            saturday=ServiceAvailability.from_ordinal(calendarRow.get("saturday")) if calendarRow.get(
-                "saturday") else ServiceAvailability.NO_SERVICE,
-            sunday=ServiceAvailability.from_ordinal(calendarRow.get("sunday")) if calendarRow.get("sunday") else ServiceAvailability.NO_SERVICE)
-            for calendarRow in calendar_rows if calendarRow.get("service_id") == row.get("service_id")]
-            + [CalendarDates(
+def map_timeframes(rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> Generator[Timeframes, None, None]:
+    """Maps the rows from the timeframes.txt file to Timeframes objects"""
+    for row in rows:
+        service_dates = [
+            Calendar(
+                serviceId=calendarRow.get("service_id"),
+                startDate=calendarRow.get("start_date"),
+                endDate=calendarRow.get("end_date"),
+                monday=ServiceAvailability.from_ordinal(calendarRow.get("monday")) if calendarRow.get(
+                    "monday") else ServiceAvailability.NO_SERVICE,
+                tuesday=ServiceAvailability.from_ordinal(calendarRow.get("tuesday")) if calendarRow.get(
+                    "tuesday") else ServiceAvailability.NO_SERVICE,
+                wednesday=ServiceAvailability.from_ordinal(calendarRow.get("wednesday")) if calendarRow.get(
+                    "wednesday") else ServiceAvailability.NO_SERVICE,
+                thursday=ServiceAvailability.from_ordinal(calendarRow.get("thursday")) if calendarRow.get(
+                    "thursday") else ServiceAvailability.NO_SERVICE,
+                friday=ServiceAvailability.from_ordinal(calendarRow.get("friday")) if calendarRow.get(
+                    "friday") else ServiceAvailability.NO_SERVICE,
+                saturday=ServiceAvailability.from_ordinal(calendarRow.get("saturday")) if calendarRow.get(
+                    "saturday") else ServiceAvailability.NO_SERVICE,
+                sunday=ServiceAvailability.from_ordinal(calendarRow.get("sunday")) if calendarRow.get("sunday") else ServiceAvailability.NO_SERVICE)
+            for calendarRow in calendar_rows if calendarRow.get("service_id") == row.get("service_id")
+        ] + [
+            CalendarDates(
                 serviceId=calendarDatesRow.get("service_id"),
                 date=calendarDatesRow.get("date"),
                 exceptionType=ExceptionType.from_ordinal(calendarDatesRow.get("exception_type")) if calendarDatesRow.get("exception_type") else ExceptionType.SERVICE_REMOVED)
-               for calendarDatesRow in calendar_dates_rows if calendarDatesRow.get("service_id") == row.get("service_id")]))
+            for calendarDatesRow in calendar_dates_rows if calendarDatesRow.get("service_id") == row.get("service_id")
+        ]
 
-    ) for row in rows]
+        yield Timeframes(
+            timeframeGroupId=row.get("timeframe_group_id"),
+            startTime=row.get("start_time"),
+            endTime=row.get("end_time"),
+            serviceDates=next(iter(service_dates))
+        )
 
 
-def map_transfers(rows: List[Dict[str, Any]]) -> List[Transfers]:
+def map_transfers(rows: Iterable[Dict[str, Any]]) -> Generator[Transfers, None, None]:
     """Maps the rows from the transfers.txt"""
-    return [Transfers(
-        fromStopId=row.get("from_stop_id"),
-        toStopId=row.get("to_stop_id"),
-        transferType=int(row.get("transfer_type")) if row.get("transfer_type") else 0,
-        minTransferTime=int(row.get("min_transfer_time")) if row.get("min_transfer_time") else 0
-    ) for row in rows]
+    for row in rows:
+        yield Transfers(
+            fromStopId=row.get("from_stop_id"),
+            toStopId=row.get("to_stop_id"),
+            transferType=int(row.get("transfer_type")) if row.get("transfer_type") else 0,
+            minTransferTime=int(row.get("min_transfer_time")) if row.get("min_transfer_time") else 0
+        )
 
 
-def map_translations(rows: List[Dict[str, Any]]) -> List[Translations]:
-    """Maps the rows from the translations.txt file to a list of Translations objects"""
-    return [Translations(
-        tableName=row.get("table_name"),
-        fieldName=row.get("field_name"),
-        language=row.get("language"),
-        translation=row.get("translation")
-    ) for row in rows]
+def map_translations(rows: Iterable[Dict[str, Any]]) -> Generator[Translations, None, None]:
+    """Maps the rows from the translations.txt file to Translations objects"""
+    for row in rows:
+        yield Translations(
+            tableName=row.get("table_name"),
+            fieldName=row.get("field_name"),
+            language=row.get("language"),
+            translation=row.get("translation")
+        )
 
 
-def map_trips(trip_rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> List[Trips]:
-    """Maps the rows from the trips.txt file to a list of Trips objects"""
-    trips = []
+def map_trips(trip_rows: Iterable[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> Generator[Trips, None, None]:
+    """Maps the rows from the trips.txt file to Trips objects"""
 
     # we do some indexing here because the combinations of the files can be enormous
     calendar_rows_by_service: Dict[str, List[Dict[str, Any]]] = {}
@@ -668,22 +726,19 @@ def map_trips(trip_rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any
                 )
             )
 
-        trips.append(
-            Trips(
-                routeId=row.get("route_id"),
-                serviceDates= calendars[0] if len(calendars) > 0 else None,
-                serviceExceptions= calendar_dates,
-                tripId=row.get("trip_id"),
-                tripHeadsign=row.get("trip_headsign"),
-                tripShortName=row.get("trip_short_name"),
-                directionId=DirectionId.from_ordinal(row.get("direction_id")) if row.get("direction_id") else DirectionId.OUTBOUND,
-                blockId=row.get("block_id"),
-                shapeId=row.get("shape_id"),
-                wheelchairAccessible=WheelchairAccessible.from_ordinal(row.get("wheelchair_accessible")) if row.get("wheelchair_accessible") else WheelchairAccessible.NO_INFO,
-                bikesAllowed=BikesAllowed.from_ordinal(row.get("bikes_allowed")) if row.get("bikes_allowed") else BikesAllowed.NO_INFO
-            )
+        yield Trips(
+            routeId=row.get("route_id"),
+            serviceDates=calendars[0] if len(calendars) > 0 else None,
+            serviceExceptions=calendar_dates,
+            tripId=row.get("trip_id"),
+            tripHeadsign=row.get("trip_headsign"),
+            tripShortName=row.get("trip_short_name"),
+            directionId=DirectionId.from_ordinal(row.get("direction_id")) if row.get("direction_id") else DirectionId.OUTBOUND,
+            blockId=row.get("block_id"),
+            shapeId=row.get("shape_id"),
+            wheelchairAccessible=WheelchairAccessible.from_ordinal(row.get("wheelchair_accessible")) if row.get("wheelchair_accessible") else WheelchairAccessible.NO_INFO,
+            bikesAllowed=BikesAllowed.from_ordinal(row.get("bikes_allowed")) if row.get("bikes_allowed") else BikesAllowed.NO_INFO
         )
-    return trips
 
 
 def send_agency_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Agency]):
@@ -756,11 +811,33 @@ def fetch_and_process_schedule(agency_id: str, reference_producer_client: Genera
         # Calculate the file hashes
         new_hashes = calculate_file_hashes(schedule_file_path)
 
-        # Find new/changed files
+        # Priority order: RT-relevant context first, bulk geometry last
+        STATIC_FILE_PRIORITY = [
+            "agency", "calendar", "calendar_dates",
+            "routes", "stops", "stop_areas",
+            "trips", "stop_times", "frequencies",
+            "transfers", "feed_info", "levels", "pathways",
+            "networks", "route_networks", "areas",
+            "attributions", "booking_rules", "fare_attributes",
+            "fare_leg_rules", "fare_media", "fare_products",
+            "fare_rules", "fare_transfer_rules", "location_groups",
+            "location_group_stores", "timeframes", "translations",
+            "shapes",  # last — largest file, not needed for RT
+        ]
+
+        def _file_priority(file_name: str) -> int:
+            base = os.path.basename(file_name).split(".")[0]
+            try:
+                return STATIC_FILE_PRIORITY.index(base)
+            except ValueError:
+                return len(STATIC_FILE_PRIORITY) - 2  # before shapes
+
+        # Find new/changed files, sorted by priority
         changed_files = []
         for file_name, new_hash in new_hashes.items():
             if force_refresh or (file_name not in old_hashes or old_hashes[file_name] != new_hash):
                 changed_files.append(file_name)
+        changed_files.sort(key=_file_priority)
 
         agency_url = gtfs_url
         agency_rows = read_schedule_file_contents(schedule_file_path, "agency.txt")
@@ -772,229 +849,133 @@ def fetch_and_process_schedule(agency_id: str, reference_producer_client: Genera
         # Read the contents of new/changed files
         send_count = 0
         for file_name in changed_files:
-            # create eventdata batch
-            file_contents = read_schedule_file_contents(schedule_file_path, file_name)
             file_base_name = os.path.basename(file_name).split(".")[0]
+            logger.info("Processing %s entities", file_base_name)
+            entity_count = 0
+
+            def _after_send():
+                nonlocal send_count, entity_count
+                send_count += 1
+                entity_count += 1
+                # Drain delivery callbacks periodically to prevent queue full
+                if send_count % 10000 == 0:
+                    reference_producer_client.producer.poll(0)
 
             if file_base_name == "agency":
-                entities = map_agency(file_contents)
-                logger.info("Processing %s agency entities", len(entities))
-                for entity in entities:
+                for entity in map_agency(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_agency(agency_url, (entity.agencyId if entity.agencyId else agency_id), entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "areas":
-                entities = map_areas(file_contents)
-                logger.info("Processing %s areas entities", len(entities))
-                for entity in entities:
+                for entity in map_areas(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_areas(agency_url, agency_id+"/"+entity.areaId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "attributions":
-                entities = map_attributions(file_contents)
-                logger.info("Processing %s attributions entities", len(entities))
-                for entity in entities:
+                for entity in map_attributions(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+(entity.routeId if entity.routeId else "any")+"/"+entity.tripId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "booking_rules":
-                entities = map_booking_rules(file_contents)
-                logger.info("Processing %s booking_rules entities", len(entities))
-                for entity in entities:
+                for entity in map_booking_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_booking_rules(agency_url, agency_id+"/"+entity.bookingRuleId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "fare_attributes":
-                entities = map_fare_attributes(file_contents)
-                logger.info("Processing %s fare_attributes entities", len(entities))
-                for entity in entities:
+                for entity in map_fare_attributes(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_attributes(agency_url, (entity.agencyId if entity.agencyId else agency_id) +"/"+entity.fareId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "fare_leg_rules":
-                entities = map_fare_leg_rules(file_contents)
-                logger.info("Processing %s fare_leg_rules entities", len(entities))
-                for entity in entities:
+                for entity in map_fare_leg_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_leg_rules(agency_url, agency_id+"/"+entity.fareLegRuleId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "fare_media":
-                entities = map_fare_media(file_contents)
-                logger.info("Processing %s fare_media entities", len(entities))
-                for entity in entities:
+                for entity in map_fare_media(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_media(agency_url, agency_id+"/"+entity.fareMediaId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "fare_products":
-                entities = map_fare_products(file_contents)
-                logger.info("Processing %s fare_products entities", len(entities))
-                for entity in entities:
+                for entity in map_fare_products(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_products(agency_url, agency_id+"/"+entity.fareProductId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "fare_rules":
-                entities = map_fare_rules(file_contents)
-                logger.info("Processing %s fare_rules entities", len(entities))
-                for entity in entities:
+                for entity in map_fare_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_rules(agency_url, agency_id+"/"+entity.fareId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "fare_transfer_rules":
-                entities = map_fare_transfer_rules(file_contents)
-                logger.info("Processing %s fare_transfer_rules entities", len(entities))
-                for entity in entities:
+                for entity in map_fare_transfer_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(agency_url, agency_id+"/"+entity.fareTransferRuleId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "feed_info":
-                entities = map_feed_info(file_contents)
-                logger.info("Processing %s feed_info entities", len(entities))
-                for entity in entities:
+                for entity in map_feed_info(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_feed_info(agency_url, agency_id+"/"+entity.feedVersion, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "frequencies":
-                entities = map_frequencies(file_contents)
-                logger.info("Processing %s frequencies entities", len(entities))
-                for entity in entities:
+                for entity in map_frequencies(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_frequencies(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "levels":
-                entities = map_levels(file_contents)
-                logger.info("Processing %s levels entities", len(entities))
-                for entity in entities:
+                for entity in map_levels(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_levels(agency_url, agency_id+"/"+entity.levelId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "location_groups":
-                entities = map_location_groups(file_contents)
-                logger.info("Processing %s location_groups entities", len(entities))
-                for entity in entities:
+                for entity in map_location_groups(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_location_groups(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "location_group_stores":
-                entities = map_location_group_stores(file_contents)
-                logger.info("Processing %s location_group_stores entities", len(entities))
-                for entity in entities:
+                for entity in map_location_group_stores(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_location_group_stores(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "networks":
-                entities = map_networks(file_contents)
-                logger.info("Processing %s networks entities", len(entities))
-                for entity in entities:
+                for entity in map_networks(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_networks(agency_url, agency_id+"/"+entity.networkId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "pathways":
-                entities = map_pathways(file_contents)
-                logger.info("Processing %s pathways entities", len(entities))
-                for entity in entities:
+                for entity in map_pathways(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_pathways(agency_url, agency_id+"/"+entity.pathwayId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "route_networks":
-                entities = map_route_networks(file_contents)
-                logger.info("Processing %s route_networks entities", len(entities))
-                for entity in entities:
+                for entity in map_route_networks(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_route_networks(agency_url, agency_id+"/"+entity.routeNetworkId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "routes":
-                entities = map_routes(file_contents)
-                logger.info("Processing %s routes entities", len(entities))
-                for entity in entities:
+                for entity in map_routes(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_routes(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.routeId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "shapes":
-                entities = map_shapes(file_contents)
-                logger.info("Processing %s shapes entities", len(entities))
-                for entity in entities:
+                for entity in map_shapes(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_shapes(agency_url, agency_id+"/"+entity.shapeId+"/"+str(entity.shapePtSequence), entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "stop_areas":
-                entities = map_stop_areas(file_contents)
-                logger.info("Processing %s stop_areas entities", len(entities))
-                for entity in entities:
+                for entity in map_stop_areas(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_stop_areas(agency_url, agency_id+"/"+entity.stopAreaId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "stops":
-                entities = map_stops(file_contents)
-                logger.info("Processing %s stops entities", len(entities))
-                for entity in entities:
+                for entity in map_stops(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_stops(agency_url, agency_id+"/"+entity.stopId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "stop_times":
-                entities = map_stop_times(file_contents)
-                logger.info("Processing %s stop_times entities", len(entities))
-                for entity in entities:
+                for entity in map_stop_times(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_stop_times(agency_url, agency_id+"/"+entity.stopId+"/"+entity.tripId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "timeframes":
-                entities = map_timeframes(file_contents, calendar_rows, calendar_dates_rows)
-                logger.info("Processing %s timeframes entities", len(entities))
-                for entity in entities:
+                for entity in map_timeframes(iter_schedule_file_contents(schedule_file_path, file_name), calendar_rows, calendar_dates_rows):
                     reference_producer_client.send_general_transit_feed_static_timeframes(agency_url, agency_id+"/"+entity.timeframeGroupId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "transfers":
-                entities = map_transfers(file_contents)
-                logger.info("Processing %s transfers entities", len(entities))
-                for entity in entities:
+                for entity in map_transfers(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_transfers(agency_url, agency_id+"/"+entity.fromStopId+"/"+entity.toStopId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "translations":
-                entities = map_translations(file_contents)
-                logger.info("Processing %s translations entities", len(entities))
-                for entity in entities:
+                for entity in map_translations(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_translations(agency_url, agency_id+"/"+entity.tableName+"/"+entity.fieldName, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
             elif file_base_name == "trips":
-                entities = map_trips(file_contents, calendar_rows, calendar_dates_rows)
-                logger.info("Processing %s trips entities", len(entities))
-                for entity in entities:
+                for entity in map_trips(iter_schedule_file_contents(schedule_file_path, file_name), calendar_rows, calendar_dates_rows):
                     reference_producer_client.send_general_transit_feed_static_trips(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
-                    send_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
+                    _after_send()
+            logger.info("Processed %s %s entities", entity_count, file_base_name)
             reference_producer_client.producer.flush()
-        # Write the new file hashes
-        write_file_hashes(schedule_file_path, new_hashes, cache_dir)
+            # Write hash for this file immediately so a crash only replays
+            # the current file, not the entire set
+            persisted = read_file_hashes(schedule_file_path, cache_dir)
+            persisted[file_name] = new_hashes[file_name]
+            write_file_hashes(schedule_file_path, persisted, cache_dir)
 
 
 def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None,
@@ -1035,21 +1016,51 @@ def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_t
         kafka_config['security.protocol'] = 'SSL'
     producer: Producer = Producer(kafka_config, logger=logger)
     gtfs_rt_producer = GeneralTransitFeedRealTimeEventProducer(producer, kafka_topic,cloudevents_mode)
-    gtfs_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
 
-    last_schedule_run = None
+    # Schedule processing state — accessed from main thread to decide when
+    # to launch, from the background thread to signal completion.
+    schedule_lock = threading.Lock()
+    schedule_thread: threading.Thread | None = None
+    last_schedule_completed: datetime | None = None
+
+    def _run_schedule(force_refresh: bool):
+        """Background worker: fetch + process static schedule files."""
+        nonlocal last_schedule_completed
+        try:
+            # Each thread gets its own EventProducer wrapper (the underlying
+            # confluent-kafka Producer is thread-safe for produce/flush).
+            bg_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
+            logger.info("Background: fetching schedule from %s", gtfs_urls)
+            fetch_and_process_schedule(agency_id, bg_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_refresh, cache_dir=cache_dir)
+            with schedule_lock:
+                last_schedule_completed = datetime.now()
+            logger.info("Background: schedule processing completed")
+        except Exception as e:
+            logger.error("Background: failed to fetch and process schedule: %s", e)
+
     try:
         while True:
             start_time = datetime.now(timezone.utc)
+
+            # Launch schedule processing in background if due
             if gtfs_urls:
-                if force_schedule_refresh or (last_schedule_run is None or datetime.now() - last_schedule_run > timedelta(seconds=schedule_poll_interval)):
-                    try:
-                        last_schedule_run = datetime.now()
-                        logger.info("Fetching schedule from %s", gtfs_urls)
-                        fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
-                        force_schedule_refresh = False
-                    except Exception as e:
-                        logger.error("Failed to fetch and process schedule: %s", e)
+                with schedule_lock:
+                    thread_alive = schedule_thread is not None and schedule_thread.is_alive()
+                    needs_run = force_schedule_refresh or (
+                        last_schedule_completed is None or
+                        datetime.now() - last_schedule_completed > timedelta(seconds=schedule_poll_interval)
+                    )
+                if needs_run and not thread_alive:
+                    schedule_thread = threading.Thread(
+                        target=_run_schedule,
+                        args=(force_schedule_refresh,),
+                        daemon=True,
+                        name="gtfs-schedule"
+                    )
+                    schedule_thread.start()
+                    force_schedule_refresh = False
+
+            # RT polling runs every cycle, regardless of schedule thread
             if gtfs_rt_urls:
                 logger.info("Polling feed updates from %s", gtfs_rt_urls)
                 for gtfs_feed_url in gtfs_rt_urls:
@@ -1057,15 +1068,20 @@ def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_t
                         poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
                     except Exception as e:
                         logger.error("Failed to poll and submit feed updates from %s: %s", gtfs_feed_url, e)
-            logger.info("Sleeping for %s seconds. Press Ctrl+C to stop.", poll_interval)
+
             end_time = datetime.now(timezone.utc)
             elapsed_time = end_time - start_time
             if elapsed_time.total_seconds() < poll_interval:
-                logger.info("Sleeping for %s seconds", poll_interval - elapsed_time.total_seconds())
-                time.sleep(poll_interval - elapsed_time.total_seconds())
+                sleep_secs = poll_interval - elapsed_time.total_seconds()
+                logger.info("Sleeping for %s seconds", sleep_secs)
+                time.sleep(sleep_secs)
     except KeyboardInterrupt:
         logger.info("Loop interrupted by user")
 
+    # Wait for any in-flight schedule thread before exit
+    if schedule_thread is not None and schedule_thread.is_alive():
+        logger.info("Waiting for background schedule thread to finish...")
+        schedule_thread.join(timeout=30)
     producer.flush()
 
 
