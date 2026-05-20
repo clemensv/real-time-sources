@@ -9,116 +9,130 @@ const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 /* ── Source catalog ────────────────────────────────────────────────────── */
 const SOURCES = [
   // ── Hydrology and Water Monitoring ──
-  { id: "bafu-hydro", name: "BAFU Hydro", cat: "Hydrology", key: false, desc: "Switzerland — ~300 stations, FOEN", kql: true, notebook: true },
-  { id: "cdec-reservoirs", name: "CDEC Reservoirs", cat: "Hydrology", key: false, desc: "California — ~2,600 stations, DWR", kql: true, notebook: true },
-  { id: "chmi-hydro", name: "CHMI Hydro", cat: "Hydrology", key: false, desc: "Czech Republic — CHMU", kql: true, notebook: true },
-  { id: "german-waters", name: "German Waters", cat: "Hydrology", key: false, desc: "Germany — 12 state portals, ~2,724 stations", kql: true, notebook: false },
-  { id: "hubeau-hydrometrie", name: "Hub'Eau Hydrometrie", cat: "Hydrology", key: false, desc: "France — ~6,300 stations", kql: true, notebook: true },
-  { id: "imgw-hydro", name: "IMGW Hydro", cat: "Hydrology", key: false, desc: "Poland — IMGW-PIB", kql: true, notebook: true },
-  { id: "ireland-opw-waterlevel", name: "Ireland OPW Water Level", cat: "Hydrology", key: false, desc: "Ireland — ~500 OPW hydrometric stations", kql: true, notebook: true },
-  { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", kql: true, notebook: true },
-  { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations", kql: true, notebook: false },
-  { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", kql: true, notebook: true },
-  { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", kql: true, notebook: true },
-  { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", kql: true, notebook: true },
-  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", kql: true, notebook: true },
-  { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", kql: true, notebook: true },
-  { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", kql: true, notebook: true },
-  { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", kql: true, notebook: true },
-  { id: "syke-hydro", name: "SYKE Hydro", cat: "Hydrology", key: false, desc: "Finland — SYKE", kql: true, notebook: true },
-  { id: "uk-ea-flood-monitoring", name: "UK EA Flood Monitoring", cat: "Hydrology", key: false, desc: "England — ~4,000 stations", kql: true, notebook: true },
-  { id: "usgs-iv", name: "USGS Instantaneous Values", cat: "Hydrology", key: false, desc: "United States — ~1.5M stations", kql: true, notebook: true },
-  { id: "usgs-nwis-wq", name: "USGS NWIS Water Quality", cat: "Hydrology", key: false, desc: "United States — ~3,000 continuous WQ sites", kql: true, notebook: true },
-  { id: "waterinfo-vmm", name: "Waterinfo VMM", cat: "Hydrology", key: false, desc: "Belgium / Flanders — ~1,785 stations", kql: true, notebook: true },
+  { id: "bafu-hydro", name: "BAFU Hydro", cat: "Hydrology", key: false, desc: "Switzerland — ~300 stations, FOEN", notebook: true },
+  { id: "canada-eccc-wateroffice", name: "Canada ECCC Water Office", cat: "Hydrology", key: false, desc: "Canada — ~2,100 hydrometric stations, ECCC/WSC" },
+  { id: "cdec-reservoirs", name: "CDEC Reservoirs", cat: "Hydrology", key: false, desc: "California — ~2,600 stations, DWR", notebook: true },
+  { id: "chmi-hydro", name: "CHMI Hydro", cat: "Hydrology", key: false, desc: "Czech Republic — CHMU", notebook: true },
+  { id: "german-waters", name: "German Waters", cat: "Hydrology", key: false, desc: "Germany — 12 state portals, ~2,724 stations" },
+  { id: "hubeau-hydrometrie", name: "Hub'Eau Hydrometrie", cat: "Hydrology", key: false, desc: "France — ~6,300 stations", notebook: true },
+  { id: "imgw-hydro", name: "IMGW Hydro", cat: "Hydrology", key: false, desc: "Poland — IMGW-PIB", notebook: true },
+  { id: "ireland-opw-waterlevel", name: "Ireland OPW Water Level", cat: "Hydrology", key: false, desc: "Ireland — ~500 OPW hydrometric stations", notebook: true },
+  { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", notebook: true },
+  { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", notebook: true },
+  { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true },
+  { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations" },
+  { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true },
+  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true },
+  { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true },
+  { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", notebook: true },
+  { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", notebook: true },
+  { id: "syke-hydro", name: "SYKE Hydro", cat: "Hydrology", key: false, desc: "Finland — SYKE", notebook: true },
+  { id: "uk-ea-flood-monitoring", name: "UK EA Flood Monitoring", cat: "Hydrology", key: false, desc: "England — ~4,000 stations", notebook: true },
+  { id: "usgs-iv", name: "USGS Instantaneous Values", cat: "Hydrology", key: false, desc: "United States — ~1.5M stations", notebook: true },
+  { id: "usgs-nwis-wq", name: "USGS NWIS Water Quality", cat: "Hydrology", key: false, desc: "United States — ~3,000 continuous WQ sites", notebook: true },
+  { id: "waterinfo-vmm", name: "Waterinfo VMM", cat: "Hydrology", key: false, desc: "Belgium / Flanders — ~1,785 stations", notebook: true },
 
   // ── Weather and Meteorology ──
-  { id: "aviationweather", name: "AviationWeather.gov", cat: "Weather", key: false, desc: "Global — METAR, SIGMET advisories", kql: true, notebook: true },
-  { id: "blitzortung", name: "Blitzortung", cat: "Weather", key: false, desc: "Global — community lightning strokes, seconds latency", kql: true, notebook: false },
-  { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", kql: true, notebook: true },
-  { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", kql: true, notebook: false },
-  { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", kql: true, notebook: true },
-  { id: "environment-canada", name: "Environment Canada", cat: "Weather", key: false, desc: "Canada — ~963 SWOB stations, hourly obs", kql: true, notebook: true },
-  { id: "geosphere-austria", name: "GeoSphere Austria", cat: "Weather", key: false, desc: "Austria — ~280 TAWES stations, 10-min obs", kql: true, notebook: true },
-  { id: "hko-hong-kong", name: "HKO Hong Kong", cat: "Weather", key: false, desc: "Hong Kong — 27 temp stations, 18 rainfall districts", kql: true, notebook: true },
-  { id: "jma-japan", name: "JMA Japan", cat: "Weather", key: false, desc: "Japan — weather bulletins, warnings, forecasts", kql: true, notebook: true },
-  { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", kql: true, notebook: true },
-  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", kql: true, notebook: false },
-  { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", kql: true, notebook: true },
-  { id: "nws-forecasts", name: "NWS Forecast Zones", cat: "Weather", key: false, desc: "United States — configurable land and marine forecast zones", kql: true, notebook: true },
-  { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov", kql: true, notebook: false },
-  { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", kql: true, notebook: true },
-  { id: "singapore-nea", name: "Singapore NEA", cat: "Weather", key: false, desc: "Singapore — 62 weather stations + 5 air-quality regions", kql: true, notebook: true },
-  { id: "smhi-weather", name: "SMHI Weather", cat: "Weather", key: false, desc: "Sweden — ~232 stations, hourly obs", kql: true, notebook: true },
+  { id: "aviationweather", name: "AviationWeather.gov", cat: "Weather", key: false, desc: "Global — METAR, SIGMET advisories", notebook: true },
+  { id: "blitzortung", name: "Blitzortung", cat: "Weather", key: false, desc: "Global — community lightning strokes, seconds latency" },
+  { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true },
+  { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts" },
+  { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true },
+  { id: "environment-canada", name: "Environment Canada", cat: "Weather", key: false, desc: "Canada — ~963 SWOB stations, hourly obs", notebook: true },
+  { id: "geosphere-austria", name: "GeoSphere Austria", cat: "Weather", key: false, desc: "Austria — ~280 TAWES stations, 10-min obs", notebook: true },
+  { id: "hko-hong-kong", name: "HKO Hong Kong", cat: "Weather", key: false, desc: "Hong Kong — 27 temp stations, 18 rainfall districts", notebook: true },
+  { id: "jma-japan", name: "JMA Japan", cat: "Weather", key: false, desc: "Japan — weather bulletins, warnings, forecasts", notebook: true },
+  { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", notebook: true },
+  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings" },
+  { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true },
+  { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", notebook: true },
+  { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov" },
+  { id: "nws-forecasts", name: "NWS Forecast Zones", cat: "Weather", key: false, desc: "United States — configurable land and marine forecast zones", notebook: true },
+  { id: "singapore-nea", name: "Singapore NEA", cat: "Weather", key: false, desc: "Singapore — 62 weather stations + 5 air-quality regions", notebook: true },
+  { id: "smhi-weather", name: "SMHI Weather", cat: "Weather", key: false, desc: "Sweden — ~232 stations, hourly obs", notebook: true },
 
   // ── Air Quality and Environmental Health ──
-  { id: "canada-aqhi", name: "Canada AQHI", cat: "Air Quality", key: false, desc: "Canada — community AQHI observations and forecasts", kql: true, notebook: true },
-  { id: "defra-aurn", name: "Defra AURN", cat: "Air Quality", key: false, desc: "United Kingdom — 300+ monitoring locations, hourly pollutants", kql: true, notebook: true },
-  { id: "fmi-finland", name: "FMI Finland", cat: "Air Quality", key: false, desc: "Finland — hourly air quality observations via FMI WFS", kql: true, notebook: true },
-  { id: "gios-poland", name: "GIOŚ Poland", cat: "Air Quality", key: false, desc: "Poland — ~250 stations, hourly pollutants + AQI", kql: true, notebook: true },
-  { id: "hongkong-epd", name: "Hong Kong EPD AQHI", cat: "Air Quality", key: false, desc: "Hong Kong — 18 AQHI stations, hourly health index", kql: true, notebook: true },
-  { id: "irceline-belgium", name: "IRCELINE Belgium", cat: "Air Quality", key: false, desc: "Belgium — station, timeseries, and hourly observations", kql: true, notebook: true },
-  { id: "laqn-london", name: "LAQN London", cat: "Air Quality", key: false, desc: "London, UK — site metadata, species, hourly measurements", kql: true, notebook: true },
-  { id: "luchtmeetnet-nl", name: "Luchtmeetnet Netherlands", cat: "Air Quality", key: false, desc: "Netherlands — station measurements, components, LKI index", kql: true, notebook: true },
-  { id: "epa-uv", name: "EPA UV Index", cat: "Air Quality", key: false, desc: "United States — city-scoped hourly and daily UV forecasts", kql: true, notebook: true },
-  { id: "sensor-community", name: "Sensor.Community", cat: "Air Quality", key: false, desc: "Global — citizen air sensors, PM and climate readings", kql: true, notebook: true },
-  { id: "uba-airdata", name: "UBA AirData", cat: "Air Quality", key: false, desc: "Germany — stations, pollutant components, hourly measures", kql: true, notebook: true },
-  { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors", kql: true, notebook: false },
+  { id: "canada-aqhi", name: "Canada AQHI", cat: "Air Quality", key: false, desc: "Canada — community AQHI observations and forecasts", notebook: true },
+  { id: "defra-aurn", name: "Defra AURN", cat: "Air Quality", key: false, desc: "United Kingdom — 300+ monitoring locations, hourly pollutants", notebook: true },
+  { id: "epa-uv", name: "EPA UV Index", cat: "Air Quality", key: false, desc: "United States — city-scoped hourly and daily UV forecasts", notebook: true },
+  { id: "fmi-finland", name: "FMI Finland", cat: "Air Quality", key: false, desc: "Finland — hourly air quality observations via FMI WFS", notebook: true },
+  { id: "gios-poland", name: "GIOŚ Poland", cat: "Air Quality", key: false, desc: "Poland — ~250 stations, hourly pollutants + AQI", notebook: true },
+  { id: "hongkong-epd", name: "Hong Kong EPD AQHI", cat: "Air Quality", key: false, desc: "Hong Kong — 18 AQHI stations, hourly health index", notebook: true },
+  { id: "irceline-belgium", name: "IRCELINE Belgium", cat: "Air Quality", key: false, desc: "Belgium — station, timeseries, and hourly observations", notebook: true },
+  { id: "laqn-london", name: "LAQN London", cat: "Air Quality", key: false, desc: "London, UK — site metadata, species, hourly measurements", notebook: true },
+  { id: "luchtmeetnet-nl", name: "Luchtmeetnet Netherlands", cat: "Air Quality", key: false, desc: "Netherlands — station measurements, components, LKI index", notebook: true },
+  { id: "sensor-community", name: "Sensor.Community", cat: "Air Quality", key: false, desc: "Global — citizen air sensors, PM and climate readings", notebook: true },
+  { id: "uba-airdata", name: "UBA AirData", cat: "Air Quality", key: false, desc: "Germany — stations, pollutant components, hourly measures", notebook: true },
+  { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors" },
 
   // ── Disaster Alerts and Civil Protection ──
-  { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", kql: true, notebook: true },
-  { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", kql: true, notebook: true },
-  { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts", kql: true, notebook: false },
-  { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", kql: true, notebook: false },
-  { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC", kql: true, notebook: false },
-  { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police", kql: true, notebook: false },
-  { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins", kql: true, notebook: false },
-  { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", kql: true, notebook: true },
-  { id: "usgs-earthquakes", name: "USGS Earthquakes", cat: "Disasters", key: false, desc: "Global — seismic events", kql: true, notebook: true },
+  { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", notebook: true },
+  { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true },
+  { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts" },
+  { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts" },
+  { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC" },
+  { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police" },
+  { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins" },
+  { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", notebook: true },
+  { id: "usgs-earthquakes", name: "USGS Earthquakes", cat: "Disasters", key: false, desc: "Global — seismic events", notebook: true },
 
   // ── Radiation Monitoring ──
-  { id: "bfs-odl", name: "BfS ODL", cat: "Radiation", key: false, desc: "Germany — ~1,700 stations, hourly gamma dose rate", kql: true, notebook: true },
-  { id: "eurdep-radiation", name: "EURDEP Radiation", cat: "Radiation", key: false, desc: "Europe — ~5,500 stations, 39 countries, gamma dose", kql: true, notebook: true },
-  { id: "usgs-geomag", name: "USGS Geomagnetism", cat: "Radiation", key: false, desc: "United States — 14 observatories, 1-min geomagnetic field", kql: true, notebook: true },
+  { id: "bfs-odl", name: "BfS ODL", cat: "Radiation", key: false, desc: "Germany — ~1,700 stations, hourly gamma dose rate", notebook: true },
+  { id: "eurdep-radiation", name: "EURDEP Radiation", cat: "Radiation", key: false, desc: "Europe — ~5,500 stations, 39 countries, gamma dose", notebook: true },
+  { id: "usgs-geomag", name: "USGS Geomagnetism", cat: "Radiation", key: false, desc: "United States — 14 observatories, 1-min geomagnetic field", notebook: true },
 
   // ── Maritime and Vessel Tracking ──
-  { id: "aisstream", name: "AISStream", cat: "Maritime", key: true, desc: "Global — AIS via WebSocket, ~200 km from shore", kql: true, notebook: false },
-  { id: "digitraffic-maritime", name: "Digitraffic Maritime", cat: "Maritime", key: false, desc: "Finland / Baltic Sea — AIS via MQTT", kql: true, notebook: false },
-  { id: "kystverket-ais", name: "Kystverket AIS", cat: "Maritime", key: false, desc: "Norway / Svalbard — raw TCP AIS, ~34 msg/s", kql: true, notebook: false },
+  { id: "aisstream", name: "AISStream", cat: "Maritime", key: true, desc: "Global — AIS via WebSocket, ~200 km from shore" },
+  { id: "digitraffic-maritime", name: "Digitraffic Maritime", cat: "Maritime", key: false, desc: "Finland / Baltic Sea — AIS via MQTT" },
+  { id: "kystverket-ais", name: "Kystverket AIS", cat: "Maritime", key: false, desc: "Norway / Svalbard — raw TCP AIS, ~34 msg/s" },
 
   // ── Aviation ──
-  { id: "mode-s", name: "Mode-S", cat: "Aviation", key: false, desc: "Local — ADS-B via dump1090 receivers", kql: true, notebook: false },
-  { id: "vatsim", name: "VATSIM", cat: "Aviation", key: false, desc: "Global — virtual aviation network, pilots & controllers", kql: true, notebook: true },
+  { id: "mode-s", name: "Mode-S", cat: "Aviation", key: false, desc: "Local — ADS-B via dump1090 receivers" },
+  { id: "vatsim", name: "VATSIM", cat: "Aviation", key: false, desc: "Global — virtual aviation network, pilots & controllers", notebook: true },
 
-  // ── Road Transport ──
-  { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", kql: true, notebook: true },
-  { id: "digitraffic-road", name: "Digitraffic Road", cat: "Transport", key: false, desc: "Finland — TMS sensors, road weather, traffic messages", kql: true, notebook: false },
-  { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", kql: true, notebook: true },
-  { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", kql: true, notebook: false },
-  { id: "madrid-traffic", name: "Madrid Traffic", cat: "Transport", key: false, desc: "Madrid, Spain — ~4,000 sensors, Informo", kql: true, notebook: true },
-  { id: "ndl-netherlands", name: "NDW Netherlands Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II", kql: true, notebook: true },
-  { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", kql: true, notebook: true },
-  { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", kql: true, notebook: true },
-  { id: "cbp-border-wait", name: "US CBP Border Wait", cat: "Transport", key: false, desc: "US borders — ~81 ports of entry", kql: true, notebook: true },
-  { id: "wsdot", name: "WSDOT", cat: "Transport", key: true, desc: "Washington State — ~1,000 traffic flow sensors (requires free key)", kql: true, notebook: true },
+  // ── Road and Public Transport ──
+  { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true },
+  { id: "digitraffic-road", name: "Digitraffic Road", cat: "Transport", key: false, desc: "Finland — TMS sensors, road weather, traffic messages" },
+  { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", notebook: true },
+  { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts" },
+  { id: "madrid-traffic", name: "Madrid Traffic", cat: "Transport", key: false, desc: "Madrid, Spain — ~4,000 sensors, Informo", notebook: true },
+  { id: "ndl-netherlands", name: "NDW Netherlands Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II", notebook: true },
+  { id: "ndw-road-traffic", name: "NDW Road Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II XML" },
+  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals" },
+  { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", notebook: true },
+  { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", notebook: true },
+  { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions" },
+  { id: "tokyo-docomo-bikeshare", name: "Tokyo Docomo Bikeshare", cat: "Transport", key: false, desc: "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT" },
+  { id: "cbp-border-wait", name: "US CBP Border Wait", cat: "Transport", key: false, desc: "US borders — ~81 ports of entry", notebook: true },
+  { id: "wsdot", name: "WSDOT", cat: "Transport", key: true, desc: "Washington State — ~1,000 traffic flow sensors (requires free key)", notebook: true },
 
   // ── Railway ──
-  { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", kql: true, notebook: true },
+  { id: "entur-norway", name: "Entur Norway", cat: "Railway", key: false, desc: "Norway — national real-time transit, SIRI ET/VM/SX" },
+  { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true },
+
+  // ── Nightlife and Live Entertainment ──
+  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules" },
 
   // ── Energy and Infrastructure ──
-  { id: "carbon-intensity", name: "Carbon Intensity UK", cat: "Energy", key: false, desc: "United Kingdom — national grid carbon intensity", kql: true, notebook: true },
-  { id: "elexon-bmrs", name: "Elexon BMRS", cat: "Energy", key: false, desc: "Great Britain — electricity market, generation, demand", kql: true, notebook: true },
-  { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", kql: true, notebook: true },
-  { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", kql: true, notebook: true },
-  { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", kql: true, notebook: false },
+  { id: "carbon-intensity", name: "Carbon Intensity UK", cat: "Energy", key: false, desc: "United Kingdom — national grid carbon intensity", notebook: true },
+  { id: "elexon-bmrs", name: "Elexon BMRS", cat: "Energy", key: false, desc: "Great Britain — electricity market, generation, demand", notebook: true },
+  { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true },
+  { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true },
+  { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)" },
 
   // ── Social Media and News ──
-  { id: "bluesky", name: "Bluesky Firehose", cat: "Social", key: false, desc: "Global — posts, likes, reposts, follows", kql: true, notebook: false },
-  { id: "wikimedia-osm-diffs", name: "OpenStreetMap Diffs", cat: "Social", key: false, desc: "Global — OSM minutely replication diffs", kql: true, notebook: true },
-  { id: "rss", name: "RSS Feeds", cat: "Social", key: false, desc: "Any — configurable RSS/Atom feed URLs or OPML files", kql: true, notebook: false },
-  { id: "wikimedia-eventstreams", name: "Wikimedia EventStreams", cat: "Social", key: false, desc: "Global — Wikipedia, Wikidata, Commons recent changes", kql: true, notebook: false },
+  { id: "bluesky", name: "Bluesky Firehose", cat: "Social", key: false, desc: "Global — posts, likes, reposts, follows" },
+  { id: "wikimedia-osm-diffs", name: "OpenStreetMap Diffs", cat: "Social", key: false, desc: "Global — OSM minutely replication diffs", notebook: true },
+  { id: "rss", name: "RSS Feeds", cat: "Social", key: false, desc: "Any — configurable RSS/Atom feed URLs or OPML files" },
+  { id: "wikimedia-eventstreams", name: "Wikimedia EventStreams", cat: "Social", key: false, desc: "Global — Wikipedia, Wikidata, Commons recent changes" },
+
+  // ── Public Events ──
+  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events" },
+  { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals" },
+  { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API" },
 
   // ── Scientific Research ──
-  { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", kql: true, notebook: true },
+  { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true },
 ];
 
 /* ── Derived data ──────────────────────────────────────────────────────── */
@@ -209,7 +223,7 @@ async function selectSource(s) {
   activeSource = s.id;
   renderList();
   $deployBar.style.display = "flex";
-  $deployBarFabric.style.display = s.kql ? "flex" : "none";
+  $deployBarFabric.style.display = "flex";
 
   // wire deploy buttons
   $btnContainer.onclick   = () => {
@@ -220,9 +234,12 @@ async function selectSource(s) {
     const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   };
-  $btnFabric.onclick      = () => openDeployForm(s, "fabric");
-  $btnFabricNotebook.style.display = s.notebook ? "inline-flex" : "none";
-  $btnFabricNotebook.onclick = () => openDeployForm(s, "notebook");
+  $btnFabric.onclick      = () => openDeployForm(s, "fabric-aci");
+  if ($btnFabricNotebook) {
+    // Notebook deploy is opt-in per source (requires <source>/notebook/<source>-feed.ipynb).
+    $btnFabricNotebook.style.display = s.notebook ? "" : "none";
+    $btnFabricNotebook.onclick = () => openDeployForm(s, "fabric-notebook");
+  }
 
   // fetch and render CONTAINER.md
   $content.innerHTML = '<div class="loading-indicator">Loading documentation…</div>';
@@ -253,42 +270,72 @@ const AZURE_LOGO_SVG = `<svg viewBox="0 0 256 256" width="18" height="18" xmlns=
 </svg>`;
 
 async function openDeployForm(source, mode) {
-  const isNotebook = mode === "notebook";
-  $deployTitle.textContent = isNotebook
-    ? `Deploy ${source.name} as Fabric Notebook`
-    : `Deploy ${source.name} to Fabric`;
+  $deployTitle.textContent = `Deploy ${source.name} to Fabric`;
   $deployPane.style.display = "flex";
   $deployForm.innerHTML = "";
 
-  // Azure section (not needed for notebook hosting — everything lives in Fabric)
-  if (!isNotebook) {
+  // Azure section
+  //   fabric-aci      → needs RG + Location + (optional) Subscription (creates ACI)
+  //   fabric-notebook → only Subscription (Fabric capacity token, no Azure deploy)
+  //   fabric          → only Subscription (optional)
+  if (mode === "fabric-aci") {
     const azSection = el("div", { class: "form-section" });
-    azSection.innerHTML = '<div class="form-section-title">Azure Resources</div>';
+    azSection.innerHTML = '<div class="form-section-title">Azure (for the ACI feeder container)</div>';
     azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
       "", "Azure subscription GUID (leave blank for default)", false));
     azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
-      `rg-${source.id}-feeder`, "Azure resource group name", true));
+      "", "Azure resource group (created on demand)", true));
     azSection.appendChild(makeField("location", "Location", "text",
-      "westcentralus", "Azure region for deployment", true));
+      "westeurope", "Azure region (defaults to RG location, else westeurope)", false));
+    azSection.appendChild(makeField("containerGroupName", "Container Group Name", "text",
+      source.id, "Name for the Azure Container Group", false));
+    $deployForm.appendChild(azSection);
+  } else if (mode === "fabric-notebook") {
+    const azSection = el("div", { class: "form-section" });
+    azSection.innerHTML = '<div class="form-section-title">Azure Subscription</div>';
+    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+      "", "Azure subscription GUID (leave blank for default)", false));
+    $deployForm.appendChild(azSection);
+  } else if (mode === "fabric") {
+    const azSection = el("div", { class: "form-section" });
+    azSection.innerHTML = '<div class="form-section-title">Azure Subscription <span style="font-weight:normal;color:var(--muted);font-size:11px">(optional)</span></div>';
+    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+      "", "Optional; leave blank to use your default", false));
     $deployForm.appendChild(azSection);
   }
 
   // Fabric section
   const fabSection = el("div", { class: "form-section" });
   fabSection.innerHTML = '<div class="form-section-title">Microsoft Fabric</div>';
-  fabSection.appendChild(makeField("workspace", "Workspace", "text",
+  fabSection.appendChild(makeField("workspaceId", "Workspace (name or GUID)", "text",
     "", "Fabric workspace name or GUID", true));
-  fabSection.appendChild(makeField("eventhouse", "Eventhouse", "text",
-    "", "Fabric Eventhouse name or GUID (leave blank to create new)", false));
+  fabSection.appendChild(makeField("eventhouseId", "Eventhouse (name or GUID)", "text",
+    "", "Fabric Eventhouse name or GUID (created on demand)", false));
   fabSection.appendChild(makeField("databaseName", "KQL Database Name", "text",
     source.id.replace(/-/g, "_"), "Name for the KQL database", false));
-  if (isNotebook) {
-    fabSection.appendChild(makeField("scheduleInterval", "Schedule Interval (minutes)", "number",
-      "15", "How often the notebook runs (5-60). Use 0 to skip scheduling.", false));
-    fabSection.appendChild(makeField("defaultLakehouse", "Default Lakehouse", "text",
-      "", "Lakehouse name in the workspace (auto-selected if exactly one exists)", false));
-  }
   $deployForm.appendChild(fabSection);
+
+  // API key section (only for sources that require one, and only the
+  // fabric-aci mode actually deploys the feeder).
+  if (source.key && mode === "fabric-aci") {
+    const keyMap = {
+      "aisstream": { param: "aisstreamApiKey", label: "AISStream API Key" },
+      "entsoe":    { param: "entsoeSecurityToken", label: "ENTSO-E Security Token" },
+      "nve-hydro": { param: "nveApiKey", label: "NVE API Key" },
+      "wsdot":     { param: "wsdotAccessCode", label: "WSDOT Access Code" }
+    };
+    const meta = keyMap[source.id];
+    if (meta) {
+      const keySection = el("div", { class: "form-section" });
+      keySection.innerHTML = `<div class="form-section-title">${esc(meta.label)} <span style="font-weight:normal;color:var(--accent);font-size:11px">required</span></div>`;
+      keySection.appendChild(makeField("apiKey", meta.label, "password",
+        "", "Stored as a securestring template parameter", true, true));
+      // remember the param name on a hidden field
+      const hidden = el("input", { type: "hidden", id: "deploy-apiKeyParamName", value: meta.param });
+      keySection.appendChild(hidden);
+      $deployForm.appendChild(keySection);
+    }
+  }
 
   // Submit button
   const submitBtn = el("button", { class: "deploy-submit", type: "button" });
@@ -298,11 +345,7 @@ async function openDeployForm(source, mode) {
 
   // Note
   const note = el("div", { class: "deploy-note" });
-  note.innerHTML = isNotebook
-    ? '<strong style="font-size:13px">Once Azure Cloud Shell has opened, paste the command to run.</strong><br>'
-      + '<span style="font-size:12px">First-time deploy builds and uploads a per-source Fabric Environment '
-      + '(\u22484 min); subsequent deploys reuse it. The notebook runs serverlessly inside Fabric \u2014 no container.</span>'
-    : '<strong style="font-size:13px">Once Azure Cloud Shell has opened, paste the command to run!</strong>';
+  note.innerHTML = '<strong style="font-size:13px">Once Azure Cloud Shell has opened, paste the command to run!</strong>';
   $deployForm.appendChild(note);
 }
 
@@ -337,72 +380,50 @@ function launchCloudShell(source, mode) {
     return el ? el.value.trim() : "";
   };
 
-  const isNotebook = mode === "notebook";
-  const rg = getValue("resourceGroup");
-  const loc = getValue("location");
   const subId = getValue("subscriptionId");
 
-  if (!isNotebook) {
-    if (!rg) { alert("Resource Group is required."); return; }
-    if (!loc) { alert("Location is required."); return; }
-  }
-
-  if (mode === "fabric") {
-    const ws = getValue("workspace");
-    const eh = getValue("eventhouse");
-    if (!ws) {
-      alert("Workspace is required for Fabric deployment.");
+  if (mode === "fabric-aci" || mode === "fabric" || mode === "fabric-notebook") {
+    const wsId = getValue("workspaceId");
+    if (!wsId) {
+      alert("Workspace (name or GUID) is required for Fabric deployment.");
       return;
     }
+    const ehId = getValue("eventhouseId");
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
-    let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
-      + `./deploy-fabric.ps1`
-      + ` -Source '${source.id}'`
-      + ` -ResourceGroup '${rg}'`
-      + ` -Location '${loc}'`;
-    if (subId) cmd += ` -SubscriptionId '${subId}'`;
-    cmd += ` -Workspace '${ws}'`;
-    if (eh) cmd += ` -Eventhouse '${eh}'`;
-    cmd += ` -DatabaseName '${dbName}'`;
+    let scriptName;
+    if (mode === "fabric-aci")           scriptName = "deploy-fabric-aci.ps1";
+    else if (mode === "fabric-notebook") scriptName = "deploy-feeder-notebook.ps1";
+    else                                 scriptName = "deploy-fabric.ps1";
 
-    navigator.clipboard.writeText(cmd).then(() => {
-      showDeployNotice("PowerShell command copied to clipboard. Paste it into the Cloud Shell tab.");
-      window.open("https://shell.azure.com/?shellType=ps", "_blank", "noopener");
-    }).catch(() => {
-      showDeployCommand(cmd, "PowerShell");
-      window.open("https://shell.azure.com/?shellType=ps", "_blank", "noopener");
-    });
-  } else if (mode === "notebook") {
-    const ws = getValue("workspace");
-    const eh = getValue("eventhouse");
-    if (!ws) {
-      alert("Workspace is required for Fabric Notebook deployment.");
-      return;
-    }
-    const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
-    const intervalRaw = getValue("scheduleInterval");
-    const lakehouse = getValue("defaultLakehouse");
-    const interval = intervalRaw === "" ? 15 : parseInt(intervalRaw, 10);
-    if (Number.isNaN(interval) || interval < 0 || interval > 60) {
-      alert("Schedule interval must be 0 (no schedule) or between 5 and 60 minutes.");
-      return;
-    }
-
-    let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-feeder-notebook.ps1' -OutFile deploy-feeder-notebook.ps1; `
-      + `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
-      + `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/strip-wheel-pathdeps.py' -OutFile strip-wheel-pathdeps.py; `
-      + `./deploy-feeder-notebook.ps1`
+    let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/${scriptName}' -OutFile ${scriptName}; `
+      + `./${scriptName}`
       + ` -Source '${source.id}'`;
-    cmd += ` -Workspace '${ws}'`;
-    if (eh) cmd += ` -Eventhouse '${eh}'`;
-    cmd += ` -DatabaseName '${dbName}'`;
-    if (interval === 0) {
-      cmd += ` -NoSchedule`;
-    } else if (interval !== 15) {
-      cmd += ` -ScheduleIntervalMinutes ${interval}`;
+
+    if (mode === "fabric-aci") {
+      const rg = getValue("resourceGroup");
+      if (!rg) { alert("Resource Group is required for the ACI + Fabric deployment."); return; }
+      const loc = getValue("location");
+      const cgName = getValue("containerGroupName") || source.id;
+      cmd += ` -ResourceGroup '${rg}'`;
+      if (loc) cmd += ` -Location '${loc}'`;
+      cmd += ` -ContainerGroupName '${cgName}'`;
+      if (source.key) {
+        const apiKey = getValue("apiKey");
+        const apiKeyParamName = getValue("apiKeyParamName");
+        if (!apiKey) { alert(`This source requires an API key (${apiKeyParamName || "secret"}).`); return; }
+        if (apiKeyParamName) {
+          cmd += ` -ApiKeyParamName '${apiKeyParamName}' -ApiKey '${apiKey}'`;
+        }
+      }
     }
-    if (lakehouse) cmd += ` -DefaultLakehouse '${lakehouse}'`;
+    if (subId) cmd += ` -SubscriptionId '${subId}'`;
+    cmd += ` -Workspace '${wsId}'`;
+    if (ehId) cmd += ` -Eventhouse '${ehId}'`;
+    cmd += ` -DatabaseName '${dbName}'`;
+    if (mode === "fabric-notebook" || mode === "fabric-aci") {
+      cmd += ` -Branch '${BRANCH}'`;
+    }
 
     navigator.clipboard.writeText(cmd).then(() => {
       showDeployNotice("PowerShell command copied to clipboard. Paste it into the Cloud Shell tab.");
@@ -460,3 +481,27 @@ function esc(s) {
 /* ── Boot ──────────────────────────────────────────────────────────────── */
 renderPills();
 renderList();
+
+/* ── Hash deep-linking ────────────────────────────────────────────────────
+   #<id>          → select source, show docs
+   #<id>/fabric   → select source AND open the Fabric deploy panel
+                    (prefers notebook mode when the source has a notebook,
+                    otherwise falls back to fabric-aci)
+   #<id>/azure    → select source AND launch the Azure portal ARM deploy
+                    (uses azure-template-with-eventhub.json when present)  */
+async function selectFromHash() {
+  const raw = (location.hash || "").replace(/^#/, "").trim();
+  if (!raw) return;
+  const [id, action] = raw.split("/");
+  const s = SOURCES.find(x => x.id === id);
+  if (!s) return;
+  await selectSource(s);
+  if (action === "fabric") {
+    openDeployForm(s, s.notebook ? "fabric-notebook" : "fabric-aci");
+  } else if (action === "azure") {
+    const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  }
+}
+window.addEventListener("hashchange", selectFromHash);
+selectFromHash();
