@@ -9,26 +9,34 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Set
 
 from confluent_kafka import Producer
-from dwd_producer_data.de.dwd.cdc.stationmetadata import StationMetadata
-from dwd_producer_data.de.dwd.cdc.airtemperature10min import AirTemperature10Min
-from dwd_producer_data.de.dwd.cdc.precipitation10min import Precipitation10Min
-from dwd_producer_data.de.dwd.cdc.wind10min import Wind10Min
-from dwd_producer_data.de.dwd.cdc.solar10min import Solar10Min
-from dwd_producer_data.de.dwd.cdc.hourlyobservation import HourlyObservation
-from dwd_producer_data.de.dwd.cdc.alert import Alert
-from dwd_producer_data.de.dwd.icond2.grid import Grid as IconD2Grid
+from dwd_producer_data import StationMetadata
+from dwd_producer_data import AirTemperature10Min
+from dwd_producer_data import Precipitation10Min
+from dwd_producer_data import Wind10Min
+from dwd_producer_data import Solar10Min
+from dwd_producer_data import HourlyObservation
+from dwd_producer_data import ExtremeWind10Min
+from dwd_producer_data import ExtremeTemperature10Min
+from dwd_producer_data import Alert
+from dwd_producer_data import RadarProductCatalog
+from dwd_producer_data import RadarFileProduct
+from dwd_producer_data import ForecastModelCatalog
+from dwd_producer_data import IconD2ForecastFile
 from dwd_producer_kafka_producer.producer import (
     DEDWDCDCEventProducer,
     DEDWDWeatherEventProducer,
-    DEDWDIconD2EventProducer,
+    DEDWDRadarEventProducer,
+    DEDWDForecastEventProducer,
 )
 
 from dwd.modules.base import BaseModule
-from dwd.modules.icond2_grid import IconD2GridModule
 from dwd.modules.station_metadata import StationMetadataModule
 from dwd.modules.station_obs_10min import StationObs10MinModule
+from dwd.modules.station_obs_10min_extremes import StationObs10MinExtremesModule
 from dwd.modules.station_obs_hourly import StationObsHourlyModule
 from dwd.modules.weather_alerts import WeatherAlertsModule
+from dwd.modules.radar_products import RadarProductsModule
+from dwd.modules.icon_d2_forecast import IconD2ForecastModule
 from dwd.util.http_client import DWDHttpClient
 from dwd.util.state import load_state, save_state
 
@@ -43,10 +51,21 @@ logger = logging.getLogger(__name__)
 MODULE_CLASSES = {
     "station_metadata": StationMetadataModule,
     "station_obs_10min": StationObs10MinModule,
+    "station_obs_10min_extremes": StationObs10MinExtremesModule,
     "station_obs_hourly": StationObsHourlyModule,
     "weather_alerts": WeatherAlertsModule,
-    "icond2_grid": IconD2GridModule,
+    "radar_products": RadarProductsModule,
+    "icon_d2_forecast": IconD2ForecastModule,
 }
+
+
+def _optional_int_env(var_name: str) -> Optional[int]:
+    """Parse an optional int env var; treat unset/empty as None."""
+    raw = os.getenv(var_name)
+    if raw is None or raw.strip() == "":
+        return None
+    value = int(raw)
+    return value or None
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -107,22 +126,27 @@ def _create_module(key: str, http_client: DWDHttpClient,
     if key == "station_obs_10min":
         categories = [p.strip() for p in ten_min_params.split(",")] if ten_min_params else None
         return StationObs10MinModule(http_client, categories=categories, station_filter=station_filter)
+    elif key == "station_obs_10min_extremes":
+        return StationObs10MinExtremesModule(http_client, station_filter=station_filter)
     elif key == "station_obs_hourly":
         return StationObsHourlyModule(http_client, station_filter=station_filter)
     elif key == "station_metadata":
         return StationMetadataModule(http_client)
     elif key == "weather_alerts":
         return WeatherAlertsModule(http_client)
-    elif key == "icond2_grid":
-        return IconD2GridModule(http_client)
+    elif key == "radar_products":
+        return RadarProductsModule(http_client)
+    elif key == "icon_d2_forecast":
+        return IconD2ForecastModule(http_client)
     else:
         raise ValueError(f"Unknown module: {key}")
 
 
 def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
-                weather_event_producer: DEDWDWeatherEventProducer,
-                icond2_event_producer: DEDWDIconD2EventProducer,
-                event: Dict[str, Any]) -> None:
+                 weather_event_producer: DEDWDWeatherEventProducer,
+                 radar_event_producer: DEDWDRadarEventProducer,
+                 forecast_event_producer: DEDWDForecastEventProducer,
+                 event: Dict[str, Any]) -> None:
     """Send a single event through the typed Kafka producer."""
     etype = event["type"]
     data = event["data"]
@@ -145,17 +169,27 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
     elif etype == "hourly_observation":
         cdc_event_producer.send_de_dwd_cdc_hourly_observation(
             _station_id=data["station_id"], data=HourlyObservation(**data), flush_producer=False)
+    elif etype == "extreme_wind_10min":
+        cdc_event_producer.send_de_dwd_cdc_extreme_wind10_min(
+            _station_id=data["station_id"], data=ExtremeWind10Min(**data), flush_producer=False)
+    elif etype == "extreme_temperature_10min":
+        cdc_event_producer.send_de_dwd_cdc_extreme_temperature10_min(
+            _station_id=data["station_id"], data=ExtremeTemperature10Min(**data), flush_producer=False)
     elif etype == "weather_alert":
         weather_event_producer.send_de_dwd_weather_alert(
             _identifier=data["identifier"], data=Alert(**data), flush_producer=False)
-    elif etype == "icond2_grid":
-        icond2_event_producer.send_de_dwd_icon_d2_grid(
-            _run_id=data["run_id"],
-            _parameter=data["parameter"],
-            _lead_hour=str(data["lead_hour"]),
-            data=IconD2Grid(**data),
-            flush_producer=False,
-        )
+    elif etype == "radar_product_catalog":
+        radar_event_producer.send_de_dwd_radar_radar_product_catalog(
+            _file_url=data["file_url"], data=RadarProductCatalog(**data), flush_producer=False)
+    elif etype == "radar_file_product":
+        radar_event_producer.send_de_dwd_radar_radar_file_product(
+            _file_url=data["file_url"], data=RadarFileProduct(**data), flush_producer=False)
+    elif etype == "forecast_model_catalog":
+        forecast_event_producer.send_de_dwd_forecast_forecast_model_catalog(
+            _file_url=data["file_url"], data=ForecastModelCatalog(**data), flush_producer=False)
+    elif etype == "icon_d2_forecast_file":
+        forecast_event_producer.send_de_dwd_forecast_icon_d2_forecast_file(
+            _file_url=data["file_url"], data=IconD2ForecastFile(**data), flush_producer=False)
     else:
         logger.warning("Unknown event type: %s", etype)
 
@@ -168,7 +202,8 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
     kafka_producer = Producer(kafka_config)
     cdc_event_producer = DEDWDCDCEventProducer(kafka_producer, kafka_topic)
     weather_event_producer = DEDWDWeatherEventProducer(kafka_producer, kafka_topic)
-    icond2_event_producer = DEDWDIconD2EventProducer(kafka_producer, kafka_topic)
+    radar_event_producer = DEDWDRadarEventProducer(kafka_producer, kafka_topic)
+    forecast_event_producer = DEDWDForecastEventProducer(kafka_producer, kafka_topic)
 
     module_names = ", ".join(m.name for m in modules)
     logger.info("Starting DWD feed → topic=%s, bootstrap=%s, modules=[%s]",
@@ -194,8 +229,13 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
                     events = []
 
                 for ev in events:
-                    _emit_event(cdc_event_producer, weather_event_producer,
-                                icond2_event_producer, ev)
+                    _emit_event(
+                        cdc_event_producer,
+                        weather_event_producer,
+                        radar_event_producer,
+                        forecast_event_producer,
+                        ev,
+                    )
                     total_events += 1
 
                 if events:
@@ -243,7 +283,7 @@ def main() -> None:
     feed_p.add_argument("-c", "--connection-string", type=str,
                         default=os.getenv("CONNECTION_STRING"))
     feed_p.add_argument("-i", "--polling-interval", type=int,
-                        default=int(os.getenv("POLLING_INTERVAL") or "0") or None,
+                        default=_optional_int_env("POLLING_INTERVAL"),
                         help="Global polling interval override in seconds (default: per-module)")
     feed_p.add_argument("--state-file", type=str,
                         default=os.getenv("STATE_FILE",

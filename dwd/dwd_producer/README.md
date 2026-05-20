@@ -19,7 +19,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 4. [Generated Producer Classes](#generated-producer-classes)    DEDWDWeatherEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    DEDWDIconD2EventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    DEDWDRadarEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DEDWDForecastEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -50,7 +52,11 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
-- DEDWDIconD2Producersolution for event-driven applications.
+- DEDWDRadarProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DEDWDForecastProducersolution for event-driven applications.
 
 
 
@@ -245,11 +251,11 @@ de_dwd_weather_dispatcher.de_dwd_cdc_station_metadata_async = de_dwd_cdc_station
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.StationMetadata`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.StationMetadata`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -260,7 +266,7 @@ None:
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -273,7 +279,45 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_cdc_station_metadata_async = de_dwd_cdc_station_metadata_event
+de_dwd_radar_dispatcher.de_dwd_cdc_station_metadata_async = de_dwd_cdc_station_metadata_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.StationMetadata`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_station_metadata_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationMetadata) ->
+None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_station_metadata_async = de_dwd_cdc_station_metadata_event
 
 **Parameters:**```
 
@@ -384,11 +428,11 @@ de_dwd_weather_dispatcher.de_dwd_cdc_air_temperature10_min_async = de_dwd_cdc_ai
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.AirTemperature10Min`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.AirTemperature10Min`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -399,7 +443,7 @@ AirTemperature10Min) -> None:
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -412,7 +456,45 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_cdc_air_temperature10_min_async = de_dwd_cdc_air_temperature10_min_event
+de_dwd_radar_dispatcher.de_dwd_cdc_air_temperature10_min_async = de_dwd_cdc_air_temperature10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.AirTemperature10Min`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_air_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AirTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_air_temperature10_min_async = de_dwd_cdc_air_temperature10_min_event
 
 **Parameters:**```
 
@@ -523,11 +605,11 @@ de_dwd_weather_dispatcher.de_dwd_cdc_precipitation10_min_async = de_dwd_cdc_prec
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.Precipitation10Min`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.Precipitation10Min`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -538,7 +620,7 @@ Precipitation10Min) -> None:
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -551,7 +633,45 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_cdc_precipitation10_min_async = de_dwd_cdc_precipitation10_min_event
+de_dwd_radar_dispatcher.de_dwd_cdc_precipitation10_min_async = de_dwd_cdc_precipitation10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.Precipitation10Min`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_precipitation10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Precipitation10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_precipitation10_min_async = de_dwd_cdc_precipitation10_min_event
 
 **Parameters:**```
 
@@ -660,11 +780,11 @@ de_dwd_weather_dispatcher.de_dwd_cdc_wind10_min_async = de_dwd_cdc_wind10_min_ev
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.Wind10Min`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.Wind10Min`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -674,7 +794,7 @@ async def de_dwd_cdc_wind10_min_event(record: ConsumerRecord, cloud_event: Cloud
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -687,7 +807,44 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_cdc_wind10_min_async = de_dwd_cdc_wind10_min_event
+de_dwd_radar_dispatcher.de_dwd_cdc_wind10_min_async = de_dwd_cdc_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.Wind10Min`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Wind10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_wind10_min_async = de_dwd_cdc_wind10_min_event
 
 **Parameters:**```
 
@@ -796,11 +953,11 @@ de_dwd_weather_dispatcher.de_dwd_cdc_solar10_min_async = de_dwd_cdc_solar10_min_
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.Solar10Min`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.Solar10Min`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -810,7 +967,7 @@ async def de_dwd_cdc_solar10_min_event(record: ConsumerRecord, cloud_event: Clou
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -823,7 +980,44 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_cdc_solar10_min_async = de_dwd_cdc_solar10_min_event
+de_dwd_radar_dispatcher.de_dwd_cdc_solar10_min_async = de_dwd_cdc_solar10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.Solar10Min`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_solar10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Solar10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_solar10_min_async = de_dwd_cdc_solar10_min_event
 
 **Parameters:**```
 
@@ -934,11 +1128,11 @@ de_dwd_weather_dispatcher.de_dwd_cdc_hourly_observation_async = de_dwd_cdc_hourl
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.HourlyObservation`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.HourlyObservation`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -949,7 +1143,7 @@ async def de_dwd_cdc_hourly_observation_event(record: ConsumerRecord, cloud_even
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -962,7 +1156,399 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_cdc_hourly_observation_async = de_dwd_cdc_hourly_observation_event
+de_dwd_radar_dispatcher.de_dwd_cdc_hourly_observation_async = de_dwd_cdc_hourly_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.HourlyObservation`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_hourly_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: HourlyObservation)
+-> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_hourly_observation_async = de_dwd_cdc_hourly_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_cdc_extreme_wind10_min_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_cdc_extreme_wind10_min_async:  Callable[[ConsumerRecord, CloudEvent,
+ExtremeWind10Min], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.CDC.ExtremeWind10Min`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.ExtremeWind10Min`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ExtremeWind10Min)
+-> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_cdc_extreme_wind10_min_async = de_dwd_cdc_extreme_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.ExtremeWind10Min`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ExtremeWind10Min)
+-> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_cdc_extreme_wind10_min_async = de_dwd_cdc_extreme_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.ExtremeWind10Min`.
+
+
+
+Producer for `DE.DWD.Radar` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ExtremeWind10Min)
+-> None:
+
+```python    # Process the event data
+
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_radar_dispatcher.de_dwd_cdc_extreme_wind10_min_async = de_dwd_cdc_extreme_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.ExtremeWind10Min`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ExtremeWind10Min)
+-> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_extreme_wind10_min_async = de_dwd_cdc_extreme_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_cdc_extreme_temperature10_min_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_cdc_extreme_temperature10_min_async:  Callable[[ConsumerRecord, CloudEvent,
+ExtremeTemperature10Min], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.CDC.ExtremeTemperature10Min`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.ExtremeTemperature10Min`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtremeTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_cdc_extreme_temperature10_min_async = de_dwd_cdc_extreme_temperature10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.ExtremeTemperature10Min`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtremeTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_cdc_extreme_temperature10_min_async = de_dwd_cdc_extreme_temperature10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.ExtremeTemperature10Min`.
+
+
+
+Producer for `DE.DWD.Radar` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtremeTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_radar_dispatcher.de_dwd_cdc_extreme_temperature10_min_async = de_dwd_cdc_extreme_temperature10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.ExtremeTemperature10Min`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtremeTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_cdc_extreme_temperature10_min_async = de_dwd_cdc_extreme_temperature10_min_event
 
 **Parameters:**```
 
@@ -1596,6 +2182,212 @@ await producer.send_de_dwd_cdc_hourly_observation_batch(```
 
 Enters the asynchronous context and starts the processor.
 
+### Dispatchers
+
+##### `send_de_dwd_cdc_extreme_wind10_min`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_cdc_extreme_wind10_min(
+
+    self,##### `_process_event`
+
+    data: ExtremeWind10Min,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.CDC.ExtremeWind10Min` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ExtremeWind10Min`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_cdc_extreme_wind10_min(
+
+    data=ExtremeWind10Min(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.CDC.ExtremeWind10Min` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_cdc_extreme_wind10_min_batch(```
+
+    messages=[
+
+        ExtremeWind10Min(...),Initializes the runner with a Kafka consumer.
+
+        ExtremeWind10Min(...),
+
+        ExtremeWind10Min(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_dwd_cdc_extreme_temperature10_min`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_cdc_extreme_temperature10_min(
+
+    self,##### `_process_event`
+
+    data: ExtremeTemperature10Min,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.CDC.ExtremeTemperature10Min` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ExtremeTemperature10Min`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_cdc_extreme_temperature10_min(
+
+    data=ExtremeTemperature10Min(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.CDC.ExtremeTemperature10Min` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_cdc_extreme_temperature10_min_batch(```
+
+    messages=[
+
+        ExtremeTemperature10Min(...),Initializes the runner with a Kafka consumer.
+
+        ExtremeTemperature10Min(...),
+
+        ExtremeTemperature10Min(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
 
 
 
@@ -1783,11 +2575,11 @@ de_dwd_weather_dispatcher.de_dwd_weather_alert_async = de_dwd_weather_alert_even
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.Alert`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.Alert`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
@@ -1797,7 +2589,7 @@ async def de_dwd_weather_alert_event(record: ConsumerRecord, cloud_event: CloudE
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -1810,7 +2602,44 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_weather_alert_async = de_dwd_weather_alert_event
+de_dwd_radar_dispatcher.de_dwd_weather_alert_async = de_dwd_weather_alert_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.Alert`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_weather_alert_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Alert) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_weather_alert_async = de_dwd_weather_alert_event
 
 **Parameters:**```
 
@@ -1939,11 +2768,11 @@ Enters the asynchronous context and starts the processor.
 
 - **Provides durability** through log-based storage with configurable retention
 
-- **Scales horizontally** across multiple brokers and partitions### DEDWDIconD2EventDispatcher
+- **Scales horizontally** across multiple brokers and partitions### DEDWDRadarEventDispatcher
 
 - **Enables pub/sub messaging** with topic-based routing
 
-`DEDWDIconD2EventDispatcher` handles events for the DE.DWD.IconD2 message group.
+`DEDWDRadarEventDispatcher` handles events for the DE.DWD.Radar message group.
 
 Use cases: Event streaming, log aggregation, real-time analytics, data integration.
 
@@ -2011,7 +2840,7 @@ await producer.close()- `consumer`: The Kafka consumer.
 
 ### With SSL/SASL
 
-The DEDWDIconD2EventDispatcher defines the following event handler hooks.
+The DEDWDRadarEventDispatcher defines the following event handler hooks.
 
 ```python
 
@@ -2019,21 +2848,20 @@ producer = DEDWDCDCProducer(
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `de_dwd_icon_d2_grid_async`
+    security_protocol='SASL_SSL',##### `de_dwd_radar_radar_product_catalog_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'de_dwd_icon_d2_grid_async:  Callable[[ConsumerRecord, CloudEvent, Grid],
-Awaitable[None]]
+    sasl_password='your-password'de_dwd_radar_radar_product_catalog_async:  Callable[[ConsumerRecord, CloudEvent,
+RadarProductCatalog], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `DE.DWD.IconD2.Grid`: One ICON-D2 forecast grid for a single (run, parameter, lead_hour)
-combination.
+Asynchronous handler hook for `DE.DWD.Radar.RadarProductCatalog`:
 
 ## Generated Producer Classes
 
@@ -2043,7 +2871,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.Grid`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.RadarProductCatalog`.
 
 
 
@@ -2053,7 +2881,8 @@ Producer for `DE.DWD.CDC` message group.Example:
 
 #### Constructor```python
 
-async def de_dwd_icon_d2_grid_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Grid) -> None:
+async def de_dwd_radar_radar_product_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RadarProductCatalog) -> None:
 
 ```python    # Process the event data
 
@@ -2070,7 +2899,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_cdc_dispatcher.de_dwd_icon_d2_grid_async = de_dwd_icon_d2_grid_event
+de_dwd_cdc_dispatcher.de_dwd_radar_radar_product_catalog_async = de_dwd_radar_radar_product_catalog_event
 
 **Parameters:**```
 
@@ -2080,7 +2909,7 @@ de_dwd_cdc_dispatcher.de_dwd_icon_d2_grid_async = de_dwd_icon_d2_grid_event
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.Grid`.
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.RadarProductCatalog`.
 
 
 
@@ -2090,7 +2919,8 @@ Producer for `DE.DWD.Weather` message group.Example:
 
 #### Constructor```python
 
-async def de_dwd_icon_d2_grid_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Grid) -> None:
+async def de_dwd_radar_radar_product_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RadarProductCatalog) -> None:
 
 ```python    # Process the event data
 
@@ -2107,7 +2937,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_weather_dispatcher.de_dwd_icon_d2_grid_async = de_dwd_icon_d2_grid_event
+de_dwd_weather_dispatcher.de_dwd_radar_radar_product_catalog_async = de_dwd_radar_radar_product_catalog_event
 
 **Parameters:**```
 
@@ -2117,21 +2947,22 @@ de_dwd_weather_dispatcher.de_dwd_icon_d2_grid_async = de_dwd_icon_d2_grid_event
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDIconD2Producer- `data`: The event data of type `dwd_producer_data.Grid`.
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.RadarProductCatalog`.
 
 
 
-Producer for `DE.DWD.IconD2` message group.Example:
+Producer for `DE.DWD.Radar` message group.Example:
 
 
 
 #### Constructor```python
 
-async def de_dwd_icon_d2_grid_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Grid) -> None:
+async def de_dwd_radar_radar_product_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RadarProductCatalog) -> None:
 
 ```python    # Process the event data
 
-DEDWDIconD2Producer(    await some_processing_function(record, cloud_event, data)
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -2144,7 +2975,222 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_dwd_icon_d2_dispatcher.de_dwd_icon_d2_grid_async = de_dwd_icon_d2_grid_event
+de_dwd_radar_dispatcher.de_dwd_radar_radar_product_catalog_async = de_dwd_radar_radar_product_catalog_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.RadarProductCatalog`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_radar_radar_product_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RadarProductCatalog) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_radar_radar_product_catalog_async = de_dwd_radar_radar_product_catalog_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_radar_radar_file_product_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_radar_radar_file_product_async:  Callable[[ConsumerRecord, CloudEvent,
+RadarFileProduct], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.Radar.RadarFileProduct`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.RadarFileProduct`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_radar_radar_file_product_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RadarFileProduct)
+-> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_radar_radar_file_product_async = de_dwd_radar_radar_file_product_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.RadarFileProduct`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_radar_radar_file_product_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RadarFileProduct)
+-> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_radar_radar_file_product_async = de_dwd_radar_radar_file_product_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.RadarFileProduct`.
+
+
+
+Producer for `DE.DWD.Radar` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_radar_radar_file_product_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RadarFileProduct)
+-> None:
+
+```python    # Process the event data
+
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_radar_dispatcher.de_dwd_radar_radar_file_product_async = de_dwd_radar_radar_file_product_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.RadarFileProduct`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_radar_radar_file_product_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RadarFileProduct)
+-> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_radar_radar_file_product_async = de_dwd_radar_radar_file_product_event
 
 **Parameters:**```
 
@@ -2162,17 +3208,17 @@ de_dwd_icon_d2_dispatcher.de_dwd_icon_d2_grid_async = de_dwd_icon_d2_grid_event
 
 ### Dispatchers
 
-##### `send_de_dwd_icon_d2_grid`Dispatchers have the following protected methods:
+##### `send_de_dwd_radar_radar_product_catalog`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_de_dwd_icon_d2_grid(
+async def send_de_dwd_radar_radar_product_catalog(
 
     self,##### `_process_event`
 
-    data: Grid,
+    data: RadarProductCatalog,
 
     partition_key: Optional[str] = None,```python
 
@@ -2186,14 +3232,13 @@ async def send_de_dwd_icon_d2_grid(
 
 
 
-Send a single `DE.DWD.IconD2.Grid` message. One ICON-D2 forecast grid for a single (run, parameter, lead_hour)
-combination.Args:
+Send a single `DE.DWD.Radar.RadarProductCatalog` message.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `Grid`
+- `data`: Message data of type `RadarProductCatalog`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -2209,9 +3254,9 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_de_dwd_icon_d2_grid(
+await producer.send_de_dwd_radar_radar_product_catalog(
 
-    data=Grid(...),Args:
+    data=RadarProductCatalog(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -2221,7 +3266,7 @@ await producer.send_de_dwd_icon_d2_grid(
 
 ```
 
-Send multiple `DE.DWD.IconD2.Grid` messages in a batch.
+Send multiple `DE.DWD.Radar.RadarProductCatalog` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -2244,15 +3289,772 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_de_dwd_icon_d2_grid_batch(```
+await producer.send_de_dwd_radar_radar_product_catalog_batch(```
 
     messages=[
 
-        Grid(...),Initializes the runner with a Kafka consumer.
+        RadarProductCatalog(...),Initializes the runner with a Kafka consumer.
 
-        Grid(...),
+        RadarProductCatalog(...),
 
-        Grid(...)Args:
+        RadarProductCatalog(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_dwd_radar_radar_file_product`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_radar_radar_file_product(
+
+    self,##### `_process_event`
+
+    data: RadarFileProduct,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.Radar.RadarFileProduct` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RadarFileProduct`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_radar_radar_file_product(
+
+    data=RadarFileProduct(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.Radar.RadarFileProduct` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_radar_radar_file_product_batch(```
+
+    messages=[
+
+        RadarFileProduct(...),Initializes the runner with a Kafka consumer.
+
+        RadarFileProduct(...),
+
+        RadarFileProduct(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DEDWDForecastEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DEDWDForecastEventDispatcher` handles events for the DE.DWD.Forecast message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from dwd_producer import DEDWDCDCProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DEDWDCDCProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_dwd_cdc_station_metadata(```python
+
+    data=StationMetadata(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DEDWDForecastEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DEDWDCDCProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_forecast_forecast_model_catalog_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_forecast_forecast_model_catalog_async:  Callable[[ConsumerRecord, CloudEvent,
+ForecastModelCatalog], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.Forecast.ForecastModelCatalog`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.ForecastModelCatalog`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_forecast_model_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ForecastModelCatalog) -> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_forecast_forecast_model_catalog_async = de_dwd_forecast_forecast_model_catalog_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.ForecastModelCatalog`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_forecast_model_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ForecastModelCatalog) -> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_forecast_forecast_model_catalog_async = de_dwd_forecast_forecast_model_catalog_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.ForecastModelCatalog`.
+
+
+
+Producer for `DE.DWD.Radar` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_forecast_model_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ForecastModelCatalog) -> None:
+
+```python    # Process the event data
+
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_radar_dispatcher.de_dwd_forecast_forecast_model_catalog_async = de_dwd_forecast_forecast_model_catalog_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.ForecastModelCatalog`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_forecast_model_catalog_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ForecastModelCatalog) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_forecast_forecast_model_catalog_async = de_dwd_forecast_forecast_model_catalog_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_forecast_icon_d2_forecast_file_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_forecast_icon_d2_forecast_file_async:  Callable[[ConsumerRecord, CloudEvent,
+IconD2ForecastFile], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.Forecast.IconD2ForecastFile`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.IconD2ForecastFile`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_icon_d2_forecast_file_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+IconD2ForecastFile) -> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_forecast_icon_d2_forecast_file_async = de_dwd_forecast_icon_d2_forecast_file_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.IconD2ForecastFile`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_icon_d2_forecast_file_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+IconD2ForecastFile) -> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_forecast_icon_d2_forecast_file_async = de_dwd_forecast_icon_d2_forecast_file_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDRadarProducer- `data`: The event data of type `dwd_producer_data.IconD2ForecastFile`.
+
+
+
+Producer for `DE.DWD.Radar` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_icon_d2_forecast_file_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+IconD2ForecastFile) -> None:
+
+```python    # Process the event data
+
+DEDWDRadarProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_radar_dispatcher.de_dwd_forecast_icon_d2_forecast_file_async = de_dwd_forecast_icon_d2_forecast_file_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDForecastProducer- `data`: The event data of type `dwd_producer_data.IconD2ForecastFile`.
+
+
+
+Producer for `DE.DWD.Forecast` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_forecast_icon_d2_forecast_file_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+IconD2ForecastFile) -> None:
+
+```python    # Process the event data
+
+DEDWDForecastProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_forecast_dispatcher.de_dwd_forecast_icon_d2_forecast_file_async = de_dwd_forecast_icon_d2_forecast_file_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_dwd_forecast_forecast_model_catalog`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_forecast_forecast_model_catalog(
+
+    self,##### `_process_event`
+
+    data: ForecastModelCatalog,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.Forecast.ForecastModelCatalog` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ForecastModelCatalog`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_forecast_forecast_model_catalog(
+
+    data=ForecastModelCatalog(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.Forecast.ForecastModelCatalog` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_forecast_forecast_model_catalog_batch(```
+
+    messages=[
+
+        ForecastModelCatalog(...),Initializes the runner with a Kafka consumer.
+
+        ForecastModelCatalog(...),
+
+        ForecastModelCatalog(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_dwd_forecast_icon_d2_forecast_file`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_forecast_icon_d2_forecast_file(
+
+    self,##### `_process_event`
+
+    data: IconD2ForecastFile,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.Forecast.IconD2ForecastFile` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `IconD2ForecastFile`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_forecast_icon_d2_forecast_file(
+
+    data=IconD2ForecastFile(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.Forecast.IconD2ForecastFile` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_forecast_icon_d2_forecast_file_batch(```
+
+    messages=[
+
+        IconD2ForecastFile(...),Initializes the runner with a Kafka consumer.
+
+        IconD2ForecastFile(...),
+
+        IconD2ForecastFile(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

@@ -42,6 +42,12 @@ class FakeCDCProducer:
     def send_de_dwd_cdc_hourly_observation(self, **_kw):
         self.calls.append("hourly_observation")
 
+    def send_de_dwd_cdc_extreme_wind10_min(self, **_kw):
+        self.calls.append("extreme_wind_10min")
+
+    def send_de_dwd_cdc_extreme_temperature10_min(self, **_kw):
+        self.calls.append("extreme_temperature_10min")
+
 
 class FakeWeatherProducer:
     def __init__(self, *_args, **_kwargs):
@@ -51,14 +57,26 @@ class FakeWeatherProducer:
         self.calls.append("weather_alert")
 
 
-class FakeIconD2Producer:
+class FakeRadarProducer:
     def __init__(self, *_args, **_kwargs):
         self.calls: List[str] = []
-        self.last_kwargs: Dict[str, Any] = {}
 
-    def send_de_dwd_icon_d2_grid(self, **kw):
-        self.calls.append("icond2_grid")
-        self.last_kwargs = kw
+    def send_de_dwd_radar_radar_product_catalog(self, **_kw):
+        self.calls.append("radar_product_catalog")
+
+    def send_de_dwd_radar_radar_file_product(self, **_kw):
+        self.calls.append("radar_file_product")
+
+
+class FakeForecastProducer:
+    def __init__(self, *_args, **_kwargs):
+        self.calls: List[str] = []
+
+    def send_de_dwd_forecast_forecast_model_catalog(self, **_kw):
+        self.calls.append("forecast_model_catalog")
+
+    def send_de_dwd_forecast_icon_d2_forecast_file(self, **_kw):
+        self.calls.append("icon_d2_forecast_file")
 
 
 # ---------------------------------------------------------------------------
@@ -188,26 +206,71 @@ _HOURLY_EVENT = {
     },
 }
 
-_ICOND2_EVENT = {
-    "type": "icond2_grid",
+_EXTREME_WIND_EVENT = {
+    "type": "extreme_wind_10min",
     "data": {
-        "run_id": "2026010100",
-        "run_time": "2026-01-01T00:00:00Z",
-        "parameter": "t_2m",
-        "unit": "degC",
-        "lead_hour": 0,
-        "valid_time": "2026-01-01T00:00:00Z",
-        "produced_at": "2026-01-01T00:05:00Z",
-        "source_url": ("https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t_2m/"
-                       "icon-d2_germany_icosahedral_single-level_2026010100_000_2d_t_2m.grib2.bz2"),
-        "resolution_deg": 0.1,
-        "bbox_min_lon": -4.0,
-        "bbox_min_lat": 43.0,
-        "bbox_max_lon": 20.5,
-        "bbox_max_lat": 58.2,
-        "lats": [50.0, 50.1, 50.2],
-        "lons": [10.0, 10.1, 10.2],
-        "values": [5.0, 5.5, 6.0],
+        "station_id": "44",
+        "timestamp": "2026-01-01T00:00:00+00:00",
+        "quality_level": 10,
+        "wind_speed_maximum": 12.0,
+        "wind_speed_minimum": 1.5,
+        "wind_direction_at_maximum": 210.0,
+    },
+}
+
+_EXTREME_TEMPERATURE_EVENT = {
+    "type": "extreme_temperature_10min",
+    "data": {
+        "station_id": "44",
+        "timestamp": "2026-01-01T00:00:00+00:00",
+        "quality_level": 10,
+        "air_temperature_maximum_2m": 8.5,
+        "air_temperature_minimum_5cm": -1.5,
+    },
+}
+
+_RADAR_PRODUCT_CATALOG_EVENT = {
+    "type": "radar_product_catalog",
+    "data": {
+        "file_url": "https://opendata.dwd.de/weather/radar/composite/ry/",
+        "product": "ry",
+        "description": "DWD radar product directory ry",
+    },
+}
+
+_RADAR_FILE_EVENT = {
+    "type": "radar_file_product",
+    "data": {
+        "file_url": "https://opendata.dwd.de/weather/radar/composite/ry/raa01-ry_10000-latest-dwd---bin",
+        "product": "ry",
+        "file_name": "raa01-ry_10000-latest-dwd---bin",
+        "modified": "2026-01-01T00:00:00+00:00",
+        "size_bytes": 1024,
+    },
+}
+
+_FORECAST_MODEL_CATALOG_EVENT = {
+    "type": "forecast_model_catalog",
+    "data": {
+        "file_url": "https://opendata.dwd.de/weather/nwp/icon-d2/grib/",
+        "model": "icon-d2",
+        "description": "DWD ICON-D2 NWP model forecast feed from Open Data directories.",
+    },
+}
+
+_ICON_D2_FILE_EVENT = {
+    "type": "icon_d2_forecast_file",
+    "data": {
+        "file_url": "https://opendata.dwd.de/weather/nwp/icon-d2/grib/icon-d2_germany_regular-lat-lon_single-level_2026010100_000_T_2M.grib2.bz2",
+        "model": "icon-d2",
+        "file_name": "icon-d2_germany_regular-lat-lon_single-level_2026010100_000_T_2M.grib2.bz2",
+        "run": "2026010100",
+        "forecast_hour": 0,
+        "parameter": "regular-lat-lon",
+        "level_type": "single-level",
+        "level": "2026010100",
+        "modified": "2026-01-01T00:00:00+00:00",
+        "size_bytes": 2048,
     },
 }
 
@@ -220,75 +283,113 @@ class TestEmitEventRouting:
     """_emit_event routes each event type to the correct generated producer class."""
 
     def _make(self):
-        return FakeCDCProducer(), FakeWeatherProducer(), FakeIconD2Producer()
+        return FakeCDCProducer(), FakeWeatherProducer(), FakeRadarProducer(), FakeForecastProducer()
 
     def test_station_metadata_routed_to_cdc(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _STATION_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _STATION_EVENT)
         assert cdc.calls == ["station_metadata"]
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
 
     def test_weather_alert_routed_to_weather(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _ALERT_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _ALERT_EVENT)
         assert cdc.calls == []
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == ["weather_alert"]
 
     def test_both_families_in_one_logical_sequence(self):
         """Both producer classes are exercised when both event families are present."""
-        cdc, wx, ic = self._make()
+        cdc, wx, radar, forecast = self._make()
         for ev in [_STATION_EVENT, _ALERT_EVENT]:
-            _emit_event(cdc, wx, ic, ev)
+            _emit_event(cdc, wx, radar, forecast, ev)
         assert "station_metadata" in cdc.calls
         assert "weather_alert" in wx.calls
 
     def test_air_temperature_routed_to_cdc(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _AIR_TEMP_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _AIR_TEMP_EVENT)
         assert cdc.calls == ["air_temperature_10min"]
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
 
     def test_precipitation_routed_to_cdc(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _PRECIP_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _PRECIP_EVENT)
         assert cdc.calls == ["precipitation_10min"]
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
 
     def test_wind_routed_to_cdc(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _WIND_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _WIND_EVENT)
         assert cdc.calls == ["wind_10min"]
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
 
     def test_solar_routed_to_cdc(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _SOLAR_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _SOLAR_EVENT)
         assert cdc.calls == ["solar_10min"]
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
 
     def test_hourly_observation_routed_to_cdc(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _HOURLY_EVENT)
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _HOURLY_EVENT)
         assert cdc.calls == ["hourly_observation"]
+        assert radar.calls == []
+        assert forecast.calls == []
+        assert wx.calls == []
+
+    def test_extreme_wind_routed_to_cdc(self):
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _EXTREME_WIND_EVENT)
+        assert cdc.calls == ["extreme_wind_10min"]
+        assert radar.calls == []
+        assert forecast.calls == []
+        assert wx.calls == []
+
+    def test_extreme_temperature_routed_to_cdc(self):
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _EXTREME_TEMPERATURE_EVENT)
+        assert cdc.calls == ["extreme_temperature_10min"]
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
 
     def test_unknown_type_routed_to_neither(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, {"type": "unknown_type", "data": {}})
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, {"type": "unknown_type", "data": {}})
         assert cdc.calls == []
+        assert radar.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
-        assert ic.calls == []
 
-    def test_icond2_grid_routed_to_icond2(self):
-        cdc, wx, ic = self._make()
-        _emit_event(cdc, wx, ic, _ICOND2_EVENT)
+    def test_radar_types_routed_to_radar_producer(self):
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _RADAR_PRODUCT_CATALOG_EVENT)
+        _emit_event(cdc, wx, radar, forecast, _RADAR_FILE_EVENT)
+        assert radar.calls == ["radar_product_catalog", "radar_file_product"]
         assert cdc.calls == []
+        assert forecast.calls == []
         assert wx.calls == []
-        assert ic.calls == ["icond2_grid"]
-        # Kafka key placeholders must be exactly the data field values.
-        assert ic.last_kwargs["_run_id"] == "2026010100"
-        assert ic.last_kwargs["_parameter"] == "t_2m"
-        assert ic.last_kwargs["_lead_hour"] == "0"
+
+    def test_forecast_types_routed_to_forecast_producer(self):
+        cdc, wx, radar, forecast = self._make()
+        _emit_event(cdc, wx, radar, forecast, _FORECAST_MODEL_CATALOG_EVENT)
+        _emit_event(cdc, wx, radar, forecast, _ICON_D2_FILE_EVENT)
+        assert forecast.calls == ["forecast_model_catalog", "icon_d2_forecast_file"]
+        assert cdc.calls == []
+        assert radar.calls == []
+        assert wx.calls == []
 
 
 # ---------------------------------------------------------------------------
@@ -316,16 +417,33 @@ class TestRunFeedDualProducerWiring:
             def send_de_dwd_weather_alert(self, **_kw):
                 sent.append("weather:weather_alert")
 
+        class FakeRadar:
+            def __init__(self, *_a, **_kw):
+                pass
+
+            def send_de_dwd_radar_radar_product_catalog(self, **_kw):
+                sent.append("radar:radar_product_catalog")
+
+        class FakeForecast:
+            def __init__(self, *_a, **_kw):
+                pass
+
+            def send_de_dwd_forecast_forecast_model_catalog(self, **_kw):
+                sent.append("forecast:forecast_model_catalog")
+
         fake_kafka = MagicMock()
         modules = [
             _FakeModule("station_metadata", [_STATION_EVENT]),
             _FakeModule("weather_alerts", [_ALERT_EVENT]),
+            _FakeModule("radar_products", [_RADAR_PRODUCT_CATALOG_EVENT]),
+            _FakeModule("icon_d2_forecast", [_FORECAST_MODEL_CATALOG_EVENT]),
         ]
 
         with patch("dwd.dwd.Producer", return_value=fake_kafka), \
              patch("dwd.dwd.DEDWDCDCEventProducer", FakeCDC), \
              patch("dwd.dwd.DEDWDWeatherEventProducer", FakeWeather), \
-             patch("dwd.dwd.DEDWDIconD2EventProducer", FakeIconD2Producer), \
+             patch("dwd.dwd.DEDWDRadarEventProducer", FakeRadar), \
+             patch("dwd.dwd.DEDWDForecastEventProducer", FakeForecast), \
              patch("dwd.dwd.load_state", return_value={}), \
              patch("dwd.dwd.save_state"), \
              patch("dwd.dwd.time.sleep", side_effect=KeyboardInterrupt):
@@ -339,6 +457,5 @@ class TestRunFeedDualProducerWiring:
 
         assert "cdc:station_metadata" in sent, "CDC producer was not called"
         assert "weather:weather_alert" in sent, "Weather producer was not called"
-
-
-
+        assert "radar:radar_product_catalog" in sent, "Radar producer was not called"
+        assert "forecast:forecast_model_catalog" in sent, "Forecast producer was not called"

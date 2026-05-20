@@ -1,5 +1,5 @@
 """
-Test case for Precipitation10Min
+Test case for ExtremeTemperature10Min
 """
 
 import os
@@ -8,31 +8,31 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from dwd_producer_data.precipitation10min import Precipitation10Min
+from dwd_producer_data.extremetemperature10min import ExtremeTemperature10Min
 
 
-class Test_Precipitation10Min(unittest.TestCase):
+class Test_ExtremeTemperature10Min(unittest.TestCase):
     """
-    Test case for Precipitation10Min
+    Test case for ExtremeTemperature10Min
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Precipitation10Min.create_instance()
+        self.instance = Test_ExtremeTemperature10Min.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Precipitation10Min for testing
+        Create instance of ExtremeTemperature10Min for testing
         """
-        instance = Precipitation10Min(
-            station_id='yylywqifsztxlxgzhwio',
-            timestamp='jwuoyctgrjcqgsilrpiq',
-            quality_level=int(21),
-            precipitation_height=float(95.92026568739396),
-            precipitation_indicator=int(9)
+        instance = ExtremeTemperature10Min(
+            station_id='noxeetwwftjvrohntnvo',
+            timestamp='oivcqfuolrfhvbihiqpk',
+            quality_level=int(12),
+            air_temperature_maximum_2m=float(42.02168570478453),
+            air_temperature_minimum_5cm=float(57.65981172989354)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'yylywqifsztxlxgzhwio'
+        test_value = 'noxeetwwftjvrohntnvo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'jwuoyctgrjcqgsilrpiq'
+        test_value = 'oivcqfuolrfhvbihiqpk'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,25 +57,25 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(21)
+        test_value = int(12)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
-    def test_precipitation_height_property(self):
+    def test_air_temperature_maximum_2m_property(self):
         """
-        Test precipitation_height property
+        Test air_temperature_maximum_2m property
         """
-        test_value = float(95.92026568739396)
-        self.instance.precipitation_height = test_value
-        self.assertEqual(self.instance.precipitation_height, test_value)
+        test_value = float(42.02168570478453)
+        self.instance.air_temperature_maximum_2m = test_value
+        self.assertEqual(self.instance.air_temperature_maximum_2m, test_value)
     
-    def test_precipitation_indicator_property(self):
+    def test_air_temperature_minimum_5cm_property(self):
         """
-        Test precipitation_indicator property
+        Test air_temperature_minimum_5cm property
         """
-        test_value = int(9)
-        self.instance.precipitation_indicator = test_value
-        self.assertEqual(self.instance.precipitation_indicator, test_value)
+        test_value = float(57.65981172989354)
+        self.instance.air_temperature_minimum_5cm = test_value
+        self.assertEqual(self.instance.air_temperature_minimum_5cm, test_value)
     
     def test_to_byte_array_json(self):
         """
@@ -83,7 +83,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Precipitation10Min.from_data(bytes_data, media_type)
+        new_instance = ExtremeTemperature10Min.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -92,7 +92,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = Precipitation10Min.from_json(json_data)
+        new_instance = ExtremeTemperature10Min.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 

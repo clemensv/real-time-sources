@@ -17,9 +17,11 @@ for src_dir in reversed(LOCAL_SRC_DIRS):
 
 
 import dwd_producer_data  # noqa: E402
-from dwd_producer_data.de import (  # noqa: E402
+from dwd_producer_data import (  # noqa: E402
     AirTemperature10Min,
     Alert,
+    ExtremeTemperature10Min,
+    ExtremeWind10Min,
     HourlyObservation,
     Precipitation10Min,
     Solar10Min,
@@ -34,4 +36,6 @@ dwd_producer_data.Precipitation10Min = Precipitation10Min
 dwd_producer_data.Wind10Min = Wind10Min
 dwd_producer_data.Solar10Min = Solar10Min
 dwd_producer_data.HourlyObservation = HourlyObservation
+dwd_producer_data.ExtremeWind10Min = ExtremeWind10Min
+dwd_producer_data.ExtremeTemperature10Min = ExtremeTemperature10Min
 dwd_producer_data.Alert = Alert
