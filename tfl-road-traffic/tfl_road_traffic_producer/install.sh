@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./tfl_road_traffic_producer_data
+pip install ./tfl_road_traffic_producer_kafka_producer
