@@ -1,0 +1,313 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [SensorConfiguration] (
+   [configuration_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SensorConfiguration] docstring "{\"description\": \"Reference data for one ISSeP Wallonia air quality sensor configuration. Each id_configuration identifies a deployed sensor unit. The bridge emits this event at startup for each distinct configuration seen in the data records.\"}";
+
+.alter table [SensorConfiguration] column-docstrings (
+   [configuration_id]: "{\"description\": \"Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SensorConfiguration] ingestion json mapping "SensorConfiguration_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "configuration_id", "path": "$.configuration_id"},
+]
+```
+
+.create-or-alter table [SensorConfiguration] ingestion json mapping "SensorConfiguration_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "configuration_id", "path": "$.data.configuration_id"},
+]
+```
+
+.drop materialized-view SensorConfigurationLatest ifexists;
+
+.create materialized-view with (backfill=true) SensorConfigurationLatest on table SensorConfiguration {
+    SensorConfiguration | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SensorConfiguration] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.issep.airquality.SensorConfiguration') | project['configuration_id'] = tostring(data.['configuration_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Observation] (
+   [configuration_id]: string,
+   [moment]: string,
+   [co]: int,
+   [no]: int,
+   [no2]: int,
+   [o3no2]: int,
+   [ppbno]: real,
+   [ppbno_statut]: int,
+   [ppbno2]: real,
+   [ppbno2_statut]: int,
+   [ppbo3]: real,
+   [ppbo3_statut]: int,
+   [ugpcmno]: real,
+   [ugpcmno_statut]: int,
+   [ugpcmno2]: real,
+   [ugpcmno2_statut]: int,
+   [ugpcmo3]: real,
+   [ugpcmo3_statut]: int,
+   [bme_t]: real,
+   [bme_t_statut]: int,
+   [bme_pres]: int,
+   [bme_pres_statut]: int,
+   [bme_rh]: real,
+   [bme_rh_statut]: int,
+   [pm1]: real,
+   [pm1_statut]: int,
+   [pm25]: real,
+   [pm25_statut]: int,
+   [pm4]: real,
+   [pm4_statut]: int,
+   [pm10]: real,
+   [pm10_statut]: int,
+   [vbat]: real,
+   [vbat_statut]: int,
+   [mwh_bat]: real,
+   [mwh_pv]: real,
+   [co_rf]: real,
+   [no_rf]: real,
+   [no2_rf]: real,
+   [o3no2_rf]: real,
+   [o3_rf]: real,
+   [pm10_rf]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Observation] docstring "{\"description\": \"Air quality observation from one ISSeP Wallonia sensor at a specific moment in time. Includes raw electrochemical gas readings, calibrated ppb and \\u00b5g/m\\u00b3 values, particulate matter concentrations, environmental parameters, reference station comparisons, and quality status flags. Negative raw values (e.g. no2=-4) are valid sensor readings and must not be filtered.\"}";
+
+.alter table [Observation] column-docstrings (
+   [configuration_id]: "{\"description\": \"Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key.\"}",
+   [moment]: "{\"description\": \"ISO 8601 observation timestamp from the upstream moment field, e.g. '2026-04-08T09:09:13+02:00'. Preserved as-is from the API response.\"}",
+   [co]: "{\"description\": \"Raw carbon monoxide electrochemical sensor reading in internal units.\"}",
+   [no]: "{\"description\": \"Raw nitric oxide electrochemical sensor reading in internal units.\"}",
+   [no2]: "{\"description\": \"Raw nitrogen dioxide electrochemical sensor reading in internal units. Negative values are valid.\"}",
+   [o3no2]: "{\"description\": \"Raw combined ozone and nitrogen dioxide electrochemical sensor reading in internal units. Negative values are valid.\"}",
+   [ppbno]: "{\"description\": \"Calibrated nitric oxide concentration in parts per billion (ppb).\"}",
+   [ppbno_statut]: "{\"description\": \"Quality status flag for ppbno. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [ppbno2]: "{\"description\": \"Calibrated nitrogen dioxide concentration in parts per billion (ppb).\"}",
+   [ppbno2_statut]: "{\"description\": \"Quality status flag for ppbno2. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [ppbo3]: "{\"description\": \"Calibrated ozone concentration in parts per billion (ppb).\"}",
+   [ppbo3_statut]: "{\"description\": \"Quality status flag for ppbo3. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [ugpcmno]: "{\"description\": \"Calibrated nitric oxide concentration in micrograms per cubic meter (\\u00b5g/m\\u00b3).\"}",
+   [ugpcmno_statut]: "{\"description\": \"Quality status flag for ugpcmno. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [ugpcmno2]: "{\"description\": \"Calibrated nitrogen dioxide concentration in micrograms per cubic meter (\\u00b5g/m\\u00b3).\"}",
+   [ugpcmno2_statut]: "{\"description\": \"Quality status flag for ugpcmno2. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [ugpcmo3]: "{\"description\": \"Calibrated ozone concentration in micrograms per cubic meter (\\u00b5g/m\\u00b3).\"}",
+   [ugpcmo3_statut]: "{\"description\": \"Quality status flag for ugpcmo3. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [bme_t]: "{\"description\": \"Temperature reading from the BME280 environmental sensor in degrees Celsius.\"}",
+   [bme_t_statut]: "{\"description\": \"Quality status flag for bme_t. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [bme_pres]: "{\"description\": \"Atmospheric pressure reading from the BME280 sensor in Pascals.\"}",
+   [bme_pres_statut]: "{\"description\": \"Quality status flag for bme_pres. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [bme_rh]: "{\"description\": \"Relative humidity reading from the BME280 sensor as a percentage.\"}",
+   [bme_rh_statut]: "{\"description\": \"Quality status flag for bme_rh. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [pm1]: "{\"description\": \"Particulate matter concentration for particles under 1 micrometer in \\u00b5g/m\\u00b3.\"}",
+   [pm1_statut]: "{\"description\": \"Quality status flag for pm1. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [pm25]: "{\"description\": \"Particulate matter concentration for particles under 2.5 micrometers in \\u00b5g/m\\u00b3.\"}",
+   [pm25_statut]: "{\"description\": \"Quality status flag for pm25. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [pm4]: "{\"description\": \"Particulate matter concentration for particles under 4 micrometers in \\u00b5g/m\\u00b3.\"}",
+   [pm4_statut]: "{\"description\": \"Quality status flag for pm4. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [pm10]: "{\"description\": \"Particulate matter concentration for particles under 10 micrometers in \\u00b5g/m\\u00b3.\"}",
+   [pm10_statut]: "{\"description\": \"Quality status flag for pm10. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [vbat]: "{\"description\": \"Battery voltage of the sensor unit in Volts.\"}",
+   [vbat_statut]: "{\"description\": \"Quality status flag for vbat. 100 indicates valid, 0 indicates invalid or unavailable.\"}",
+   [mwh_bat]: "{\"description\": \"Battery energy level in milliwatt-hours. Negative values indicate discharge.\"}",
+   [mwh_pv]: "{\"description\": \"Photovoltaic energy generation in milliwatt-hours.\"}",
+   [co_rf]: "{\"description\": \"Carbon monoxide reference station comparison value.\"}",
+   [no_rf]: "{\"description\": \"Nitric oxide reference station comparison value.\"}",
+   [no2_rf]: "{\"description\": \"Nitrogen dioxide reference station comparison value.\"}",
+   [o3no2_rf]: "{\"description\": \"Combined ozone and nitrogen dioxide reference station comparison value.\"}",
+   [o3_rf]: "{\"description\": \"Ozone reference station comparison value.\"}",
+   [pm10_rf]: "{\"description\": \"PM10 reference station comparison value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "configuration_id", "path": "$.configuration_id"},
+  {"column": "moment", "path": "$.moment"},
+  {"column": "co", "path": "$.co"},
+  {"column": "no", "path": "$.no"},
+  {"column": "no2", "path": "$.no2"},
+  {"column": "o3no2", "path": "$.o3no2"},
+  {"column": "ppbno", "path": "$.ppbno"},
+  {"column": "ppbno_statut", "path": "$.ppbno_statut"},
+  {"column": "ppbno2", "path": "$.ppbno2"},
+  {"column": "ppbno2_statut", "path": "$.ppbno2_statut"},
+  {"column": "ppbo3", "path": "$.ppbo3"},
+  {"column": "ppbo3_statut", "path": "$.ppbo3_statut"},
+  {"column": "ugpcmno", "path": "$.ugpcmno"},
+  {"column": "ugpcmno_statut", "path": "$.ugpcmno_statut"},
+  {"column": "ugpcmno2", "path": "$.ugpcmno2"},
+  {"column": "ugpcmno2_statut", "path": "$.ugpcmno2_statut"},
+  {"column": "ugpcmo3", "path": "$.ugpcmo3"},
+  {"column": "ugpcmo3_statut", "path": "$.ugpcmo3_statut"},
+  {"column": "bme_t", "path": "$.bme_t"},
+  {"column": "bme_t_statut", "path": "$.bme_t_statut"},
+  {"column": "bme_pres", "path": "$.bme_pres"},
+  {"column": "bme_pres_statut", "path": "$.bme_pres_statut"},
+  {"column": "bme_rh", "path": "$.bme_rh"},
+  {"column": "bme_rh_statut", "path": "$.bme_rh_statut"},
+  {"column": "pm1", "path": "$.pm1"},
+  {"column": "pm1_statut", "path": "$.pm1_statut"},
+  {"column": "pm25", "path": "$.pm25"},
+  {"column": "pm25_statut", "path": "$.pm25_statut"},
+  {"column": "pm4", "path": "$.pm4"},
+  {"column": "pm4_statut", "path": "$.pm4_statut"},
+  {"column": "pm10", "path": "$.pm10"},
+  {"column": "pm10_statut", "path": "$.pm10_statut"},
+  {"column": "vbat", "path": "$.vbat"},
+  {"column": "vbat_statut", "path": "$.vbat_statut"},
+  {"column": "mwh_bat", "path": "$.mwh_bat"},
+  {"column": "mwh_pv", "path": "$.mwh_pv"},
+  {"column": "co_rf", "path": "$.co_rf"},
+  {"column": "no_rf", "path": "$.no_rf"},
+  {"column": "no2_rf", "path": "$.no2_rf"},
+  {"column": "o3no2_rf", "path": "$.o3no2_rf"},
+  {"column": "o3_rf", "path": "$.o3_rf"},
+  {"column": "pm10_rf", "path": "$.pm10_rf"},
+]
+```
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "configuration_id", "path": "$.data.configuration_id"},
+  {"column": "moment", "path": "$.data.moment"},
+  {"column": "co", "path": "$.data.co"},
+  {"column": "no", "path": "$.data.no"},
+  {"column": "no2", "path": "$.data.no2"},
+  {"column": "o3no2", "path": "$.data.o3no2"},
+  {"column": "ppbno", "path": "$.data.ppbno"},
+  {"column": "ppbno_statut", "path": "$.data.ppbno_statut"},
+  {"column": "ppbno2", "path": "$.data.ppbno2"},
+  {"column": "ppbno2_statut", "path": "$.data.ppbno2_statut"},
+  {"column": "ppbo3", "path": "$.data.ppbo3"},
+  {"column": "ppbo3_statut", "path": "$.data.ppbo3_statut"},
+  {"column": "ugpcmno", "path": "$.data.ugpcmno"},
+  {"column": "ugpcmno_statut", "path": "$.data.ugpcmno_statut"},
+  {"column": "ugpcmno2", "path": "$.data.ugpcmno2"},
+  {"column": "ugpcmno2_statut", "path": "$.data.ugpcmno2_statut"},
+  {"column": "ugpcmo3", "path": "$.data.ugpcmo3"},
+  {"column": "ugpcmo3_statut", "path": "$.data.ugpcmo3_statut"},
+  {"column": "bme_t", "path": "$.data.bme_t"},
+  {"column": "bme_t_statut", "path": "$.data.bme_t_statut"},
+  {"column": "bme_pres", "path": "$.data.bme_pres"},
+  {"column": "bme_pres_statut", "path": "$.data.bme_pres_statut"},
+  {"column": "bme_rh", "path": "$.data.bme_rh"},
+  {"column": "bme_rh_statut", "path": "$.data.bme_rh_statut"},
+  {"column": "pm1", "path": "$.data.pm1"},
+  {"column": "pm1_statut", "path": "$.data.pm1_statut"},
+  {"column": "pm25", "path": "$.data.pm25"},
+  {"column": "pm25_statut", "path": "$.data.pm25_statut"},
+  {"column": "pm4", "path": "$.data.pm4"},
+  {"column": "pm4_statut", "path": "$.data.pm4_statut"},
+  {"column": "pm10", "path": "$.data.pm10"},
+  {"column": "pm10_statut", "path": "$.data.pm10_statut"},
+  {"column": "vbat", "path": "$.data.vbat"},
+  {"column": "vbat_statut", "path": "$.data.vbat_statut"},
+  {"column": "mwh_bat", "path": "$.data.mwh_bat"},
+  {"column": "mwh_pv", "path": "$.data.mwh_pv"},
+  {"column": "co_rf", "path": "$.data.co_rf"},
+  {"column": "no_rf", "path": "$.data.no_rf"},
+  {"column": "no2_rf", "path": "$.data.no2_rf"},
+  {"column": "o3no2_rf", "path": "$.data.o3no2_rf"},
+  {"column": "o3_rf", "path": "$.data.o3_rf"},
+  {"column": "pm10_rf", "path": "$.data.pm10_rf"},
+]
+```
+
+.drop materialized-view ObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) ObservationLatest on table Observation {
+    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Observation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.issep.airquality.Observation') | project['configuration_id'] = tostring(data.['configuration_id']),['moment'] = tostring(data.['moment']),['co'] = toint(data.['co']),['no'] = toint(data.['no']),['no2'] = toint(data.['no2']),['o3no2'] = toint(data.['o3no2']),['ppbno'] = toreal(data.['ppbno']),['ppbno_statut'] = toint(data.['ppbno_statut']),['ppbno2'] = toreal(data.['ppbno2']),['ppbno2_statut'] = toint(data.['ppbno2_statut']),['ppbo3'] = toreal(data.['ppbo3']),['ppbo3_statut'] = toint(data.['ppbo3_statut']),['ugpcmno'] = toreal(data.['ugpcmno']),['ugpcmno_statut'] = toint(data.['ugpcmno_statut']),['ugpcmno2'] = toreal(data.['ugpcmno2']),['ugpcmno2_statut'] = toint(data.['ugpcmno2_statut']),['ugpcmo3'] = toreal(data.['ugpcmo3']),['ugpcmo3_statut'] = toint(data.['ugpcmo3_statut']),['bme_t'] = toreal(data.['bme_t']),['bme_t_statut'] = toint(data.['bme_t_statut']),['bme_pres'] = toint(data.['bme_pres']),['bme_pres_statut'] = toint(data.['bme_pres_statut']),['bme_rh'] = toreal(data.['bme_rh']),['bme_rh_statut'] = toint(data.['bme_rh_statut']),['pm1'] = toreal(data.['pm1']),['pm1_statut'] = toint(data.['pm1_statut']),['pm25'] = toreal(data.['pm25']),['pm25_statut'] = toint(data.['pm25_statut']),['pm4'] = toreal(data.['pm4']),['pm4_statut'] = toint(data.['pm4_statut']),['pm10'] = toreal(data.['pm10']),['pm10_statut'] = toint(data.['pm10_statut']),['vbat'] = toreal(data.['vbat']),['vbat_statut'] = toint(data.['vbat_statut']),['mwh_bat'] = toreal(data.['mwh_bat']),['mwh_pv'] = toreal(data.['mwh_pv']),['co_rf'] = toreal(data.['co_rf']),['no_rf'] = toreal(data.['no_rf']),['no2_rf'] = toreal(data.['no2_rf']),['o3no2_rf'] = toreal(data.['o3no2_rf']),['o3_rf'] = toreal(data.['o3_rf']),['pm10_rf'] = toreal(data.['pm10_rf']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

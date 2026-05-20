@@ -1,0 +1,261 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['dk.energinet.energidataservice.PowerSystemSnapshot'] (
+   [minutes1_utc]: string,
+   [minutes1_dk]: string,
+   [price_area]: string,
+   [co2_emission]: real,
+   [production_ge_100mw]: real,
+   [production_lt_100mw]: real,
+   [solar_power]: real,
+   [offshore_wind_power]: real,
+   [onshore_wind_power]: real,
+   [exchange_sum]: real,
+   [exchange_dk1_de]: real,
+   [exchange_dk1_nl]: real,
+   [exchange_dk1_gb]: real,
+   [exchange_dk1_no]: real,
+   [exchange_dk1_se]: real,
+   [exchange_dk1_dk2]: real,
+   [exchange_dk2_de]: real,
+   [exchange_dk2_se]: real,
+   [exchange_bornholm_se]: real,
+   [afrr_activated_dk1]: real,
+   [afrr_activated_dk2]: real,
+   [mfrr_activated_dk1]: real,
+   [mfrr_activated_dk2]: real,
+   [imbalance_dk1]: real,
+   [imbalance_dk2]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['dk.energinet.energidataservice.PowerSystemSnapshot'] docstring "{\"description\": \"Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet). Published by the PowerSystemRightNow dataset at approximately 1-minute intervals.\"}";
+
+.alter table ['dk.energinet.energidataservice.PowerSystemSnapshot'] column-docstrings (
+   [minutes1_utc]: "{\"description\": \"UTC timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1UTC' field.\"}",
+   [minutes1_dk]: "{\"description\": \"Danish local-time timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1DK' field.\"}",
+   [price_area]: "{\"description\": \"Price area code. Set to 'DK' for system-wide power system snapshots that cover the entire Danish grid (both DK1 and DK2).\"}",
+   [co2_emission]: "{\"description\": \"CO2 emission intensity of electricity consumed in Denmark at the time of the snapshot, measured in grams of CO2 per kWh (g/kWh). Sourced from 'CO2Emission'.\"}",
+   [production_ge_100mw]: "{\"description\": \"Total electricity production from centralized power plants with capacity >= 100 MW, in megawatts (MW). Sourced from 'ProductionGe100MW'.\"}",
+   [production_lt_100mw]: "{\"description\": \"Total electricity production from decentralized power plants with capacity < 100 MW, in megawatts (MW). Sourced from 'ProductionLt100MW'.\"}",
+   [solar_power]: "{\"description\": \"Estimated total solar photovoltaic power production in Denmark, in megawatts (MW). Sourced from 'SolarPower'.\"}",
+   [offshore_wind_power]: "{\"description\": \"Total offshore wind power production in Denmark, in megawatts (MW). Sourced from 'OffshoreWindPower'.\"}",
+   [onshore_wind_power]: "{\"description\": \"Total onshore wind power production in Denmark, in megawatts (MW). Sourced from 'OnshoreWindPower'.\"}",
+   [exchange_sum]: "{\"description\": \"Net total cross-border electricity exchange for all Danish interconnectors, in megawatts (MW). Positive values indicate net import; negative values indicate net export. Sourced from 'Exchange_Sum'.\"}",
+   [exchange_dk1_de]: "{\"description\": \"Electricity exchange flow on the DK1\\u2013Germany interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_DE'.\"}",
+   [exchange_dk1_nl]: "{\"description\": \"Electricity exchange flow on the DK1\\u2013Netherlands (COBRAcable) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NL'.\"}",
+   [exchange_dk1_gb]: "{\"description\": \"Electricity exchange flow on the DK1\\u2013Great Britain (Viking Link) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_GB'.\"}",
+   [exchange_dk1_no]: "{\"description\": \"Electricity exchange flow on the DK1\\u2013Norway (Skagerrak) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NO'.\"}",
+   [exchange_dk1_se]: "{\"description\": \"Electricity exchange flow on the DK1\\u2013Sweden interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_SE'.\"}",
+   [exchange_dk1_dk2]: "{\"description\": \"Electricity exchange flow on the DK1\\u2013DK2 (Great Belt) interconnector, in megawatts (MW). Positive = flow from DK1 to DK2, negative = flow from DK2 to DK1. Sourced from 'Exchange_DK1_DK2'.\"}",
+   [exchange_dk2_de]: "{\"description\": \"Electricity exchange flow on the DK2\\u2013Germany (Kontek) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_DE'.\"}",
+   [exchange_dk2_se]: "{\"description\": \"Electricity exchange flow on the DK2\\u2013Sweden (\\u00d8resund) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_SE'.\"}",
+   [exchange_bornholm_se]: "{\"description\": \"Electricity exchange flow on the Bornholm\\u2013Sweden interconnector, in megawatts (MW). Positive = import to Bornholm, negative = export from Bornholm. Sourced from 'Exchange_Bornholm_SE'.\"}",
+   [afrr_activated_dk1]: "{\"description\": \"Automatic Frequency Restoration Reserve (aFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK1'.\"}",
+   [afrr_activated_dk2]: "{\"description\": \"Automatic Frequency Restoration Reserve (aFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK2'.\"}",
+   [mfrr_activated_dk1]: "{\"description\": \"Manual Frequency Restoration Reserve (mFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK1'.\"}",
+   [mfrr_activated_dk2]: "{\"description\": \"Manual Frequency Restoration Reserve (mFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK2'.\"}",
+   [imbalance_dk1]: "{\"description\": \"Net power imbalance in price area DK1, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK1'.\"}",
+   [imbalance_dk2]: "{\"description\": \"Net power imbalance in price area DK2, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK2'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['dk.energinet.energidataservice.PowerSystemSnapshot'] ingestion json mapping "dk.energinet.energidataservice.PowerSystemSnapshot_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "minutes1_utc", "path": "$.minutes1_utc"},
+  {"column": "minutes1_dk", "path": "$.minutes1_dk"},
+  {"column": "price_area", "path": "$.price_area"},
+  {"column": "co2_emission", "path": "$.co2_emission"},
+  {"column": "production_ge_100mw", "path": "$.production_ge_100mw"},
+  {"column": "production_lt_100mw", "path": "$.production_lt_100mw"},
+  {"column": "solar_power", "path": "$.solar_power"},
+  {"column": "offshore_wind_power", "path": "$.offshore_wind_power"},
+  {"column": "onshore_wind_power", "path": "$.onshore_wind_power"},
+  {"column": "exchange_sum", "path": "$.exchange_sum"},
+  {"column": "exchange_dk1_de", "path": "$.exchange_dk1_de"},
+  {"column": "exchange_dk1_nl", "path": "$.exchange_dk1_nl"},
+  {"column": "exchange_dk1_gb", "path": "$.exchange_dk1_gb"},
+  {"column": "exchange_dk1_no", "path": "$.exchange_dk1_no"},
+  {"column": "exchange_dk1_se", "path": "$.exchange_dk1_se"},
+  {"column": "exchange_dk1_dk2", "path": "$.exchange_dk1_dk2"},
+  {"column": "exchange_dk2_de", "path": "$.exchange_dk2_de"},
+  {"column": "exchange_dk2_se", "path": "$.exchange_dk2_se"},
+  {"column": "exchange_bornholm_se", "path": "$.exchange_bornholm_se"},
+  {"column": "afrr_activated_dk1", "path": "$.afrr_activated_dk1"},
+  {"column": "afrr_activated_dk2", "path": "$.afrr_activated_dk2"},
+  {"column": "mfrr_activated_dk1", "path": "$.mfrr_activated_dk1"},
+  {"column": "mfrr_activated_dk2", "path": "$.mfrr_activated_dk2"},
+  {"column": "imbalance_dk1", "path": "$.imbalance_dk1"},
+  {"column": "imbalance_dk2", "path": "$.imbalance_dk2"},
+]
+```
+
+.create-or-alter table ['dk.energinet.energidataservice.PowerSystemSnapshot'] ingestion json mapping "dk.energinet.energidataservice.PowerSystemSnapshot_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "minutes1_utc", "path": "$.data.minutes1_utc"},
+  {"column": "minutes1_dk", "path": "$.data.minutes1_dk"},
+  {"column": "price_area", "path": "$.data.price_area"},
+  {"column": "co2_emission", "path": "$.data.co2_emission"},
+  {"column": "production_ge_100mw", "path": "$.data.production_ge_100mw"},
+  {"column": "production_lt_100mw", "path": "$.data.production_lt_100mw"},
+  {"column": "solar_power", "path": "$.data.solar_power"},
+  {"column": "offshore_wind_power", "path": "$.data.offshore_wind_power"},
+  {"column": "onshore_wind_power", "path": "$.data.onshore_wind_power"},
+  {"column": "exchange_sum", "path": "$.data.exchange_sum"},
+  {"column": "exchange_dk1_de", "path": "$.data.exchange_dk1_de"},
+  {"column": "exchange_dk1_nl", "path": "$.data.exchange_dk1_nl"},
+  {"column": "exchange_dk1_gb", "path": "$.data.exchange_dk1_gb"},
+  {"column": "exchange_dk1_no", "path": "$.data.exchange_dk1_no"},
+  {"column": "exchange_dk1_se", "path": "$.data.exchange_dk1_se"},
+  {"column": "exchange_dk1_dk2", "path": "$.data.exchange_dk1_dk2"},
+  {"column": "exchange_dk2_de", "path": "$.data.exchange_dk2_de"},
+  {"column": "exchange_dk2_se", "path": "$.data.exchange_dk2_se"},
+  {"column": "exchange_bornholm_se", "path": "$.data.exchange_bornholm_se"},
+  {"column": "afrr_activated_dk1", "path": "$.data.afrr_activated_dk1"},
+  {"column": "afrr_activated_dk2", "path": "$.data.afrr_activated_dk2"},
+  {"column": "mfrr_activated_dk1", "path": "$.data.mfrr_activated_dk1"},
+  {"column": "mfrr_activated_dk2", "path": "$.data.mfrr_activated_dk2"},
+  {"column": "imbalance_dk1", "path": "$.data.imbalance_dk1"},
+  {"column": "imbalance_dk2", "path": "$.data.imbalance_dk2"},
+]
+```
+
+.drop materialized-view ['dk.energinet.energidataservice.PowerSystemSnapshotLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['dk.energinet.energidataservice.PowerSystemSnapshotLatest'] on table ['dk.energinet.energidataservice.PowerSystemSnapshot'] {
+    ['dk.energinet.energidataservice.PowerSystemSnapshot'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['dk.energinet.energidataservice.PowerSystemSnapshot'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.energinet.energidataservice.PowerSystemSnapshot') | project['minutes1_utc'] = tostring(data.['minutes1_utc']),['minutes1_dk'] = tostring(data.['minutes1_dk']),['price_area'] = tostring(data.['price_area']),['co2_emission'] = toreal(data.['co2_emission']),['production_ge_100mw'] = toreal(data.['production_ge_100mw']),['production_lt_100mw'] = toreal(data.['production_lt_100mw']),['solar_power'] = toreal(data.['solar_power']),['offshore_wind_power'] = toreal(data.['offshore_wind_power']),['onshore_wind_power'] = toreal(data.['onshore_wind_power']),['exchange_sum'] = toreal(data.['exchange_sum']),['exchange_dk1_de'] = toreal(data.['exchange_dk1_de']),['exchange_dk1_nl'] = toreal(data.['exchange_dk1_nl']),['exchange_dk1_gb'] = toreal(data.['exchange_dk1_gb']),['exchange_dk1_no'] = toreal(data.['exchange_dk1_no']),['exchange_dk1_se'] = toreal(data.['exchange_dk1_se']),['exchange_dk1_dk2'] = toreal(data.['exchange_dk1_dk2']),['exchange_dk2_de'] = toreal(data.['exchange_dk2_de']),['exchange_dk2_se'] = toreal(data.['exchange_dk2_se']),['exchange_bornholm_se'] = toreal(data.['exchange_bornholm_se']),['afrr_activated_dk1'] = toreal(data.['afrr_activated_dk1']),['afrr_activated_dk2'] = toreal(data.['afrr_activated_dk2']),['mfrr_activated_dk1'] = toreal(data.['mfrr_activated_dk1']),['mfrr_activated_dk2'] = toreal(data.['mfrr_activated_dk2']),['imbalance_dk1'] = toreal(data.['imbalance_dk1']),['imbalance_dk2'] = toreal(data.['imbalance_dk2']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['dk.energinet.energidataservice.SpotPrice'] (
+   [hour_utc]: string,
+   [hour_dk]: string,
+   [price_area]: string,
+   [spot_price_dkk]: real,
+   [spot_price_eur]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['dk.energinet.energidataservice.SpotPrice'] docstring "{\"description\": \"Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.\"}";
+
+.alter table ['dk.energinet.energidataservice.SpotPrice'] column-docstrings (
+   [hour_utc]: "{\"description\": \"UTC hour for which the spot price applies, in ISO 8601 format. Each price applies to the full 60-minute interval starting at this timestamp. Sourced from 'HourUTC'.\"}",
+   [hour_dk]: "{\"description\": \"Danish local-time hour for which the spot price applies, in ISO 8601 format. Sourced from 'HourDK'.\"}",
+   [price_area]: "{\"description\": \"Nord Pool bidding zone code. 'DK1' is Western Denmark (Jutland and Funen); 'DK2' is Eastern Denmark (Zealand, Lolland-Falster, and Bornholm). Sourced from 'PriceArea'.\"}",
+   [spot_price_dkk]: "{\"description\": \"Day-ahead spot price in Danish Kroner per megawatt-hour (DKK/MWh). Sourced from 'SpotPriceDKK'.\"}",
+   [spot_price_eur]: "{\"description\": \"Day-ahead spot price in Euros per megawatt-hour (EUR/MWh). Sourced from 'SpotPriceEUR'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['dk.energinet.energidataservice.SpotPrice'] ingestion json mapping "dk.energinet.energidataservice.SpotPrice_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "hour_utc", "path": "$.hour_utc"},
+  {"column": "hour_dk", "path": "$.hour_dk"},
+  {"column": "price_area", "path": "$.price_area"},
+  {"column": "spot_price_dkk", "path": "$.spot_price_dkk"},
+  {"column": "spot_price_eur", "path": "$.spot_price_eur"},
+]
+```
+
+.create-or-alter table ['dk.energinet.energidataservice.SpotPrice'] ingestion json mapping "dk.energinet.energidataservice.SpotPrice_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "hour_utc", "path": "$.data.hour_utc"},
+  {"column": "hour_dk", "path": "$.data.hour_dk"},
+  {"column": "price_area", "path": "$.data.price_area"},
+  {"column": "spot_price_dkk", "path": "$.data.spot_price_dkk"},
+  {"column": "spot_price_eur", "path": "$.data.spot_price_eur"},
+]
+```
+
+.drop materialized-view ['dk.energinet.energidataservice.SpotPriceLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['dk.energinet.energidataservice.SpotPriceLatest'] on table ['dk.energinet.energidataservice.SpotPrice'] {
+    ['dk.energinet.energidataservice.SpotPrice'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['dk.energinet.energidataservice.SpotPrice'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.energinet.energidataservice.SpotPrice') | project['hour_utc'] = tostring(data.['hour_utc']),['hour_dk'] = tostring(data.['hour_dk']),['price_area'] = tostring(data.['price_area']),['spot_price_dkk'] = toreal(data.['spot_price_dkk']),['spot_price_eur'] = toreal(data.['spot_price_eur']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

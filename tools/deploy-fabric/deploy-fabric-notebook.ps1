@@ -66,11 +66,19 @@ param(
     [string]$NotebookName = "botfinder",
     [string]$NotebookPath,
 
+    [switch]$SkipPostDeployHook,
+
+    [string]$Repo = "clemensv/real-time-sources",
+
+    [string]$Branch = "main",
+
     [switch]$WhatIf
 )
 
 $ErrorActionPreference = "Stop"
 $FabricApi = "https://api.fabric.microsoft.com/v1"
+$RawBase   = "https://raw.githubusercontent.com/$Repo/$Branch"
+$TempDir   = if ($env:TEMP) { $env:TEMP } elseif ($env:TMPDIR) { $env:TMPDIR } else { [System.IO.Path]::GetTempPath() }
 $guidRx = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
 if (-not $DatabaseName)            { $DatabaseName = $Source -replace '-', '_' }
@@ -99,6 +107,53 @@ function Invoke-FabricApi {
     if ($LASTEXITCODE -ne 0) { throw "Fabric API error ($Method $Url): $($result | Out-String)" }
     if ($result) { return $result | ConvertFrom-Json }
     return $null
+}
+
+# ── Optional post-deploy hook (shared convention with deploy-fabric.ps1) ─
+# A source MAY ship a {Source}/fabric/post-deploy.ps1 to perform extra
+# Fabric wiring (Map layers, dashboards, environment seeding, …). The hook
+# is auto-discovered (local working tree first, then $RawBase fallback) and
+# invoked with a -Context hashtable.
+function Invoke-SourcePostDeployHook {
+    param([Parameter(Mandatory)] [hashtable]$Context)
+
+    if ($SkipPostDeployHook) {
+        Write-Info "Post-deploy hook skipped (-SkipPostDeployHook)"
+        return
+    }
+
+    $rel = "$Source/fabric/post-deploy.ps1"
+    $hookPath = $null
+    try {
+        $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..") -ErrorAction Stop
+        $candidate = Join-Path $repoRoot $rel
+        if (Test-Path $candidate) { $hookPath = $candidate; Write-Info "Post-deploy hook found locally: $hookPath" }
+    } catch { }
+    if (-not $hookPath) {
+        $hookUrl = "$RawBase/$rel"
+        try {
+            $null = Invoke-WebRequest -Uri $hookUrl -Method Head -UseBasicParsing -ErrorAction Stop
+            $tmp = Join-Path $TempDir "post-deploy-$Source-$([Guid]::NewGuid().ToString('N')).ps1"
+            Invoke-WebRequest -Uri $hookUrl -OutFile $tmp -UseBasicParsing | Out-Null
+            $hookPath = $tmp
+            Write-Info "Post-deploy hook downloaded from $hookUrl"
+        } catch {
+            Write-Info "No post-deploy hook for '$Source' (looked for $rel) — skipping"
+            return
+        }
+    }
+
+    Write-Step "post" "Running post-deploy hook ($Source/fabric/post-deploy.ps1)..."
+    try {
+        & $hookPath -Context $Context
+        if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
+            throw "Post-deploy hook exited with code $LASTEXITCODE"
+        }
+        Write-OK "Post-deploy hook completed"
+    } catch {
+        Write-Warning "Post-deploy hook failed: $($_.Exception.Message)"
+        throw
+    }
 }
 
 Write-Host "=== botfinder Notebook Deployment ===" -ForegroundColor Cyan
@@ -247,3 +302,25 @@ Write-Host ""
 Write-Host "  Open in Fabric portal:" -ForegroundColor White
 Write-Host "    https://app.fabric.microsoft.com/groups/$WorkspaceId/synapsenotebooks/$notebookId" -ForegroundColor Cyan
 Write-Host ""
+
+# ── Optional post-deploy hook ───────────────────────────────────────────
+$hookContext = @{
+    Source                 = $Source
+    Mode                   = 'notebook'
+    SubscriptionId         = $SubscriptionId
+    Repo                   = $Repo
+    Branch                 = $Branch
+    RawBase                = $RawBase
+    FabricApi              = $FabricApi
+    TempDir                = $TempDir
+    WorkspaceId            = $WorkspaceId
+    WorkspaceName          = $wsInfo.displayName
+    EventhouseId           = $eh.id
+    EventhouseName         = $eh.displayName
+    EventhouseClusterUri   = $queryUri
+    DatabaseId             = $db.id
+    DatabaseName           = $db.displayName
+    NotebookId             = $notebookId
+    NotebookName           = $NotebookName
+}
+Invoke-SourcePostDeployHook -Context $hookContext

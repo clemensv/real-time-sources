@@ -1,58 +1,44 @@
 """ AirTemperature10Min dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class AirTemperature10Min:
     """
-    A AirTemperature10Min record.
+    AirTemperature10Min
+    
     Attributes:
-        station_id (str): 
-        timestamp (str): 
-        quality_level (int): 
-        pressure_station_level (float): 
-        air_temperature_2m (float): 
-        air_temperature_5cm (float): 
-        relative_humidity (float): 
-        dew_point_temperature (float): """
+        station_id (str)
+        timestamp (str)
+        quality_level (typing.Optional[int])
+        pressure_station_level (typing.Optional[float])
+        air_temperature_2m (typing.Optional[float])
+        air_temperature_5cm (typing.Optional[float])
+        relative_humidity (typing.Optional[float])
+        dew_point_temperature (typing.Optional[float])
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    quality_level: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
-    pressure_station_level: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_station_level"))
-    air_temperature_2m: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_2m"))
-    air_temperature_5cm: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_5cm"))
-    relative_humidity: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
-    dew_point_temperature: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dew_point_temperature"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"AirTemperature10Min\", \"namespace\": \"DE.DWD.CDC\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"quality_level\", \"type\": \"long\"}, {\"name\": \"pressure_station_level\", \"type\": \"double\"}, {\"name\": \"air_temperature_2m\", \"type\": \"double\"}, {\"name\": \"air_temperature_5cm\", \"type\": \"double\"}, {\"name\": \"relative_humidity\", \"type\": \"double\"}, {\"name\": \"dew_point_temperature\", \"type\": \"double\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.timestamp=str(self.timestamp)
-        self.quality_level=int(self.quality_level)
-        self.pressure_station_level=float(self.pressure_station_level)
-        self.air_temperature_2m=float(self.air_temperature_2m)
-        self.air_temperature_5cm=float(self.air_temperature_5cm)
-        self.relative_humidity=float(self.relative_humidity)
-        self.dew_point_temperature=float(self.dew_point_temperature)
+    quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
+    pressure_station_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_station_level"))
+    air_temperature_2m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_2m"))
+    air_temperature_5cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_5cm"))
+    relative_humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
+    dew_point_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dew_point_temperature"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'AirTemperature10Min':
@@ -63,7 +49,7 @@ class AirTemperature10Min:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -82,7 +68,7 @@ class AirTemperature10Min:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -96,8 +82,6 @@ class AirTemperature10Min:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -110,12 +94,6 @@ class AirTemperature10Min:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -144,10 +122,6 @@ class AirTemperature10Min:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -173,18 +147,6 @@ class AirTemperature10Min:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return AirTemperature10Min.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -192,5 +154,23 @@ class AirTemperature10Min:
                 return AirTemperature10Min.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'AirTemperature10Min':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='slosiajxxaubopaasmtk',
+            timestamp='pmjynbnujpmzlrwkwuzz',
+            quality_level=int(79),
+            pressure_station_level=float(72.85805607742044),
+            air_temperature_2m=float(14.523432829120352),
+            air_temperature_5cm=float(55.52193751897325),
+            relative_humidity=float(16.94333339492331),
+            dew_point_temperature=float(96.10692215346626)
+        )

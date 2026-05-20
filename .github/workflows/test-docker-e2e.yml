@@ -1,123 +1,98 @@
 name: Docker E2E Tests
 
+# Strategy: a `discover` job inspects the changed files and decides which
+# feeders to build + test. If only one feeder's files changed, only that
+# feeder's docker-build + docker-kafka-flow jobs run. If any infrastructure
+# path changed (tests/docker_e2e/**, this workflow, tools/**, catalog.json)
+# the full matrix runs. workflow_dispatch / schedule also force full.
+#
+# The authoritative feeder list lives in tests/docker_e2e/matrix.json so
+# adding a feeder is a JSON edit, not a YAML edit.
+
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - '**/Dockerfile'
-      - '**/pyproject.toml'
-      - '**/requirements.txt'
-      - '**/xreg/*.xreg.json'
-      - 'tests/docker_e2e/**'
-      - '.github/workflows/test-docker-e2e.yml'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - '**/Dockerfile'
-      - '**/pyproject.toml'
-      - '**/requirements.txt'
-      - '**/xreg/*.xreg.json'
-      - 'tests/docker_e2e/**'
-      - '.github/workflows/test-docker-e2e.yml'
+  workflow_dispatch:
 
 jobs:
+  discover:
+    name: Discover affected feeders
+    runs-on: ubuntu-latest
+    outputs:
+      build_matrix: ${{ steps.compute.outputs.build_matrix }}
+      flow_matrix: ${{ steps.compute.outputs.flow_matrix }}
+      full_run: ${{ steps.compute.outputs.full_run }}
+      reason: ${{ steps.compute.outputs.reason }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Collect changed files
+        id: changed
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.event.after }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            git fetch origin "$PR_BASE_SHA" --depth=1 || true
+            files=$(git diff --name-only "$PR_BASE_SHA" "$PR_HEAD_SHA")
+          elif [ "$EVENT_NAME" = "push" ] && [ -n "${BEFORE_SHA:-}" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            files=$(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA")
+          else
+            files=""
+          fi
+          {
+            echo "files<<EOF_FILES"
+            echo "$files"
+            echo "EOF_FILES"
+          } >> "$GITHUB_OUTPUT"
+          echo "[changed] $(echo "$files" | wc -l) file(s):"
+          echo "$files" | head -50
+
+      - name: Compute filtered matrix
+        id: compute
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHANGED_FILES: ${{ steps.changed.outputs.files }}
+        run: python tests/docker_e2e/discover_matrix.py
+
   docker-build:
     name: Docker Build & Import
+    needs: discover
+    if: ${{ needs.discover.outputs.build_matrix != '' && fromJson(needs.discover.outputs.build_matrix).include[0] != null }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        project:
-          - { dir: blitzortung, module: blitzortung }
-          - { dir: bluesky, module: bluesky }
-          - { dir: bfs-odl, module: bfs_odl }
-          - { dir: canada-aqhi, module: canada_aqhi }
-          - { dir: chmi-hydro, module: chmi_hydro }
-          - { dir: defra-aurn, module: defra_aurn }
-          - { dir: epa-uv, module: epa_uv }
-          - { dir: fienta, module: fienta }
-          - { dir: fmi-finland, module: fmi_finland }
-          - { dir: hongkong-epd, module: hongkong_epd }
-          - { dir: irail, module: irail }
-          - { dir: irceline-belgium, module: irceline_belgium }
-          - { dir: gtfs, module: gtfs_rt_bridge }
-          - { dir: hubeau-hydrometrie, module: hubeau_hydrometrie }
-          - { dir: imgw-hydro, module: imgw_hydro }
-          - { dir: king-county-marine, module: king_county_marine }
-          - { dir: laqn-london, module: laqn_london }
-          - { dir: luchtmeetnet-nl, module: luchtmeetnet_nl }
-          - { dir: mode-s, module: mode_s_kafka_bridge }
-          - { dir: noaa, module: noaa }
-          - { dir: noaa-goes, module: noaa_goes }
-          - { dir: noaa-ndbc, module: noaa_ndbc }
-          - { dir: noaa-nws, module: noaa_nws }
-          - { dir: pegelonline, module: pegelonline }
-          - { dir: rss, module: rssbridge }
-          - { dir: rws-waterwebservices, module: rws_waterwebservices }
-          - { dir: seattle-911, module: seattle_911 }
-          - { dir: seattle-street-closures, module: seattle_street_closures }
-          - { dir: sensor-community, module: sensor_community }
-          - { dir: smhi-hydro, module: smhi_hydro }
-          - { dir: uk-ea-flood-monitoring, module: uk_ea_flood_monitoring }
-          - { dir: uba-airdata, module: uba_airdata }
-          - { dir: usgs-earthquakes, module: usgs_earthquakes }
-          - { dir: usgs-iv, module: usgs_iv }
-           - { dir: waterinfo-vmm, module: waterinfo_vmm }
-           - { dir: wsdot, module: wsdot }
-           - { dir: xceed, module: xceed }
+      matrix: ${{ fromJson(needs.discover.outputs.build_matrix) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
       - name: Build Docker image
         run: |
-          docker build -t test-${{ matrix.project.dir }} ./${{ matrix.project.dir }}
+          docker build -t test-${{ matrix.dir }} ./${{ matrix.dir }}
 
       - name: Verify module imports
         run: |
-          docker run --rm test-${{ matrix.project.dir }} \
-            python -c "import ${{ matrix.project.module }}; print('OK')"
+          docker run --rm test-${{ matrix.dir }} \
+            python -c "import ${{ matrix.module }}; print('OK')"
 
   docker-kafka-flow:
     name: Docker Kafka Flow
+    needs: [discover, docker-build]
+    if: ${{ always() && needs.docker-build.result != 'failure' && needs.discover.outputs.flow_matrix != '' && fromJson(needs.discover.outputs.flow_matrix).include[0] != null }}
     runs-on: ubuntu-latest
-    needs: docker-build
     strategy:
       fail-fast: false
-      matrix:
-        project:
-          - { dir: blitzortung, test_class: TestBlitzortungDockerFlow }
-          - { dir: canada-aqhi, test_class: TestCanadaAQHIDockerFlow }
-          - { dir: chmi-hydro, test_class: TestCHMIHydroDockerFlow }
-          - { dir: defra-aurn, test_class: TestDefraAURNDockerFlow }
-          - { dir: epa-uv, test_class: TestEPAUVDockerFlow }
-          - { dir: fmi-finland, test_class: TestFMIFinlandDockerFlow }
-          - { dir: fienta, test_class: TestFientaDockerFlow }
-          - { dir: hongkong-epd, test_class: TestHongKongEPDDockerFlow }
-          - { dir: hubeau-hydrometrie, test_class: TestHubeauDockerFlow }
-          - { dir: imgw-hydro, test_class: TestIMGWHydroDockerFlow }
-          - { dir: irceline-belgium, test_class: TestIrcelineBelgiumDockerFlow }
-          - { dir: king-county-marine, test_class: TestKingCountyMarineDockerFlow }
-          - { dir: laqn-london, test_class: TestLAQNLondonDockerFlow }
-          - { dir: luchtmeetnet-nl, test_class: TestLuchtmeetnetNLDockerFlow }
-          - { dir: noaa, test_class: TestNOAADockerFlow }
-          - { dir: noaa-goes, test_class: TestNOAAGoesDockerFlow }
-          - { dir: noaa-ndbc, test_class: TestNOAANdbcDockerFlow }
-          - { dir: noaa-nws, test_class: TestNOAANwsDockerFlow }
-          - { dir: pegelonline, test_class: TestPegelonlineDockerFlow }
-          - { dir: rws-waterwebservices, test_class: TestRWSDockerFlow }
-          - { dir: seattle-911, test_class: TestSeattle911DockerFlow }
-          - { dir: seattle-street-closures, test_class: TestSeattleStreetClosuresDockerFlow }
-          - { dir: sensor-community, test_class: TestSensorCommunityDockerFlow }
-          - { dir: smhi-hydro, test_class: TestSMHIHydroDockerFlow }
-          - { dir: singapore-nea, test_class: TestSingaporeNEAAirQualityDockerFlow }
-          - { dir: uba-airdata, test_class: TestUBAAirDataDockerFlow }
-          - { dir: uk-ea-flood-monitoring, test_class: TestUKEADockerFlow }
-          - { dir: usgs-earthquakes, test_class: TestUSGSEarthquakesDockerFlow }
-          - { dir: usgs-iv, test_class: TestUSGSIVDockerFlow }
-           - { dir: waterinfo-vmm, test_class: TestWaterinfoVMMDockerFlow }
-           - { dir: wsdot, test_class: TestWSDOTDockerFlow }
-           - { dir: xceed, test_class: TestXceedDockerFlow }
+      matrix: ${{ fromJson(needs.discover.outputs.flow_matrix) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -133,13 +108,13 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t test-${{ matrix.project.dir }} ./${{ matrix.project.dir }}
+          docker build -t test-${{ matrix.dir }} ./${{ matrix.dir }}
 
       - name: Run Kafka flow test
         run: |
           pytest tests/docker_e2e/test_docker_kafka_flow.py \
             -v --timeout=300 \
-            -k "${{ matrix.project.test_class }}" \
+            -k "${{ matrix.test_class }}" \
             --tb=long
         timeout-minutes: 10
         env:

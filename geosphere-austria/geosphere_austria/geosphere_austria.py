@@ -298,6 +298,13 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="GeoSphere Austria TAWES bridge")
     parser.add_argument("command", choices=["feed", "list"], default="feed", nargs="?")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). "
+             "Useful for scheduled execution in Fabric notebooks.",
+    )
     args = parser.parse_args()
 
     if args.command == "list":
@@ -353,6 +360,9 @@ def main() -> None:
             logger.exception("Unexpected error during feed cycle")
 
         logger.info("Sleeping %d seconds until next poll", polling_interval)
+        if args.once:
+            logger.info("--once mode: exiting after first polling cycle")
+            break
         time.sleep(polling_interval)
 
 

@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['de.bfs.odl.Station'] (
    [station_id]: string,
    [station_code]: string,
    [name]: string,
@@ -43,9 +43,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Metadata for a BfS ODL gamma dose rate monitoring station. Each station is a stationary probe in the IMIS (Integrated Measuring and Information System) network operated by the German Federal Office for Radiation Protection (Bundesamt f\\u00fcr Strahlenschutz). Stations continuously measure ambient gamma dose rate and report hourly averaged values.\"}";
+.alter table ['de.bfs.odl.Station'] docstring "{\"description\": \"Metadata for a BfS ODL gamma dose rate monitoring station. Each station is a stationary probe in the IMIS (Integrated Measuring and Information System) network operated by the German Federal Office for Radiation Protection (Bundesamt f\\u00fcr Strahlenschutz). Stations continuously measure ambient gamma dose rate and report hourly averaged values.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['de.bfs.odl.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Nine-digit station identifier (Kennziffer) assigned by BfS in the IMIS network. Composed of the official municipality key (AGS) prefix and a station sequence number. Example: '033510091'. This is the stable key used for timeseries retrieval.\"}",
    [station_code]: "{\"description\": \"Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area.\"}",
    [name]: "{\"description\": \"Human-readable name of the station location, typically a German municipality or locality name. Example: 'Flensburg'.\"}",
@@ -63,7 +63,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['de.bfs.odl.Station'] ingestion json mapping "de.bfs.odl.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -84,7 +84,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['de.bfs.odl.Station'] ingestion json mapping "de.bfs.odl.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -105,13 +105,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['de.bfs.odl.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.bfs.odl.StationLatest'] on table ['de.bfs.odl.Station'] {
+    ['de.bfs.odl.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['de.bfs.odl.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -122,7 +122,7 @@
 }]
 ```
 
-.create-merge table [DoseRateMeasurement] (
+.create-merge table ['de.bfs.odl.DoseRateMeasurement'] (
    [station_id]: string,
    [start_measure]: string,
    [end_measure]: string,
@@ -138,9 +138,9 @@
    [___subject]: string
 );
 
-.alter table [DoseRateMeasurement] docstring "{\"description\": \"A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (\\u00b5Sv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 \\u00b5Sv/h depending on local geology and altitude.\"}";
+.alter table ['de.bfs.odl.DoseRateMeasurement'] docstring "{\"description\": \"A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (\\u00b5Sv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 \\u00b5Sv/h depending on local geology and altitude.\"}";
 
-.alter table [DoseRateMeasurement] column-docstrings (
+.alter table ['de.bfs.odl.DoseRateMeasurement'] column-docstrings (
    [station_id]: "{\"description\": \"Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.\"}",
    [start_measure]: "{\"description\": \"Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'.\"}",
    [end_measure]: "{\"description\": \"End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'.\"}",
@@ -156,7 +156,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DoseRateMeasurement] ingestion json mapping "DoseRateMeasurement_json_flat"
+.create-or-alter table ['de.bfs.odl.DoseRateMeasurement'] ingestion json mapping "de.bfs.odl.DoseRateMeasurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -175,7 +175,7 @@
 ]
 ```
 
-.create-or-alter table [DoseRateMeasurement] ingestion json mapping "DoseRateMeasurement_json_ce_structured"
+.create-or-alter table ['de.bfs.odl.DoseRateMeasurement'] ingestion json mapping "de.bfs.odl.DoseRateMeasurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -194,13 +194,13 @@
 ]
 ```
 
-.drop materialized-view DoseRateMeasurementLatest ifexists;
+.drop materialized-view ['de.bfs.odl.DoseRateMeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DoseRateMeasurementLatest on table DoseRateMeasurement {
-    DoseRateMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.bfs.odl.DoseRateMeasurementLatest'] on table ['de.bfs.odl.DoseRateMeasurement'] {
+    ['de.bfs.odl.DoseRateMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DoseRateMeasurement] policy update
+.alter table ['de.bfs.odl.DoseRateMeasurement'] policy update
 ```
 [{
   "IsEnabled": true,

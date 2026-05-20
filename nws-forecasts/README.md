@@ -60,3 +60,4 @@ python -m nws_forecasts
 - `nws_forecasts/nws_forecasts.py` - runtime bridge
 - `nws_forecasts_producer/` - generated producer code
 - `tests/` - unit and live API tests
+- `notebook/nws-forecasts-feed.ipynb` - Fabric notebook hosting option, deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for scheduled single-cycle (`--once`) runs against a Fabric Event Stream.

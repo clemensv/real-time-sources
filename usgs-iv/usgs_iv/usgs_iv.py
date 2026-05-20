@@ -123,7 +123,7 @@ class USGSDataPoller:
 
     TS_PARAM_REGEX = re.compile(r'^(\d+)_(\d{5})$')
 
-    def __init__(self, kafka_config: Dict[str, str]|None = None, kafka_topic: str|None = None, last_polled_file: str|None = None, state: str|None = None, force_site_refresh: bool = False, force_data_refresh: bool = False):
+    def __init__(self, kafka_config: Dict[str, str]|None = None, kafka_topic: str|None = None, last_polled_file: str|None = None, state: str|None = None, force_site_refresh: bool = False, force_data_refresh: bool = False, once: bool = False):
         """
         Initialize the USGSDataPoller class.
 
@@ -143,6 +143,7 @@ class USGSDataPoller:
         self.state = state
         self.force_site_refresh = force_site_refresh
         self.force_data_refresh = force_data_refresh
+        self.once = once
 
     async def get_data_by_state(self, state_code: str) -> AsyncIterator[List[Dict[str, Any]]]:
         """
@@ -491,6 +492,9 @@ class USGSDataPoller:
                 counts_str = ', '.join([f"{k}: {v}" for k, v in counts.items()])
                 logger.info("Counts for state %s: %s", state_code, counts_str)
             stations_sent = True
+            if self.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             remaining_time = poll_interval - (datetime.now(timezone.utc) - start_poll_time)
             if remaining_time.total_seconds() > 0:
                 logger.info("Sleeping for %s", remaining_time)
@@ -661,6 +665,9 @@ def main():
                                 help='Force refresh of data')
     feed_parser.add_argument('--log-level', type=str,
                              help='Logging level', default='INFO')
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
     
     sites_parser = subparsers.add_parser('sites', help="List USGS sites")
     sites_parser.add_argument('--state', type=str, help='USGS state code to poll sites for.', required=False)
@@ -730,7 +737,8 @@ def main():
             last_polled_file=args.last_polled_file,
             state=args.state,
             force_site_refresh=args.force_site_refresh,
-            force_data_refresh=args.force_data_refresh
+            force_data_refresh=args.force_data_refresh,
+            once=args.once
         )
 
         asyncio.run(poller.poll_and_send())

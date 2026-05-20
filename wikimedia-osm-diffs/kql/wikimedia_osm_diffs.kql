@@ -1,0 +1,197 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [MapChange] (
+   [change_type]: string,
+   [element_type]: string,
+   [element_id]: long,
+   [version]: int,
+   [timestamp]: datetime,
+   [changeset_id]: long,
+   [user_name]: string,
+   [user_id]: long,
+   [latitude]: real,
+   [longitude]: real,
+   [tags]: string,
+   [sequence_number]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MapChange] docstring "{\"description\": \"An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively.\"}";
+
+.alter table [MapChange] column-docstrings (
+   [change_type]: "{\"description\": \"The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections.\"}",
+   [element_type]: "{\"description\": \"The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements.\"}",
+   [element_id]: "{\"description\": \"The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity.\"}",
+   [version]: "{\"description\": \"The version number of this element. Each edit to an element increments the version by one.\"}",
+   [timestamp]: "{\"description\": \"The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML.\"}",
+   [changeset_id]: "{\"description\": \"The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user.\"}",
+   [user_name]: "{\"description\": \"The display name of the OSM user who made this edit. May be null for redacted or anonymous edits.\"}",
+   [user_id]: "{\"description\": \"The numeric user identifier of the OSM contributor. May be null for redacted or anonymous edits.\"}",
+   [latitude]: "{\"description\": \"The WGS-84 latitude of the node in decimal degrees. Present only when element_type is node; null for ways and relations.\"}",
+   [longitude]: "{\"description\": \"The WGS-84 longitude of the node in decimal degrees. Present only when element_type is node; null for ways and relations.\"}",
+   [tags]: "{\"description\": \"JSON-encoded object of key-value tag pairs attached to this element. Tags describe the element's real-world features such as name, highway type, or building classification. Encoded as a JSON string because xreg does not natively support map types.\"}",
+   [sequence_number]: "{\"description\": \"The replication sequence number of the minutely diff file that contained this change. Useful for correlating changes back to specific replication state.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MapChange] ingestion json mapping "MapChange_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "change_type", "path": "$.change_type"},
+  {"column": "element_type", "path": "$.element_type"},
+  {"column": "element_id", "path": "$.element_id"},
+  {"column": "version", "path": "$.version"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "changeset_id", "path": "$.changeset_id"},
+  {"column": "user_name", "path": "$.user_name"},
+  {"column": "user_id", "path": "$.user_id"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "tags", "path": "$.tags"},
+  {"column": "sequence_number", "path": "$.sequence_number"},
+]
+```
+
+.create-or-alter table [MapChange] ingestion json mapping "MapChange_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "change_type", "path": "$.data.change_type"},
+  {"column": "element_type", "path": "$.data.element_type"},
+  {"column": "element_id", "path": "$.data.element_id"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "changeset_id", "path": "$.data.changeset_id"},
+  {"column": "user_name", "path": "$.data.user_name"},
+  {"column": "user_id", "path": "$.data.user_id"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "tags", "path": "$.data.tags"},
+  {"column": "sequence_number", "path": "$.data.sequence_number"},
+]
+```
+
+.drop materialized-view MapChangeLatest ifexists;
+
+.create materialized-view with (backfill=true) MapChangeLatest on table MapChange {
+    MapChange | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MapChange] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Org.OpenStreetMap.Diffs.MapChange') | project['change_type'] = tostring(data.['change_type']),['element_type'] = tostring(data.['element_type']),['element_id'] = tolong(data.['element_id']),['version'] = toint(data.['version']),['timestamp'] = todatetime(data.['timestamp']),['changeset_id'] = tolong(data.['changeset_id']),['user_name'] = tostring(data.['user_name']),['user_id'] = tolong(data.['user_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['tags'] = tostring(data.['tags']),['sequence_number'] = tolong(data.['sequence_number']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ReplicationState] (
+   [sequence_number]: long,
+   [timestamp]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ReplicationState] docstring "{\"description\": \"The current replication state of the OpenStreetMap minutely diff feed. Published once per poll cycle. The sequence_number and timestamp are parsed from the Java-properties-style state.txt file at https://planet.openstreetmap.org/replication/minute/state.txt.\"}";
+
+.alter table [ReplicationState] column-docstrings (
+   [sequence_number]: "{\"description\": \"The monotonically increasing sequence number of the latest processed minutely diff file. Each diff file corresponds to exactly one sequence number.\"}",
+   [timestamp]: "{\"description\": \"The UTC timestamp associated with the replication state, indicating the point in time up to which the diff file covers OSM edits.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ReplicationState] ingestion json mapping "ReplicationState_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sequence_number", "path": "$.sequence_number"},
+  {"column": "timestamp", "path": "$.timestamp"},
+]
+```
+
+.create-or-alter table [ReplicationState] ingestion json mapping "ReplicationState_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sequence_number", "path": "$.data.sequence_number"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+]
+```
+
+.drop materialized-view ReplicationStateLatest ifexists;
+
+.create materialized-view with (backfill=true) ReplicationStateLatest on table ReplicationState {
+    ReplicationState | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ReplicationState] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Org.OpenStreetMap.Diffs.ReplicationState') | project['sequence_number'] = tolong(data.['sequence_number']),['timestamp'] = todatetime(data.['timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

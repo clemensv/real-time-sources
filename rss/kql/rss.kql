@@ -1,0 +1,148 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [FeedItem] (
+   [author]: dynamic,
+   [publisher]: dynamic,
+   [summary]: dynamic,
+   [title]: dynamic,
+   [source]: dynamic,
+   [content]: dynamic,
+   [enclosures]: dynamic,
+   [published]: long,
+   [updated]: long,
+   [created]: long,
+   [expired]: long,
+   [id]: string,
+   [license]: string,
+   [comments]: string,
+   [contributors]: dynamic,
+   [links]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FeedItem] docstring "{\"description\": \"Represents an item in an RSS feed, containing metadata such as the author, title, and content.\"}";
+
+.alter table [FeedItem] column-docstrings (
+   [author]: "{\"description\": \"Information about the feed item's author.\"}",
+   [publisher]: "{\"description\": \"Information about the feed item's publisher.\"}",
+   [summary]: "{\"description\": \"A short summary of the feed item.\"}",
+   [title]: "{\"description\": \"The feed item's title.\"}",
+   [source]: "{\"description\": \"Information about the source feed of the item.\"}",
+   [content]: "{\"description\": \"The content of the feed item, potentially including multiple formats.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/FeedItemContent\"}, \"default\": null, \"description\": \"The content of the feed item, potentially including multiple formats.\"}}",
+   [enclosures]: "{\"description\": \"Media attachments associated with the feed item.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/FeedItemEnclosure\"}, \"default\": null, \"description\": \"Media attachments associated with the feed item.\"}}",
+   [published]: "{\"description\": \"The publication date and time of the feed item.\"}",
+   [updated]: "{\"description\": \"The last updated date and time of the feed item.\"}",
+   [created]: "{\"description\": \"The creation date and time of the feed item.\"}",
+   [expired]: "{\"description\": \"The expiration date and time of the feed item.\"}",
+   [id]: "{\"description\": \"A unique identifier for the feed item.\"}",
+   [license]: "{\"description\": \"License information for the feed item.\"}",
+   [comments]: "{\"description\": \"A link to comments or feedback related to the feed item.\"}",
+   [contributors]: "{\"description\": \"A list of individuals who contributed to the feed item.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor\"}, \"default\": null, \"description\": \"A list of individuals who contributed to the feed item.\"}}",
+   [links]: "{\"description\": \"A collection of links related to the feed item.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/Link\"}, \"default\": null, \"description\": \"A collection of links related to the feed item.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FeedItem] ingestion json mapping "FeedItem_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "author", "path": "$.author"},
+  {"column": "publisher", "path": "$.publisher"},
+  {"column": "summary", "path": "$.summary"},
+  {"column": "title", "path": "$.title"},
+  {"column": "source", "path": "$.source"},
+  {"column": "content", "path": "$.content"},
+  {"column": "enclosures", "path": "$.enclosures"},
+  {"column": "published", "path": "$.published"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "created", "path": "$.created"},
+  {"column": "expired", "path": "$.expired"},
+  {"column": "id", "path": "$.id"},
+  {"column": "license", "path": "$.license"},
+  {"column": "comments", "path": "$.comments"},
+  {"column": "contributors", "path": "$.contributors"},
+  {"column": "links", "path": "$.links"},
+]
+```
+
+.create-or-alter table [FeedItem] ingestion json mapping "FeedItem_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "author", "path": "$.data.author"},
+  {"column": "publisher", "path": "$.data.publisher"},
+  {"column": "summary", "path": "$.data.summary"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "source", "path": "$.data.source"},
+  {"column": "content", "path": "$.data.content"},
+  {"column": "enclosures", "path": "$.data.enclosures"},
+  {"column": "published", "path": "$.data.published"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "created", "path": "$.data.created"},
+  {"column": "expired", "path": "$.data.expired"},
+  {"column": "id", "path": "$.data.id"},
+  {"column": "license", "path": "$.data.license"},
+  {"column": "comments", "path": "$.data.comments"},
+  {"column": "contributors", "path": "$.data.contributors"},
+  {"column": "links", "path": "$.data.links"},
+]
+```
+
+.drop materialized-view FeedItemLatest ifexists;
+
+.create materialized-view with (backfill=true) FeedItemLatest on table FeedItem {
+    FeedItem | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FeedItem] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.RssFeeds.FeedItem') | project['author'] = todynamic(data.['author']),['publisher'] = todynamic(data.['publisher']),['summary'] = todynamic(data.['summary']),['title'] = todynamic(data.['title']),['source'] = todynamic(data.['source']),['content'] = todynamic(data.['content']),['enclosures'] = todynamic(data.['enclosures']),['published'] = tolong(data.['published']),['updated'] = tolong(data.['updated']),['created'] = tolong(data.['created']),['expired'] = tolong(data.['expired']),['id'] = tostring(data.['id']),['license'] = tostring(data.['license']),['comments'] = tostring(data.['comments']),['contributors'] = todynamic(data.['contributors']),['links'] = todynamic(data.['links']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

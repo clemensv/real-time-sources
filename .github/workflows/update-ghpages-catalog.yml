@@ -85,7 +85,8 @@ jobs:
                   f"cat: {js_string(item['cat'])}, "
                   f"key: {js_bool(item['key'])}, "
                   f"desc: {js_string(item['desc'])}, "
-                  f"kql: {js_bool(item['kql'])} "
+                  f"kql: {js_bool(item['kql'])}, "
+                  f"notebook: {js_bool(item.get('notebook', False))} "
                   '},'
               )
 

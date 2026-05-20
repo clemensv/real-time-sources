@@ -205,9 +205,13 @@ class USGSEarthquakePoller:
             with open(self.last_polled_file, 'w', encoding='utf-8') as file:
                 json.dump(seen_ids, file)
 
-    async def poll_and_send(self):
+    async def poll_and_send(self, once: bool = False):
         """
         Continuously poll the USGS earthquake feed and send new/updated events to Kafka.
+
+        Args:
+            once: If True, exit after one polling cycle. Useful for scheduled
+                execution (e.g. Fabric notebooks).
         """
         seen_ids = self.load_seen_event_ids()
         poll_interval = timedelta(minutes=1)
@@ -255,6 +259,10 @@ class USGSEarthquakePoller:
             # Prune old events from the seen set (keep last 30 days worth)
             cutoff = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
             seen_ids = {eid: ts for eid, ts in seen_ids.items() if ts >= cutoff}
+
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
 
             elapsed = datetime.now(timezone.utc) - start_poll_time
             remaining = poll_interval - elapsed
@@ -332,6 +340,9 @@ def main():
                              help='Minimum magnitude filter (client-side)')
     feed_parser.add_argument('--log-level', type=str,
                              help='Logging level', default='INFO')
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     events_parser = subparsers.add_parser('events', help="List recent earthquake events")
     events_parser.add_argument('--feed', type=str, default='all_hour',
@@ -401,7 +412,7 @@ def main():
             min_magnitude=args.min_magnitude
         )
 
-        asyncio.run(poller.poll_and_send())
+        asyncio.run(poller.poll_and_send(once=args.once))
     else:
         parser.print_help()
 

@@ -1,4 +1,4 @@
-from .bicyclecount import BicycleCount
 from .counter import Counter
+from .bicyclecount import BicycleCount
 
-__all__ = ["BicycleCount", "Counter"]
+__all__ = ["Counter", "BicycleCount"]

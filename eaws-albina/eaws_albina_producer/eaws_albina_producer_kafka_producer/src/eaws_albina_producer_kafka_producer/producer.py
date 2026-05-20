@@ -7,6 +7,7 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+from eaws_albina_producer_data import AvalancheRegion
 from eaws_albina_producer_data import AvalancheBulletin
 
 class OrgEAWSALBINABulletinsEventProducer:
@@ -39,6 +40,38 @@ class OrgEAWSALBINABulletinsEventProducer:
         elif default_key is not None:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_org_eaws_albina_avalanche_region(self,_region_id : str, data: AvalancheRegion, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AvalancheRegion], str]=None) -> None:
+        """
+        Sends the 'org.EAWS.ALBINA.AvalancheRegion' event to the Kafka topic
+
+        Args:
+            _region_id(str):  Value for placeholder region_id in attribute subject
+            data: (AvalancheRegion): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, AvalancheRegion], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{region_id}'
+        """
+        kafka_key = "{region_id}".format(region_id=_region_id)
+        attributes = {
+             "type":"org.EAWS.ALBINA.AvalancheRegion",
+             "source":"https://avalanche.report",
+             "subject":"{region_id}".format(region_id = _region_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
 
     def send_org_eaws_albina_avalanche_bulletin(self,_region_id : str, data: AvalancheBulletin, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AvalancheBulletin], str]=None) -> None:
         """

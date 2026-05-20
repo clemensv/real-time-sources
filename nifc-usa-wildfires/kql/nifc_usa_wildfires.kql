@@ -1,0 +1,200 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [WildfireIncident] (
+   [irwin_id]: string,
+   [incident_name]: string,
+   [unique_fire_identifier]: string,
+   [incident_type_category]: string,
+   [incident_type_kind]: string,
+   [fire_discovery_datetime]: string,
+   [daily_acres]: real,
+   [calculated_acres]: real,
+   [discovery_acres]: real,
+   [percent_contained]: real,
+   [poo_state]: string,
+   [poo_county]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [fire_cause]: string,
+   [fire_cause_general]: string,
+   [gacc]: string,
+   [total_incident_personnel]: int,
+   [incident_management_organization]: string,
+   [fire_mgmt_complexity]: string,
+   [residences_destroyed]: int,
+   [other_structures_destroyed]: int,
+   [injuries]: int,
+   [fatalities]: int,
+   [containment_datetime]: string,
+   [control_datetime]: string,
+   [fire_out_datetime]: string,
+   [final_acres]: real,
+   [modified_on_datetime]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WildfireIncident] docstring "{\"description\": \"Active wildfire incident data from the National Interagency Fire Center (NIFC) IRWIN system, published via ArcGIS Feature Service.\"}";
+
+.alter table [WildfireIncident] column-docstrings (
+   [irwin_id]: "{\"description\": \"IRWIN incident identifier, a globally unique GUID assigned by the Integrated Reporting of Wildland-Fire Information (IRWIN) system. Primary key for wildfire incidents.\"}",
+   [incident_name]: "{\"description\": \"The name assigned to the wildfire incident (e.g. 'Pinnacle', 'Backbone').\"}",
+   [unique_fire_identifier]: "{\"description\": \"Unique fire identifier string assigned by the dispatching agency (e.g. '2025-ORRSF-000389'). May be null for incidents not yet assigned.\"}",
+   [incident_type_category]: "{\"description\": \"Category of the incident type: WF (Wildfire), RX (Prescribed Fire), or other NWCG-defined categories.\"}",
+   [incident_type_kind]: "{\"description\": \"Kind of incident from NWCG classification (e.g. 'FI' for Fire).\"}",
+   [fire_discovery_datetime]: "{\"description\": \"Date and time when the fire was first discovered, in ISO 8601 format. Converted from ArcGIS epoch milliseconds.\"}",
+   [daily_acres]: "{\"description\": \"Most recently reported fire size in acres from the daily situation report.\"}",
+   [calculated_acres]: "{\"description\": \"GIS-calculated fire area in acres, derived from perimeter mapping when available.\"}",
+   [discovery_acres]: "{\"description\": \"Size of the fire in acres at the time of initial discovery.\"}",
+   [percent_contained]: "{\"description\": \"Percentage of the fire perimeter that is contained (0-100). Null if not reported.\"}",
+   [poo_state]: "{\"description\": \"US state or territory where the point of origin is located, as a two-letter code prefixed with 'US-' (e.g. 'US-OR', 'US-CA').\"}",
+   [poo_county]: "{\"description\": \"County where the point of origin of the fire is located (e.g. 'Curry', 'Kings').\"}",
+   [latitude]: "{\"description\": \"Latitude of the fire incident point of origin in decimal degrees (WGS 84).\"}",
+   [longitude]: "{\"description\": \"Longitude of the fire incident point of origin in decimal degrees (WGS 84).\"}",
+   [fire_cause]: "{\"description\": \"General cause of the fire (e.g. 'Natural', 'Human', 'Undetermined').\"}",
+   [fire_cause_general]: "{\"description\": \"Specific fire cause category when known (e.g. 'Lightning', 'Arson', 'Equipment Use').\"}",
+   [gacc]: "{\"description\": \"Geographic Area Coordination Center responsible for the incident (e.g. 'NWCC', 'OSCC', 'EACC'). GACCs coordinate wildfire management resources across regions.\"}",
+   [total_incident_personnel]: "{\"description\": \"Total number of personnel assigned to the incident including all resources.\"}",
+   [incident_management_organization]: "{\"description\": \"Name or type of the incident management organization or team managing the fire.\"}",
+   [fire_mgmt_complexity]: "{\"description\": \"Complexity level of the fire management effort, typically a Type designation (e.g. 'Type 1' for the most complex).\"}",
+   [residences_destroyed]: "{\"description\": \"Number of residential structures destroyed by the fire.\"}",
+   [other_structures_destroyed]: "{\"description\": \"Number of non-residential structures (outbuildings, commercial, etc.) destroyed by the fire.\"}",
+   [injuries]: "{\"description\": \"Number of injuries reported in connection with the incident.\"}",
+   [fatalities]: "{\"description\": \"Number of fatalities reported in connection with the incident.\"}",
+   [containment_datetime]: "{\"description\": \"Date and time the fire was fully contained, in ISO 8601 format. Null if not yet contained.\"}",
+   [control_datetime]: "{\"description\": \"Date and time the fire was declared under control, in ISO 8601 format. Null if not yet controlled.\"}",
+   [fire_out_datetime]: "{\"description\": \"Date and time the fire was declared out, in ISO 8601 format. Null if the fire is still active.\"}",
+   [final_acres]: "{\"description\": \"Final fire size in acres after the fire is declared out.\"}",
+   [modified_on_datetime]: "{\"description\": \"Date and time when the incident record was last modified in the IRWIN system, in ISO 8601 format.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WildfireIncident] ingestion json mapping "WildfireIncident_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "irwin_id", "path": "$.irwin_id"},
+  {"column": "incident_name", "path": "$.incident_name"},
+  {"column": "unique_fire_identifier", "path": "$.unique_fire_identifier"},
+  {"column": "incident_type_category", "path": "$.incident_type_category"},
+  {"column": "incident_type_kind", "path": "$.incident_type_kind"},
+  {"column": "fire_discovery_datetime", "path": "$.fire_discovery_datetime"},
+  {"column": "daily_acres", "path": "$.daily_acres"},
+  {"column": "calculated_acres", "path": "$.calculated_acres"},
+  {"column": "discovery_acres", "path": "$.discovery_acres"},
+  {"column": "percent_contained", "path": "$.percent_contained"},
+  {"column": "poo_state", "path": "$.poo_state"},
+  {"column": "poo_county", "path": "$.poo_county"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "fire_cause", "path": "$.fire_cause"},
+  {"column": "fire_cause_general", "path": "$.fire_cause_general"},
+  {"column": "gacc", "path": "$.gacc"},
+  {"column": "total_incident_personnel", "path": "$.total_incident_personnel"},
+  {"column": "incident_management_organization", "path": "$.incident_management_organization"},
+  {"column": "fire_mgmt_complexity", "path": "$.fire_mgmt_complexity"},
+  {"column": "residences_destroyed", "path": "$.residences_destroyed"},
+  {"column": "other_structures_destroyed", "path": "$.other_structures_destroyed"},
+  {"column": "injuries", "path": "$.injuries"},
+  {"column": "fatalities", "path": "$.fatalities"},
+  {"column": "containment_datetime", "path": "$.containment_datetime"},
+  {"column": "control_datetime", "path": "$.control_datetime"},
+  {"column": "fire_out_datetime", "path": "$.fire_out_datetime"},
+  {"column": "final_acres", "path": "$.final_acres"},
+  {"column": "modified_on_datetime", "path": "$.modified_on_datetime"},
+]
+```
+
+.create-or-alter table [WildfireIncident] ingestion json mapping "WildfireIncident_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "irwin_id", "path": "$.data.irwin_id"},
+  {"column": "incident_name", "path": "$.data.incident_name"},
+  {"column": "unique_fire_identifier", "path": "$.data.unique_fire_identifier"},
+  {"column": "incident_type_category", "path": "$.data.incident_type_category"},
+  {"column": "incident_type_kind", "path": "$.data.incident_type_kind"},
+  {"column": "fire_discovery_datetime", "path": "$.data.fire_discovery_datetime"},
+  {"column": "daily_acres", "path": "$.data.daily_acres"},
+  {"column": "calculated_acres", "path": "$.data.calculated_acres"},
+  {"column": "discovery_acres", "path": "$.data.discovery_acres"},
+  {"column": "percent_contained", "path": "$.data.percent_contained"},
+  {"column": "poo_state", "path": "$.data.poo_state"},
+  {"column": "poo_county", "path": "$.data.poo_county"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "fire_cause", "path": "$.data.fire_cause"},
+  {"column": "fire_cause_general", "path": "$.data.fire_cause_general"},
+  {"column": "gacc", "path": "$.data.gacc"},
+  {"column": "total_incident_personnel", "path": "$.data.total_incident_personnel"},
+  {"column": "incident_management_organization", "path": "$.data.incident_management_organization"},
+  {"column": "fire_mgmt_complexity", "path": "$.data.fire_mgmt_complexity"},
+  {"column": "residences_destroyed", "path": "$.data.residences_destroyed"},
+  {"column": "other_structures_destroyed", "path": "$.data.other_structures_destroyed"},
+  {"column": "injuries", "path": "$.data.injuries"},
+  {"column": "fatalities", "path": "$.data.fatalities"},
+  {"column": "containment_datetime", "path": "$.data.containment_datetime"},
+  {"column": "control_datetime", "path": "$.data.control_datetime"},
+  {"column": "fire_out_datetime", "path": "$.data.fire_out_datetime"},
+  {"column": "final_acres", "path": "$.data.final_acres"},
+  {"column": "modified_on_datetime", "path": "$.data.modified_on_datetime"},
+]
+```
+
+.drop materialized-view WildfireIncidentLatest ifexists;
+
+.create materialized-view with (backfill=true) WildfireIncidentLatest on table WildfireIncident {
+    WildfireIncident | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WildfireIncident] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Gov.NIFC.Wildfires.WildfireIncident') | project['irwin_id'] = tostring(data.['irwin_id']),['incident_name'] = tostring(data.['incident_name']),['unique_fire_identifier'] = tostring(data.['unique_fire_identifier']),['incident_type_category'] = tostring(data.['incident_type_category']),['incident_type_kind'] = tostring(data.['incident_type_kind']),['fire_discovery_datetime'] = tostring(data.['fire_discovery_datetime']),['daily_acres'] = toreal(data.['daily_acres']),['calculated_acres'] = toreal(data.['calculated_acres']),['discovery_acres'] = toreal(data.['discovery_acres']),['percent_contained'] = toreal(data.['percent_contained']),['poo_state'] = tostring(data.['poo_state']),['poo_county'] = tostring(data.['poo_county']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['fire_cause'] = tostring(data.['fire_cause']),['fire_cause_general'] = tostring(data.['fire_cause_general']),['gacc'] = tostring(data.['gacc']),['total_incident_personnel'] = toint(data.['total_incident_personnel']),['incident_management_organization'] = tostring(data.['incident_management_organization']),['fire_mgmt_complexity'] = tostring(data.['fire_mgmt_complexity']),['residences_destroyed'] = toint(data.['residences_destroyed']),['other_structures_destroyed'] = toint(data.['other_structures_destroyed']),['injuries'] = toint(data.['injuries']),['fatalities'] = toint(data.['fatalities']),['containment_datetime'] = tostring(data.['containment_datetime']),['control_datetime'] = tostring(data.['control_datetime']),['fire_out_datetime'] = tostring(data.['fire_out_datetime']),['final_acres'] = toreal(data.['final_acres']),['modified_on_datetime'] = tostring(data.['modified_on_datetime']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

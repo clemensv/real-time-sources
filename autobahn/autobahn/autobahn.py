@@ -747,7 +747,7 @@ class AutobahnPoller:
         self.save_state()
         return changes_by_family
 
-    async def poll_and_send(self) -> None:
+    async def poll_and_send(self, once: bool = False) -> None:
         timeout = aiohttp.ClientTimeout(total=60)
         async with aiohttp.ClientSession(timeout=timeout) as session:
             while True:
@@ -758,6 +758,10 @@ class AutobahnPoller:
                     logger.info("Autobahn cycle complete: %s", summary)
                 else:
                     logger.info("Autobahn cycle complete: no changes")
+
+                if once:
+                    logger.info("--once mode: exiting after first polling cycle")
+                    return
 
                 elapsed = datetime.now(timezone.utc) - cycle_started
                 remaining = timedelta(seconds=self.poll_interval_seconds) - elapsed
@@ -854,6 +858,7 @@ def main() -> None:
     feed_parser.add_argument("--sasl-password", type=str, default=None, help="SASL password")
     feed_parser.add_argument("--connection-string", type=str, default=None, help="Event Hubs or Fabric Event Streams connection string")
     feed_parser.add_argument("--log-level", type=str, default=None, help="Logging level")
+    feed_parser.add_argument("--once", action="store_true", help="Run a single polling cycle and exit (for scheduled hosts like Fabric notebooks)")
 
     args = parser.parse_args()
     if not args.subcommand:
@@ -887,7 +892,8 @@ def main() -> None:
         roads=roads,
         request_concurrency=request_concurrency,
     )
-    asyncio.run(poller.poll_and_send())
+    once_flag = bool(getattr(args, "once", False)) or os.getenv("ONCE_MODE", "").lower() in {"1", "true", "yes"}
+    asyncio.run(poller.poll_and_send(once=once_flag))
 
 
 if __name__ == "__main__":

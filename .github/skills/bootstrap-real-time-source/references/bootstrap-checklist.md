@@ -20,7 +20,13 @@
 - runtime package like `<source>/<source>.py` or `bridge.py`
 - generated producer output like `<source>_producer/` or `<source>_producer_tmp/`
 - `tests/`
+- `notebook/<source>-feed.ipynb` — **required for poll-based sources**; copied from `pegelonline/notebook/pegelonline-feed.ipynb` with the substitutions from the `notebook-feeder-retrofit` skill. Skipped for streaming bridges (WebSocket / MQTT / raw TCP / SSE).
 - optional `azure-template.json`, `generate-template.ps1`, `kql/`, or `fabric/`
+
+In addition:
+
+- `catalog.json` at the repo root must list the new source. For poll-based sources, set `"notebook": true` after the `kql` field so the gh-pages portal exposes the Fabric Notebook deploy button.
+- The bridge module must support `--once` (preferred) or `ONCE_MODE=true` so the notebook can run a single polling cycle on a Fabric schedule.
 
 ## Repo Conventions
 
@@ -40,6 +46,7 @@
 - The container can be started with repo-standard Kafka configuration.
 - README, CONTAINER, and EVENTS docs match the actual behavior.
 - The Docker E2E test validates both reference and telemetry event types where applicable.
+- **For poll-based sources:** `<source>/notebook/<source>-feed.ipynb` exists, declares the five required placeholders (`EVENTSTREAM_NAME`, `STATE_FILE`, `POLLING_INTERVAL`, `ONCE_MODE`, `WORKSPACE_ID`), contains no forbidden patterns (`asyncio.run(`, `%pip install`, hardcoded `CONNECTION_STRING=`), and `catalog.json` has `"notebook": true` for the source. The bridge accepts `--once` and exits after one cycle.
 
 ## Common Mistakes
 
@@ -51,3 +58,4 @@
 - **Forgetting that multiple message groups produce multiple generated producer classes.** If the contract splits the source into several message groups, plan for the runtime to import and instantiate all corresponding `*EventProducer` classes. Do not assume one generated producer wrapper owns every `send_*` method.
 - Adding a source folder without container docs or without a generator script.
 - Copying a superficially similar source when the transport pattern is wrong.
+- **Shipping a poll-based source without the notebook artifact and `catalog.json` `notebook: true` flag.** The Fabric Notebook hosting path is a first-class deployment option in this repo; new poll-based sources must expose it from day one rather than being retrofitted later. Forgetting `--once` support in the bridge is the same mistake — the notebook flow requires single-cycle execution.

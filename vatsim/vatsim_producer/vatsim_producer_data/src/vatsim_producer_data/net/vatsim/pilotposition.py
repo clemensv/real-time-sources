@@ -13,7 +13,6 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -38,7 +37,7 @@ class PilotPosition:
         route (typing.Optional[str]): Route string from flight plan. Null if no flight plan.
         cruise_altitude (typing.Optional[str]): Planned cruise altitude. Null if no flight plan.
         pilot_rating (int): VATSIM pilot rating bitmask.
-        last_updated (datetime.datetime): UTC timestamp of last position update."""
+        last_updated (str): UTC timestamp of last position update."""
     
     cid: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cid"))
     callsign: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
@@ -56,10 +55,10 @@ class PilotPosition:
     route: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route"))
     cruise_altitude: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cruise_altitude"))
     pilot_rating: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pilot_rating"))
-    last_updated: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_updated"))
+    last_updated: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_updated"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"PilotPosition\", \"namespace\": \"net.vatsim\", \"doc\": \"Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.\", \"fields\": [{\"name\": \"cid\", \"type\": \"int\", \"doc\": \"VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID.\"}, {\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"ATC-style callsign chosen by the pilot for this session.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Aircraft latitude in decimal degrees (WGS-84).\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Aircraft longitude in decimal degrees (WGS-84).\"}, {\"name\": \"altitude\", \"type\": \"int\", \"doc\": \"Indicated altitude in feet above mean sea level.\"}, {\"name\": \"groundspeed\", \"type\": \"int\", \"doc\": \"Ground speed in knots.\"}, {\"name\": \"heading\", \"type\": \"int\", \"doc\": \"Magnetic heading in degrees (0-359).\"}, {\"name\": \"transponder\", \"type\": \"string\", \"doc\": \"Four-digit transponder (squawk) code.\"}, {\"name\": \"qnh_mb\", \"type\": \"int\", \"doc\": \"Altimeter setting (QNH) in millibars.\"}, {\"name\": \"flight_rules\", \"type\": [\"null\", \"string\"], \"doc\": \"Flight rules: I or V. Null if no flight plan.\", \"default\": null}, {\"name\": \"aircraft_short\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO aircraft type designator. Null if no flight plan.\", \"default\": null}, {\"name\": \"departure\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO departure airport code. Null if no flight plan.\", \"default\": null}, {\"name\": \"arrival\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO arrival airport code. Null if no flight plan.\", \"default\": null}, {\"name\": \"route\", \"type\": [\"null\", \"string\"], \"doc\": \"Route string from flight plan. Null if no flight plan.\", \"default\": null}, {\"name\": \"cruise_altitude\", \"type\": [\"null\", \"string\"], \"doc\": \"Planned cruise altitude. Null if no flight plan.\", \"default\": null}, {\"name\": \"pilot_rating\", \"type\": \"int\", \"doc\": \"VATSIM pilot rating bitmask.\"}, {\"name\": \"last_updated\", \"type\": {\"type\": \"long\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"UTC timestamp of last position update.\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"PilotPosition\", \"namespace\": \"net.vatsim\", \"doc\": \"Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.\", \"fields\": [{\"name\": \"cid\", \"type\": \"int\", \"doc\": \"VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID.\"}, {\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"ATC-style callsign chosen by the pilot for this session.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Aircraft latitude in decimal degrees (WGS-84).\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Aircraft longitude in decimal degrees (WGS-84).\"}, {\"name\": \"altitude\", \"type\": \"int\", \"doc\": \"Indicated altitude in feet above mean sea level.\"}, {\"name\": \"groundspeed\", \"type\": \"int\", \"doc\": \"Ground speed in knots.\"}, {\"name\": \"heading\", \"type\": \"int\", \"doc\": \"Magnetic heading in degrees (0-359).\"}, {\"name\": \"transponder\", \"type\": \"string\", \"doc\": \"Four-digit transponder (squawk) code.\"}, {\"name\": \"qnh_mb\", \"type\": \"int\", \"doc\": \"Altimeter setting (QNH) in millibars.\"}, {\"name\": \"flight_rules\", \"type\": [\"null\", \"string\"], \"doc\": \"Flight rules: I or V. Null if no flight plan.\", \"default\": null}, {\"name\": \"aircraft_short\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO aircraft type designator. Null if no flight plan.\", \"default\": null}, {\"name\": \"departure\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO departure airport code. Null if no flight plan.\", \"default\": null}, {\"name\": \"arrival\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO arrival airport code. Null if no flight plan.\", \"default\": null}, {\"name\": \"route\", \"type\": [\"null\", \"string\"], \"doc\": \"Route string from flight plan. Null if no flight plan.\", \"default\": null}, {\"name\": \"cruise_altitude\", \"type\": [\"null\", \"string\"], \"doc\": \"Planned cruise altitude. Null if no flight plan.\", \"default\": null}, {\"name\": \"pilot_rating\", \"type\": \"int\", \"doc\": \"VATSIM pilot rating bitmask.\"}, {\"name\": \"last_updated\", \"type\": \"string\", \"doc\": \"UTC timestamp of last position update.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -80,8 +79,7 @@ class PilotPosition:
         self.route=str(self.route) if self.route else None
         self.cruise_altitude=str(self.cruise_altitude) if self.cruise_altitude else None
         self.pilot_rating=int(self.pilot_rating)
-        value_last_updated = self.last_updated
-        self.last_updated = value_last_updated
+        self.last_updated=str(self.last_updated)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PilotPosition':

@@ -63,3 +63,7 @@ configured.
 - Dataset page: https://data.seattle.gov/Built-Environment/Street-Closures/ium9-iqtc
 - SODA endpoint: https://data.seattle.gov/resource/ium9-iqtc.json
 - API docs: https://dev.socrata.com/foundry/data.seattle.gov/ium9-iqtc
+
+## Fabric notebook hosting
+
+This bridge can also run as a scheduled Microsoft Fabric notebook (`notebook/seattle-street-closures-feed.ipynb`); deploy it via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).

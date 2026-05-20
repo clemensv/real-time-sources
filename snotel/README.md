@@ -64,6 +64,10 @@ Requires `xrcg` 0.10.1.
 - **Coverage**: 900+ stations across western US and Alaska
 - **License**: US Government Public Domain
 
+## Fabric notebook hosting
+
+For scheduled execution as a Microsoft Fabric notebook (instead of a long-running container), deploy with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1). The notebook at `snotel/notebook/snotel-feed.ipynb` runs `snotel feed --once` per scheduled invocation and writes dedupe state to OneLake.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

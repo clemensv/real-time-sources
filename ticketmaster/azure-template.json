@@ -45,8 +45,9 @@
     },
     "ticketmasterApiKey": {
       "type": "secureString",
+      "defaultValue": "",
       "metadata": {
-        "description": "Ticketmaster Discovery API consumer key / API key."
+        "description": "Ticketmaster Discovery API consumer key / API key. Leave blank to deploy template only; bridge will exit until a key is supplied via redeploy."
       }
     },
     "countryCodes": {

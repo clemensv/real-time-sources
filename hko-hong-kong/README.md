@@ -54,3 +54,9 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhko-hong-kong%2Fazure-template-with-eventhub.json)
+
+### Option 3: Fabric notebook hosting
+
+Run this feeder as a scheduled Microsoft Fabric notebook (no container required) via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+which uploads [`notebook/hko-hong-kong-feed.ipynb`](notebook/hko-hong-kong-feed.ipynb) and binds it to a Lakehouse, KQL database, and Event Stream in your Fabric workspace.

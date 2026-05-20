@@ -58,6 +58,10 @@ the payload carries both that public community identity and the upstream
 - Deduplicates forecasts by community, publication time, and forecast period
 - Refreshes reference data every 24 hours by default
 
+## Fabric notebook hosting
+
+- A scheduled Fabric notebook variant is available at [`notebook/canada-aqhi-feed.ipynb`](notebook/canada-aqhi-feed.ipynb) and can be deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Installation
 
 ```powershell

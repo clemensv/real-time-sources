@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [SensorInfo] (
+.create-merge table ['io.sensor.community.SensorInfo'] (
    [sensor_id]: int,
    [sensor_type_id]: int,
    [sensor_type_name]: string,
@@ -44,9 +44,9 @@
    [___subject]: string
 );
 
-.alter table [SensorInfo] docstring "{\"description\": \"Schema for Sensor.Community sensor reference data, capturing the stable sensor identifier, hardware type, and latest known location metadata published in the Airrohr API payload.\"}";
+.alter table ['io.sensor.community.SensorInfo'] docstring "{\"description\": \"Schema for Sensor.Community sensor reference data, capturing the stable sensor identifier, hardware type, and latest known location metadata published in the Airrohr API payload.\"}";
 
-.alter table [SensorInfo] column-docstrings (
+.alter table ['io.sensor.community.SensorInfo'] column-docstrings (
    [sensor_id]: "{\"description\": \"Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.\"}",
    [sensor_type_id]: "{\"description\": \"Numeric upstream identifier for the sensor hardware type, such as the Sensor.Community type id for SDS011 or BME280.\"}",
    [sensor_type_name]: "{\"description\": \"Upstream sensor hardware type name published under sensor.sensor_type.name, for example SDS011, SPS30, BME280, or DHT22.\"}",
@@ -65,7 +65,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [SensorInfo] ingestion json mapping "SensorInfo_json_flat"
+.create-or-alter table ['io.sensor.community.SensorInfo'] ingestion json mapping "io.sensor.community.SensorInfo_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,7 +87,7 @@
 ]
 ```
 
-.create-or-alter table [SensorInfo] ingestion json mapping "SensorInfo_json_ce_structured"
+.create-or-alter table ['io.sensor.community.SensorInfo'] ingestion json mapping "io.sensor.community.SensorInfo_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -109,13 +109,13 @@
 ]
 ```
 
-.drop materialized-view SensorInfoLatest ifexists;
+.drop materialized-view ['io.sensor.community.SensorInfoLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SensorInfoLatest on table SensorInfo {
-    SensorInfo | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['io.sensor.community.SensorInfoLatest'] on table ['io.sensor.community.SensorInfo'] {
+    ['io.sensor.community.SensorInfo'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SensorInfo] policy update
+.alter table ['io.sensor.community.SensorInfo'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -126,7 +126,7 @@
 }]
 ```
 
-.create-merge table [SensorReading] (
+.create-merge table ['io.sensor.community.SensorReading'] (
    [sensor_id]: int,
    [timestamp]: string,
    [sensor_type_name]: string,
@@ -148,9 +148,9 @@
    [___subject]: string
 );
 
-.alter table [SensorReading] docstring "{\"description\": \"Schema for the latest normalized Sensor.Community telemetry reading for a single sensor and timestamp, covering particulate matter, temperature, humidity, pressure, and supported noise measurements.\"}";
+.alter table ['io.sensor.community.SensorReading'] docstring "{\"description\": \"Schema for the latest normalized Sensor.Community telemetry reading for a single sensor and timestamp, covering particulate matter, temperature, humidity, pressure, and supported noise measurements.\"}";
 
-.alter table [SensorReading] column-docstrings (
+.alter table ['io.sensor.community.SensorReading'] column-docstrings (
    [sensor_id]: "{\"description\": \"Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.\"}",
    [timestamp]: "{\"description\": \"UTC timestamp published by Sensor.Community for the reading in the format YYYY-MM-DD HH:mm:ss.\"}",
    [sensor_type_name]: "{\"description\": \"Upstream sensor hardware type name published under sensor.sensor_type.name for the device that emitted the reading.\"}",
@@ -172,7 +172,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [SensorReading] ingestion json mapping "SensorReading_json_flat"
+.create-or-alter table ['io.sensor.community.SensorReading'] ingestion json mapping "io.sensor.community.SensorReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -197,7 +197,7 @@
 ]
 ```
 
-.create-or-alter table [SensorReading] ingestion json mapping "SensorReading_json_ce_structured"
+.create-or-alter table ['io.sensor.community.SensorReading'] ingestion json mapping "io.sensor.community.SensorReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -222,13 +222,13 @@
 ]
 ```
 
-.drop materialized-view SensorReadingLatest ifexists;
+.drop materialized-view ['io.sensor.community.SensorReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SensorReadingLatest on table SensorReading {
-    SensorReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['io.sensor.community.SensorReadingLatest'] on table ['io.sensor.community.SensorReading'] {
+    ['io.sensor.community.SensorReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SensorReading] policy update
+.alter table ['io.sensor.community.SensorReading'] policy update
 ```
 [{
   "IsEnabled": true,

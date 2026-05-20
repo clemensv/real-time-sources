@@ -5,7 +5,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Switzerland — ~300 stations, FOEN",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "cdec-reservoirs",
@@ -13,7 +14,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "California — ~2,600 stations, DWR",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "chmi-hydro",
@@ -21,7 +23,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Czech Republic — CHMU",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "german-waters",
@@ -37,7 +40,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "France — ~6,300 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "imgw-hydro",
@@ -45,7 +49,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Poland — IMGW-PIB",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "ireland-opw-waterlevel",
@@ -53,7 +58,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Ireland — ~500 OPW hydrometric stations",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nepal-bipad-hydrology",
@@ -61,7 +67,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Nepal — Himalayan river basins, BIPAD",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "noaa",
@@ -77,7 +84,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — buoy observations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "king-county-marine",
@@ -85,7 +93,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Washington State / Puget Sound — buoy and mooring telemetry",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nve-hydro",
@@ -93,7 +102,8 @@
     "cat": "Hydrology",
     "key": true,
     "desc": "Norway — NVE (requires free API key)",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "pegelonline",
@@ -101,7 +111,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Germany — federal waterways, ~3,000 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "rws-waterwebservices",
@@ -109,7 +120,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Netherlands — ~785 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "smhi-hydro",
@@ -117,7 +129,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Sweden — SMHI",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "snotel",
@@ -125,7 +138,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Western US & Alaska — ~900 snowpack stations, NRCS",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "syke-hydro",
@@ -133,7 +147,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Finland — SYKE",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "uk-ea-flood-monitoring",
@@ -141,7 +156,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "England — ~4,000 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-iv",
@@ -149,7 +165,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — ~1.5M stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-nwis-wq",
@@ -157,7 +174,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — ~3,000 continuous WQ sites",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "waterinfo-vmm",
@@ -165,7 +183,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Belgium / Flanders — ~1,785 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "aviationweather",
@@ -173,7 +192,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Global — METAR, SIGMET advisories",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "blitzortung",
@@ -189,7 +209,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Australia — ~8 capital city airports, half-hourly obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "dwd",
@@ -205,7 +226,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Germany — daily pollen forecasts, 27 regions",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "environment-canada",
@@ -213,7 +235,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Canada — ~963 SWOB stations, hourly obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "geosphere-austria",
@@ -221,7 +244,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Austria — ~280 TAWES stations, 10-min obs",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "hko-hong-kong",
@@ -229,7 +253,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Hong Kong — 27 temp stations, 18 rainfall districts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "jma-japan",
@@ -237,7 +262,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Japan — weather bulletins, warnings, forecasts",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "kmi-belgium",
@@ -245,7 +271,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Belgium — ~14 AWS stations, 10-min observations",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "meteoalarm",
@@ -261,7 +288,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "United States — weather alerts, CAP",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nws-forecasts",
@@ -269,7 +297,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "United States — configurable land and marine forecast zones",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nws-alerts",
@@ -285,7 +314,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Global — space weather, solar wind, K-index",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "singapore-nea",
@@ -293,7 +323,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Singapore — 62 weather stations + 5 air-quality regions",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "smhi-weather",
@@ -301,7 +332,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Sweden — ~232 stations, hourly obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "canada-aqhi",
@@ -309,7 +341,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Canada — community AQHI observations and forecasts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "defra-aurn",
@@ -317,7 +350,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "United Kingdom — 300+ monitoring locations, hourly pollutants",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "fmi-finland",
@@ -325,7 +359,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Finland — hourly air quality observations via FMI WFS",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "gios-poland",
@@ -333,7 +368,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Poland — ~250 stations, hourly pollutants + AQI",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "hongkong-epd",
@@ -341,7 +377,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Hong Kong — 18 AQHI stations, hourly health index",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "irceline-belgium",
@@ -349,7 +386,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Belgium — station, timeseries, and hourly observations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "laqn-london",
@@ -357,7 +395,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "London, UK — site metadata, species, hourly measurements",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "luchtmeetnet-nl",
@@ -365,7 +404,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Netherlands — station measurements, components, LKI index",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "epa-uv",
@@ -373,7 +413,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "United States — city-scoped hourly and daily UV forecasts",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "sensor-community",
@@ -381,7 +422,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Global — citizen air sensors, PM and climate readings",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "uba-airdata",
@@ -389,7 +431,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Germany — stations, pollutant components, hourly measures",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "wallonia-issep",
@@ -397,7 +440,7 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Belgium / Wallonia — low-cost air quality sensors",
-    "kql": false
+    "kql": true
   },
   {
     "id": "australia-wildfires",
@@ -405,7 +448,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Australia — NSW, QLD, VIC bushfire incidents",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "eaws-albina",
@@ -413,7 +457,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "European Alps — daily avalanche bulletins, CAAMLv6",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "gdacs",
@@ -429,7 +474,7 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Brazil — Amazon & Cerrado deforestation alerts",
-    "kql": false
+    "kql": true
   },
   {
     "id": "nifc-usa-wildfires",
@@ -437,7 +482,7 @@
     "cat": "Disasters",
     "key": false,
     "desc": "United States — active wildfire incidents, NIFC",
-    "kql": false
+    "kql": true
   },
   {
     "id": "nina-bbk",
@@ -461,7 +506,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Seattle, WA — real-time fire dispatch incidents",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-earthquakes",
@@ -469,7 +515,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Global — seismic events",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "bfs-odl",
@@ -477,7 +524,8 @@
     "cat": "Radiation",
     "key": false,
     "desc": "Germany — ~1,700 stations, hourly gamma dose rate",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "eurdep-radiation",
@@ -485,7 +533,8 @@
     "cat": "Radiation",
     "key": false,
     "desc": "Europe — ~5,500 stations, 39 countries, gamma dose",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-geomag",
@@ -493,7 +542,8 @@
     "cat": "Radiation",
     "key": false,
     "desc": "United States — 14 observatories, 1-min geomagnetic field",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "aisstream",
@@ -517,7 +567,7 @@
     "cat": "Maritime",
     "key": false,
     "desc": "Norway / Svalbard — raw TCP AIS, ~34 msg/s",
-    "kql": false
+    "kql": true
   },
   {
     "id": "mode-s",
@@ -533,7 +583,8 @@
     "cat": "Aviation",
     "key": false,
     "desc": "Global — virtual aviation network, pilots & controllers",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "autobahn",
@@ -541,7 +592,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Germany — roadworks, warnings, closures, webcams",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "digitraffic-road",
@@ -557,7 +609,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "France — national road network, DATEX II",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "gtfs",
@@ -573,7 +626,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Madrid, Spain — ~4,000 sensors, Informo",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "ndl-netherlands",
@@ -581,7 +635,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "paris-bicycle-counters",
@@ -589,7 +644,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Paris — ~141 counting stations, hourly counts",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "seattle-street-closures",
@@ -597,7 +653,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Seattle, WA — permit-driven street closure windows",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "cbp-border-wait",
@@ -605,7 +662,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "US borders — ~81 ports of entry",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "wsdot",
@@ -613,7 +671,8 @@
     "cat": "Transport",
     "key": true,
     "desc": "Washington State — ~1,000 traffic flow sensors (requires free key)",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "irail",
@@ -621,7 +680,8 @@
     "cat": "Railway",
     "key": false,
     "desc": "Belgium — ~600 NMBS/SNCB stations, departures, delays",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "carbon-intensity",
@@ -629,7 +689,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "United Kingdom — national grid carbon intensity",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "elexon-bmrs",
@@ -637,7 +698,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "Great Britain — electricity market, generation, demand",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "energidataservice-dk",
@@ -645,7 +707,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "Denmark — power system, spot prices, CO₂",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "energy-charts",
@@ -653,7 +716,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "Europe — 40+ countries, electricity generation & prices",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "entsoe",
@@ -677,7 +741,8 @@
     "cat": "Social",
     "key": false,
     "desc": "Global — OSM minutely replication diffs",
-    "kql": false
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "rss",
@@ -685,7 +750,7 @@
     "cat": "Social",
     "key": false,
     "desc": "Any — configurable RSS/Atom feed URLs or OPML files",
-    "kql": false
+    "kql": true
   },
   {
     "id": "wikimedia-eventstreams",
@@ -701,6 +766,7 @@
     "cat": "Science",
     "key": false,
     "desc": "Global — LIGO/Virgo/KAGRA gravitational wave candidates",
-    "kql": false
+    "kql": true,
+    "notebook": true
   }
 ]

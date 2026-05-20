@@ -130,7 +130,7 @@ class EAFloodMonitoringAPI:
             config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
-    def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
+    def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '', once: bool = False) -> None:
         """Feed stations and send updates as CloudEvents."""
         previous_readings: Dict[str, str] = _load_state(state_file)
 
@@ -224,6 +224,9 @@ class EAFloodMonitoringAPI:
                 logging.info("Sent %d readings in %.1f seconds. Waiting %.0f seconds.",
                              count, end_time - start_time, effective_interval)
                 _save_state(state_file, previous_readings)
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_interval > 0:
                     time.sleep(effective_interval)
 
@@ -279,6 +282,9 @@ def main() -> None:
                              default=polling_interval_default)
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE', os.path.expanduser('~/.uk_ea_flood_monitoring_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -333,7 +339,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file)
+        api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file, once=args.once)
     else:
         parser.print_help()
 

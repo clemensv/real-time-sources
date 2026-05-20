@@ -65,3 +65,7 @@ Build or pull the image and configure it with environment variables as documente
 ### Option 3: Deploy to Azure Container Instances
 
 Run the published container image in Azure Container Instances or another container host and bind a persistent volume for the state file.
+
+### Option 4: Fabric notebook hosting
+
+Deploy as a scheduled Microsoft Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) — see [`notebook/kmi-belgium-feed.ipynb`](notebook/kmi-belgium-feed.ipynb).

@@ -42,6 +42,31 @@ def _parse_dms(coord: str) -> float:
     return degrees + minutes / 60.0 + seconds / 3600.0
 
 
+def _to_rfc3339_utc(ts: str) -> str | None:
+    """Convert a SYKE 'Aika' timestamp (ISO 8601, treated as UTC) to RFC3339 with 'Z' suffix.
+
+    Returns None for falsy inputs. SYKE serves Aika without timezone designator; per
+    the upstream Hydrologiarajapinta documentation observations are stored in UTC, so
+    we attach the explicit 'Z' suffix without converting.
+    """
+    if not ts:
+        return None
+    s = ts.strip()
+    if not s:
+        return None
+    if s.endswith('Z'):
+        return s
+    if '+' in s[10:] or s.endswith('+00:00'):
+        try:
+            dt = datetime.fromisoformat(s.replace('Z', '+00:00'))
+            return dt.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        except ValueError:
+            return s
+    if '.' in s:
+        s = s.split('.', 1)[0]
+    return s + 'Z'
+
+
 class SYKEHydroAPI:
     """Client for the SYKE Hydrology OData API."""
 
@@ -174,7 +199,7 @@ def send_stations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer) -> 
             latitude=lat,
             longitude=lon,
         )
-        producer.send_fi_syke_hydrology_station(data=station_data, flush_producer=False)
+        producer.send_fi_syke_hydrology_station(_station_id=str(pid), data=station_data, flush_producer=False)
         sent_count += 1
 
     producer.producer.flush()
@@ -202,28 +227,28 @@ def feed_observations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer,
         wl = latest_wl.get(pid)
         q = latest_q.get(pid)
 
-        wl_val = float(wl['Arvo']) if wl and wl.get('Arvo') is not None else 0.0
-        wl_ts = wl.get('Aika', '') if wl and wl.get('Arvo') is not None else ''
-        q_val = float(q['Arvo']) if q and q.get('Arvo') is not None else 0.0
-        q_ts = q.get('Aika', '') if q and q.get('Arvo') is not None else ''
+        wl_val = float(wl['Arvo']) if wl and wl.get('Arvo') is not None else None
+        wl_ts = _to_rfc3339_utc(wl.get('Aika', '')) if wl and wl.get('Arvo') is not None else None
+        q_val = float(q['Arvo']) if q and q.get('Arvo') is not None else None
+        q_ts = _to_rfc3339_utc(q.get('Aika', '')) if q and q.get('Arvo') is not None else None
 
         if not wl_ts and not q_ts:
             continue
 
-        reading_key = f"{pid}:{wl_ts}:{q_ts}"
+        reading_key = f"{pid}:{wl_ts or ''}:{q_ts or ''}"
         if reading_key in previous_readings:
             continue
 
         obs_data = WaterLevelObservation(
             station_id=str(pid),
             water_level=wl_val,
-            water_level_unit='cm',
+            water_level_unit='cm' if wl_val is not None else None,
             water_level_timestamp=wl_ts,
             discharge=q_val,
-            discharge_unit='m3/s',
+            discharge_unit='m3/s' if q_val is not None else None,
             discharge_timestamp=q_ts,
         )
-        producer.send_fi_syke_hydrology_water_level_observation(data=obs_data, flush_producer=False)
+        producer.send_fi_syke_hydrology_water_level_observation(_station_id=str(pid), data=obs_data, flush_producer=False)
         sent_count += 1
         previous_readings[reading_key] = wl_ts or q_ts
 
@@ -240,6 +265,9 @@ def main():
                         default=int(os.environ.get('POLLING_INTERVAL', '3600')))
     parser.add_argument('--state-file', type=str,
                         default=os.environ.get('STATE_FILE', os.path.expanduser('~/.syke_hydro_state.json')))
+    parser.add_argument('--once', action='store_true',
+                        default=os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
     subparsers = parser.add_subparsers(dest='command')
     subparsers.add_parser('feed', help='Feed data to Kafka')
     subparsers.add_parser('list', help='List all stations')
@@ -287,6 +315,9 @@ def main():
                 logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if args.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()

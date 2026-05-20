@@ -150,31 +150,37 @@
                     }
                   },
                   "water_level": {
-                    "type": "double",
+                    "type": ["double", "null"],
+                    "description": "Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.",
                     "altnames": {
                       "lang:fi": "Arvo"
                     }
                   },
                   "water_level_unit": {
-                    "type": "string"
+                    "type": ["string", "null"],
+                    "description": "Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null."
                   },
                   "water_level_timestamp": {
-                    "type": "datetime",
+                    "type": ["datetime", "null"],
+                    "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.",
                     "altnames": {
                       "lang:fi": "Aika"
                     }
                   },
                   "discharge": {
-                    "type": "double",
+                    "type": ["double", "null"],
+                    "description": "Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.",
                     "altnames": {
                       "lang:fi": "Arvo"
                     }
                   },
                   "discharge_unit": {
-                    "type": "string"
+                    "type": ["string", "null"],
+                    "description": "Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null."
                   },
                   "discharge_timestamp": {
-                    "type": "datetime",
+                    "type": ["datetime", "null"],
+                    "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.",
                     "altnames": {
                       "lang:fi": "Aika"
                     }

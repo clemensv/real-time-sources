@@ -1,0 +1,310 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] (
+   [zone_id]: string,
+   [zone_type]: string,
+   [name]: string,
+   [state]: string,
+   [forecast_office_url]: string,
+   [grid_identifier]: string,
+   [awips_location_identifier]: string,
+   [cwa_ids]: dynamic,
+   [forecast_office_urls]: dynamic,
+   [time_zones]: dynamic,
+   [observation_station_ids]: dynamic,
+   [radar_station]: string,
+   [effective_date]: datetime,
+   [expiration_date]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] docstring "{\"description\": \"Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata.\"}";
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] column-docstrings (
+   [zone_id]: "{\"description\": \"NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone.\"}",
+   [zone_type]: "{\"description\": \"NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts.\"}",
+   [name]: "{\"description\": \"Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'.\"}",
+   [state]: "{\"description\": \"Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones.\"}",
+   [forecast_office_url]: "{\"description\": \"Canonical api.weather.gov URL of the primary Weather Forecast Office responsible for the zone, from properties.forecastOffice.\"}",
+   [grid_identifier]: "{\"description\": \"Grid identifier from properties.gridIdentifier. For Seattle forecast zones this is commonly the three-letter WFO grid identifier such as SEW. Marine zones can omit this field.\"}",
+   [awips_location_identifier]: "{\"description\": \"AWIPS location identifier from properties.awipsLocationIdentifier when the zone has a matching AWIPS code.\"}",
+   [cwa_ids]: "{\"description\": \"List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs.\", \"schema\": {\"type\": \"array\", \"description\": \"List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs.\", \"items\": {\"type\": \"string\", \"pattern\": \"^[A-Z]{3}$\"}}}",
+   [forecast_office_urls]: "{\"description\": \"List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list.\", \"schema\": {\"type\": \"array\", \"description\": \"List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list.\", \"items\": {\"type\": \"string\"}}}",
+   [time_zones]: "{\"description\": \"Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles.\", \"schema\": {\"type\": \"array\", \"description\": \"Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles.\", \"items\": {\"type\": \"string\"}}}",
+   [observation_station_ids]: "{\"description\": \"Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data.\", \"schema\": {\"type\": \"array\", \"description\": \"Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data.\", \"items\": {\"type\": \"string\"}}}",
+   [radar_station]: "{\"description\": \"Nearest NEXRAD radar station identifier from properties.radarStation, such as ATX for Seattle-area land zones, or null when the zone metadata does not declare a radar station.\"}",
+   [effective_date]: "{\"description\": \"Date and time at which this zone definition became effective, from properties.effectiveDate.\"}",
+   [expiration_date]: "{\"description\": \"Date and time at which this zone definition expires, from properties.expirationDate. NWS currently uses a far-future sentinel date for active zone definitions.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "zone_type", "path": "$.zone_type"},
+  {"column": "name", "path": "$.name"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_office_url", "path": "$.forecast_office_url"},
+  {"column": "grid_identifier", "path": "$.grid_identifier"},
+  {"column": "awips_location_identifier", "path": "$.awips_location_identifier"},
+  {"column": "cwa_ids", "path": "$.cwa_ids"},
+  {"column": "forecast_office_urls", "path": "$.forecast_office_urls"},
+  {"column": "time_zones", "path": "$.time_zones"},
+  {"column": "observation_station_ids", "path": "$.observation_station_ids"},
+  {"column": "radar_station", "path": "$.radar_station"},
+  {"column": "effective_date", "path": "$.effective_date"},
+  {"column": "expiration_date", "path": "$.expiration_date"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "zone_type", "path": "$.data.zone_type"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_office_url", "path": "$.data.forecast_office_url"},
+  {"column": "grid_identifier", "path": "$.data.grid_identifier"},
+  {"column": "awips_location_identifier", "path": "$.data.awips_location_identifier"},
+  {"column": "cwa_ids", "path": "$.data.cwa_ids"},
+  {"column": "forecast_office_urls", "path": "$.data.forecast_office_urls"},
+  {"column": "time_zones", "path": "$.data.time_zones"},
+  {"column": "observation_station_ids", "path": "$.data.observation_station_ids"},
+  {"column": "radar_station", "path": "$.data.radar_station"},
+  {"column": "effective_date", "path": "$.data.effective_date"},
+  {"column": "expiration_date", "path": "$.data.expiration_date"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZoneLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZoneLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.ForecastZone') | project['zone_id'] = tostring(data.['zone_id']),['zone_type'] = tostring(data.['zone_type']),['name'] = tostring(data.['name']),['state'] = tostring(data.['state']),['forecast_office_url'] = tostring(data.['forecast_office_url']),['grid_identifier'] = tostring(data.['grid_identifier']),['awips_location_identifier'] = tostring(data.['awips_location_identifier']),['cwa_ids'] = todynamic(data.['cwa_ids']),['forecast_office_urls'] = todynamic(data.['forecast_office_urls']),['time_zones'] = todynamic(data.['time_zones']),['observation_station_ids'] = todynamic(data.['observation_station_ids']),['radar_station'] = tostring(data.['radar_station']),['effective_date'] = todatetime(data.['effective_date']),['expiration_date'] = todatetime(data.['expiration_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] (
+   [zone_id]: string,
+   [updated]: datetime,
+   [periods]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] docstring "{\"description\": \"Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone.\"}";
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] column-docstrings (
+   [zone_id]: "{\"description\": \"Forecast zone identifier for the land forecast snapshot. This matches the configured zone identifier and the upstream properties.zone URL suffix.\"}",
+   [updated]: "{\"description\": \"Timestamp from properties.updated indicating when the NWS most recently updated this zone forecast.\"}",
+   [periods]: "{\"description\": \"Ordered narrative forecast periods from properties.periods. Each element represents one named daypart or day-level outlook such as Tonight, Tuesday, or Tuesday Night.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "periods", "path": "$.periods"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "periods", "path": "$.data.periods"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecastLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecastLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['updated'] = todatetime(data.['updated']),['periods'] = todynamic(data.['periods']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] (
+   [zone_id]: string,
+   [zone_name]: string,
+   [product_title]: string,
+   [office_name]: string,
+   [issued_at_text]: string,
+   [expires_text]: string,
+   [wmo_header]: string,
+   [bulletin_awips_id]: string,
+   [synopsis]: string,
+   [periods]: dynamic,
+   [bulletin_text]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] docstring "{\"description\": \"Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone.\"}";
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] column-docstrings (
+   [zone_id]: "{\"description\": \"Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal.\"}",
+   [zone_name]: "{\"description\": \"Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin.\"}",
+   [product_title]: "{\"description\": \"Bulletin title line, such as 'Coastal Waters Forecast for Washington'.\"}",
+   [office_name]: "{\"description\": \"Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'.\"}",
+   [issued_at_text]: "{\"description\": \"Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT.\"}",
+   [expires_text]: "{\"description\": \"Raw Expires header value from the bulletin preamble, preserved as text because the feed does not provide an explicit timezone annotation in ISO form.\"}",
+   [wmo_header]: "{\"description\": \"WMO abbreviated heading line from the marine bulletin, for example 'FZUS56 KSEW 132142'.\"}",
+   [bulletin_awips_id]: "{\"description\": \"AWIPS product identifier line from the bulletin, for example CWFSEW.\"}",
+   [synopsis]: "{\"description\": \"Narrative synopsis paragraph that appears before the zone-specific section and describes the broader marine area covered by the bulletin.\"}",
+   [periods]: "{\"description\": \"Ordered narrative forecast periods parsed from the zone-specific section. Each element preserves the named period heading and its free-text forecast text.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [bulletin_text]: "{\"description\": \"Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "zone_name", "path": "$.zone_name"},
+  {"column": "product_title", "path": "$.product_title"},
+  {"column": "office_name", "path": "$.office_name"},
+  {"column": "issued_at_text", "path": "$.issued_at_text"},
+  {"column": "expires_text", "path": "$.expires_text"},
+  {"column": "wmo_header", "path": "$.wmo_header"},
+  {"column": "bulletin_awips_id", "path": "$.bulletin_awips_id"},
+  {"column": "synopsis", "path": "$.synopsis"},
+  {"column": "periods", "path": "$.periods"},
+  {"column": "bulletin_text", "path": "$.bulletin_text"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "zone_name", "path": "$.data.zone_name"},
+  {"column": "product_title", "path": "$.data.product_title"},
+  {"column": "office_name", "path": "$.data.office_name"},
+  {"column": "issued_at_text", "path": "$.data.issued_at_text"},
+  {"column": "expires_text", "path": "$.data.expires_text"},
+  {"column": "wmo_header", "path": "$.data.wmo_header"},
+  {"column": "bulletin_awips_id", "path": "$.data.bulletin_awips_id"},
+  {"column": "synopsis", "path": "$.data.synopsis"},
+  {"column": "periods", "path": "$.data.periods"},
+  {"column": "bulletin_text", "path": "$.data.bulletin_text"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecastLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecastLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['zone_name'] = tostring(data.['zone_name']),['product_title'] = tostring(data.['product_title']),['office_name'] = tostring(data.['office_name']),['issued_at_text'] = tostring(data.['issued_at_text']),['expires_text'] = tostring(data.['expires_text']),['wmo_header'] = tostring(data.['wmo_header']),['bulletin_awips_id'] = tostring(data.['bulletin_awips_id']),['synopsis'] = tostring(data.['synopsis']),['periods'] = todynamic(data.['periods']),['bulletin_text'] = tostring(data.['bulletin_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

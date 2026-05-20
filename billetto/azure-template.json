@@ -45,8 +45,9 @@
     },
     "billettoApiKeypair": {
       "type": "secureString",
+      "defaultValue": "",
       "metadata": {
-        "description": "Billetto API keypair in key_id:secret form."
+        "description": "Billetto API keypair in key_id:secret form. Leave blank to deploy template only; bridge will exit until a key is supplied via redeploy."
       }
     },
     "kafkaTopic": {

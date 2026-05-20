@@ -1,0 +1,436 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [PositionReportClassA] (
+   [mmsi]: int,
+   [navigation_status]: int,
+   [rate_of_turn]: real,
+   [speed_over_ground]: real,
+   [position_accuracy]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [course_over_ground]: real,
+   [true_heading]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [msg_type]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [PositionReportClassA] ingestion json mapping "PositionReportClassA_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "navigation_status", "path": "$.navigation_status"},
+  {"column": "rate_of_turn", "path": "$.rate_of_turn"},
+  {"column": "speed_over_ground", "path": "$.speed_over_ground"},
+  {"column": "position_accuracy", "path": "$.position_accuracy"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "course_over_ground", "path": "$.course_over_ground"},
+  {"column": "true_heading", "path": "$.true_heading"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "msg_type", "path": "$.msg_type"},
+]
+```
+
+.create-or-alter table [PositionReportClassA] ingestion json mapping "PositionReportClassA_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "navigation_status", "path": "$.data.navigation_status"},
+  {"column": "rate_of_turn", "path": "$.data.rate_of_turn"},
+  {"column": "speed_over_ground", "path": "$.data.speed_over_ground"},
+  {"column": "position_accuracy", "path": "$.data.position_accuracy"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "course_over_ground", "path": "$.data.course_over_ground"},
+  {"column": "true_heading", "path": "$.data.true_heading"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "msg_type", "path": "$.data.msg_type"},
+]
+```
+
+.drop materialized-view PositionReportClassALatest ifexists;
+
+.create materialized-view with (backfill=true) PositionReportClassALatest on table PositionReportClassA {
+    PositionReportClassA | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PositionReportClassA] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.PositionReportClassA') | project['mmsi'] = toint(data.['mmsi']),['navigation_status'] = toint(data.['navigation_status']),['rate_of_turn'] = toreal(data.['rate_of_turn']),['speed_over_ground'] = toreal(data.['speed_over_ground']),['position_accuracy'] = toint(data.['position_accuracy']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['course_over_ground'] = toreal(data.['course_over_ground']),['true_heading'] = toint(data.['true_heading']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),['msg_type'] = toint(data.['msg_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StaticVoyageData] (
+   [mmsi]: int,
+   [imo_number]: int,
+   [callsign]: string,
+   [ship_name]: string,
+   [ship_type]: int,
+   [dimension_to_bow]: int,
+   [dimension_to_stern]: int,
+   [dimension_to_port]: int,
+   [dimension_to_starboard]: int,
+   [draught]: real,
+   [destination]: string,
+   [eta_month]: int,
+   [eta_day]: int,
+   [eta_hour]: int,
+   [eta_minute]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [StaticVoyageData] ingestion json mapping "StaticVoyageData_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "imo_number", "path": "$.imo_number"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "ship_name", "path": "$.ship_name"},
+  {"column": "ship_type", "path": "$.ship_type"},
+  {"column": "dimension_to_bow", "path": "$.dimension_to_bow"},
+  {"column": "dimension_to_stern", "path": "$.dimension_to_stern"},
+  {"column": "dimension_to_port", "path": "$.dimension_to_port"},
+  {"column": "dimension_to_starboard", "path": "$.dimension_to_starboard"},
+  {"column": "draught", "path": "$.draught"},
+  {"column": "destination", "path": "$.destination"},
+  {"column": "eta_month", "path": "$.eta_month"},
+  {"column": "eta_day", "path": "$.eta_day"},
+  {"column": "eta_hour", "path": "$.eta_hour"},
+  {"column": "eta_minute", "path": "$.eta_minute"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+.create-or-alter table [StaticVoyageData] ingestion json mapping "StaticVoyageData_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "imo_number", "path": "$.data.imo_number"},
+  {"column": "callsign", "path": "$.data.callsign"},
+  {"column": "ship_name", "path": "$.data.ship_name"},
+  {"column": "ship_type", "path": "$.data.ship_type"},
+  {"column": "dimension_to_bow", "path": "$.data.dimension_to_bow"},
+  {"column": "dimension_to_stern", "path": "$.data.dimension_to_stern"},
+  {"column": "dimension_to_port", "path": "$.data.dimension_to_port"},
+  {"column": "dimension_to_starboard", "path": "$.data.dimension_to_starboard"},
+  {"column": "draught", "path": "$.data.draught"},
+  {"column": "destination", "path": "$.data.destination"},
+  {"column": "eta_month", "path": "$.data.eta_month"},
+  {"column": "eta_day", "path": "$.data.eta_day"},
+  {"column": "eta_hour", "path": "$.data.eta_hour"},
+  {"column": "eta_minute", "path": "$.data.eta_minute"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "station_id", "path": "$.data.station_id"},
+]
+```
+
+.drop materialized-view StaticVoyageDataLatest ifexists;
+
+.create materialized-view with (backfill=true) StaticVoyageDataLatest on table StaticVoyageData {
+    StaticVoyageData | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StaticVoyageData] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.StaticVoyageData') | project['mmsi'] = toint(data.['mmsi']),['imo_number'] = toint(data.['imo_number']),['callsign'] = tostring(data.['callsign']),['ship_name'] = tostring(data.['ship_name']),['ship_type'] = toint(data.['ship_type']),['dimension_to_bow'] = toint(data.['dimension_to_bow']),['dimension_to_stern'] = toint(data.['dimension_to_stern']),['dimension_to_port'] = toint(data.['dimension_to_port']),['dimension_to_starboard'] = toint(data.['dimension_to_starboard']),['draught'] = toreal(data.['draught']),['destination'] = tostring(data.['destination']),['eta_month'] = toint(data.['eta_month']),['eta_day'] = toint(data.['eta_day']),['eta_hour'] = toint(data.['eta_hour']),['eta_minute'] = toint(data.['eta_minute']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PositionReportClassB] (
+   [mmsi]: int,
+   [speed_over_ground]: real,
+   [position_accuracy]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [course_over_ground]: real,
+   [true_heading]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [msg_type]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [PositionReportClassB] ingestion json mapping "PositionReportClassB_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "speed_over_ground", "path": "$.speed_over_ground"},
+  {"column": "position_accuracy", "path": "$.position_accuracy"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "course_over_ground", "path": "$.course_over_ground"},
+  {"column": "true_heading", "path": "$.true_heading"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "msg_type", "path": "$.msg_type"},
+]
+```
+
+.create-or-alter table [PositionReportClassB] ingestion json mapping "PositionReportClassB_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "speed_over_ground", "path": "$.data.speed_over_ground"},
+  {"column": "position_accuracy", "path": "$.data.position_accuracy"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "course_over_ground", "path": "$.data.course_over_ground"},
+  {"column": "true_heading", "path": "$.data.true_heading"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "msg_type", "path": "$.data.msg_type"},
+]
+```
+
+.drop materialized-view PositionReportClassBLatest ifexists;
+
+.create materialized-view with (backfill=true) PositionReportClassBLatest on table PositionReportClassB {
+    PositionReportClassB | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PositionReportClassB] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.PositionReportClassB') | project['mmsi'] = toint(data.['mmsi']),['speed_over_ground'] = toreal(data.['speed_over_ground']),['position_accuracy'] = toint(data.['position_accuracy']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['course_over_ground'] = toreal(data.['course_over_ground']),['true_heading'] = toint(data.['true_heading']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),['msg_type'] = toint(data.['msg_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StaticDataClassB] (
+   [mmsi]: int,
+   [part_number]: int,
+   [ship_name]: string,
+   [ship_type]: int,
+   [callsign]: string,
+   [dimension_to_bow]: int,
+   [dimension_to_stern]: int,
+   [dimension_to_port]: int,
+   [dimension_to_starboard]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [StaticDataClassB] ingestion json mapping "StaticDataClassB_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "part_number", "path": "$.part_number"},
+  {"column": "ship_name", "path": "$.ship_name"},
+  {"column": "ship_type", "path": "$.ship_type"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "dimension_to_bow", "path": "$.dimension_to_bow"},
+  {"column": "dimension_to_stern", "path": "$.dimension_to_stern"},
+  {"column": "dimension_to_port", "path": "$.dimension_to_port"},
+  {"column": "dimension_to_starboard", "path": "$.dimension_to_starboard"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+.create-or-alter table [StaticDataClassB] ingestion json mapping "StaticDataClassB_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "part_number", "path": "$.data.part_number"},
+  {"column": "ship_name", "path": "$.data.ship_name"},
+  {"column": "ship_type", "path": "$.data.ship_type"},
+  {"column": "callsign", "path": "$.data.callsign"},
+  {"column": "dimension_to_bow", "path": "$.data.dimension_to_bow"},
+  {"column": "dimension_to_stern", "path": "$.data.dimension_to_stern"},
+  {"column": "dimension_to_port", "path": "$.data.dimension_to_port"},
+  {"column": "dimension_to_starboard", "path": "$.data.dimension_to_starboard"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "station_id", "path": "$.data.station_id"},
+]
+```
+
+.drop materialized-view StaticDataClassBLatest ifexists;
+
+.create materialized-view with (backfill=true) StaticDataClassBLatest on table StaticDataClassB {
+    StaticDataClassB | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StaticDataClassB] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.StaticDataClassB') | project['mmsi'] = toint(data.['mmsi']),['part_number'] = toint(data.['part_number']),['ship_name'] = tostring(data.['ship_name']),['ship_type'] = toint(data.['ship_type']),['callsign'] = tostring(data.['callsign']),['dimension_to_bow'] = toint(data.['dimension_to_bow']),['dimension_to_stern'] = toint(data.['dimension_to_stern']),['dimension_to_port'] = toint(data.['dimension_to_port']),['dimension_to_starboard'] = toint(data.['dimension_to_starboard']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AidToNavigation] (
+   [mmsi]: int,
+   [aid_type]: int,
+   [name]: string,
+   [position_accuracy]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [timestamp]: string,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [AidToNavigation] ingestion json mapping "AidToNavigation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "aid_type", "path": "$.aid_type"},
+  {"column": "name", "path": "$.name"},
+  {"column": "position_accuracy", "path": "$.position_accuracy"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+.create-or-alter table [AidToNavigation] ingestion json mapping "AidToNavigation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "aid_type", "path": "$.data.aid_type"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "position_accuracy", "path": "$.data.position_accuracy"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "station_id", "path": "$.data.station_id"},
+]
+```
+
+.drop materialized-view AidToNavigationLatest ifexists;
+
+.create materialized-view with (backfill=true) AidToNavigationLatest on table AidToNavigation {
+    AidToNavigation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AidToNavigation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.AidToNavigation') | project['mmsi'] = toint(data.['mmsi']),['aid_type'] = toint(data.['aid_type']),['name'] = tostring(data.['name']),['position_accuracy'] = toint(data.['position_accuracy']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
