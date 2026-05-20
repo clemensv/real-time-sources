@@ -1,0 +1,486 @@
+{
+  "endpoints": {
+    "JP.JMA.Quake.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "jma-bosai-quake",
+          "key": "jp.jma.quake/{event_id}/{serial}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Quake"
+      ]
+    }
+  },
+  "messagegroups": {
+    "JP.JMA.Quake": {
+      "messages": {
+        "JP.JMA.Quake.EarthquakeReport": {
+          "name": "EarthquakeReport",
+          "envelope": "CloudEvents/1.0",
+          "description": "JMA Bosai earthquake and seismic intensity report header enriched with parsed hypocenter coordinates, prefecture and city intensity summaries, and tsunami-related comment interpretation from the detail bulletin when available.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.JMA.Quake.EarthquakeReport"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.jma.quake/{event_id}/{serial}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/JP.JMA.Quake.jstruct/schemas/JP.JMA.Quake.EarthquakeReport"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "JP.JMA.Quake.jstruct": {
+      "schemas": {
+        "JP.JMA.Quake.EarthquakeReport": {
+          "name": "EarthquakeReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "name": "EarthquakeReport",
+                "type": "object",
+                "description": "A JMA Bosai earthquake report record built from the recent earthquake list endpoint and, when available, the matching full detail JSON bulletin. The record is keyed by the stable JMA event id plus report serial so updates, corrections, and cancellations for the same earthquake remain distinct stream records.",
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "description": "Stable JMA earthquake event identifier copied from list.json eid and detail Head.EventID. JMA uses the earthquake origin time in YYYYMMDDHHMMSS form as the event id, so multiple serial reports for the same earthquake share this value.",
+                    "altnames": {
+                      "jma-bosai": "eid"
+                    },
+                    "pattern": "^[0-9]{14}$"
+                  },
+                  "report_id": {
+                    "type": "string",
+                    "description": "Composite report identifier formed as event_id, an underscore, and the JMA serial number. It distinguishes initial, corrected, and subsequent bulletins for the same earthquake event."
+                  },
+                  "serial": {
+                    "type": "integer",
+                    "description": "JMA report serial number parsed from list.json ser and detail Head.Serial. The serial identifies the revision sequence for bulletins sharing the same event id.",
+                    "minimum": 0,
+                    "altnames": {
+                      "jma-bosai": "ser"
+                    }
+                  },
+                  "info_type": {
+                    "type": "string",
+                    "description": "Normalized information type derived from the Japanese JMA ift field: ISSUED for 発表, CORRECTED for 訂正, and CANCELLED for 取消.",
+                    "enum": [
+                      "ISSUED",
+                      "CORRECTED",
+                      "CANCELLED"
+                    ],
+                    "altenums": {
+                      "jma_label": {
+                        "ISSUED": "発表",
+                        "CORRECTED": "訂正",
+                        "CANCELLED": "取消"
+                      }
+                    },
+                    "altnames": {
+                      "jma-bosai": "ift"
+                    }
+                  },
+                  "report_datetime": {
+                    "type": "string",
+                    "description": "Report publication time converted from list.json rdt to an RFC3339 UTC timestamp. JMA publishes rdt with a local offset for the report release time.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "rdt"
+                    }
+                  },
+                  "report_datetime_local": {
+                    "type": "string",
+                    "description": "Original JMA report publication timestamp copied from list.json rdt, preserving the local offset supplied by the JMA Bosai feed.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "rdt"
+                    }
+                  },
+                  "control_datetime": {
+                    "type": "string",
+                    "description": "JMA control timestamp — when the bulletin was published to the JMA distribution system, distinct from `report_datetime` which is the event report time. This field converts the compact list.json ctt value from JST to an RFC3339 UTC timestamp.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "ctt"
+                    }
+                  },
+                  "control_datetime_local": {
+                    "type": "string",
+                    "description": "JMA control timestamp — when the bulletin was published to the JMA distribution system, distinct from `report_datetime` which is the event report time. This field preserves the compact list.json ctt value as an RFC3339 timestamp with the Japan Standard Time offset.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "ctt"
+                    }
+                  },
+                  "origin_datetime": {
+                    "type": "string",
+                    "description": "Earthquake origin time converted from list.json at to an RFC3339 UTC timestamp. JMA uses this time as the basis for the event id.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "at"
+                    }
+                  },
+                  "origin_datetime_local": {
+                    "type": "string",
+                    "description": "Original JMA earthquake origin timestamp copied from list.json at, preserving the local offset supplied by the JMA Bosai feed.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "at"
+                    }
+                  },
+                  "title_jp": {
+                    "type": "string",
+                    "description": "Japanese JMA bulletin title copied from list.json ttl, such as 震源・震度情報 for earthquake and seismic intensity information.",
+                    "altnames": {
+                      "jma-bosai": "ttl"
+                    }
+                  },
+                  "title_en": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "English bulletin title copied from list.json en_ttl when supplied by the multilingual JMA Bosai feed. Null is emitted when en_ttl is absent, including some 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "altnames": {
+                      "jma-bosai": "en_ttl"
+                    }
+                  },
+                  "epicenter_area_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "JMA hypocenter or epicenter area code copied from list.json acd and detail Body.Earthquake.Hypocenter.Area.Code. Null is emitted when the source bulletin omits hypocenter metadata, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "altnames": {
+                      "jma-bosai": "acd"
+                    }
+                  },
+                  "epicenter_area_jp": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Japanese epicenter area name copied from list.json anm and detail Body.Earthquake.Hypocenter.Area.Name. Null is emitted when the source bulletin omits hypocenter metadata, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "altnames": {
+                      "jma-bosai": "anm"
+                    }
+                  },
+                  "epicenter_area_en": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "English epicenter area name copied from list.json en_anm when supplied by the multilingual JMA Bosai feed. Null is emitted when the source bulletin omits hypocenter metadata, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "altnames": {
+                      "jma-bosai": "en_anm"
+                    }
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Hypocenter latitude in WGS84 decimal degrees parsed from the ISO 6709 coordinate string in list.json cod or detail Body.Earthquake.Hypocenter.Area.Coordinate. Null is emitted when the coordinate is absent or cannot be parsed; null is also emitted when list.json cod is absent, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "minimum": -90.0,
+                    "maximum": 90.0,
+                    "unit": "degree",
+                    "symbol": "°",
+                    "altnames": {
+                      "jma-bosai": "cod"
+                    }
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Hypocenter longitude in WGS84 decimal degrees parsed from the ISO 6709 coordinate string in list.json cod or detail Body.Earthquake.Hypocenter.Area.Coordinate. Null is emitted when the coordinate is absent or cannot be parsed; null is also emitted when list.json cod is absent, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "minimum": -180.0,
+                    "maximum": 180.0,
+                    "unit": "degree",
+                    "symbol": "°",
+                    "altnames": {
+                      "jma-bosai": "cod"
+                    }
+                  },
+                  "depth_km": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Hypocenter depth in kilometres parsed from the third component of the ISO 6709 coordinate string. JMA encodes depth in metres with a sign in cod; this field divides the absolute metre value by 1000 so +35.0+135.5-10000/ becomes 10.0 km. Null is emitted when list.json cod is absent, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "minimum": 0.0,
+                    "unit": "kilometer",
+                    "symbol": "km",
+                    "altnames": {
+                      "jma-bosai": "cod"
+                    },
+                    "maximum": 700.0
+                  },
+                  "magnitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Dimensionless JMA earthquake magnitude parsed from list.json mag or detail Body.Earthquake.Magnitude and expressed on the JMA magnitude scale, which is similar to Richter magnitude for shallow events. Null is emitted when the source bulletin omits magnitude, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "altnames": {
+                      "jma-bosai": "mag"
+                    }
+                  },
+                  "max_intensity": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Maximum observed JMA seismic intensity for the report copied from list.json maxi or detail Body.Intensity.Observation.MaxInt. Null is emitted when the bulletin has no observed intensity summary, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.",
+                    "altenums": {
+                      "jma_label": {
+                        "1": "震度1 (slight)",
+                        "2": "震度2",
+                        "3": "震度3",
+                        "4": "震度4",
+                        "5-": "震度5弱",
+                        "5+": "震度5強",
+                        "6-": "震度6弱",
+                        "6+": "震度6強",
+                        "7": "震度7 (catastrophic)"
+                      }
+                    },
+                    "altnames": {
+                      "jma-bosai": "maxi"
+                    },
+                    "pattern": "^(1|2|3|4|5-|5\\+|6-|6\\+|7)$",
+                    "enum": [
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5-",
+                      "5+",
+                      "6-",
+                      "6+",
+                      "7"
+                    ]
+                  },
+                  "bulletin_type": {
+                    "type": "string",
+                    "description": "JMA detail bulletin product code parsed from the detail JSON filename. Supported earthquake-related JMA Bosai codes are VXSE51 (震度速報), VXSE52 (震源に関する情報), VXSE53 (震源・震度に関する情報), VXSE5k (震源・震度情報 Bosai variant), VXSE61 (長周期地震動に関する観測情報), and VYSE52 (南海トラフ地震関連解説情報). Tsunami-specific VTSE products are deliberately not modeled by this source.",
+                    "altnames": {
+                      "jma-bosai": "json"
+                    },
+                    "enum": [
+                      "VXSE51",
+                      "VXSE52",
+                      "VXSE53",
+                      "VXSE5k",
+                      "VXSE61",
+                      "VYSE52"
+                    ],
+                    "altenums": {
+                      "jma_documentation": {
+                        "VXSE51": "震度速報 — prompt seismic intensity bulletin reporting observed intensity before hypocenter details are finalized.",
+                        "VXSE52": "震源に関する情報 — hypocenter bulletin issued when source parameters are available and observed intensity details may be absent.",
+                        "VXSE53": "震源・震度に関する情報 — hypocenter and seismic intensity bulletin with source parameters and observation summaries.",
+                        "VXSE5k": "震源・震度情報 — JMA Bosai detail bulletin variant for earthquake source and seismic intensity information.",
+                        "VXSE61": "長周期地震動に関する観測情報 — observed long-period ground motion information related to an earthquake.",
+                        "VYSE52": "南海トラフ地震関連解説情報 — explanatory information related to the Nankai Trough earthquake assessment process."
+                      }
+                    }
+                  },
+                  "detail_url": {
+                    "type": "string",
+                    "description": "Absolute URL for the full JMA Bosai earthquake detail JSON referenced by list.json json.",
+                    "format": "uri",
+                    "altnames": {
+                      "jma-bosai": "json"
+                    }
+                  },
+                  "affected_prefectures": {
+                    "type": "array",
+                    "description": "Prefecture intensity summaries derived from list.json int[]. Each entry includes the JMA prefecture code and maximum JMA seismic intensity reported for that prefecture.",
+                    "items": {
+                      "type": {
+                        "$ref": "#/definitions/AffectedPrefecture"
+                      }
+                    },
+                    "altnames": {
+                      "jma-bosai": "int"
+                    }
+                  },
+                  "affected_cities": {
+                    "type": "array",
+                    "description": "City intensity summaries flattened from list.json int[].city[]. Each entry carries its parent prefecture code, city code, and maximum JMA seismic intensity for the city.",
+                    "items": {
+                      "type": {
+                        "$ref": "#/definitions/AffectedCity"
+                      }
+                    },
+                    "altnames": {
+                      "jma-bosai": "int.city"
+                    }
+                  },
+                  "tsunami_possible": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "Interpretation of tsunami-related text in the full detail JSON comments. True means the detail bulletin text indicates tsunami attention or possibility; false means the detail explicitly states there is no tsunami concern; null means no tsunami-related detail text was available or fetched."
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "report_id",
+                  "serial",
+                  "info_type",
+                  "report_datetime",
+                  "report_datetime_local",
+                  "control_datetime",
+                  "control_datetime_local",
+                  "origin_datetime",
+                  "origin_datetime_local",
+                  "title_jp",
+                  "bulletin_type",
+                  "detail_url",
+                  "affected_prefectures",
+                  "affected_cities",
+                  "tsunami_possible"
+                ],
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.jma.go.jp/schemas/bosai/quake/EarthquakeReport",
+                "definitions": {
+                  "AffectedPrefecture": {
+                    "name": "AffectedPrefecture",
+                    "type": "object",
+                    "description": "Prefecture-level maximum seismic intensity summary from each object in the JMA Bosai list.json int array. JMA publishes this compact list with prefecture code and the maximum observed JMA seismic intensity in that prefecture for the report.",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "description": "JMA prefecture code copied from int[].code in the Bosai earthquake list entry. The code identifies the prefecture in which one or more observations contributed to the report.",
+                        "altnames": {
+                          "jma-bosai": "code"
+                        }
+                      },
+                      "max_intensity": {
+                        "type": "string",
+                        "description": "Maximum JMA seismic intensity observed in the prefecture for this report, copied from int[].maxi and expressed on the JMA shindo scale.",
+                        "altenums": {
+                          "jma_label": {
+                            "1": "震度1 (slight)",
+                            "2": "震度2",
+                            "3": "震度3",
+                            "4": "震度4",
+                            "5-": "震度5弱",
+                            "5+": "震度5強",
+                            "6-": "震度6弱",
+                            "6+": "震度6強",
+                            "7": "震度7 (catastrophic)"
+                          }
+                        },
+                        "altnames": {
+                          "jma-bosai": "maxi"
+                        },
+                        "pattern": "^(1|2|3|4|5-|5\\+|6-|6\\+|7)$",
+                        "enum": [
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5-",
+                          "5+",
+                          "6-",
+                          "6+",
+                          "7"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "max_intensity"
+                    ]
+                  },
+                  "AffectedCity": {
+                    "name": "AffectedCity",
+                    "type": "object",
+                    "description": "City-level maximum seismic intensity summary derived from each city item nested under JMA Bosai list.json int[] prefecture entries.",
+                    "properties": {
+                      "prefecture_code": {
+                        "type": "string",
+                        "description": "JMA prefecture code from the parent int[].code entry, retained with each city so consumers can join city intensity summaries to prefecture-level summaries without consulting out-of-band context."
+                      },
+                      "city_code": {
+                        "type": "string",
+                        "description": "JMA local-government city code copied from int[].city[].code for the city, ward, town, or village whose maximum intensity is summarized.",
+                        "altnames": {
+                          "jma-bosai": "code"
+                        }
+                      },
+                      "max_intensity": {
+                        "type": "string",
+                        "description": "Maximum JMA seismic intensity observed in the city for this report, copied from int[].city[].maxi and expressed on the JMA shindo scale.",
+                        "altenums": {
+                          "jma_label": {
+                            "1": "震度1 (slight)",
+                            "2": "震度2",
+                            "3": "震度3",
+                            "4": "震度4",
+                            "5-": "震度5弱",
+                            "5+": "震度5強",
+                            "6-": "震度6弱",
+                            "6+": "震度6強",
+                            "7": "震度7 (catastrophic)"
+                          }
+                        },
+                        "altnames": {
+                          "jma-bosai": "maxi"
+                        },
+                        "pattern": "^(1|2|3|4|5-|5\\+|6-|6\\+|7)$",
+                        "enum": [
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5-",
+                          "5+",
+                          "6-",
+                          "6+",
+                          "7"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "prefecture_code",
+                      "city_code",
+                      "max_intensity"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

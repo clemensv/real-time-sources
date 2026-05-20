@@ -1,0 +1,2 @@
+pip install .\jma_bosai_volcano_producer_data
+pip install .\jma_bosai_volcano_producer_kafka_producer

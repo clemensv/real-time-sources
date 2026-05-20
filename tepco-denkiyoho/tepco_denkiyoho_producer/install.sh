@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./tepco_denkiyoho_producer_data
+pip install ./tepco_denkiyoho_producer_kafka_producer

@@ -1,0 +1,1287 @@
+{
+  "endpoints": {
+    "JP.JMA.Amedas.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "jma-bosai-amedas",
+          "key": "jp.jma.amedas/{station_code}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Amedas"
+      ]
+    }
+  },
+  "messagegroups": {
+    "JP.JMA.Amedas": {
+      "messages": {
+        "JP.JMA.Amedas.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference event for one JMA AMeDAS station from the Bosai amedastable.json station table, including names, geodetic position, elevation, station capability tier, and measurement capability bitmask.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.JMA.Amedas.Station"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.jma.amedas/{station_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Station"
+        },
+        "JP.JMA.Amedas.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Telemetry event for one JMA AMeDAS station observation in a ten-minute Bosai map snapshot. Each measurement value is nullable because JMA publishes different fields by station capability and by observation availability.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.JMA.Amedas.Observation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.jma.amedas/{station_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "JP.JMA.Amedas.jstruct": {
+      "schemas": {
+        "JP.JMA.Amedas.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.jma.go.jp/schemas/bosai/amedas/Station",
+                "name": "Station",
+                "$root": "#/definitions/JP/JMA/Amedas/Station",
+                "definitions": {
+                  "JP": {
+                    "JMA": {
+                      "Amedas": {
+                        "Station": {
+                          "name": "Station",
+                          "type": "object",
+                          "properties": {
+                            "station_code": {
+                              "type": "string",
+                              "pattern": "^[0-9]{5}$",
+                              "description": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map."
+                            },
+                            "kj_name": {
+                              "type": "string",
+                              "altnames": {
+                                "lang:ja-Kanji": "kjName"
+                              },
+                              "description": "Japanese kanji station name from the JMA AMeDAS station table (kjName), used by the Bosai web application for Japanese display labels."
+                            },
+                            "kana": {
+                              "type": "string",
+                              "altnames": {
+                                "lang:ja-Kana": "knName"
+                              },
+                              "description": "Japanese kana station reading from the JMA AMeDAS station table (knName in live payloads, kana in older examples), used by the Bosai web application for phonetic Japanese display."
+                            },
+                            "en_name": {
+                              "type": "string",
+                              "altnames": {
+                                "json": "enName"
+                              },
+                              "description": "English station name from the JMA AMeDAS station table."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "unit": "degree",
+                              "description": "Station latitude in WGS84 decimal degrees. The JMA station table publishes latitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60.",
+                              "minimum": -90,
+                              "maximum": 90,
+                              "symbol": "°",
+                              "altnames": {
+                                "jma-bosai": "lat"
+                              }
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "unit": "degree",
+                              "description": "Station longitude in WGS84 decimal degrees. The JMA station table publishes longitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60.",
+                              "minimum": -180,
+                              "maximum": 180,
+                              "symbol": "°",
+                              "altnames": {
+                                "jma-bosai": "lon"
+                              }
+                            },
+                            "altitude_m": {
+                              "type": "double",
+                              "unit": "meter",
+                              "altnames": {
+                                "json": "alt"
+                              },
+                              "description": "Station elevation above sea level in meters from the JMA station table alt field."
+                            },
+                            "station_type": {
+                              "type": "string",
+                              "enum": [
+                                "A",
+                                "B",
+                                "C"
+                              ],
+                              "descriptions": {
+                                "A": "JMA AMeDAS capability tier A station, typically a major station with pressure and broader meteorological observations.",
+                                "B": "JMA AMeDAS capability tier B station.",
+                                "C": "JMA AMeDAS capability tier C station, commonly an automated regional station with a smaller measurement set."
+                              },
+                              "description": "JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station."
+                            },
+                            "elems_bitmask": {
+                              "type": "string",
+                              "altnames": {
+                                "json": "elems"
+                              },
+                              "description": "JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application."
+                            },
+                            "enabled_measurements": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility."
+                            }
+                          },
+                          "required": [
+                            "station_code",
+                            "kj_name",
+                            "kana",
+                            "en_name",
+                            "latitude",
+                            "longitude",
+                            "altitude_m",
+                            "station_type",
+                            "elems_bitmask",
+                            "enabled_measurements"
+                          ],
+                          "description": "Reference event for one JMA AMeDAS station from the Bosai amedastable.json station table, including names, geodetic position, elevation, station capability tier, and measurement capability bitmask."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "JP.JMA.Amedas.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.jma.go.jp/schemas/bosai/amedas/Observation",
+                "name": "Observation",
+                "$root": "#/definitions/JP/JMA/Amedas/Observation",
+                "definitions": {
+                  "JP": {
+                    "JMA": {
+                      "Amedas": {
+                        "Observation": {
+                          "name": "Observation",
+                          "type": "object",
+                          "properties": {
+                            "station_code": {
+                              "type": "string",
+                              "pattern": "^[0-9]{5}$",
+                              "description": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map."
+                            },
+                            "observed_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Observation snapshot timestamp converted from JMA latest_time.txt to UTC and serialized as RFC3339. AMeDAS map snapshots are published every ten minutes."
+                            },
+                            "observed_at_local": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Original JMA latest_time.txt timestamp in Japan Standard Time with +09:00 offset, serialized as RFC3339."
+                            },
+                            "temp": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Air temperature observed automatically by AMeDAS, expressed in degrees Celsius. JMA documents temperature as air temperature displayed in 0.1 °C units.",
+                              "unit": "celsius",
+                              "altnames": {
+                                "jma-bosai": "temp"
+                              }
+                            },
+                            "temp_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "humidity": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Relative humidity of the air observed automatically by AMeDAS, expressed as percent. JMA documents humidity as relative humidity displayed in 1 percent units.",
+                              "unit": "percent",
+                              "altnames": {
+                                "jma-bosai": "humidity"
+                              },
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "humidity_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "pressure": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Station pressure from JMA Bosai AMeDAS where available, expressed in hectopascals.",
+                              "unit": "hectopascal",
+                              "altnames": {
+                                "jma-bosai": "pressure"
+                              }
+                            },
+                            "pressure_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "normal_pressure": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Sea-level adjusted pressure (normalPressure in the Bosai payload) where available, expressed in hectopascals.",
+                              "unit": "hectopascal",
+                              "altnames": {
+                                "jma-bosai": "normalPressure"
+                              }
+                            },
+                            "normal_pressure_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "wind_speed": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Wind speed averaged over the ten minutes before observation time, expressed in meters per second. JMA documents wind speed as the speed of the wind over the preceding ten minutes.",
+                              "unit": "meter_per_second",
+                              "altnames": {
+                                "jma-bosai": "wind"
+                              }
+                            },
+                            "wind_speed_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "wind_direction": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Wind direction from which the wind blows, converted by the bridge from JMA 16-direction codes to degrees clockwise from true north.",
+                              "unit": "degree",
+                              "altnames": {
+                                "jma-bosai": "windDirection"
+                              },
+                              "minimum": 0,
+                              "exclusiveMaximum": 360
+                            },
+                            "wind_direction_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "wind_gust": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Maximum instantaneous wind speed (gust) for the observation interval from the JMA Bosai per-station point payload, expressed in meters per second. The bridge enriches map observations with this value only for configured point-detail stations.",
+                              "unit": "meter_per_second",
+                              "altnames": {
+                                "jma-bosai": "gust"
+                              }
+                            },
+                            "wind_gust_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the gust tuple in the Bosai AMeDAS per-station point payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA non-normal quality states as represented by the Bosai web application."
+                            },
+                            "wind_gust_direction": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Direction from which the maximum instantaneous wind gust blew, converted by the bridge from JMA 16-direction codes in gustDirection to degrees clockwise from true north. The field is present only when point-detail enrichment is configured and JMA publishes a gust direction.",
+                              "unit": "degree",
+                              "minimum": 0,
+                              "exclusiveMaximum": 360,
+                              "altnames": {
+                                "jma-bosai": "gustDirection"
+                              }
+                            },
+                            "wind_gust_time": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date-time",
+                              "description": "UTC RFC3339 timestamp for the maximum instantaneous wind gust time from the JMA Bosai per-station gustTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
+                              "altnames": {
+                                "jma-bosai": "gustTime"
+                              }
+                            },
+                            "max_temp": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Maximum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations.",
+                              "unit": "celsius",
+                              "altnames": {
+                                "jma-bosai": "maxTemp"
+                              }
+                            },
+                            "max_temp_time": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date-time",
+                              "description": "UTC RFC3339 timestamp for the maximum air temperature time from the JMA Bosai per-station maxTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
+                              "altnames": {
+                                "jma-bosai": "maxTempTime"
+                              }
+                            },
+                            "min_temp": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Minimum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations.",
+                              "unit": "celsius",
+                              "altnames": {
+                                "jma-bosai": "minTemp"
+                              }
+                            },
+                            "min_temp_time": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "format": "date-time",
+                              "description": "UTC RFC3339 timestamp for the minimum air temperature time from the JMA Bosai per-station minTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
+                              "altnames": {
+                                "jma-bosai": "minTempTime"
+                              }
+                            },
+                            "precipitation10m": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Precipitation amount for the previous 10 minutes, expressed in millimeters of liquid water equivalent. JMA documents precipitation as rain or snow amount melted to water and displayed in 0.5 mm units.",
+                              "unit": "millimeter",
+                              "altnames": {
+                                "jma-bosai": "precipitation10m"
+                              }
+                            },
+                            "precipitation10m_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "precipitation1h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Precipitation amount for the previous 1 hour, expressed in millimeters of liquid water equivalent.",
+                              "unit": "millimeter",
+                              "altnames": {
+                                "jma-bosai": "precipitation1h"
+                              }
+                            },
+                            "precipitation1h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "precipitation3h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Precipitation amount for the previous 3 hours, expressed in millimeters of liquid water equivalent.",
+                              "unit": "millimeter",
+                              "altnames": {
+                                "jma-bosai": "precipitation3h"
+                              }
+                            },
+                            "precipitation3h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "precipitation24h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Precipitation amount for the previous 24 hours, expressed in millimeters of liquid water equivalent.",
+                              "unit": "millimeter",
+                              "altnames": {
+                                "jma-bosai": "precipitation24h"
+                              }
+                            },
+                            "precipitation24h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "sun10m": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Sunshine duration for the previous 10 minutes, expressed in minutes. JMA publishes this ten-minute map field in minutes, so its unit intentionally differs from the hourly sun1h field.",
+                              "unit": "minute",
+                              "altnames": {
+                                "jma-bosai": "sun10m"
+                              }
+                            },
+                            "sun10m_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "sun1h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Sunshine duration for the previous 1 hour, expressed in hours as published by the Bosai AMeDAS map. JMA publishes this hourly field in hours, so its unit intentionally differs from the ten-minute sun10m field.",
+                              "unit": "hour",
+                              "altnames": {
+                                "jma-bosai": "sun1h"
+                              }
+                            },
+                            "sun1h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "snow": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Snow depth, the height of snow on the ground, expressed in centimeters. JMA documents snow depth as the height from the ground surface to the top of accumulated snow.",
+                              "unit": "centimeter",
+                              "altnames": {
+                                "jma-bosai": "snow"
+                              }
+                            },
+                            "snow_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "snow1h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Change in snow depth over the previous 1 hour, expressed in centimeters.",
+                              "unit": "centimeter",
+                              "altnames": {
+                                "jma-bosai": "snow1h"
+                              }
+                            },
+                            "snow1h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "snow6h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Change in snow depth over the previous 6 hours, expressed in centimeters.",
+                              "unit": "centimeter",
+                              "altnames": {
+                                "jma-bosai": "snow6h"
+                              }
+                            },
+                            "snow6h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "snow12h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Change in snow depth over the previous 12 hours, expressed in centimeters.",
+                              "unit": "centimeter",
+                              "altnames": {
+                                "jma-bosai": "snow12h"
+                              }
+                            },
+                            "snow12h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "snow24h": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Change in snow depth over the previous 24 hours, expressed in centimeters.",
+                              "unit": "centimeter",
+                              "altnames": {
+                                "jma-bosai": "snow24h"
+                              }
+                            },
+                            "snow24h_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "visibility": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Horizontal visibility where published by JMA Bosai AMeDAS, expressed in meters.",
+                              "unit": "meter",
+                              "altnames": {
+                                "jma-bosai": "visibility"
+                              }
+                            },
+                            "visibility_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "cloud": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Cloud amount code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish cloud information.",
+                              "altnames": {
+                                "jma-bosai": "cloud"
+                              }
+                            },
+                            "cloud_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "weather": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Present weather code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish weather information.",
+                              "altnames": {
+                                "jma-bosai": "weather"
+                              }
+                            },
+                            "weather_qc_flag": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            }
+                          },
+                          "required": [
+                            "station_code",
+                            "observed_at",
+                            "observed_at_local",
+                            "temp",
+                            "temp_qc_flag",
+                            "humidity",
+                            "humidity_qc_flag",
+                            "pressure",
+                            "pressure_qc_flag",
+                            "normal_pressure",
+                            "normal_pressure_qc_flag",
+                            "wind_speed",
+                            "wind_speed_qc_flag",
+                            "wind_direction",
+                            "wind_direction_qc_flag",
+                            "wind_gust",
+                            "wind_gust_qc_flag",
+                            "wind_gust_direction",
+                            "wind_gust_time",
+                            "max_temp",
+                            "max_temp_time",
+                            "min_temp",
+                            "min_temp_time",
+                            "precipitation10m",
+                            "precipitation10m_qc_flag",
+                            "precipitation1h",
+                            "precipitation1h_qc_flag",
+                            "precipitation3h",
+                            "precipitation3h_qc_flag",
+                            "precipitation24h",
+                            "precipitation24h_qc_flag",
+                            "sun10m",
+                            "sun10m_qc_flag",
+                            "sun1h",
+                            "sun1h_qc_flag",
+                            "snow",
+                            "snow_qc_flag",
+                            "snow1h",
+                            "snow1h_qc_flag",
+                            "snow6h",
+                            "snow6h_qc_flag",
+                            "snow12h",
+                            "snow12h_qc_flag",
+                            "snow24h",
+                            "snow24h_qc_flag",
+                            "visibility",
+                            "visibility_qc_flag",
+                            "cloud",
+                            "cloud_qc_flag",
+                            "weather",
+                            "weather_qc_flag"
+                          ],
+                          "description": "Telemetry event for one JMA AMeDAS station observation in a ten-minute Bosai map snapshot. Each measurement value is nullable because JMA publishes different fields by station capability and by observation availability."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Amedas.avro": {
+      "schemas": {
+        "JP.JMA.Amedas.Station": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "JP.JMA.Amedas",
+                "doc": "Reference event for one JMA AMeDAS station from the Bosai amedastable.json station table, including names, geodetic position, elevation, station capability tier, and measurement capability bitmask.",
+                "fields": [
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map."
+                  },
+                  {
+                    "name": "kj_name",
+                    "type": "string",
+                    "doc": "Japanese kanji station name from the JMA AMeDAS station table (kjName), used by the Bosai web application for Japanese display labels."
+                  },
+                  {
+                    "name": "kana",
+                    "type": "string",
+                    "doc": "Japanese kana station reading from the JMA AMeDAS station table (knName in live payloads, kana in older examples), used by the Bosai web application for phonetic Japanese display."
+                  },
+                  {
+                    "name": "en_name",
+                    "type": "string",
+                    "doc": "English station name from the JMA AMeDAS station table."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Station latitude in WGS84 decimal degrees. The JMA station table publishes latitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Station longitude in WGS84 decimal degrees. The JMA station table publishes longitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60."
+                  },
+                  {
+                    "name": "altitude_m",
+                    "type": "double",
+                    "doc": "Station elevation above sea level in meters from the JMA station table alt field."
+                  },
+                  {
+                    "name": "station_type",
+                    "type": "string",
+                    "doc": "JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station."
+                  },
+                  {
+                    "name": "elems_bitmask",
+                    "type": "string",
+                    "doc": "JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application."
+                  },
+                  {
+                    "name": "enabled_measurements",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "JP.JMA.Amedas.Observation": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "namespace": "JP.JMA.Amedas",
+                "doc": "Telemetry event for one JMA AMeDAS station observation in a ten-minute Bosai map snapshot. Each measurement value is nullable because JMA publishes different fields by station capability and by observation availability.",
+                "fields": [
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map."
+                  },
+                  {
+                    "name": "observed_at",
+                    "type": "string",
+                    "doc": "Observation snapshot timestamp converted from JMA latest_time.txt to UTC and serialized as RFC3339. AMeDAS map snapshots are published every ten minutes."
+                  },
+                  {
+                    "name": "observed_at_local",
+                    "type": "string",
+                    "doc": "Original JMA latest_time.txt timestamp in Japan Standard Time with +09:00 offset, serialized as RFC3339."
+                  },
+                  {
+                    "name": "temp",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Air temperature observed automatically by AMeDAS, expressed in degrees Celsius. JMA documents temperature as air temperature displayed in 0.1 °C units.",
+                    "default": null
+                  },
+                  {
+                    "name": "temp_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "humidity",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Relative humidity of the air observed automatically by AMeDAS, expressed as percent. JMA documents humidity as relative humidity displayed in 1 percent units.",
+                    "default": null
+                  },
+                  {
+                    "name": "humidity_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "pressure",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station pressure from JMA Bosai AMeDAS where available, expressed in hectopascals.",
+                    "default": null
+                  },
+                  {
+                    "name": "pressure_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "normal_pressure",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sea-level adjusted pressure (normalPressure in the Bosai payload) where available, expressed in hectopascals.",
+                    "default": null
+                  },
+                  {
+                    "name": "normal_pressure_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind speed averaged over the ten minutes before observation time, expressed in meters per second. JMA documents wind speed as the speed of the wind over the preceding ten minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_speed_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Wind direction from which the wind blows, converted by the bridge from JMA 16-direction codes to degrees clockwise from true north.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_direction_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_gust",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum instantaneous wind speed (gust) for the observation interval from the JMA Bosai per-station point payload, expressed in meters per second. The bridge enriches map observations with this value only for configured point-detail stations.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_gust_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the gust tuple in the Bosai AMeDAS per-station point payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_gust_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Direction from which the maximum instantaneous wind gust blew, converted by the bridge from JMA 16-direction codes in gustDirection to degrees clockwise from true north. The field is present only when point-detail enrichment is configured and JMA publishes a gust direction.",
+                    "default": null
+                  },
+                  {
+                    "name": "wind_gust_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UTC RFC3339 timestamp for the maximum instantaneous wind gust time from the JMA Bosai per-station gustTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
+                    "default": null
+                  },
+                  {
+                    "name": "max_temp",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Maximum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations.",
+                    "default": null
+                  },
+                  {
+                    "name": "max_temp_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UTC RFC3339 timestamp for the maximum air temperature time from the JMA Bosai per-station maxTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
+                    "default": null
+                  },
+                  {
+                    "name": "min_temp",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Minimum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations.",
+                    "default": null
+                  },
+                  {
+                    "name": "min_temp_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UTC RFC3339 timestamp for the minimum air temperature time from the JMA Bosai per-station minTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation10m",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Precipitation amount for the previous 10 minutes, expressed in millimeters of liquid water equivalent. JMA documents precipitation as rain or snow amount melted to water and displayed in 0.5 mm units.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation10m_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation1h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Precipitation amount for the previous 1 hour, expressed in millimeters of liquid water equivalent.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation1h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation3h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Precipitation amount for the previous 3 hours, expressed in millimeters of liquid water equivalent.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation3h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation24h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Precipitation amount for the previous 24 hours, expressed in millimeters of liquid water equivalent.",
+                    "default": null
+                  },
+                  {
+                    "name": "precipitation24h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "sun10m",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sunshine duration for the previous 10 minutes, expressed in minutes. JMA publishes this ten-minute map field in minutes, so its unit intentionally differs from the hourly sun1h field.",
+                    "default": null
+                  },
+                  {
+                    "name": "sun10m_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "sun1h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Sunshine duration for the previous 1 hour, expressed in hours as published by the Bosai AMeDAS map. JMA publishes this hourly field in hours, so its unit intentionally differs from the ten-minute sun10m field.",
+                    "default": null
+                  },
+                  {
+                    "name": "sun1h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Snow depth, the height of snow on the ground, expressed in centimeters. JMA documents snow depth as the height from the ground surface to the top of accumulated snow.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow1h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Change in snow depth over the previous 1 hour, expressed in centimeters.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow1h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow6h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Change in snow depth over the previous 6 hours, expressed in centimeters.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow6h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow12h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Change in snow depth over the previous 12 hours, expressed in centimeters.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow12h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow24h",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Change in snow depth over the previous 24 hours, expressed in centimeters.",
+                    "default": null
+                  },
+                  {
+                    "name": "snow24h_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "visibility",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Horizontal visibility where published by JMA Bosai AMeDAS, expressed in meters.",
+                    "default": null
+                  },
+                  {
+                    "name": "visibility_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "cloud",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Cloud amount code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish cloud information.",
+                    "default": null
+                  },
+                  {
+                    "name": "cloud_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  },
+                  {
+                    "name": "weather",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Present weather code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish weather information.",
+                    "default": null
+                  },
+                  {
+                    "name": "weather_qc_flag",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}

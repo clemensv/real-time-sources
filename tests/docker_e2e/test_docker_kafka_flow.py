@@ -358,6 +358,26 @@ def wikimedia_osm_diffs_image():
 def inpe_deter_brazil_image():
     return build_image('inpe-deter-brazil')
 
+@pytest.fixture(scope='module')
+def jma_bosai_amedas_image():
+    return build_image('jma-bosai-amedas')
+
+@pytest.fixture(scope='module')
+def jma_bosai_quake_image():
+    return build_image('jma-bosai-quake')
+
+@pytest.fixture(scope='module')
+def jma_bosai_volcano_image():
+    return build_image('jma-bosai-volcano')
+
+@pytest.fixture(scope='module')
+def jma_bosai_warning_image():
+    return build_image('jma-bosai-warning')
+
+@pytest.fixture(scope='module')
+def tepco_denkiyoho_image():
+    return build_image('tepco-denkiyoho')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1974,3 +1994,92 @@ class TestKMIBelgiumDockerFlow:
             reference_types=['Station'],
             telemetry_types=['WeatherObservation'],
         )
+
+
+# ---------------------------------------------------------------------------
+# JMA Bosai AMeDAS (Japan – automated weather station network)
+# ---------------------------------------------------------------------------
+
+class TestJmaBosaiAmedasDockerFlow:
+    TOPIC = 'test-jma-bosai-amedas'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, jma_bosai_amedas_image):
+        _run_kafka_flow_test(
+            kafka, jma_bosai_amedas_image, self.TOPIC,
+            reference_types=['JP.JMA.Amedas.Station'],
+            telemetry_types=['JP.JMA.Amedas.Observation'],
+            required_exact_types=['JP.JMA.Amedas.Station', 'JP.JMA.Amedas.Observation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# JMA Bosai Quake (Japan – earthquake bulletins)
+# ---------------------------------------------------------------------------
+
+class TestJmaBosaiQuakeDockerFlow:
+    TOPIC = 'test-jma-bosai-quake'
+
+    def test_emits_earthquake_reports(self, kafka: KafkaFixture, jma_bosai_quake_image):
+        _run_kafka_flow_test(
+            kafka, jma_bosai_quake_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['JP.JMA.Quake.EarthquakeReport'],
+            required_exact_types=['JP.JMA.Quake.EarthquakeReport'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# JMA Bosai Volcano (Japan – volcanic warnings)
+# ---------------------------------------------------------------------------
+
+class TestJmaBosaiVolcanoDockerFlow:
+    TOPIC = 'test-jma-bosai-volcano'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, jma_bosai_volcano_image):
+        _run_kafka_flow_test(
+            kafka, jma_bosai_volcano_image, self.TOPIC,
+            reference_types=['JP.JMA.Volcano.Volcano'],
+            telemetry_types=['JP.JMA.Volcano.VolcanicWarning'],
+            required_any_types=['JP.JMA.Volcano.VolcanicWarning', 'JP.JMA.Volcano.VolcanicEruption'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# JMA Bosai Warning & Tsunami (Japan – per-prefecture warnings + tsunami)
+# ---------------------------------------------------------------------------
+
+class TestJmaBosaiWarningDockerFlow:
+    TOPIC = 'test-jma-bosai-warning'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, jma_bosai_warning_image):
+        _run_kafka_flow_test(
+            kafka, jma_bosai_warning_image, self.TOPIC,
+            reference_types=['Office'],
+            telemetry_types=['WeatherWarning'],
+            required_any_types=['JP.JMA.Warning.WeatherWarning', 'JP.JMA.Tsunami.TsunamiAlert'],
+            extra_env={
+                'KAFKA_TOPIC_WARNING': 'test-jma-bosai-warning',
+                'KAFKA_TOPIC_TSUNAMI': 'test-jma-bosai-warning',
+            },
+        )
+
+
+# ---------------------------------------------------------------------------
+# TEPCO Denkiyoho (Japan/Kanto – electricity supply & demand)
+# ---------------------------------------------------------------------------
+
+class TestTepcoDenkiyohoDockerFlow:
+    TOPIC = 'test-tepco-denkiyoho'
+
+    def test_emits_supply_and_demand(self, kafka: KafkaFixture, tepco_denkiyoho_image):
+        _run_kafka_flow_test(
+            kafka, tepco_denkiyoho_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['jp.tepco.denkiyoho'],
+            required_any_types=[
+                'jp.tepco.denkiyoho.SupplyCapacity',
+                'jp.tepco.denkiyoho.DemandActual',
+                'jp.tepco.denkiyoho.DemandForecast',
+            ],
+        )
+
