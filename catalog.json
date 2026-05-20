@@ -9,6 +9,14 @@
     "notebook": true
   },
   {
+    "id": "canada-eccc-wateroffice",
+    "name": "Canada ECCC Water Office",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "Canada — ~2,100 hydrometric stations, ECCC/WSC",
+    "kql": true
+  },
+  {
     "id": "cdec-reservoirs",
     "name": "CDEC Reservoirs",
     "cat": "Hydrology",
@@ -62,6 +70,15 @@
     "notebook": true
   },
   {
+    "id": "king-county-marine",
+    "name": "King County Marine",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "Washington State / Puget Sound — buoy and mooring telemetry",
+    "kql": true,
+    "notebook": true
+  },
+  {
     "id": "nepal-bipad-hydrology",
     "name": "Nepal BIPAD Hydrology",
     "cat": "Hydrology",
@@ -69,14 +86,6 @@
     "desc": "Nepal — Himalayan river basins, BIPAD",
     "kql": true,
     "notebook": true
-  },
-  {
-    "id": "noaa",
-    "name": "NOAA Tides & Currents",
-    "cat": "Hydrology",
-    "key": false,
-    "desc": "United States — ~3,000 stations",
-    "kql": true
   },
   {
     "id": "noaa-ndbc",
@@ -88,13 +97,12 @@
     "notebook": true
   },
   {
-    "id": "king-county-marine",
-    "name": "King County Marine",
+    "id": "noaa",
+    "name": "NOAA Tides & Currents",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Washington State / Puget Sound — buoy and mooring telemetry",
-    "kql": true,
-    "notebook": true
+    "desc": "United States — ~3,000 stations",
+    "kql": true
   },
   {
     "id": "nve-hydro",
@@ -283,20 +291,20 @@
     "kql": true
   },
   {
+    "id": "noaa-goes",
+    "name": "NOAA GOES / SWPC",
+    "cat": "Weather",
+    "key": false,
+    "desc": "Global — space weather, solar wind, K-index",
+    "kql": true,
+    "notebook": true
+  },
+  {
     "id": "noaa-nws",
     "name": "NOAA NWS",
     "cat": "Weather",
     "key": false,
     "desc": "United States — weather alerts, CAP",
-    "kql": true,
-    "notebook": true
-  },
-  {
-    "id": "nws-forecasts",
-    "name": "NWS Forecast Zones",
-    "cat": "Weather",
-    "key": false,
-    "desc": "United States — configurable land and marine forecast zones",
     "kql": true,
     "notebook": true
   },
@@ -309,11 +317,11 @@
     "kql": true
   },
   {
-    "id": "noaa-goes",
-    "name": "NOAA GOES / SWPC",
+    "id": "nws-forecasts",
+    "name": "NWS Forecast Zones",
     "cat": "Weather",
     "key": false,
-    "desc": "Global — space weather, solar wind, K-index",
+    "desc": "United States — configurable land and marine forecast zones",
     "kql": true,
     "notebook": true
   },
@@ -350,6 +358,15 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "United Kingdom — 300+ monitoring locations, hourly pollutants",
+    "kql": true,
+    "notebook": true
+  },
+  {
+    "id": "epa-uv",
+    "name": "EPA UV Index",
+    "cat": "Air Quality",
+    "key": false,
+    "desc": "United States — city-scoped hourly and daily UV forecasts",
     "kql": true,
     "notebook": true
   },
@@ -404,15 +421,6 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Netherlands — station measurements, components, LKI index",
-    "kql": true,
-    "notebook": true
-  },
-  {
-    "id": "epa-uv",
-    "name": "EPA UV Index",
-    "cat": "Air Quality",
-    "key": false,
-    "desc": "United States — city-scoped hourly and daily UV forecasts",
     "kql": true,
     "notebook": true
   },
@@ -639,6 +647,21 @@
     "notebook": true
   },
   {
+    "id": "ndw-road-traffic",
+    "name": "NDW Road Traffic",
+    "cat": "Transport",
+    "key": false,
+    "desc": "Netherlands — national road traffic, DATEX II XML",
+    "kql": true
+  },
+  {
+    "id": "nextbus",
+    "name": "Nextbus",
+    "cat": "Transport",
+    "key": true,
+    "desc": "North America — public transit arrivals"
+  },
+  {
     "id": "paris-bicycle-counters",
     "name": "Paris Bicycle Counters",
     "cat": "Transport",
@@ -655,6 +678,20 @@
     "desc": "Seattle, WA — permit-driven street closure windows",
     "kql": true,
     "notebook": true
+  },
+  {
+    "id": "tfl-road-traffic",
+    "name": "TfL Road Traffic",
+    "cat": "Transport",
+    "key": false,
+    "desc": "London, UK — road corridor status and disruptions"
+  },
+  {
+    "id": "tokyo-docomo-bikeshare",
+    "name": "Tokyo Docomo Bikeshare",
+    "cat": "Transport",
+    "key": false,
+    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT"
   },
   {
     "id": "cbp-border-wait",
@@ -675,6 +712,14 @@
     "notebook": true
   },
   {
+    "id": "entur-norway",
+    "name": "Entur Norway",
+    "cat": "Railway",
+    "key": false,
+    "desc": "Norway — national real-time transit, SIRI ET/VM/SX",
+    "kql": true
+  },
+  {
     "id": "irail",
     "name": "iRail",
     "cat": "Railway",
@@ -682,6 +727,14 @@
     "desc": "Belgium — ~600 NMBS/SNCB stations, departures, delays",
     "kql": true,
     "notebook": true
+  },
+  {
+    "id": "xceed",
+    "name": "Xceed",
+    "cat": "Nightlife",
+    "key": false,
+    "desc": "Europe — clubs, bars, parties, festivals — event schedules",
+    "kql": true
   },
   {
     "id": "carbon-intensity",
@@ -759,6 +812,28 @@
     "key": false,
     "desc": "Global — Wikipedia, Wikidata, Commons recent changes",
     "kql": true
+  },
+  {
+    "id": "billetto",
+    "name": "Billetto",
+    "cat": "Public Events",
+    "key": false,
+    "desc": "Europe — pan-European ticketed public events"
+  },
+  {
+    "id": "fienta",
+    "name": "Fienta",
+    "cat": "Public Events",
+    "key": false,
+    "desc": "Europe — ticketed public events with sale-status signals",
+    "kql": true
+  },
+  {
+    "id": "ticketmaster",
+    "name": "Ticketmaster",
+    "cat": "Public Events",
+    "key": true,
+    "desc": "Global — concerts, sports, theater, arts via Discovery API"
   },
   {
     "id": "gracedb",
