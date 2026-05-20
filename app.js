@@ -483,12 +483,15 @@ renderPills();
 renderList();
 
 /* ── Hash deep-linking ────────────────────────────────────────────────────
-   #<id>          → select source, show docs
-   #<id>/fabric   → select source AND open the Fabric deploy panel
-                    (prefers notebook mode when the source has a notebook,
-                    otherwise falls back to fabric-aci)
-   #<id>/azure    → select source AND launch the Azure portal ARM deploy
-                    (uses azure-template-with-eventhub.json when present)  */
+   #<id>                     → select source, show docs
+   #<id>/fabric              → select source + open Fabric deploy panel
+                               (notebook if available, else ACI)
+   #<id>/fabric-aci          → select source + open Fabric ACI deploy panel
+   #<id>/fabric-notebook     → select source + open Fabric Notebook deploy panel
+   #<id>/azure               → select source + launch Azure ARM deploy
+                               (azure-template-with-eventhub.json)
+   #<id>/azure-byoeh         → select source + launch Azure ARM deploy
+                               (azure-template.json, bring-your-own Event Hub) */
 async function selectFromHash() {
   const raw = (location.hash || "").replace(/^#/, "").trim();
   if (!raw) return;
@@ -498,8 +501,15 @@ async function selectFromHash() {
   await selectSource(s);
   if (action === "fabric") {
     openDeployForm(s, s.notebook ? "fabric-notebook" : "fabric-aci");
+  } else if (action === "fabric-aci") {
+    openDeployForm(s, "fabric-aci");
+  } else if (action === "fabric-notebook") {
+    openDeployForm(s, "fabric-notebook");
   } else if (action === "azure") {
     const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  } else if (action === "azure-byoeh") {
+    const url = `${RAW}/${s.id}/azure-template.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   }
 }
