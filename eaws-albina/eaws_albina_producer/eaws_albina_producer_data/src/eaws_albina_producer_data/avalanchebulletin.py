@@ -182,19 +182,19 @@ class AvalancheBulletin:
             An instance of the dataclass.
         """
         return cls(
-            region_id='ykmcykqqghawdmwzkdlw',
-            region_name='ypmzgqvizridsefyeusz',
-            bulletin_id='qokasuwubhiupmxvgbmd',
+            region_id='qjyiwxiokkptmghvhstc',
+            region_name='wgczzsvtyuhpriycpywk',
+            bulletin_id='rnbspyxqncepfxmajlli',
             publication_time=datetime.datetime.now(datetime.timezone.utc),
             valid_time_start=datetime.datetime.now(datetime.timezone.utc),
             valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='hbcaydnxzvwjpbdtnvof',
+            lang='qxoppjypaxflljwyzrxi',
             max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(99),
-            danger_ratings_json='xenudgeprbjwlwwddpio',
-            avalanche_problems_json='frkmhnzpdyvvurkaevgn',
-            tendency_type='qpzoasymaktwupnxdldq',
-            danger_patterns_json='ecoyacwxymllpmcvvwbf',
-            avalanche_activity_highlights='jjpciqoiazkbomglfldr',
-            snowpack_structure_comment='cdnpaowuucedhechyrqj'
+            max_danger_rating_value=int(55),
+            danger_ratings_json='lanedingueqjwpsuaesg',
+            avalanche_problems_json='kvrhegqhsjjihijbziny',
+            tendency_type='eafedtcvbgxfalfpduuf',
+            danger_patterns_json='bezqerousrgwnskrbumx',
+            avalanche_activity_highlights='vyyqvwzepuclcxkpdgyg',
+            snowpack_structure_comment='izsibvubkmcdnevgnswu'
         )

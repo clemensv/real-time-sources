@@ -1,0 +1,382 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['gov.noaa.aviationweather.Station'] (
+   [icao_id]: string,
+   [iata_id]: string,
+   [faa_id]: string,
+   [wmo_id]: string,
+   [name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [elevation]: real,
+   [state]: string,
+   [country]: string,
+   [site_type]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['gov.noaa.aviationweather.Station'] docstring "{\"description\": \"Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products.\"}";
+
+.alter table ['gov.noaa.aviationweather.Station'] column-docstrings (
+   [icao_id]: "{\"description\": \"ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport).\"}",
+   [iata_id]: "{\"description\": \"IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations.\"}",
+   [faa_id]: "{\"description\": \"FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations.\"}",
+   [wmo_id]: "{\"description\": \"WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null.\"}",
+   [name]: "{\"description\": \"Human-readable site name from the AviationWeather station database, e.g. 'New York/JF Kennedy Intl'.\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees north. Negative values indicate southern hemisphere.\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees east. Negative values indicate western hemisphere.\"}",
+   [elevation]: "{\"description\": \"Station field elevation in meters above mean sea level.\"}",
+   [state]: "{\"description\": \"State or province code where the station is located (e.g. 'NY'). May be null for non-US stations.\"}",
+   [country]: "{\"description\": \"Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB').\"}",
+   [site_type]: "{\"description\": \"Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['gov.noaa.aviationweather.Station'] ingestion json mapping "gov.noaa.aviationweather.Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "icao_id", "path": "$.icao_id"},
+  {"column": "iata_id", "path": "$.iata_id"},
+  {"column": "faa_id", "path": "$.faa_id"},
+  {"column": "wmo_id", "path": "$.wmo_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "elevation", "path": "$.elevation"},
+  {"column": "state", "path": "$.state"},
+  {"column": "country", "path": "$.country"},
+  {"column": "site_type", "path": "$.site_type"},
+]
+```
+
+.create-or-alter table ['gov.noaa.aviationweather.Station'] ingestion json mapping "gov.noaa.aviationweather.Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "icao_id", "path": "$.data.icao_id"},
+  {"column": "iata_id", "path": "$.data.iata_id"},
+  {"column": "faa_id", "path": "$.data.faa_id"},
+  {"column": "wmo_id", "path": "$.data.wmo_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "elevation", "path": "$.data.elevation"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "site_type", "path": "$.data.site_type"},
+]
+```
+
+.drop materialized-view ['gov.noaa.aviationweather.StationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['gov.noaa.aviationweather.StationLatest'] on table ['gov.noaa.aviationweather.Station'] {
+    ['gov.noaa.aviationweather.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['gov.noaa.aviationweather.Station'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.noaa.aviationweather.Station') | project['icao_id'] = tostring(data.['icao_id']),['iata_id'] = tostring(data.['iata_id']),['faa_id'] = tostring(data.['faa_id']),['wmo_id'] = tostring(data.['wmo_id']),['name'] = tostring(data.['name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toreal(data.['elevation']),['state'] = tostring(data.['state']),['country'] = tostring(data.['country']),['site_type'] = tostring(data.['site_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['gov.noaa.aviationweather.Metar'] (
+   [icao_id]: string,
+   [obs_time]: datetime,
+   [report_time]: datetime,
+   [temp]: real,
+   [dewp]: real,
+   [wdir]: int,
+   [wspd]: int,
+   [wgst]: int,
+   [visib]: string,
+   [altim]: real,
+   [slp]: real,
+   [qc_field]: int,
+   [wx_string]: string,
+   [metar_type]: string,
+   [raw_ob]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [elevation]: real,
+   [flt_cat]: string,
+   [clouds]: string,
+   [name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['gov.noaa.aviationweather.Metar'] docstring "{\"description\": \"METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station.\"}";
+
+.alter table ['gov.noaa.aviationweather.Metar'] column-docstrings (
+   [icao_id]: "{\"description\": \"ICAO station identifier for the reporting station (e.g. 'KJFK').\"}",
+   [obs_time]: "{\"description\": \"Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response.\"}",
+   [report_time]: "{\"description\": \"Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported.\"}",
+   [temp]: "{\"description\": \"Air temperature at the station. Unit: degrees Celsius.\"}",
+   [dewp]: "{\"description\": \"Dewpoint temperature at the station. Unit: degrees Celsius.\"}",
+   [wdir]: "{\"description\": \"Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm.\"}",
+   [wspd]: "{\"description\": \"Sustained wind speed in knots.\"}",
+   [wgst]: "{\"description\": \"Wind gust speed in knots. Null if no gusts reported.\"}",
+   [visib]: "{\"description\": \"Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles.\"}",
+   [altim]: "{\"description\": \"Altimeter setting (QNH) in hectopascals.\"}",
+   [slp]: "{\"description\": \"Sea level pressure in hectopascals. May be null if not reported.\"}",
+   [qc_field]: "{\"description\": \"Quality control flag bitmask from the qcField in the API response.\"}",
+   [wx_string]: "{\"description\": \"Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist).\"}",
+   [metar_type]: "{\"description\": \"METAR report type: 'METAR' for routine, 'SPECI' for special observation.\"}",
+   [raw_ob]: "{\"description\": \"The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'.\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees north from the METAR response.\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees east from the METAR response.\"}",
+   [elevation]: "{\"description\": \"Station elevation in meters above mean sea level from the METAR response.\"}",
+   [flt_cat]: "{\"description\": \"Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR.\"}",
+   [clouds]: "{\"description\": \"JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{\\\"cover\\\":\\\"SCT\\\",\\\"base\\\":5000}]'.\"}",
+   [name]: "{\"description\": \"Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['gov.noaa.aviationweather.Metar'] ingestion json mapping "gov.noaa.aviationweather.Metar_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "icao_id", "path": "$.icao_id"},
+  {"column": "obs_time", "path": "$.obs_time"},
+  {"column": "report_time", "path": "$.report_time"},
+  {"column": "temp", "path": "$.temp"},
+  {"column": "dewp", "path": "$.dewp"},
+  {"column": "wdir", "path": "$.wdir"},
+  {"column": "wspd", "path": "$.wspd"},
+  {"column": "wgst", "path": "$.wgst"},
+  {"column": "visib", "path": "$.visib"},
+  {"column": "altim", "path": "$.altim"},
+  {"column": "slp", "path": "$.slp"},
+  {"column": "qc_field", "path": "$.qc_field"},
+  {"column": "wx_string", "path": "$.wx_string"},
+  {"column": "metar_type", "path": "$.metar_type"},
+  {"column": "raw_ob", "path": "$.raw_ob"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "elevation", "path": "$.elevation"},
+  {"column": "flt_cat", "path": "$.flt_cat"},
+  {"column": "clouds", "path": "$.clouds"},
+  {"column": "name", "path": "$.name"},
+]
+```
+
+.create-or-alter table ['gov.noaa.aviationweather.Metar'] ingestion json mapping "gov.noaa.aviationweather.Metar_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "icao_id", "path": "$.data.icao_id"},
+  {"column": "obs_time", "path": "$.data.obs_time"},
+  {"column": "report_time", "path": "$.data.report_time"},
+  {"column": "temp", "path": "$.data.temp"},
+  {"column": "dewp", "path": "$.data.dewp"},
+  {"column": "wdir", "path": "$.data.wdir"},
+  {"column": "wspd", "path": "$.data.wspd"},
+  {"column": "wgst", "path": "$.data.wgst"},
+  {"column": "visib", "path": "$.data.visib"},
+  {"column": "altim", "path": "$.data.altim"},
+  {"column": "slp", "path": "$.data.slp"},
+  {"column": "qc_field", "path": "$.data.qc_field"},
+  {"column": "wx_string", "path": "$.data.wx_string"},
+  {"column": "metar_type", "path": "$.data.metar_type"},
+  {"column": "raw_ob", "path": "$.data.raw_ob"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "elevation", "path": "$.data.elevation"},
+  {"column": "flt_cat", "path": "$.data.flt_cat"},
+  {"column": "clouds", "path": "$.data.clouds"},
+  {"column": "name", "path": "$.data.name"},
+]
+```
+
+.drop materialized-view ['gov.noaa.aviationweather.MetarLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['gov.noaa.aviationweather.MetarLatest'] on table ['gov.noaa.aviationweather.Metar'] {
+    ['gov.noaa.aviationweather.Metar'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['gov.noaa.aviationweather.Metar'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.noaa.aviationweather.Metar') | project['icao_id'] = tostring(data.['icao_id']),['obs_time'] = todatetime(data.['obs_time']),['report_time'] = todatetime(data.['report_time']),['temp'] = toreal(data.['temp']),['dewp'] = toreal(data.['dewp']),['wdir'] = toint(data.['wdir']),['wspd'] = toint(data.['wspd']),['wgst'] = toint(data.['wgst']),['visib'] = tostring(data.['visib']),['altim'] = toreal(data.['altim']),['slp'] = toreal(data.['slp']),['qc_field'] = toint(data.['qc_field']),['wx_string'] = tostring(data.['wx_string']),['metar_type'] = tostring(data.['metar_type']),['raw_ob'] = tostring(data.['raw_ob']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toreal(data.['elevation']),['flt_cat'] = tostring(data.['flt_cat']),['clouds'] = tostring(data.['clouds']),['name'] = tostring(data.['name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['gov.noaa.aviationweather.Sigmet'] (
+   [icao_id]: string,
+   [series_id]: string,
+   [valid_time_from]: datetime,
+   [valid_time_to]: datetime,
+   [hazard]: string,
+   [qualifier]: string,
+   [sigmet_type]: string,
+   [altitude_hi]: int,
+   [altitude_low]: int,
+   [movement_dir]: string,
+   [movement_spd]: string,
+   [severity]: int,
+   [raw_sigmet]: string,
+   [coords]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['gov.noaa.aviationweather.Sigmet'] docstring "{\"description\": \"SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash.\"}";
+
+.alter table ['gov.noaa.aviationweather.Sigmet'] column-docstrings (
+   [icao_id]: "{\"description\": \"ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs.\"}",
+   [series_id]: "{\"description\": \"SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international).\"}",
+   [valid_time_from]: "{\"description\": \"Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).\"}",
+   [valid_time_to]: "{\"description\": \"End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).\"}",
+   [hazard]: "{\"description\": \"Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc.\"}",
+   [qualifier]: "{\"description\": \"Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs.\"}",
+   [sigmet_type]: "{\"description\": \"SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs.\"}",
+   [altitude_hi]: "{\"description\": \"Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs.\"}",
+   [altitude_low]: "{\"description\": \"Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs.\"}",
+   [movement_dir]: "{\"description\": \"Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international.\"}",
+   [movement_spd]: "{\"description\": \"Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international.\"}",
+   [severity]: "{\"description\": \"Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity.\"}",
+   [raw_sigmet]: "{\"description\": \"Full raw SIGMET text as received from the upstream source.\"}",
+   [coords]: "{\"description\": \"JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{\\\"lat\\\":41.88,\\\"lon\\\":-123.70},{\\\"lat\\\":40.00,\\\"lon\\\":-124.23}]'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['gov.noaa.aviationweather.Sigmet'] ingestion json mapping "gov.noaa.aviationweather.Sigmet_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "icao_id", "path": "$.icao_id"},
+  {"column": "series_id", "path": "$.series_id"},
+  {"column": "valid_time_from", "path": "$.valid_time_from"},
+  {"column": "valid_time_to", "path": "$.valid_time_to"},
+  {"column": "hazard", "path": "$.hazard"},
+  {"column": "qualifier", "path": "$.qualifier"},
+  {"column": "sigmet_type", "path": "$.sigmet_type"},
+  {"column": "altitude_hi", "path": "$.altitude_hi"},
+  {"column": "altitude_low", "path": "$.altitude_low"},
+  {"column": "movement_dir", "path": "$.movement_dir"},
+  {"column": "movement_spd", "path": "$.movement_spd"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "raw_sigmet", "path": "$.raw_sigmet"},
+  {"column": "coords", "path": "$.coords"},
+]
+```
+
+.create-or-alter table ['gov.noaa.aviationweather.Sigmet'] ingestion json mapping "gov.noaa.aviationweather.Sigmet_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "icao_id", "path": "$.data.icao_id"},
+  {"column": "series_id", "path": "$.data.series_id"},
+  {"column": "valid_time_from", "path": "$.data.valid_time_from"},
+  {"column": "valid_time_to", "path": "$.data.valid_time_to"},
+  {"column": "hazard", "path": "$.data.hazard"},
+  {"column": "qualifier", "path": "$.data.qualifier"},
+  {"column": "sigmet_type", "path": "$.data.sigmet_type"},
+  {"column": "altitude_hi", "path": "$.data.altitude_hi"},
+  {"column": "altitude_low", "path": "$.data.altitude_low"},
+  {"column": "movement_dir", "path": "$.data.movement_dir"},
+  {"column": "movement_spd", "path": "$.data.movement_spd"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "raw_sigmet", "path": "$.data.raw_sigmet"},
+  {"column": "coords", "path": "$.data.coords"},
+]
+```
+
+.drop materialized-view ['gov.noaa.aviationweather.SigmetLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['gov.noaa.aviationweather.SigmetLatest'] on table ['gov.noaa.aviationweather.Sigmet'] {
+    ['gov.noaa.aviationweather.Sigmet'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['gov.noaa.aviationweather.Sigmet'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.noaa.aviationweather.Sigmet') | project['icao_id'] = tostring(data.['icao_id']),['series_id'] = tostring(data.['series_id']),['valid_time_from'] = todatetime(data.['valid_time_from']),['valid_time_to'] = todatetime(data.['valid_time_to']),['hazard'] = tostring(data.['hazard']),['qualifier'] = tostring(data.['qualifier']),['sigmet_type'] = tostring(data.['sigmet_type']),['altitude_hi'] = toint(data.['altitude_hi']),['altitude_low'] = toint(data.['altitude_low']),['movement_dir'] = tostring(data.['movement_dir']),['movement_spd'] = tostring(data.['movement_spd']),['severity'] = toint(data.['severity']),['raw_sigmet'] = tostring(data.['raw_sigmet']),['coords'] = tostring(data.['coords']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

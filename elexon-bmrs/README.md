@@ -11,6 +11,7 @@
 - **Deduplication**: Tracks last seen settlement periods in a state file to avoid reprocessing.
 - **Kafka Integration**: Send events to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: Deployable as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) using [`notebook/elexon-bmrs-feed.ipynb`](notebook/elexon-bmrs-feed.ipynb).
 
 ## Installation
 

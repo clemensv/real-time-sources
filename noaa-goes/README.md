@@ -18,6 +18,7 @@ The poller fetches three types of space weather data:
 - **Deduplication**: Tracks last-seen timestamps per data type to avoid reprocessing.
 - **Kafka Integration**: Sends space weather data to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: A scheduled-execution notebook is shipped at `notebook/noaa-goes-feed.ipynb` and can be deployed with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
 
 ## Installation
 

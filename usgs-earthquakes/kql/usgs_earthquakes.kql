@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Event] (
+.create-merge table ['USGS.Earthquakes.Event'] (
    [id]: string,
    [magnitude]: real,
    [mag_type]: string,
@@ -59,9 +59,9 @@
    [___subject]: string
 );
 
-.alter table [Event] docstring "{\"description\": \"USGS earthquake event data from the Earthquake Hazards Program.\"}";
+.alter table ['USGS.Earthquakes.Event'] docstring "{\"description\": \"USGS earthquake event data from the Earthquake Hazards Program.\"}";
 
-.alter table [Event] column-docstrings (
+.alter table ['USGS.Earthquakes.Event'] column-docstrings (
    [id]: "{\"description\": \"Unique identifier for the earthquake event.\"}",
    [magnitude]: "{\"description\": \"Magnitude of the earthquake.\"}",
    [mag_type]: "{\"description\": \"Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww).\"}",
@@ -95,7 +95,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Event] ingestion json mapping "Event_json_flat"
+.create-or-alter table ['USGS.Earthquakes.Event'] ingestion json mapping "USGS.Earthquakes.Event_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -132,7 +132,7 @@
 ]
 ```
 
-.create-or-alter table [Event] ingestion json mapping "Event_json_ce_structured"
+.create-or-alter table ['USGS.Earthquakes.Event'] ingestion json mapping "USGS.Earthquakes.Event_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -169,13 +169,13 @@
 ]
 ```
 
-.drop materialized-view EventLatest ifexists;
+.drop materialized-view ['USGS.Earthquakes.EventLatest'] ifexists;
 
-.create materialized-view with (backfill=true) EventLatest on table Event {
-    Event | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.Earthquakes.EventLatest'] on table ['USGS.Earthquakes.Event'] {
+    ['USGS.Earthquakes.Event'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Event] policy update
+.alter table ['USGS.Earthquakes.Event'] policy update
 ```
 [{
   "IsEnabled": true,

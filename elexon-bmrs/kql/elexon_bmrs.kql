@@ -1,0 +1,241 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['UK.Co.Elexon.BMRS.GenerationMix'] (
+   [settlement_period]: int,
+   [start_time]: datetime,
+   [biomass_mw]: real,
+   [ccgt_mw]: real,
+   [coal_mw]: real,
+   [nuclear_mw]: real,
+   [wind_mw]: real,
+   [ocgt_mw]: real,
+   [oil_mw]: real,
+   [npshyd_mw]: real,
+   [ps_mw]: real,
+   [intfr_mw]: real,
+   [intned_mw]: real,
+   [intnem_mw]: real,
+   [intelec_mw]: real,
+   [intifa2_mw]: real,
+   [intnsl_mw]: real,
+   [intvkl_mw]: real,
+   [other_mw]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['UK.Co.Elexon.BMRS.GenerationMix'] docstring "{\"description\": \"Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint.\"}";
+
+.alter table ['UK.Co.Elexon.BMRS.GenerationMix'] column-docstrings (
+   [settlement_period]: "{\"description\": \"GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC. Period 1 covers 00:00-00:30, period 2 covers 00:30-01:00, and so on.\"}",
+   [start_time]: "{\"description\": \"UTC start time of the settlement period as reported by the BMRS generation outturn summary endpoint.\"}",
+   [biomass_mw]: "{\"description\": \"Generation output from biomass-fuelled power stations in megawatts (MW). Biomass includes dedicated biomass plants and biomass co-firing units.\"}",
+   [ccgt_mw]: "{\"description\": \"Generation output from combined cycle gas turbine (CCGT) power stations in megawatts (MW). CCGT is the primary gas-fired generation technology in GB.\"}",
+   [coal_mw]: "{\"description\": \"Generation output from coal-fired power stations in megawatts (MW).\"}",
+   [nuclear_mw]: "{\"description\": \"Generation output from nuclear power stations in megawatts (MW).\"}",
+   [wind_mw]: "{\"description\": \"Generation output from wind farms (onshore and offshore combined) in megawatts (MW).\"}",
+   [ocgt_mw]: "{\"description\": \"Generation output from open cycle gas turbine (OCGT) power stations in megawatts (MW). OCGT units are typically used for peaking and reserve.\"}",
+   [oil_mw]: "{\"description\": \"Generation output from oil-fired power stations in megawatts (MW).\"}",
+   [npshyd_mw]: "{\"description\": \"Generation output from non-pumped-storage hydroelectric power stations in megawatts (MW).\"}",
+   [ps_mw]: "{\"description\": \"Generation output from pumped storage hydroelectric power stations in megawatts (MW). PS units can act as both generation and demand.\"}",
+   [intfr_mw]: "{\"description\": \"Net import via the France interconnector (IFA) in megawatts (MW). Positive values indicate import to GB.\"}",
+   [intned_mw]: "{\"description\": \"Net import via the Netherlands interconnector (BritNed) in megawatts (MW). Positive values indicate import to GB.\"}",
+   [intnem_mw]: "{\"description\": \"Net import via the Belgium interconnector (Nemo Link) in megawatts (MW). Positive values indicate import to GB.\"}",
+   [intelec_mw]: "{\"description\": \"Net import via the East-West Interconnector (EWIC) to Ireland in megawatts (MW). Positive values indicate import to GB.\"}",
+   [intifa2_mw]: "{\"description\": \"Net import via the IFA2 interconnector to France in megawatts (MW). Positive values indicate import to GB.\"}",
+   [intnsl_mw]: "{\"description\": \"Net import via the North Sea Link interconnector to Norway in megawatts (MW). Positive values indicate import to GB.\"}",
+   [intvkl_mw]: "{\"description\": \"Net import via the Viking Link interconnector to Denmark in megawatts (MW). Positive values indicate import to GB.\"}",
+   [other_mw]: "{\"description\": \"Generation output from other fuel types not individually categorised in megawatts (MW).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['UK.Co.Elexon.BMRS.GenerationMix'] ingestion json mapping "UK.Co.Elexon.BMRS.GenerationMix_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "settlement_period", "path": "$.settlement_period"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "biomass_mw", "path": "$.biomass_mw"},
+  {"column": "ccgt_mw", "path": "$.ccgt_mw"},
+  {"column": "coal_mw", "path": "$.coal_mw"},
+  {"column": "nuclear_mw", "path": "$.nuclear_mw"},
+  {"column": "wind_mw", "path": "$.wind_mw"},
+  {"column": "ocgt_mw", "path": "$.ocgt_mw"},
+  {"column": "oil_mw", "path": "$.oil_mw"},
+  {"column": "npshyd_mw", "path": "$.npshyd_mw"},
+  {"column": "ps_mw", "path": "$.ps_mw"},
+  {"column": "intfr_mw", "path": "$.intfr_mw"},
+  {"column": "intned_mw", "path": "$.intned_mw"},
+  {"column": "intnem_mw", "path": "$.intnem_mw"},
+  {"column": "intelec_mw", "path": "$.intelec_mw"},
+  {"column": "intifa2_mw", "path": "$.intifa2_mw"},
+  {"column": "intnsl_mw", "path": "$.intnsl_mw"},
+  {"column": "intvkl_mw", "path": "$.intvkl_mw"},
+  {"column": "other_mw", "path": "$.other_mw"},
+]
+```
+
+.create-or-alter table ['UK.Co.Elexon.BMRS.GenerationMix'] ingestion json mapping "UK.Co.Elexon.BMRS.GenerationMix_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "settlement_period", "path": "$.data.settlement_period"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "biomass_mw", "path": "$.data.biomass_mw"},
+  {"column": "ccgt_mw", "path": "$.data.ccgt_mw"},
+  {"column": "coal_mw", "path": "$.data.coal_mw"},
+  {"column": "nuclear_mw", "path": "$.data.nuclear_mw"},
+  {"column": "wind_mw", "path": "$.data.wind_mw"},
+  {"column": "ocgt_mw", "path": "$.data.ocgt_mw"},
+  {"column": "oil_mw", "path": "$.data.oil_mw"},
+  {"column": "npshyd_mw", "path": "$.data.npshyd_mw"},
+  {"column": "ps_mw", "path": "$.data.ps_mw"},
+  {"column": "intfr_mw", "path": "$.data.intfr_mw"},
+  {"column": "intned_mw", "path": "$.data.intned_mw"},
+  {"column": "intnem_mw", "path": "$.data.intnem_mw"},
+  {"column": "intelec_mw", "path": "$.data.intelec_mw"},
+  {"column": "intifa2_mw", "path": "$.data.intifa2_mw"},
+  {"column": "intnsl_mw", "path": "$.data.intnsl_mw"},
+  {"column": "intvkl_mw", "path": "$.data.intvkl_mw"},
+  {"column": "other_mw", "path": "$.data.other_mw"},
+]
+```
+
+.drop materialized-view ['UK.Co.Elexon.BMRS.GenerationMixLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['UK.Co.Elexon.BMRS.GenerationMixLatest'] on table ['UK.Co.Elexon.BMRS.GenerationMix'] {
+    ['UK.Co.Elexon.BMRS.GenerationMix'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['UK.Co.Elexon.BMRS.GenerationMix'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'UK.Co.Elexon.BMRS.GenerationMix') | project['settlement_period'] = toint(data.['settlement_period']),['start_time'] = todatetime(data.['start_time']),['biomass_mw'] = toreal(data.['biomass_mw']),['ccgt_mw'] = toreal(data.['ccgt_mw']),['coal_mw'] = toreal(data.['coal_mw']),['nuclear_mw'] = toreal(data.['nuclear_mw']),['wind_mw'] = toreal(data.['wind_mw']),['ocgt_mw'] = toreal(data.['ocgt_mw']),['oil_mw'] = toreal(data.['oil_mw']),['npshyd_mw'] = toreal(data.['npshyd_mw']),['ps_mw'] = toreal(data.['ps_mw']),['intfr_mw'] = toreal(data.['intfr_mw']),['intned_mw'] = toreal(data.['intned_mw']),['intnem_mw'] = toreal(data.['intnem_mw']),['intelec_mw'] = toreal(data.['intelec_mw']),['intifa2_mw'] = toreal(data.['intifa2_mw']),['intnsl_mw'] = toreal(data.['intnsl_mw']),['intvkl_mw'] = toreal(data.['intvkl_mw']),['other_mw'] = toreal(data.['other_mw']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['UK.Co.Elexon.BMRS.DemandOutturn'] (
+   [settlement_period]: int,
+   [settlement_date]: string,
+   [start_time]: datetime,
+   [publish_time]: datetime,
+   [initial_demand_outturn_mw]: real,
+   [initial_transmission_system_demand_outturn_mw]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] docstring "{\"description\": \"Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon.\"}";
+
+.alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] column-docstrings (
+   [settlement_period]: "{\"description\": \"GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC.\"}",
+   [settlement_date]: "{\"description\": \"Settlement date in ISO 8601 format (YYYY-MM-DD) as reported by the BMRS demand outturn endpoint.\"}",
+   [start_time]: "{\"description\": \"UTC start time of the settlement period as reported by the BMRS demand outturn endpoint.\"}",
+   [publish_time]: "{\"description\": \"UTC timestamp when the demand outturn data was published by Elexon.\"}",
+   [initial_demand_outturn_mw]: "{\"description\": \"Initial national demand outturn (INDO) in megawatts (MW). This is the metered generation output less station transformer, unit transformer, and pumped storage demand, measured at the Grid Supply Point (GSP).\"}",
+   [initial_transmission_system_demand_outturn_mw]: "{\"description\": \"Initial transmission system demand outturn (ITSDO) in megawatts (MW). This represents the national demand plus station demand, pumping, and interconnector exports.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] ingestion json mapping "UK.Co.Elexon.BMRS.DemandOutturn_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "settlement_period", "path": "$.settlement_period"},
+  {"column": "settlement_date", "path": "$.settlement_date"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "publish_time", "path": "$.publish_time"},
+  {"column": "initial_demand_outturn_mw", "path": "$.initial_demand_outturn_mw"},
+  {"column": "initial_transmission_system_demand_outturn_mw", "path": "$.initial_transmission_system_demand_outturn_mw"},
+]
+```
+
+.create-or-alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] ingestion json mapping "UK.Co.Elexon.BMRS.DemandOutturn_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "settlement_period", "path": "$.data.settlement_period"},
+  {"column": "settlement_date", "path": "$.data.settlement_date"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "publish_time", "path": "$.data.publish_time"},
+  {"column": "initial_demand_outturn_mw", "path": "$.data.initial_demand_outturn_mw"},
+  {"column": "initial_transmission_system_demand_outturn_mw", "path": "$.data.initial_transmission_system_demand_outturn_mw"},
+]
+```
+
+.drop materialized-view ['UK.Co.Elexon.BMRS.DemandOutturnLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['UK.Co.Elexon.BMRS.DemandOutturnLatest'] on table ['UK.Co.Elexon.BMRS.DemandOutturn'] {
+    ['UK.Co.Elexon.BMRS.DemandOutturn'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'UK.Co.Elexon.BMRS.DemandOutturn') | project['settlement_period'] = toint(data.['settlement_period']),['settlement_date'] = tostring(data.['settlement_date']),['start_time'] = todatetime(data.['start_time']),['publish_time'] = todatetime(data.['publish_time']),['initial_demand_outturn_mw'] = toreal(data.['initial_demand_outturn_mw']),['initial_transmission_system_demand_outturn_mw'] = toreal(data.['initial_transmission_system_demand_outturn_mw']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

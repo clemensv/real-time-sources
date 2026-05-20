@@ -298,11 +298,16 @@ class CarbonIntensityPoller:
         self.producer.producer.flush()
         return emitted_key
 
-    def poll_and_send(self) -> None:
-        """Continuous polling loop with deduplication."""
+    def poll_and_send(self, once: bool = False) -> None:
+        """Polling loop with deduplication.
+
+        When ``once`` is True the loop exits after a single cycle. This is
+        used for scheduled execution (e.g. Fabric notebook hosting) where
+        the scheduler invokes the bridge once per interval.
+        """
         state = self.load_state()
         last_period = state.get("last_period_from")
-        print(f"Starting Carbon Intensity poller (last_period={last_period})")
+        print(f"Starting Carbon Intensity poller (last_period={last_period}, once={once})")
 
         while True:
             try:
@@ -313,6 +318,10 @@ class CarbonIntensityPoller:
                     self.save_state(state)
             except Exception as exc:
                 print(f"Error during poll cycle: {exc}")
+
+            if once:
+                print("--once mode: exiting after first polling cycle")
+                return
 
             print(f"Sleeping {POLL_INTERVAL_SECONDS}s until next poll…")
             time.sleep(POLL_INTERVAL_SECONDS)
@@ -327,6 +336,13 @@ def main():
     parser.add_argument('--sasl-password', type=str)
     parser.add_argument('--connection-string', type=str)
     parser.add_argument('--last-polled-file', type=str)
+    parser.add_argument(
+        '--once',
+        action='store_true',
+        default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+        help='Exit after one polling cycle (also via ONCE_MODE env var). '
+             'Useful for scheduled execution in Fabric notebooks.',
+    )
 
     args = parser.parse_args()
 
@@ -334,8 +350,11 @@ def main():
         args.connection_string = os.getenv('CONNECTION_STRING')
     if not args.last_polled_file:
         args.last_polled_file = os.getenv(
-            'CARBON_INTENSITY_LAST_POLLED_FILE',
-            os.path.expanduser('~/.carbon_intensity_last_polled.json'),
+            'STATE_FILE',
+            os.getenv(
+                'CARBON_INTENSITY_LAST_POLLED_FILE',
+                os.path.expanduser('~/.carbon_intensity_last_polled.json'),
+            ),
         )
 
     if args.connection_string:
@@ -376,7 +395,7 @@ def main():
         kafka_topic=kafka_topic,
         last_polled_file=args.last_polled_file,
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

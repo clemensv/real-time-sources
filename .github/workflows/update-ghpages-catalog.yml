@@ -1,0 +1,129 @@
+name: Update ghpages catalog
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - catalog.json
+
+permissions:
+  contents: write
+
+jobs:
+  sync-catalog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          path: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout ghpages
+        uses: actions/checkout@v6
+        with:
+          ref: ghpages
+          path: ghpages
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Update SOURCES block in app.js
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          catalog = json.loads(Path('main/catalog.json').read_text(encoding='utf-8'))
+          app_js_path = Path('ghpages/app.js')
+          app_js = app_js_path.read_text(encoding='utf-8')
+
+          section_titles = {
+              'Hydrology': 'Hydrology and Water Monitoring',
+              'Weather': 'Weather and Meteorology',
+              'Air Quality': 'Air Quality and Environmental Health',
+              'Disasters': 'Disaster Alerts and Civil Protection',
+              'Radiation': 'Radiation Monitoring',
+              'Maritime': 'Maritime and Vessel Tracking',
+              'Aviation': 'Aviation',
+              'Transport': 'Road Transport',
+              'Railway': 'Railway',
+              'Energy': 'Energy and Infrastructure',
+              'Social': 'Social Media and News',
+              'Science': 'Scientific Research',
+          }
+
+          def js_bool(value: bool) -> str:
+              return 'true' if value else 'false'
+
+          def js_string(value: str) -> str:
+              return json.dumps(value, ensure_ascii=False)
+
+          lines = ['const SOURCES = [']
+          current_category = None
+
+          for item in catalog:
+              category = item['cat']
+              if category != current_category:
+                  if current_category is not None:
+                      lines.append('')
+                  lines.append(f"  // ── {section_titles.get(category, category)} ──")
+                  current_category = category
+
+              lines.append(
+                  '  { '
+                  f"id: {js_string(item['id'])}, "
+                  f"name: {js_string(item['name'])}, "
+                  f"cat: {js_string(item['cat'])}, "
+                  f"key: {js_bool(item['key'])}, "
+                  f"desc: {js_string(item['desc'])}, "
+                  f"kql: {js_bool(item['kql'])}, "
+                  f"notebook: {js_bool(item.get('notebook', False))} "
+                  '},'
+              )
+
+          lines.append('];')
+          new_block = '\n'.join(lines)
+
+          new_app_js, replacements = re.subn(
+              r'const SOURCES = \[.*?\n\];',
+              new_block,
+              app_js,
+              count=1,
+              flags=re.S,
+          )
+
+          if replacements != 1:
+              raise SystemExit('Could not locate SOURCES block in ghpages/app.js')
+
+          if new_app_js != app_js:
+              app_js_path.write_text(new_app_js, encoding='utf-8')
+          PY
+
+      - name: Check for changes
+        id: diff
+        working-directory: ghpages
+        run: |
+          if git diff --quiet -- app.js; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push changes
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: ghpages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js
+          git commit -m "Sync catalog from main"
+          git push origin ghpages

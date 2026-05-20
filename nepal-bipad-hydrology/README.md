@@ -43,6 +43,10 @@ docker run --rm \
 
 See [CONTAINER.md](CONTAINER.md) for full deployment documentation.
 
+- **Fabric notebook hosting** — schedule single-cycle runs inside a Microsoft
+  Fabric workspace via
+  [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Development
 
 ```shell

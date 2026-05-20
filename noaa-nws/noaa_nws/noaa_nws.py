@@ -210,10 +210,14 @@ class NWSAlertPoller:
             print(f"Error fetching NWS alerts: {err}")
             return []
 
-    def poll_and_send(self):
+    def poll_and_send(self, once: bool = False):
         """
         Main polling loop. Fetches alerts, deduplicates, and sends new alerts
         to Kafka as CloudEvents. Polls every POLL_INTERVAL_SECONDS.
+
+        Args:
+            once: If True, exit after one polling cycle (alerts + observations).
+                Used for scheduled execution in Fabric notebooks.
         """
         print(f"Starting NWS Weather Alert poller, polling every {self.POLL_INTERVAL_SECONDS}s")
         print(f"  Alerts URL: {self.ALERTS_URL}")
@@ -310,6 +314,10 @@ class NWSAlertPoller:
             except Exception as e:
                 print(f"Error in polling loop: {e}")
 
+            if once:
+                print("--once mode: exiting after first polling cycle")
+                break
+
             time.sleep(self.POLL_INTERVAL_SECONDS)
 
 
@@ -362,6 +370,10 @@ def main():
                         help="Password for SASL PLAIN authentication")
     parser.add_argument('--connection-string', type=str,
                         help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
+    parser.add_argument('--once', action='store_true',
+                        default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                             'Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -409,7 +421,7 @@ def main():
         kafka_topic=kafka_topic,
         last_polled_file=args.last_polled_file
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

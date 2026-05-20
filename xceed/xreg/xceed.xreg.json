@@ -1,0 +1,349 @@
+{
+  "endpoints": {
+    "xceed.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "xceed",
+          "key": "{event_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/xceed"
+      ]
+    },
+    "xceed.admissions.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "xceed",
+          "key": "{event_id}/{admission_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/xceed.admissions"
+      ]
+    }
+  },
+  "messagegroups": {
+    "xceed": {
+      "messagegroupid": "xceed",
+      "description": "Xceed public nightlife and live-entertainment event reference data. Contains scheduled event metadata including venue information. Emitted at bridge startup and refreshed periodically.",
+      "messages": {
+        "xceed.Event": {
+          "messageid": "xceed.Event",
+          "name": "Event",
+          "envelope": "CloudEvents/1.0",
+          "description": "Metadata for a scheduled nightlife or live-entertainment event as published by the Xceed Open Event API. Includes event identity, schedule, venue, and external sales link. Emitted as reference data at startup and on each refresh cycle.",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.Event",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents specification version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "xceed.Event",
+              "description": "CloudEvents type identifier for an Xceed event record"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{feedurl}",
+              "description": "Base URL of the Xceed Open Event API feed"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{event_id}",
+              "description": "Unique UUID identifier of the Xceed event, matching the Kafka key"
+            }
+          }
+        }
+      }
+    },
+    "xceed.admissions": {
+      "messagegroupid": "xceed.admissions",
+      "description": "Xceed public offer telemetry. Contains ticket, guest-list, and bottle-service offer snapshots for each event, including sales-state signals and normalized pricing fields. Emitted each polling cycle.",
+      "messages": {
+        "xceed.EventAdmission": {
+          "messageid": "xceed.EventAdmission",
+          "name": "EventAdmission",
+          "envelope": "CloudEvents/1.0",
+          "description": "Ticket-, guest-list-, or bottle-service-offer snapshot for a single Xceed event admission record, retrieved from the public GET https://offer.xceed.me/v1/events/:eventId/admissions endpoint. The bridge flattens the upstream category arrays into one normalized event family while preserving the offer kind in the admission_type field.",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.EventAdmission",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents specification version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "xceed.EventAdmission",
+              "description": "CloudEvents type identifier for an Xceed admission record"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{feedurl}",
+              "description": "Base URL of the Xceed public offer API feed"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{event_id}/{admission_id}",
+              "description": "Composite identifier consisting of the parent event UUID and the admission tier UUID, separated by a slash, matching the Kafka key"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "xceed.jstruct": {
+      "schemas": {
+        "xceed.Event": {
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://xceed.me/schemas/xceed/Event",
+                "type": "object",
+                "name": "Event",
+                "description": "Scheduled nightlife or live-entertainment event record as published by the Xceed Open Event API v1 /events endpoint. Xceed is a European nightlife and ticketing platform covering clubs, bars, parties, and festivals. Each event has a stable UUID assigned by Xceed, a human-readable slug, schedule timestamps, a cover image, an optional external ticket sales link, and an embedded venue object describing the physical location.",
+                "required": [
+                  "event_id",
+                  "name",
+                  "starting_time"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "description": "Stable UUID assigned by Xceed to uniquely identify this event across all API versions. Returned as the 'id' field in the /events response. Used as the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "json": "id"
+                    }
+                  },
+                  "legacy_id": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Legacy numeric integer identifier for the event from an earlier Xceed system version. Returned as 'legacyId' in the /events response. May be null for events that were created natively in the current UUID-based system.",
+                    "altnames": {
+                      "json": "legacyId"
+                    }
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable display name of the event as entered by the event organiser on the Xceed platform. Examples: 'Techno Warehouse Party', 'Club Night with DJ X', 'Summer Festival Opening'. Returned as 'name' in the /events response."
+                  },
+                  "slug": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "URL-friendly string identifier for the event, derived from the event name and suitable for use in Xceed web URLs. Returned as 'slug' in the /events response. Example: 'techno-warehouse-party-2024'. May be null for draft or unlisted events."
+                  },
+                  "starting_time": {
+                    "type": "datetime",
+                    "description": "Scheduled start time of the event expressed as a UTC datetime. Derived from the 'startingTime' UNIX epoch seconds integer in the /events response. Represents when the event doors open or the event officially begins.",
+                    "altnames": {
+                      "json": "startingTime"
+                    }
+                  },
+                  "ending_time": {
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Scheduled end time of the event expressed as a UTC datetime. Derived from the 'endingTime' UNIX epoch seconds integer in the /events response. May be null if the organiser has not specified an end time.",
+                    "altnames": {
+                      "json": "endingTime"
+                    }
+                  },
+                  "cover_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "HTTPS URL pointing to the event's main banner or cover image hosted on the Xceed CDN. Returned as 'coverUrl' in the /events response. Suitable for display in listings and detail views. May be null if no image has been uploaded.",
+                    "altnames": {
+                      "json": "coverUrl"
+                    }
+                  },
+                  "external_sales_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "HTTPS URL pointing to an external ticket vendor or the event organiser's own sales page, when tickets are not sold directly through the Xceed platform. Returned as 'externalSalesUrl' in the /events response. Null when tickets are sold via Xceed admissions.",
+                    "altnames": {
+                      "json": "externalSalesUrl"
+                    }
+                  },
+                  "venue_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "UUID assigned by Xceed to uniquely identify the venue where this event takes place. Extracted from the nested 'venue.id' field in the /events response. Null if venue information is not available for this event."
+                  },
+                  "venue_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Display name of the venue as listed on the Xceed platform. Extracted from 'venue.name' in the /events response. Examples: 'Berghain', 'Fabric', 'Pacha Barcelona'. Null if venue information is not attached to this event."
+                  },
+                  "venue_city": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "City in which the venue is located, as stored in the Xceed venue record. Extracted from 'venue.city' or 'venue.location.city' in the /events response. Null if venue or city information is unavailable."
+                  },
+                  "venue_country_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 3166-1 alpha-2 country code indicating the country where the venue is located. Extracted from 'venue.countryCode' or the venue location object in the /events response. Examples: 'DE', 'GB', 'ES', 'FR'. Null if country information is unavailable."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xceed.EventAdmission": {
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://xceed.me/schemas/xceed/EventAdmission",
+                "type": "object",
+                "name": "EventAdmission",
+                "description": "Normalized offer snapshot for a single admission record of an Xceed event, retrieved from the public GET https://offer.xceed.me/v1/events/:eventId/admissions endpoint. The upstream payload groups offers into bottleService, guestList, and ticket arrays. The bridge flattens those arrays into one event stream and preserves the original offer kind in admission_type while carrying key sales-state signals, normalized price, and remaining quantity.",
+                "required": [
+                  "event_id",
+                  "admission_id",
+                  "admission_type"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "description": "UUID of the parent Xceed event that this admission tier belongs to. Matches the 'event_id' field in the corresponding xceed.Event record and the first segment of the Kafka key."
+                  },
+                  "admission_id": {
+                    "type": "string",
+                    "description": "Stable UUID assigned by Xceed to uniquely identify this admission or offer record within its parent event. Returned as the 'id' field of each object inside the bottleService, guestList, or ticket arrays of the GET https://offer.xceed.me/v1/events/:eventId/admissions response. Forms the second segment of the composite Kafka key '{event_id}/{admission_id}'.",
+                    "altnames": {
+                      "json": "id"
+                    }
+                  },
+                  "admission_type": {
+                    "type": "string",
+                    "description": "Normalized Xceed offer kind for this record. Derived from the upstream 'admissionType' field when present, otherwise from the containing array name in the public offer-service response. Typical values include 'ticket', 'guestlist', and 'bottleservice'. This field preserves whether the record represents a standard ticket, a guest-list slot, or a bottle-service/table booking.",
+                    "altnames": {
+                      "json": "admissionType"
+                    }
+                  },
+                  "name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable label for this offer as set by the event organiser. Examples: 'Early Bird', 'General Admission', 'VIP Access', 'Guest List', or named table areas. Returned as 'name' in each offer object of the public offer-service response. May be null if the record has no display label."
+                  },
+                  "is_sold_out": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "Boolean flag indicating whether this offer is sold out. Derived from the nested 'salesStatus.isSoldOut' field in the public offer-service response, or from a top-level 'isSoldOut' field if Xceed exposes one in future. True means no more units of this offer can be purchased. Null if the sales-state field is absent.",
+                    "altnames": {
+                      "json": "isSoldOut"
+                    }
+                  },
+                  "is_sales_closed": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "Boolean flag indicating whether sales for this offer have been closed, either because the sales window expired, the event started, or the organiser manually closed sales. Derived from the nested 'salesStatus.isSalesClosed' field in the public offer-service response, or from a top-level 'isSalesClosed' field if present. Null if the sales-state field is absent.",
+                    "altnames": {
+                      "json": "isSalesClosed"
+                    }
+                  },
+                  "price": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Normalized price amount for this offer in the currency specified by the 'currency' field. Derived from the nested 'price.amount' field in the public offer-service response. May be null for free events, complimentary guest-list offers, or when pricing information is not exposed through the public API.",
+                    "unit": "currency_unit",
+                    "symbol": ""
+                  },
+                  "currency": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 4217 three-letter currency code indicating the currency in which the normalized 'price' field is denominated. Derived from the nested 'price.currency' field in the public offer-service response. Examples include 'EUR' and 'GBP'. Null when price is null or when currency information is not provided by the API."
+                  },
+                  "remaining": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Remaining quantity for this offer at the time the API was polled. Derived from the upstream 'quantity' field when present, with fallback to a top-level 'remaining' field if Xceed exposes one in future. Null when remaining quantity is not tracked or not exposed through the public API. A value of 0 typically accompanies is_sold_out=true."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

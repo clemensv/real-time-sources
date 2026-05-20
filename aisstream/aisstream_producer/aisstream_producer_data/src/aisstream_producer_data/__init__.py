@@ -1,3 +1,35 @@
-from .aisstream_producer_data import Document
+from .binaryacknowledge import BinaryAcknowledge
+from .safetybroadcastmessage import SafetyBroadcastMessage
+from .datalinkmanagementmessage import DataLinkManagementMessage
+from .groupassignmentcommand import GroupAssignmentCommand
+from .assignedmodecommand import AssignedModeCommand
+from .applicationid import ApplicationID
+from .binarybroadcastmessage import BinaryBroadcastMessage
+from .station1msg1 import Station1Msg1
+from .station1msg2 import Station1Msg2
+from .station2 import Station2
+from .interrogation import Interrogation
+from .dimension import Dimension
+from .eta import Eta
+from .shipstaticdata import ShipStaticData
+from .multislotbinarymessage import MultiSlotBinaryMessage
+from .aidstonavigationreport import AidsToNavigationReport
+from .reporta import ReportA
+from .reportb import ReportB
+from .staticdatareport import StaticDataReport
+from .singleslotbinarymessage import SingleSlotBinaryMessage
+from .area import Area
+from .unicast import Unicast
+from .channelmanagement import ChannelManagement
+from .coordinatedutcinquiry import CoordinatedUTCInquiry
+from .positionreport import PositionReport
+from .gnssbroadcastbinarymessage import GnssBroadcastBinaryMessage
+from .addressedbinarymessage import AddressedBinaryMessage
+from .basestationreport import BaseStationReport
+from .addressedsafetymessage import AddressedSafetyMessage
+from .longrangeaisbroadcastmessage import LongRangeAisBroadcastMessage
+from .extendedclassbpositionreport import ExtendedClassBPositionReport
+from .standardsearchandrescueaircraftreport import StandardSearchAndRescueAircraftReport
+from .standardclassbpositionreport import StandardClassBPositionReport
 
-__all__ = ["Document"]
+__all__ = ["BinaryAcknowledge", "SafetyBroadcastMessage", "DataLinkManagementMessage", "GroupAssignmentCommand", "AssignedModeCommand", "ApplicationID", "BinaryBroadcastMessage", "Station1Msg1", "Station1Msg2", "Station2", "Interrogation", "Dimension", "Eta", "ShipStaticData", "MultiSlotBinaryMessage", "AidsToNavigationReport", "ReportA", "ReportB", "StaticDataReport", "SingleSlotBinaryMessage", "Area", "Unicast", "ChannelManagement", "CoordinatedUTCInquiry", "PositionReport", "GnssBroadcastBinaryMessage", "AddressedBinaryMessage", "BaseStationReport", "AddressedSafetyMessage", "LongRangeAisBroadcastMessage", "ExtendedClassBPositionReport", "StandardSearchAndRescueAircraftReport", "StandardClassBPositionReport"]

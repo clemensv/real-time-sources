@@ -26,6 +26,7 @@ only new or changed readings.
   the upstream update cadence
 - **Kafka integration**: SASL PLAIN authentication for Event Hubs / Fabric Event
   Streams
+- **Fabric notebook hosting**: deploy as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (see `notebook/bafu-hydro-feed.ipynb`).
 
 ## Data Source
 

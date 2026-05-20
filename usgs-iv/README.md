@@ -31,6 +31,10 @@ pip install .
 
 For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
 
+### Fabric notebook hosting
+
+A scheduled-execution variant runs the bridge inside a Microsoft Fabric notebook (`notebook/usgs-iv-feed.ipynb`) deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook invokes `usgs-iv feed --once` per scheduled tick and persists dedupe state to the attached Lakehouse.
+
 ## How to Use
 
 After installation, the tool can be run using the `usgs-iv` command. It supports multiple subcommands:

@@ -11,6 +11,7 @@ container group, sharing one Kafka/Event Hubs/Fabric Event Stream connection.
 | [Seattle street closures](../../seattle-street-closures/CONTAINER.md) | Seattle | Active street closures |
 | [King County marine](../../king-county-marine/CONTAINER.md) | King County / Puget Sound | Buoy and mooring water quality |
 | [EPA UV](../../epa-uv/CONTAINER.md) | Seattle | UV forecasts |
+| [NWS forecasts](../../nws-forecasts/CONTAINER.md) | Seattle and central Puget Sound forecast zones | Land and marine forecast snapshots |
 | [WSDOT](../../wsdot/CONTAINER.md) | Washington / Puget Sound | Ferries, mountain passes, roads, tolls, weather, traffic |
 | [NOAA](../../noaa/CONTAINER.md) | Puget Sound CO-OPS stations | Water level, tide predictions, and available meteorology across Seattle-area stations |
 
@@ -21,6 +22,7 @@ container group, sharing one Kafka/Event Hubs/Fabric Event Stream connection.
   Townsend, `9445958` Bremerton, `9446484` Tacoma, `9447130` Seattle,
   `9449424` Cherry Point, and `9449880` Friday Harbor.
 - The EPA UV bridge is pinned to `Seattle,WA`.
+- The NWS forecast bridge is pinned to Seattle-vicinity public and marine forecast zones: land `WAZ312`, `WAZ315`, `WAZ316`, `WAZ317`; marine `PZZ130`, `PZZ131`, `PZZ132`, `PZZ133`, `PZZ134`, `PZZ135`.
 - The WSDOT bridge uses `REGION_FILTER=Northwest,Olympic` for traffic-flow
   scoping, but ferry, mountain-pass, weather, toll, and other statewide WSDOT
   feeds remain enabled because the bridge exposes them as part of its standard
@@ -32,8 +34,8 @@ Most bridges here are I/O-bound pollers. A small ACI group is sufficient.
 
 | | Standard container | Heavier containers | Total |
 |---|---|---|---|
-| CPU | 0.1 cores | WSDOT 0.2, seven NOAA sidecars at 0.2 each | 2.0 cores |
-| Memory | 0.3 GB | WSDOT 0.5, seven NOAA sidecars at 0.4 each | 4.5 GB |
+| CPU | 0.1 cores | WSDOT 0.2, seven NOAA sidecars at 0.2 each | 2.1 cores |
+| Memory | 0.3 GB | WSDOT 0.5, seven NOAA sidecars at 0.4 each | 4.8 GB |
 
 ## Deploy to Azure Container Instances
 
@@ -84,4 +86,5 @@ restarts.
 The Fabric assets in [fabric](fabric/README.md) create a raw CloudEvents landing
 database and Event Stream. Existing bridge-local KQL is reused for WSDOT and
 NOAA, and supplemental KQL fans out Seattle 911, Seattle street closures, King
-County marine, and EPA UV from the shared `_cloudevents_dispatch` table.
+County marine, EPA UV, and NWS forecast zones from the shared
+`_cloudevents_dispatch` table.

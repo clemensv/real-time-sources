@@ -46,37 +46,34 @@ class HKOWeatherAPI:
         return response.json()
 
     @staticmethod
+    def _section_entries(data: dict, section: str) -> list[dict]:
+        """Return the `data` list for a top-level section, tolerating HKO quirks.
+
+        The HKO rhrread endpoint occasionally returns empty strings (e.g. ``""``)
+        for a section instead of an object — most commonly for ``uvindex`` at
+        night, or for ``warningMessage``/``tcmessage`` when nothing is in force.
+        Defensively normalize any non-dict / missing section to an empty list.
+        """
+        section_val = data.get(section)
+        if not isinstance(section_val, dict):
+            return []
+        entries = section_val.get("data", [])
+        if not isinstance(entries, list):
+            return []
+        return [e for e in entries if isinstance(e, dict) and "place" in e]
+
+    @staticmethod
     def extract_places(data: dict) -> dict[str, Station]:
         """Extract all unique places from the rhrread response as Station reference data."""
         places: dict[str, dict] = {}
 
-        for entry in data.get("temperature", {}).get("data", []):
-            name = entry["place"]
-            pid = slugify(name)
-            if pid not in places:
-                places[pid] = {"name": name, "types": set()}
-            places[pid]["types"].add("temperature")
-
-        for entry in data.get("rainfall", {}).get("data", []):
-            name = entry["place"]
-            pid = slugify(name)
-            if pid not in places:
-                places[pid] = {"name": name, "types": set()}
-            places[pid]["types"].add("rainfall")
-
-        for entry in data.get("humidity", {}).get("data", []):
-            name = entry["place"]
-            pid = slugify(name)
-            if pid not in places:
-                places[pid] = {"name": name, "types": set()}
-            places[pid]["types"].add("humidity")
-
-        for entry in data.get("uvindex", {}).get("data", []):
-            name = entry["place"]
-            pid = slugify(name)
-            if pid not in places:
-                places[pid] = {"name": name, "types": set()}
-            places[pid]["types"].add("uvindex")
+        for section in ("temperature", "rainfall", "humidity", "uvindex"):
+            for entry in HKOWeatherAPI._section_entries(data, section):
+                name = entry["place"]
+                pid = slugify(name)
+                if pid not in places:
+                    places[pid] = {"name": name, "types": set()}
+                places[pid]["types"].add(section)
 
         stations: dict[str, Station] = {}
         for pid, info in places.items():
@@ -97,28 +94,40 @@ class HKOWeatherAPI:
             update_time = datetime.now(timezone.utc)
 
         temp_map: dict[str, float] = {}
-        for entry in data.get("temperature", {}).get("data", []):
-            temp_map[slugify(entry["place"])] = float(entry["value"])
+        for entry in HKOWeatherAPI._section_entries(data, "temperature"):
+            try:
+                temp_map[slugify(entry["place"])] = float(entry["value"])
+            except (KeyError, TypeError, ValueError):
+                continue
 
         rain_map: dict[str, float] = {}
-        for entry in data.get("rainfall", {}).get("data", []):
-            rain_map[slugify(entry["place"])] = float(entry["max"])
+        for entry in HKOWeatherAPI._section_entries(data, "rainfall"):
+            try:
+                rain_map[slugify(entry["place"])] = float(entry["max"])
+            except (KeyError, TypeError, ValueError):
+                continue
 
         humidity_map: dict[str, int] = {}
-        for entry in data.get("humidity", {}).get("data", []):
-            humidity_map[slugify(entry["place"])] = int(entry["value"])
+        for entry in HKOWeatherAPI._section_entries(data, "humidity"):
+            try:
+                humidity_map[slugify(entry["place"])] = int(entry["value"])
+            except (KeyError, TypeError, ValueError):
+                continue
 
         uv_map: dict[str, tuple[float, str]] = {}
-        for entry in data.get("uvindex", {}).get("data", []):
-            uv_map[slugify(entry["place"])] = (
-                float(entry.get("value", 0)),
-                entry.get("desc", ""),
-            )
+        for entry in HKOWeatherAPI._section_entries(data, "uvindex"):
+            try:
+                uv_map[slugify(entry["place"])] = (
+                    float(entry.get("value", 0)),
+                    entry.get("desc", ""),
+                )
+            except (TypeError, ValueError):
+                continue
 
         all_pids: set[str] = set()
         name_map: dict[str, str] = {}
         for section in ("temperature", "rainfall", "humidity", "uvindex"):
-            for entry in data.get(section, {}).get("data", []):
+            for entry in HKOWeatherAPI._section_entries(data, section):
                 pid = slugify(entry["place"])
                 all_pids.add(pid)
                 name_map[pid] = entry["place"]
@@ -231,7 +240,9 @@ def main():
                         default=os.environ.get("STATE_FILE", os.path.expanduser("~/.hko_hong_kong_state.json")))
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List places from current weather")
-    subparsers.add_parser("feed", help="Feed data to Kafka")
+    feed_parser = subparsers.add_parser("feed", help="Feed data to Kafka")
+    feed_parser.add_argument("--once", action="store_true",
+                             help="Run a single polling cycle and exit (for scheduled hosts).")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
     api = HKOWeatherAPI(polling_interval=args.polling_interval)
@@ -264,6 +275,7 @@ def main():
         logger.info("Starting HKO Hong Kong Weather bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
         send_stations(api, event_producer)
+        once = bool(getattr(args, "once", False))
         while True:
             try:
                 count = feed_observations(api, event_producer, previous_readings)
@@ -271,6 +283,9 @@ def main():
                 logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()

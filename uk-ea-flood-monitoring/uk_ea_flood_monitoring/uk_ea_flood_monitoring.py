@@ -10,7 +10,7 @@ import json
 import sys
 import time
 import logging
-from typing import Dict, List, Any, Optional, Set
+from typing import Dict, List, Any
 import argparse
 import requests
 from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
@@ -86,7 +86,7 @@ class EAFloodMonitoringAPI:
         """Build a mapping from measure URI to station reference."""
         measure_map: Dict[str, str] = {}
         for station in stations:
-            station_ref = self.station_reference_for_station(station)
+            station_ref = station.get("stationReference", station.get("notation", ""))
             measures = station.get("measures", [])
             if isinstance(measures, list):
                 for m in measures:
@@ -98,79 +98,6 @@ class EAFloodMonitoringAPI:
                 if measure_id:
                     measure_map[measure_id] = station_ref
         return measure_map
-
-    @staticmethod
-    def station_reference_for_station(station: Dict[str, Any]) -> str:
-        """Return the stable station reference for a station payload."""
-        return station.get("stationReference", station.get("notation", ""))
-
-    @staticmethod
-    def resolve_station_reference(measure_uri: str, measure_map: Dict[str, str]) -> str:
-        """Resolve a station reference from a measure URI."""
-        station_ref = measure_map.get(measure_uri, "")
-        if not station_ref and "/" in measure_uri:
-            parts = measure_uri.split("/")
-            for i, part in enumerate(parts):
-                if part == "measures" and i + 1 < len(parts):
-                    station_ref = parts[i + 1].split("-")[0]
-                    break
-        return station_ref
-
-    def select_station_references(
-        self,
-        stations: List[Dict[str, Any]],
-        measure_map: Dict[str, str],
-        readings: List[Dict[str, Any]],
-        max_stations: Optional[int],
-    ) -> Optional[Set[str]]:
-        """Select a bounded set of stations that currently have live readings."""
-        if max_stations is None:
-            return None
-
-        active_station_refs: Set[str] = set()
-        for reading in readings:
-            station_ref = self.resolve_station_reference(reading.get("measure", ""), measure_map)
-            if station_ref:
-                active_station_refs.add(station_ref)
-
-        selected_station_refs: Set[str] = set()
-        for station in stations:
-            station_ref = self.station_reference_for_station(station)
-            if station_ref in active_station_refs:
-                selected_station_refs.add(station_ref)
-                if len(selected_station_refs) >= max_stations:
-                    break
-
-        return selected_station_refs
-
-    def filter_stations(
-        self,
-        stations: List[Dict[str, Any]],
-        allowed_station_refs: Optional[Set[str]],
-    ) -> List[Dict[str, Any]]:
-        """Filter stations to a selected bounded subset."""
-        if allowed_station_refs is None:
-            return stations
-        return [
-            station
-            for station in stations
-            if self.station_reference_for_station(station) in allowed_station_refs
-        ]
-
-    def filter_readings(
-        self,
-        readings: List[Dict[str, Any]],
-        measure_map: Dict[str, str],
-        allowed_station_refs: Optional[Set[str]],
-    ) -> List[Dict[str, Any]]:
-        """Filter readings to the selected bounded station subset."""
-        if allowed_station_refs is None:
-            return readings
-        return [
-            reading
-            for reading in readings
-            if self.resolve_station_reference(reading.get("measure", ""), measure_map) in allowed_station_refs
-        ]
 
     def parse_connection_string(self, connection_string: str) -> Dict[str, str]:
         """
@@ -203,14 +130,7 @@ class EAFloodMonitoringAPI:
             config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
-    def feed_stations(
-        self,
-        kafka_config: dict,
-        kafka_topic: str,
-        polling_interval: int,
-        state_file: str = '',
-        max_stations: Optional[int] = None,
-    ) -> None:
+    def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '', once: bool = False) -> None:
         """Feed stations and send updates as CloudEvents."""
         previous_readings: Dict[str, str] = _load_state(state_file)
 
@@ -223,36 +143,10 @@ class EAFloodMonitoringAPI:
 
         # Fetch and send station reference data
         stations = self.list_stations()
-        full_measure_map = self.build_measure_map(stations)
-        selected_station_refs: Optional[Set[str]] = None
-        initial_readings: Optional[List[Dict[str, Any]]] = None
-
-        if max_stations is not None:
-            initial_readings = self.get_latest_readings()
-            selected_station_refs = self.select_station_references(
-                stations, full_measure_map, initial_readings, max_stations
-            )
-            stations = self.filter_stations(stations, selected_station_refs)
-            if selected_station_refs:
-                self.measure_to_station = {
-                    measure_id: station_ref
-                    for measure_id, station_ref in full_measure_map.items()
-                    if station_ref in selected_station_refs
-                }
-            else:
-                self.measure_to_station = full_measure_map
-            initial_readings = self.filter_readings(
-                initial_readings, full_measure_map, selected_station_refs
-            )
-            logging.info(
-                "Limiting UK EA emission to %d stations with current readings",
-                len(stations),
-            )
-        else:
-            self.measure_to_station = full_measure_map
+        self.measure_to_station = self.build_measure_map(stations)
 
         for station in stations:
-            station_ref = self.station_reference_for_station(station)
+            station_ref = station.get("stationReference", station.get("notation", ""))
             raw_lat = station.get("lat", 0.0)
             raw_long = station.get("long", 0.0)
             if isinstance(raw_lat, list):
@@ -281,14 +175,7 @@ class EAFloodMonitoringAPI:
             try:
                 count = 0
                 start_time = time.time()
-                if initial_readings is not None:
-                    readings = initial_readings
-                    initial_readings = None
-                else:
-                    readings = self.get_latest_readings()
-                    readings = self.filter_readings(
-                        readings, self.measure_to_station, selected_station_refs
-                    )
+                readings = self.get_latest_readings()
 
                 for item in readings:
                     measure_uri = item.get("measure", "")
@@ -304,7 +191,14 @@ class EAFloodMonitoringAPI:
                         continue
 
                     # Resolve station reference from measure URI
-                    station_ref = self.resolve_station_reference(measure_uri, self.measure_to_station)
+                    station_ref = self.measure_to_station.get(measure_uri, "")
+                    if not station_ref and "/" in measure_uri:
+                        # Try extracting station ref from measure URI pattern
+                        parts = measure_uri.split("/")
+                        for i, part in enumerate(parts):
+                            if part == "measures" and i + 1 < len(parts):
+                                station_ref = parts[i + 1].split("-")[0]
+                                break
 
                     reading_data = Reading(
                         station_reference=station_ref,
@@ -330,6 +224,9 @@ class EAFloodMonitoringAPI:
                 logging.info("Sent %d readings in %.1f seconds. Waiting %.0f seconds.",
                              count, end_time - start_time, effective_interval)
                 _save_state(state_file, previous_readings)
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_interval > 0:
                     time.sleep(effective_interval)
 
@@ -385,12 +282,9 @@ def main() -> None:
                              default=polling_interval_default)
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE', os.path.expanduser('~/.uk_ea_flood_monitoring_state.json')))
-    max_stations_default = None
-    if os.getenv('MAX_STATIONS'):
-        max_stations_default = int(os.getenv('MAX_STATIONS'))
-    feed_parser.add_argument('--max-stations', type=int,
-                             help='Limit startup station emission to a bounded subset for test runs',
-                             default=max_stations_default)
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -445,13 +339,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        api.feed_stations(
-            kafka_config,
-            kafka_topic,
-            args.polling_interval,
-            args.state_file,
-            args.max_stations,
-        )
+        api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file, once=args.once)
     else:
         parser.print_help()
 

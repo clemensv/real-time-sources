@@ -77,6 +77,10 @@ def noaa_nws_image():
     return build_image('noaa-nws')
 
 @pytest.fixture(scope='module')
+def nws_forecasts_image():
+    return build_image('nws-forecasts')
+
+@pytest.fixture(scope='module')
 def usgs_iv_image():
     return build_image('usgs-iv')
 
@@ -270,6 +274,90 @@ def seattle_911_image():
 def seattle_street_closures_image():
     return build_image('seattle-street-closures')
 
+@pytest.fixture(scope='module')
+def canada_eccc_wateroffice_image():
+    return build_image('canada-eccc-wateroffice')
+
+@pytest.fixture(scope='module')
+def ticketmaster_image():
+    return build_image('ticketmaster')
+
+@pytest.fixture(scope='module')
+def entur_norway_image():
+    return build_image('entur-norway')
+
+@pytest.fixture(scope='module')
+def xceed_image():
+    return build_image('xceed')
+
+@pytest.fixture(scope='module')
+def fienta_image():
+    return build_image('fienta')
+
+@pytest.fixture(scope='module')
+def kmi_belgium_image():
+    return build_image('kmi-belgium')
+
+@pytest.fixture(scope='module')
+def wallonia_issep_image():
+    return build_image('wallonia-issep')
+
+@pytest.fixture(scope='module')
+def aviationweather_image():
+    return build_image('aviationweather')
+
+@pytest.fixture(scope='module')
+def cbp_border_wait_image():
+    return build_image('cbp-border-wait')
+
+@pytest.fixture(scope='module')
+def elexon_bmrs_image():
+    return build_image('elexon-bmrs')
+
+@pytest.fixture(scope='module')
+def energy_charts_image():
+    return build_image('energy-charts')
+
+@pytest.fixture(scope='module')
+def carbon_intensity_image():
+    return build_image('carbon-intensity')
+
+@pytest.fixture(scope='module')
+def energidataservice_dk_image():
+    return build_image('energidataservice-dk')
+
+@pytest.fixture(scope='module')
+def usgs_geomag_image():
+    return build_image('usgs-geomag')
+
+@pytest.fixture(scope='module')
+def french_road_traffic_image():
+    return build_image('french-road-traffic')
+
+@pytest.fixture(scope='module')
+def ndl_netherlands_image():
+    return build_image('ndl-netherlands')
+
+@pytest.fixture(scope='module')
+def eaws_albina_image():
+    return build_image('eaws-albina')
+
+@pytest.fixture(scope='module')
+def geosphere_austria_image():
+    return build_image('geosphere-austria')
+
+@pytest.fixture(scope='module')
+def jma_japan_image():
+    return build_image('jma-japan')
+
+@pytest.fixture(scope='module')
+def wikimedia_osm_diffs_image():
+    return build_image('wikimedia-osm-diffs')
+
+@pytest.fixture(scope='module')
+def inpe_deter_brazil_image():
+    return build_image('inpe-deter-brazil')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -283,6 +371,7 @@ def _run_kafka_flow_test(
     reference_types: Optional[List[str]] = None,
     telemetry_types: Optional[List[str]] = None,
     required_types: Optional[List[str]] = None,
+    required_exact_types: Optional[List[str]] = None,
     required_any_types: Optional[List[str]] = None,
     extra_env: Optional[Dict[str, str]] = None,
     command: Optional[str | List[str]] = None,
@@ -304,6 +393,8 @@ def _run_kafka_flow_test(
             Pass *None* for projects that emit no reference data.
         telemetry_types: Substrings expected in ``type`` for telemetry events.
         required_types: Substrings that must all appear in observed event types.
+        required_exact_types: Exact CloudEvent types that must all appear in
+            observed event types.
         required_any_types: Substrings where at least one must appear.
         extra_env: Additional environment variables for the container.
         command: Optional container command override.
@@ -342,10 +433,13 @@ def _run_kafka_flow_test(
             required_ok = required_types is None or all(
                 any(pat in t for t in observed_types) for pat in required_types
             )
+            required_exact_ok = required_exact_types is None or all(
+                exact_type in observed_types for exact_type in required_exact_types
+            )
             required_any_ok = required_any_types is None or any(
                 any(pat in t for t in observed_types) for pat in required_any_types
             )
-            return ref_ok and tel_ok and required_ok and required_any_ok
+            return ref_ok and tel_ok and required_ok and required_exact_ok and required_any_ok
 
         try:
             while time.time() < deadline:
@@ -406,6 +500,17 @@ def _run_kafka_flow_test(
             ]
             assert not missing, (
                 f'Missing required event families {missing}. Observed types: '
+                f'{sorted(observed_types)}\n'
+                f'Container logs:\n{container.logs().decode()}'
+            )
+
+        if required_exact_types is not None:
+            missing_exact = [
+                exact_type for exact_type in required_exact_types
+                if exact_type not in observed_types
+            ]
+            assert not missing_exact, (
+                f'Missing exact event families {missing_exact}. Observed types: '
                 f'{sorted(observed_types)}\n'
                 f'Container logs:\n{container.logs().decode()}'
             )
@@ -632,6 +737,30 @@ class TestNOAANwsDockerFlow:
             kafka, noaa_nws_image, self.TOPIC,
             reference_types=['Zone'],
             telemetry_types=['WeatherAlert'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# NWS Forecast Zones
+# ---------------------------------------------------------------------------
+
+class TestNWSForecastsDockerFlow:
+    TOPIC = 'test-nws-forecasts'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nws_forecasts_image):
+        _run_kafka_flow_test(
+            kafka, nws_forecasts_image, self.TOPIC,
+            reference_types=['ForecastZone'],
+            telemetry_types=['LandZoneForecast', 'MarineZoneForecast'],
+            required_types=['ForecastZone', 'LandZoneForecast', 'MarineZoneForecast'],
+            extra_env={
+                'KAFKA_TOPIC': self.TOPIC,
+                'NWS_FORECAST_ZONES': 'WAZ315,PZZ135',
+                'NWS_FORECAST_POLL_INTERVAL_SECONDS': '300',
+                'NWS_FORECAST_REFERENCE_REFRESH_SECONDS': '21600',
+            },
+            min_messages=3,
+            timeout=240,
         )
 
 
@@ -870,7 +999,8 @@ class TestNVEHydroDockerFlow:
 
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nve_image):
         api_key = os.environ.get('NVE_API_KEY', '')
-        assert api_key, 'NVE_API_KEY environment variable must be set'
+        if not api_key:
+            pytest.skip('NVE_API_KEY environment variable is not set')
         _run_kafka_flow_test(
             kafka, nve_image, self.TOPIC,
             reference_types=['Station'],
@@ -1092,7 +1222,9 @@ class TestCanadaAQHIDockerFlow:
             kafka, canada_aqhi_image, self.TOPIC,
             reference_types=['Community'],
             telemetry_types=['Observation', 'Forecast'],
-            required_types=['Community', 'Observation', 'Forecast'],
+            # Forecast publication from Environment Canada is intermittent (often empty
+            # outside business hours); require only the always-available core types.
+            required_types=['Community', 'Observation'],
             extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON', 'MAX_COMMUNITIES': '10'},
         )
 
@@ -1450,6 +1582,27 @@ class TestNDLNetherlandsDockerFlow:
         )
 
 
+# NDW Netherlands Road Traffic (reference + telemetry: speed, travel time, DRIP, MSI, situations)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def ndw_road_traffic_image():
+    return build_image('ndw-road-traffic')
+
+class TestNDWRoadTrafficDockerFlow:
+    TOPIC = 'test-ndw-road-traffic'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ndw_road_traffic_image):
+        _run_kafka_flow_test(
+            kafka, ndw_road_traffic_image, self.TOPIC,
+            reference_types=['PointMeasurementSite', 'RouteMeasurementSite', 'DripSign', 'MsiSign'],
+            telemetry_types=['TrafficObservation', 'TravelTimeObservation', 'DripDisplayState', 'MsiDisplayState'],
+            extra_env={'MAX_RECORDS_PER_FAMILY': '20'},
+            min_messages=5,
+            timeout=420,
+        )
+
+
 # Madrid Traffic (Informo real-time traffic sensors)
 # ---------------------------------------------------------------------------
 
@@ -1664,3 +1817,130 @@ class TestSeattleStreetClosuresDockerFlow:
             min_messages=1,
         )
 
+# ---------------------------------------------------------------------------
+# Billetto Public Events (requires BILLETTO_API_KEYPAIR)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def billetto_image():
+    if not os.environ.get('BILLETTO_API_KEYPAIR', ''):
+        pytest.skip('BILLETTO_API_KEYPAIR not set')
+    return build_image('billetto')
+
+
+class TestBillettoDockerFlow:
+    TOPIC = 'test-billetto-events'
+
+    def test_emits_events(self, kafka: KafkaFixture, billetto_image):
+        _run_kafka_flow_test(
+            kafka, billetto_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Event'],
+            min_messages=1,
+            extra_env={
+                'BILLETTO_API_KEYPAIR': os.environ['BILLETTO_API_KEYPAIR'],
+                'POLLING_INTERVAL': '5',
+            },
+        )
+
+
+# ---------------------------------------------------------------------------
+# Canada ECCC Water Office (hydrometric stations + real-time observations)
+# ---------------------------------------------------------------------------
+
+class TestCanadaECCCWaterOfficeDockerFlow:
+    TOPIC = 'test-canada-eccc-wateroffice'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, canada_eccc_wateroffice_image):
+        _run_kafka_flow_test(
+            kafka, canada_eccc_wateroffice_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['Observation'],
+            required_types=['Station', 'Observation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# Ticketmaster (public events – reference + telemetry)
+# ---------------------------------------------------------------------------
+
+class TestTicketmasterDockerFlow:
+    TOPIC = 'test-ticketmaster'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ticketmaster_image):
+        api_key = os.environ.get('TICKETMASTER_API_KEY', '')
+        if not api_key:
+            pytest.skip('TICKETMASTER_API_KEY not set')
+        _run_kafka_flow_test(
+            kafka, ticketmaster_image, self.TOPIC,
+            reference_types=['Ticketmaster.Reference'],
+            telemetry_types=['Ticketmaster.Events'],
+            extra_env={
+                'TICKETMASTER_API_KEY': api_key,
+                'COUNTRY_CODES': 'US',
+                'POLL_INTERVAL': '60',
+                'REFERENCE_REFRESH': '3600',
+            },
+            min_messages=5,
+            timeout=300,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Entur Norway (SIRI real-time transit)
+# ---------------------------------------------------------------------------
+
+class TestEnturNorwayDockerFlow:
+    TOPIC = 'test-entur-norway'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, entur_norway_image):
+        _run_kafka_flow_test(
+            kafka, entur_norway_image, self.TOPIC,
+            reference_types=['DatedServiceJourney'],
+            telemetry_types=['EstimatedVehicleJourney', 'MonitoredVehicleJourney', 'PtSituationElement'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# Xceed (nightlife and live-entertainment events)
+# ---------------------------------------------------------------------------
+
+class TestXceedDockerFlow:
+    TOPIC = 'test-xceed'
+
+    def test_emits_reference_events(self, kafka: KafkaFixture, xceed_image):
+        _run_kafka_flow_test(
+            kafka, xceed_image, self.TOPIC,
+            reference_types=['xceed.Event'],
+            telemetry_types=None,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Fienta Public Events (Europe – ticketed events with sale-status)
+# ---------------------------------------------------------------------------
+
+class TestFientaDockerFlow:
+    TOPIC = 'test-fienta'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fienta_image):
+        _run_kafka_flow_test(
+            kafka, fienta_image, self.TOPIC,
+            required_exact_types=['Com.Fienta.Event', 'Com.Fienta.EventSaleStatus'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# KMI Belgium (Belgium – automatic weather station observations)
+# ---------------------------------------------------------------------------
+
+class TestKMIBelgiumDockerFlow:
+    TOPIC = 'test-kmi-belgium'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, kmi_belgium_image):
+        _run_kafka_flow_test(
+            kafka, kmi_belgium_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
+        )

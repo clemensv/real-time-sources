@@ -17,6 +17,7 @@ COPY . /app
 RUN pip install .
 
 # Define environment variables (default values)
+ENV PYTHONUNBUFFERED=1
 ENV PARIS_VELO_LAST_POLLED_FILE="/mnt/fileshare/paris_velo_last_polled.json"
 ENV CONNECTION_STRING=""
 

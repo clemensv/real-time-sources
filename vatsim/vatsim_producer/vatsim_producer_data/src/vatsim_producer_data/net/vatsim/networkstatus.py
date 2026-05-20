@@ -13,7 +13,6 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -23,28 +22,27 @@ class NetworkStatus:
     Aggregate VATSIM network status snapshot emitted once per poll cycle.
     Attributes:
         callsign (str): Constant key value 'status'.
-        update_timestamp (datetime.datetime): UTC timestamp of the VATSIM data snapshot.
+        update_timestamp (str): UTC timestamp of the VATSIM data snapshot.
         connected_clients (int): Total connected clients.
         unique_users (int): Unique connected user IDs.
         pilot_count (int): Number of pilots currently flying.
         controller_count (int): Number of controllers connected."""
     
     callsign: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
-    update_timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_timestamp"))
+    update_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_timestamp"))
     connected_clients: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="connected_clients"))
     unique_users: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unique_users"))
     pilot_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pilot_count"))
     controller_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="controller_count"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"NetworkStatus\", \"namespace\": \"net.vatsim\", \"doc\": \"Aggregate VATSIM network status snapshot emitted once per poll cycle.\", \"fields\": [{\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"Constant key value 'status'.\"}, {\"name\": \"update_timestamp\", \"type\": {\"type\": \"long\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"UTC timestamp of the VATSIM data snapshot.\"}, {\"name\": \"connected_clients\", \"type\": \"int\", \"doc\": \"Total connected clients.\"}, {\"name\": \"unique_users\", \"type\": \"int\", \"doc\": \"Unique connected user IDs.\"}, {\"name\": \"pilot_count\", \"type\": \"int\", \"doc\": \"Number of pilots currently flying.\"}, {\"name\": \"controller_count\", \"type\": \"int\", \"doc\": \"Number of controllers connected.\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"NetworkStatus\", \"namespace\": \"net.vatsim\", \"doc\": \"Aggregate VATSIM network status snapshot emitted once per poll cycle.\", \"fields\": [{\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"Constant key value 'status'.\"}, {\"name\": \"update_timestamp\", \"type\": \"string\", \"doc\": \"UTC timestamp of the VATSIM data snapshot.\"}, {\"name\": \"connected_clients\", \"type\": \"int\", \"doc\": \"Total connected clients.\"}, {\"name\": \"unique_users\", \"type\": \"int\", \"doc\": \"Unique connected user IDs.\"}, {\"name\": \"pilot_count\", \"type\": \"int\", \"doc\": \"Number of pilots currently flying.\"}, {\"name\": \"controller_count\", \"type\": \"int\", \"doc\": \"Number of controllers connected.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.callsign=str(self.callsign)
-        value_update_timestamp = self.update_timestamp
-        self.update_timestamp = value_update_timestamp
+        self.update_timestamp=str(self.update_timestamp)
         self.connected_clients=int(self.connected_clients)
         self.unique_users=int(self.unique_users)
         self.pilot_count=int(self.pilot_count)

@@ -61,6 +61,12 @@ python -m irceline_belgium feed --kafka-bootstrap-servers localhost:9092 --kafka
 - Timeseries: `https://geo.irceline.be/sos/api/v1/timeseries`
 - Phenomena: `https://geo.irceline.be/sos/api/v1/phenomena`
 
+## Fabric notebook hosting
+
+This source can also run as a scheduled Fabric notebook via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+using `notebook/irceline-belgium-feed.ipynb`.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

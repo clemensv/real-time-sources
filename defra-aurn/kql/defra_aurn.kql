@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['uk.gov.defra.aurn.Station'] (
    [station_id]: string,
    [label]: string,
    [latitude]: real,
@@ -37,9 +37,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Metadata for a Defra AURN monitoring station as returned by GET /stations. The bridge flattens the GeoJSON feature into a payload with the station identifier, the upstream display label, and WGS84 latitude and longitude values taken from geometry.coordinates[0] and geometry.coordinates[1], because this API returns coordinates in latitude, longitude order.\"}";
+.alter table ['uk.gov.defra.aurn.Station'] docstring "{\"description\": \"Metadata for a Defra AURN monitoring station as returned by GET /stations. The bridge flattens the GeoJSON feature into a payload with the station identifier, the upstream display label, and WGS84 latitude and longitude values taken from geometry.coordinates[0] and geometry.coordinates[1], because this API returns coordinates in latitude, longitude order.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['uk.gov.defra.aurn.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Stable numeric monitoring station identifier from the GeoJSON feature properties.id field returned by GET /stations. The bridge converts the numeric API value to a string so it can be used consistently as the Kafka key and CloudEvents subject.\"}",
    [label]: "{\"description\": \"Upstream station label from properties.label in GET /stations. In this API the label includes both the site name and the monitored pollutant description, for example 'Camden Kerbside-Particulate matter less than 10 micro m (aerosol)'.\"}",
    [latitude]: "{\"description\": \"WGS84 latitude in decimal degrees taken from geometry.coordinates[0] in the Defra SOS GeoJSON feature. The upstream API uses latitude-first coordinate ordering rather than GeoJSON's usual longitude-first convention.\"}",
@@ -51,7 +51,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['uk.gov.defra.aurn.Station'] ingestion json mapping "uk.gov.defra.aurn.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -66,7 +66,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['uk.gov.defra.aurn.Station'] ingestion json mapping "uk.gov.defra.aurn.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -81,13 +81,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['uk.gov.defra.aurn.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.gov.defra.aurn.StationLatest'] on table ['uk.gov.defra.aurn.Station'] {
+    ['uk.gov.defra.aurn.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['uk.gov.defra.aurn.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -98,7 +98,7 @@
 }]
 ```
 
-.create-merge table [Timeseries] (
+.create-merge table ['uk.gov.defra.aurn.Timeseries'] (
    [timeseries_id]: string,
    [label]: string,
    [uom]: string,
@@ -117,9 +117,9 @@
    [___subject]: string
 );
 
-.alter table [Timeseries] docstring "{\"description\": \"Reference metadata for a Defra AURN station and pollutant timeseries combination, assembled from GET /timeseries/{id}?expanded=true. The payload preserves the stable timeseries identifier, linked station metadata, unit of measurement, and pollutant taxonomy references published in parameters.phenomenon and parameters.category.\"}";
+.alter table ['uk.gov.defra.aurn.Timeseries'] docstring "{\"description\": \"Reference metadata for a Defra AURN station and pollutant timeseries combination, assembled from GET /timeseries/{id}?expanded=true. The payload preserves the stable timeseries identifier, linked station metadata, unit of measurement, and pollutant taxonomy references published in parameters.phenomenon and parameters.category.\"}";
 
-.alter table [Timeseries] column-docstrings (
+.alter table ['uk.gov.defra.aurn.Timeseries'] column-docstrings (
    [timeseries_id]: "{\"description\": \"Stable numeric timeseries identifier from the id field returned by GET /timeseries and GET /timeseries/{id}?expanded=true. Each timeseries represents one station and one pollutant combination.\"}",
    [label]: "{\"description\": \"Descriptive label from the timeseries label field. In the live API this string combines the EIONet pollutant URI, the station identifier, and the station display label.\"}",
    [uom]: "{\"description\": \"Unit of measurement string from the timeseries uom field, for example 'ug.m-3'. The bridge republishes the upstream unit token unchanged so consumers can interpret observation values correctly.\"}",
@@ -138,7 +138,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_flat"
+.create-or-alter table ['uk.gov.defra.aurn.Timeseries'] ingestion json mapping "uk.gov.defra.aurn.Timeseries_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -160,7 +160,7 @@
 ]
 ```
 
-.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_ce_structured"
+.create-or-alter table ['uk.gov.defra.aurn.Timeseries'] ingestion json mapping "uk.gov.defra.aurn.Timeseries_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -182,13 +182,13 @@
 ]
 ```
 
-.drop materialized-view TimeseriesLatest ifexists;
+.drop materialized-view ['uk.gov.defra.aurn.TimeseriesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TimeseriesLatest on table Timeseries {
-    Timeseries | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.gov.defra.aurn.TimeseriesLatest'] on table ['uk.gov.defra.aurn.Timeseries'] {
+    ['uk.gov.defra.aurn.Timeseries'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Timeseries] policy update
+.alter table ['uk.gov.defra.aurn.Timeseries'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -199,7 +199,7 @@
 }]
 ```
 
-.create-merge table [Observation] (
+.create-merge table ['uk.gov.defra.aurn.Observation'] (
    [timeseries_id]: string,
    [timestamp]: datetime,
    [value]: real,
@@ -211,9 +211,9 @@
    [___subject]: string
 );
 
-.alter table [Observation] docstring "{\"description\": \"Observation value from GET /timeseries/{id}/getData. The bridge converts the upstream Unix millisecond timestamp to an ISO 8601 UTC timestamp string and republishes the measurement value together with the timeseries identifier and unit of measurement from the reference metadata.\"}";
+.alter table ['uk.gov.defra.aurn.Observation'] docstring "{\"description\": \"Observation value from GET /timeseries/{id}/getData. The bridge converts the upstream Unix millisecond timestamp to an ISO 8601 UTC timestamp string and republishes the measurement value together with the timeseries identifier and unit of measurement from the reference metadata.\"}";
 
-.alter table [Observation] column-docstrings (
+.alter table ['uk.gov.defra.aurn.Observation'] column-docstrings (
    [timeseries_id]: "{\"description\": \"Stable numeric timeseries identifier for the series that produced this observation. This field is the Kafka key and CloudEvents subject for both the reference timeseries event and the observation event.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp encoded as an ISO 8601 UTC string. The bridge converts the upstream GET /timeseries/{id}/getData values[].timestamp Unix millisecond value with datetime.fromtimestamp(timestamp/1000, tz=timezone.utc).isoformat().\"}",
    [value]: "{\"description\": \"Measured pollutant concentration or other reported numeric reading from values[].value in GET /timeseries/{id}/getData. The field is nullable because the API can represent missing or flagged values with null.\"}",
@@ -225,7 +225,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+.create-or-alter table ['uk.gov.defra.aurn.Observation'] ingestion json mapping "uk.gov.defra.aurn.Observation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -240,7 +240,7 @@
 ]
 ```
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+.create-or-alter table ['uk.gov.defra.aurn.Observation'] ingestion json mapping "uk.gov.defra.aurn.Observation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -255,13 +255,13 @@
 ]
 ```
 
-.drop materialized-view ObservationLatest ifexists;
+.drop materialized-view ['uk.gov.defra.aurn.ObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ObservationLatest on table Observation {
-    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.gov.defra.aurn.ObservationLatest'] on table ['uk.gov.defra.aurn.Observation'] {
+    ['uk.gov.defra.aurn.Observation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Observation] policy update
+.alter table ['uk.gov.defra.aurn.Observation'] policy update
 ```
 [{
   "IsEnabled": true,

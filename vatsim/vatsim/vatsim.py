@@ -29,6 +29,48 @@ else:
 VATSIM_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json"
 
 
+def _parse_iso(value: str) -> datetime.datetime:
+    """Parse an ISO-8601 timestamp tolerating 'Z' suffix and >6-digit fractional seconds.
+
+    VATSIM emits timestamps like ``2026-05-17T07:48:40.5031859Z`` (7-digit
+    fractional seconds and 'Z' UTC marker) which ``datetime.fromisoformat``
+    rejects on Python <3.11.
+    """
+    if value.endswith("Z"):
+        value = value[:-1] + "+00:00"
+    if "." in value:
+        head, frac_and_tz = value.split(".", 1)
+        # Split off timezone (after '+' or '-' that isn't the leading sign of fraction)
+        tz_sep = ""
+        for sep in ("+", "-"):
+            idx = frac_and_tz.find(sep)
+            if idx > 0:
+                tz_sep = frac_and_tz[idx:]
+                frac_and_tz = frac_and_tz[:idx]
+                break
+        # Truncate fractional seconds to 6 digits (microseconds precision)
+        frac = frac_and_tz[:6].ljust(6, "0")
+        value = f"{head}.{frac}{tz_sep}"
+    return datetime.datetime.fromisoformat(value)
+
+
+def _normalize_rfc3339(value: str) -> str:
+    """Normalize a VATSIM ISO-8601 timestamp string to RFC3339 with 'Z' UTC suffix.
+
+    Tolerates trailing 'Z' and >6-digit fractional seconds by routing through
+    :func:`_parse_iso` and re-formatting. Returns a UTC RFC3339 string suitable
+    for the downstream JsonStructure ``string`` field.
+    """
+    dt = _parse_iso(value)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+    else:
+        dt = dt.astimezone(datetime.timezone.utc)
+    # Format with microseconds + 'Z' suffix
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f") + "Z"
+
+
+
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
     try:
@@ -84,7 +126,7 @@ class VatsimBridge:
             route=fp.get("route"),
             cruise_altitude=fp.get("altitude"),
             pilot_rating=pilot.get("pilot_rating", 0),
-            last_updated=datetime.datetime.fromisoformat(pilot["last_updated"]),
+            last_updated=_normalize_rfc3339(pilot["last_updated"]),
         )
 
     @staticmethod
@@ -103,7 +145,7 @@ class VatsimBridge:
             facility=ctrl["facility"],
             rating=ctrl["rating"],
             text_atis=text_atis,
-            last_updated=datetime.datetime.fromisoformat(ctrl["last_updated"]),
+            last_updated=_normalize_rfc3339(ctrl["last_updated"]),
         )
 
     @staticmethod
@@ -111,7 +153,7 @@ class VatsimBridge:
         """Build a NetworkStatus from the general section."""
         return NetworkStatus(
             callsign="status",
-            update_timestamp=datetime.datetime.fromisoformat(general["update_timestamp"]),
+            update_timestamp=_normalize_rfc3339(general["update_timestamp"]),
             connected_clients=general.get("connected_clients", 0),
             unique_users=general.get("unique_users", 0),
             pilot_count=pilot_count,
@@ -151,7 +193,7 @@ class VatsimBridge:
             config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
-    def feed(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
+    def feed(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '', once: bool = False) -> None:
         """Poll VATSIM and emit events to Kafka."""
         previous_pilots: Dict[str, str] = _load_state(state_file).get('pilots', {})
         previous_controllers: Dict[str, str] = _load_state(state_file).get('controllers', {})
@@ -225,6 +267,9 @@ class VatsimBridge:
                     pilot_count, ctrl_count, elapsed, effective_interval
                 )
                 _save_state(state_file, {'pilots': previous_pilots, 'controllers': previous_controllers})
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_interval > 0:
                     time.sleep(effective_interval)
             except KeyboardInterrupt:
@@ -266,6 +311,10 @@ def main() -> None:
                              default=polling_interval_default)
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE', os.path.expanduser('~/.vatsim_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                                  'Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
     bridge = VatsimBridge()
@@ -304,7 +353,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        bridge.feed(kafka_config, kafka_topic, args.polling_interval, args.state_file)
+        bridge.feed(kafka_config, kafka_topic, args.polling_interval, args.state_file, args.once)
     else:
         parser.print_help()
 

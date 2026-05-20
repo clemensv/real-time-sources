@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['nl.rivm.luchtmeetnet.Station'] (
    [station_number]: string,
    [location]: string,
    [type]: string,
@@ -43,9 +43,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.\"}";
+.alter table ['nl.rivm.luchtmeetnet.Station'] docstring "{\"description\": \"Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['nl.rivm.luchtmeetnet.Station'] column-docstrings (
    [station_number]: "{\"description\": \"Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests.\"}",
    [location]: "{\"description\": \"Human-readable station location label published by Luchtmeetnet.\"}",
    [type]: "{\"description\": \"Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional.\"}",
@@ -63,7 +63,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['nl.rivm.luchtmeetnet.Station'] ingestion json mapping "nl.rivm.luchtmeetnet.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -84,7 +84,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['nl.rivm.luchtmeetnet.Station'] ingestion json mapping "nl.rivm.luchtmeetnet.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -105,13 +105,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['nl.rivm.luchtmeetnet.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['nl.rivm.luchtmeetnet.StationLatest'] on table ['nl.rivm.luchtmeetnet.Station'] {
+    ['nl.rivm.luchtmeetnet.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['nl.rivm.luchtmeetnet.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -122,7 +122,7 @@
 }]
 ```
 
-.create-merge table [Measurement] (
+.create-merge table ['nl.rivm.luchtmeetnet.Measurement'] (
    [station_number]: string,
    [formula]: string,
    [value]: real,
@@ -134,9 +134,9 @@
    [___subject]: string
 );
 
-.alter table [Measurement] docstring "{\"description\": \"Hourly Luchtmeetnet measurement for a station and a single component formula. The API returns the latest values on page 1 and orders the series by measurement time.\"}";
+.alter table ['nl.rivm.luchtmeetnet.Measurement'] docstring "{\"description\": \"Hourly Luchtmeetnet measurement for a station and a single component formula. The API returns the latest values on page 1 and orders the series by measurement time.\"}";
 
-.alter table [Measurement] column-docstrings (
+.alter table ['nl.rivm.luchtmeetnet.Measurement'] column-docstrings (
    [station_number]: "{\"description\": \"Stable Luchtmeetnet station code identifying where the measurement was taken.\"}",
    [formula]: "{\"description\": \"Component formula code identifying what was measured, for example NO2, O3, PM10, or FN.\"}",
    [value]: "{\"description\": \"Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog.\"}",
@@ -148,7 +148,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_flat"
+.create-or-alter table ['nl.rivm.luchtmeetnet.Measurement'] ingestion json mapping "nl.rivm.luchtmeetnet.Measurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -163,7 +163,7 @@
 ]
 ```
 
-.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_ce_structured"
+.create-or-alter table ['nl.rivm.luchtmeetnet.Measurement'] ingestion json mapping "nl.rivm.luchtmeetnet.Measurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -178,13 +178,13 @@
 ]
 ```
 
-.drop materialized-view MeasurementLatest ifexists;
+.drop materialized-view ['nl.rivm.luchtmeetnet.MeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MeasurementLatest on table Measurement {
-    Measurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['nl.rivm.luchtmeetnet.MeasurementLatest'] on table ['nl.rivm.luchtmeetnet.Measurement'] {
+    ['nl.rivm.luchtmeetnet.Measurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Measurement] policy update
+.alter table ['nl.rivm.luchtmeetnet.Measurement'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -195,7 +195,7 @@
 }]
 ```
 
-.create-merge table [LKI] (
+.create-merge table ['nl.rivm.luchtmeetnet.LKI'] (
    [station_number]: string,
    [value]: int,
    [timestamp_measured]: string,
@@ -206,9 +206,9 @@
    [___subject]: string
 );
 
-.alter table [LKI] docstring "{\"description\": \"Hourly Dutch national air quality index value for a station. The LKI scale runs from 1 to 11, where lower values indicate better air quality.\"}";
+.alter table ['nl.rivm.luchtmeetnet.LKI'] docstring "{\"description\": \"Hourly Dutch national air quality index value for a station. The LKI scale runs from 1 to 11, where lower values indicate better air quality.\"}";
 
-.alter table [LKI] column-docstrings (
+.alter table ['nl.rivm.luchtmeetnet.LKI'] column-docstrings (
    [station_number]: "{\"description\": \"Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated.\"}",
    [value]: "{\"description\": \"Luchtkwaliteitsindex value on the Dutch 1 to 11 scale, where 1 to 3 is good, 4 to 6 is moderate, 7 to 9 is bad, and 10 to 11 is very bad.\"}",
    [timestamp_measured]: "{\"description\": \"Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset.\"}",
@@ -219,7 +219,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LKI] ingestion json mapping "LKI_json_flat"
+.create-or-alter table ['nl.rivm.luchtmeetnet.LKI'] ingestion json mapping "nl.rivm.luchtmeetnet.LKI_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -233,7 +233,7 @@
 ]
 ```
 
-.create-or-alter table [LKI] ingestion json mapping "LKI_json_ce_structured"
+.create-or-alter table ['nl.rivm.luchtmeetnet.LKI'] ingestion json mapping "nl.rivm.luchtmeetnet.LKI_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -247,13 +247,13 @@
 ]
 ```
 
-.drop materialized-view LKILatest ifexists;
+.drop materialized-view ['nl.rivm.luchtmeetnet.LKILatest'] ifexists;
 
-.create materialized-view with (backfill=true) LKILatest on table LKI {
-    LKI | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['nl.rivm.luchtmeetnet.LKILatest'] on table ['nl.rivm.luchtmeetnet.LKI'] {
+    ['nl.rivm.luchtmeetnet.LKI'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LKI] policy update
+.alter table ['nl.rivm.luchtmeetnet.LKI'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -264,7 +264,7 @@
 }]
 ```
 
-.create-merge table [Component] (
+.create-merge table ['nl.rivm.luchtmeetnet.components.Component'] (
    [formula]: string,
    [name_nl]: string,
    [name_en]: string,
@@ -275,9 +275,9 @@
    [___subject]: string
 );
 
-.alter table [Component] docstring "{\"description\": \"Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.\"}";
+.alter table ['nl.rivm.luchtmeetnet.components.Component'] docstring "{\"description\": \"Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.\"}";
 
-.alter table [Component] column-docstrings (
+.alter table ['nl.rivm.luchtmeetnet.components.Component'] column-docstrings (
    [formula]: "{\"description\": \"Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB.\"}",
    [name_nl]: "{\"description\": \"Dutch display name for the component from the component catalog.\"}",
    [name_en]: "{\"description\": \"English display name for the component from the component catalog.\"}",
@@ -288,7 +288,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Component] ingestion json mapping "Component_json_flat"
+.create-or-alter table ['nl.rivm.luchtmeetnet.components.Component'] ingestion json mapping "nl.rivm.luchtmeetnet.components.Component_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -302,7 +302,7 @@
 ]
 ```
 
-.create-or-alter table [Component] ingestion json mapping "Component_json_ce_structured"
+.create-or-alter table ['nl.rivm.luchtmeetnet.components.Component'] ingestion json mapping "nl.rivm.luchtmeetnet.components.Component_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -316,13 +316,13 @@
 ]
 ```
 
-.drop materialized-view ComponentLatest ifexists;
+.drop materialized-view ['nl.rivm.luchtmeetnet.components.ComponentLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ComponentLatest on table Component {
-    Component | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['nl.rivm.luchtmeetnet.components.ComponentLatest'] on table ['nl.rivm.luchtmeetnet.components.Component'] {
+    ['nl.rivm.luchtmeetnet.components.Component'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Component] policy update
+.alter table ['nl.rivm.luchtmeetnet.components.Component'] policy update
 ```
 [{
   "IsEnabled": true,

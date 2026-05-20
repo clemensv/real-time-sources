@@ -28,14 +28,13 @@ class Test_Document(unittest.TestCase):
         Create instance of Document for testing
         """
         instance = Document(
-            station_id='siegogtejyoknkbueqqg',
-            timestamp='qfvpxilphsayqripxidw',
-            quality_level=int(11),
-            pressure_station_level=float(68.79361925956235),
-            air_temperature_2m=float(8.331565133725949),
-            air_temperature_5cm=float(84.60521567627347),
-            relative_humidity=float(34.23430588595144),
-            dew_point_temperature=float(68.35608812836259)
+            station_id='wwjpufzlhvixlnpktrlk',
+            timestamp='gjpvezwtlpqxggmqgxfv',
+            quality_level=int(66),
+            global_radiation=float(11.90945613831822),
+            sunshine_duration=float(61.190019602780474),
+            diffuse_radiation=float(29.45380446161544),
+            longwave_radiation=float(47.001941620085084)
         )
         return instance
 
@@ -44,7 +43,7 @@ class Test_Document(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'siegogtejyoknkbueqqg'
+        test_value = 'wwjpufzlhvixlnpktrlk'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +51,7 @@ class Test_Document(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'qfvpxilphsayqripxidw'
+        test_value = 'gjpvezwtlpqxggmqgxfv'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -60,49 +59,41 @@ class Test_Document(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(11)
+        test_value = int(66)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
-    def test_pressure_station_level_property(self):
+    def test_global_radiation_property(self):
         """
-        Test pressure_station_level property
+        Test global_radiation property
         """
-        test_value = float(68.79361925956235)
-        self.instance.pressure_station_level = test_value
-        self.assertEqual(self.instance.pressure_station_level, test_value)
+        test_value = float(11.90945613831822)
+        self.instance.global_radiation = test_value
+        self.assertEqual(self.instance.global_radiation, test_value)
     
-    def test_air_temperature_2m_property(self):
+    def test_sunshine_duration_property(self):
         """
-        Test air_temperature_2m property
+        Test sunshine_duration property
         """
-        test_value = float(8.331565133725949)
-        self.instance.air_temperature_2m = test_value
-        self.assertEqual(self.instance.air_temperature_2m, test_value)
+        test_value = float(61.190019602780474)
+        self.instance.sunshine_duration = test_value
+        self.assertEqual(self.instance.sunshine_duration, test_value)
     
-    def test_air_temperature_5cm_property(self):
+    def test_diffuse_radiation_property(self):
         """
-        Test air_temperature_5cm property
+        Test diffuse_radiation property
         """
-        test_value = float(84.60521567627347)
-        self.instance.air_temperature_5cm = test_value
-        self.assertEqual(self.instance.air_temperature_5cm, test_value)
+        test_value = float(29.45380446161544)
+        self.instance.diffuse_radiation = test_value
+        self.assertEqual(self.instance.diffuse_radiation, test_value)
     
-    def test_relative_humidity_property(self):
+    def test_longwave_radiation_property(self):
         """
-        Test relative_humidity property
+        Test longwave_radiation property
         """
-        test_value = float(34.23430588595144)
-        self.instance.relative_humidity = test_value
-        self.assertEqual(self.instance.relative_humidity, test_value)
-    
-    def test_dew_point_temperature_property(self):
-        """
-        Test dew_point_temperature property
-        """
-        test_value = float(68.35608812836259)
-        self.instance.dew_point_temperature = test_value
-        self.assertEqual(self.instance.dew_point_temperature, test_value)
+        test_value = float(47.001941620085084)
+        self.instance.longwave_radiation = test_value
+        self.assertEqual(self.instance.longwave_radiation, test_value)
     
     def test_to_byte_array_avro(self):
         """

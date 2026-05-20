@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Community] (
+.create-merge table ['ca.gc.weather.aqhi.Community'] (
    [province]: string,
    [community_name]: string,
    [cgndb_code]: string,
@@ -40,9 +40,9 @@
    [___subject]: string
 );
 
-.alter table [Community] docstring "{\"description\": \"Reference record for an AQHI community from the official ECCC AQHI city lists. It links the public community name and province code to the CGNDB key and current XML feeds used by the bridge.\"}";
+.alter table ['ca.gc.weather.aqhi.Community'] docstring "{\"description\": \"Reference record for an AQHI community from the official ECCC AQHI city lists. It links the public community name and province code to the CGNDB key and current XML feeds used by the bridge.\"}";
 
-.alter table [Community] column-docstrings (
+.alter table ['ca.gc.weather.aqhi.Community'] column-docstrings (
    [province]: "{\"description\": \"Two-letter Canadian province or territory abbreviation resolved for the AQHI community.\"}",
    [community_name]: "{\"description\": \"English AQHI community name as published by Environment and Climate Change Canada.\"}",
    [cgndb_code]: "{\"description\": \"Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.\"}",
@@ -57,7 +57,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Community] ingestion json mapping "Community_json_flat"
+.create-or-alter table ['ca.gc.weather.aqhi.Community'] ingestion json mapping "ca.gc.weather.aqhi.Community_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -75,7 +75,7 @@
 ]
 ```
 
-.create-or-alter table [Community] ingestion json mapping "Community_json_ce_structured"
+.create-or-alter table ['ca.gc.weather.aqhi.Community'] ingestion json mapping "ca.gc.weather.aqhi.Community_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -93,13 +93,13 @@
 ]
 ```
 
-.drop materialized-view CommunityLatest ifexists;
+.drop materialized-view ['ca.gc.weather.aqhi.CommunityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CommunityLatest on table Community {
-    Community | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ca.gc.weather.aqhi.CommunityLatest'] on table ['ca.gc.weather.aqhi.Community'] {
+    ['ca.gc.weather.aqhi.Community'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Community] policy update
+.alter table ['ca.gc.weather.aqhi.Community'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -110,7 +110,7 @@
 }]
 ```
 
-.create-merge table [Observation] (
+.create-merge table ['ca.gc.weather.aqhi.Observation'] (
    [province]: string,
    [community_name]: string,
    [cgndb_code]: string,
@@ -124,9 +124,9 @@
    [___subject]: string
 );
 
-.alter table [Observation] docstring "{\"description\": \"Latest AQHI observation for a reporting community. The value reflects short-term health risk from air pollution and may be null when the upstream feed has not published a value yet.\"}";
+.alter table ['ca.gc.weather.aqhi.Observation'] docstring "{\"description\": \"Latest AQHI observation for a reporting community. The value reflects short-term health risk from air pollution and may be null when the upstream feed has not published a value yet.\"}";
 
-.alter table [Observation] column-docstrings (
+.alter table ['ca.gc.weather.aqhi.Observation'] column-docstrings (
    [province]: "{\"description\": \"Two-letter Canadian province or territory abbreviation resolved for the AQHI community.\"}",
    [community_name]: "{\"description\": \"English AQHI community name as published by Environment and Climate Change Canada.\"}",
    [cgndb_code]: "{\"description\": \"Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.\"}",
@@ -140,7 +140,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+.create-or-alter table ['ca.gc.weather.aqhi.Observation'] ingestion json mapping "ca.gc.weather.aqhi.Observation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -157,7 +157,7 @@
 ]
 ```
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+.create-or-alter table ['ca.gc.weather.aqhi.Observation'] ingestion json mapping "ca.gc.weather.aqhi.Observation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -174,13 +174,13 @@
 ]
 ```
 
-.drop materialized-view ObservationLatest ifexists;
+.drop materialized-view ['ca.gc.weather.aqhi.ObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ObservationLatest on table Observation {
-    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ca.gc.weather.aqhi.ObservationLatest'] on table ['ca.gc.weather.aqhi.Observation'] {
+    ['ca.gc.weather.aqhi.Observation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Observation] policy update
+.alter table ['ca.gc.weather.aqhi.Observation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -191,7 +191,7 @@
 }]
 ```
 
-.create-merge table [Forecast] (
+.create-merge table ['ca.gc.weather.aqhi.Forecast'] (
    [province]: string,
    [community_name]: string,
    [cgndb_code]: string,
@@ -208,9 +208,9 @@
    [___subject]: string
 );
 
-.alter table [Forecast] docstring "{\"description\": \"Public AQHI forecast for a community and one of the four standard forecast periods published by ECCC.\"}";
+.alter table ['ca.gc.weather.aqhi.Forecast'] docstring "{\"description\": \"Public AQHI forecast for a community and one of the four standard forecast periods published by ECCC.\"}";
 
-.alter table [Forecast] column-docstrings (
+.alter table ['ca.gc.weather.aqhi.Forecast'] column-docstrings (
    [province]: "{\"description\": \"Two-letter Canadian province or territory abbreviation resolved for the AQHI community.\"}",
    [community_name]: "{\"description\": \"English AQHI community name as published by Environment and Climate Change Canada.\"}",
    [cgndb_code]: "{\"description\": \"Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.\"}",
@@ -227,7 +227,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Forecast] ingestion json mapping "Forecast_json_flat"
+.create-or-alter table ['ca.gc.weather.aqhi.Forecast'] ingestion json mapping "ca.gc.weather.aqhi.Forecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -247,7 +247,7 @@
 ]
 ```
 
-.create-or-alter table [Forecast] ingestion json mapping "Forecast_json_ce_structured"
+.create-or-alter table ['ca.gc.weather.aqhi.Forecast'] ingestion json mapping "ca.gc.weather.aqhi.Forecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -267,13 +267,13 @@
 ]
 ```
 
-.drop materialized-view ForecastLatest ifexists;
+.drop materialized-view ['ca.gc.weather.aqhi.ForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ForecastLatest on table Forecast {
-    Forecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ca.gc.weather.aqhi.ForecastLatest'] on table ['ca.gc.weather.aqhi.Forecast'] {
+    ['ca.gc.weather.aqhi.Forecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Forecast] policy update
+.alter table ['ca.gc.weather.aqhi.Forecast'] policy update
 ```
 [{
   "IsEnabled": true,

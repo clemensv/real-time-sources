@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['uk.gov.environment.ea.floodmonitoring.Station'] (
    [station_reference]: string,
    [label]: string,
    [river_name]: string,
@@ -43,9 +43,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Station\"}";
+.alter table ['uk.gov.environment.ea.floodmonitoring.Station'] docstring "{\"description\": \"Station\"}";
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['uk.gov.environment.ea.floodmonitoring.Station'] ingestion json mapping "uk.gov.environment.ea.floodmonitoring.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -66,7 +66,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['uk.gov.environment.ea.floodmonitoring.Station'] ingestion json mapping "uk.gov.environment.ea.floodmonitoring.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,13 +87,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['uk.gov.environment.ea.floodmonitoring.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.gov.environment.ea.floodmonitoring.StationLatest'] on table ['uk.gov.environment.ea.floodmonitoring.Station'] {
+    ['uk.gov.environment.ea.floodmonitoring.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['uk.gov.environment.ea.floodmonitoring.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -104,7 +104,7 @@
 }]
 ```
 
-.create-merge table [Reading] (
+.create-merge table ['uk.gov.environment.ea.floodmonitoring.Reading'] (
    [station_reference]: string,
    [date_time]: datetime,
    [measure]: string,
@@ -116,9 +116,9 @@
    [___subject]: string
 );
 
-.alter table [Reading] docstring "{\"description\": \"Reading\"}";
+.alter table ['uk.gov.environment.ea.floodmonitoring.Reading'] docstring "{\"description\": \"Reading\"}";
 
-.create-or-alter table [Reading] ingestion json mapping "Reading_json_flat"
+.create-or-alter table ['uk.gov.environment.ea.floodmonitoring.Reading'] ingestion json mapping "uk.gov.environment.ea.floodmonitoring.Reading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -133,7 +133,7 @@
 ]
 ```
 
-.create-or-alter table [Reading] ingestion json mapping "Reading_json_ce_structured"
+.create-or-alter table ['uk.gov.environment.ea.floodmonitoring.Reading'] ingestion json mapping "uk.gov.environment.ea.floodmonitoring.Reading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -148,13 +148,13 @@
 ]
 ```
 
-.drop materialized-view ReadingLatest ifexists;
+.drop materialized-view ['uk.gov.environment.ea.floodmonitoring.ReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ReadingLatest on table Reading {
-    Reading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.gov.environment.ea.floodmonitoring.ReadingLatest'] on table ['uk.gov.environment.ea.floodmonitoring.Reading'] {
+    ['uk.gov.environment.ea.floodmonitoring.Reading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Reading] policy update
+.alter table ['uk.gov.environment.ea.floodmonitoring.Reading'] policy update
 ```
 [{
   "IsEnabled": true,

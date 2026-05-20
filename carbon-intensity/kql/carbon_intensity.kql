@@ -1,0 +1,334 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Intensity] (
+   [period_from]: datetime,
+   [period_to]: datetime,
+   [forecast]: int,
+   [actual]: int,
+   [index]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Intensity] docstring "{\"description\": \"National half-hourly carbon intensity for the Great Britain electricity grid, published by National Grid ESO. Contains the forecast and actual carbon dioxide emission intensity in grams of CO2 per kilowatt-hour, along with a qualitative index band.\"}";
+
+.alter table [Intensity] column-docstrings (
+   [period_from]: "{\"description\": \"ISO 8601 UTC timestamp marking the start of the half-hour settlement period (e.g. 2026-04-06T09:30Z).\"}",
+   [period_to]: "{\"description\": \"ISO 8601 UTC timestamp marking the end of the half-hour settlement period (e.g. 2026-04-06T10:00Z).\"}",
+   [forecast]: "{\"description\": \"Forecast carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh), computed ahead of real-time by National Grid ESO.\"}",
+   [actual]: "{\"description\": \"Actual (metered) carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh). May be null when the period has not yet completed.\"}",
+   [index]: "{\"description\": \"Qualitative index band for the carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Intensity] ingestion json mapping "Intensity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "period_from", "path": "$.period_from"},
+  {"column": "period_to", "path": "$.period_to"},
+  {"column": "forecast", "path": "$.forecast"},
+  {"column": "actual", "path": "$.actual"},
+  {"column": "index", "path": "$.index"},
+]
+```
+
+.create-or-alter table [Intensity] ingestion json mapping "Intensity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "period_from", "path": "$.data.period_from"},
+  {"column": "period_to", "path": "$.data.period_to"},
+  {"column": "forecast", "path": "$.data.forecast"},
+  {"column": "actual", "path": "$.data.actual"},
+  {"column": "index", "path": "$.data.index"},
+]
+```
+
+.drop materialized-view IntensityLatest ifexists;
+
+.create materialized-view with (backfill=true) IntensityLatest on table Intensity {
+    Intensity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Intensity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.org.carbonintensity.Intensity') | project['period_from'] = todatetime(data.['period_from']),['period_to'] = todatetime(data.['period_to']),['forecast'] = toint(data.['forecast']),['actual'] = toint(data.['actual']),['index'] = tostring(data.['index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GenerationMix] (
+   [period_from]: datetime,
+   [period_to]: datetime,
+   [biomass_pct]: real,
+   [coal_pct]: real,
+   [gas_pct]: real,
+   [hydro_pct]: real,
+   [imports_pct]: real,
+   [nuclear_pct]: real,
+   [oil_pct]: real,
+   [other_pct]: real,
+   [solar_pct]: real,
+   [wind_pct]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GenerationMix] docstring "{\"description\": \"National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period.\"}";
+
+.alter table [GenerationMix] column-docstrings (
+   [period_from]: "{\"description\": \"ISO 8601 UTC timestamp marking the start of the half-hour settlement period.\"}",
+   [period_to]: "{\"description\": \"ISO 8601 UTC timestamp marking the end of the half-hour settlement period.\"}",
+   [biomass_pct]: "{\"description\": \"Percentage of electricity generated from biomass (wood pellets, energy crops, and other organic matter) during this settlement period.\"}",
+   [coal_pct]: "{\"description\": \"Percentage of electricity generated from coal-fired power stations during this settlement period.\"}",
+   [gas_pct]: "{\"description\": \"Percentage of electricity generated from natural gas (CCGT and OCGT) during this settlement period.\"}",
+   [hydro_pct]: "{\"description\": \"Percentage of electricity generated from hydroelectric power stations during this settlement period.\"}",
+   [imports_pct]: "{\"description\": \"Percentage of electricity supplied via interconnector imports from continental Europe and Ireland during this settlement period.\"}",
+   [nuclear_pct]: "{\"description\": \"Percentage of electricity generated from nuclear power stations during this settlement period.\"}",
+   [oil_pct]: "{\"description\": \"Percentage of electricity generated from oil-fired power stations during this settlement period.\"}",
+   [other_pct]: "{\"description\": \"Percentage of electricity generated from other or unclassified fuel sources during this settlement period.\"}",
+   [solar_pct]: "{\"description\": \"Percentage of electricity generated from solar photovoltaic installations during this settlement period.\"}",
+   [wind_pct]: "{\"description\": \"Percentage of electricity generated from onshore and offshore wind turbines during this settlement period.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GenerationMix] ingestion json mapping "GenerationMix_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "period_from", "path": "$.period_from"},
+  {"column": "period_to", "path": "$.period_to"},
+  {"column": "biomass_pct", "path": "$.biomass_pct"},
+  {"column": "coal_pct", "path": "$.coal_pct"},
+  {"column": "gas_pct", "path": "$.gas_pct"},
+  {"column": "hydro_pct", "path": "$.hydro_pct"},
+  {"column": "imports_pct", "path": "$.imports_pct"},
+  {"column": "nuclear_pct", "path": "$.nuclear_pct"},
+  {"column": "oil_pct", "path": "$.oil_pct"},
+  {"column": "other_pct", "path": "$.other_pct"},
+  {"column": "solar_pct", "path": "$.solar_pct"},
+  {"column": "wind_pct", "path": "$.wind_pct"},
+]
+```
+
+.create-or-alter table [GenerationMix] ingestion json mapping "GenerationMix_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "period_from", "path": "$.data.period_from"},
+  {"column": "period_to", "path": "$.data.period_to"},
+  {"column": "biomass_pct", "path": "$.data.biomass_pct"},
+  {"column": "coal_pct", "path": "$.data.coal_pct"},
+  {"column": "gas_pct", "path": "$.data.gas_pct"},
+  {"column": "hydro_pct", "path": "$.data.hydro_pct"},
+  {"column": "imports_pct", "path": "$.data.imports_pct"},
+  {"column": "nuclear_pct", "path": "$.data.nuclear_pct"},
+  {"column": "oil_pct", "path": "$.data.oil_pct"},
+  {"column": "other_pct", "path": "$.data.other_pct"},
+  {"column": "solar_pct", "path": "$.data.solar_pct"},
+  {"column": "wind_pct", "path": "$.data.wind_pct"},
+]
+```
+
+.drop materialized-view GenerationMixLatest ifexists;
+
+.create materialized-view with (backfill=true) GenerationMixLatest on table GenerationMix {
+    GenerationMix | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GenerationMix] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.org.carbonintensity.GenerationMix') | project['period_from'] = todatetime(data.['period_from']),['period_to'] = todatetime(data.['period_to']),['biomass_pct'] = toreal(data.['biomass_pct']),['coal_pct'] = toreal(data.['coal_pct']),['gas_pct'] = toreal(data.['gas_pct']),['hydro_pct'] = toreal(data.['hydro_pct']),['imports_pct'] = toreal(data.['imports_pct']),['nuclear_pct'] = toreal(data.['nuclear_pct']),['oil_pct'] = toreal(data.['oil_pct']),['other_pct'] = toreal(data.['other_pct']),['solar_pct'] = toreal(data.['solar_pct']),['wind_pct'] = toreal(data.['wind_pct']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [RegionalIntensity] (
+   [region_id]: int,
+   [dnoregion]: string,
+   [shortname]: string,
+   [period_from]: datetime,
+   [period_to]: datetime,
+   [forecast]: int,
+   [index]: string,
+   [biomass_pct]: real,
+   [coal_pct]: real,
+   [gas_pct]: real,
+   [hydro_pct]: real,
+   [imports_pct]: real,
+   [nuclear_pct]: real,
+   [oil_pct]: real,
+   [other_pct]: real,
+   [solar_pct]: real,
+   [wind_pct]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RegionalIntensity] docstring "{\"description\": \"Half-hourly carbon intensity and generation mix for one of the 17 GB Distribution Network Operator (DNO) regions, published by National Grid ESO. Each record covers a specific DNO region identified by its numeric region ID.\"}";
+
+.alter table [RegionalIntensity] column-docstrings (
+   [region_id]: "{\"description\": \"Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1\\u00e2\\u20ac\\u201c17).\"}",
+   [dnoregion]: "{\"description\": \"Full name of the Distribution Network Operator region (e.g. 'Scottish Hydro Electric Power Distribution').\"}",
+   [shortname]: "{\"description\": \"Short display name for the DNO region (e.g. 'North Scotland').\"}",
+   [period_from]: "{\"description\": \"ISO 8601 UTC timestamp marking the start of the half-hour settlement period.\"}",
+   [period_to]: "{\"description\": \"ISO 8601 UTC timestamp marking the end of the half-hour settlement period.\"}",
+   [forecast]: "{\"description\": \"Forecast carbon intensity for this region and settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh).\"}",
+   [index]: "{\"description\": \"Qualitative index band for the regional carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'.\"}",
+   [biomass_pct]: "{\"description\": \"Percentage of electricity generated from biomass in this region during this settlement period.\"}",
+   [coal_pct]: "{\"description\": \"Percentage of electricity generated from coal in this region during this settlement period.\"}",
+   [gas_pct]: "{\"description\": \"Percentage of electricity generated from natural gas in this region during this settlement period.\"}",
+   [hydro_pct]: "{\"description\": \"Percentage of electricity generated from hydroelectric power in this region during this settlement period.\"}",
+   [imports_pct]: "{\"description\": \"Percentage of electricity supplied via interconnector imports in this region during this settlement period.\"}",
+   [nuclear_pct]: "{\"description\": \"Percentage of electricity generated from nuclear power in this region during this settlement period.\"}",
+   [oil_pct]: "{\"description\": \"Percentage of electricity generated from oil in this region during this settlement period.\"}",
+   [other_pct]: "{\"description\": \"Percentage of electricity generated from other or unclassified fuel sources in this region during this settlement period.\"}",
+   [solar_pct]: "{\"description\": \"Percentage of electricity generated from solar photovoltaic installations in this region during this settlement period.\"}",
+   [wind_pct]: "{\"description\": \"Percentage of electricity generated from wind turbines in this region during this settlement period.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RegionalIntensity] ingestion json mapping "RegionalIntensity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "dnoregion", "path": "$.dnoregion"},
+  {"column": "shortname", "path": "$.shortname"},
+  {"column": "period_from", "path": "$.period_from"},
+  {"column": "period_to", "path": "$.period_to"},
+  {"column": "forecast", "path": "$.forecast"},
+  {"column": "index", "path": "$.index"},
+  {"column": "biomass_pct", "path": "$.biomass_pct"},
+  {"column": "coal_pct", "path": "$.coal_pct"},
+  {"column": "gas_pct", "path": "$.gas_pct"},
+  {"column": "hydro_pct", "path": "$.hydro_pct"},
+  {"column": "imports_pct", "path": "$.imports_pct"},
+  {"column": "nuclear_pct", "path": "$.nuclear_pct"},
+  {"column": "oil_pct", "path": "$.oil_pct"},
+  {"column": "other_pct", "path": "$.other_pct"},
+  {"column": "solar_pct", "path": "$.solar_pct"},
+  {"column": "wind_pct", "path": "$.wind_pct"},
+]
+```
+
+.create-or-alter table [RegionalIntensity] ingestion json mapping "RegionalIntensity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "dnoregion", "path": "$.data.dnoregion"},
+  {"column": "shortname", "path": "$.data.shortname"},
+  {"column": "period_from", "path": "$.data.period_from"},
+  {"column": "period_to", "path": "$.data.period_to"},
+  {"column": "forecast", "path": "$.data.forecast"},
+  {"column": "index", "path": "$.data.index"},
+  {"column": "biomass_pct", "path": "$.data.biomass_pct"},
+  {"column": "coal_pct", "path": "$.data.coal_pct"},
+  {"column": "gas_pct", "path": "$.data.gas_pct"},
+  {"column": "hydro_pct", "path": "$.data.hydro_pct"},
+  {"column": "imports_pct", "path": "$.data.imports_pct"},
+  {"column": "nuclear_pct", "path": "$.data.nuclear_pct"},
+  {"column": "oil_pct", "path": "$.data.oil_pct"},
+  {"column": "other_pct", "path": "$.data.other_pct"},
+  {"column": "solar_pct", "path": "$.data.solar_pct"},
+  {"column": "wind_pct", "path": "$.data.wind_pct"},
+]
+```
+
+.drop materialized-view RegionalIntensityLatest ifexists;
+
+.create materialized-view with (backfill=true) RegionalIntensityLatest on table RegionalIntensity {
+    RegionalIntensity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RegionalIntensity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.org.carbonintensity.RegionalIntensity') | project['region_id'] = toint(data.['region_id']),['dnoregion'] = tostring(data.['dnoregion']),['shortname'] = tostring(data.['shortname']),['period_from'] = todatetime(data.['period_from']),['period_to'] = todatetime(data.['period_to']),['forecast'] = toint(data.['forecast']),['index'] = tostring(data.['index']),['biomass_pct'] = toreal(data.['biomass_pct']),['coal_pct'] = toreal(data.['coal_pct']),['gas_pct'] = toreal(data.['gas_pct']),['hydro_pct'] = toreal(data.['hydro_pct']),['imports_pct'] = toreal(data.['imports_pct']),['nuclear_pct'] = toreal(data.['nuclear_pct']),['oil_pct'] = toreal(data.['oil_pct']),['other_pct'] = toreal(data.['other_pct']),['solar_pct'] = toreal(data.['solar_pct']),['wind_pct'] = toreal(data.['wind_pct']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

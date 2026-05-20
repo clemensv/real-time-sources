@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Sources — Fluent Ops Console</title>
+<style>
+  :root {
+    --fabric-purple: #742774;
+    --fabric-magenta: #b4009e;
+    --accent-light: #f3e5f5;
+    --bg: #fafafa;
+    --card-bg: #ffffff;
+    --text: #323130;
+    --text-secondary: #605e5c;
+    --border: #edebe9;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); background: var(--bg); line-height: 1.5; }
+  a { color: var(--fabric-purple); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--fabric-purple), var(--fabric-magenta));
+    color: #fff;
+    padding: 64px 32px;
+    text-align: left;
+  }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .hero-logo svg { width: 40px; height: 40px; }
+  .hero-logo span { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9; }
+  .hero h1 { font-size: 40px; font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
+  .hero p { font-size: 20px; opacity: 0.9; margin-bottom: 32px; max-width: 640px; }
+  .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: #fff; color: var(--fabric-purple); }
+  .btn-primary:hover { background: var(--accent-light); text-decoration: none; }
+  .btn-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.25); text-decoration: none; }
+
+  /* How It Works */
+  .how-it-works { max-width: 1200px; margin: 0 auto; padding: 64px 32px; }
+  .how-it-works h2 { font-size: 28px; font-weight: 700; margin-bottom: 40px; text-align: center; }
+  .steps { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0; align-items: center; }
+  .step { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: var(--shadow); }
+  .step-number { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--fabric-purple); color: #fff; font-weight: 700; font-size: 16px; margin-bottom: 16px; }
+  .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .step p { font-size: 14px; color: var(--text-secondary); }
+  .step code { display: block; background: #1b1b1f; color: #d4d4d4; padding: 12px; border-radius: 6px; font-size: 12px; margin-top: 12px; text-align: left; font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; white-space: pre-wrap; word-break: break-all; }
+  .step-arrow { font-size: 28px; color: var(--fabric-purple); padding: 0 8px; }
+
+  /* Source Grid */
+  .sources { max-width: 1200px; margin: 0 auto; padding: 0 32px 64px; }
+  .sources > h2 { font-size: 28px; font-weight: 700; margin-bottom: 32px; text-align: center; }
+
+  .group { margin-bottom: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); overflow: hidden; }
+  .group-header { display: flex; align-items: center; gap: 12px; padding: 16px 24px; cursor: pointer; user-select: none; background: var(--card-bg); transition: background 0.15s; }
+  .group-header:hover { background: #f8f8f8; }
+  .group-icon { font-size: 24px; flex-shrink: 0; }
+  .group-name { font-size: 18px; font-weight: 600; flex: 1; }
+  .group-count { background: var(--fabric-purple); color: #fff; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 12px; }
+  .group-chevron { font-size: 18px; color: var(--text-secondary); transition: transform 0.2s; }
+  .group.open .group-chevron { transform: rotate(180deg); }
+  .group-body { display: none; padding: 8px 24px 24px; }
+  .group.open .group-body { display: block; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: var(--card-bg); box-shadow: var(--shadow); transition: box-shadow 0.15s; }
+  .card:hover { box-shadow: var(--shadow-hover); }
+  .card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .card-logo { width: 40px; height: 40px; border-radius: 8px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; color: var(--fabric-purple); font-weight: 700; }
+  .card-title { font-size: 15px; font-weight: 600; }
+  .card-desc { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .card-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; background: #f3f2f1; color: var(--text-secondary); }
+  .pill-freq { background: #e8f5e9; color: #2e7d32; }
+  .pill-flag { font-size: 14px; background: transparent; padding: 0; }
+  .card-actions { display: flex; gap: 8px; }
+  .btn-sm { padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); transition: all 0.15s; }
+  .btn-sm:hover { background: #f3f2f1; }
+  .btn-sm.purple { background: var(--fabric-purple); color: #fff; border-color: var(--fabric-purple); }
+  .btn-sm.purple:hover { background: #5e1f5e; }
+
+  .docker-expand { display: none; margin-top: 12px; background: #1b1b1f; color: #d4d4d4; padding: 12px; border-radius: 6px; font-size: 12px; font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; white-space: pre-wrap; word-break: break-all; position: relative; }
+  .docker-expand.show { display: block; }
+  .docker-expand .copy-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.1); border: none; color: #aaa; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+  .docker-expand .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+  /* Footer */
+  footer { background: #1b1b1f; color: #d4d4d4; padding: 32px; text-align: center; }
+  footer a { color: #bb86fc; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-brand { font-size: 13px; opacity: 0.7; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 28px; }
+    .hero p { font-size: 16px; }
+    .steps { grid-template-columns: 1fr; gap: 16px; }
+    .step-arrow { transform: rotate(90deg); justify-self: center; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-logo">
+      <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="8" fill="rgba(255,255,255,0.2)"/><path d="M10 12h8v8h-8zM22 12h8v8h-8zM10 22h8v8h-8zM22 22h8v8h-8z" fill="#fff" opacity="0.9"/></svg>
+      <span>Microsoft Fabric · Real-Time Analytics</span>
+    </div>
+    <h1>Real-time data sources — ready to stream into Fabric</h1>
+    <p>Pre-built containers. Pull. Run. Analyze. 24 bridges streaming live data from weather stations, vessel trackers, energy markets, and more.</p>
+    <div class="hero-buttons">
+      <a href="#sources" class="btn btn-primary">Browse Sources</a>
+      <a href="#how-it-works" class="btn btn-secondary">How It Works</a>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works" id="how-it-works">
+  <h2>How It Works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <h3>Pull the container</h3>
+      <p>Each bridge is a pre-built Docker image on GitHub Container Registry.</p>
+      <code>docker pull ghcr.io/clemensv/real-time-sources/noaa</code>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <h3>Stream to Event Hub</h3>
+      <p>Point the container at your Event Hub, Fabric Event Stream, or any Kafka endpoint.</p>
+      <code>docker run -e KAFKA_BOOTSTRAP_SERVERS=... -e KAFKA_TOPIC=... ghcr.io/clemensv/real-time-sources/noaa</code>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <h3>Query in real time</h3>
+      <p>Data lands in your Fabric Eventhouse. Query with KQL instantly.</p>
+      <code>WaterLevelObservations
+| where timestamp > ago(1h)
+| summarize avg(value) by station</code>
+    </div>
+  </div>
+</section>
+
+<!-- Sources -->
+<section class="sources" id="sources">
+  <h2>Data Sources</h2>
+
+  <!-- Water & Hydrology -->
+  <div class="group open" id="group-water">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">💧</span>
+      <span class="group-name">Water &amp; Hydrology</span>
+      <span class="group-count">12</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🌊</div>
+            <div><div class="card-title">NOAA Tides &amp; Currents</div><div class="card-desc">Water level and current data from 3,000+ US stations</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 6 min</span>
+            <span class="pill pill-flag">🇺🇸</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=noaa-tides \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/noaa</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🔵</div>
+            <div><div class="card-title">NOAA NDBC</div><div class="card-desc">Buoy observations across US waters</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 5 min</span>
+            <span class="pill pill-flag">🇺🇸</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=noaa-ndbc \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/noaa-ndbc</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇩🇪</div>
+            <div><div class="card-title">Pegelonline</div><div class="card-desc">German federal waterways water levels from WSV</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 15 min</span>
+            <span class="pill pill-flag">🇩🇪</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=pegelonline \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/pegelonline</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">📊</div>
+            <div><div class="card-title">USGS Instantaneous Values</div><div class="card-desc">Water quality &amp; quantity from 1.5M+ US stations</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 15 min</span>
+            <span class="pill pill-flag">🇺🇸</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=usgs-iv \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/usgs-iv</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇨🇿</div>
+            <div><div class="card-title">CHMI Hydro</div><div class="card-desc">Czech hydrological observations from ČHMÚ</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 10 min</span>
+            <span class="pill pill-flag">🇨🇿</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=chmi-hydro \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/chmi-hydro</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇵🇱</div>
+            <div><div class="card-title">IMGW Hydro</div><div class="card-desc">Polish hydrological data from IMGW-PIB</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 10 min</span>
+            <span class="pill pill-flag">🇵🇱</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=imgw-hydro \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/imgw-hydro</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇸🇪</div>
+            <div><div class="card-title">SMHI Hydro</div><div class="card-desc">Swedish discharge data from SMHI</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 15 min</span>
+            <span class="pill pill-flag">🇸🇪</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=smhi-hydro \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/smhi-hydro</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇫🇷</div>
+            <div><div class="card-title">Hub'Eau Hydrometrie</div><div class="card-desc">French water level &amp; flow from 6,300 stations</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 10 min</span>
+            <span class="pill pill-flag">🇫🇷</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=hubeau-hydrometrie \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇳🇱</div>
+            <div><div class="card-title">RWS Waterwebservices</div><div class="card-desc">Dutch water monitoring from Rijkswaterstaat (785 stations)</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 10 min</span>
+            <span class="pill pill-flag">🇳🇱</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=rws-waterwebservices \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/rws-waterwebservices</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇬🇧</div>
+            <div><div class="card-title">UK EA Flood Monitoring</div><div class="card-desc">English flood &amp; river data from 4,000 stations</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 15 min</span>
+            <span class="pill pill-flag">🇬🇧</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=uk-ea-flood-monitoring \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇧🇪</div>
+            <div><div class="card-title">Waterinfo VMM</div><div class="card-desc">Flemish water levels from 1,785 stations</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 15 min</span>
+            <span class="pill pill-flag">🇧🇪</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=waterinfo-vmm \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/waterinfo-vmm</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇩🇪</div>
+            <div><div class="card-title">German Waters</div><div class="card-desc">Water levels from 12 German state portals (2,724 stations)</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 15 min</span>
+            <span class="pill pill-flag">🇩🇪</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=german-waters \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/german-waters</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Maritime & Vessel Tracking -->
+  <div class="group" id="group-maritime">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">🚢</span>
+      <span class="group-name">Maritime &amp; Vessel Tracking</span>
+      <span class="group-count">3</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">📡</div>
+            <div><div class="card-title">AISStream</div><div class="card-desc">Global AIS vessel tracking via WebSocket (~200 km from shore)</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⚡ real-time</span>
+            <span class="pill pill-flag">🌍</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=aisstream \
+  -e AISSTREAM_API_KEY='&lt;api-key&gt;' \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/aisstream</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇳🇴</div>
+            <div><div class="card-title">Kystverket AIS</div><div class="card-desc">Norwegian coastal AIS — ~34 msg/s, no API key required</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⚡ real-time</span>
+            <span class="pill pill-flag">🇳🇴</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=kystverket-ais \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/kystverket-ais</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🇫🇮</div>
+            <div><div class="card-title">Digitraffic Maritime</div><div class="card-desc">Finnish AIS from Baltic Sea — ~35 msg/s, open data (CC 4.0 BY)</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⚡ real-time</span>
+            <span class="pill pill-flag">🇫🇮</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=digitraffic-maritime \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/digitraffic-maritime</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weather & Space -->
+  <div class="group" id="group-weather">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">⛈️</span>
+      <span class="group-name">Weather &amp; Space</span>
+      <span class="group-count">3</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🌤️</div>
+            <div><div class="card-title">DWD</div><div class="card-desc">German weather from 1,450 stations — observations &amp; CAP alerts</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 10 min</span>
+            <span class="pill pill-flag">🇩🇪</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=dwd \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/dwd</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">⚠️</div>
+            <div><div class="card-title">NOAA NWS</div><div class="card-desc">US weather alerts from the National Weather Service</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 60 sec</span>
+            <span class="pill pill-flag">🇺🇸</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=noaa-nws \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/noaa-nws</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">☀️</div>
+            <div><div class="card-title">NOAA GOES / SWPC</div><div class="card-desc">Space weather alerts, K-index &amp; solar wind data</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 60 sec</span>
+            <span class="pill pill-flag">🌍</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=noaa-goes \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/noaa-goes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transportation -->
+  <div class="group" id="group-transport">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">✈️</span>
+      <span class="group-name">Transportation</span>
+      <span class="group-count">2</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🚌</div>
+            <div><div class="card-title">GTFS Realtime</div><div class="card-desc">Public transport positions, trip updates &amp; alerts — 1,000+ agencies worldwide</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⚡ varies by feed</span>
+            <span class="pill pill-flag">🌍</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=gtfs \
+  -e GTFS_URL='&lt;gtfs-rt-feed-url&gt;' \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/gtfs</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">✈️</div>
+            <div><div class="card-title">Mode-S</div><div class="card-desc">ADS-B aircraft telemetry from dump1090 receivers</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 60 sec</span>
+            <span class="pill pill-flag">📍 Local</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=mode-s \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/mode-s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Energy -->
+  <div class="group" id="group-energy">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">⚡</span>
+      <span class="group-name">Energy</span>
+      <span class="group-count">1</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">⚡</div>
+            <div><div class="card-title">ENTSO-E</div><div class="card-desc">European electricity market — generation, prices, load, cross-border flows</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ varies</span>
+            <span class="pill pill-flag">🇪🇺</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=entsoe \
+  -e ENTSOE_API_KEY='&lt;api-key&gt;' \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/entsoe</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seismology -->
+  <div class="group" id="group-seismology">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">🌍</span>
+      <span class="group-name">Seismology</span>
+      <span class="group-count">1</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🌋</div>
+            <div><div class="card-title">USGS Earthquakes</div><div class="card-desc">Global seismic events with deduplication</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ every 60 sec</span>
+            <span class="pill pill-flag">🌍</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=usgs-earthquakes \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/usgs-earthquakes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social & Media -->
+  <div class="group" id="group-social">
+    <div class="group-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="group-icon">📡</span>
+      <span class="group-name">Social &amp; Media</span>
+      <span class="group-count">2</span>
+      <span class="group-chevron">▾</span>
+    </div>
+    <div class="group-body">
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">🦋</div>
+            <div><div class="card-title">Bluesky Firehose</div><div class="card-desc">Real-time posts, likes, reposts, follows from AT Protocol</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⚡ real-time</span>
+            <span class="pill pill-flag">🌍</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=bluesky \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/bluesky</div>
+        </div>
+
+        <div class="card">
+          <div class="card-top">
+            <div class="card-logo">📰</div>
+            <div><div class="card-title">RSS Feeds</div><div class="card-desc">News &amp; blog posts from any RSS/OPML feed</div></div>
+          </div>
+          <div class="card-meta">
+            <span class="pill pill-freq">⏱ configurable</span>
+            <span class="pill pill-flag">🌍</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-sm" onclick="toggleDocker(this)">🐳 Docker</button>
+            <a class="btn-sm purple" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">Deploy to Azure</a>
+          </div>
+          <div class="docker-expand"><button class="copy-btn" onclick="copyCode(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=rss \
+  -e RSS_URLS='&lt;feed-url-1&gt;,&lt;feed-url-2&gt;' \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/rss</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-brand">Built for Microsoft Fabric Real-Time Analytics</span>
+    <span><a href="https://github.com/clemensv/real-time-sources">GitHub</a> · <a href="https://github.com/clemensv/real-time-sources/blob/main/LICENSE.md">License</a></span>
+  </div>
+</footer>
+
+<script>
+function toggleDocker(btn) {
+  const expand = btn.closest('.card').querySelector('.docker-expand');
+  expand.classList.toggle('show');
+  btn.textContent = expand.classList.contains('show') ? '🐳 Hide' : '🐳 Docker';
+}
+function copyCode(btn) {
+  const code = btn.parentElement.textContent.replace('Copy', '').trim();
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+</script>
+</body>
+</html>

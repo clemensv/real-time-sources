@@ -80,6 +80,13 @@ python -m luchtmeetnet_nl feed --connection-string "Endpoint=sb://namespace.serv
 
 This project is licensed under the MIT License. See [LICENSE.md](../LICENSE.md).
 
+## Fabric notebook hosting
+
+This source can also be hosted as a scheduled Fabric notebook via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+which deploys [`notebook/luchtmeetnet-nl-feed.ipynb`](notebook/luchtmeetnet-nl-feed.ipynb)
+to run one polling cycle per scheduled execution.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

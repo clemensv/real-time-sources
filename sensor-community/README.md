@@ -57,6 +57,10 @@ python -m sensor_community feed --connection-string "BootstrapServer=localhost:9
 - `STATE_FILE` — persisted dedup and metadata state file
 - `KAFKA_ENABLE_TLS` — set to `false` for plain Kafka when you want an explicit `PLAINTEXT` security protocol
 
+## Fabric notebook hosting
+
+- This source ships a Fabric notebook feeder at `notebook/sensor-community-feed.ipynb` that runs a single polling cycle on a Fabric schedule. Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Upstream links
 
 - Sensor.Community project: https://sensor.community/

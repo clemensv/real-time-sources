@@ -194,3 +194,335 @@
 }]
 ```
 
+// ---------------------------------------------------------------------------
+// Map-friendly enrichment + trend helpers
+// ---------------------------------------------------------------------------
+// Joins the latest measurement per station with the latest Station metadata
+// (lat/lon, names, agency, water body). Consumed by the Fabric Map layers
+// wired by ``pegelonline/fabric/wire_pegelonline_map.py``.
+
+// Static table of per-station river-line segments (one polyline per station,
+// produced from Azure Maps tiles + station-backbone fallback by
+// pegelonline/fabric/build_river_geometries.py). Declared up-front so the
+// map-layer functions can reference it before the data ingest runs.
+.create-merge table RiverSegments
+   (water_shortname:string, water_longname:string, station_id:string,
+    geometry:dynamic, source:string)
+   with (folder = "Map");
+
+.create-or-alter function with (folder = "Map") EnrichedMeasurements() {
+    let stations = StationLatest
+        | project station_id, shortname, longname, agency, longitude, latitude, km,
+                  water_shortname = tostring(water.shortname),
+                  water_longname  = tostring(water.longname);
+    CurrentMeasurementLatest
+    | project station_id, value, stateMnwMhw, stateNswHsw, ___time
+    | join kind=inner stations on station_id
+    | project-away station_id1
+    | where isnotnull(longitude) and isnotnull(latitude)
+          and longitude != 0.0 and latitude != 0.0
+}
+
+// 24-hour trend (rising / steady / falling) computed against the reading
+// closest to 24h ago, with a +/- 1h tolerance window.
+
+.create-or-alter function with (folder = "Map") MeasurementTrend24h() {
+    let now_reads = CurrentMeasurementLatest
+        | project station_id, value_now = value, ___time;
+    let then_reads = CurrentMeasurement
+        | where ___time between (ago(25h) .. ago(23h))
+        | summarize arg_max(___time, value) by station_id
+        | project station_id, value_then = value;
+    EnrichedMeasurements()
+    | join kind=leftouter (now_reads) on station_id
+    | join kind=leftouter (then_reads) on station_id
+    | extend delta_cm = iif(isnull(value_then), real(null), value - value_then)
+    | extend direction = case(
+        isnull(delta_cm),  "unknown",
+        delta_cm >  5.0,   "rising",
+        delta_cm < -5.0,   "falling",
+        "steady")
+    | project-away station_id1, station_id2
+}
+
+// 15-minute time-bucketed history (last 24h) used by the time-slider layer.
+// One row per (station, 15-min bucket) carrying the latest sample of that
+// bucket plus the enriched station metadata.
+
+.create-or-alter function with (folder = "Map") MeasurementHistoryBuckets(window:timespan = 24h) {
+    let stations = StationLatest
+        | project station_id, shortname, longname, agency, longitude, latitude, km,
+                  water_shortname = tostring(water.shortname),
+                  water_longname  = tostring(water.longname);
+    CurrentMeasurement
+    | where ___time > ago(window)
+    | extend bucket = bin(___time, 15m)
+    | summarize arg_max(___time, value, stateMnwMhw, stateNswHsw) by station_id, bucket
+    | extend ['Time (UTC, 15-min)'] = strcat(format_datetime(bucket, 'yyyy-MM-dd HH:mm'), ' UTC')
+    | join kind=inner stations on station_id
+    | project-away station_id1
+    | where isnotnull(longitude) and isnotnull(latitude)
+          and longitude != 0.0 and latitude != 0.0
+}
+
+// Per-river polyline that traces all gauges of a named water body, ordered
+// downstream by river-km. Aggregates worst-of state so the line itself takes
+// on the colour of the most severe gauge along the river. Single-gauge rivers
+// are skipped (no line to draw).
+//
+// Severity scale: very-high(4) > high(3) > normal(2) > low(1) > unknown(0).
+// Worst-of is reported as a string so the map can match against it.
+
+.create-or-alter function with (folder = "Map") RiverBackbones() {
+    let severity = (s:string) {
+        case(
+            s == "very-high", 4,
+            s == "high",      3,
+            s == "normal",    2,
+            s == "low",       1,
+            0)
+    };
+    let ordered = EnrichedMeasurements()
+        | extend sev = severity(stateMnwMhw)
+        | where isnotempty(water_shortname) and isnotnull(km)
+        | order by water_shortname asc, km asc;
+    // Per-river max gap (km, great-circle approx). Sea coasts and umbrella
+    // "water_shortname" groups (OSTSEE, NORDSEE, …) end up with huge gaps
+    // because km values aren't comparable across disjoint sub-bodies — skip
+    // them so the map doesn't render giant diagonal lines.
+    let gaps = ordered
+        | extend prev_lon = case(prev(water_shortname) == water_shortname,
+                                 prev(longitude), real(null)),
+                 prev_lat = case(prev(water_shortname) == water_shortname,
+                                 prev(latitude),  real(null))
+        | extend seg_km = case(isnull(prev_lon), real(0),
+                               sqrt(pow((latitude - prev_lat) * 111.0, 2) +
+                                    pow((longitude - prev_lon) * 111.0 *
+                                        cos(latitude * pi() / 180.0), 2)))
+        | summarize max_seg_km = max(seg_km) by water_shortname;
+    ordered
+    | summarize
+        n_gauges     = count(),
+        worst_sev    = max(sev),
+        avg_value    = avg(value),
+        lons         = make_list(longitude),
+        lats         = make_list(latitude),
+        gauge_names  = make_list(shortname),
+        gauge_values = make_list(value),
+        gauge_states = make_list(stateMnwMhw)
+        by water_shortname, water_longname
+    | join kind=inner gaps on water_shortname
+    | project-away water_shortname1
+    | where n_gauges >= 2 and max_seg_km <= 50.0
+    // Build [[lon,lat],...] pairs as a JSON string and parse_json once —
+    // `make_list(pack_array(lon,lat))` flattens nested dynamics in Kusto.
+    | mv-apply lon = lons to typeof(double), lat = lats to typeof(double) on (
+        extend pair = strcat('[', lon, ',', lat, ']')
+        | summarize pair_strs = make_list(pair)
+      )
+    | extend coords = parse_json(strcat('[', strcat_array(pair_strs, ','), ']'))
+    | extend worst_state = case(
+        worst_sev == 4, "very-high",
+        worst_sev == 3, "high",
+        worst_sev == 2, "normal",
+        worst_sev == 1, "low",
+        "unknown")
+    | extend geometry = bag_pack("type", "LineString", "coordinates", coords)
+    | extend label = strcat(water_longname, "  (", tostring(n_gauges), " gauges)")
+    | project water_shortname, water_longname, label, worst_state, n_gauges,
+              avg_value, geometry
+}
+
+// =====================================================================
+// Per-station segment helpers
+//
+// For the showpiece map, point markers are replaced with river-line
+// segments coloured by the metric at the nearest station. The static
+// ``RiverSegments`` table (one polyline per station, produced by
+// pegelonline/fabric/build_river_geometries.py) is joined with the live
+// metric per station_id.
+//
+// Each helper returns the same shape:
+//   geometry          MultiLineString or LineString
+//   station_id        gauge identifier
+//   water_shortname   waterway shortname
+//   shortname/longname station names (for labels)
+//   stroke_color      hex colour to feed into Fabric Map ``["get","stroke_color"]``
+//   stroke_weight     line thickness (proportional, capped)
+//   label             user-visible text (station + value)
+//
+// Stations with no recent reading still render in neutral grey so the
+// river isn't visually punctured by missing data.
+// =====================================================================
+
+.create-or-alter function with (folder = "Map") CurrentByStation() {
+    let stations = StationLatest
+        | project station_id, shortname, longname, agency, km,
+                  water_shortname = tostring(water.shortname),
+                  water_longname  = tostring(water.longname);
+    CurrentMeasurementLatest
+    | project station_id, value, stateMnwMhw, stateNswHsw, ___time
+    | join kind=inner stations on station_id
+    | project-away station_id1
+}
+
+.create-or-alter function with (folder = "Map") StateSegments() {
+    let metrics = CurrentByStation();
+    RiverSegments
+    | join kind=leftouter metrics on station_id
+    | project-away station_id1, water_shortname1
+    | extend state = coalesce(stateMnwMhw, "unknown")
+    | extend stroke_color = case(
+        state == "very-high", "#d7191c",
+        state == "high",      "#fdae61",
+        state == "normal",    "#1a9850",
+        state == "low",       "#2c7bb6",
+        state == "very-low",  "#08306b",
+        "#7f7f7f")
+    | extend stroke_weight = 5.0
+    | extend label = strcat(coalesce(shortname, "n/a"), "  ",
+                            iif(isnull(value), "no data", strcat(tostring(round(value, 0)), " cm")))
+    | project geometry, station_id, water_shortname, shortname, longname,
+              value, state, stroke_color, stroke_weight, label, ___time
+}
+
+.create-or-alter function with (folder = "Map") NavSegments() {
+    let metrics = CurrentByStation();
+    RiverSegments
+    | join kind=leftouter metrics on station_id
+    | project-away station_id1, water_shortname1
+    | extend nav_state = coalesce(stateNswHsw, "unknown")
+    | extend stroke_color = case(
+        nav_state == "very-high", "#d7191c",
+        nav_state == "high",      "#fdae61",
+        nav_state == "normal",    "#1a9850",
+        nav_state == "low",       "#2c7bb6",
+        nav_state == "very-low",  "#08306b",
+        "#7f7f7f")
+    | extend stroke_weight = 5.0
+    | extend label = strcat(coalesce(shortname, "n/a"), "  ",
+                            iif(isnull(value), "no data", strcat(tostring(round(value, 0)), " cm")))
+    | project geometry, station_id, water_shortname, shortname, longname,
+              value, nav_state, stroke_color, stroke_weight, label, ___time
+}
+
+// Parametrised trend helper, called by Trend1h/3h/6h/24h. Returns river
+// segments coloured by per-station Delta(now, now-window) and labelled with
+// the actual elapsed window (lets us tolerate readings landing a few minutes
+// off from the exact `window`-ago timestamp).
+//
+// Colour convention (deliberately distinct from grey):
+//   extreme-rise   #d7191c  red       -- rate > 3 cm/h sustained
+//   rising         #fdae61  orange    -- rate > 0.25 cm/h
+//   steady         #ffffbf  pale yel. -- |rate| <= 0.25 cm/h
+//   falling        #abd9e9  light blue-- rate < -0.25 cm/h
+//   extreme-fall   #2c7bb6  blue      -- rate < -3 cm/h sustained
+//   unknown        #7f7f7f  grey      -- ONLY when we have no reference reading
+.create-or-alter function with (folder = "Map") TrendBase(window:timespan) {
+    let target_time   = now() - window;
+    let target_hours  = todouble(window / 1h);
+    let tol_low_h     = target_hours * 0.5;
+    let tol_high_h    = max_of(target_hours * 1.5, target_hours + 6.0);
+    // Find per station the reading closest to (now - window) and only use it
+    // if it sits inside the tolerance band, so a 24h window doesn't silently
+    // borrow a 30-min-old reading when retention is too short.
+    let then_reads = CurrentMeasurement
+        | extend dist = abs(datetime_diff('second', ___time, target_time))
+        | summarize arg_min(dist, ___time, value) by station_id
+        | project station_id, value_then = value, time_then = ___time;
+    let trend = CurrentByStation()
+        | join kind=leftouter (then_reads) on station_id
+        | project-away station_id1
+        | extend hours_back = round(todouble(datetime_diff('minute', ___time, time_then)) / 60.0, 2)
+        | extend in_tolerance = isnotnull(hours_back) and hours_back >= tol_low_h and hours_back <= tol_high_h
+        | extend delta_cm = iif(in_tolerance, value - value_then, real(null))
+        | extend rate_cmh = iif(isnull(delta_cm) or hours_back < 0.1, real(null), delta_cm / hours_back)
+        | extend direction = case(
+            isnull(rate_cmh),     "unknown",
+            rate_cmh >   3.0,     "extreme-rise",
+            rate_cmh >   0.25,    "rising",
+            rate_cmh <  -3.0,     "extreme-fall",
+            rate_cmh <  -0.25,    "falling",
+            "steady");
+    RiverSegments
+    | join kind=leftouter trend on station_id
+    | project-away station_id1, water_shortname1
+    | extend direction = coalesce(direction, "unknown")
+    | extend abs_delta = abs(coalesce(delta_cm, real(0)))
+    | extend hours_back = coalesce(hours_back, real(0))
+    // Grey is reserved for "no reference reading available". Every other
+    // state gets a colour from the 5-class diverging RdYlBu palette.
+    | extend stroke_color = case(
+        direction == "extreme-rise", "#d7191c",
+        direction == "rising",       "#fdae61",
+        direction == "steady",       "#ffffbf",
+        direction == "falling",      "#abd9e9",
+        direction == "extreme-fall", "#2c7bb6",
+        "#7f7f7f")
+    // Thicker line where the change is bigger; clamp on a per-window basis
+    // so a 100 cm/24h move and a 100 cm/1h move don't render identically.
+    | extend cap_cm = target_hours * 10.0   // 10 cm/h is "very fast"
+    | extend stroke_weight = 3.5 + 4.5 * iif(abs_delta > cap_cm, 1.0, abs_delta / cap_cm)
+    | extend trend_arrow = case(
+        direction == "extreme-rise", "++",
+        direction == "rising",       "+",
+        direction == "steady",       "=",
+        direction == "falling",      "-",
+        direction == "extreme-fall", "--",
+        "?")
+    | extend window_label = strcat(tostring(toint(round(target_hours, 0))), "h")
+    | extend label = strcat(coalesce(shortname, "n/a"), "  ", trend_arrow, " ",
+        case(isnull(delta_cm),  strcat("no ", window_label, " ref"),
+             direction == "steady", strcat("~ steady (", window_label, ")"),
+             strcat(iif(delta_cm > 0.0, "+", ""), tostring(round(delta_cm, 0)), " cm/", window_label)))
+    | project geometry, station_id, water_shortname, shortname, longname,
+              value, direction, delta_cm, abs_delta, hours_back, stroke_color, stroke_weight, label
+}
+
+.create-or-alter function with (folder = "Map") TrendSegments1h()  { TrendBase(1h)  }
+.create-or-alter function with (folder = "Map") TrendSegments3h()  { TrendBase(3h)  }
+.create-or-alter function with (folder = "Map") TrendSegments6h()  { TrendBase(6h)  }
+.create-or-alter function with (folder = "Map") TrendSegments24h() { TrendBase(24h) }
+// Back-compat alias: existing map layer and tests still call TrendSegments().
+.create-or-alter function with (folder = "Map") TrendSegments()    { TrendBase(24h) }
+
+.create-or-alter function with (folder = "Map") FreshSegments() {
+    let metrics = CurrentByStation();
+    RiverSegments
+    | join kind=leftouter metrics on station_id
+    | project-away station_id1, water_shortname1
+    | extend age_min = iif(isnull(___time), long(-1),
+                           datetime_diff('minute', now(), ___time))
+    | extend freshness = case(
+        age_min < 0,    "no-data",
+        age_min <= 60,  "fresh",
+        age_min <= 180, "stale",
+        age_min <= 720, "old",
+                        "very-old")
+    | extend stroke_color = case(
+        freshness == "fresh",    "#1a9850",
+        freshness == "stale",    "#fdae61",
+        freshness == "old",      "#d7191c",
+        freshness == "very-old", "#7f7f7f",
+                                 "#bdbdbd")
+    | extend stroke_weight = 5.0
+    | extend label = strcat(coalesce(shortname, "n/a"), "  ",
+        iif(age_min < 0, "no data", strcat(tostring(age_min), " min ago")))
+    | project geometry, station_id, water_shortname, shortname, longname,
+              value, freshness, age_min, stroke_color, stroke_weight, label
+}
+
+.create-or-alter function with (folder = "Map") StationLabels() {
+    let coords = StationLatest
+        | project station_id, longitude, latitude;
+    CurrentByStation()
+    | join kind=inner coords on station_id
+    | project-away station_id1
+    | where isnotnull(longitude) and isnotnull(latitude)
+          and longitude != 0.0 and latitude != 0.0
+    | extend state = coalesce(stateMnwMhw, "unknown")
+    | extend label = strcat(shortname, "  ",
+                            iif(isnull(value), "no data", strcat(tostring(round(value, 0)), " cm")))
+    | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude))
+    | project geometry, station_id, shortname, longname, value, state, water_shortname, label
+}

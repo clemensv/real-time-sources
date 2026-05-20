@@ -29,6 +29,10 @@ All three endpoints are public GeoJSON feeds requiring no authentication.
 
 See [EVENTS.md](EVENTS.md) for the full event catalog.
 
+## Fabric notebook hosting
+
+This source ships a Fabric notebook (`notebook/australia-wildfires-feed.ipynb`) deployable via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for serverless polling inside a Fabric workspace.
+
 ## Running
 
 ```bash

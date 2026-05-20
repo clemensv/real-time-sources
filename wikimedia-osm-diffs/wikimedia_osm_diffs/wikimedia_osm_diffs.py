@@ -62,6 +62,8 @@ def parse_state_txt(text: str) -> dict[str, Any]:
             result["sequence_number"] = int(value)
         elif key == "timestamp":
             ts_str = value.replace("\\:", ":")
+            if ts_str.endswith("Z"):
+                ts_str = ts_str[:-1] + "+00:00"
             result["timestamp"] = datetime.datetime.fromisoformat(ts_str)
     return result
 
@@ -111,6 +113,8 @@ def parse_osmchange_xml(xml_bytes: bytes, sequence_number: int) -> list[dict[str
 
             ts_str = elem.get("timestamp", "")
             if ts_str:
+                if ts_str.endswith("Z"):
+                    ts_str = ts_str[:-1] + "+00:00"
                 ts = datetime.datetime.fromisoformat(ts_str)
             else:
                 ts = datetime.datetime.now(datetime.timezone.utc)
@@ -222,6 +226,7 @@ class OsmDiffsBridge:
         user_agent: str = DEFAULT_USER_AGENT,
         poll_interval: int = 60,
         max_retry_delay: int = 120,
+        once: bool = False,
     ) -> None:
         self._diffs_producer = diffs_producer
         self._state_producer = state_producer
@@ -232,6 +237,7 @@ class OsmDiffsBridge:
         self._user_agent = user_agent
         self._poll_interval = poll_interval
         self._max_retry_delay = max_retry_delay
+        self._once = once
         self._last_sequence = state_store.load()
         self._total_events = 0
         self._session = requests.Session()
@@ -244,11 +250,17 @@ class OsmDiffsBridge:
             try:
                 self._poll_cycle()
                 retry_delay = 1
+                if self._once:
+                    logger.info("--once mode: exiting after first polling cycle")
+                    return
                 time.sleep(self._poll_interval)
             except KeyboardInterrupt:
                 raise
             except Exception as exc:
                 logger.warning("Poll cycle error: %s. Retrying in %ds.", exc, retry_delay)
+                if self._once:
+                    logger.info("--once mode: exiting after error")
+                    return
                 time.sleep(retry_delay)
                 retry_delay = min(retry_delay * 2, self._max_retry_delay)
 
@@ -394,6 +406,7 @@ def run_feed(args: argparse.Namespace) -> int:
         user_agent=args.user_agent,
         poll_interval=args.poll_interval,
         max_retry_delay=args.max_retry_delay,
+        once=args.once,
     )
 
     try:
@@ -479,6 +492,12 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument(
         "--user-agent",
         default=os.getenv("OSM_DIFFS_USER_AGENT", DEFAULT_USER_AGENT),
+    )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
     )
 
     probe_parser = subparsers.add_parser("probe", help="Print current state and a few changes")

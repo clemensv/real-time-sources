@@ -16,9 +16,15 @@ from dwd_producer_data.de.dwd.cdc.wind10min import Wind10Min
 from dwd_producer_data.de.dwd.cdc.solar10min import Solar10Min
 from dwd_producer_data.de.dwd.cdc.hourlyobservation import HourlyObservation
 from dwd_producer_data.de.dwd.cdc.alert import Alert
-from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer, DEDWDWeatherEventProducer
+from dwd_producer_data.de.dwd.icond2.grid import Grid as IconD2Grid
+from dwd_producer_kafka_producer.producer import (
+    DEDWDCDCEventProducer,
+    DEDWDWeatherEventProducer,
+    DEDWDIconD2EventProducer,
+)
 
 from dwd.modules.base import BaseModule
+from dwd.modules.icond2_grid import IconD2GridModule
 from dwd.modules.station_metadata import StationMetadataModule
 from dwd.modules.station_obs_10min import StationObs10MinModule
 from dwd.modules.station_obs_hourly import StationObsHourlyModule
@@ -39,6 +45,7 @@ MODULE_CLASSES = {
     "station_obs_10min": StationObs10MinModule,
     "station_obs_hourly": StationObsHourlyModule,
     "weather_alerts": WeatherAlertsModule,
+    "icond2_grid": IconD2GridModule,
 }
 
 
@@ -106,12 +113,15 @@ def _create_module(key: str, http_client: DWDHttpClient,
         return StationMetadataModule(http_client)
     elif key == "weather_alerts":
         return WeatherAlertsModule(http_client)
+    elif key == "icond2_grid":
+        return IconD2GridModule(http_client)
     else:
         raise ValueError(f"Unknown module: {key}")
 
 
 def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
                 weather_event_producer: DEDWDWeatherEventProducer,
+                icond2_event_producer: DEDWDIconD2EventProducer,
                 event: Dict[str, Any]) -> None:
     """Send a single event through the typed Kafka producer."""
     etype = event["type"]
@@ -138,6 +148,14 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
     elif etype == "weather_alert":
         weather_event_producer.send_de_dwd_weather_alert(
             _identifier=data["identifier"], data=Alert(**data), flush_producer=False)
+    elif etype == "icond2_grid":
+        icond2_event_producer.send_de_dwd_icon_d2_grid(
+            _run_id=data["run_id"],
+            _parameter=data["parameter"],
+            _lead_hour=str(data["lead_hour"]),
+            data=IconD2Grid(**data),
+            flush_producer=False,
+        )
     else:
         logger.warning("Unknown event type: %s", etype)
 
@@ -150,6 +168,7 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
     kafka_producer = Producer(kafka_config)
     cdc_event_producer = DEDWDCDCEventProducer(kafka_producer, kafka_topic)
     weather_event_producer = DEDWDWeatherEventProducer(kafka_producer, kafka_topic)
+    icond2_event_producer = DEDWDIconD2EventProducer(kafka_producer, kafka_topic)
 
     module_names = ", ".join(m.name for m in modules)
     logger.info("Starting DWD feed → topic=%s, bootstrap=%s, modules=[%s]",
@@ -175,7 +194,8 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
                     events = []
 
                 for ev in events:
-                    _emit_event(cdc_event_producer, weather_event_producer, ev)
+                    _emit_event(cdc_event_producer, weather_event_producer,
+                                icond2_event_producer, ev)
                     total_events += 1
 
                 if events:
@@ -223,7 +243,7 @@ def main() -> None:
     feed_p.add_argument("-c", "--connection-string", type=str,
                         default=os.getenv("CONNECTION_STRING"))
     feed_p.add_argument("-i", "--polling-interval", type=int,
-                        default=int(os.getenv("POLLING_INTERVAL", "0")) or None,
+                        default=int(os.getenv("POLLING_INTERVAL") or "0") or None,
                         help="Global polling interval override in seconds (default: per-module)")
     feed_p.add_argument("--state-file", type=str,
                         default=os.getenv("STATE_FILE",

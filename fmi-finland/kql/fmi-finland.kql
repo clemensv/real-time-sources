@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['fi.fmi.opendata.airquality.Station'] (
    [fmisid]: string,
    [station_name]: string,
    [latitude]: real,
@@ -38,9 +38,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid). Municipality is taken from the WFS station metadata region name, and coordinates are the representative point published by FMI.\"}";
+.alter table ['fi.fmi.opendata.airquality.Station'] docstring "{\"description\": \"Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid). Municipality is taken from the WFS station metadata region name, and coordinates are the representative point published by FMI.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['fi.fmi.opendata.airquality.Station'] column-docstrings (
    [fmisid]: "{\"description\": \"Stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject.\"}",
    [station_name]: "{\"description\": \"Air quality station name from the FMI station metadata, for example 'Helsinki Kallio 2'.\"}",
    [latitude]: "{\"description\": \"WGS84 latitude of the station representative point in decimal degrees.\"}",
@@ -53,7 +53,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['fi.fmi.opendata.airquality.Station'] ingestion json mapping "fi.fmi.opendata.airquality.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -69,7 +69,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['fi.fmi.opendata.airquality.Station'] ingestion json mapping "fi.fmi.opendata.airquality.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -85,13 +85,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['fi.fmi.opendata.airquality.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fi.fmi.opendata.airquality.StationLatest'] on table ['fi.fmi.opendata.airquality.Station'] {
+    ['fi.fmi.opendata.airquality.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['fi.fmi.opendata.airquality.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -102,7 +102,7 @@
 }]
 ```
 
-.create-merge table [Observation] (
+.create-merge table ['fi.fmi.opendata.airquality.Observation'] (
    [fmisid]: string,
    [station_name]: string,
    [observation_time]: string,
@@ -120,9 +120,9 @@
    [___subject]: string
 );
 
-.alter table [Observation] docstring "{\"description\": \"Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.\"}";
+.alter table ['fi.fmi.opendata.airquality.Observation'] docstring "{\"description\": \"Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.\"}";
 
-.alter table [Observation] column-docstrings (
+.alter table ['fi.fmi.opendata.airquality.Observation'] column-docstrings (
    [fmisid]: "{\"description\": \"Stable FMI station identifier (fmisid) for the observing station.\"}",
    [station_name]: "{\"description\": \"Station name resolved from station metadata or, if metadata lookup fails, the station identifier string.\"}",
    [observation_time]: "{\"description\": \"Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z.\"}",
@@ -140,7 +140,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+.create-or-alter table ['fi.fmi.opendata.airquality.Observation'] ingestion json mapping "fi.fmi.opendata.airquality.Observation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -161,7 +161,7 @@
 ]
 ```
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+.create-or-alter table ['fi.fmi.opendata.airquality.Observation'] ingestion json mapping "fi.fmi.opendata.airquality.Observation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -182,13 +182,13 @@
 ]
 ```
 
-.drop materialized-view ObservationLatest ifexists;
+.drop materialized-view ['fi.fmi.opendata.airquality.ObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ObservationLatest on table Observation {
-    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fi.fmi.opendata.airquality.ObservationLatest'] on table ['fi.fmi.opendata.airquality.Observation'] {
+    ['fi.fmi.opendata.airquality.Observation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Observation] policy update
+.alter table ['fi.fmi.opendata.airquality.Observation'] policy update
 ```
 [{
   "IsEnabled": true,

@@ -76,6 +76,7 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.io/paris-bicycle-counters/Counter/v1",
                 "type": "object",
                 "required": [
                   "counter_id",
@@ -152,6 +153,7 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.io/paris-bicycle-counters/BicycleCount/v1",
                 "type": "object",
                 "required": [
                   "counter_id",

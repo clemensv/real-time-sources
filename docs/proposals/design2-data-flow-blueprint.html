@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Sources — Data Flow Blueprint</title>
+<style>
+  :root {
+    --bg: #1b1b1f;
+    --bg-alt: #242428;
+    --bg-card: #2a2a2e;
+    --blue: #0078d4;
+    --blue-glow: #0078d4aa;
+    --purple: #742774;
+    --text: #e4e4e8;
+    --text-dim: #9e9ea2;
+    --border: #3a3a3e;
+    --mono: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+    --sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 6px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--sans); color: var(--text); background: var(--bg); line-height: 1.6; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 80px 32px 60px;
+    text-align: center;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .hero-flow {
+    position: absolute; inset: 0; z-index: 0;
+  }
+  .hero-flow line {
+    stroke: var(--blue);
+    stroke-width: 1;
+    opacity: 0.2;
+  }
+  .hero-flow line.bright {
+    stroke-width: 2;
+    opacity: 0.4;
+    filter: drop-shadow(0 0 4px var(--blue-glow));
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+  .hero h1 { font-size: 44px; font-weight: 700; margin-bottom: 16px; }
+  .hero h1 span { color: var(--blue); }
+  .hero p { font-size: 18px; color: var(--text-dim); margin-bottom: 40px; }
+
+  /* Architecture diagram */
+  .arch-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 32px 16px;
+    flex-wrap: wrap;
+  }
+  .arch-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 140px;
+  }
+  .arch-node .icon { font-size: 28px; margin-bottom: 6px; }
+  .arch-node .label { font-size: 12px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .arch-arrow { font-size: 24px; color: var(--blue); flex-shrink: 0; }
+  .arch-arrow::after { content: '→'; }
+
+  /* Source Bands */
+  .band { padding: 40px 0; }
+  .band:nth-child(odd) { background: var(--bg); }
+  .band:nth-child(even) { background: var(--bg-alt); }
+  .band-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+  .band-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .band-icon { font-size: 32px; }
+  .band-title { font-size: 22px; font-weight: 700; }
+  .band-desc { font-size: 14px; color: var(--text-dim); }
+
+  .tile-scroll {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;
+  }
+  .tile-scroll::-webkit-scrollbar { height: 6px; }
+  .tile-scroll::-webkit-scrollbar-track { background: transparent; }
+  .tile-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .tile {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .tile:hover, .tile.selected {
+    border-color: var(--blue);
+    box-shadow: 0 0 12px var(--blue-glow);
+  }
+  .tile-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tile-logo { font-size: 22px; }
+  .tile-name { font-size: 15px; font-weight: 600; }
+  .tile-desc { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; min-height: 36px; }
+  .tile-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tile-pill { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(0,120,212,0.15); color: var(--blue); font-weight: 600; }
+  .tile-image { font-family: var(--mono); font-size: 11px; color: var(--text-dim); word-break: break-all; }
+  .tile-deploy {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .tile-deploy:hover { background: #1a8cef; text-decoration: none; }
+
+  /* Sticky Command Bar */
+  .command-bar {
+    position: sticky;
+    bottom: 0;
+    background: #18181b;
+    border-top: 2px solid var(--blue);
+    z-index: 100;
+    transition: transform 0.2s;
+  }
+  .command-bar-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 32px;
+    gap: 4px;
+    background: #111114;
+  }
+  .tab-btn {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--sans);
+    background: transparent;
+    color: var(--text-dim);
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .tab-btn:hover { color: var(--text); }
+  .command-bar-label { margin-left: auto; font-size: 11px; color: var(--text-dim); }
+  .command-bar-label span { color: var(--blue); font-weight: 600; }
+  .command-body { padding: 12px 32px 16px; }
+  .command-block {
+    background: #0d0d10;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #d4d4d4;
+    white-space: pre-wrap;
+    word-break: break-all;
+    position: relative;
+    display: none;
+  }
+  .command-block.active { display: block; }
+  .command-block .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(255,255,255,0.08);
+    border: none; color: #888; padding: 4px 10px; border-radius: 4px;
+    cursor: pointer; font-size: 11px; font-family: var(--sans);
+  }
+  .command-block .copy-btn:hover { background: rgba(255,255,255,0.15); color: #bbb; }
+
+  /* Footer */
+  footer {
+    background: #0d0d10;
+    padding: 24px 32px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  footer a { color: var(--blue); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 28px; }
+    .arch-diagram { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+    .tile { flex: 0 0 260px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <svg class="hero-flow" viewBox="0 0 1200 300" preserveAspectRatio="none">
+    <line x1="0" y1="60" x2="1200" y2="60" />
+    <line x1="0" y1="120" x2="1200" y2="100" class="bright" />
+    <line x1="0" y1="180" x2="1200" y2="200" />
+    <line x1="0" y1="240" x2="1200" y2="220" class="bright" />
+    <line x1="100" y1="0" x2="300" y2="300" />
+    <line x1="400" y1="0" x2="600" y2="300" class="bright" />
+    <line x1="700" y1="0" x2="900" y2="300" />
+    <line x1="1000" y1="0" x2="1100" y2="300" class="bright" />
+  </svg>
+  <div class="hero-content">
+    <h1><span>24</span> Real-Time Data Bridges → Microsoft Fabric</h1>
+    <p>Pre-built containers streaming live data from APIs worldwide into Event Hubs, Fabric Event Streams, and any Kafka endpoint.</p>
+    <div class="arch-diagram">
+      <div class="arch-node"><div class="icon">🌐</div><div class="label">Data Sources</div></div>
+      <div class="arch-arrow"></div>
+      <div class="arch-node"><div class="icon">🐳</div><div class="label">Container Bridge</div></div>
+      <div class="arch-arrow"></div>
+      <div class="arch-node"><div class="icon">📨</div><div class="label">Event Hub / Kafka</div></div>
+      <div class="arch-arrow"></div>
+      <div class="arch-node"><div class="icon">📊</div><div class="label">Fabric Eventhouse</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Water & Hydrology Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">💧</span>
+      <div>
+        <div class="band-title">Water &amp; Hydrology</div>
+        <div class="band-desc">12 bridges covering water levels, discharge, and flood monitoring across 9 countries</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('noaa','NOAA Tides','docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 -e KAFKA_TOPIC=noaa ghcr.io/clemensv/real-time-sources/noaa','az container create -g myRG -n noaa --image ghcr.io/clemensv/real-time-sources/noaa --environment-variables KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 KAFKA_TOPIC=noaa')">
+        <div class="tile-top"><span class="tile-logo">🌊</span><span class="tile-name">NOAA Tides</span></div>
+        <div class="tile-desc">Water level &amp; current data from 3,000+ US stations</div>
+        <div class="tile-meta"><span class="tile-pill">every 6 min</span><span class="tile-pill">🇺🇸</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/noaa</div>
+      </div>
+      <div class="tile" onclick="selectSource('noaa-ndbc','NOAA NDBC','docker run ... ghcr.io/clemensv/real-time-sources/noaa-ndbc','az container create ... --image ghcr.io/clemensv/real-time-sources/noaa-ndbc')">
+        <div class="tile-top"><span class="tile-logo">🔵</span><span class="tile-name">NOAA NDBC</span></div>
+        <div class="tile-desc">Buoy observations across US waters</div>
+        <div class="tile-meta"><span class="tile-pill">every 5 min</span><span class="tile-pill">🇺🇸</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/noaa-ndbc</div>
+      </div>
+      <div class="tile" onclick="selectSource('pegelonline','Pegelonline','docker run ... ghcr.io/clemensv/real-time-sources/pegelonline','az container create ... --image ghcr.io/clemensv/real-time-sources/pegelonline')">
+        <div class="tile-top"><span class="tile-logo">🇩🇪</span><span class="tile-name">Pegelonline</span></div>
+        <div class="tile-desc">German federal waterways water levels from WSV</div>
+        <div class="tile-meta"><span class="tile-pill">every 15 min</span><span class="tile-pill">🇩🇪</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/pegelonline</div>
+      </div>
+      <div class="tile" onclick="selectSource('usgs-iv','USGS IV','docker run ... ghcr.io/clemensv/real-time-sources/usgs-iv','az container create ... --image ghcr.io/clemensv/real-time-sources/usgs-iv')">
+        <div class="tile-top"><span class="tile-logo">📊</span><span class="tile-name">USGS IV</span></div>
+        <div class="tile-desc">Water quality &amp; quantity from 1.5M+ US stations</div>
+        <div class="tile-meta"><span class="tile-pill">every 15 min</span><span class="tile-pill">🇺🇸</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/usgs-iv</div>
+      </div>
+      <div class="tile" onclick="selectSource('chmi-hydro','CHMI Hydro','docker run ... ghcr.io/clemensv/real-time-sources/chmi-hydro','az container create ... --image ghcr.io/clemensv/real-time-sources/chmi-hydro')">
+        <div class="tile-top"><span class="tile-logo">🇨🇿</span><span class="tile-name">CHMI Hydro</span></div>
+        <div class="tile-desc">Czech hydrological observations from ČHMÚ</div>
+        <div class="tile-meta"><span class="tile-pill">every 10 min</span><span class="tile-pill">🇨🇿</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/chmi-hydro</div>
+      </div>
+      <div class="tile" onclick="selectSource('imgw-hydro','IMGW Hydro','docker run ... ghcr.io/clemensv/real-time-sources/imgw-hydro','az container create ... --image ghcr.io/clemensv/real-time-sources/imgw-hydro')">
+        <div class="tile-top"><span class="tile-logo">🇵🇱</span><span class="tile-name">IMGW Hydro</span></div>
+        <div class="tile-desc">Polish hydrological data from IMGW-PIB</div>
+        <div class="tile-meta"><span class="tile-pill">every 10 min</span><span class="tile-pill">🇵🇱</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/imgw-hydro</div>
+      </div>
+      <div class="tile" onclick="selectSource('smhi-hydro','SMHI Hydro','docker run ... ghcr.io/clemensv/real-time-sources/smhi-hydro','az container create ... --image ghcr.io/clemensv/real-time-sources/smhi-hydro')">
+        <div class="tile-top"><span class="tile-logo">🇸🇪</span><span class="tile-name">SMHI Hydro</span></div>
+        <div class="tile-desc">Swedish discharge data from SMHI</div>
+        <div class="tile-meta"><span class="tile-pill">every 15 min</span><span class="tile-pill">🇸🇪</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/smhi-hydro</div>
+      </div>
+      <div class="tile" onclick="selectSource('hubeau-hydrometrie','Hub Eau','docker run ... ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie','az container create ... --image ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie')">
+        <div class="tile-top"><span class="tile-logo">🇫🇷</span><span class="tile-name">Hub'Eau</span></div>
+        <div class="tile-desc">French water level &amp; flow from 6,300 stations</div>
+        <div class="tile-meta"><span class="tile-pill">every 10 min</span><span class="tile-pill">🇫🇷</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie</div>
+      </div>
+      <div class="tile" onclick="selectSource('rws-waterwebservices','RWS','docker run ... ghcr.io/clemensv/real-time-sources/rws-waterwebservices','az container create ... --image ghcr.io/clemensv/real-time-sources/rws-waterwebservices')">
+        <div class="tile-top"><span class="tile-logo">🇳🇱</span><span class="tile-name">RWS Waterwebservices</span></div>
+        <div class="tile-desc">Dutch water monitoring from Rijkswaterstaat (785 stations)</div>
+        <div class="tile-meta"><span class="tile-pill">every 10 min</span><span class="tile-pill">🇳🇱</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/rws-waterwebservices</div>
+      </div>
+      <div class="tile" onclick="selectSource('uk-ea-flood-monitoring','UK EA','docker run ... ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring','az container create ... --image ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring')">
+        <div class="tile-top"><span class="tile-logo">🇬🇧</span><span class="tile-name">UK EA Flood</span></div>
+        <div class="tile-desc">English flood &amp; river data from 4,000 stations</div>
+        <div class="tile-meta"><span class="tile-pill">every 15 min</span><span class="tile-pill">🇬🇧</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring</div>
+      </div>
+      <div class="tile" onclick="selectSource('waterinfo-vmm','VMM','docker run ... ghcr.io/clemensv/real-time-sources/waterinfo-vmm','az container create ... --image ghcr.io/clemensv/real-time-sources/waterinfo-vmm')">
+        <div class="tile-top"><span class="tile-logo">🇧🇪</span><span class="tile-name">Waterinfo VMM</span></div>
+        <div class="tile-desc">Flemish water levels from 1,785 stations</div>
+        <div class="tile-meta"><span class="tile-pill">every 15 min</span><span class="tile-pill">🇧🇪</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/waterinfo-vmm</div>
+      </div>
+      <div class="tile" onclick="selectSource('german-waters','German Waters','docker run ... ghcr.io/clemensv/real-time-sources/german-waters','az container create ... --image ghcr.io/clemensv/real-time-sources/german-waters')">
+        <div class="tile-top"><span class="tile-logo">🇩🇪</span><span class="tile-name">German Waters</span></div>
+        <div class="tile-desc">12 German state portals — 2,724 stations</div>
+        <div class="tile-meta"><span class="tile-pill">every 15 min</span><span class="tile-pill">🇩🇪</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/german-waters</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Maritime Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">🚢</span>
+      <div>
+        <div class="band-title">Maritime &amp; Vessel Tracking</div>
+        <div class="band-desc">3 AIS bridges covering global, Norwegian, and Finnish coastal waters</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('aisstream','AISStream','docker run -e AISSTREAM_API_KEY=&lt;key&gt; ... ghcr.io/clemensv/real-time-sources/aisstream','az container create ... --image ghcr.io/clemensv/real-time-sources/aisstream')">
+        <div class="tile-top"><span class="tile-logo">📡</span><span class="tile-name">AISStream</span></div>
+        <div class="tile-desc">Global AIS vessel tracking via WebSocket</div>
+        <div class="tile-meta"><span class="tile-pill">real-time</span><span class="tile-pill">🌍</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/aisstream</div>
+      </div>
+      <div class="tile" onclick="selectSource('kystverket-ais','Kystverket AIS','docker run ... ghcr.io/clemensv/real-time-sources/kystverket-ais','az container create ... --image ghcr.io/clemensv/real-time-sources/kystverket-ais')">
+        <div class="tile-top"><span class="tile-logo">🇳🇴</span><span class="tile-name">Kystverket AIS</span></div>
+        <div class="tile-desc">Norwegian coastal AIS — ~34 msg/s, no API key</div>
+        <div class="tile-meta"><span class="tile-pill">real-time</span><span class="tile-pill">🇳🇴</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/kystverket-ais</div>
+      </div>
+      <div class="tile" onclick="selectSource('digitraffic-maritime','Digitraffic','docker run ... ghcr.io/clemensv/real-time-sources/digitraffic-maritime','az container create ... --image ghcr.io/clemensv/real-time-sources/digitraffic-maritime')">
+        <div class="tile-top"><span class="tile-logo">🇫🇮</span><span class="tile-name">Digitraffic Maritime</span></div>
+        <div class="tile-desc">Finnish Baltic AIS — ~35 msg/s, CC 4.0 BY</div>
+        <div class="tile-meta"><span class="tile-pill">real-time</span><span class="tile-pill">🇫🇮</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/digitraffic-maritime</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Weather & Space Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">⛈️</span>
+      <div>
+        <div class="band-title">Weather &amp; Space</div>
+        <div class="band-desc">3 bridges for terrestrial weather and space weather monitoring</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('dwd','DWD','docker run ... ghcr.io/clemensv/real-time-sources/dwd','az container create ... --image ghcr.io/clemensv/real-time-sources/dwd')">
+        <div class="tile-top"><span class="tile-logo">🌤️</span><span class="tile-name">DWD</span></div>
+        <div class="tile-desc">German weather from 1,450 stations + CAP alerts</div>
+        <div class="tile-meta"><span class="tile-pill">every 10 min</span><span class="tile-pill">🇩🇪</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/dwd</div>
+      </div>
+      <div class="tile" onclick="selectSource('noaa-nws','NOAA NWS','docker run ... ghcr.io/clemensv/real-time-sources/noaa-nws','az container create ... --image ghcr.io/clemensv/real-time-sources/noaa-nws')">
+        <div class="tile-top"><span class="tile-logo">⚠️</span><span class="tile-name">NOAA NWS</span></div>
+        <div class="tile-desc">US weather alerts from the National Weather Service</div>
+        <div class="tile-meta"><span class="tile-pill">every 60 sec</span><span class="tile-pill">🇺🇸</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/noaa-nws</div>
+      </div>
+      <div class="tile" onclick="selectSource('noaa-goes','NOAA GOES','docker run ... ghcr.io/clemensv/real-time-sources/noaa-goes','az container create ... --image ghcr.io/clemensv/real-time-sources/noaa-goes')">
+        <div class="tile-top"><span class="tile-logo">☀️</span><span class="tile-name">NOAA GOES / SWPC</span></div>
+        <div class="tile-desc">Space weather alerts, K-index &amp; solar wind</div>
+        <div class="tile-meta"><span class="tile-pill">every 60 sec</span><span class="tile-pill">🌍</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/noaa-goes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Transportation Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">✈️</span>
+      <div>
+        <div class="band-title">Transportation</div>
+        <div class="band-desc">Public transit and aircraft telemetry</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('gtfs','GTFS Realtime','docker run -e GTFS_URL=&lt;feed&gt; ... ghcr.io/clemensv/real-time-sources/gtfs','az container create ... --image ghcr.io/clemensv/real-time-sources/gtfs')">
+        <div class="tile-top"><span class="tile-logo">🚌</span><span class="tile-name">GTFS Realtime</span></div>
+        <div class="tile-desc">Public transport from 1,000+ agencies worldwide</div>
+        <div class="tile-meta"><span class="tile-pill">varies</span><span class="tile-pill">🌍</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/gtfs</div>
+      </div>
+      <div class="tile" onclick="selectSource('mode-s','Mode-S','docker run ... ghcr.io/clemensv/real-time-sources/mode-s','az container create ... --image ghcr.io/clemensv/real-time-sources/mode-s')">
+        <div class="tile-top"><span class="tile-logo">✈️</span><span class="tile-name">Mode-S</span></div>
+        <div class="tile-desc">ADS-B aircraft telemetry from dump1090</div>
+        <div class="tile-meta"><span class="tile-pill">every 60 sec</span><span class="tile-pill">📍 Local</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/mode-s</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Energy Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">⚡</span>
+      <div>
+        <div class="band-title">Energy</div>
+        <div class="band-desc">European electricity market data</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('entsoe','ENTSO-E','docker run -e ENTSOE_API_KEY=&lt;key&gt; ... ghcr.io/clemensv/real-time-sources/entsoe','az container create ... --image ghcr.io/clemensv/real-time-sources/entsoe')">
+        <div class="tile-top"><span class="tile-logo">⚡</span><span class="tile-name">ENTSO-E</span></div>
+        <div class="tile-desc">Generation, prices, load, cross-border flows</div>
+        <div class="tile-meta"><span class="tile-pill">varies</span><span class="tile-pill">🇪🇺</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/entsoe</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Seismology Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">🌍</span>
+      <div>
+        <div class="band-title">Seismology</div>
+        <div class="band-desc">Global earthquake event monitoring</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('usgs-earthquakes','USGS Earthquakes','docker run ... ghcr.io/clemensv/real-time-sources/usgs-earthquakes','az container create ... --image ghcr.io/clemensv/real-time-sources/usgs-earthquakes')">
+        <div class="tile-top"><span class="tile-logo">🌋</span><span class="tile-name">USGS Earthquakes</span></div>
+        <div class="tile-desc">Global seismic events with deduplication</div>
+        <div class="tile-meta"><span class="tile-pill">every 60 sec</span><span class="tile-pill">🌍</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/usgs-earthquakes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Social & Media Band -->
+<section class="band">
+  <div class="band-inner">
+    <div class="band-header">
+      <span class="band-icon">📡</span>
+      <div>
+        <div class="band-title">Social &amp; Media</div>
+        <div class="band-desc">Social network firehose and RSS feeds</div>
+      </div>
+    </div>
+    <div class="tile-scroll">
+      <div class="tile" onclick="selectSource('bluesky','Bluesky Firehose','docker run ... ghcr.io/clemensv/real-time-sources/bluesky','az container create ... --image ghcr.io/clemensv/real-time-sources/bluesky')">
+        <div class="tile-top"><span class="tile-logo">🦋</span><span class="tile-name">Bluesky Firehose</span></div>
+        <div class="tile-desc">Real-time posts, likes, reposts, follows</div>
+        <div class="tile-meta"><span class="tile-pill">real-time</span><span class="tile-pill">🌍</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/bluesky</div>
+      </div>
+      <div class="tile" onclick="selectSource('rss','RSS Feeds','docker run -e RSS_URLS=&lt;urls&gt; ... ghcr.io/clemensv/real-time-sources/rss','az container create ... --image ghcr.io/clemensv/real-time-sources/rss')">
+        <div class="tile-top"><span class="tile-logo">📰</span><span class="tile-name">RSS Feeds</span></div>
+        <div class="tile-desc">News &amp; blog posts from any RSS/OPML feed</div>
+        <div class="tile-meta"><span class="tile-pill">configurable</span><span class="tile-pill">🌍</span></div>
+        <div class="tile-image">ghcr.io/clemensv/real-time-sources/rss</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sticky Command Bar -->
+<div class="command-bar" id="commandBar">
+  <div class="command-bar-header">
+    <button class="tab-btn active" onclick="switchTab('docker')">Docker</button>
+    <button class="tab-btn" onclick="switchTab('azcli')">Azure CLI</button>
+    <button class="tab-btn" onclick="switchTab('arm')">ARM Template</button>
+    <span class="command-bar-label">Selected: <span id="selectedLabel">none — click a source tile above</span></span>
+  </div>
+  <div class="command-body">
+    <div class="command-block active" id="tab-docker">
+      <button class="copy-btn" onclick="copyBlock('tab-docker')">Copy</button>
+      <span id="docker-cmd"># Click a source tile above to populate this command
+docker run \
+  -e KAFKA_BOOTSTRAP_SERVERS=&lt;your-eventhub&gt;.servicebus.windows.net:9093 \
+  -e KAFKA_TOPIC=&lt;topic&gt; \
+  -e SASL_USERNAME='$ConnectionString' \
+  -e SASL_PASSWORD='&lt;connection-string&gt;' \
+  ghcr.io/clemensv/real-time-sources/&lt;source&gt;</span>
+    </div>
+    <div class="command-block" id="tab-azcli">
+      <button class="copy-btn" onclick="copyBlock('tab-azcli')">Copy</button>
+      <span id="azcli-cmd"># Click a source tile above to populate this command
+az container create \
+  --resource-group myResourceGroup \
+  --name &lt;source&gt; \
+  --image ghcr.io/clemensv/real-time-sources/&lt;source&gt; \
+  --environment-variables \
+    KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 \
+    KAFKA_TOPIC=&lt;topic&gt;</span>
+    </div>
+    <div class="command-block" id="tab-arm">
+      <button class="copy-btn" onclick="copyBlock('tab-arm')">Copy</button>
+      <span id="arm-cmd"># Select a source to enable the Deploy to Azure button
+# ARM templates are available in each source's directory</span>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <a href="https://github.com/clemensv/real-time-sources">GitHub</a> · <a href="https://learn.microsoft.com/en-us/fabric/real-time-analytics/">Fabric Real-Time Analytics Docs</a>
+</footer>
+
+<script>
+const sources = {
+  'noaa': { name: 'NOAA Tides', image: 'noaa' },
+  'noaa-ndbc': { name: 'NOAA NDBC', image: 'noaa-ndbc' },
+  'pegelonline': { name: 'Pegelonline', image: 'pegelonline' },
+  'usgs-iv': { name: 'USGS IV', image: 'usgs-iv' },
+  'chmi-hydro': { name: 'CHMI Hydro', image: 'chmi-hydro' },
+  'imgw-hydro': { name: 'IMGW Hydro', image: 'imgw-hydro' },
+  'smhi-hydro': { name: 'SMHI Hydro', image: 'smhi-hydro' },
+  'hubeau-hydrometrie': { name: "Hub'Eau", image: 'hubeau-hydrometrie' },
+  'rws-waterwebservices': { name: 'RWS', image: 'rws-waterwebservices' },
+  'uk-ea-flood-monitoring': { name: 'UK EA Flood', image: 'uk-ea-flood-monitoring' },
+  'waterinfo-vmm': { name: 'Waterinfo VMM', image: 'waterinfo-vmm' },
+  'german-waters': { name: 'German Waters', image: 'german-waters' },
+  'aisstream': { name: 'AISStream', image: 'aisstream' },
+  'kystverket-ais': { name: 'Kystverket AIS', image: 'kystverket-ais' },
+  'digitraffic-maritime': { name: 'Digitraffic', image: 'digitraffic-maritime' },
+  'dwd': { name: 'DWD', image: 'dwd' },
+  'noaa-nws': { name: 'NOAA NWS', image: 'noaa-nws' },
+  'noaa-goes': { name: 'NOAA GOES', image: 'noaa-goes' },
+  'gtfs': { name: 'GTFS Realtime', image: 'gtfs' },
+  'mode-s': { name: 'Mode-S', image: 'mode-s' },
+  'entsoe': { name: 'ENTSO-E', image: 'entsoe' },
+  'usgs-earthquakes': { name: 'USGS Earthquakes', image: 'usgs-earthquakes' },
+  'bluesky': { name: 'Bluesky', image: 'bluesky' },
+  'rss': { name: 'RSS Feeds', image: 'rss' },
+};
+
+let currentTab = 'docker';
+
+function selectSource(id) {
+  const src = sources[id];
+  if (!src) return;
+  document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('selectedLabel').textContent = src.name;
+  const img = `ghcr.io/clemensv/real-time-sources/${src.image}`;
+  document.getElementById('docker-cmd').textContent =
+`docker run \\
+  -e KAFKA_BOOTSTRAP_SERVERS=<your-eventhub>.servicebus.windows.net:9093 \\
+  -e KAFKA_TOPIC=${id} \\
+  -e SASL_USERNAME='$ConnectionString' \\
+  -e SASL_PASSWORD='<connection-string>' \\
+  ${img}`;
+  document.getElementById('azcli-cmd').textContent =
+`az container create \\
+  --resource-group myResourceGroup \\
+  --name ${id} \\
+  --image ${img} \\
+  --environment-variables \\
+    KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\
+    KAFKA_TOPIC=${id}`;
+  document.getElementById('arm-cmd').textContent =
+`# Deploy ${src.name} to Azure Container Instances
+# ARM template: ${id}/azure-template.json`;
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.command-block').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function copyBlock(id) {
+  const text = document.getElementById(id).querySelector('span').textContent;
+  navigator.clipboard.writeText(text);
+  const btn = document.getElementById(id).querySelector('.copy-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+</script>
+</body>
+</html>

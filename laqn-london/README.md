@@ -110,6 +110,7 @@ entries with whitespace-only `Species` payloads are ignored.
 - [CONTAINER.md](CONTAINER.md) — container usage
 - [EVENTS.md](EVENTS.md) — generated event contract documentation
 - [DATABASE.md](../DATABASE.md) — downstream analytics notes
+- Fabric notebook hosting: deploy `notebook/laqn-london-feed.ipynb` to a Fabric workspace with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for serverless scheduled execution.
 
 ## Deploying into Azure Container Instances
 

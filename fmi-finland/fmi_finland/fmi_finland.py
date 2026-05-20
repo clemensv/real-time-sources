@@ -558,6 +558,12 @@ def main() -> None:
         default=os.getenv("STATE_FILE", os.path.expanduser("~/.fmi_finland_state.json")),
         help="JSON file used for deduplication state.",
     )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     _configure_logging()
@@ -613,6 +619,10 @@ def main() -> None:
             break
         except Exception as exc:  # pragma: no cover - runtime resiliency
             logger.exception("Feed cycle failed: %s", exc)
+
+        if args.once:
+            logger.info("--once mode: exiting after first polling cycle")
+            break
 
         sleep_seconds = max(
             0,

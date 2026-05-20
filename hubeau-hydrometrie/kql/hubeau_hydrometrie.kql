@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] (
    [code_station]: string,
    [libelle_station]: string,
    [code_site]: string,
@@ -43,9 +43,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Station\"}";
+.alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] docstring "{\"description\": \"Station\"}";
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] ingestion json mapping "fr.gov.eaufrance.hubeau.hydrometrie.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -66,7 +66,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] ingestion json mapping "fr.gov.eaufrance.hubeau.hydrometrie.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,13 +87,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['fr.gov.eaufrance.hubeau.hydrometrie.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fr.gov.eaufrance.hubeau.hydrometrie.StationLatest'] on table ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] {
+    ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -104,7 +104,7 @@
 }]
 ```
 
-.create-merge table [Observation] (
+.create-merge table ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] (
    [code_station]: string,
    [date_obs]: datetime,
    [resultat_obs]: real,
@@ -118,9 +118,9 @@
    [___subject]: string
 );
 
-.alter table [Observation] docstring "{\"description\": \"Observation\"}";
+.alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] docstring "{\"description\": \"Observation\"}";
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+.create-or-alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] ingestion json mapping "fr.gov.eaufrance.hubeau.hydrometrie.Observation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -137,7 +137,7 @@
 ]
 ```
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+.create-or-alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] ingestion json mapping "fr.gov.eaufrance.hubeau.hydrometrie.Observation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -154,13 +154,13 @@
 ]
 ```
 
-.drop materialized-view ObservationLatest ifexists;
+.drop materialized-view ['fr.gov.eaufrance.hubeau.hydrometrie.ObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ObservationLatest on table Observation {
-    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fr.gov.eaufrance.hubeau.hydrometrie.ObservationLatest'] on table ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] {
+    ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Observation] policy update
+.alter table ['fr.gov.eaufrance.hubeau.hydrometrie.Observation'] policy update
 ```
 [{
   "IsEnabled": true,

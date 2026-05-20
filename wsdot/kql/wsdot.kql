@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [TrafficFlowStation] (
+.create-merge table ['us.wa.wsdot.traffic.TrafficFlowStation'] (
    [flow_data_id]: string,
    [station_name]: string,
    [region]: string,
@@ -42,9 +42,9 @@
    [___subject]: string
 );
 
-.alter table [TrafficFlowStation] docstring "{\"description\": \"Metadata for a traffic flow sensor station in the WSDOT network. Each sensor is identified by a unique FlowDataID integer.\"}";
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] docstring "{\"description\": \"Metadata for a traffic flow sensor station in the WSDOT network. Each sensor is identified by a unique FlowDataID integer.\"}";
 
-.alter table [TrafficFlowStation] column-docstrings (
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] column-docstrings (
    [flow_data_id]: "{\"description\": \"Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.\"}",
    [station_name]: "{\"description\": \"Descriptive name of the flow sensor station.\"}",
    [region]: "{\"description\": \"WSDOT geographic coverage region.\"}",
@@ -61,7 +61,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TrafficFlowStation] ingestion json mapping "TrafficFlowStation_json_flat"
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowStation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -81,7 +81,7 @@
 ]
 ```
 
-.create-or-alter table [TrafficFlowStation] ingestion json mapping "TrafficFlowStation_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowStation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -101,13 +101,13 @@
 ]
 ```
 
-.drop materialized-view TrafficFlowStationLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.traffic.TrafficFlowStationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TrafficFlowStationLatest on table TrafficFlowStation {
-    TrafficFlowStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.traffic.TrafficFlowStationLatest'] on table ['us.wa.wsdot.traffic.TrafficFlowStation'] {
+    ['us.wa.wsdot.traffic.TrafficFlowStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TrafficFlowStation] policy update
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -118,7 +118,7 @@
 }]
 ```
 
-.create-merge table [TrafficFlowReading] (
+.create-merge table ['us.wa.wsdot.traffic.TrafficFlowReading'] (
    [flow_data_id]: string,
    [station_name]: string,
    [region]: string,
@@ -131,9 +131,9 @@
    [___subject]: string
 );
 
-.alter table [TrafficFlowReading] docstring "{\"description\": \"A traffic flow reading from a WSDOT sensor station.\"}";
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] docstring "{\"description\": \"A traffic flow reading from a WSDOT sensor station.\"}";
 
-.alter table [TrafficFlowReading] column-docstrings (
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] column-docstrings (
    [flow_data_id]: "{\"description\": \"Sensor station identifier, stringified from upstream FlowDataID.\"}",
    [station_name]: "{\"description\": \"Station name.\"}",
    [region]: "{\"description\": \"WSDOT region.\"}",
@@ -146,7 +146,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TrafficFlowReading] ingestion json mapping "TrafficFlowReading_json_flat"
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -162,7 +162,7 @@
 ]
 ```
 
-.create-or-alter table [TrafficFlowReading] ingestion json mapping "TrafficFlowReading_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -178,13 +178,13 @@
 ]
 ```
 
-.drop materialized-view TrafficFlowReadingLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.traffic.TrafficFlowReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TrafficFlowReadingLatest on table TrafficFlowReading {
-    TrafficFlowReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.traffic.TrafficFlowReadingLatest'] on table ['us.wa.wsdot.traffic.TrafficFlowReading'] {
+    ['us.wa.wsdot.traffic.TrafficFlowReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TrafficFlowReading] policy update
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -195,7 +195,7 @@
 }]
 ```
 
-.create-merge table [TravelTimeRoute] (
+.create-merge table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] (
    [travel_time_id]: string,
    [name]: string,
    [description]: string,
@@ -222,9 +222,9 @@
    [___subject]: string
 );
 
-.alter table [TravelTimeRoute] docstring "{\"description\": \"A named travel time route monitored by WSDOT with historical average and current real-time travel times in minutes.\"}";
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] docstring "{\"description\": \"A named travel time route monitored by WSDOT with historical average and current real-time travel times in minutes.\"}";
 
-.alter table [TravelTimeRoute] column-docstrings (
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] column-docstrings (
    [travel_time_id]: "{\"description\": \"Unique route identifier, stringified from upstream TravelTimeID.\"}",
    [name]: "{\"description\": \"Short route segment name.\"}",
    [description]: "{\"description\": \"Longer description including lane type.\"}",
@@ -251,7 +251,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TravelTimeRoute] ingestion json mapping "TravelTimeRoute_json_flat"
+.create-or-alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] ingestion json mapping "us.wa.wsdot.traveltimes.TravelTimeRoute_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -281,7 +281,7 @@
 ]
 ```
 
-.create-or-alter table [TravelTimeRoute] ingestion json mapping "TravelTimeRoute_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] ingestion json mapping "us.wa.wsdot.traveltimes.TravelTimeRoute_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -311,13 +311,13 @@
 ]
 ```
 
-.drop materialized-view TravelTimeRouteLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.traveltimes.TravelTimeRouteLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TravelTimeRouteLatest on table TravelTimeRoute {
-    TravelTimeRoute | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.traveltimes.TravelTimeRouteLatest'] on table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] {
+    ['us.wa.wsdot.traveltimes.TravelTimeRoute'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TravelTimeRoute] policy update
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -328,7 +328,7 @@
 }]
 ```
 
-.create-merge table [MountainPassCondition] (
+.create-merge table ['us.wa.wsdot.mountainpass.MountainPassCondition'] (
    [mountain_pass_id]: string,
    [mountain_pass_name]: string,
    [elevation_in_feet]: int,
@@ -350,9 +350,9 @@
    [___subject]: string
 );
 
-.alter table [MountainPassCondition] docstring "{\"description\": \"Current conditions at a Washington State mountain pass. WSDOT monitors 16 mountain passes reporting temperature, weather, road conditions, travel advisories, and directional restrictions.\"}";
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] docstring "{\"description\": \"Current conditions at a Washington State mountain pass. WSDOT monitors 16 mountain passes reporting temperature, weather, road conditions, travel advisories, and directional restrictions.\"}";
 
-.alter table [MountainPassCondition] column-docstrings (
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] column-docstrings (
    [mountain_pass_id]: "{\"description\": \"Unique pass identifier, stringified from upstream MountainPassId.\"}",
    [mountain_pass_name]: "{\"description\": \"Pass name with highway designation.\"}",
    [elevation_in_feet]: "{\"description\": \"Summit elevation in feet above sea level.\"}",
@@ -374,7 +374,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [MountainPassCondition] ingestion json mapping "MountainPassCondition_json_flat"
+.create-or-alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] ingestion json mapping "us.wa.wsdot.mountainpass.MountainPassCondition_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -399,7 +399,7 @@
 ]
 ```
 
-.create-or-alter table [MountainPassCondition] ingestion json mapping "MountainPassCondition_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] ingestion json mapping "us.wa.wsdot.mountainpass.MountainPassCondition_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -424,13 +424,13 @@
 ]
 ```
 
-.drop materialized-view MountainPassConditionLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.mountainpass.MountainPassConditionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MountainPassConditionLatest on table MountainPassCondition {
-    MountainPassCondition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.mountainpass.MountainPassConditionLatest'] on table ['us.wa.wsdot.mountainpass.MountainPassCondition'] {
+    ['us.wa.wsdot.mountainpass.MountainPassCondition'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [MountainPassCondition] policy update
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -441,7 +441,7 @@
 }]
 ```
 
-.create-merge table [WeatherStation] (
+.create-merge table ['us.wa.wsdot.weather.WeatherStation'] (
    [station_id]: string,
    [station_name]: string,
    [latitude]: real,
@@ -453,9 +453,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherStation] docstring "{\"description\": \"Metadata for a WSDOT RWIS station.\"}";
+.alter table ['us.wa.wsdot.weather.WeatherStation'] docstring "{\"description\": \"Metadata for a WSDOT RWIS station.\"}";
 
-.alter table [WeatherStation] column-docstrings (
+.alter table ['us.wa.wsdot.weather.WeatherStation'] column-docstrings (
    [station_id]: "{\"description\": \"Station identifier from upstream StationCode.\"}",
    [station_name]: "{\"description\": \"Station name with highway and milepost.\"}",
    [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
@@ -467,7 +467,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_flat"
+.create-or-alter table ['us.wa.wsdot.weather.WeatherStation'] ingestion json mapping "us.wa.wsdot.weather.WeatherStation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -482,7 +482,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.weather.WeatherStation'] ingestion json mapping "us.wa.wsdot.weather.WeatherStation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -497,13 +497,13 @@
 ]
 ```
 
-.drop materialized-view WeatherStationLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.weather.WeatherStationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherStationLatest on table WeatherStation {
-    WeatherStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.weather.WeatherStationLatest'] on table ['us.wa.wsdot.weather.WeatherStation'] {
+    ['us.wa.wsdot.weather.WeatherStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherStation] policy update
+.alter table ['us.wa.wsdot.weather.WeatherStation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -514,7 +514,7 @@
 }]
 ```
 
-.create-merge table [WeatherReading] (
+.create-merge table ['us.wa.wsdot.weather.WeatherReading'] (
    [station_id]: string,
    [station_name]: string,
    [reading_time]: string,
@@ -537,9 +537,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherReading] docstring "{\"description\": \"A current weather reading from a WSDOT RWIS station.\"}";
+.alter table ['us.wa.wsdot.weather.WeatherReading'] docstring "{\"description\": \"A current weather reading from a WSDOT RWIS station.\"}";
 
-.alter table [WeatherReading] column-docstrings (
+.alter table ['us.wa.wsdot.weather.WeatherReading'] column-docstrings (
    [station_id]: "{\"description\": \"Station identifier from upstream StationID.\"}",
    [station_name]: "{\"description\": \"Station name.\"}",
    [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
@@ -562,7 +562,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherReading] ingestion json mapping "WeatherReading_json_flat"
+.create-or-alter table ['us.wa.wsdot.weather.WeatherReading'] ingestion json mapping "us.wa.wsdot.weather.WeatherReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -588,7 +588,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherReading] ingestion json mapping "WeatherReading_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.weather.WeatherReading'] ingestion json mapping "us.wa.wsdot.weather.WeatherReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -614,13 +614,13 @@
 ]
 ```
 
-.drop materialized-view WeatherReadingLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.weather.WeatherReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherReadingLatest on table WeatherReading {
-    WeatherReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.weather.WeatherReadingLatest'] on table ['us.wa.wsdot.weather.WeatherReading'] {
+    ['us.wa.wsdot.weather.WeatherReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherReading] policy update
+.alter table ['us.wa.wsdot.weather.WeatherReading'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -631,7 +631,7 @@
 }]
 ```
 
-.create-merge table [TollRate] (
+.create-merge table ['us.wa.wsdot.tolls.TollRate'] (
    [trip_name]: string,
    [state_route]: string,
    [travel_direction]: string,
@@ -653,9 +653,9 @@
    [___subject]: string
 );
 
-.alter table [TollRate] docstring "{\"description\": \"Current toll rate for a WSDOT tolled route segment with dynamic pricing.\"}";
+.alter table ['us.wa.wsdot.tolls.TollRate'] docstring "{\"description\": \"Current toll rate for a WSDOT tolled route segment with dynamic pricing.\"}";
 
-.alter table [TollRate] column-docstrings (
+.alter table ['us.wa.wsdot.tolls.TollRate'] column-docstrings (
    [trip_name]: "{\"description\": \"Tolled route segment identifier.\"}",
    [state_route]: "{\"description\": \"State route number.\"}",
    [travel_direction]: "{\"description\": \"Travel direction: N, S, E, W.\"}",
@@ -677,7 +677,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TollRate] ingestion json mapping "TollRate_json_flat"
+.create-or-alter table ['us.wa.wsdot.tolls.TollRate'] ingestion json mapping "us.wa.wsdot.tolls.TollRate_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -702,7 +702,7 @@
 ]
 ```
 
-.create-or-alter table [TollRate] ingestion json mapping "TollRate_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.tolls.TollRate'] ingestion json mapping "us.wa.wsdot.tolls.TollRate_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -727,13 +727,13 @@
 ]
 ```
 
-.drop materialized-view TollRateLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.tolls.TollRateLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TollRateLatest on table TollRate {
-    TollRate | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.tolls.TollRateLatest'] on table ['us.wa.wsdot.tolls.TollRate'] {
+    ['us.wa.wsdot.tolls.TollRate'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TollRate] policy update
+.alter table ['us.wa.wsdot.tolls.TollRate'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -744,7 +744,7 @@
 }]
 ```
 
-.create-merge table [CommercialVehicleRestriction] (
+.create-merge table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] (
    [state_route_id]: string,
    [bridge_number]: string,
    [bridge_name]: string,
@@ -775,9 +775,9 @@
    [___subject]: string
 );
 
-.alter table [CommercialVehicleRestriction] docstring "{\"description\": \"A commercial vehicle restriction on a Washington State highway bridge or road segment.\"}";
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] docstring "{\"description\": \"A commercial vehicle restriction on a Washington State highway bridge or road segment.\"}";
 
-.alter table [CommercialVehicleRestriction] column-docstrings (
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] column-docstrings (
    [state_route_id]: "{\"description\": \"State route identifier, first part of composite key.\"}",
    [bridge_number]: "{\"description\": \"Bridge or structure number, second part of composite key.\"}",
    [bridge_name]: "{\"description\": \"Bridge or structure name.\"}",
@@ -808,7 +808,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [CommercialVehicleRestriction] ingestion json mapping "CommercialVehicleRestriction_json_flat"
+.create-or-alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] ingestion json mapping "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -842,7 +842,7 @@
 ]
 ```
 
-.create-or-alter table [CommercialVehicleRestriction] ingestion json mapping "CommercialVehicleRestriction_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] ingestion json mapping "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -876,13 +876,13 @@
 ]
 ```
 
-.drop materialized-view CommercialVehicleRestrictionLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestrictionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CommercialVehicleRestrictionLatest on table CommercialVehicleRestriction {
-    CommercialVehicleRestriction | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestrictionLatest'] on table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] {
+    ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [CommercialVehicleRestriction] policy update
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -893,7 +893,7 @@
 }]
 ```
 
-.create-merge table [BorderCrossing] (
+.create-merge table ['us.wa.wsdot.border.BorderCrossing'] (
    [crossing_name]: string,
    [wait_time]: int,
    [time]: string,
@@ -908,9 +908,9 @@
    [___subject]: string
 );
 
-.alter table [BorderCrossing] docstring "{\"description\": \"US-Canada border crossing wait time in Washington State.\"}";
+.alter table ['us.wa.wsdot.border.BorderCrossing'] docstring "{\"description\": \"US-Canada border crossing wait time in Washington State.\"}";
 
-.alter table [BorderCrossing] column-docstrings (
+.alter table ['us.wa.wsdot.border.BorderCrossing'] column-docstrings (
    [crossing_name]: "{\"description\": \"Crossing lane identifier.\"}",
    [wait_time]: "{\"description\": \"Wait time in minutes.\"}",
    [time]: "{\"description\": \"ISO 8601 UTC measurement timestamp.\"}",
@@ -925,7 +925,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BorderCrossing] ingestion json mapping "BorderCrossing_json_flat"
+.create-or-alter table ['us.wa.wsdot.border.BorderCrossing'] ingestion json mapping "us.wa.wsdot.border.BorderCrossing_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -943,7 +943,7 @@
 ]
 ```
 
-.create-or-alter table [BorderCrossing] ingestion json mapping "BorderCrossing_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.border.BorderCrossing'] ingestion json mapping "us.wa.wsdot.border.BorderCrossing_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -961,13 +961,13 @@
 ]
 ```
 
-.drop materialized-view BorderCrossingLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.border.BorderCrossingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BorderCrossingLatest on table BorderCrossing {
-    BorderCrossing | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.border.BorderCrossingLatest'] on table ['us.wa.wsdot.border.BorderCrossing'] {
+    ['us.wa.wsdot.border.BorderCrossing'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BorderCrossing] policy update
+.alter table ['us.wa.wsdot.border.BorderCrossing'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -978,7 +978,7 @@
 }]
 ```
 
-.create-merge table [VesselLocation] (
+.create-merge table ['us.wa.wsdot.ferries.VesselLocation'] (
    [vessel_id]: string,
    [vessel_name]: string,
    [mmsi]: int,
@@ -1007,9 +1007,9 @@
    [___subject]: string
 );
 
-.alter table [VesselLocation] docstring "{\"description\": \"Real-time location and status of a Washington State Ferries vessel.\"}";
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] docstring "{\"description\": \"Real-time location and status of a Washington State Ferries vessel.\"}";
 
-.alter table [VesselLocation] column-docstrings (
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] column-docstrings (
    [vessel_id]: "{\"description\": \"Vessel identifier, stringified from upstream VesselID.\"}",
    [vessel_name]: "{\"description\": \"Ferry vessel name.\"}",
    [mmsi]: "{\"description\": \"Maritime Mobile Service Identity for AIS.\"}",
@@ -1038,7 +1038,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_flat"
+.create-or-alter table ['us.wa.wsdot.ferries.VesselLocation'] ingestion json mapping "us.wa.wsdot.ferries.VesselLocation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1070,7 +1070,7 @@
 ]
 ```
 
-.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_ce_structured"
+.create-or-alter table ['us.wa.wsdot.ferries.VesselLocation'] ingestion json mapping "us.wa.wsdot.ferries.VesselLocation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1102,13 +1102,13 @@
 ]
 ```
 
-.drop materialized-view VesselLocationLatest ifexists;
+.drop materialized-view ['us.wa.wsdot.ferries.VesselLocationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) VesselLocationLatest on table VesselLocation {
-    VesselLocation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.wsdot.ferries.VesselLocationLatest'] on table ['us.wa.wsdot.ferries.VesselLocation'] {
+    ['us.wa.wsdot.ferries.VesselLocation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [VesselLocation] policy update
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] policy update
 ```
 [{
   "IsEnabled": true,

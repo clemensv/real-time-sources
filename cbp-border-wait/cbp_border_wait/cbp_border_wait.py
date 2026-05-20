@@ -276,6 +276,7 @@ def feed(args):
 
     polling_interval = int(args.polling_interval or os.environ.get("POLLING_INTERVAL", "3600"))
     state_file = args.state_file or os.environ.get("STATE_FILE", "")
+    once = bool(getattr(args, "once", False))
 
     previous_timestamps: Dict[str, str] = _load_state(state_file)
 
@@ -342,6 +343,9 @@ def feed(args):
                 (datetime.now(timezone.utc) + timedelta(seconds=effective_interval)).isoformat(),
             )
             _save_state(state_file, previous_timestamps)
+            if once:
+                logging.info("--once mode: exiting after first polling cycle")
+                break
             if effective_interval > 0:
                 time.sleep(effective_interval)
         except KeyboardInterrupt:
@@ -349,6 +353,9 @@ def feed(args):
             break
         except Exception as exc:
             logging.error("Error occurred: %s", exc)
+            if once:
+                logging.info("--once mode: exiting after first polling cycle (with error)")
+                break
             logging.info("Retrying in %d seconds...", polling_interval)
             time.sleep(polling_interval)
 
@@ -361,6 +368,12 @@ def main():
     feed_parser.add_argument("--connection-string", help="Kafka connection string")
     feed_parser.add_argument("--polling-interval", type=int, default=3600, help="Polling interval in seconds (default: 3600)")
     feed_parser.add_argument("--state-file", help="Path to state persistence file")
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     if args.command == "feed":

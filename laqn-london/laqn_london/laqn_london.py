@@ -366,6 +366,7 @@ class LAQNLondonAPI:
         polling_interval: int,
         state_file: str = "",
         reference_refresh_polls: int = 24,
+        once: bool = False,
     ) -> None:
         """Emit reference data first and then poll telemetry forever."""
         state = _load_state(state_file)
@@ -414,6 +415,9 @@ class LAQNLondonAPI:
                     elapsed,
                     wait_seconds,
                 )
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if wait_seconds:
                     await asyncio.sleep(wait_seconds)
             except KeyboardInterrupt:
@@ -487,6 +491,12 @@ def main() -> None:
         default=os.getenv("STATE_FILE", os.path.expanduser("~/.laqn_london_state.json")),
         help="Path to the persisted dedupe state file",
     )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     api = LAQNLondonAPI()
@@ -541,4 +551,4 @@ def main() -> None:
     elif tls_enabled:
         kafka_config["security.protocol"] = "SSL"
 
-    asyncio.run(api.feed(kafka_config, kafka_topic, args.polling_interval, args.state_file))
+    asyncio.run(api.feed(kafka_config, kafka_topic, args.polling_interval, args.state_file, once=args.once))

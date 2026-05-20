@@ -9,7 +9,6 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from vatsim_producer_data.net.vatsim.networkstatus import NetworkStatus
-import datetime
 
 
 class Test_NetworkStatus(unittest.TestCase):
@@ -29,12 +28,12 @@ class Test_NetworkStatus(unittest.TestCase):
         Create instance of NetworkStatus for testing
         """
         instance = NetworkStatus(
-            callsign='xzopunqcmtwnzydxbxxz',
-            update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            connected_clients=int(2),
-            unique_users=int(60),
-            pilot_count=int(30),
-            controller_count=int(64)
+            callsign='qqdbnmlwslmxrxqsycby',
+            update_timestamp='obtnfkmutfqkhtjtwbfa',
+            connected_clients=int(26),
+            unique_users=int(80),
+            pilot_count=int(90),
+            controller_count=int(74)
         )
         return instance
 
@@ -43,7 +42,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'xzopunqcmtwnzydxbxxz'
+        test_value = 'qqdbnmlwslmxrxqsycby'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -51,7 +50,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test update_timestamp property
         """
-        test_value = datetime.datetime.now(datetime.timezone.utc)
+        test_value = 'obtnfkmutfqkhtjtwbfa'
         self.instance.update_timestamp = test_value
         self.assertEqual(self.instance.update_timestamp, test_value)
     
@@ -59,7 +58,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test connected_clients property
         """
-        test_value = int(2)
+        test_value = int(26)
         self.instance.connected_clients = test_value
         self.assertEqual(self.instance.connected_clients, test_value)
     
@@ -67,7 +66,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test unique_users property
         """
-        test_value = int(60)
+        test_value = int(80)
         self.instance.unique_users = test_value
         self.assertEqual(self.instance.unique_users, test_value)
     
@@ -75,7 +74,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test pilot_count property
         """
-        test_value = int(30)
+        test_value = int(90)
         self.instance.pilot_count = test_value
         self.assertEqual(self.instance.pilot_count, test_value)
     
@@ -83,7 +82,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test controller_count property
         """
-        test_value = int(64)
+        test_value = int(74)
         self.instance.controller_count = test_value
         self.assertEqual(self.instance.controller_count, test_value)
     

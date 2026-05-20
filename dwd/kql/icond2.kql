@@ -1,0 +1,66 @@
+// ICON-D2 forecast grid — per-cell expansion table for Fabric Map layers.
+//
+// The landing table ['de.dwd.icond2.Grid'] (parallel lats/lons/values arrays,
+// one row per (run_id, parameter, lead_hour)) is created and fed by
+// dwd.kql (auto-generated from the xreg manifest) via the standard dispatch
+// update policy.
+//
+// This script adds the per-cell view on top of that landing table:
+//
+//   ['de.dwd.icond2.GridPoints']  — exploded per-cell table. Populated
+//                                    automatically by an update policy that
+//                                    mv-expands the parallel arrays.
+//
+// The GridPoints schema is intentionally identical to the schema used by
+// the Fabric Map demo layers:
+//   run:datetime, lead_hour:int, parameter:string,
+//   lat:real, lon:real, value:real, unit:string
+// so the 8 ICON-D2 map layers keep working without rewiring.
+//
+// Chain:  bridge -> Kafka -> Eventstream -> _cloudevents_dispatch
+//                       -> ['de.dwd.icond2.Grid']        (auto-gen dispatch update policy)
+//                            -> ['de.dwd.icond2.GridPoints'] (mv-expand update policy below)
+
+.create-merge table ['de.dwd.icond2.GridPoints'] (
+    [run]: datetime,
+    [lead_hour]: int,
+    [parameter]: string,
+    [lat]: real,
+    [lon]: real,
+    [value]: real,
+    [unit]: string
+);
+
+.alter table ['de.dwd.icond2.GridPoints'] docstring "Per-cell ICON-D2 forecast values, expanded from ['de.dwd.icond2.Grid'] via update policy. Schema matches the existing Fabric Map demo layers.";
+
+// Update-policy function: explode the parallel arrays into one row per cell.
+// `dbz_cmax` carries a clear-air sentinel around -150 dBZ that we drop here.
+.create-or-alter function with (folder='IconD2', skipvalidation='true') [_expand_icond2_grid] () {
+    ['de.dwd.icond2.Grid']
+    | mv-expand i = range(0, array_length(lats) - 1) to typeof(int)
+    | extend lat = todouble(lats[i]),
+             lon = todouble(lons[i]),
+             value = todouble(values[i])
+    | where isnotnull(value)
+    | where parameter != "dbz_cmax" or value > -50.0
+    | project run = todatetime(run_time),
+              lead_hour,
+              parameter,
+              lat = toreal(lat),
+              lon = toreal(lon),
+              value = toreal(value),
+              unit
+}
+
+.alter table ['de.dwd.icond2.GridPoints'] policy update
+```
+[
+  {
+    "IsEnabled": true,
+    "Source": "de.dwd.icond2.Grid",
+    "Query": "_expand_icond2_grid()",
+    "IsTransactional": false,
+    "PropagateIngestionProperties": false
+  }
+]
+```

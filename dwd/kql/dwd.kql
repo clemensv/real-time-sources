@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [StationMetadata] (
+.create-merge table ['de.dwd.cdc.StationMetadata'] (
    [station_id]: string,
    [station_name]: string,
    [latitude]: real,
@@ -41,9 +41,9 @@
    [___subject]: string
 );
 
-.alter table [StationMetadata] docstring "{\"description\": \"StationMetadata\"}";
+.alter table ['de.dwd.cdc.StationMetadata'] docstring "{\"description\": \"StationMetadata\"}";
 
-.create-or-alter table [StationMetadata] ingestion json mapping "StationMetadata_json_flat"
+.create-or-alter table ['de.dwd.cdc.StationMetadata'] ingestion json mapping "de.dwd.cdc.StationMetadata_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -62,7 +62,7 @@
 ]
 ```
 
-.create-or-alter table [StationMetadata] ingestion json mapping "StationMetadata_json_ce_structured"
+.create-or-alter table ['de.dwd.cdc.StationMetadata'] ingestion json mapping "de.dwd.cdc.StationMetadata_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -81,13 +81,13 @@
 ]
 ```
 
-.drop materialized-view StationMetadataLatest ifexists;
+.drop materialized-view ['de.dwd.cdc.StationMetadataLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationMetadataLatest on table StationMetadata {
-    StationMetadata | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.cdc.StationMetadataLatest'] on table ['de.dwd.cdc.StationMetadata'] {
+    ['de.dwd.cdc.StationMetadata'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [StationMetadata] policy update
+.alter table ['de.dwd.cdc.StationMetadata'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -98,7 +98,7 @@
 }]
 ```
 
-.create-merge table [AirTemperature10Min] (
+.create-merge table ['de.dwd.cdc.AirTemperature10Min'] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -114,9 +114,9 @@
    [___subject]: string
 );
 
-.alter table [AirTemperature10Min] docstring "{\"description\": \"AirTemperature10Min\"}";
+.alter table ['de.dwd.cdc.AirTemperature10Min'] docstring "{\"description\": \"AirTemperature10Min\"}";
 
-.create-or-alter table [AirTemperature10Min] ingestion json mapping "AirTemperature10Min_json_flat"
+.create-or-alter table ['de.dwd.cdc.AirTemperature10Min'] ingestion json mapping "de.dwd.cdc.AirTemperature10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -135,7 +135,7 @@
 ]
 ```
 
-.create-or-alter table [AirTemperature10Min] ingestion json mapping "AirTemperature10Min_json_ce_structured"
+.create-or-alter table ['de.dwd.cdc.AirTemperature10Min'] ingestion json mapping "de.dwd.cdc.AirTemperature10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -154,13 +154,13 @@
 ]
 ```
 
-.drop materialized-view AirTemperature10MinLatest ifexists;
+.drop materialized-view ['de.dwd.cdc.AirTemperature10MinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AirTemperature10MinLatest on table AirTemperature10Min {
-    AirTemperature10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.cdc.AirTemperature10MinLatest'] on table ['de.dwd.cdc.AirTemperature10Min'] {
+    ['de.dwd.cdc.AirTemperature10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [AirTemperature10Min] policy update
+.alter table ['de.dwd.cdc.AirTemperature10Min'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -171,7 +171,7 @@
 }]
 ```
 
-.create-merge table [Precipitation10Min] (
+.create-merge table ['de.dwd.cdc.Precipitation10Min'] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -184,9 +184,9 @@
    [___subject]: string
 );
 
-.alter table [Precipitation10Min] docstring "{\"description\": \"Precipitation10Min\"}";
+.alter table ['de.dwd.cdc.Precipitation10Min'] docstring "{\"description\": \"Precipitation10Min\"}";
 
-.create-or-alter table [Precipitation10Min] ingestion json mapping "Precipitation10Min_json_flat"
+.create-or-alter table ['de.dwd.cdc.Precipitation10Min'] ingestion json mapping "de.dwd.cdc.Precipitation10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -202,7 +202,7 @@
 ]
 ```
 
-.create-or-alter table [Precipitation10Min] ingestion json mapping "Precipitation10Min_json_ce_structured"
+.create-or-alter table ['de.dwd.cdc.Precipitation10Min'] ingestion json mapping "de.dwd.cdc.Precipitation10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -218,13 +218,13 @@
 ]
 ```
 
-.drop materialized-view Precipitation10MinLatest ifexists;
+.drop materialized-view ['de.dwd.cdc.Precipitation10MinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) Precipitation10MinLatest on table Precipitation10Min {
-    Precipitation10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.cdc.Precipitation10MinLatest'] on table ['de.dwd.cdc.Precipitation10Min'] {
+    ['de.dwd.cdc.Precipitation10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Precipitation10Min] policy update
+.alter table ['de.dwd.cdc.Precipitation10Min'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -235,7 +235,7 @@
 }]
 ```
 
-.create-merge table [Wind10Min] (
+.create-merge table ['de.dwd.cdc.Wind10Min'] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -248,9 +248,9 @@
    [___subject]: string
 );
 
-.alter table [Wind10Min] docstring "{\"description\": \"Wind10Min\"}";
+.alter table ['de.dwd.cdc.Wind10Min'] docstring "{\"description\": \"Wind10Min\"}";
 
-.create-or-alter table [Wind10Min] ingestion json mapping "Wind10Min_json_flat"
+.create-or-alter table ['de.dwd.cdc.Wind10Min'] ingestion json mapping "de.dwd.cdc.Wind10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -266,7 +266,7 @@
 ]
 ```
 
-.create-or-alter table [Wind10Min] ingestion json mapping "Wind10Min_json_ce_structured"
+.create-or-alter table ['de.dwd.cdc.Wind10Min'] ingestion json mapping "de.dwd.cdc.Wind10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -282,13 +282,13 @@
 ]
 ```
 
-.drop materialized-view Wind10MinLatest ifexists;
+.drop materialized-view ['de.dwd.cdc.Wind10MinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) Wind10MinLatest on table Wind10Min {
-    Wind10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.cdc.Wind10MinLatest'] on table ['de.dwd.cdc.Wind10Min'] {
+    ['de.dwd.cdc.Wind10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Wind10Min] policy update
+.alter table ['de.dwd.cdc.Wind10Min'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -299,7 +299,7 @@
 }]
 ```
 
-.create-merge table [Solar10Min] (
+.create-merge table ['de.dwd.cdc.Solar10Min'] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -314,9 +314,9 @@
    [___subject]: string
 );
 
-.alter table [Solar10Min] docstring "{\"description\": \"Solar10Min\"}";
+.alter table ['de.dwd.cdc.Solar10Min'] docstring "{\"description\": \"Solar10Min\"}";
 
-.create-or-alter table [Solar10Min] ingestion json mapping "Solar10Min_json_flat"
+.create-or-alter table ['de.dwd.cdc.Solar10Min'] ingestion json mapping "de.dwd.cdc.Solar10Min_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -334,7 +334,7 @@
 ]
 ```
 
-.create-or-alter table [Solar10Min] ingestion json mapping "Solar10Min_json_ce_structured"
+.create-or-alter table ['de.dwd.cdc.Solar10Min'] ingestion json mapping "de.dwd.cdc.Solar10Min_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -352,13 +352,13 @@
 ]
 ```
 
-.drop materialized-view Solar10MinLatest ifexists;
+.drop materialized-view ['de.dwd.cdc.Solar10MinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) Solar10MinLatest on table Solar10Min {
-    Solar10Min | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.cdc.Solar10MinLatest'] on table ['de.dwd.cdc.Solar10Min'] {
+    ['de.dwd.cdc.Solar10Min'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Solar10Min] policy update
+.alter table ['de.dwd.cdc.Solar10Min'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -369,7 +369,7 @@
 }]
 ```
 
-.create-merge table [HourlyObservation] (
+.create-merge table ['de.dwd.cdc.HourlyObservation'] (
    [station_id]: string,
    [timestamp]: string,
    [quality_level]: int,
@@ -383,9 +383,9 @@
    [___subject]: string
 );
 
-.alter table [HourlyObservation] docstring "{\"description\": \"HourlyObservation\"}";
+.alter table ['de.dwd.cdc.HourlyObservation'] docstring "{\"description\": \"HourlyObservation\"}";
 
-.create-or-alter table [HourlyObservation] ingestion json mapping "HourlyObservation_json_flat"
+.create-or-alter table ['de.dwd.cdc.HourlyObservation'] ingestion json mapping "de.dwd.cdc.HourlyObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -402,7 +402,7 @@
 ]
 ```
 
-.create-or-alter table [HourlyObservation] ingestion json mapping "HourlyObservation_json_ce_structured"
+.create-or-alter table ['de.dwd.cdc.HourlyObservation'] ingestion json mapping "de.dwd.cdc.HourlyObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -419,13 +419,13 @@
 ]
 ```
 
-.drop materialized-view HourlyObservationLatest ifexists;
+.drop materialized-view ['de.dwd.cdc.HourlyObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) HourlyObservationLatest on table HourlyObservation {
-    HourlyObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.cdc.HourlyObservationLatest'] on table ['de.dwd.cdc.HourlyObservation'] {
+    ['de.dwd.cdc.HourlyObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [HourlyObservation] policy update
+.alter table ['de.dwd.cdc.HourlyObservation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -436,7 +436,7 @@
 }]
 ```
 
-.create-merge table [Alert] (
+.create-merge table ['de.dwd.weather.Alert'] (
    [identifier]: string,
    [sender]: string,
    [sent]: string,
@@ -460,9 +460,9 @@
    [___subject]: string
 );
 
-.alter table [Alert] docstring "{\"description\": \"Alert\"}";
+.alter table ['de.dwd.weather.Alert'] docstring "{\"description\": \"Alert\"}";
 
-.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
+.create-or-alter table ['de.dwd.weather.Alert'] ingestion json mapping "de.dwd.weather.Alert_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -489,7 +489,7 @@
 ]
 ```
 
-.create-or-alter table [Alert] ingestion json mapping "Alert_json_ce_structured"
+.create-or-alter table ['de.dwd.weather.Alert'] ingestion json mapping "de.dwd.weather.Alert_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -516,18 +516,139 @@
 ]
 ```
 
-.drop materialized-view AlertLatest ifexists;
+.drop materialized-view ['de.dwd.weather.AlertLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AlertLatest on table Alert {
-    Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.dwd.weather.AlertLatest'] on table ['de.dwd.weather.Alert'] {
+    ['de.dwd.weather.Alert'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Alert] policy update
+.alter table ['de.dwd.weather.Alert'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Weather.Alert') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = tostring(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['event'] = tostring(data.['event']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['effective'] = tostring(data.['effective']),['onset'] = tostring(data.['onset']),['expires'] = tostring(data.['expires']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['de.dwd.icond2.Grid'] (
+   [run_id]: string,
+   [run_time]: string,
+   [parameter]: string,
+   [unit]: string,
+   [lead_hour]: int,
+   [valid_time]: string,
+   [produced_at]: string,
+   [source_url]: string,
+   [resolution_deg]: real,
+   [bbox_min_lon]: real,
+   [bbox_min_lat]: real,
+   [bbox_max_lon]: real,
+   [bbox_max_lat]: real,
+   [lats]: dynamic,
+   [lons]: dynamic,
+   [values]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['de.dwd.icond2.Grid'] docstring "{\"description\": \"An ICON-D2 forecast grid for one model run, one parameter, and one lead hour. Values are pre-aggregated to a regular 0.1 degree lat/lon grid by area mean over the source ICON triangular cells. The lats/lons/values arrays have the same length and are aligned by index: cell i has coordinates (lats[i], lons[i]) and value values[i].\"}";
+
+.alter table ['de.dwd.icond2.Grid'] column-docstrings (
+   [run_id]: "{\"description\": \"Compact run identifier in the form YYYYMMDDHH (UTC). Used in Kafka subject and source URL.\"}",
+   [run_time]: "{\"description\": \"Model initialization time in ISO 8601 UTC, e.g. 2026-05-18T00:00:00Z.\"}",
+   [parameter]: "{\"description\": \"DWD short name of the ICON-D2 parameter, e.g. t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow.\"}",
+   [unit]: "{\"description\": \"Unit of the values array after bridge-side conversion (e.g. degC, mm, m/s, %, J/kg, dBZ, hPa, m).\"}",
+   [lead_hour]: "{\"description\": \"Forecast lead time in hours from run_time. ICON-D2 publishes 0..48 inclusive.\"}",
+   [valid_time]: "{\"description\": \"ISO 8601 UTC datetime to which the forecast applies = run_time + lead_hour hours.\"}",
+   [produced_at]: "{\"description\": \"ISO 8601 UTC datetime at which the bridge emitted this event.\"}",
+   [source_url]: "{\"description\": \"Fully qualified URL of the upstream GRIB2.bz2 file from which this grid was decoded.\"}",
+   [resolution_deg]: "{\"description\": \"Cell side length in degrees of the regular lat/lon aggregation grid (e.g. 0.1).\"}",
+   [bbox_min_lon]: "{\"description\": \"Minimum longitude of the aggregation bounding box.\"}",
+   [bbox_min_lat]: "{\"description\": \"Minimum latitude of the aggregation bounding box.\"}",
+   [bbox_max_lon]: "{\"description\": \"Maximum longitude of the aggregation bounding box.\"}",
+   [bbox_max_lat]: "{\"description\": \"Maximum latitude of the aggregation bounding box.\"}",
+   [lats]: "{\"description\": \"Cell centre latitudes in degrees north, aligned by index with lons[] and values[].\", \"schema\": {\"type\": \"array\", \"description\": \"Cell centre latitudes in degrees north, aligned by index with lons[] and values[].\", \"items\": {\"type\": \"double\", \"unit\": \"degree\", \"symbol\": \"deg\"}}}",
+   [lons]: "{\"description\": \"Cell centre longitudes in degrees east, aligned by index with lats[] and values[].\", \"schema\": {\"type\": \"array\", \"description\": \"Cell centre longitudes in degrees east, aligned by index with lats[] and values[].\", \"items\": {\"type\": \"double\", \"unit\": \"degree\", \"symbol\": \"deg\"}}}",
+   [values]: "{\"description\": \"Parameter values in the unit advertised by `unit`, aligned by index with lats[] and lons[]. Missing cells are omitted from all three arrays.\", \"schema\": {\"type\": \"array\", \"description\": \"Parameter values in the unit advertised by `unit`, aligned by index with lats[] and lons[]. Missing cells are omitted from all three arrays.\", \"items\": {\"type\": \"double\"}}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['de.dwd.icond2.Grid'] ingestion json mapping "de.dwd.icond2.Grid_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "run_id", "path": "$.run_id"},
+  {"column": "run_time", "path": "$.run_time"},
+  {"column": "parameter", "path": "$.parameter"},
+  {"column": "unit", "path": "$.unit"},
+  {"column": "lead_hour", "path": "$.lead_hour"},
+  {"column": "valid_time", "path": "$.valid_time"},
+  {"column": "produced_at", "path": "$.produced_at"},
+  {"column": "source_url", "path": "$.source_url"},
+  {"column": "resolution_deg", "path": "$.resolution_deg"},
+  {"column": "bbox_min_lon", "path": "$.bbox_min_lon"},
+  {"column": "bbox_min_lat", "path": "$.bbox_min_lat"},
+  {"column": "bbox_max_lon", "path": "$.bbox_max_lon"},
+  {"column": "bbox_max_lat", "path": "$.bbox_max_lat"},
+  {"column": "lats", "path": "$.lats"},
+  {"column": "lons", "path": "$.lons"},
+  {"column": "values", "path": "$.values"},
+]
+```
+
+.create-or-alter table ['de.dwd.icond2.Grid'] ingestion json mapping "de.dwd.icond2.Grid_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "run_id", "path": "$.data.run_id"},
+  {"column": "run_time", "path": "$.data.run_time"},
+  {"column": "parameter", "path": "$.data.parameter"},
+  {"column": "unit", "path": "$.data.unit"},
+  {"column": "lead_hour", "path": "$.data.lead_hour"},
+  {"column": "valid_time", "path": "$.data.valid_time"},
+  {"column": "produced_at", "path": "$.data.produced_at"},
+  {"column": "source_url", "path": "$.data.source_url"},
+  {"column": "resolution_deg", "path": "$.data.resolution_deg"},
+  {"column": "bbox_min_lon", "path": "$.data.bbox_min_lon"},
+  {"column": "bbox_min_lat", "path": "$.data.bbox_min_lat"},
+  {"column": "bbox_max_lon", "path": "$.data.bbox_max_lon"},
+  {"column": "bbox_max_lat", "path": "$.data.bbox_max_lat"},
+  {"column": "lats", "path": "$.data.lats"},
+  {"column": "lons", "path": "$.data.lons"},
+  {"column": "values", "path": "$.data.values"},
+]
+```
+
+.drop materialized-view ['de.dwd.icond2.GridLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['de.dwd.icond2.GridLatest'] on table ['de.dwd.icond2.Grid'] {
+    ['de.dwd.icond2.Grid'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['de.dwd.icond2.Grid'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.IconD2.Grid') | project['run_id'] = tostring(data.['run_id']),['run_time'] = tostring(data.['run_time']),['parameter'] = tostring(data.['parameter']),['unit'] = tostring(data.['unit']),['lead_hour'] = toint(data.['lead_hour']),['valid_time'] = tostring(data.['valid_time']),['produced_at'] = tostring(data.['produced_at']),['source_url'] = tostring(data.['source_url']),['resolution_deg'] = toreal(data.['resolution_deg']),['bbox_min_lon'] = toreal(data.['bbox_min_lon']),['bbox_min_lat'] = toreal(data.['bbox_min_lat']),['bbox_max_lon'] = toreal(data.['bbox_max_lon']),['bbox_max_lat'] = toreal(data.['bbox_max_lat']),['lats'] = todynamic(data.['lats']),['lons'] = todynamic(data.['lons']),['values'] = todynamic(data.['values']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]

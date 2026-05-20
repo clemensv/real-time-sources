@@ -7,6 +7,10 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+def _compact_json_dumps(obj, **kwargs):
+    """Serialize to JSON without whitespace for compact wire format."""
+    return json.dumps(obj, separators=(',', ':'))
 from gtfs_rt_producer_data import VehiclePosition
 from gtfs_rt_producer_data import TripUpdate
 from gtfs_rt_producer_data import Alert
@@ -93,7 +97,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -127,7 +131,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -161,7 +165,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -277,7 +281,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -311,7 +315,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -345,7 +349,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -379,7 +383,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -413,7 +417,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -447,7 +451,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -481,7 +485,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -515,7 +519,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -549,7 +553,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -583,7 +587,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -617,7 +621,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -651,7 +655,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -685,7 +689,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -719,7 +723,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -753,7 +757,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -787,7 +791,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -821,7 +825,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -855,7 +859,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -889,7 +893,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -923,7 +927,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -957,7 +961,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -991,7 +995,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -1025,7 +1029,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -1059,7 +1063,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -1093,7 +1097,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -1127,7 +1131,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -1161,7 +1165,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
@@ -1195,7 +1199,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
