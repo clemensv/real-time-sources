@@ -30,3 +30,8 @@ mode-s/kql/aircraft.csv
 **/.playwright-mcp/
 gracedb/.venv/
 energy-charts/.venv/
+
+# Local virtualenvs and scratch artifacts
+.venv/
+origin_merged.json
+pr_integration.json
