@@ -69,7 +69,7 @@ def extract_stations(features: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]
             stations[station_ref] = {
                 "station_ref": station_ref,
                 "station_name": props.get("station_name", ""),
-                "region_id": int(props.get("region_id", 0)),
+                "region_id": int(props.get("region_id") or 0),
                 "longitude": float(coords[0]) if len(coords) > 0 else 0.0,
                 "latitude": float(coords[1]) if len(coords) > 1 else 0.0,
             }
@@ -87,7 +87,7 @@ def extract_readings(features: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "sensor_ref": props.get("sensor_ref", ""),
             "value": parse_value(props.get("value")),
             "datetime": props.get("datetime", ""),
-            "err_code": int(props.get("err_code", 0)),
+            "err_code": int(props.get("err_code") or 0),
         })
     return readings
 
