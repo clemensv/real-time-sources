@@ -49,6 +49,8 @@ docker run --rm \
 
 See [CONTAINER.md](CONTAINER.md) for full deployment instructions.
 
+- **Fabric notebook hosting:** alternatively, deploy this bridge as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (see [`notebook/geosphere-austria-feed.ipynb`](notebook/geosphere-austria-feed.ipynb)).
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

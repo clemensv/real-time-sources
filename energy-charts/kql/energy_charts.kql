@@ -1,0 +1,346 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['info.energy_charts.PublicPower'] (
+   [country]: string,
+   [timestamp]: datetime,
+   [unix_seconds]: long,
+   [hydro_pumped_storage_consumption_mw]: real,
+   [cross_border_electricity_trading_mw]: real,
+   [hydro_run_of_river_mw]: real,
+   [biomass_mw]: real,
+   [fossil_brown_coal_lignite_mw]: real,
+   [fossil_hard_coal_mw]: real,
+   [fossil_oil_mw]: real,
+   [fossil_coal_derived_gas_mw]: real,
+   [fossil_gas_mw]: real,
+   [geothermal_mw]: real,
+   [hydro_water_reservoir_mw]: real,
+   [hydro_pumped_storage_mw]: real,
+   [others_mw]: real,
+   [waste_mw]: real,
+   [wind_offshore_mw]: real,
+   [wind_onshore_mw]: real,
+   [solar_mw]: real,
+   [nuclear_mw]: real,
+   [load_mw]: real,
+   [residual_load_mw]: real,
+   [renewable_share_of_generation_pct]: real,
+   [renewable_share_of_load_pct]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['info.energy_charts.PublicPower'] docstring "{\"description\": \"Net electricity generation by fuel type for a given country at a specific 15-minute interval. Sourced from the Energy-Charts /public_power endpoint (Fraunhofer ISE) which aggregates ENTSO-E transparency platform data. Each record represents one timestamp in the parallel-array response, with individual production types flattened into named fields in megawatts (MW). Negative values for hydro pumped storage consumption and cross-border trading indicate consumption or export. The renewable_share_of_generation and renewable_share_of_load fields are percentages (0\\u2013100). Load represents total grid demand.\"}";
+
+.alter table ['info.energy_charts.PublicPower'] column-docstrings (
+   [country]: "{\"description\": \"ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany, 'fr' for France). Used as the query parameter in the Energy-Charts API.\"}",
+   [timestamp]: "{\"description\": \"UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval.\"}",
+   [unix_seconds]: "{\"description\": \"Unix epoch timestamp in seconds as returned by the Energy-Charts API. Each value corresponds to one row in the parallel arrays of production_types.\"}",
+   [hydro_pumped_storage_consumption_mw]: "{\"description\": \"Net power consumed by pumped-storage hydroelectric plants (MW). Values are typically negative, indicating the plant is pumping water uphill (consuming electricity). Corresponds to the 'Hydro pumped storage consumption' production type.\"}",
+   [cross_border_electricity_trading_mw]: "{\"description\": \"Net cross-border electricity exchange (MW). Positive values indicate net imports; negative values indicate net exports. Corresponds to the 'Cross border electricity trading' production type.\"}",
+   [hydro_run_of_river_mw]: "{\"description\": \"Net generation from run-of-river hydroelectric plants (MW). These plants generate electricity from the natural flow of rivers without significant storage. Corresponds to the 'Hydro Run-of-River' production type.\"}",
+   [biomass_mw]: "{\"description\": \"Net generation from biomass power plants (MW). Includes solid biomass, biogas, and bioliquids. Corresponds to the 'Biomass' production type.\"}",
+   [fossil_brown_coal_lignite_mw]: "{\"description\": \"Net generation from brown coal (lignite) power plants (MW). Lignite is a low-grade coal with high moisture content used primarily in Germany. Corresponds to the 'Fossil brown coal / lignite' production type.\"}",
+   [fossil_hard_coal_mw]: "{\"description\": \"Net generation from hard coal power plants (MW). Hard coal (anthracite/bituminous) has higher energy density than lignite. Corresponds to the 'Fossil hard coal' production type.\"}",
+   [fossil_oil_mw]: "{\"description\": \"Net generation from oil-fired power plants (MW). Includes heavy fuel oil and light oil combustion turbines. Corresponds to the 'Fossil oil' production type.\"}",
+   [fossil_coal_derived_gas_mw]: "{\"description\": \"Net generation from coal-derived gas power plants (MW). Includes blast furnace gas, coke oven gas, and coal mine methane. Corresponds to the 'Fossil coal-derived gas' production type.\"}",
+   [fossil_gas_mw]: "{\"description\": \"Net generation from natural gas power plants (MW). Includes combined-cycle gas turbines (CCGT) and open-cycle gas turbines (OCGT). Corresponds to the 'Fossil gas' production type.\"}",
+   [geothermal_mw]: "{\"description\": \"Net generation from geothermal power plants (MW). Uses heat from the earth's interior to generate electricity. Corresponds to the 'Geothermal' production type.\"}",
+   [hydro_water_reservoir_mw]: "{\"description\": \"Net generation from reservoir hydroelectric plants (MW). These plants store water behind a dam and release it to generate electricity on demand. Corresponds to the 'Hydro water reservoir' production type.\"}",
+   [hydro_pumped_storage_mw]: "{\"description\": \"Net generation from pumped-storage hydroelectric plants when generating (MW). Positive values indicate the plant is releasing stored water to generate electricity. Corresponds to the 'Hydro pumped storage' (generation) production type.\"}",
+   [others_mw]: "{\"description\": \"Net generation from other power sources not classified into specific categories (MW). May include mixed-fuel plants or uncategorized sources. Corresponds to the 'Others' production type.\"}",
+   [waste_mw]: "{\"description\": \"Net generation from waste incineration power plants (MW). Includes municipal solid waste and industrial waste combustion. Corresponds to the 'Waste' production type.\"}",
+   [wind_offshore_mw]: "{\"description\": \"Net generation from offshore wind turbines (MW). Offshore wind farms are located in bodies of water, typically on the continental shelf. Corresponds to the 'Wind offshore' production type.\"}",
+   [wind_onshore_mw]: "{\"description\": \"Net generation from onshore wind turbines (MW). Onshore wind farms are located on land. Corresponds to the 'Wind onshore' production type.\"}",
+   [solar_mw]: "{\"description\": \"Net generation from solar photovoltaic (PV) and concentrated solar power (CSP) plants (MW). Corresponds to the 'Solar' production type.\"}",
+   [nuclear_mw]: "{\"description\": \"Net generation from nuclear power plants (MW). Not present for all countries (e.g. absent for Germany after nuclear phase-out). Corresponds to the 'Nuclear' production type when available.\"}",
+   [load_mw]: "{\"description\": \"Total electricity grid load (demand) for the country (MW). Represents the sum of all electricity consumption at the given timestamp. Corresponds to the 'Load' production type.\"}",
+   [residual_load_mw]: "{\"description\": \"Residual load (MW). Calculated as total load minus generation from variable renewable sources (wind and solar). A high residual load indicates that conventional or dispatchable power plants must cover most of the demand. Corresponds to the 'Residual load' production type.\"}",
+   [renewable_share_of_generation_pct]: "{\"description\": \"Percentage of total electricity generation that comes from renewable sources (0\\u2013100). Calculated by dividing renewable generation by total generation. Corresponds to the 'Renewable share of generation' production type.\"}",
+   [renewable_share_of_load_pct]: "{\"description\": \"Percentage of the total grid load that is covered by renewable generation (0\\u2013100). Calculated by dividing renewable generation by total load. Corresponds to the 'Renewable share of load' production type.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['info.energy_charts.PublicPower'] ingestion json mapping "info.energy_charts.PublicPower_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "country", "path": "$.country"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "unix_seconds", "path": "$.unix_seconds"},
+  {"column": "hydro_pumped_storage_consumption_mw", "path": "$.hydro_pumped_storage_consumption_mw"},
+  {"column": "cross_border_electricity_trading_mw", "path": "$.cross_border_electricity_trading_mw"},
+  {"column": "hydro_run_of_river_mw", "path": "$.hydro_run_of_river_mw"},
+  {"column": "biomass_mw", "path": "$.biomass_mw"},
+  {"column": "fossil_brown_coal_lignite_mw", "path": "$.fossil_brown_coal_lignite_mw"},
+  {"column": "fossil_hard_coal_mw", "path": "$.fossil_hard_coal_mw"},
+  {"column": "fossil_oil_mw", "path": "$.fossil_oil_mw"},
+  {"column": "fossil_coal_derived_gas_mw", "path": "$.fossil_coal_derived_gas_mw"},
+  {"column": "fossil_gas_mw", "path": "$.fossil_gas_mw"},
+  {"column": "geothermal_mw", "path": "$.geothermal_mw"},
+  {"column": "hydro_water_reservoir_mw", "path": "$.hydro_water_reservoir_mw"},
+  {"column": "hydro_pumped_storage_mw", "path": "$.hydro_pumped_storage_mw"},
+  {"column": "others_mw", "path": "$.others_mw"},
+  {"column": "waste_mw", "path": "$.waste_mw"},
+  {"column": "wind_offshore_mw", "path": "$.wind_offshore_mw"},
+  {"column": "wind_onshore_mw", "path": "$.wind_onshore_mw"},
+  {"column": "solar_mw", "path": "$.solar_mw"},
+  {"column": "nuclear_mw", "path": "$.nuclear_mw"},
+  {"column": "load_mw", "path": "$.load_mw"},
+  {"column": "residual_load_mw", "path": "$.residual_load_mw"},
+  {"column": "renewable_share_of_generation_pct", "path": "$.renewable_share_of_generation_pct"},
+  {"column": "renewable_share_of_load_pct", "path": "$.renewable_share_of_load_pct"},
+]
+```
+
+.create-or-alter table ['info.energy_charts.PublicPower'] ingestion json mapping "info.energy_charts.PublicPower_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "unix_seconds", "path": "$.data.unix_seconds"},
+  {"column": "hydro_pumped_storage_consumption_mw", "path": "$.data.hydro_pumped_storage_consumption_mw"},
+  {"column": "cross_border_electricity_trading_mw", "path": "$.data.cross_border_electricity_trading_mw"},
+  {"column": "hydro_run_of_river_mw", "path": "$.data.hydro_run_of_river_mw"},
+  {"column": "biomass_mw", "path": "$.data.biomass_mw"},
+  {"column": "fossil_brown_coal_lignite_mw", "path": "$.data.fossil_brown_coal_lignite_mw"},
+  {"column": "fossil_hard_coal_mw", "path": "$.data.fossil_hard_coal_mw"},
+  {"column": "fossil_oil_mw", "path": "$.data.fossil_oil_mw"},
+  {"column": "fossil_coal_derived_gas_mw", "path": "$.data.fossil_coal_derived_gas_mw"},
+  {"column": "fossil_gas_mw", "path": "$.data.fossil_gas_mw"},
+  {"column": "geothermal_mw", "path": "$.data.geothermal_mw"},
+  {"column": "hydro_water_reservoir_mw", "path": "$.data.hydro_water_reservoir_mw"},
+  {"column": "hydro_pumped_storage_mw", "path": "$.data.hydro_pumped_storage_mw"},
+  {"column": "others_mw", "path": "$.data.others_mw"},
+  {"column": "waste_mw", "path": "$.data.waste_mw"},
+  {"column": "wind_offshore_mw", "path": "$.data.wind_offshore_mw"},
+  {"column": "wind_onshore_mw", "path": "$.data.wind_onshore_mw"},
+  {"column": "solar_mw", "path": "$.data.solar_mw"},
+  {"column": "nuclear_mw", "path": "$.data.nuclear_mw"},
+  {"column": "load_mw", "path": "$.data.load_mw"},
+  {"column": "residual_load_mw", "path": "$.data.residual_load_mw"},
+  {"column": "renewable_share_of_generation_pct", "path": "$.data.renewable_share_of_generation_pct"},
+  {"column": "renewable_share_of_load_pct", "path": "$.data.renewable_share_of_load_pct"},
+]
+```
+
+.drop materialized-view ['info.energy_charts.PublicPowerLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['info.energy_charts.PublicPowerLatest'] on table ['info.energy_charts.PublicPower'] {
+    ['info.energy_charts.PublicPower'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['info.energy_charts.PublicPower'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'info.energy_charts.PublicPower') | project['country'] = tostring(data.['country']),['timestamp'] = todatetime(data.['timestamp']),['unix_seconds'] = tolong(data.['unix_seconds']),['hydro_pumped_storage_consumption_mw'] = toreal(data.['hydro_pumped_storage_consumption_mw']),['cross_border_electricity_trading_mw'] = toreal(data.['cross_border_electricity_trading_mw']),['hydro_run_of_river_mw'] = toreal(data.['hydro_run_of_river_mw']),['biomass_mw'] = toreal(data.['biomass_mw']),['fossil_brown_coal_lignite_mw'] = toreal(data.['fossil_brown_coal_lignite_mw']),['fossil_hard_coal_mw'] = toreal(data.['fossil_hard_coal_mw']),['fossil_oil_mw'] = toreal(data.['fossil_oil_mw']),['fossil_coal_derived_gas_mw'] = toreal(data.['fossil_coal_derived_gas_mw']),['fossil_gas_mw'] = toreal(data.['fossil_gas_mw']),['geothermal_mw'] = toreal(data.['geothermal_mw']),['hydro_water_reservoir_mw'] = toreal(data.['hydro_water_reservoir_mw']),['hydro_pumped_storage_mw'] = toreal(data.['hydro_pumped_storage_mw']),['others_mw'] = toreal(data.['others_mw']),['waste_mw'] = toreal(data.['waste_mw']),['wind_offshore_mw'] = toreal(data.['wind_offshore_mw']),['wind_onshore_mw'] = toreal(data.['wind_onshore_mw']),['solar_mw'] = toreal(data.['solar_mw']),['nuclear_mw'] = toreal(data.['nuclear_mw']),['load_mw'] = toreal(data.['load_mw']),['residual_load_mw'] = toreal(data.['residual_load_mw']),['renewable_share_of_generation_pct'] = toreal(data.['renewable_share_of_generation_pct']),['renewable_share_of_load_pct'] = toreal(data.['renewable_share_of_load_pct']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['info.energy_charts.SpotPrice'] (
+   [country]: string,
+   [bidding_zone]: string,
+   [timestamp]: datetime,
+   [unix_seconds]: long,
+   [price_eur_per_mwh]: real,
+   [unit]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['info.energy_charts.SpotPrice'] docstring "{\"description\": \"Day-ahead electricity spot price for a given bidding zone at a specific timestamp. Sourced from the Energy-Charts /price endpoint (Fraunhofer ISE) which provides wholesale electricity market prices from ENTSO-E and national exchanges. Prices are the day-ahead auction clearing price in EUR per MWh. The bidding zone identifies the market area (e.g. 'DE-LU' for the Germany-Luxembourg zone).\"}";
+
+.alter table ['info.energy_charts.SpotPrice'] column-docstrings (
+   [country]: "{\"description\": \"ISO 3166-1 alpha-2 country code derived from the bidding zone (e.g. 'de' from 'DE-LU'). Used for Kafka key partitioning.\"}",
+   [bidding_zone]: "{\"description\": \"European electricity bidding zone identifier as used by ENTSO-E (e.g. 'DE-LU' for Germany-Luxembourg, 'FR' for France, 'NO1' for Norway zone 1). The bzn parameter in the Energy-Charts /price API.\"}",
+   [timestamp]: "{\"description\": \"UTC timestamp derived from the unix_seconds value. Marks the start of the price interval (typically 15-minute or hourly depending on the market).\"}",
+   [unix_seconds]: "{\"description\": \"Unix epoch timestamp in seconds as returned by the Energy-Charts API.\"}",
+   [price_eur_per_mwh]: "{\"description\": \"Day-ahead electricity spot price in EUR per megawatt-hour (EUR/MWh). This is the clearing price from the day-ahead auction on the relevant power exchange. Can be negative during periods of excess generation.\"}",
+   [unit]: "{\"description\": \"Unit label as returned by the Energy-Charts API (e.g. 'EUR / MWh'). Included for traceability with the upstream response.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['info.energy_charts.SpotPrice'] ingestion json mapping "info.energy_charts.SpotPrice_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "country", "path": "$.country"},
+  {"column": "bidding_zone", "path": "$.bidding_zone"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "unix_seconds", "path": "$.unix_seconds"},
+  {"column": "price_eur_per_mwh", "path": "$.price_eur_per_mwh"},
+  {"column": "unit", "path": "$.unit"},
+]
+```
+
+.create-or-alter table ['info.energy_charts.SpotPrice'] ingestion json mapping "info.energy_charts.SpotPrice_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "bidding_zone", "path": "$.data.bidding_zone"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "unix_seconds", "path": "$.data.unix_seconds"},
+  {"column": "price_eur_per_mwh", "path": "$.data.price_eur_per_mwh"},
+  {"column": "unit", "path": "$.data.unit"},
+]
+```
+
+.drop materialized-view ['info.energy_charts.SpotPriceLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['info.energy_charts.SpotPriceLatest'] on table ['info.energy_charts.SpotPrice'] {
+    ['info.energy_charts.SpotPrice'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['info.energy_charts.SpotPrice'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'info.energy_charts.SpotPrice') | project['country'] = tostring(data.['country']),['bidding_zone'] = tostring(data.['bidding_zone']),['timestamp'] = todatetime(data.['timestamp']),['unix_seconds'] = tolong(data.['unix_seconds']),['price_eur_per_mwh'] = toreal(data.['price_eur_per_mwh']),['unit'] = tostring(data.['unit']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['info.energy_charts.GridSignal'] (
+   [country]: string,
+   [timestamp]: datetime,
+   [unix_seconds]: long,
+   [signal]: int,
+   [renewable_share_pct]: real,
+   [substitute]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['info.energy_charts.GridSignal'] docstring "{\"description\": \"Grid carbon signal for a given country at a specific timestamp. Sourced from the Energy-Charts /signal endpoint (Fraunhofer ISE). Provides a traffic-light signal (0=green, 1=yellow, 2=red) indicating how carbon-intensive the current electricity mix is. Green (0) means high renewable share and low carbon intensity \\u2014 a good time to consume electricity. Red (2) means low renewable share and high carbon intensity. The renewable share percentage is also included for precise analysis.\"}";
+
+.alter table ['info.energy_charts.GridSignal'] column-docstrings (
+   [country]: "{\"description\": \"ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany). Used as the query parameter in the Energy-Charts API.\"}",
+   [timestamp]: "{\"description\": \"UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval.\"}",
+   [unix_seconds]: "{\"description\": \"Unix epoch timestamp in seconds as returned by the Energy-Charts API.\"}",
+   [signal]: "{\"description\": \"Traffic-light carbon signal: 0 = green (high renewable share, low carbon \\u2014 good time to consume), 1 = yellow (moderate renewable share), 2 = red (low renewable share, high carbon \\u2014 avoid consumption if possible). The thresholds are defined by Fraunhofer ISE based on the renewable share of generation.\"}",
+   [renewable_share_pct]: "{\"description\": \"Renewable share of generation as a percentage (0\\u2013100) at this timestamp. This is the precise numerical value underlying the traffic-light signal.\"}",
+   [substitute]: "{\"description\": \"Whether this signal value is a substitute (forecast or estimate) rather than based on actual metered data. True indicates the value is projected; false indicates it is based on real measurements.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['info.energy_charts.GridSignal'] ingestion json mapping "info.energy_charts.GridSignal_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "country", "path": "$.country"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "unix_seconds", "path": "$.unix_seconds"},
+  {"column": "signal", "path": "$.signal"},
+  {"column": "renewable_share_pct", "path": "$.renewable_share_pct"},
+  {"column": "substitute", "path": "$.substitute"},
+]
+```
+
+.create-or-alter table ['info.energy_charts.GridSignal'] ingestion json mapping "info.energy_charts.GridSignal_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "unix_seconds", "path": "$.data.unix_seconds"},
+  {"column": "signal", "path": "$.data.signal"},
+  {"column": "renewable_share_pct", "path": "$.data.renewable_share_pct"},
+  {"column": "substitute", "path": "$.data.substitute"},
+]
+```
+
+.drop materialized-view ['info.energy_charts.GridSignalLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['info.energy_charts.GridSignalLatest'] on table ['info.energy_charts.GridSignal'] {
+    ['info.energy_charts.GridSignal'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['info.energy_charts.GridSignal'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'info.energy_charts.GridSignal') | project['country'] = tostring(data.['country']),['timestamp'] = todatetime(data.['timestamp']),['unix_seconds'] = tolong(data.['unix_seconds']),['signal'] = toint(data.['signal']),['renewable_share_pct'] = toreal(data.['renewable_share_pct']),['substitute'] = tobool(data.['substitute']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

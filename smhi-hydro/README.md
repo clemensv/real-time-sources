@@ -30,6 +30,12 @@ bridge.
 
 See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
 
+### Fabric notebook hosting
+
+This source can also be deployed as a scheduled Microsoft Fabric notebook
+feeder via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+using `notebook/smhi-hydro-feed.ipynb`.
+
 ## Usage
 
 ### List all stations

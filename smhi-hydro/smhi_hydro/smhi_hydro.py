@@ -188,6 +188,9 @@ def main():
                         help='Polling interval in seconds (default: 900)')
     parser.add_argument('--state-file', type=str,
                         default=os.environ.get('STATE_FILE', os.path.expanduser('~/.smhi_hydro_state.json')))
+    parser.add_argument('--once', action='store_true',
+                        default=os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
     subparsers = parser.add_subparsers(dest='command')
     subparsers.add_parser('list', help='List all stations')
     obs_parser = subparsers.add_parser('observation', help='Get latest discharge for a station')
@@ -249,6 +252,9 @@ def main():
                 logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if args.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()

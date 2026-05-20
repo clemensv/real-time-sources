@@ -1,0 +1,205 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['at.geosphere.tawes.WeatherStation'] (
+   [station_id]: string,
+   [station_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [altitude]: real,
+   [state]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['at.geosphere.tawes.WeatherStation'] docstring "{\"description\": \"Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.\"}";
+
+.alter table ['at.geosphere.tawes.WeatherStation'] column-docstrings (
+   [station_id]: "{\"description\": \"Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.\"}",
+   [station_name]: "{\"description\": \"Station name from the GeoSphere metadata, for example 'WIEN HOHE WARTE' or 'INNSBRUCK FLUGHAFEN'. Mapped from the upstream 'name' field.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lat' field.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lon' field.\"}",
+   [altitude]: "{\"description\": \"Station altitude above sea level in meters, sourced from the GeoSphere metadata 'altitude' field.\"}",
+   [state]: "{\"description\": \"Austrian federal state (Bundesland) where the station is located, for example 'Wien', 'Tirol', 'Steiermark'. Sourced from the GeoSphere metadata 'state' field. Null when the metadata does not include a state.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['at.geosphere.tawes.WeatherStation'] ingestion json mapping "at.geosphere.tawes.WeatherStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "altitude", "path": "$.altitude"},
+  {"column": "state", "path": "$.state"},
+]
+```
+
+.create-or-alter table ['at.geosphere.tawes.WeatherStation'] ingestion json mapping "at.geosphere.tawes.WeatherStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "altitude", "path": "$.data.altitude"},
+  {"column": "state", "path": "$.data.state"},
+]
+```
+
+.drop materialized-view ['at.geosphere.tawes.WeatherStationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['at.geosphere.tawes.WeatherStationLatest'] on table ['at.geosphere.tawes.WeatherStation'] {
+    ['at.geosphere.tawes.WeatherStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['at.geosphere.tawes.WeatherStation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'at.geosphere.tawes.WeatherStation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['altitude'] = toreal(data.['altitude']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['at.geosphere.tawes.WeatherObservation'] (
+   [station_id]: string,
+   [observation_time]: string,
+   [temperature]: real,
+   [humidity]: real,
+   [precipitation]: real,
+   [wind_direction]: real,
+   [wind_speed]: real,
+   [pressure]: real,
+   [sunshine_duration]: real,
+   [global_radiation]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['at.geosphere.tawes.WeatherObservation'] docstring "{\"description\": \"10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.\"}";
+
+.alter table ['at.geosphere.tawes.WeatherObservation'] column-docstrings (
+   [station_id]: "{\"description\": \"GeoSphere Austria numeric station identifier for the observing station. Mapped from the upstream 'station' property in the GeoJSON features.\"}",
+   [observation_time]: "{\"description\": \"Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'.\"}",
+   [temperature]: "{\"description\": \"Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter.\"}",
+   [humidity]: "{\"description\": \"Relative humidity (Relative Feuchte) as a percentage over the 10-minute interval, from the GeoSphere RF parameter. Null when not reported.\"}",
+   [precipitation]: "{\"description\": \"Precipitation (Niederschlag) in millimeters accumulated during the 10-minute interval, from the GeoSphere RR parameter. Null when not reported.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction (Windrichtung) in degrees over the 10-minute interval, from the GeoSphere DD parameter. 0 indicates north, 90 east, 180 south, 270 west. Null when not reported.\"}",
+   [wind_speed]: "{\"description\": \"Wind speed (Windgeschwindigkeit) in meters per second over the 10-minute interval, from the GeoSphere FF parameter. Null when not reported.\"}",
+   [pressure]: "{\"description\": \"Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported.\"}",
+   [sunshine_duration]: "{\"description\": \"Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing.\"}",
+   [global_radiation]: "{\"description\": \"Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['at.geosphere.tawes.WeatherObservation'] ingestion json mapping "at.geosphere.tawes.WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "temperature", "path": "$.temperature"},
+  {"column": "humidity", "path": "$.humidity"},
+  {"column": "precipitation", "path": "$.precipitation"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "pressure", "path": "$.pressure"},
+  {"column": "sunshine_duration", "path": "$.sunshine_duration"},
+  {"column": "global_radiation", "path": "$.global_radiation"},
+]
+```
+
+.create-or-alter table ['at.geosphere.tawes.WeatherObservation'] ingestion json mapping "at.geosphere.tawes.WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "temperature", "path": "$.data.temperature"},
+  {"column": "humidity", "path": "$.data.humidity"},
+  {"column": "precipitation", "path": "$.data.precipitation"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "pressure", "path": "$.data.pressure"},
+  {"column": "sunshine_duration", "path": "$.data.sunshine_duration"},
+  {"column": "global_radiation", "path": "$.data.global_radiation"},
+]
+```
+
+.drop materialized-view ['at.geosphere.tawes.WeatherObservationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['at.geosphere.tawes.WeatherObservationLatest'] on table ['at.geosphere.tawes.WeatherObservation'] {
+    ['at.geosphere.tawes.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['at.geosphere.tawes.WeatherObservation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'at.geosphere.tawes.WeatherObservation') | project['station_id'] = tostring(data.['station_id']),['observation_time'] = tostring(data.['observation_time']),['temperature'] = toreal(data.['temperature']),['humidity'] = toreal(data.['humidity']),['precipitation'] = toreal(data.['precipitation']),['wind_direction'] = toreal(data.['wind_direction']),['wind_speed'] = toreal(data.['wind_speed']),['pressure'] = toreal(data.['pressure']),['sunshine_duration'] = toreal(data.['sunshine_duration']),['global_radiation'] = toreal(data.['global_radiation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['be.irceline.Station'] (
    [station_id]: string,
    [label]: string,
    [latitude]: real,
@@ -37,9 +37,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.\"}";
+.alter table ['be.irceline.Station'] docstring "{\"description\": \"Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['be.irceline.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key.\"}",
    [label]: "{\"description\": \"Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site.\"}",
    [latitude]: "{\"description\": \"Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation].\"}",
@@ -51,7 +51,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['be.irceline.Station'] ingestion json mapping "be.irceline.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -66,7 +66,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['be.irceline.Station'] ingestion json mapping "be.irceline.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -81,13 +81,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['be.irceline.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['be.irceline.StationLatest'] on table ['be.irceline.Station'] {
+    ['be.irceline.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['be.irceline.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -98,7 +98,7 @@
 }]
 ```
 
-.create-merge table [Timeseries] (
+.create-merge table ['be.irceline.Timeseries'] (
    [timeseries_id]: string,
    [label]: string,
    [uom]: string,
@@ -118,9 +118,9 @@
    [___subject]: string
 );
 
-.alter table [Timeseries] docstring "{\"description\": \"Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.\"}";
+.alter table ['be.irceline.Timeseries'] docstring "{\"description\": \"Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.\"}";
 
-.alter table [Timeseries] column-docstrings (
+.alter table ['be.irceline.Timeseries'] column-docstrings (
    [timeseries_id]: "{\"description\": \"Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events.\"}",
    [label]: "{\"description\": \"Descriptive timeseries label from the upstream label property, combining phenomenon name, timeseries identifier, procedure label, and station label. Example: 'Particulate Matter < 10 \\u00b5m 6152 - DAILY CORRECTION TEOM - procedure, 40AL01 - Linkeroever'.\"}",
    [uom]: "{\"description\": \"Published unit of measurement from the upstream uom property, such as '\\u00b5g/m\\u00b3'. IRCELINE returns this literal display unit on both collection and expanded timeseries responses.\"}",
@@ -140,7 +140,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_flat"
+.create-or-alter table ['be.irceline.Timeseries'] ingestion json mapping "be.irceline.Timeseries_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -163,7 +163,7 @@
 ]
 ```
 
-.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_ce_structured"
+.create-or-alter table ['be.irceline.Timeseries'] ingestion json mapping "be.irceline.Timeseries_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -186,13 +186,13 @@
 ]
 ```
 
-.drop materialized-view TimeseriesLatest ifexists;
+.drop materialized-view ['be.irceline.TimeseriesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TimeseriesLatest on table Timeseries {
-    Timeseries | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['be.irceline.TimeseriesLatest'] on table ['be.irceline.Timeseries'] {
+    ['be.irceline.Timeseries'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Timeseries] policy update
+.alter table ['be.irceline.Timeseries'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -203,7 +203,7 @@
 }]
 ```
 
-.create-merge table [Observation] (
+.create-merge table ['be.irceline.Observation'] (
    [timeseries_id]: string,
    [timestamp]: string,
    [value]: real,
@@ -215,9 +215,9 @@
    [___subject]: string
 );
 
-.alter table [Observation] docstring "{\"description\": \"Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.\"}";
+.alter table ['be.irceline.Observation'] docstring "{\"description\": \"Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.\"}";
 
-.alter table [Observation] column-docstrings (
+.alter table ['be.irceline.Observation'] column-docstrings (
    [timeseries_id]: "{\"description\": \"Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'.\"}",
    [value]: "{\"description\": \"Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null.\"}",
@@ -229,7 +229,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+.create-or-alter table ['be.irceline.Observation'] ingestion json mapping "be.irceline.Observation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -244,7 +244,7 @@
 ]
 ```
 
-.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+.create-or-alter table ['be.irceline.Observation'] ingestion json mapping "be.irceline.Observation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -259,13 +259,13 @@
 ]
 ```
 
-.drop materialized-view ObservationLatest ifexists;
+.drop materialized-view ['be.irceline.ObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ObservationLatest on table Observation {
-    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['be.irceline.ObservationLatest'] on table ['be.irceline.Observation'] {
+    ['be.irceline.Observation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Observation] policy update
+.alter table ['be.irceline.Observation'] policy update
 ```
 [{
   "IsEnabled": true,

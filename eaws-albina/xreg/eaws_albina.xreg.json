@@ -25,6 +25,25 @@
   "messagegroups": {
     "org.EAWS.ALBINA.Bulletins": {
       "messages": {
+        "org.EAWS.ALBINA.AvalancheRegion": {
+          "name": "AvalancheRegion",
+          "description": "Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.EAWS.ALBINA.AvalancheRegion"
+            },
+            "source": {
+              "value": "https://avalanche.report"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheRegion"
+        },
         "org.EAWS.ALBINA.AvalancheBulletin": {
           "name": "AvalancheBulletin",
           "envelope": "CloudEvents/1.0",
@@ -156,6 +175,48 @@
                       "null"
                     ],
                     "description": "Description of current snowpack structure and layering from snowpackStructure.comment. May contain HTML markup. Null if not provided."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.EAWS.ALBINA.AvalancheRegion": {
+          "name": "AvalancheRegion",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "AvalancheRegion",
+                "description": "Reference record describing an EAWS region (or super-region) the bridge is configured to observe. Emitted at startup so that downstream consumers know the regional context even in summer months when no daily bulletins are published.",
+                "required": [
+                  "region_id",
+                  "lang",
+                  "configured_at"
+                ],
+                "properties": {
+                  "region_id": {
+                    "type": "string",
+                    "description": "EAWS region identifier (country prefix plus warning service code), e.g. AT-07 for Tirol, IT-32-BZ for South Tyrol. Matches the regionID used in CAAMLv6 bulletins."
+                  },
+                  "lang": {
+                    "type": "string",
+                    "description": "ISO 639-1 language code used by the bridge when requesting bulletins for this region (de, en, it, fr, etc.)."
+                  },
+                  "configured_at": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp when this region was registered in the bridge configuration. Updated whenever the bridge starts and re-emits its catalog."
+                  },
+                  "bulletin_base_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Base URL used by the bridge to fetch CAAMLv6 bulletins for this region (typically https://avalanche.report/albina_files). Null when not provided."
                   }
                 }
               }

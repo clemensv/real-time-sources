@@ -1,0 +1,1180 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [PointMeasurementSite] (
+   [measurement_site_id]: string,
+   [name]: string,
+   [measurement_site_type]: string,
+   [period]: int,
+   [latitude]: real,
+   [longitude]: real,
+   [road_name]: string,
+   [lane_count]: int,
+   [carriageway_type]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PointMeasurementSite] docstring "{\"description\": \"Reference data for a point measurement site from the NDW DATEX II measurement_current feed. A point site uses a fixed sensor (inductive loop or microwave) to measure speed and flow at a single cross-section of road.\"}";
+
+.alter table [PointMeasurementSite] column-docstrings (
+   [measurement_site_id]: "{\"description\": \"Unique identifier of the NDW measurement site, from the DATEX II measurementSiteRecord id attribute. Example: RWS01_MST_0001-01.\"}",
+   [name]: "{\"description\": \"Human-readable name of the measurement site from the DATEX II measurementSiteName element.\"}",
+   [measurement_site_type]: "{\"description\": \"Sensor technology type used at this measurement site, from the DATEX II measurementEquipmentTypeUsed element. Example values: inductionLoop, microwave.\"}",
+   [period]: "{\"description\": \"Measurement aggregation period in seconds, from the DATEX II measurementSpecificCharacteristics period element.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the measurement point in decimal degrees, from the DATEX II pointByCoordinates/pointCoordinates/latitude element.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the measurement point in decimal degrees, from the DATEX II pointByCoordinates/pointCoordinates/longitude element.\"}",
+   [road_name]: "{\"description\": \"Road identifier on which the sensor is located, from the DATEX II roadInformation/roadName element. Example values: A1, N205.\"}",
+   [lane_count]: "{\"description\": \"Number of lanes monitored at this measurement site, derived from the number of measurementSpecificCharacteristics elements.\"}",
+   [carriageway_type]: "{\"description\": \"Carriageway type from the DATEX II carriagewayType element. Example values: mainCarriageway, slipRoad, connectingCarriageway.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PointMeasurementSite] ingestion json mapping "PointMeasurementSite_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.measurement_site_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "measurement_site_type", "path": "$.measurement_site_type"},
+  {"column": "period", "path": "$.period"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "lane_count", "path": "$.lane_count"},
+  {"column": "carriageway_type", "path": "$.carriageway_type"},
+]
+```
+
+.create-or-alter table [PointMeasurementSite] ingestion json mapping "PointMeasurementSite_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.data.measurement_site_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "measurement_site_type", "path": "$.data.measurement_site_type"},
+  {"column": "period", "path": "$.data.period"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "lane_count", "path": "$.data.lane_count"},
+  {"column": "carriageway_type", "path": "$.data.carriageway_type"},
+]
+```
+
+.drop materialized-view PointMeasurementSiteLatest ifexists;
+
+.create materialized-view with (backfill=true) PointMeasurementSiteLatest on table PointMeasurementSite {
+    PointMeasurementSite | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PointMeasurementSite] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.AVG.PointMeasurementSite') | project['measurement_site_id'] = tostring(data.['measurement_site_id']),['name'] = tostring(data.['name']),['measurement_site_type'] = tostring(data.['measurement_site_type']),['period'] = toint(data.['period']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['road_name'] = tostring(data.['road_name']),['lane_count'] = toint(data.['lane_count']),['carriageway_type'] = tostring(data.['carriageway_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [RouteMeasurementSite] (
+   [measurement_site_id]: string,
+   [name]: string,
+   [measurement_site_type]: string,
+   [period]: int,
+   [start_latitude]: real,
+   [start_longitude]: real,
+   [end_latitude]: real,
+   [end_longitude]: real,
+   [road_name]: string,
+   [length_metres]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RouteMeasurementSite] docstring "{\"description\": \"Reference data for a route (section) measurement site from the NDW DATEX II measurement_current feed. A route site covers a road segment between two geographic endpoints used for travel time computation.\"}";
+
+.alter table [RouteMeasurementSite] column-docstrings (
+   [measurement_site_id]: "{\"description\": \"Unique identifier of the NDW route measurement site, from the DATEX II measurementSiteRecord id attribute.\"}",
+   [name]: "{\"description\": \"Human-readable name of the route measurement site from the DATEX II measurementSiteName element.\"}",
+   [measurement_site_type]: "{\"description\": \"Measurement method type, from the DATEX II measurementEquipmentTypeUsed element. Example values: detectLoop, floatingCar.\"}",
+   [period]: "{\"description\": \"Measurement aggregation period in seconds, from the DATEX II measurementSpecificCharacteristics period element.\"}",
+   [start_latitude]: "{\"description\": \"WGS84 latitude of the route start point in decimal degrees.\"}",
+   [start_longitude]: "{\"description\": \"WGS84 longitude of the route start point in decimal degrees.\"}",
+   [end_latitude]: "{\"description\": \"WGS84 latitude of the route end point in decimal degrees.\"}",
+   [end_longitude]: "{\"description\": \"WGS84 longitude of the route end point in decimal degrees.\"}",
+   [road_name]: "{\"description\": \"Road identifier for the route section. Example values: A1, A10, N44.\"}",
+   [length_metres]: "{\"description\": \"Length of the route section in metres, from the DATEX II length element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RouteMeasurementSite] ingestion json mapping "RouteMeasurementSite_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.measurement_site_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "measurement_site_type", "path": "$.measurement_site_type"},
+  {"column": "period", "path": "$.period"},
+  {"column": "start_latitude", "path": "$.start_latitude"},
+  {"column": "start_longitude", "path": "$.start_longitude"},
+  {"column": "end_latitude", "path": "$.end_latitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "length_metres", "path": "$.length_metres"},
+]
+```
+
+.create-or-alter table [RouteMeasurementSite] ingestion json mapping "RouteMeasurementSite_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.data.measurement_site_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "measurement_site_type", "path": "$.data.measurement_site_type"},
+  {"column": "period", "path": "$.data.period"},
+  {"column": "start_latitude", "path": "$.data.start_latitude"},
+  {"column": "start_longitude", "path": "$.data.start_longitude"},
+  {"column": "end_latitude", "path": "$.data.end_latitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "length_metres", "path": "$.data.length_metres"},
+]
+```
+
+.drop materialized-view RouteMeasurementSiteLatest ifexists;
+
+.create materialized-view with (backfill=true) RouteMeasurementSiteLatest on table RouteMeasurementSite {
+    RouteMeasurementSite | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RouteMeasurementSite] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.AVG.RouteMeasurementSite') | project['measurement_site_id'] = tostring(data.['measurement_site_id']),['name'] = tostring(data.['name']),['measurement_site_type'] = tostring(data.['measurement_site_type']),['period'] = toint(data.['period']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),['road_name'] = tostring(data.['road_name']),['length_metres'] = toreal(data.['length_metres']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TrafficObservation] (
+   [measurement_site_id]: string,
+   [measurement_time]: string,
+   [average_speed]: real,
+   [vehicle_flow_rate]: int,
+   [number_of_lanes_with_data]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TrafficObservation] docstring "{\"description\": \"Aggregated traffic speed and flow observation per road segment from the NDW DATEX II trafficspeed feed. Speed is averaged and flow summed across all reporting lanes at the measurement site.\"}";
+
+.alter table [TrafficObservation] column-docstrings (
+   [measurement_site_id]: "{\"description\": \"Unique identifier of the NDW measurement site, from the DATEX II measurementSiteReference id attribute.\"}",
+   [measurement_time]: "{\"description\": \"Timestamp of the measurement in ISO 8601 UTC format, from the DATEX II measurementTimeDefault element.\"}",
+   [average_speed]: "{\"description\": \"Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed.\"}",
+   [vehicle_flow_rate]: "{\"description\": \"Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported.\"}",
+   [number_of_lanes_with_data]: "{\"description\": \"Number of lanes that reported valid measurement data at this measurement site.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TrafficObservation] ingestion json mapping "TrafficObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.measurement_site_id"},
+  {"column": "measurement_time", "path": "$.measurement_time"},
+  {"column": "average_speed", "path": "$.average_speed"},
+  {"column": "vehicle_flow_rate", "path": "$.vehicle_flow_rate"},
+  {"column": "number_of_lanes_with_data", "path": "$.number_of_lanes_with_data"},
+]
+```
+
+.create-or-alter table [TrafficObservation] ingestion json mapping "TrafficObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.data.measurement_site_id"},
+  {"column": "measurement_time", "path": "$.data.measurement_time"},
+  {"column": "average_speed", "path": "$.data.average_speed"},
+  {"column": "vehicle_flow_rate", "path": "$.data.vehicle_flow_rate"},
+  {"column": "number_of_lanes_with_data", "path": "$.data.number_of_lanes_with_data"},
+]
+```
+
+.drop materialized-view TrafficObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) TrafficObservationLatest on table TrafficObservation {
+    TrafficObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TrafficObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.AVG.TrafficObservation') | project['measurement_site_id'] = tostring(data.['measurement_site_id']),['measurement_time'] = tostring(data.['measurement_time']),['average_speed'] = toreal(data.['average_speed']),['vehicle_flow_rate'] = toint(data.['vehicle_flow_rate']),['number_of_lanes_with_data'] = toint(data.['number_of_lanes_with_data']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TravelTimeObservation] (
+   [measurement_site_id]: string,
+   [measurement_time]: string,
+   [duration]: real,
+   [reference_duration]: real,
+   [accuracy]: real,
+   [data_quality]: real,
+   [number_of_input_values]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TravelTimeObservation] docstring "{\"description\": \"Travel time observation for a road segment from the NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.\"}";
+
+.alter table [TravelTimeObservation] column-docstrings (
+   [measurement_site_id]: "{\"description\": \"Unique identifier of the NDW route measurement site, from the DATEX II measurementSiteReference id attribute.\"}",
+   [measurement_time]: "{\"description\": \"Timestamp of the measurement in ISO 8601 UTC format, from the DATEX II measurementTimeDefault element.\"}",
+   [duration]: "{\"description\": \"Measured travel time in seconds for the route section, from the DATEX II travelTime/duration element. Null if the upstream value was negative (invalid).\"}",
+   [reference_duration]: "{\"description\": \"Free-flow reference travel time in seconds for the route section, from the DATEX II basicDataReferenceValue/travelTimeData/travelTime/duration extension element. Null if not provided.\"}",
+   [accuracy]: "{\"description\": \"Accuracy percentage of the travel time measurement as a value between 0 and 100, from the DATEX II travelTime accuracy attribute.\"}",
+   [data_quality]: "{\"description\": \"Supplier-calculated data quality score as a value between 0 and 100, from the DATEX II supplierCalculatedDataQuality attribute.\"}",
+   [number_of_input_values]: "{\"description\": \"Number of input observations used to compute the travel time, from the DATEX II numberOfInputValuesUsed attribute.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TravelTimeObservation] ingestion json mapping "TravelTimeObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.measurement_site_id"},
+  {"column": "measurement_time", "path": "$.measurement_time"},
+  {"column": "duration", "path": "$.duration"},
+  {"column": "reference_duration", "path": "$.reference_duration"},
+  {"column": "accuracy", "path": "$.accuracy"},
+  {"column": "data_quality", "path": "$.data_quality"},
+  {"column": "number_of_input_values", "path": "$.number_of_input_values"},
+]
+```
+
+.create-or-alter table [TravelTimeObservation] ingestion json mapping "TravelTimeObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "measurement_site_id", "path": "$.data.measurement_site_id"},
+  {"column": "measurement_time", "path": "$.data.measurement_time"},
+  {"column": "duration", "path": "$.data.duration"},
+  {"column": "reference_duration", "path": "$.data.reference_duration"},
+  {"column": "accuracy", "path": "$.data.accuracy"},
+  {"column": "data_quality", "path": "$.data.data_quality"},
+  {"column": "number_of_input_values", "path": "$.data.number_of_input_values"},
+]
+```
+
+.drop materialized-view TravelTimeObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) TravelTimeObservationLatest on table TravelTimeObservation {
+    TravelTimeObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TravelTimeObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.AVG.TravelTimeObservation') | project['measurement_site_id'] = tostring(data.['measurement_site_id']),['measurement_time'] = tostring(data.['measurement_time']),['duration'] = toreal(data.['duration']),['reference_duration'] = toreal(data.['reference_duration']),['accuracy'] = toreal(data.['accuracy']),['data_quality'] = toreal(data.['data_quality']),['number_of_input_values'] = toint(data.['number_of_input_values']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DripSign] (
+   [vms_controller_id]: string,
+   [vms_index]: string,
+   [vms_type]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [road_name]: string,
+   [description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DripSign] docstring "{\"description\": \"Reference data for a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign within a VMS controller.\"}";
+
+.alter table [DripSign] column-docstrings (
+   [vms_controller_id]: "{\"description\": \"Unique identifier of the VMS controller unit, from the DATEX II vmsUnitRecord id attribute.\"}",
+   [vms_index]: "{\"description\": \"Index of the individual VMS sign within the controller unit, from the DATEX II vmsRecord index attribute, converted to string.\"}",
+   [vms_type]: "{\"description\": \"DRIP sign type, from the DATEX II vmsType element. Example values: presignalling, matrixBoardTwoByTwo, matrixBoardOneByTwo.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the DRIP sign location in decimal degrees.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the DRIP sign location in decimal degrees.\"}",
+   [road_name]: "{\"description\": \"Road identifier where the DRIP sign is located. Example values: A1, A10.\"}",
+   [description]: "{\"description\": \"Human-readable description of the DRIP sign from the DATEX II description element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DripSign] ingestion json mapping "DripSign_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vms_controller_id", "path": "$.vms_controller_id"},
+  {"column": "vms_index", "path": "$.vms_index"},
+  {"column": "vms_type", "path": "$.vms_type"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "description", "path": "$.description"},
+]
+```
+
+.create-or-alter table [DripSign] ingestion json mapping "DripSign_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vms_controller_id", "path": "$.data.vms_controller_id"},
+  {"column": "vms_index", "path": "$.data.vms_index"},
+  {"column": "vms_type", "path": "$.data.vms_type"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "description", "path": "$.data.description"},
+]
+```
+
+.drop materialized-view DripSignLatest ifexists;
+
+.create materialized-view with (backfill=true) DripSignLatest on table DripSign {
+    DripSign | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DripSign] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.DRIP.DripSign') | project['vms_controller_id'] = tostring(data.['vms_controller_id']),['vms_index'] = tostring(data.['vms_index']),['vms_type'] = tostring(data.['vms_type']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['road_name'] = tostring(data.['road_name']),['description'] = tostring(data.['description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DripDisplayState] (
+   [vms_controller_id]: string,
+   [vms_index]: string,
+   [publication_time]: string,
+   [active]: bool,
+   [vms_text]: string,
+   [pictogram_code]: string,
+   [state]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DripDisplayState] docstring "{\"description\": \"Current display state of a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state.\"}";
+
+.alter table [DripDisplayState] column-docstrings (
+   [vms_controller_id]: "{\"description\": \"Unique identifier of the VMS controller unit, from the DATEX II vmsUnitRecord id attribute.\"}",
+   [vms_index]: "{\"description\": \"Index of the individual VMS sign within the controller unit, converted to string.\"}",
+   [publication_time]: "{\"description\": \"ISO 8601 UTC timestamp when this display state was published, from the DATEX II publicationTime element.\"}",
+   [active]: "{\"description\": \"Whether the DRIP sign is currently displaying content. Derived from the DATEX II vmsWorking or displayActive element.\"}",
+   [vms_text]: "{\"description\": \"Concatenated text from all display panels of the sign, from the DATEX II displayedText/vmsText/vmsTextLine elements.\"}",
+   [pictogram_code]: "{\"description\": \"Pictogram code displayed on the sign, from the DATEX II pictogramDisplayAreaSettings/vmsPicktogramDisplayCharacteristics/vmsPicktogramDescription element.\"}",
+   [state]: "{\"description\": \"Operational state of the DRIP sign, from the DATEX II vmsUnitFault or operationalState element. Example values: working, fault, maintenance.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DripDisplayState] ingestion json mapping "DripDisplayState_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vms_controller_id", "path": "$.vms_controller_id"},
+  {"column": "vms_index", "path": "$.vms_index"},
+  {"column": "publication_time", "path": "$.publication_time"},
+  {"column": "active", "path": "$.active"},
+  {"column": "vms_text", "path": "$.vms_text"},
+  {"column": "pictogram_code", "path": "$.pictogram_code"},
+  {"column": "state", "path": "$.state"},
+]
+```
+
+.create-or-alter table [DripDisplayState] ingestion json mapping "DripDisplayState_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vms_controller_id", "path": "$.data.vms_controller_id"},
+  {"column": "vms_index", "path": "$.data.vms_index"},
+  {"column": "publication_time", "path": "$.data.publication_time"},
+  {"column": "active", "path": "$.data.active"},
+  {"column": "vms_text", "path": "$.data.vms_text"},
+  {"column": "pictogram_code", "path": "$.data.pictogram_code"},
+  {"column": "state", "path": "$.data.state"},
+]
+```
+
+.drop materialized-view DripDisplayStateLatest ifexists;
+
+.create materialized-view with (backfill=true) DripDisplayStateLatest on table DripDisplayState {
+    DripDisplayState | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DripDisplayState] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.DRIP.DripDisplayState') | project['vms_controller_id'] = tostring(data.['vms_controller_id']),['vms_index'] = tostring(data.['vms_index']),['publication_time'] = tostring(data.['publication_time']),['active'] = tobool(data.['active']),['vms_text'] = tostring(data.['vms_text']),['pictogram_code'] = tostring(data.['pictogram_code']),['state'] = tostring(data.['state']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MsiSign] (
+   [sign_id]: string,
+   [sign_type]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [road_name]: string,
+   [lane]: string,
+   [description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MsiSign] docstring "{\"description\": \"Reference data for a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane.\"}";
+
+.alter table [MsiSign] column-docstrings (
+   [sign_id]: "{\"description\": \"Unique identifier of the MSI sign, from the DATEX II vmsUnitRecord id attribute.\"}",
+   [sign_type]: "{\"description\": \"MSI sign type, from the DATEX II vmsType element. Example values: matrixBoardOneByOne, matrixBoardTwoByOne.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the MSI sign location in decimal degrees.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the MSI sign location in decimal degrees.\"}",
+   [road_name]: "{\"description\": \"Road identifier where the MSI sign is located. Example values: A1, A2.\"}",
+   [lane]: "{\"description\": \"Lane designation above which the MSI sign is installed, from the DATEX II laneNumber element.\"}",
+   [description]: "{\"description\": \"Human-readable description of the MSI sign installation from the DATEX II description element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MsiSign] ingestion json mapping "MsiSign_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sign_id", "path": "$.sign_id"},
+  {"column": "sign_type", "path": "$.sign_type"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "lane", "path": "$.lane"},
+  {"column": "description", "path": "$.description"},
+]
+```
+
+.create-or-alter table [MsiSign] ingestion json mapping "MsiSign_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sign_id", "path": "$.data.sign_id"},
+  {"column": "sign_type", "path": "$.data.sign_type"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "lane", "path": "$.data.lane"},
+  {"column": "description", "path": "$.data.description"},
+]
+```
+
+.drop materialized-view MsiSignLatest ifexists;
+
+.create materialized-view with (backfill=true) MsiSignLatest on table MsiSign {
+    MsiSign | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MsiSign] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.MSI.MsiSign') | project['sign_id'] = tostring(data.['sign_id']),['sign_type'] = tostring(data.['sign_type']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['road_name'] = tostring(data.['road_name']),['lane'] = tostring(data.['lane']),['description'] = tostring(data.['description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MsiDisplayState] (
+   [sign_id]: string,
+   [publication_time]: string,
+   [image_code]: string,
+   [state]: string,
+   [speed_limit]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MsiDisplayState] docstring "{\"description\": \"Current display state of a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown.\"}";
+
+.alter table [MsiDisplayState] column-docstrings (
+   [sign_id]: "{\"description\": \"Unique identifier of the MSI sign, from the DATEX II vmsUnitRecord id attribute.\"}",
+   [publication_time]: "{\"description\": \"ISO 8601 UTC timestamp when this display state was published, from the DATEX II publicationTime element.\"}",
+   [image_code]: "{\"description\": \"Code of the image currently displayed on the MSI sign, from the DATEX II imageCode or displayedText element. Example values: blank, closed, 70, 80, 100, arrow_left.\"}",
+   [state]: "{\"description\": \"Operational state derived from the displayed image. Example values: open, closed, speed_limit.\"}",
+   [speed_limit]: "{\"description\": \"Speed limit in km/h displayed on the sign when showing a speed limit image. Null when the sign is blank or shows a non-numeric image.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MsiDisplayState] ingestion json mapping "MsiDisplayState_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sign_id", "path": "$.sign_id"},
+  {"column": "publication_time", "path": "$.publication_time"},
+  {"column": "image_code", "path": "$.image_code"},
+  {"column": "state", "path": "$.state"},
+  {"column": "speed_limit", "path": "$.speed_limit"},
+]
+```
+
+.create-or-alter table [MsiDisplayState] ingestion json mapping "MsiDisplayState_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sign_id", "path": "$.data.sign_id"},
+  {"column": "publication_time", "path": "$.data.publication_time"},
+  {"column": "image_code", "path": "$.data.image_code"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "speed_limit", "path": "$.data.speed_limit"},
+]
+```
+
+.drop materialized-view MsiDisplayStateLatest ifexists;
+
+.create materialized-view with (backfill=true) MsiDisplayStateLatest on table MsiDisplayState {
+    MsiDisplayState | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MsiDisplayState] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.MSI.MsiDisplayState') | project['sign_id'] = tostring(data.['sign_id']),['publication_time'] = tostring(data.['publication_time']),['image_code'] = tostring(data.['image_code']),['state'] = tostring(data.['state']),['speed_limit'] = toint(data.['speed_limit']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Roadwork] (
+   [situation_record_id]: string,
+   [version_time]: string,
+   [validity_status]: string,
+   [start_time]: string,
+   [end_time]: string,
+   [road_name]: string,
+   [description]: string,
+   [location_description]: string,
+   [probability]: string,
+   [severity]: string,
+   [management_type]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Roadwork] docstring "{\"description\": \"Road construction or maintenance work event from the NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.\"}";
+
+.alter table [Roadwork] column-docstrings (
+   [situation_record_id]: "{\"description\": \"Unique identifier of the situation record, from the DATEX II situationRecord id attribute.\"}",
+   [version_time]: "{\"description\": \"ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.\"}",
+   [validity_status]: "{\"description\": \"Validity status of the situation record, from the DATEX II validityStatus element. Example values: active, suspended, definedByValidityTimeSpec.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the roadwork validity period starts, from the DATEX II overallStartTime element.\"}",
+   [end_time]: "{\"description\": \"ISO 8601 UTC timestamp when the roadwork validity period ends, from the DATEX II overallEndTime element. Null for open-ended situations.\"}",
+   [road_name]: "{\"description\": \"Road name or identifier where the roadwork is located.\"}",
+   [description]: "{\"description\": \"Human-readable description of the roadwork situation from the DATEX II comment or description element.\"}",
+   [location_description]: "{\"description\": \"Human-readable description of the roadwork location from the DATEX II locationDescriptor element.\"}",
+   [probability]: "{\"description\": \"Probability of occurrence for the roadwork, from the DATEX II probabilityOfOccurrence element. Example values: certain, probable, risk.\"}",
+   [severity]: "{\"description\": \"Overall severity of the roadwork impact, from the DATEX II severity element. Example values: highest, high, medium, low, lowest.\"}",
+   [management_type]: "{\"description\": \"Type of road management applied, from the DATEX II roadMaintenanceType or managementType element. Example values: laneClosures, carriagewayClosure.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Roadwork] ingestion json mapping "Roadwork_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.situation_record_id"},
+  {"column": "version_time", "path": "$.version_time"},
+  {"column": "validity_status", "path": "$.validity_status"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "description", "path": "$.description"},
+  {"column": "location_description", "path": "$.location_description"},
+  {"column": "probability", "path": "$.probability"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "management_type", "path": "$.management_type"},
+]
+```
+
+.create-or-alter table [Roadwork] ingestion json mapping "Roadwork_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.data.situation_record_id"},
+  {"column": "version_time", "path": "$.data.version_time"},
+  {"column": "validity_status", "path": "$.data.validity_status"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "location_description", "path": "$.data.location_description"},
+  {"column": "probability", "path": "$.data.probability"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "management_type", "path": "$.data.management_type"},
+]
+```
+
+.drop materialized-view RoadworkLatest ifexists;
+
+.create materialized-view with (backfill=true) RoadworkLatest on table Roadwork {
+    Roadwork | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Roadwork] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Situations.Roadwork') | project['situation_record_id'] = tostring(data.['situation_record_id']),['version_time'] = tostring(data.['version_time']),['validity_status'] = tostring(data.['validity_status']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['road_name'] = tostring(data.['road_name']),['description'] = tostring(data.['description']),['location_description'] = tostring(data.['location_description']),['probability'] = tostring(data.['probability']),['severity'] = tostring(data.['severity']),['management_type'] = tostring(data.['management_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BridgeOpening] (
+   [situation_record_id]: string,
+   [version_time]: string,
+   [validity_status]: string,
+   [start_time]: string,
+   [end_time]: string,
+   [bridge_name]: string,
+   [road_name]: string,
+   [description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BridgeOpening] docstring "{\"description\": \"Bridge opening event from the NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes a temporary road closure on the Dutch road network.\"}";
+
+.alter table [BridgeOpening] column-docstrings (
+   [situation_record_id]: "{\"description\": \"Unique identifier of the situation record, from the DATEX II situationRecord id attribute.\"}",
+   [version_time]: "{\"description\": \"ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.\"}",
+   [validity_status]: "{\"description\": \"Validity status of the bridge opening record from the DATEX II validityStatus element.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the bridge opening starts.\"}",
+   [end_time]: "{\"description\": \"ISO 8601 UTC timestamp when the bridge opening ends and the road reopens.\"}",
+   [bridge_name]: "{\"description\": \"Name of the bridge being opened, from the DATEX II bridgeName or locationName element.\"}",
+   [road_name]: "{\"description\": \"Road identifier that is affected by the bridge opening.\"}",
+   [description]: "{\"description\": \"Human-readable description of the bridge opening event from the DATEX II comment or description element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BridgeOpening] ingestion json mapping "BridgeOpening_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.situation_record_id"},
+  {"column": "version_time", "path": "$.version_time"},
+  {"column": "validity_status", "path": "$.validity_status"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "bridge_name", "path": "$.bridge_name"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "description", "path": "$.description"},
+]
+```
+
+.create-or-alter table [BridgeOpening] ingestion json mapping "BridgeOpening_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.data.situation_record_id"},
+  {"column": "version_time", "path": "$.data.version_time"},
+  {"column": "validity_status", "path": "$.data.validity_status"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "bridge_name", "path": "$.data.bridge_name"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "description", "path": "$.data.description"},
+]
+```
+
+.drop materialized-view BridgeOpeningLatest ifexists;
+
+.create materialized-view with (backfill=true) BridgeOpeningLatest on table BridgeOpening {
+    BridgeOpening | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BridgeOpening] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Situations.BridgeOpening') | project['situation_record_id'] = tostring(data.['situation_record_id']),['version_time'] = tostring(data.['version_time']),['validity_status'] = tostring(data.['validity_status']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['bridge_name'] = tostring(data.['bridge_name']),['road_name'] = tostring(data.['road_name']),['description'] = tostring(data.['description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TemporaryClosure] (
+   [situation_record_id]: string,
+   [version_time]: string,
+   [validity_status]: string,
+   [start_time]: string,
+   [end_time]: string,
+   [road_name]: string,
+   [description]: string,
+   [location_description]: string,
+   [severity]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TemporaryClosure] docstring "{\"description\": \"Temporary road closure from the NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or individual lanes on the Dutch national road network.\"}";
+
+.alter table [TemporaryClosure] column-docstrings (
+   [situation_record_id]: "{\"description\": \"Unique identifier of the situation record, from the DATEX II situationRecord id attribute.\"}",
+   [version_time]: "{\"description\": \"ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.\"}",
+   [validity_status]: "{\"description\": \"Validity status of the temporary closure record from the DATEX II validityStatus element.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the temporary closure starts.\"}",
+   [end_time]: "{\"description\": \"ISO 8601 UTC timestamp when the temporary closure ends.\"}",
+   [road_name]: "{\"description\": \"Road identifier where the temporary closure applies.\"}",
+   [description]: "{\"description\": \"Human-readable description of the temporary closure from the DATEX II comment or description element.\"}",
+   [location_description]: "{\"description\": \"Human-readable description of the closure location from the DATEX II locationDescriptor element.\"}",
+   [severity]: "{\"description\": \"Overall severity of the closure impact, from the DATEX II severity element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TemporaryClosure] ingestion json mapping "TemporaryClosure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.situation_record_id"},
+  {"column": "version_time", "path": "$.version_time"},
+  {"column": "validity_status", "path": "$.validity_status"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "description", "path": "$.description"},
+  {"column": "location_description", "path": "$.location_description"},
+  {"column": "severity", "path": "$.severity"},
+]
+```
+
+.create-or-alter table [TemporaryClosure] ingestion json mapping "TemporaryClosure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.data.situation_record_id"},
+  {"column": "version_time", "path": "$.data.version_time"},
+  {"column": "validity_status", "path": "$.data.validity_status"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "location_description", "path": "$.data.location_description"},
+  {"column": "severity", "path": "$.data.severity"},
+]
+```
+
+.drop materialized-view TemporaryClosureLatest ifexists;
+
+.create materialized-view with (backfill=true) TemporaryClosureLatest on table TemporaryClosure {
+    TemporaryClosure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TemporaryClosure] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Situations.TemporaryClosure') | project['situation_record_id'] = tostring(data.['situation_record_id']),['version_time'] = tostring(data.['version_time']),['validity_status'] = tostring(data.['validity_status']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['road_name'] = tostring(data.['road_name']),['description'] = tostring(data.['description']),['location_description'] = tostring(data.['location_description']),['severity'] = tostring(data.['severity']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TemporarySpeedLimit] (
+   [situation_record_id]: string,
+   [version_time]: string,
+   [validity_status]: string,
+   [start_time]: string,
+   [end_time]: string,
+   [road_name]: string,
+   [speed_limit_kmh]: int,
+   [description]: string,
+   [location_description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TemporarySpeedLimit] docstring "{\"description\": \"Temporary speed limit measure from the NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in the maximum allowed speed on a section of the national road network.\"}";
+
+.alter table [TemporarySpeedLimit] column-docstrings (
+   [situation_record_id]: "{\"description\": \"Unique identifier of the situation record, from the DATEX II situationRecord id attribute.\"}",
+   [version_time]: "{\"description\": \"ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.\"}",
+   [validity_status]: "{\"description\": \"Validity status of the temporary speed limit record from the DATEX II validityStatus element.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the temporary speed limit starts.\"}",
+   [end_time]: "{\"description\": \"ISO 8601 UTC timestamp when the temporary speed limit ends.\"}",
+   [road_name]: "{\"description\": \"Road identifier where the temporary speed limit applies.\"}",
+   [speed_limit_kmh]: "{\"description\": \"Temporary maximum speed limit in km/h, from the DATEX II speedLimit/maximumSpeedLimit element.\"}",
+   [description]: "{\"description\": \"Human-readable description of the temporary speed limit from the DATEX II comment or description element.\"}",
+   [location_description]: "{\"description\": \"Human-readable description of the speed limit section location from the DATEX II locationDescriptor element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TemporarySpeedLimit] ingestion json mapping "TemporarySpeedLimit_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.situation_record_id"},
+  {"column": "version_time", "path": "$.version_time"},
+  {"column": "validity_status", "path": "$.validity_status"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "speed_limit_kmh", "path": "$.speed_limit_kmh"},
+  {"column": "description", "path": "$.description"},
+  {"column": "location_description", "path": "$.location_description"},
+]
+```
+
+.create-or-alter table [TemporarySpeedLimit] ingestion json mapping "TemporarySpeedLimit_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.data.situation_record_id"},
+  {"column": "version_time", "path": "$.data.version_time"},
+  {"column": "validity_status", "path": "$.data.validity_status"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "speed_limit_kmh", "path": "$.data.speed_limit_kmh"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "location_description", "path": "$.data.location_description"},
+]
+```
+
+.drop materialized-view TemporarySpeedLimitLatest ifexists;
+
+.create materialized-view with (backfill=true) TemporarySpeedLimitLatest on table TemporarySpeedLimit {
+    TemporarySpeedLimit | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TemporarySpeedLimit] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Situations.TemporarySpeedLimit') | project['situation_record_id'] = tostring(data.['situation_record_id']),['version_time'] = tostring(data.['version_time']),['validity_status'] = tostring(data.['validity_status']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['road_name'] = tostring(data.['road_name']),['speed_limit_kmh'] = toint(data.['speed_limit_kmh']),['description'] = tostring(data.['description']),['location_description'] = tostring(data.['location_description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SafetyRelatedMessage] (
+   [situation_record_id]: string,
+   [version_time]: string,
+   [validity_status]: string,
+   [start_time]: string,
+   [end_time]: string,
+   [road_name]: string,
+   [message_type]: string,
+   [description]: string,
+   [urgency]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SafetyRelatedMessage] docstring "{\"description\": \"Safety-related traffic information message from the NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.\"}";
+
+.alter table [SafetyRelatedMessage] column-docstrings (
+   [situation_record_id]: "{\"description\": \"Unique identifier of the situation record, from the DATEX II situationRecord id attribute.\"}",
+   [version_time]: "{\"description\": \"ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.\"}",
+   [validity_status]: "{\"description\": \"Validity status of the safety message record from the DATEX II validityStatus element.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the safety-related situation starts.\"}",
+   [end_time]: "{\"description\": \"ISO 8601 UTC timestamp when the safety-related situation ends.\"}",
+   [road_name]: "{\"description\": \"Road identifier where the safety-related event is located.\"}",
+   [message_type]: "{\"description\": \"Type of safety-related message, from the DATEX II xsi:type attribute on the situationRecord. Example values: RoadOrCarriagewayOrLaneManagement, VehicleObstruction, PoorRoadInfrastructure.\"}",
+   [description]: "{\"description\": \"Human-readable description of the safety-related message from the DATEX II comment or description element.\"}",
+   [urgency]: "{\"description\": \"Urgency level of the safety message, from the DATEX II urgency element. Example values: extremelyUrgent, urgent, normalUrgency.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SafetyRelatedMessage] ingestion json mapping "SafetyRelatedMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.situation_record_id"},
+  {"column": "version_time", "path": "$.version_time"},
+  {"column": "validity_status", "path": "$.validity_status"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "message_type", "path": "$.message_type"},
+  {"column": "description", "path": "$.description"},
+  {"column": "urgency", "path": "$.urgency"},
+]
+```
+
+.create-or-alter table [SafetyRelatedMessage] ingestion json mapping "SafetyRelatedMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_record_id", "path": "$.data.situation_record_id"},
+  {"column": "version_time", "path": "$.data.version_time"},
+  {"column": "validity_status", "path": "$.data.validity_status"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "message_type", "path": "$.data.message_type"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "urgency", "path": "$.data.urgency"},
+]
+```
+
+.drop materialized-view SafetyRelatedMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) SafetyRelatedMessageLatest on table SafetyRelatedMessage {
+    SafetyRelatedMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SafetyRelatedMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Situations.SafetyRelatedMessage') | project['situation_record_id'] = tostring(data.['situation_record_id']),['version_time'] = tostring(data.['version_time']),['validity_status'] = tostring(data.['validity_status']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['road_name'] = tostring(data.['road_name']),['message_type'] = tostring(data.['message_type']),['description'] = tostring(data.['description']),['urgency'] = tostring(data.['urgency']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

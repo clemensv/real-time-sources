@@ -11,7 +11,7 @@ authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 [tool.poetry.dependencies]
 
 python = ">=3.10,<4.0"
-requests = ">=2.32.3"
+requests = ">=2.34.2"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
@@ -21,7 +21,7 @@ noaa_producer_kafka_producer = {path = "noaa_producer/noaa_producer_kafka_produc
 
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.2"
+pytest = ">=9.0.3"
 pytest-cov = ">=5.0.0"
 testcontainers = ">=4.8.1"
 requests-mock = ">=1.12.1"

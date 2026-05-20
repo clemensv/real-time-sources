@@ -1,0 +1,375 @@
+{
+  "endpoints": {
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "nws-forecasts",
+          "key": "{zone_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts"
+      ]
+    }
+  },
+  "messagegroups": {
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.ForecastZone": {
+          "name": "ForecastZone",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.ForecastZone"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{zone_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast": {
+          "name": "LandZoneForecast",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{zone_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast": {
+          "name": "MarineZoneForecast",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"
+            },
+            "source": {
+              "value": "https://tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/"
+            },
+            "subject": {
+              "value": "{zone_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.jstruct": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.NWS.ForecastZone": {
+          "name": "ForecastZone",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/nws-forecasts/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone.json",
+                "type": "object",
+                "name": "ForecastZone",
+                "description": "Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata.",
+                "required": [
+                  "zone_id",
+                  "zone_type",
+                  "name",
+                  "state",
+                  "forecast_office_url",
+                  "effective_date",
+                  "expiration_date"
+                ],
+                "properties": {
+                  "zone_id": {
+                    "type": "string",
+                    "description": "NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone.",
+                    "pattern": "^[A-Z]{3}[0-9]{3}$"
+                  },
+                  "zone_type": {
+                    "type": "string",
+                    "description": "NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts.",
+                    "enum": [
+                      "public",
+                      "coastal",
+                      "offshore",
+                      "marine"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones.",
+                    "pattern": "^[A-Z]{2}$"
+                  },
+                  "forecast_office_url": {
+                    "type": "string",
+                    "description": "Canonical api.weather.gov URL of the primary Weather Forecast Office responsible for the zone, from properties.forecastOffice."
+                  },
+                  "grid_identifier": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Grid identifier from properties.gridIdentifier. For Seattle forecast zones this is commonly the three-letter WFO grid identifier such as SEW. Marine zones can omit this field.",
+                    "pattern": "^[A-Z]{3}$"
+                  },
+                  "awips_location_identifier": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "AWIPS location identifier from properties.awipsLocationIdentifier when the zone has a matching AWIPS code."
+                  },
+                  "cwa_ids": {
+                    "type": "array",
+                    "description": "List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs.",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{3}$"
+                    }
+                  },
+                  "forecast_office_urls": {
+                    "type": "array",
+                    "description": "List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "time_zones": {
+                    "type": "array",
+                    "description": "Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "observation_station_ids": {
+                    "type": "array",
+                    "description": "Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "radar_station": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Nearest NEXRAD radar station identifier from properties.radarStation, such as ATX for Seattle-area land zones, or null when the zone metadata does not declare a radar station."
+                  },
+                  "effective_date": {
+                    "type": "datetime",
+                    "description": "Date and time at which this zone definition became effective, from properties.effectiveDate."
+                  },
+                  "expiration_date": {
+                    "type": "datetime",
+                    "description": "Date and time at which this zone definition expires, from properties.expirationDate. NWS currently uses a far-future sentinel date for active zone definitions."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast": {
+          "name": "LandZoneForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/nws-forecasts/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast.json",
+                "type": "object",
+                "name": "LandZoneForecast",
+                "description": "Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone.",
+                "required": [
+                  "zone_id",
+                  "updated",
+                  "periods"
+                ],
+                "properties": {
+                  "zone_id": {
+                    "type": "string",
+                    "description": "Forecast zone identifier for the land forecast snapshot. This matches the configured zone identifier and the upstream properties.zone URL suffix.",
+                    "pattern": "^[A-Z]{3}[0-9]{3}$"
+                  },
+                  "updated": {
+                    "type": "datetime",
+                    "description": "Timestamp from properties.updated indicating when the NWS most recently updated this zone forecast."
+                  },
+                  "periods": {
+                    "type": "array",
+                    "description": "Ordered narrative forecast periods from properties.periods. Each element represents one named daypart or day-level outlook such as Tonight, Tuesday, or Tuesday Night.",
+                    "items": {
+                      "type": "object",
+                      "name": "LandForecastPeriod",
+                      "description": "One ordered narrative period from the NWS land zone forecast payload.",
+                      "required": [
+                        "period_number",
+                        "period_name",
+                        "detailed_forecast"
+                      ],
+                      "properties": {
+                        "period_number": {
+                          "type": "int32",
+                          "description": "Ordinal period number from properties.periods[].number. NWS numbers the periods in forecast order starting at 1."
+                        },
+                        "period_name": {
+                          "type": "string",
+                          "description": "Human-readable forecast period label from properties.periods[].name, for example Tonight, Tuesday, or Tuesday Night."
+                        },
+                        "detailed_forecast": {
+                          "type": "string",
+                          "description": "Full narrative forecast text from properties.periods[].detailedForecast. This text carries the forecast content including precipitation chances, temperature ranges, and wind conditions."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast": {
+          "name": "MarineZoneForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/nws-forecasts/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast.json",
+                "type": "object",
+                "name": "MarineZoneForecast",
+                "description": "Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone.",
+                "required": [
+                  "zone_id",
+                  "zone_name",
+                  "issued_at_text",
+                  "periods",
+                  "bulletin_text"
+                ],
+                "properties": {
+                  "zone_id": {
+                    "type": "string",
+                    "description": "Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal.",
+                    "pattern": "^[A-Z]{3}[0-9]{3}$"
+                  },
+                  "zone_name": {
+                    "type": "string",
+                    "description": "Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin."
+                  },
+                  "product_title": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Bulletin title line, such as 'Coastal Waters Forecast for Washington'."
+                  },
+                  "office_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'."
+                  },
+                  "issued_at_text": {
+                    "type": "string",
+                    "description": "Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT."
+                  },
+                  "expires_text": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Raw Expires header value from the bulletin preamble, preserved as text because the feed does not provide an explicit timezone annotation in ISO form."
+                  },
+                  "wmo_header": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "WMO abbreviated heading line from the marine bulletin, for example 'FZUS56 KSEW 132142'."
+                  },
+                  "bulletin_awips_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "AWIPS product identifier line from the bulletin, for example CWFSEW."
+                  },
+                  "synopsis": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Narrative synopsis paragraph that appears before the zone-specific section and describes the broader marine area covered by the bulletin."
+                  },
+                  "periods": {
+                    "type": "array",
+                    "description": "Ordered narrative forecast periods parsed from the zone-specific section. Each element preserves the named period heading and its free-text forecast text.",
+                    "items": {
+                      "type": "object",
+                      "name": "MarineForecastPeriod",
+                      "description": "One named forecast period parsed from the marine text bulletin.",
+                      "required": [
+                        "period_name",
+                        "forecast_text"
+                      ],
+                      "properties": {
+                        "period_name": {
+                          "type": "string",
+                          "description": "Uppercase period label parsed from the leading token in the bulletin section, such as TONIGHT, TUE, or SAT NIGHT."
+                        },
+                        "forecast_text": {
+                          "type": "string",
+                          "description": "Narrative forecast text for the period, preserving the marine bulletin wording about winds, seas, waves, precipitation, and outlook conditions."
+                        }
+                      }
+                    }
+                  },
+                  "bulletin_text": {
+                    "type": "string",
+                    "description": "Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

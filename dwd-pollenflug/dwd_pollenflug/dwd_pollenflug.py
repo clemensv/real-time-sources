@@ -227,8 +227,13 @@ def main():
                         help="Password for SASL PLAIN authentication")
     parser.add_argument('--connection-string', type=str,
                         help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
+    parser.add_argument('--once', action='store_true',
+                        help="Run a single polling cycle and exit (used by scheduled hosts e.g. Fabric notebooks)")
 
     args = parser.parse_args()
+
+    once_env = os.getenv('ONCE_MODE', '').strip().lower() in ('1', 'true', 'yes')
+    once = bool(args.once or once_env)
 
     if not args.connection_string:
         args.connection_string = os.getenv('CONNECTION_STRING')
@@ -275,7 +280,7 @@ def main():
         kafka_topic=kafka_topic,
         last_polled_file=args.last_polled_file,
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=once)
 
 
 if __name__ == "__main__":

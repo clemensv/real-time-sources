@@ -111,6 +111,17 @@ The upstream station GeoJSON uses `geometry.coordinates[0]` as latitude and
 ordering, and the bridge preserves the actual upstream semantics rather than the
 convention.
 
+## Fabric notebook hosting
+
+This source ships a Fabric notebook feeder at
+`notebook/defra-aurn-feed.ipynb` that runs the bridge in `--once` mode on a
+Fabric schedule. Deploy it with
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1);
+the script builds a per-source Fabric Environment with the producer and
+bridge wheels, binds the Lakehouse, KQL database, and Environment to the
+notebook, looks up the Event Stream connection string at runtime via the
+Topology API, and schedules the notebook.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

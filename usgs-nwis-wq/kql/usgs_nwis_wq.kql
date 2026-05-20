@@ -1,0 +1,172 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['gov.usgs.waterservices.wq.MonitoringSite'] (
+   [site_number]: string,
+   [site_name]: string,
+   [agency_code]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [site_type]: string,
+   [state_code]: string,
+   [county_code]: string,
+   [huc_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table ['gov.usgs.waterservices.wq.MonitoringSite'] ingestion json mapping "gov.usgs.waterservices.wq.MonitoringSite_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_number", "path": "$.site_number"},
+  {"column": "site_name", "path": "$.site_name"},
+  {"column": "agency_code", "path": "$.agency_code"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "site_type", "path": "$.site_type"},
+  {"column": "state_code", "path": "$.state_code"},
+  {"column": "county_code", "path": "$.county_code"},
+  {"column": "huc_code", "path": "$.huc_code"},
+]
+```
+
+.create-or-alter table ['gov.usgs.waterservices.wq.MonitoringSite'] ingestion json mapping "gov.usgs.waterservices.wq.MonitoringSite_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_number", "path": "$.data.site_number"},
+  {"column": "site_name", "path": "$.data.site_name"},
+  {"column": "agency_code", "path": "$.data.agency_code"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "site_type", "path": "$.data.site_type"},
+  {"column": "state_code", "path": "$.data.state_code"},
+  {"column": "county_code", "path": "$.data.county_code"},
+  {"column": "huc_code", "path": "$.data.huc_code"},
+]
+```
+
+.drop materialized-view ['gov.usgs.waterservices.wq.MonitoringSiteLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['gov.usgs.waterservices.wq.MonitoringSiteLatest'] on table ['gov.usgs.waterservices.wq.MonitoringSite'] {
+    ['gov.usgs.waterservices.wq.MonitoringSite'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['gov.usgs.waterservices.wq.MonitoringSite'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.WaterQuality.Sites.MonitoringSite') | project['site_number'] = tostring(data.['site_number']),['site_name'] = tostring(data.['site_name']),['agency_code'] = tostring(data.['agency_code']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['site_type'] = tostring(data.['site_type']),['state_code'] = tostring(data.['state_code']),['county_code'] = tostring(data.['county_code']),['huc_code'] = tostring(data.['huc_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['gov.usgs.waterservices.wq.WaterQualityReading'] (
+   [site_number]: string,
+   [site_name]: string,
+   [parameter_code]: string,
+   [parameter_name]: string,
+   [value]: real,
+   [unit]: string,
+   [qualifier]: string,
+   [date_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table ['gov.usgs.waterservices.wq.WaterQualityReading'] ingestion json mapping "gov.usgs.waterservices.wq.WaterQualityReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_number", "path": "$.site_number"},
+  {"column": "site_name", "path": "$.site_name"},
+  {"column": "parameter_code", "path": "$.parameter_code"},
+  {"column": "parameter_name", "path": "$.parameter_name"},
+  {"column": "value", "path": "$.value"},
+  {"column": "unit", "path": "$.unit"},
+  {"column": "qualifier", "path": "$.qualifier"},
+  {"column": "date_time", "path": "$.date_time"},
+]
+```
+
+.create-or-alter table ['gov.usgs.waterservices.wq.WaterQualityReading'] ingestion json mapping "gov.usgs.waterservices.wq.WaterQualityReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_number", "path": "$.data.site_number"},
+  {"column": "site_name", "path": "$.data.site_name"},
+  {"column": "parameter_code", "path": "$.data.parameter_code"},
+  {"column": "parameter_name", "path": "$.data.parameter_name"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "unit", "path": "$.data.unit"},
+  {"column": "qualifier", "path": "$.data.qualifier"},
+  {"column": "date_time", "path": "$.data.date_time"},
+]
+```
+
+.drop materialized-view ['gov.usgs.waterservices.wq.WaterQualityReadingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['gov.usgs.waterservices.wq.WaterQualityReadingLatest'] on table ['gov.usgs.waterservices.wq.WaterQualityReading'] {
+    ['gov.usgs.waterservices.wq.WaterQualityReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['gov.usgs.waterservices.wq.WaterQualityReading'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.WaterQuality.Readings.WaterQualityReading') | project['site_number'] = tostring(data.['site_number']),['site_name'] = tostring(data.['site_name']),['parameter_code'] = tostring(data.['parameter_code']),['parameter_name'] = tostring(data.['parameter_name']),['value'] = toreal(data.['value']),['unit'] = tostring(data.['unit']),['qualifier'] = tostring(data.['qualifier']),['date_time'] = tostring(data.['date_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

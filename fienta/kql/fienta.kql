@@ -1,0 +1,273 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Event] (
+   [event_id]: string,
+   [name]: string,
+   [start]: string,
+   [end]: string,
+   [duration_text]: string,
+   [time_notes]: string,
+   [event_status]: string,
+   [sale_status]: string,
+   [attendance_mode]: string,
+   [venue_name]: string,
+   [venue_id]: string,
+   [address]: string,
+   [postal_code]: string,
+   [description]: string,
+   [url]: string,
+   [buy_tickets_url]: string,
+   [image_url]: string,
+   [image_small_url]: string,
+   [series_id]: string,
+   [organizer_name]: string,
+   [organizer_phone]: string,
+   [organizer_email]: string,
+   [organizer_id]: int,
+   [categories]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Event] docstring "{\"description\": \"Reference data for a Fienta public event as exposed by the public events endpoint. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with the latest published event metadata from https://fienta.com/api/v1/public/events.\"}";
+
+.alter table [Event] column-docstrings (
+   [event_id]: "{\"description\": \"Unique stable identifier for the event as assigned by Fienta. Sourced from the 'id' field in the Fienta API response and used as the CloudEvents subject and Kafka key.\"}",
+   [name]: "{\"description\": \"Display title of the event as shown on the public event page. Sourced from the 'title' field in the Fienta API response.\"}",
+   [start]: "{\"description\": \"Local event start datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Sourced from the 'starts_at' field in the Fienta API response.\"}",
+   [end]: "{\"description\": \"Local event end datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload has no end time. Sourced from the 'ends_at' field in the Fienta API response.\"}",
+   [duration_text]: "{\"description\": \"Human-readable duration summary rendered by Fienta for the event schedule, for example 'Tue 1. April 2025 at 09:00 - Thu 31. December 2026 at 17:00'. Sourced from the 'duration_string' field in the Fienta API response.\"}",
+   [time_notes]: "{\"description\": \"Free-form notes about the event timing published by the organizer. Null when the event listing has no timing note. Sourced from the 'notes_about_time' field in the Fienta API response.\"}",
+   [event_status]: "{\"description\": \"Lifecycle status of the event listing as published by Fienta, for example 'scheduled'. Sourced from the 'event_status' field in the Fienta API response.\"}",
+   [sale_status]: "{\"description\": \"Current ticket sale status of the event. Observed values in the public feed include 'onSale', 'soldOut', 'notOnSale', and 'saleEnded'. Sourced from the 'sale_status' field in the Fienta API response.\"}",
+   [attendance_mode]: "{\"description\": \"Attendance mode reported by Fienta for the event, for example 'offline'. Null when the public event listing omits the field. Sourced from the 'attendance_mode' field in the Fienta API response.\"}",
+   [venue_name]: "{\"description\": \"Venue or place name shown on the public event listing, for example 'Worldwide' or a named physical venue. Null when not supplied. Sourced from the 'venue' field in the Fienta API response.\"}",
+   [venue_id]: "{\"description\": \"Venue identifier provided by Fienta for the event location. Null when the listing has no venue identifier. Sourced from the 'venue_id' field in the Fienta API response.\"}",
+   [address]: "{\"description\": \"Postal street address for the venue as shown on the public event listing. Null when the address is not supplied. Sourced from the 'address' field in the Fienta API response.\"}",
+   [postal_code]: "{\"description\": \"Postal code for the venue address. Null when the event listing has no postal code. Sourced from the 'address_postal_code' field in the Fienta API response.\"}",
+   [description]: "{\"description\": \"Event description as published by the organizer. The public payload can contain HTML markup or be empty. Sourced from the 'description' field in the Fienta API response.\"}",
+   [url]: "{\"description\": \"Public Fienta URL for the event details page. Sourced from the 'url' field in the Fienta API response.\"}",
+   [buy_tickets_url]: "{\"description\": \"Public URL that Fienta exposes for the ticket purchase flow. Null when the listing does not include a dedicated purchase URL. Sourced from the 'buy_tickets_url' field in the Fienta API response.\"}",
+   [image_url]: "{\"description\": \"URL of the primary promotional image for the event. Null when no image is provided. Sourced from the 'image_url' field in the Fienta API response.\"}",
+   [image_small_url]: "{\"description\": \"URL of the smaller promotional image variant for the event. Null when the public event listing does not include a smaller image rendition. Sourced from the 'image_small_url' field in the Fienta API response.\"}",
+   [series_id]: "{\"description\": \"Series identifier or slug used by Fienta to group related event listings. Null when the event is not associated with a series. Sourced from the 'series_id' field in the Fienta API response.\"}",
+   [organizer_name]: "{\"description\": \"Display name of the event organizer. Null when the organizer name is absent from the public payload. Sourced from the 'organizer_name' field in the Fienta API response.\"}",
+   [organizer_phone]: "{\"description\": \"Organizer phone number published on the event listing. Null when the organizer did not expose a phone number. Sourced from the 'organizer_phone' field in the Fienta API response.\"}",
+   [organizer_email]: "{\"description\": \"Organizer email address published on the event listing. Null when the organizer did not expose an email address. Sourced from the 'organizer_email' field in the Fienta API response.\"}",
+   [organizer_id]: "{\"description\": \"Numeric identifier of the organizer account in Fienta. Null when the public event payload omits the organizer identifier. Sourced from the 'organizer_id' field in the Fienta API response.\"}",
+   [categories]: "{\"description\": \"List of category labels assigned to the event listing, such as 'other' or 'family'. The bridge emits an empty array when the public event payload omits the categories array. Sourced from the 'categories' field in the Fienta API response.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"List of category labels assigned to the event listing, such as 'other' or 'family'. The bridge emits an empty array when the public event payload omits the categories array. Sourced from the 'categories' field in the Fienta API response.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Event] ingestion json mapping "Event_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "start", "path": "$.start"},
+  {"column": "end", "path": "$.end"},
+  {"column": "duration_text", "path": "$.duration_text"},
+  {"column": "time_notes", "path": "$.time_notes"},
+  {"column": "event_status", "path": "$.event_status"},
+  {"column": "sale_status", "path": "$.sale_status"},
+  {"column": "attendance_mode", "path": "$.attendance_mode"},
+  {"column": "venue_name", "path": "$.venue_name"},
+  {"column": "venue_id", "path": "$.venue_id"},
+  {"column": "address", "path": "$.address"},
+  {"column": "postal_code", "path": "$.postal_code"},
+  {"column": "description", "path": "$.description"},
+  {"column": "url", "path": "$.url"},
+  {"column": "buy_tickets_url", "path": "$.buy_tickets_url"},
+  {"column": "image_url", "path": "$.image_url"},
+  {"column": "image_small_url", "path": "$.image_small_url"},
+  {"column": "series_id", "path": "$.series_id"},
+  {"column": "organizer_name", "path": "$.organizer_name"},
+  {"column": "organizer_phone", "path": "$.organizer_phone"},
+  {"column": "organizer_email", "path": "$.organizer_email"},
+  {"column": "organizer_id", "path": "$.organizer_id"},
+  {"column": "categories", "path": "$.categories"},
+]
+```
+
+.create-or-alter table [Event] ingestion json mapping "Event_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "start", "path": "$.data.start"},
+  {"column": "end", "path": "$.data.end"},
+  {"column": "duration_text", "path": "$.data.duration_text"},
+  {"column": "time_notes", "path": "$.data.time_notes"},
+  {"column": "event_status", "path": "$.data.event_status"},
+  {"column": "sale_status", "path": "$.data.sale_status"},
+  {"column": "attendance_mode", "path": "$.data.attendance_mode"},
+  {"column": "venue_name", "path": "$.data.venue_name"},
+  {"column": "venue_id", "path": "$.data.venue_id"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "postal_code", "path": "$.data.postal_code"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "buy_tickets_url", "path": "$.data.buy_tickets_url"},
+  {"column": "image_url", "path": "$.data.image_url"},
+  {"column": "image_small_url", "path": "$.data.image_small_url"},
+  {"column": "series_id", "path": "$.data.series_id"},
+  {"column": "organizer_name", "path": "$.data.organizer_name"},
+  {"column": "organizer_phone", "path": "$.data.organizer_phone"},
+  {"column": "organizer_email", "path": "$.data.organizer_email"},
+  {"column": "organizer_id", "path": "$.data.organizer_id"},
+  {"column": "categories", "path": "$.data.categories"},
+]
+```
+
+.drop materialized-view EventLatest ifexists;
+
+.create materialized-view with (backfill=true) EventLatest on table Event {
+    Event | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Event] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Com.Fienta.Event') | project['event_id'] = tostring(data.['event_id']),['name'] = tostring(data.['name']),['start'] = tostring(data.['start']),['end'] = tostring(data.['end']),['duration_text'] = tostring(data.['duration_text']),['time_notes'] = tostring(data.['time_notes']),['event_status'] = tostring(data.['event_status']),['sale_status'] = tostring(data.['sale_status']),['attendance_mode'] = tostring(data.['attendance_mode']),['venue_name'] = tostring(data.['venue_name']),['venue_id'] = tostring(data.['venue_id']),['address'] = tostring(data.['address']),['postal_code'] = tostring(data.['postal_code']),['description'] = tostring(data.['description']),['url'] = tostring(data.['url']),['buy_tickets_url'] = tostring(data.['buy_tickets_url']),['image_url'] = tostring(data.['image_url']),['image_small_url'] = tostring(data.['image_small_url']),['series_id'] = tostring(data.['series_id']),['organizer_name'] = tostring(data.['organizer_name']),['organizer_phone'] = tostring(data.['organizer_phone']),['organizer_email'] = tostring(data.['organizer_email']),['organizer_id'] = toint(data.['organizer_id']),['categories'] = todynamic(data.['categories']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EventSaleStatus] (
+   [event_id]: string,
+   [name]: string,
+   [sale_status]: string,
+   [event_status]: string,
+   [start]: string,
+   [end]: string,
+   [url]: string,
+   [buy_tickets_url]: string,
+   [observed_at]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [EventSaleStatus] docstring "{\"description\": \"Telemetry event emitted whenever the bridge observes a change in the sale_status value of a Fienta public event between two polls of the public events endpoint.\"}";
+
+.alter table [EventSaleStatus] column-docstrings (
+   [event_id]: "{\"description\": \"Unique stable identifier for the event as assigned by Fienta. Sourced from the 'id' field in the Fienta API response and used as the CloudEvents subject and Kafka key.\"}",
+   [name]: "{\"description\": \"Display title of the event at the time the bridge observed the sale status change. Sourced from the 'title' field in the Fienta API response.\"}",
+   [sale_status]: "{\"description\": \"Current ticket sale status observed for the event, such as 'onSale', 'soldOut', 'notOnSale', or 'saleEnded'. Sourced from the 'sale_status' field in the Fienta API response.\"}",
+   [event_status]: "{\"description\": \"Lifecycle status of the event listing at the time of observation, for example 'scheduled'. Null when the public payload omits the value. Sourced from the 'event_status' field in the Fienta API response.\"}",
+   [start]: "{\"description\": \"Local event start datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload omits the start time. Sourced from the 'starts_at' field in the Fienta API response.\"}",
+   [end]: "{\"description\": \"Local event end datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload omits the end time. Sourced from the 'ends_at' field in the Fienta API response.\"}",
+   [url]: "{\"description\": \"Public Fienta URL for the event details page. Null when the public payload omits the event URL. Sourced from the 'url' field in the Fienta API response.\"}",
+   [buy_tickets_url]: "{\"description\": \"Public URL that Fienta exposes for the ticket purchase flow at the time of the observation. Null when the listing does not include a dedicated purchase URL. Sourced from the 'buy_tickets_url' field in the Fienta API response.\"}",
+   [observed_at]: "{\"description\": \"RFC 3339 UTC timestamp generated by the bridge when it observed the sale_status change while polling the Fienta public events API.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [EventSaleStatus] ingestion json mapping "EventSaleStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "sale_status", "path": "$.sale_status"},
+  {"column": "event_status", "path": "$.event_status"},
+  {"column": "start", "path": "$.start"},
+  {"column": "end", "path": "$.end"},
+  {"column": "url", "path": "$.url"},
+  {"column": "buy_tickets_url", "path": "$.buy_tickets_url"},
+  {"column": "observed_at", "path": "$.observed_at"},
+]
+```
+
+.create-or-alter table [EventSaleStatus] ingestion json mapping "EventSaleStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "sale_status", "path": "$.data.sale_status"},
+  {"column": "event_status", "path": "$.data.event_status"},
+  {"column": "start", "path": "$.data.start"},
+  {"column": "end", "path": "$.data.end"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "buy_tickets_url", "path": "$.data.buy_tickets_url"},
+  {"column": "observed_at", "path": "$.data.observed_at"},
+]
+```
+
+.drop materialized-view EventSaleStatusLatest ifexists;
+
+.create materialized-view with (backfill=true) EventSaleStatusLatest on table EventSaleStatus {
+    EventSaleStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EventSaleStatus] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Com.Fienta.EventSaleStatus') | project['event_id'] = tostring(data.['event_id']),['name'] = tostring(data.['name']),['sale_status'] = tostring(data.['sale_status']),['event_status'] = tostring(data.['event_status']),['start'] = tostring(data.['start']),['end'] = tostring(data.['end']),['url'] = tostring(data.['url']),['buy_tickets_url'] = tostring(data.['buy_tickets_url']),['observed_at'] = tostring(data.['observed_at']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -19,28 +19,26 @@ import avro.io
 @dataclass
 class Document:
     """
-    AirTemperature10Min
+    Solar10Min
     Attributes:
         station_id (str): 
         timestamp (str): 
         quality_level (typing.Optional[int]): 
-        pressure_station_level (typing.Optional[float]): 
-        air_temperature_2m (typing.Optional[float]): 
-        air_temperature_5cm (typing.Optional[float]): 
-        relative_humidity (typing.Optional[float]): 
-        dew_point_temperature (typing.Optional[float]): """
+        global_radiation (typing.Optional[float]): 
+        sunshine_duration (typing.Optional[float]): 
+        diffuse_radiation (typing.Optional[float]): 
+        longwave_radiation (typing.Optional[float]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
-    pressure_station_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_station_level"))
-    air_temperature_2m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_2m"))
-    air_temperature_5cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_5cm"))
-    relative_humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
-    dew_point_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dew_point_temperature"))
+    global_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_radiation"))
+    sunshine_duration: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
+    diffuse_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="diffuse_radiation"))
+    longwave_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longwave_radiation"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"document\", \"doc\": \"AirTemperature10Min\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"quality_level\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"pressure_station_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"air_temperature_2m\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"air_temperature_5cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"relative_humidity\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"dew_point_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"document\", \"doc\": \"Solar10Min\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"quality_level\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"global_radiation\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"sunshine_duration\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"diffuse_radiation\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"longwave_radiation\", \"type\": [\"null\", \"double\"], \"default\": null}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -48,11 +46,10 @@ class Document:
         self.station_id=str(self.station_id)
         self.timestamp=str(self.timestamp)
         self.quality_level=int(self.quality_level) if self.quality_level else None
-        self.pressure_station_level=float(self.pressure_station_level) if self.pressure_station_level else None
-        self.air_temperature_2m=float(self.air_temperature_2m) if self.air_temperature_2m else None
-        self.air_temperature_5cm=float(self.air_temperature_5cm) if self.air_temperature_5cm else None
-        self.relative_humidity=float(self.relative_humidity) if self.relative_humidity else None
-        self.dew_point_temperature=float(self.dew_point_temperature) if self.dew_point_temperature else None
+        self.global_radiation=float(self.global_radiation) if self.global_radiation else None
+        self.sunshine_duration=float(self.sunshine_duration) if self.sunshine_duration else None
+        self.diffuse_radiation=float(self.diffuse_radiation) if self.diffuse_radiation else None
+        self.longwave_radiation=float(self.longwave_radiation) if self.longwave_radiation else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Document':

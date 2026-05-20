@@ -1,3 +1,7 @@
-from .kystverket_ais_producer_data import Document
+from .positionreportclassa import PositionReportClassA
+from .positionreportclassb import PositionReportClassB
+from .staticdataclassb import StaticDataClassB
+from .staticvoyagedata import StaticVoyageData
+from .aidtonavigation import AidToNavigation
 
-__all__ = ["Document"]
+__all__ = ["PositionReportClassA", "PositionReportClassB", "StaticDataClassB", "StaticVoyageData", "AidToNavigation"]

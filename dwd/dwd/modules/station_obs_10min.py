@@ -28,8 +28,8 @@ CATEGORY_EVENT_TYPES = {
     "precipitation": "precipitation_10min",
     "wind": "wind_10min",
     "solar": "solar_10min",
-    "extreme_wind": "wind_10min",
-    "extreme_temperature": "air_temperature_10min",
+    "extreme_wind": "extreme_wind_10min",
+    "extreme_temperature": "extreme_temperature_10min",
 }
 
 

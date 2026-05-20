@@ -41,6 +41,48 @@
       "messagegroups": [
         "#/messagegroups/DE.DWD.Weather"
       ]
+    },
+    "DE.DWD.Radar.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd",
+          "key": "{file_url}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Radar"
+      ]
+    },
+    "DE.DWD.Forecast.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd",
+          "key": "{file_url}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Forecast"
+      ]
     }
   },
   "messagegroups": {
@@ -153,6 +195,42 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.HourlyObservation"
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeWind10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeWind10Min"
+        },
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeTemperature10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeTemperature10Min"
         }
       }
     },
@@ -177,6 +255,86 @@
           "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.Weather.Alert"
         }
       }
+    },
+    "DE.DWD.Radar": {
+      "messages": {
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarProductCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{file_url}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarProductCatalog"
+        },
+        "DE.DWD.Radar.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarFileProduct"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{file_url}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarFileProduct"
+        }
+      }
+    },
+    "DE.DWD.Forecast": {
+      "messages": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.ForecastModelCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{file_url}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.ForecastModelCatalog"
+        },
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.IconD2ForecastFile"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{file_url}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.IconD2ForecastFile"
+        }
+      }
     }
   },
   "schemagroups": {
@@ -199,7 +357,7 @@
                   "longitude",
                   "elevation"
                 ],
-                "name": "document",
+                "name": "StationMetadata",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -249,7 +407,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "AirTemperature10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -320,7 +478,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Precipitation10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -373,7 +531,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Wind10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -426,7 +584,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Solar10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -492,7 +650,7 @@
                   "timestamp",
                   "parameter"
                 ],
-                "name": "document",
+                "name": "HourlyObservation",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -545,7 +703,7 @@
                   "severity",
                   "event"
                 ],
-                "name": "document",
+                "name": "Alert",
                 "properties": {
                   "identifier": {
                     "type": "string"
@@ -601,482 +759,324 @@
               }
             }
           }
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "ExtremeWind10Min",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "STATIONS_ID"
+                    }
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "MESS_DATUM"
+                    }
+                  },
+                  "quality_level": {
+                    "type": "int32",
+                    "altnames": {
+                      "lang:de": "QN"
+                    }
+                  },
+                  "wind_speed_maximum": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "FX_10"
+                    }
+                  },
+                  "wind_speed_minimum": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "FNX_10"
+                    }
+                  },
+                  "wind_direction_at_maximum": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "DX_10"
+                    }
+                  }
+                },
+                "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeWind10Min",
+                "description": "ExtremeWind10Min"
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "ExtremeTemperature10Min",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "STATIONS_ID"
+                    }
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "MESS_DATUM"
+                    }
+                  },
+                  "quality_level": {
+                    "type": "int32",
+                    "altnames": {
+                      "lang:de": "QN"
+                    }
+                  },
+                  "air_temperature_maximum_2m": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "TX_10"
+                    }
+                  },
+                  "air_temperature_minimum_5cm": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "TN_10"
+                    }
+                  }
+                },
+                "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeTemperature10Min",
+                "description": "ExtremeTemperature10Min"
+              }
+            }
+          }
         }
       }
     },
-    "DE.DWD.CDC.avro": {
+    "DE.DWD.Radar.jstruct": {
       "schemas": {
-        "DE.DWD.CDC.StationMetadata": {
-          "name": "StationMetadata",
-          "format": "Avro/1.11.3",
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
           "versions": {
             "1": {
-              "format": "Avro/1.11.3",
+              "format": "JsonStructure/draft-02",
               "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "StationMetadata",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "RadarProductCatalog",
+                "required": [
+                  "product",
+                  "file_url"
+                ],
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "description": "Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value."
                   },
-                  {
-                    "name": "station_name",
-                    "type": "string"
+                  "file_url": {
+                    "type": "string",
+                    "description": "Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'."
                   },
-                  {
-                    "name": "latitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "longitude",
-                    "type": "double"
-                  },
-                  {
-                    "name": "elevation",
-                    "type": "double"
-                  },
-                  {
-                    "name": "state",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "from_date",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "to_date",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
+                  "description": {
+                    "type": "string",
+                    "description": "Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata."
                   }
-                ]
+                },
+                "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarProductCatalog",
+                "description": "Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered."
               }
             }
           }
         },
-        "DE.DWD.CDC.AirTemperature10Min": {
-          "name": "AirTemperature10Min",
-          "format": "Avro/1.11.3",
+        "DE.DWD.Radar.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
           "versions": {
             "1": {
-              "format": "Avro/1.11.3",
+              "format": "JsonStructure/draft-02",
               "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "AirTemperature10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "RadarFileProduct",
+                "required": [
+                  "file_url",
+                  "product",
+                  "file_name",
+                  "modified"
+                ],
+                "properties": {
+                  "file_url": {
+                    "type": "string",
+                    "description": "Absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. The URL is publicly fetchable with an unauthenticated HTTP GET and supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event by performing a plain GET against this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key, which guarantees per-file ordering. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/composite_wn_20260517_2005-hd5'."
                   },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
+                  "product": {
+                    "type": "string",
+                    "description": "Short identifier of the radar product family this file belongs to (for example 'wn', 'rv', 'dmax'); matches the 'product' field of the corresponding RadarProductCatalog event."
                   },
-                  {
-                    "name": "quality_level",
+                  "file_name": {
+                    "type": "string",
+                    "description": "Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url."
+                  },
+                  "modified": {
+                    "type": "string",
+                    "description": "Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication."
+                  },
+                  "size_bytes": {
                     "type": [
-                      "null",
-                      "int"
+                      "int64",
+                      "null"
                     ],
-                    "default": null
-                  },
-                  {
-                    "name": "pressure_station_level",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "air_temperature_2m",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "air_temperature_5cm",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "relative_humidity",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "dew_point_temperature",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
+                    "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites)."
                   }
-                ]
+                },
+                "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarFileProduct",
+                "description": "Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.jstruct": {
+      "schemas": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "ForecastModelCatalog",
+                "required": [
+                  "model",
+                  "file_url"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours."
+                  },
+                  "file_url": {
+                    "type": "string",
+                    "description": "Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata."
+                  }
+                },
+                "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/ForecastModelCatalog",
+                "description": "Reference (catalog) event describing a single NWP forecast model family published by DWD Open Data. One event is emitted per model the first time the bridge observes it, so consumers can build a catalog of available models and the URLs from which their forecast files can be discovered."
               }
             }
           }
         },
-        "DE.DWD.CDC.Precipitation10Min": {
-          "name": "Precipitation10Min",
-          "format": "Avro/1.11.3",
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
           "versions": {
             "1": {
-              "format": "Avro/1.11.3",
+              "format": "JsonStructure/draft-02",
               "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Precipitation10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "IconD2ForecastFile",
+                "required": [
+                  "file_url",
+                  "model",
+                  "file_name",
+                  "modified"
+                ],
+                "properties": {
+                  "file_url": {
+                    "type": "string",
+                    "description": "Absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. The file is bzip2-compressed GRIB2 (.grib2.bz2) and can be fetched with an unauthenticated HTTP GET; the server supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event with a plain GET against this URL. Each file holds a single variable at a single vertical level for a single forecast lead hour, which keeps per-file payloads small (typically a few hundred KB compressed). Also used verbatim as the CloudEvents 'subject' and the Kafka partition key. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t/icon-d2_germany_icosahedral_model-level_2026051700_003_10_t.grib2.bz2'."
                   },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
+                  "model": {
+                    "type": "string",
+                    "description": "Identifier of the source forecast model; matches the 'model' field of the corresponding ForecastModelCatalog event. Currently always 'icon-d2'."
                   },
-                  {
-                    "name": "quality_level",
+                  "file_name": {
+                    "type": "string",
+                    "description": "Bare file name as listed in the DWD Apache directory index, following the DWD convention 'icon-d2_<grid>_<level_type>_<run>_<lead>_<level>_<parameter>.grib2.bz2'. Convenient for parsing without splitting file_url."
+                  },
+                  "run": {
                     "type": [
-                      "null",
-                      "int"
+                      "string",
+                      "null"
                     ],
-                    "default": null
+                    "description": "Model run cycle in 'YYYYMMDDHH' UTC form, parsed from file_name (e.g. '2026051700' for the 00 UTC run on 2026-05-17). ICON-D2 is run every three hours. Null when the file name does not match the expected pattern (for example time-invariant or auxiliary files)."
                   },
-                  {
-                    "name": "precipitation_height",
+                  "forecast_hour": {
                     "type": [
-                      "null",
-                      "double"
+                      "int32",
+                      "null"
                     ],
-                    "default": null
+                    "description": "Forecast lead time in whole hours from the start of the run, parsed from file_name. For ICON-D2 this ranges from 0 to 48. Null when the file name does not match the expected pattern."
                   },
-                  {
-                    "name": "precipitation_indicator",
+                  "parameter": {
                     "type": [
-                      "null",
-                      "int"
+                      "string",
+                      "null"
                     ],
-                    "default": null
+                    "description": "Short ICON-D2 parameter identifier parsed from file_name (for example 't' for temperature, 'u'/'v' for wind components, 'tot_prec' for total precipitation, 'clct' for total cloud cover, 'alb_rad' for shortwave albedo)."
+                  },
+                  "level_type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Vertical level encoding parsed from file_name. Common values are 'single-level' (surface and 2D fields), 'model-level' (native ICON hybrid levels indexed 1..65 from top to bottom), 'pressure-level' (interpolated to fixed pressure surfaces, in hPa), and 'time-invariant' (constant fields such as orography)."
+                  },
+                  "level": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted."
+                  },
+                  "modified": {
+                    "type": "string",
+                    "description": "Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication."
+                  },
+                  "size_bytes": {
+                    "type": [
+                      "int64",
+                      "null"
+                    ],
+                    "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed."
                   }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.Wind10Min": {
-          "name": "Wind10Min",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Wind10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "wind_speed",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "wind_direction",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.Solar10Min": {
-          "name": "Solar10Min",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Solar10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "global_radiation",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "sunshine_duration",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "diffuse_radiation",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "longwave_radiation",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.HourlyObservation": {
-          "name": "HourlyObservation",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "HourlyObservation",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "parameter",
-                    "type": "string"
-                  },
-                  {
-                    "name": "value",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "unit",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.Weather.Alert": {
-          "name": "Alert",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Alert",
-                "fields": [
-                  {
-                    "name": "identifier",
-                    "type": "string"
-                  },
-                  {
-                    "name": "sender",
-                    "type": "string"
-                  },
-                  {
-                    "name": "sent",
-                    "type": "string"
-                  },
-                  {
-                    "name": "status",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "msg_type",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "severity",
-                    "type": "string"
-                  },
-                  {
-                    "name": "urgency",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "certainty",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "event",
-                    "type": "string"
-                  },
-                  {
-                    "name": "headline",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "description",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "effective",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "onset",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "expires",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "area_desc",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "geocodes",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
+                },
+                "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/IconD2ForecastFile",
+                "description": "Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload."
               }
             }
           }

@@ -1031,6 +1031,9 @@ def main():
                         help="Password for SASL PLAIN authentication")
     parser.add_argument('--connection-string', type=str,
                         help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
+    parser.add_argument('--once', action='store_true',
+                        default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -1039,7 +1042,7 @@ def main():
     if not args.last_polled_file:
         args.last_polled_file = os.getenv('NDBC_LAST_POLLED_FILE')
         if not args.last_polled_file:
-            args.last_polled_file = os.path.expanduser('~/.ndbc_last_polled.json')
+            args.last_polled_file = os.getenv('STATE_FILE') or os.path.expanduser('~/.ndbc_last_polled.json')
 
     if args.connection_string:
         config_params = parse_connection_string(args.connection_string)
@@ -1078,7 +1081,7 @@ def main():
         kafka_topic=kafka_topic,
         last_polled_file=args.last_polled_file
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

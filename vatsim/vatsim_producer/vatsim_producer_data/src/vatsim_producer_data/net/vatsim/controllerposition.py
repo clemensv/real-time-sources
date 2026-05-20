@@ -13,7 +13,6 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -28,7 +27,7 @@ class ControllerPosition:
         facility (int): VATSIM facility type code.
         rating (int): VATSIM ATC rating.
         text_atis (typing.Optional[str]): Controller ATIS text, lines joined by newline. Null when not set.
-        last_updated (datetime.datetime): UTC timestamp of last update."""
+        last_updated (str): UTC timestamp of last update."""
     
     cid: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cid"))
     callsign: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
@@ -36,10 +35,10 @@ class ControllerPosition:
     facility: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="facility"))
     rating: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rating"))
     text_atis: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="text_atis"))
-    last_updated: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_updated"))
+    last_updated: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_updated"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"ControllerPosition\", \"namespace\": \"net.vatsim\", \"doc\": \"Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.\", \"fields\": [{\"name\": \"cid\", \"type\": \"int\", \"doc\": \"VATSIM Certificate Identifier (CID).\"}, {\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"Controller position callsign.\"}, {\"name\": \"frequency\", \"type\": \"string\", \"doc\": \"Radio frequency in MHz.\"}, {\"name\": \"facility\", \"type\": \"int\", \"doc\": \"VATSIM facility type code.\"}, {\"name\": \"rating\", \"type\": \"int\", \"doc\": \"VATSIM ATC rating.\"}, {\"name\": \"text_atis\", \"type\": [\"null\", \"string\"], \"doc\": \"Controller ATIS text, lines joined by newline. Null when not set.\", \"default\": null}, {\"name\": \"last_updated\", \"type\": {\"type\": \"long\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"UTC timestamp of last update.\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"ControllerPosition\", \"namespace\": \"net.vatsim\", \"doc\": \"Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.\", \"fields\": [{\"name\": \"cid\", \"type\": \"int\", \"doc\": \"VATSIM Certificate Identifier (CID).\"}, {\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"Controller position callsign.\"}, {\"name\": \"frequency\", \"type\": \"string\", \"doc\": \"Radio frequency in MHz.\"}, {\"name\": \"facility\", \"type\": \"int\", \"doc\": \"VATSIM facility type code.\"}, {\"name\": \"rating\", \"type\": \"int\", \"doc\": \"VATSIM ATC rating.\"}, {\"name\": \"text_atis\", \"type\": [\"null\", \"string\"], \"doc\": \"Controller ATIS text, lines joined by newline. Null when not set.\", \"default\": null}, {\"name\": \"last_updated\", \"type\": \"string\", \"doc\": \"UTC timestamp of last update.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -50,8 +49,7 @@ class ControllerPosition:
         self.facility=int(self.facility)
         self.rating=int(self.rating)
         self.text_atis=str(self.text_atis) if self.text_atis else None
-        value_last_updated = self.last_updated
-        self.last_updated = value_last_updated
+        self.last_updated=str(self.last_updated)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ControllerPosition':

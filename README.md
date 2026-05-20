@@ -21,13 +21,14 @@ information. The supported authentication scheme for the Kafka endpoint is
 
 The sources are organized by domain below. Each entry links to the container
 documentation, and the README in each project directory has full details. There
-are 86 containers in total.
+are 87 containers in total.
 
 ### Hydrology and Water Monitoring
 
 | Source | Coverage | README | Container | Build |
 |---|---|---|---|---|
 | BAFU Hydro | Switzerland (~300 stations, FOEN) | [📖](bafu-hydro/README.md) | [🐳](bafu-hydro/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-bafu-hydro) |
+| Canada ECCC Water Office | Canada (~2,100 hydrometric stations, WSC) | [📖](canada-eccc-wateroffice/README.md) | [🐳](canada-eccc-wateroffice/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-canada-eccc-wateroffice) |
 | CDEC Reservoirs | California (~2,600 stations, DWR) | [📖](cdec-reservoirs/README.md) | [🐳](cdec-reservoirs/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-cdec-reservoirs) |
 | CHMI Hydro | Czech Republic (CHMU) | [📖](chmi-hydro/README.md) | [🐳](chmi-hydro/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-chmi-hydro) |
 | German Waters | Germany (12 state portals, ~2,724 stations) | [📖](german-waters/README.md) | [🐳](german-waters/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-german-waters) |
@@ -64,6 +65,7 @@ are 86 containers in total.
 | JMA Japan | Japan (weather bulletins, warnings, forecasts) | [📖](jma-japan/README.md) | [🐳](jma-japan/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-jma-japan) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template-with-eventhub.json) |
 | Meteoalarm | Europe (37 countries, severe weather warnings) | [📖](meteoalarm/README.md) | [🐳](meteoalarm/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-meteoalarm) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmeteoalarm%2Fazure-template-with-eventhub.json) |
 | NOAA NWS | United States (weather alerts, CAP) | [📖](noaa-nws/README.md) | [🐳](noaa-nws/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-noaa-nws) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-nws%2Fazure-template-with-eventhub.json) |
+| NWS Forecast Zones | United States (configurable land and marine forecast zones; Puget Sound defaults) | [📖](nws-forecasts/README.md) | [🐳](nws-forecasts/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nws-forecasts) |  |
 | NWS CAP Alerts | United States (active alerts via api.weather.gov) | [📖](nws-alerts/README.md) | [🐳](nws-alerts/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nws-alerts) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnws-alerts%2Fazure-template-with-eventhub.json) |
 | NOAA GOES / SWPC | Global (space weather, solar wind, K-index) | [📖](noaa-goes/README.md) | [🐳](noaa-goes/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-noaa-goes) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-goes%2Fazure-template-with-eventhub.json) |
 | Singapore NEA | Singapore (62 weather stations + 5 air-quality regions) | [📖](singapore-nea/README.md) | [🐳](singapore-nea/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-singapore-nea) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template-with-eventhub.json) |
@@ -134,10 +136,12 @@ are 86 containers in total.
 | GTFS Realtime | Global (1,000+ transit agencies, vehicles, trips, alerts) | [📖](gtfs/README.md) | [🐳](gtfs/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gtfs) [![Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-gtfs.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-gtfs.yml) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-with-eventhub.json) |
 | Madrid Traffic | Madrid, Spain (~4,000 sensors, Informo) | [📖](madrid-traffic/README.md) | [🐳](madrid-traffic/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-madrid-traffic) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template-with-eventhub.json) |
 | NDW Netherlands Traffic | Netherlands (national road traffic, DATEX II) | [📖](ndl-netherlands/README.md) | [🐳](ndl-netherlands/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ndl-netherlands) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-with-eventhub.json) |
+| NDW Road Traffic | Netherlands (speed, travel time, DRIP, MSI, situations, DATEX II v3) | [📖](ndw-road-traffic/README.md) | [🐳](ndw-road-traffic/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ndw-road-traffic) | |
 | TfL Road Traffic | London, UK (road corridor status and disruptions, TfL Unified API) | [📖](tfl-road-traffic/README.md) | [🐳](tfl-road-traffic/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-tfl-road-traffic) | |
 | Nextbus | North America (public transit arrivals) | [📖](nextbus/README.md) | — | — |
 | Paris Bicycle Counters | Paris (~141 counting stations, hourly counts) | [📖](paris-bicycle-counters/README.md) | [🐳](paris-bicycle-counters/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-paris-bicycle-counters) |
 | Seattle Street Closures | Seattle, Washington (permit-driven street closure windows) | [📖](seattle-street-closures/README.md) | [🐳](seattle-street-closures/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-seattle-street-closures) |
+| Tokyo Docomo Bikeshare | Tokyo, Japan (1,794 stations, GBFS 2.3 via ODPT) | [📖](tokyo-docomo-bikeshare/README.md) | [🐳](tokyo-docomo-bikeshare/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-tokyo-docomo-bikeshare) |
 | US CBP Border Wait | US-Canada & US-Mexico borders (~81 ports of entry) | [📖](cbp-border-wait/README.md) | [🐳](cbp-border-wait/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-cbp-border-wait) |
 | WSDOT | Washington State (~1,000 traffic flow sensors, LOS readings) | [📖](wsdot/README.md) | [🐳](wsdot/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wsdot) |
 
@@ -145,7 +149,14 @@ are 86 containers in total.
 
 | Source | Coverage | README | Container | Build | Deploy |
 |---|---|---|---|---|---|
+| Entur Norway | Norway (national real-time transit, SIRI ET/VM/SX) | [📖](entur-norway/README.md) | [🐳](entur-norway/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-entur-norway) | |
 | iRail | Belgium (~600 NMBS/SNCB stations, departures, delays) | [📖](irail/README.md) | [🐳](irail/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-irail) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template-with-eventhub.json) |
+
+### Nightlife and Live Entertainment
+
+| Source | Coverage | README | Container | Build |
+|---|---|---|---|---|
+| Xceed | Europe (clubs, bars, parties, festivals — event schedules and ticket-state signals) | [📖](xceed/README.md) | [🐳](xceed/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-xceed) |
 
 ### Energy and Infrastructure
 
@@ -166,11 +177,24 @@ are 86 containers in total.
 | RSS Feeds | Any (configurable RSS/Atom feed URLs or OPML files) | [📖](rss/README.md) | [🐳](rss/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-rss) [![Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-rss.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-rss.yml) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-with-eventhub.json) |
 | Wikimedia EventStreams | Global (Wikipedia, Wikidata, Commons recent changes) | [📖](wikimedia-eventstreams/README.md) | [🐳](wikimedia-eventstreams/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wikimedia-eventstreams) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template-with-eventhub.json) |
 
+### Public Events
+
+| Source | Coverage | README | Container | Build |
+|---|---|---|---|---|
+| Billetto | Europe (DK, GB, DE, SE, NO, FI, BE, AT, IE – ticketed events) | [📖](billetto/README.md) | [🐳](billetto/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-billetto) |
+| Ticketmaster | Global (concerts, sports, theater, arts, and other live public events) | [📖](ticketmaster/README.md) | [🐳](ticketmaster/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ticketmaster) |
+
 ### Scientific Research
 
 | Source | Coverage | README | Container | Build | Deploy |
 |---|---|---|---|---|---|
 | GraceDB | Global (LIGO/Virgo/KAGRA gravitational wave candidates) | [📖](gracedb/README.md) | [🐳](gracedb/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gracedb) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-with-eventhub.json) |
+
+### Public Events
+
+| Source | Coverage | README | Container | Build | Deploy |
+|---|---|---|---|---|---|
+| Fienta | Europe (ticketed public events with sale-status signals) | [📖](fienta/README.md) | [🐳](fienta/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-fienta) | |
 
 ## Code Generation
 
@@ -192,6 +216,11 @@ above.
 **[BAFU Hydro](bafu-hydro/README.md)** -- Swiss Federal Office for the
 Environment (BAFU/FOEN) hydrological monitoring network. Forwards water level,
 discharge, and temperature observations from approximately 300 stations.
+
+**[Canada ECCC Water Office](canada-eccc-wateroffice/README.md)** -- Environment
+and Climate Change Canada (ECCC) Water Survey of Canada. Real-time water level
+and discharge from approximately 2,100 hydrometric stations across all Canadian
+provinces and territories, updated every 5 minutes via OGC API Features.
 
 **[CDEC Reservoirs](cdec-reservoirs/README.md)** -- California Data Exchange
 Center (CDEC). Real-time reservoir storage, elevation, inflow, and outflow from
@@ -506,6 +535,12 @@ counting stations across Paris with counter location reference data.
 Open Data street closure schedule feed. Permit-keyed closure windows with
 street segments, dates, and serialized geometry snapshots.
 
+**[Tokyo Docomo Bikeshare](tokyo-docomo-bikeshare/README.md)** -- Tokyo Docomo
+Bikeshare real-time availability. GBFS 2.3 feed from the Open Data Platform for
+Transportation (ODPT) covering 1,794 dock-based stations across central Tokyo
+wards. System metadata, station locations (bilingual names), and real-time bike
+and dock availability updated on a 60-second TTL.
+
 **[US CBP Border Wait](cbp-border-wait/README.md)** -- US Customs and Border
 Protection border wait times. Real-time delay data for approximately 81 land
 border ports of entry along the US-Canada and US-Mexico borders.
@@ -520,6 +555,14 @@ readings updated every 90 seconds. Requires a free API access code.
 API. Station metadata and departure boards for approximately 600 NMBS/SNCB
 stations, including delays, platform assignments, cancellations, and occupancy.
 No authentication. Rate-limited to 3 requests/second; full cycle ~3–4 minutes.
+
+### Nightlife and Live Entertainment
+
+**[Xceed](xceed/README.md)** -- Xceed Open Event API. European nightlife and
+live-entertainment events including clubs, bars, parties, and festivals. Emits
+event reference data (schedule, venue, cover image) and admission telemetry
+(per-tier ticket-availability signals including `isSoldOut` and `isSalesClosed`).
+No authentication required. Polled every 5 minutes by default.
 
 ### Energy and Infrastructure
 
@@ -561,11 +604,28 @@ feed URLs or OPML files. Only forwards new items.
 public recentchange stream for edits, page creations, and log actions across
 Wikipedia, Wikidata, Commons, and sister projects.
 
+### Public Events
+
+**[Billetto](billetto/README.md)** -- Billetto pan-European event-discovery
+platform. Polls the public events API for new and updated ticketed events
+across Denmark, the United Kingdom, Germany, Sweden, Norway, Finland, Belgium,
+Austria, and Ireland. Emits event schedule, venue, organizer, pricing, and
+ticket availability as CloudEvents keyed by stable Billetto event ID.
+
 ### Scientific Research
 
 **[GraceDB](gracedb/README.md)** -- LIGO/Virgo/KAGRA GraceDB gravitational wave
 candidate event database. Superevent alerts including chirp mass, false alarm
 rate, classification probabilities, and sky localization data.
+
+### Public Events
+
+**[Fienta](fienta/README.md)** -- European public event ticketing platform
+(Estonia, Latvia, Lithuania, and other European markets). Emits full event
+reference data including name, location, organizer, and schedule, plus
+sale-status change telemetry (`onSale`, `soldOut`, `notOnSale`, `saleEnded`)
+whenever a public event's ticket status changes. Polling the Fienta public REST
+API requires no authentication.
 
 ### External
 

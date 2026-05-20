@@ -256,47 +256,61 @@ class TestStationList:
     def test_fallback_stations_have_correct_canberra_product(self):
         canberra = [s for s in FALLBACK_STATIONS if s[1] == 94926]
         assert len(canberra) == 1
-        assert canberra[0][0] == "IDC60901"
+        assert canberra[0][0] == "IDN60903"
 
 
 class TestStationDiscovery:
-    SAMPLE_STATIONS_TXT = (
-        "Bureau of Meteorology product IDCJMC0014.                                       Produced: 07 Apr 2026\r\n"
-        "\r\n"
-        "   Site  Dist  Site name                                 Start     End      Lat       Lon Source         STA Height (m)   Bar_ht    WMO\r\n"
-        "------- ----- ---------------------------------------- ------- ------- -------- --------- -------------- --- ---------- -------- ------\r\n"
-        " 066037 66    SYDNEY AIRPORT AMO                          1929      .. -33.9461  151.1731 GPS            NSW        6.0      6.4  94767\r\n"
-        " 086282 08    MELBOURNE AIRPORT                           1970      .. -37.6655  144.8321 GPS            VIC      113.4    113.4  94866\r\n"
-        " 001006 01    WYNDHAM AERO                                1951      .. -15.5100  128.1503 GPS            WA         3.8      4.2  95214\r\n"
-        " 001000 01    KARUNJIE                                    1940    1983 -16.2919  127.1956 .....          WA       320.0       ..     ..\r\n"
-        " 005097 05    LEARMONTH SOLAR OBSERVATORY                 2013      .. -22.2183  114.1031 GPS            NSW         ..       ..     ..\r\n"
-    )
+    SAMPLE_NSW_PAGE = """
+        <html><body>
+          <a href="/products/IDN60801/IDN60801.94768.shtml">Sydney</a>
+          <a href="/products/IDN60801/IDN60801.94767.shtml">Sydney Airport</a>
+          <a href="/products/IDN60801/IDN60801.94768.shtml">duplicate</a>
+        </body></html>
+    """
+    SAMPLE_VIC_PAGE = """
+        <a href="/products/IDV60801/IDV60801.95936.shtml">Melbourne</a>
+        <a href="/products/IDV60801/IDV60801.94866.shtml">Melbourne Airport</a>
+    """
+
+    def _patched_get(self, mapping):
+        def fake_get(url, *args, **kwargs):
+            resp = MagicMock()
+            resp.raise_for_status = MagicMock()
+            resp.status_code = 200
+            resp.text = mapping.get(url, "")
+            if url not in mapping:
+                resp.raise_for_status.side_effect = Exception("404")
+            return resp
+        return fake_get
 
     def test_discover_all_active(self):
+        from bom_australia.bom_australia import STATE_OBSERVATION_PAGES
+        mapping = {
+            STATE_OBSERVATION_PAGES["NSW"]: self.SAMPLE_NSW_PAGE,
+            STATE_OBSERVATION_PAGES["VIC"]: self.SAMPLE_VIC_PAGE,
+        }
         api = BOMAustraliaAPI()
-        mock_resp = MagicMock()
-        mock_resp.status_code = 200
-        mock_resp.text = self.SAMPLE_STATIONS_TXT
-        mock_resp.raise_for_status = MagicMock()
-        with patch.object(api.session, "get", return_value=mock_resp):
+        with patch.object(api.session, "get", side_effect=self._patched_get(mapping)):
             stations = api.discover_stations()
-        # 3 active with WMO (Sydney, Melbourne, Wyndham); old closed and no-WMO excluded
-        assert len(stations) == 3
-        wmos = [s[1] for s in stations]
-        assert 94767 in wmos
-        assert 94866 in wmos
-        assert 95214 in wmos
+        assert ("IDN60801", 94768) in stations
+        assert ("IDN60801", 94767) in stations
+        assert ("IDV60801", 95936) in stations
+        assert ("IDV60801", 94866) in stations
+        # duplicate (NSW 94768) listed twice should appear once
+        assert len(stations) == len(set(stations))
 
     def test_discover_with_state_filter(self):
+        from bom_australia.bom_australia import STATE_OBSERVATION_PAGES
+        mapping = {
+            STATE_OBSERVATION_PAGES["NSW"]: self.SAMPLE_NSW_PAGE,
+            STATE_OBSERVATION_PAGES["VIC"]: self.SAMPLE_VIC_PAGE,
+        }
         api = BOMAustraliaAPI()
-        mock_resp = MagicMock()
-        mock_resp.status_code = 200
-        mock_resp.text = self.SAMPLE_STATIONS_TXT
-        mock_resp.raise_for_status = MagicMock()
-        with patch.object(api.session, "get", return_value=mock_resp):
+        with patch.object(api.session, "get", side_effect=self._patched_get(mapping)):
             stations = api.discover_stations(state_filter="NSW")
-        assert len(stations) == 1
-        assert stations[0] == ("IDN60901", 94767)
+        assert ("IDN60801", 94767) in stations
+        assert ("IDN60801", 94768) in stations
+        assert all(pid.startswith("IDN") for pid, _ in stations)
 
     def test_discover_fallback_on_error(self):
         api = BOMAustraliaAPI()

@@ -366,6 +366,7 @@ def run_bridge(
     polling_interval: int,
     flow_url: str = TRAFFIC_FLOW_URL,
     events_url: str = ROAD_EVENTS_URL,
+    once: bool = False,
 ) -> None:
     """Main polling loop: fetch DATEX II XML, parse, emit CloudEvents."""
     producer = Producer(kafka_config)
@@ -448,6 +449,10 @@ def run_bridge(
                 flow_count, event_count, elapsed,
             )
 
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
+
             remaining = max(0, polling_interval - elapsed)
             if remaining > 0:
                 time.sleep(remaining)
@@ -498,6 +503,11 @@ def main() -> None:
         "-i", "--polling-interval", type=int, default=polling_default,
         help="Polling interval in seconds (default: 360)",
     )
+    feed_parser.add_argument(
+        "--once", action="store_true",
+        default=os.getenv("ONCE_MODE", "false").lower() in ("true", "1", "yes"),
+        help="Run a single polling cycle and exit (for scheduled/notebook execution).",
+    )
 
     args = parser.parse_args()
 
@@ -538,7 +548,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config["security.protocol"] = "SSL"
 
-        run_bridge(kafka_config, topic_flow, topic_events, args.polling_interval)
+        run_bridge(kafka_config, topic_flow, topic_events, args.polling_interval, once=args.once)
     else:
         parser.print_help()
 

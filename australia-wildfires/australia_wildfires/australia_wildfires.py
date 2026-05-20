@@ -446,6 +446,9 @@ def main():
     parser.add_argument("--state-file", type=str,
                         default=os.environ.get("STATE_FILE",
                                                os.path.expanduser("~/.australia_wildfires_state.json")))
+    parser.add_argument("--once", action="store_true",
+                        default=os.environ.get("ONCE_MODE", "false").lower() in ("true", "1", "yes"),
+                        help="Run a single polling cycle and exit (used by Fabric notebook hosting)")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List current incidents")
     subparsers.add_parser("feed", help="Feed data to Kafka")
@@ -491,6 +494,9 @@ def main():
                 logger.info("Sent %d fire incident events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if args.once:
+                logger.info("--once specified; exiting after single cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()

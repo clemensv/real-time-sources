@@ -106,9 +106,9 @@ producer = OrgEAWSALBINABulletinsProducer(
 
 # Send single message
 
-await producer.send_org_eaws_albina_avalanche_bulletin(```python
+await producer.send_org_eaws_albina_avalanche_region(```python
 
-    data=AvalancheBulletin(...),add_consumer(self, consumer: KafkaConsumer)
+    data=AvalancheRegion(...),add_consumer(self, consumer: KafkaConsumer)
 
     partition_key='device-123'```
 
@@ -131,6 +131,72 @@ The OrgEAWSALBINABulletinsEventDispatcher defines the following event handler ho
 ```python
 
 producer = OrgEAWSALBINABulletinsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `org_eaws_albina_avalanche_region_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'org_eaws_albina_avalanche_region_async:  Callable[[ConsumerRecord, CloudEvent,
+AvalancheRegion], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `org.EAWS.ALBINA.AvalancheRegion`: Reference event describing an EAWS region (or super-
+region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set
+changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside
+the avalanche season when no bulletins are being published.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### OrgEAWSALBINABulletinsProducer- `data`: The event data of type `eaws_albina_producer_data.AvalancheRegion`.
+
+
+
+Producer for `org.EAWS.ALBINA.Bulletins` message group.Example:
+
+
+
+#### Constructor```python
+
+async def org_eaws_albina_avalanche_region_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AvalancheRegion)
+-> None:
+
+```python    # Process the event data
+
+OrgEAWSALBINABulletinsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+org_eaws_albina_bulletins_dispatcher.org_eaws_albina_avalanche_region_async = org_eaws_albina_avalanche_region_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
 
     bootstrap_servers='localhost:9093',
 
@@ -200,6 +266,112 @@ org_eaws_albina_bulletins_dispatcher.org_eaws_albina_avalanche_bulletin_async = 
 #### Send Methods## Internals
 
 
+
+### Dispatchers
+
+##### `send_org_eaws_albina_avalanche_region`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_org_eaws_albina_avalanche_region(
+
+    self,##### `_process_event`
+
+    data: AvalancheRegion,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `org.EAWS.ALBINA.AvalancheRegion` message. Reference event describing an EAWS region (or super-region)
+that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts
+as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche
+season when no bulletins are being published.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AvalancheRegion`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_org_eaws_albina_avalanche_region(
+
+    data=AvalancheRegion(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `org.EAWS.ALBINA.AvalancheRegion` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_org_eaws_albina_avalanche_region_batch(```
+
+    messages=[
+
+        AvalancheRegion(...),Initializes the runner with a Kafka consumer.
+
+        AvalancheRegion(...),
+
+        AvalancheRegion(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 

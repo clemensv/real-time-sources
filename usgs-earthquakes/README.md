@@ -17,6 +17,7 @@ to Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
 - **Magnitude Filtering**: Filter events client-side by minimum magnitude.
 - **Deduplication**: Tracks seen events by ID and update timestamp — only new or updated events are forwarded.
 - **Kafka Integration**: Send earthquake events as CloudEvents to a Kafka topic, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams.
+- **Fabric notebook hosting**: Deploy as a scheduled Fabric notebook feeder via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) — runs `usgs-earthquakes feed --once` per cycle and resolves the Event Stream connection string at runtime.
 
 ## Installation
 

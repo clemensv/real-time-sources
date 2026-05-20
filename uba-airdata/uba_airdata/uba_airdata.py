@@ -399,6 +399,12 @@ def main() -> None:
         default=int(os.getenv("REFERENCE_REFRESH_POLLS", "24")),
         help="Number of telemetry polls between reference refreshes",
     )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     if args.command != "feed":
@@ -433,6 +439,9 @@ def main() -> None:
             elapsed = time.monotonic() - cycle_started
             sleep_seconds = max(0.0, float(args.polling_interval) - elapsed)
             logger.info("Sent %d measure events in %.2f seconds; sleeping %.2f seconds", sent, elapsed, sleep_seconds)
+            if args.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             if sleep_seconds > 0:
                 time.sleep(sleep_seconds)
         except KeyboardInterrupt:

@@ -69,7 +69,7 @@ def extract_stations(features: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]
             stations[station_ref] = {
                 "station_ref": station_ref,
                 "station_name": props.get("station_name", ""),
-                "region_id": int(props.get("region_id", 0)),
+                "region_id": int(props.get("region_id") or 0),
                 "longitude": float(coords[0]) if len(coords) > 0 else 0.0,
                 "latitude": float(coords[1]) if len(coords) > 1 else 0.0,
             }
@@ -87,7 +87,7 @@ def extract_readings(features: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "sensor_ref": props.get("sensor_ref", ""),
             "value": parse_value(props.get("value")),
             "datetime": props.get("datetime", ""),
-            "err_code": int(props.get("err_code", 0)),
+            "err_code": int(props.get("err_code") or 0),
         })
     return readings
 
@@ -201,7 +201,7 @@ def emit_readings(
 
 
 def feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
-         state_file: str = '') -> None:
+         state_file: str = '', once: bool = False) -> None:
     """Main polling loop: emit stations then poll readings."""
     seen_keys: Set[str] = set(_load_state(state_file).get("seen_keys", []))
     session = requests.Session()
@@ -251,6 +251,9 @@ def feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
 
             logging.info("Emitted %d readings in %.1fs. Waiting %.0fs.",
                          count, elapsed, effective_interval)
+            if once:
+                logging.info("--once mode: exiting after first polling cycle")
+                break
             if effective_interval > 0:
                 time.sleep(effective_interval)
         except KeyboardInterrupt:
@@ -296,6 +299,9 @@ def main() -> None:
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE',
                                                os.path.expanduser('~/.ireland_opw_waterlevel_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -339,7 +345,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        feed(kafka_config, kafka_topic, args.polling_interval, args.state_file)
+        feed(kafka_config, kafka_topic, args.polling_interval, args.state_file, args.once)
     else:
         parser.print_help()
 

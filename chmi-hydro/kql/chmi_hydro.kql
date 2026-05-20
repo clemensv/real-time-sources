@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['cz.gov.chmi.hydro.Station'] (
    [station_id]: string,
    [dbc]: string,
    [station_name]: string,
@@ -44,9 +44,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Station\"}";
+.alter table ['cz.gov.chmi.hydro.Station'] docstring "{\"description\": \"Station\"}";
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['cz.gov.chmi.hydro.Station'] ingestion json mapping "cz.gov.chmi.hydro.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -68,7 +68,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['cz.gov.chmi.hydro.Station'] ingestion json mapping "cz.gov.chmi.hydro.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -90,13 +90,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['cz.gov.chmi.hydro.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['cz.gov.chmi.hydro.StationLatest'] on table ['cz.gov.chmi.hydro.Station'] {
+    ['cz.gov.chmi.hydro.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['cz.gov.chmi.hydro.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -107,7 +107,7 @@
 }]
 ```
 
-.create-merge table [WaterLevelObservation] (
+.create-merge table ['cz.gov.chmi.hydro.WaterLevelObservation'] (
    [station_id]: string,
    [station_name]: string,
    [stream_name]: string,
@@ -124,9 +124,9 @@
    [___subject]: string
 );
 
-.alter table [WaterLevelObservation] docstring "{\"description\": \"WaterLevelObservation\"}";
+.alter table ['cz.gov.chmi.hydro.WaterLevelObservation'] docstring "{\"description\": \"WaterLevelObservation\"}";
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_flat"
+.create-or-alter table ['cz.gov.chmi.hydro.WaterLevelObservation'] ingestion json mapping "cz.gov.chmi.hydro.WaterLevelObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -146,7 +146,7 @@
 ]
 ```
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_ce_structured"
+.create-or-alter table ['cz.gov.chmi.hydro.WaterLevelObservation'] ingestion json mapping "cz.gov.chmi.hydro.WaterLevelObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -166,13 +166,13 @@
 ]
 ```
 
-.drop materialized-view WaterLevelObservationLatest ifexists;
+.drop materialized-view ['cz.gov.chmi.hydro.WaterLevelObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelObservationLatest on table WaterLevelObservation {
-    WaterLevelObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['cz.gov.chmi.hydro.WaterLevelObservationLatest'] on table ['cz.gov.chmi.hydro.WaterLevelObservation'] {
+    ['cz.gov.chmi.hydro.WaterLevelObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevelObservation] policy update
+.alter table ['cz.gov.chmi.hydro.WaterLevelObservation'] policy update
 ```
 [{
   "IsEnabled": true,

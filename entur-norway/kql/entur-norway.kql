@@ -1,0 +1,495 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [DatedServiceJourney] (
+   [service_journey_id]: string,
+   [operating_day]: string,
+   [line_ref]: string,
+   [operator_ref]: string,
+   [direction_ref]: string,
+   [vehicle_mode]: string,
+   [route_ref]: string,
+   [published_line_name]: string,
+   [external_line_ref]: string,
+   [origin_name]: string,
+   [destination_name]: string,
+   [data_source]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DatedServiceJourney] docstring "{\"description\": \"Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference (DatedVehicleJourneyRef) and operating day (DataFrameRef). This reference record is extracted from the SIRI-ET feed and published at startup and refresh intervals.\"}";
+
+.alter table [DatedServiceJourney] column-docstrings (
+   [service_journey_id]: "{\"description\": \"NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey within the NeTEx codespace. Example: RUT:ServiceJourney:1-1234.\"}",
+   [operating_day]: "{\"description\": \"ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.\"}",
+   [line_ref]: "{\"description\": \"NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.\"}",
+   [operator_ref]: "{\"description\": \"NeTEx Operator or codespace reference identifying the operator responsible for this journey. Example: RUT.\"}",
+   [direction_ref]: "{\"description\": \"Direction reference for this journey leg, e.g. Outbound or Inbound, or a NeTEx DirectionType value.\"}",
+   [vehicle_mode]: "{\"description\": \"SIRI VehicleMode describing the mode of transport for this journey. Known values: bus, tram, rail, ferry, metro, water, air, coach, taxi.\"}",
+   [route_ref]: "{\"description\": \"NeTEx Route reference for this journey, if available.\"}",
+   [published_line_name]: "{\"description\": \"Public-facing line number or name displayed to passengers on signs and in apps. Example: 31.\"}",
+   [external_line_ref]: "{\"description\": \"External line reference, typically the same value as line_ref, used for cross-system reconciliation.\"}",
+   [origin_name]: "{\"description\": \"Human-readable name of the origin stop or place for this journey.\"}",
+   [destination_name]: "{\"description\": \"Human-readable name of the destination stop or place for this journey.\"}",
+   [data_source]: "{\"description\": \"Operator codespace originating this data record, as reported in the SIRI DataSource element. Example: RUT.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DatedServiceJourney] ingestion json mapping "DatedServiceJourney_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "service_journey_id", "path": "$.service_journey_id"},
+  {"column": "operating_day", "path": "$.operating_day"},
+  {"column": "line_ref", "path": "$.line_ref"},
+  {"column": "operator_ref", "path": "$.operator_ref"},
+  {"column": "direction_ref", "path": "$.direction_ref"},
+  {"column": "vehicle_mode", "path": "$.vehicle_mode"},
+  {"column": "route_ref", "path": "$.route_ref"},
+  {"column": "published_line_name", "path": "$.published_line_name"},
+  {"column": "external_line_ref", "path": "$.external_line_ref"},
+  {"column": "origin_name", "path": "$.origin_name"},
+  {"column": "destination_name", "path": "$.destination_name"},
+  {"column": "data_source", "path": "$.data_source"},
+]
+```
+
+.create-or-alter table [DatedServiceJourney] ingestion json mapping "DatedServiceJourney_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "service_journey_id", "path": "$.data.service_journey_id"},
+  {"column": "operating_day", "path": "$.data.operating_day"},
+  {"column": "line_ref", "path": "$.data.line_ref"},
+  {"column": "operator_ref", "path": "$.data.operator_ref"},
+  {"column": "direction_ref", "path": "$.data.direction_ref"},
+  {"column": "vehicle_mode", "path": "$.data.vehicle_mode"},
+  {"column": "route_ref", "path": "$.data.route_ref"},
+  {"column": "published_line_name", "path": "$.data.published_line_name"},
+  {"column": "external_line_ref", "path": "$.data.external_line_ref"},
+  {"column": "origin_name", "path": "$.data.origin_name"},
+  {"column": "destination_name", "path": "$.data.destination_name"},
+  {"column": "data_source", "path": "$.data.data_source"},
+]
+```
+
+.drop materialized-view DatedServiceJourneyLatest ifexists;
+
+.create materialized-view with (backfill=true) DatedServiceJourneyLatest on table DatedServiceJourney {
+    DatedServiceJourney | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DatedServiceJourney] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'no.entur.DatedServiceJourney') | project['service_journey_id'] = tostring(data.['service_journey_id']),['operating_day'] = tostring(data.['operating_day']),['line_ref'] = tostring(data.['line_ref']),['operator_ref'] = tostring(data.['operator_ref']),['direction_ref'] = tostring(data.['direction_ref']),['vehicle_mode'] = tostring(data.['vehicle_mode']),['route_ref'] = tostring(data.['route_ref']),['published_line_name'] = tostring(data.['published_line_name']),['external_line_ref'] = tostring(data.['external_line_ref']),['origin_name'] = tostring(data.['origin_name']),['destination_name'] = tostring(data.['destination_name']),['data_source'] = tostring(data.['data_source']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EstimatedVehicleJourney] (
+   [service_journey_id]: string,
+   [operating_day]: string,
+   [line_ref]: string,
+   [operator_ref]: string,
+   [direction_ref]: string,
+   [vehicle_mode]: string,
+   [published_line_name]: string,
+   [route_ref]: string,
+   [origin_name]: string,
+   [destination_name]: string,
+   [is_cancellation]: bool,
+   [is_extra_journey]: bool,
+   [is_complete_stop_sequence]: bool,
+   [monitored]: bool,
+   [data_source]: string,
+   [recorded_at_time]: datetime,
+   [estimated_calls]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [EstimatedVehicleJourney] docstring "{\"description\": \"Real-time estimated timetable update for a vehicle journey from the Entur SIRI-ET feed. Contains per-stop arrival and departure predictions, journey-level cancellation and extra-journey flags, and monitoring status. Sourced from GET /realtime/v1/rest/et using incremental requestorId polling.\"}";
+
+.alter table [EstimatedVehicleJourney] column-docstrings (
+   [service_journey_id]: "{\"description\": \"NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey within the NeTEx codespace. Example: RUT:ServiceJourney:1-1234.\"}",
+   [operating_day]: "{\"description\": \"ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.\"}",
+   [line_ref]: "{\"description\": \"NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.\"}",
+   [operator_ref]: "{\"description\": \"NeTEx Operator or codespace reference identifying the operator responsible for this journey. Example: RUT.\"}",
+   [direction_ref]: "{\"description\": \"Direction reference for this journey, e.g. Outbound or Inbound.\"}",
+   [vehicle_mode]: "{\"description\": \"SIRI VehicleMode describing the mode of transport. Known values: bus, tram, rail, ferry, metro, water, air, coach, taxi.\"}",
+   [published_line_name]: "{\"description\": \"Public-facing line number or name displayed to passengers. Example: 31.\"}",
+   [route_ref]: "{\"description\": \"NeTEx Route reference for this journey, if available.\"}",
+   [origin_name]: "{\"description\": \"Human-readable name of the origin stop or place for this journey.\"}",
+   [destination_name]: "{\"description\": \"Human-readable name of the destination stop or place for this journey.\"}",
+   [is_cancellation]: "{\"description\": \"True if the entire journey is cancelled. Corresponds to the SIRI Cancellation element on the EstimatedVehicleJourney. Defaults to false.\"}",
+   [is_extra_journey]: "{\"description\": \"True if this is an extra journey added outside the planned timetable (SIRI ExtraJourney).\"}",
+   [is_complete_stop_sequence]: "{\"description\": \"True if the EstimatedCalls list covers all stops in the journey sequence (SIRI IsCompleteStopSequence). False means the list is a partial update.\"}",
+   [monitored]: "{\"description\": \"True if this journey is being actively tracked by an AVL system.\"}",
+   [data_source]: "{\"description\": \"Operator codespace originating this data record, from the SIRI DataSource element. Example: RUT.\"}",
+   [recorded_at_time]: "{\"description\": \"ISO 8601 UTC timestamp when this update was recorded by the source system (SIRI RecordedAtTime).\"}",
+   [estimated_calls]: "{\"description\": \"Ordered list of estimated arrival and departure times for each stop along the journey. May be a partial list if is_complete_stop_sequence is false.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/no/entur/EstimatedCall\"}, \"description\": \"Ordered list of estimated arrival and departure times for each stop along the journey. May be a partial list if is_complete_stop_sequence is false.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [EstimatedVehicleJourney] ingestion json mapping "EstimatedVehicleJourney_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "service_journey_id", "path": "$.service_journey_id"},
+  {"column": "operating_day", "path": "$.operating_day"},
+  {"column": "line_ref", "path": "$.line_ref"},
+  {"column": "operator_ref", "path": "$.operator_ref"},
+  {"column": "direction_ref", "path": "$.direction_ref"},
+  {"column": "vehicle_mode", "path": "$.vehicle_mode"},
+  {"column": "published_line_name", "path": "$.published_line_name"},
+  {"column": "route_ref", "path": "$.route_ref"},
+  {"column": "origin_name", "path": "$.origin_name"},
+  {"column": "destination_name", "path": "$.destination_name"},
+  {"column": "is_cancellation", "path": "$.is_cancellation"},
+  {"column": "is_extra_journey", "path": "$.is_extra_journey"},
+  {"column": "is_complete_stop_sequence", "path": "$.is_complete_stop_sequence"},
+  {"column": "monitored", "path": "$.monitored"},
+  {"column": "data_source", "path": "$.data_source"},
+  {"column": "recorded_at_time", "path": "$.recorded_at_time"},
+  {"column": "estimated_calls", "path": "$.estimated_calls"},
+]
+```
+
+.create-or-alter table [EstimatedVehicleJourney] ingestion json mapping "EstimatedVehicleJourney_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "service_journey_id", "path": "$.data.service_journey_id"},
+  {"column": "operating_day", "path": "$.data.operating_day"},
+  {"column": "line_ref", "path": "$.data.line_ref"},
+  {"column": "operator_ref", "path": "$.data.operator_ref"},
+  {"column": "direction_ref", "path": "$.data.direction_ref"},
+  {"column": "vehicle_mode", "path": "$.data.vehicle_mode"},
+  {"column": "published_line_name", "path": "$.data.published_line_name"},
+  {"column": "route_ref", "path": "$.data.route_ref"},
+  {"column": "origin_name", "path": "$.data.origin_name"},
+  {"column": "destination_name", "path": "$.data.destination_name"},
+  {"column": "is_cancellation", "path": "$.data.is_cancellation"},
+  {"column": "is_extra_journey", "path": "$.data.is_extra_journey"},
+  {"column": "is_complete_stop_sequence", "path": "$.data.is_complete_stop_sequence"},
+  {"column": "monitored", "path": "$.data.monitored"},
+  {"column": "data_source", "path": "$.data.data_source"},
+  {"column": "recorded_at_time", "path": "$.data.recorded_at_time"},
+  {"column": "estimated_calls", "path": "$.data.estimated_calls"},
+]
+```
+
+.drop materialized-view EstimatedVehicleJourneyLatest ifexists;
+
+.create materialized-view with (backfill=true) EstimatedVehicleJourneyLatest on table EstimatedVehicleJourney {
+    EstimatedVehicleJourney | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EstimatedVehicleJourney] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'no.entur.EstimatedVehicleJourney') | project['service_journey_id'] = tostring(data.['service_journey_id']),['operating_day'] = tostring(data.['operating_day']),['line_ref'] = tostring(data.['line_ref']),['operator_ref'] = tostring(data.['operator_ref']),['direction_ref'] = tostring(data.['direction_ref']),['vehicle_mode'] = tostring(data.['vehicle_mode']),['published_line_name'] = tostring(data.['published_line_name']),['route_ref'] = tostring(data.['route_ref']),['origin_name'] = tostring(data.['origin_name']),['destination_name'] = tostring(data.['destination_name']),['is_cancellation'] = tobool(data.['is_cancellation']),['is_extra_journey'] = tobool(data.['is_extra_journey']),['is_complete_stop_sequence'] = tobool(data.['is_complete_stop_sequence']),['monitored'] = tobool(data.['monitored']),['data_source'] = tostring(data.['data_source']),['recorded_at_time'] = todatetime(data.['recorded_at_time']),['estimated_calls'] = todynamic(data.['estimated_calls']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MonitoredVehicleJourney] (
+   [service_journey_id]: string,
+   [operating_day]: string,
+   [recorded_at_time]: datetime,
+   [line_ref]: string,
+   [operator_ref]: string,
+   [direction_ref]: string,
+   [vehicle_mode]: string,
+   [published_line_name]: string,
+   [origin_name]: string,
+   [destination_name]: string,
+   [vehicle_ref]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [bearing]: real,
+   [delay_seconds]: int,
+   [occupancy_status]: string,
+   [progress_status]: string,
+   [monitored]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MonitoredVehicleJourney] docstring "{\"description\": \"Real-time vehicle monitoring update from the Entur SIRI-VM feed. Contains the current geographic position, bearing, delay, and occupancy of a vehicle operating a specific dated service journey. Sourced from GET /realtime/v1/rest/vm using incremental requestorId polling.\"}";
+
+.alter table [MonitoredVehicleJourney] column-docstrings (
+   [service_journey_id]: "{\"description\": \"NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey. Example: RUT:ServiceJourney:1-1234.\"}",
+   [operating_day]: "{\"description\": \"ISO 8601 calendar date string for the operating day of this journey, from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.\"}",
+   [recorded_at_time]: "{\"description\": \"ISO 8601 UTC timestamp from the parent VehicleActivity/RecordedAtTime element indicating when this position was recorded.\"}",
+   [line_ref]: "{\"description\": \"NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.\"}",
+   [operator_ref]: "{\"description\": \"NeTEx Operator or codespace reference for the operator running this journey. Example: RUT.\"}",
+   [direction_ref]: "{\"description\": \"Direction reference for this journey, e.g. Outbound or Inbound.\"}",
+   [vehicle_mode]: "{\"description\": \"SIRI VehicleMode describing the mode of transport. Known values: bus, tram, rail, ferry, metro, water, air, coach, taxi.\"}",
+   [published_line_name]: "{\"description\": \"Public-facing line number or name displayed to passengers. Example: 31.\"}",
+   [origin_name]: "{\"description\": \"Human-readable name of the origin stop or place for this journey.\"}",
+   [destination_name]: "{\"description\": \"Human-readable name of the destination stop or place for this journey.\"}",
+   [vehicle_ref]: "{\"description\": \"Vehicle identifier from the SIRI VehicleRef element. Identifies the physical vehicle (e.g. bus number), not the journey. Not used as a Kafka key.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the vehicle's current position in decimal degrees, from VehicleLocation/Latitude.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the vehicle's current position in decimal degrees, from VehicleLocation/Longitude.\"}",
+   [bearing]: "{\"description\": \"Compass bearing in degrees (0-360) indicating the direction of travel, from the SIRI Bearing element.\"}",
+   [delay_seconds]: "{\"description\": \"Current delay in integer seconds, parsed from the ISO 8601 Duration value in the SIRI Delay element. Positive values indicate lateness; negative values indicate running early.\"}",
+   [occupancy_status]: "{\"description\": \"Passenger occupancy status of the vehicle from the SIRI OccupancyStatus element.\"}",
+   [progress_status]: "{\"description\": \"Journey progress status from the SIRI ProgressStatus element indicating whether the journey is running normally or has been cancelled/skipped.\"}",
+   [monitored]: "{\"description\": \"True if this journey is being actively tracked by an AVL system, from the SIRI Monitored element.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MonitoredVehicleJourney] ingestion json mapping "MonitoredVehicleJourney_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "service_journey_id", "path": "$.service_journey_id"},
+  {"column": "operating_day", "path": "$.operating_day"},
+  {"column": "recorded_at_time", "path": "$.recorded_at_time"},
+  {"column": "line_ref", "path": "$.line_ref"},
+  {"column": "operator_ref", "path": "$.operator_ref"},
+  {"column": "direction_ref", "path": "$.direction_ref"},
+  {"column": "vehicle_mode", "path": "$.vehicle_mode"},
+  {"column": "published_line_name", "path": "$.published_line_name"},
+  {"column": "origin_name", "path": "$.origin_name"},
+  {"column": "destination_name", "path": "$.destination_name"},
+  {"column": "vehicle_ref", "path": "$.vehicle_ref"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "bearing", "path": "$.bearing"},
+  {"column": "delay_seconds", "path": "$.delay_seconds"},
+  {"column": "occupancy_status", "path": "$.occupancy_status"},
+  {"column": "progress_status", "path": "$.progress_status"},
+  {"column": "monitored", "path": "$.monitored"},
+]
+```
+
+.create-or-alter table [MonitoredVehicleJourney] ingestion json mapping "MonitoredVehicleJourney_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "service_journey_id", "path": "$.data.service_journey_id"},
+  {"column": "operating_day", "path": "$.data.operating_day"},
+  {"column": "recorded_at_time", "path": "$.data.recorded_at_time"},
+  {"column": "line_ref", "path": "$.data.line_ref"},
+  {"column": "operator_ref", "path": "$.data.operator_ref"},
+  {"column": "direction_ref", "path": "$.data.direction_ref"},
+  {"column": "vehicle_mode", "path": "$.data.vehicle_mode"},
+  {"column": "published_line_name", "path": "$.data.published_line_name"},
+  {"column": "origin_name", "path": "$.data.origin_name"},
+  {"column": "destination_name", "path": "$.data.destination_name"},
+  {"column": "vehicle_ref", "path": "$.data.vehicle_ref"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "bearing", "path": "$.data.bearing"},
+  {"column": "delay_seconds", "path": "$.data.delay_seconds"},
+  {"column": "occupancy_status", "path": "$.data.occupancy_status"},
+  {"column": "progress_status", "path": "$.data.progress_status"},
+  {"column": "monitored", "path": "$.data.monitored"},
+]
+```
+
+.drop materialized-view MonitoredVehicleJourneyLatest ifexists;
+
+.create materialized-view with (backfill=true) MonitoredVehicleJourneyLatest on table MonitoredVehicleJourney {
+    MonitoredVehicleJourney | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MonitoredVehicleJourney] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'no.entur.MonitoredVehicleJourney') | project['service_journey_id'] = tostring(data.['service_journey_id']),['operating_day'] = tostring(data.['operating_day']),['recorded_at_time'] = todatetime(data.['recorded_at_time']),['line_ref'] = tostring(data.['line_ref']),['operator_ref'] = tostring(data.['operator_ref']),['direction_ref'] = tostring(data.['direction_ref']),['vehicle_mode'] = tostring(data.['vehicle_mode']),['published_line_name'] = tostring(data.['published_line_name']),['origin_name'] = tostring(data.['origin_name']),['destination_name'] = tostring(data.['destination_name']),['vehicle_ref'] = tostring(data.['vehicle_ref']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['bearing'] = toreal(data.['bearing']),['delay_seconds'] = toint(data.['delay_seconds']),['occupancy_status'] = tostring(data.['occupancy_status']),['progress_status'] = tostring(data.['progress_status']),['monitored'] = tobool(data.['monitored']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PtSituationElement] (
+   [situation_number]: string,
+   [version]: string,
+   [creation_time]: datetime,
+   [source_type]: string,
+   [source_name]: string,
+   [progress]: string,
+   [severity]: string,
+   [keywords]: string,
+   [summary]: string,
+   [description]: string,
+   [affects_line_refs]: dynamic,
+   [affects_stop_point_refs]: dynamic,
+   [validity_periods]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PtSituationElement] docstring "{\"description\": \"Real-time transit disruption or service alert from the Entur SIRI-SX feed. Describes a published situation element such as a service disruption, delay cause, planned engineering work, or passenger information notice. Includes affected network elements, severity, textual descriptions, and validity periods. Sourced from GET /realtime/v1/rest/sx.\"}";
+
+.alter table [PtSituationElement] column-docstrings (
+   [situation_number]: "{\"description\": \"Unique situation identifier from the SIRI SituationNumber element. Used as the Kafka key. Example: RUT:SituationNumber:12345.\"}",
+   [version]: "{\"description\": \"Version number of this situation record, from the SIRI Version element. Increments with each update to the same situation.\"}",
+   [creation_time]: "{\"description\": \"ISO 8601 UTC timestamp when this situation was first created, from the SIRI CreationTime element.\"}",
+   [source_type]: "{\"description\": \"Type of the originating source system from the SIRI Source/SourceType element.\"}",
+   [source_name]: "{\"description\": \"Name of the originating source organisation from the SIRI Source/Name element.\"}",
+   [progress]: "{\"description\": \"Publication progress state of this situation from the SIRI Progress element.\"}",
+   [severity]: "{\"description\": \"SIRI Severity classification of the impact of this situation on passenger services.\"}",
+   [keywords]: "{\"description\": \"Space-separated list of classification keywords from the SIRI Keywords element, used to categorise the situation type.\"}",
+   [summary]: "{\"description\": \"Short public-facing summary text in Norwegian or English describing the situation, from the SIRI Summary element.\"}",
+   [description]: "{\"description\": \"Full public-facing descriptive text in Norwegian or English providing details about the situation, from the SIRI Description element.\"}",
+   [affects_line_refs]: "{\"description\": \"List of NeTEx LineRef values identifying the lines affected by this situation, extracted from Affects/Networks/AffectedNetwork/AffectedLine/LineRef elements.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"List of NeTEx LineRef values identifying the lines affected by this situation, extracted from Affects/Networks/AffectedNetwork/AffectedLine/LineRef elements.\"}}",
+   [affects_stop_point_refs]: "{\"description\": \"List of NSR StopPointRef values identifying the stop points affected by this situation, extracted from Affects/StopPoints/AffectedStopPoint/StopPointRef elements.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"List of NSR StopPointRef values identifying the stop points affected by this situation, extracted from Affects/StopPoints/AffectedStopPoint/StopPointRef elements.\"}}",
+   [validity_periods]: "{\"description\": \"One or more time windows during which this situation is active, from the SIRI ValidityPeriod elements.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/no/entur/ValidityPeriod\"}, \"description\": \"One or more time windows during which this situation is active, from the SIRI ValidityPeriod elements.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PtSituationElement] ingestion json mapping "PtSituationElement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_number", "path": "$.situation_number"},
+  {"column": "version", "path": "$.version"},
+  {"column": "creation_time", "path": "$.creation_time"},
+  {"column": "source_type", "path": "$.source_type"},
+  {"column": "source_name", "path": "$.source_name"},
+  {"column": "progress", "path": "$.progress"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "keywords", "path": "$.keywords"},
+  {"column": "summary", "path": "$.summary"},
+  {"column": "description", "path": "$.description"},
+  {"column": "affects_line_refs", "path": "$.affects_line_refs"},
+  {"column": "affects_stop_point_refs", "path": "$.affects_stop_point_refs"},
+  {"column": "validity_periods", "path": "$.validity_periods"},
+]
+```
+
+.create-or-alter table [PtSituationElement] ingestion json mapping "PtSituationElement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_number", "path": "$.data.situation_number"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "creation_time", "path": "$.data.creation_time"},
+  {"column": "source_type", "path": "$.data.source_type"},
+  {"column": "source_name", "path": "$.data.source_name"},
+  {"column": "progress", "path": "$.data.progress"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "keywords", "path": "$.data.keywords"},
+  {"column": "summary", "path": "$.data.summary"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "affects_line_refs", "path": "$.data.affects_line_refs"},
+  {"column": "affects_stop_point_refs", "path": "$.data.affects_stop_point_refs"},
+  {"column": "validity_periods", "path": "$.data.validity_periods"},
+]
+```
+
+.drop materialized-view PtSituationElementLatest ifexists;
+
+.create materialized-view with (backfill=true) PtSituationElementLatest on table PtSituationElement {
+    PtSituationElement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PtSituationElement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'no.entur.PtSituationElement') | project['situation_number'] = tostring(data.['situation_number']),['version'] = tostring(data.['version']),['creation_time'] = todatetime(data.['creation_time']),['source_type'] = tostring(data.['source_type']),['source_name'] = tostring(data.['source_name']),['progress'] = tostring(data.['progress']),['severity'] = tostring(data.['severity']),['keywords'] = tostring(data.['keywords']),['summary'] = tostring(data.['summary']),['description'] = tostring(data.['description']),['affects_line_refs'] = todynamic(data.['affects_line_refs']),['affects_stop_point_refs'] = todynamic(data.['affects_stop_point_refs']),['validity_periods'] = todynamic(data.['validity_periods']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -58,6 +58,13 @@ See [EVENTS.md](EVENTS.md) for the CloudEvents message definitions.
 
 See [CONTAINER.md](CONTAINER.md) for Docker container deployment info.
 
+## Fabric notebook hosting
+
+This source can also run as a scheduled Microsoft Fabric notebook via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+which packages the bridge as a Fabric Environment and schedules
+`notebook/rws-waterwebservices-feed.ipynb` to run one polling cycle per tick.
+
 ## API Reference
 
 - **Base URL**: `https://ddapi20-waterwebservices.rijkswaterstaat.nl`

@@ -61,6 +61,13 @@ cd french-road-traffic
 pwsh generate_producer.ps1
 ```
 
+## Fabric notebook hosting
+
+This source can be deployed as a Fabric notebook (scheduled single-cycle
+execution) via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+The notebook lives at [`notebook/french-road-traffic-feed.ipynb`](notebook/french-road-traffic-feed.ipynb)
+and runs `french-road-traffic feed --once` per tick.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

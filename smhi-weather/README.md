@@ -55,3 +55,12 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsmhi-weather%2Fazure-template-with-eventhub.json)
+
+## Fabric notebook hosting
+
+The bridge can also be hosted as a Microsoft Fabric scheduled notebook
+(see [`smhi-weather/notebook/smhi-weather-feed.ipynb`](notebook/smhi-weather-feed.ipynb)).
+Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+which builds a per-source Fabric Environment, binds Lakehouse + KQL + Environment
+to the notebook, resolves the Event Stream connection string at runtime, and
+schedules single-cycle (`--once`) executions.

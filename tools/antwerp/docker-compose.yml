@@ -1,0 +1,138 @@
+# Antwerp - Docker Compose
+#
+# Usage:
+#   $env:CONNECTION_STRING="..."
+#   $env:AISSTREAM_API_KEY="<key>"
+#   $env:ENTSOE_SECURITY_TOKEN="<token>"
+#   $env:GTFS_RT_HEADER_KEY="<de-lijn-rt-key>"
+#   $env:GTFS_STATIC_HEADER_KEY="<de-lijn-static-key>"
+#   docker compose up -d
+#
+# Or with plain Kafka:
+#   $env:KAFKA_BOOTSTRAP_SERVERS="broker:9092"
+#   $env:KAFKA_TOPIC="antwerp"
+#   $env:KAFKA_ENABLE_TLS="false"
+#   $env:AISSTREAM_API_KEY="<key>"
+#   $env:ENTSOE_SECURITY_TOKEN="<token>"
+#   $env:GTFS_RT_HEADER_KEY="<de-lijn-rt-key>"
+#   $env:GTFS_STATIC_HEADER_KEY="<de-lijn-static-key>"
+#   docker compose up -d
+
+services:
+  gtfs-delijn:
+    image: ghcr.io/clemensv/real-time-sources-gtfs:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - GTFS_RT_URLS=https://api.delijn.be/gtfs/v3/realtime
+      - GTFS_RT_HEADERS=Ocp-Apim-Subscription-Key=${GTFS_RT_HEADER_KEY:-}
+      - GTFS_URLS=https://api.delijn.be/gtfs/static/v3/gtfs_transit.zip,https://addtransit.com/gtfsfile/85165/DeWaterbus.zip
+      - GTFS_HEADERS=Ocp-Apim-Subscription-Key=${GTFS_STATIC_HEADER_KEY:-}
+      - AGENCY=DL
+      - SCHEDULE_DIR=/data/gtfs_schedules
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  waterinfo-vmm:
+    image: ghcr.io/clemensv/real-time-sources-waterinfo-vmm:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/waterinfo_vmm_state.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  rws-waterwebservices:
+    image: ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/rws_waterwebservices_state.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  aisstream:
+    image: ghcr.io/clemensv/real-time-sources-aisstream:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - AISSTREAM_API_KEY=${AISSTREAM_API_KEY:-}
+      - AISSTREAM_BOUNDING_BOXES=51.1,4.2,51.5,4.6
+    restart: unless-stopped
+
+  irceline-belgium:
+    image: ghcr.io/clemensv/real-time-sources-irceline-belgium:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/irceline_belgium_state.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  meteoalarm:
+    image: ghcr.io/clemensv/real-time-sources-meteoalarm:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - METEOALARM_STATE_FILE=/data/meteoalarm_state.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  usgs-earthquakes:
+    image: ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - USGS_EQ_LAST_POLLED_FILE=/data/usgs_eq_last_polled.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  entsoe:
+    image: ghcr.io/clemensv/real-time-sources-entsoe:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - ENTSOE_SECURITY_TOKEN=${ENTSOE_SECURITY_TOKEN:-}
+      - ENTSOE_DOMAINS=10YBE----------2
+      - STATE_FILE=/data/entsoe_state.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+  rss:
+    image: ghcr.io/clemensv/real-time-sources-rss:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - FEED_URLS=https://www.vrt.be/vrtnws/nl.rss.articles.regio-antwerpen.xml,https://www.vrt.be/vrtnws/nl.rss.articles.xml,https://sporza.be/nl.rss.xml,https://sporza.be/nl/categorie/voetbal.rss.xml,https://sporza.be/nl/categorie/wielrennen.rss.xml,https://www.hln.be/regio/antwerpen/rss.xml,https://www.hln.be/sport/rss.xml,https://www.hln.be/showbizz/rss.xml,https://www.hln.be/home/rss.xml,https://feeds.nos.nl/nosnieuwsalgemeen,https://feeds.nos.nl/nossportalgemeen,https://feeds.nos.nl/nosnieuwscultuurenmedia,https://feeds.nos.nl/nosnieuwsbinnenland
+      - STATE_FILE=/data/rssbridge_state.json
+    volumes:
+      - antwerp-data:/data
+    restart: unless-stopped
+
+volumes:
+  antwerp-data:

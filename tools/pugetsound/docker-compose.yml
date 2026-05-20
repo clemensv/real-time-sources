@@ -62,6 +62,19 @@ services:
       - pugetsound-data:/data
     restart: unless-stopped
 
+  nws-forecasts:
+    image: ghcr.io/clemensv/real-time-sources-nws-forecasts:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - NWS_FORECAST_ZONES=WAZ312,WAZ315,WAZ316,WAZ317,PZZ130,PZZ131,PZZ132,PZZ133,PZZ134,PZZ135
+      - NWS_FORECAST_STATE_FILE=/data/nws_forecasts_state.json
+    volumes:
+      - pugetsound-data:/data
+    restart: unless-stopped
+
   wsdot:
     image: ghcr.io/clemensv/real-time-sources-wsdot:latest
     environment:

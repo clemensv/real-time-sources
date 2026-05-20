@@ -319,6 +319,12 @@ def main():
         type=str,
         default=os.environ.get("STATE_FILE", os.path.expanduser("~/.singapore_nea_state.json")),
     )
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List weather stations")
     subparsers.add_parser("list-air-quality", help="List air quality regions")
@@ -375,6 +381,9 @@ def main():
         now + AIR_QUALITY_REFERENCE_REFRESH_INTERVAL if airquality_event_producer else float("inf")
     )
 
+    did_weather = False
+    did_airquality = not bool(airquality_event_producer)
+
     while True:
         now = time.monotonic()
         next_due = min(next_weather_poll, next_airquality_poll, next_airquality_region_refresh)
@@ -385,6 +394,7 @@ def main():
         state_changed = False
 
         if now >= next_weather_poll:
+            did_weather = True
             next_weather_poll = now + args.polling_interval
             try:
                 count = feed_observations(weather_api, weather_event_producer, weather_state)
@@ -401,6 +411,7 @@ def main():
                 logger.error("Error refreshing air quality regions: %s", exc)
 
         if airquality_event_producer and now >= next_airquality_poll:
+            did_airquality = True
             next_airquality_poll = now + args.airquality_polling_interval
             try:
                 psi_count = fetch_and_send_psi(air_quality_api, airquality_event_producer, psi_state)
@@ -420,6 +431,10 @@ def main():
 
         if state_changed:
             _save_state(args.state_file, _compose_state(weather_state, psi_state, pm25_state))
+
+        if args.once and did_weather and did_airquality:
+            logger.info("--once mode: exiting after first polling cycle")
+            break
 
 
 if __name__ == "__main__":

@@ -1,0 +1,435 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  },
+  "parameters": {
+    "appName": {
+      "defaultValue": "[resourceGroup().name]",
+      "maxLength": 64,
+      "metadata": {
+        "description": "The name of the Antwerp container group."
+      },
+      "type": "string"
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Kafka/Event Hub/Fabric Event Stream connection string shared by all containers."
+      },
+      "type": "securestring"
+    },
+    "aisstreamApiKeySecret": {
+      "metadata": {
+        "description": "AISStream API key for maritime vessel tracking."
+      },
+      "type": "securestring"
+    },
+    "entsoeSecurityTokenSecret": {
+      "metadata": {
+        "description": "ENTSO-E Transparency Platform API security token."
+      },
+      "type": "securestring"
+    },
+    "gtfsRtHeaderKeySecret": {
+      "metadata": {
+        "description": "De Lijn GTFS-RT API subscription key (Ocp-Apim-Subscription-Key)."
+      },
+      "type": "securestring"
+    },
+    "gtfsStaticHeaderKeySecret": {
+      "metadata": {
+        "description": "De Lijn GTFS Static API subscription key (Ocp-Apim-Subscription-Key)."
+      },
+      "type": "securestring"
+    },
+    "gtfsImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-gtfs:latest",
+      "type": "string"
+    },
+    "waterinfoVmmImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-waterinfo-vmm:latest",
+      "type": "string"
+    },
+    "rwsWaterwebservicesImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest",
+      "type": "string"
+    },
+    "aisstreamImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-aisstream:latest",
+      "type": "string"
+    },
+    "ircelineBelgiumImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-irceline-belgium:latest",
+      "type": "string"
+    },
+    "meteoalarmImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-meteoalarm:latest",
+      "type": "string"
+    },
+    "usgsEarthquakesImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest",
+      "type": "string"
+    },
+    "entsoeImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-entsoe:latest",
+      "type": "string"
+    },
+    "rssImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-rss:latest",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 5120
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-09-01",
+      "name": "[parameters('appName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "gtfs-delijn",
+            "properties": {
+              "image": "[parameters('gtfsImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 4.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "GTFS_RT_URLS",
+                  "value": "https://api.delijn.be/gtfs/v3/realtime"
+                },
+                {
+                  "name": "GTFS_RT_HEADERS",
+                  "secureValue": "[concat('Ocp-Apim-Subscription-Key=', parameters('gtfsRtHeaderKeySecret'))]"
+                },
+                {
+                  "name": "GTFS_URLS",
+                  "value": "https://api.delijn.be/gtfs/static/v3/gtfs_transit.zip,https://addtransit.com/gtfsfile/85165/DeWaterbus.zip"
+                },
+                {
+                  "name": "GTFS_HEADERS",
+                  "secureValue": "[concat('Ocp-Apim-Subscription-Key=', parameters('gtfsStaticHeaderKeySecret'))]"
+                },
+                {
+                  "name": "AGENCY",
+                  "value": "DL"
+                },
+                {
+                  "name": "SCHEDULE_DIR",
+                  "value": "/mnt/fileshare/gtfs_schedules"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "waterinfo-vmm",
+            "properties": {
+              "image": "[parameters('waterinfoVmmImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/fileshare/waterinfo_vmm_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "rws-waterwebservices",
+            "properties": {
+              "image": "[parameters('rwsWaterwebservicesImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/fileshare/rws_waterwebservices_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "aisstream",
+            "properties": {
+              "image": "[parameters('aisstreamImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.5
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "AISSTREAM_API_KEY",
+                  "secureValue": "[parameters('aisstreamApiKeySecret')]"
+                },
+                {
+                  "name": "AISSTREAM_BOUNDING_BOXES",
+                  "value": "51.1,4.2,51.5,4.6"
+                }
+              ]
+            }
+          },
+          {
+            "name": "irceline-belgium",
+            "properties": {
+              "image": "[parameters('ircelineBelgiumImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/fileshare/irceline_belgium_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "meteoalarm",
+            "properties": {
+              "image": "[parameters('meteoalarmImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "METEOALARM_STATE_FILE",
+                  "value": "/mnt/fileshare/meteoalarm_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "usgs-earthquakes",
+            "properties": {
+              "image": "[parameters('usgsEarthquakesImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "USGS_EQ_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/usgs_eq_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "entsoe",
+            "properties": {
+              "image": "[parameters('entsoeImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "ENTSOE_SECURITY_TOKEN",
+                  "secureValue": "[parameters('entsoeSecurityTokenSecret')]"
+                },
+                {
+                  "name": "ENTSOE_DOMAINS",
+                  "value": "10YBE----------2"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/fileshare/entsoe_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "rss",
+            "properties": {
+              "image": "[parameters('rssImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "FEED_URLS",
+                  "value": "https://www.vrt.be/vrtnws/nl.rss.articles.regio-antwerpen.xml,https://www.vrt.be/vrtnws/nl.rss.articles.xml,https://sporza.be/nl.rss.xml,https://sporza.be/nl/categorie/voetbal.rss.xml,https://sporza.be/nl/categorie/wielrennen.rss.xml,https://www.hln.be/regio/antwerpen/rss.xml,https://www.hln.be/sport/rss.xml,https://www.hln.be/showbizz/rss.xml,https://www.hln.be/home/rss.xml,https://feeds.nos.nl/nosnieuwsalgemeen,https://feeds.nos.nl/nossportalgemeen,https://feeds.nos.nl/nosnieuwscultuurenmedia,https://feeds.nos.nl/nosnieuwsbinnenland"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/fileshare/rssbridge_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "azurefilevolume",
+            "azureFile": {
+              "storageAccountName": "[variables('storageAccountName')]",
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "osType": "Linux"
+      }
+    }
+  ]
+}

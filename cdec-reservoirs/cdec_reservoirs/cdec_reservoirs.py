@@ -144,7 +144,8 @@ class CdecReservoirsAPI:
         return config_dict
 
     async def feed_readings(self, kafka_config: dict, kafka_topic: str,
-                            polling_interval: int, state_file: str = '') -> None:
+                            polling_interval: int, state_file: str = '',
+                            once: bool = False) -> None:
         """Poll CDEC and emit reservoir readings to Kafka."""
         seen_keys: Set[str] = set()
         if state_file:
@@ -221,6 +222,9 @@ class CdecReservoirsAPI:
                     count, elapsed, effective_interval,
                 )
                 _save_state(state_file, seen_keys)
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_interval > 0:
                     time.sleep(effective_interval)
             except KeyboardInterrupt:
@@ -301,6 +305,9 @@ def main() -> None:
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE',
                                                os.path.expanduser('~/.cdec_reservoirs_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
     api = CdecReservoirsAPI(
@@ -353,7 +360,7 @@ def main() -> None:
             kafka_config['security.protocol'] = 'SSL'
 
         asyncio.run(api.feed_readings(
-            kafka_config, kafka_topic, args.polling_interval, args.state_file))
+            kafka_config, kafka_topic, args.polling_interval, args.state_file, args.once))
     else:
         parser.print_help()
 

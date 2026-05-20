@@ -26,6 +26,9 @@ and emits only new or changed readings.
 - **Configurable polling interval**: Default 600 seconds (10 minutes)
 - **Kafka integration**: SASL PLAIN authentication for Event Hubs / Fabric Event
   Streams
+- **Fabric notebook hosting**: deployable as a scheduled Fabric notebook via
+  [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+  (uses the `--once` flag for single-cycle execution).
 
 ## Data Source
 

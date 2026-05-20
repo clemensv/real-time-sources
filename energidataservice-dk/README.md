@@ -17,6 +17,10 @@ See [EVENTS.md](EVENTS.md) for the full event schema documentation.
 
 See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
 
+## Fabric notebook hosting
+
+This source ships a Fabric notebook feeder at [`notebook/energidataservice-dk-feed.ipynb`](notebook/energidataservice-dk-feed.ipynb); deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) to run scheduled single-cycle polls inside a Microsoft Fabric workspace.
+
 ## Quick Start
 
 ```shell

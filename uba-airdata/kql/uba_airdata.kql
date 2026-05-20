@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['de.uba.airdata.Station'] (
    [station_id]: int,
    [station_code]: string,
    [station_name]: string,
@@ -51,9 +51,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference data for a station in the Umweltbundesamt air_data/v3 station catalog. The station payload describes the UBA station identifier, official station code, station naming, active period, WGS84 coordinates, the denormalized federal state monitoring network, and the station environment classification.\"}";
+.alter table ['de.uba.airdata.Station'] docstring "{\"description\": \"Reference data for a station in the Umweltbundesamt air_data/v3 station catalog. The station payload describes the UBA station identifier, official station code, station naming, active period, WGS84 coordinates, the denormalized federal state monitoring network, and the station environment classification.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['de.uba.airdata.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Stable numeric UBA station identifier from the 'station id' column. This is the station key used for CloudEvents subject and Kafka key.\"}",
    [station_code]: "{\"description\": \"Official station code from the 'station code' column, typically the European Environment Agency style identifier such as 'DEBE021' or 'DEBB003'.\"}",
    [station_name]: "{\"description\": \"Human-readable station name from the 'station name' column as published by UBA.\"}",
@@ -79,7 +79,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['de.uba.airdata.Station'] ingestion json mapping "de.uba.airdata.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -108,7 +108,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['de.uba.airdata.Station'] ingestion json mapping "de.uba.airdata.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -137,13 +137,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['de.uba.airdata.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.uba.airdata.StationLatest'] on table ['de.uba.airdata.Station'] {
+    ['de.uba.airdata.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['de.uba.airdata.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -154,7 +154,7 @@
 }]
 ```
 
-.create-merge table [Measure] (
+.create-merge table ['de.uba.airdata.Measure'] (
    [station_id]: int,
    [component_id]: int,
    [scope_id]: int,
@@ -169,9 +169,9 @@
    [___subject]: string
 );
 
-.alter table [Measure] docstring "{\"description\": \"Hourly air quality measurement record from the UBA air_data/v3 measures endpoint. The upstream API returns measurements grouped by station and measurement start time for a requested component and averaging scope.\"}";
+.alter table ['de.uba.airdata.Measure'] docstring "{\"description\": \"Hourly air quality measurement record from the UBA air_data/v3 measures endpoint. The upstream API returns measurements grouped by station and measurement start time for a requested component and averaging scope.\"}";
 
-.alter table [Measure] column-docstrings (
+.alter table ['de.uba.airdata.Measure'] column-docstrings (
    [station_id]: "{\"description\": \"Stable numeric UBA station identifier for the station that reported the measurement.\"}",
    [component_id]: "{\"description\": \"Stable numeric UBA pollutant component identifier from the first element of the measure value array, for example 5 for NO\\u2082.\"}",
    [scope_id]: "{\"description\": \"Stable numeric UBA averaging scope identifier from the second element of the measure value array. Scope 2 represents the one-hour average used by this bridge.\"}",
@@ -186,7 +186,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Measure] ingestion json mapping "Measure_json_flat"
+.create-or-alter table ['de.uba.airdata.Measure'] ingestion json mapping "de.uba.airdata.Measure_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -204,7 +204,7 @@
 ]
 ```
 
-.create-or-alter table [Measure] ingestion json mapping "Measure_json_ce_structured"
+.create-or-alter table ['de.uba.airdata.Measure'] ingestion json mapping "de.uba.airdata.Measure_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -222,13 +222,13 @@
 ]
 ```
 
-.drop materialized-view MeasureLatest ifexists;
+.drop materialized-view ['de.uba.airdata.MeasureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MeasureLatest on table Measure {
-    Measure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.uba.airdata.MeasureLatest'] on table ['de.uba.airdata.Measure'] {
+    ['de.uba.airdata.Measure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Measure] policy update
+.alter table ['de.uba.airdata.Measure'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -239,7 +239,7 @@
 }]
 ```
 
-.create-merge table [Component] (
+.create-merge table ['de.uba.airdata.components.Component'] (
    [component_id]: int,
    [component_code]: string,
    [symbol]: string,
@@ -252,9 +252,9 @@
    [___subject]: string
 );
 
-.alter table [Component] docstring "{\"description\": \"Reference data for a pollutant component from the UBA air_data/v3 components catalog. Each component defines the stable numeric component identifier, short code, published symbol, published unit string, and English display name.\"}";
+.alter table ['de.uba.airdata.components.Component'] docstring "{\"description\": \"Reference data for a pollutant component from the UBA air_data/v3 components catalog. Each component defines the stable numeric component identifier, short code, published symbol, published unit string, and English display name.\"}";
 
-.alter table [Component] column-docstrings (
+.alter table ['de.uba.airdata.components.Component'] column-docstrings (
    [component_id]: "{\"description\": \"Stable numeric UBA component identifier from the 'component id' column. This is the CloudEvents subject and Kafka key for component events.\"}",
    [component_code]: "{\"description\": \"Short UBA component code from the 'component code' column, such as 'PM10', 'NO2', 'O3', or 'PM2'.\"}",
    [symbol]: "{\"description\": \"Published component symbol from the 'component symbol' column. This may include Unicode subscripts, for example 'PM\\u2081\\u2080' or 'NO\\u2082'.\"}",
@@ -267,7 +267,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Component] ingestion json mapping "Component_json_flat"
+.create-or-alter table ['de.uba.airdata.components.Component'] ingestion json mapping "de.uba.airdata.components.Component_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -283,7 +283,7 @@
 ]
 ```
 
-.create-or-alter table [Component] ingestion json mapping "Component_json_ce_structured"
+.create-or-alter table ['de.uba.airdata.components.Component'] ingestion json mapping "de.uba.airdata.components.Component_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -299,13 +299,13 @@
 ]
 ```
 
-.drop materialized-view ComponentLatest ifexists;
+.drop materialized-view ['de.uba.airdata.components.ComponentLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ComponentLatest on table Component {
-    Component | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['de.uba.airdata.components.ComponentLatest'] on table ['de.uba.airdata.components.Component'] {
+    ['de.uba.airdata.components.Component'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Component] policy update
+.alter table ['de.uba.airdata.components.Component'] policy update
 ```
 [{
   "IsEnabled": true,

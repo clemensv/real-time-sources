@@ -188,3 +188,26 @@ The `data` of the CloudEvent message is a JSON object with the following attribu
 * `routeTag`: the route tag
 * `messages`: the route messages as a JSON object
 
+## Deploying into Azure Container Instances
+
+You can deploy this bridge directly to Azure Container Instances using the
+container image `ghcr.io/clemensv/real-time-sources-nextbus:latest`. Two
+deployment options are available:
+
+### Option 1: Bring your own Event Hub
+
+Deploy the container and provide your own Azure Event Hubs or Fabric Event
+Streams connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template.json)
+
+### Option 2: Deploy with a new Event Hub
+
+Deploy the container together with a new Event Hub namespace (Standard SKU, 1
+throughput unit) and event hub. The connection string is automatically
+configured.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventhub.json)
+
+For full container deployment documentation, see [CONTAINER.md](CONTAINER.md).
+

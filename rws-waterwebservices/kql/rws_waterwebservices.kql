@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['nl.rws.waterwebservices.Station'] (
    [station_code]: string,
    [name]: string,
    [latitude]: real,
@@ -38,9 +38,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Station\"}";
+.alter table ['nl.rws.waterwebservices.Station'] docstring "{\"description\": \"Station\"}";
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['nl.rws.waterwebservices.Station'] ingestion json mapping "nl.rws.waterwebservices.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -56,7 +56,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['nl.rws.waterwebservices.Station'] ingestion json mapping "nl.rws.waterwebservices.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,13 +72,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['nl.rws.waterwebservices.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['nl.rws.waterwebservices.StationLatest'] on table ['nl.rws.waterwebservices.Station'] {
+    ['nl.rws.waterwebservices.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['nl.rws.waterwebservices.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -89,7 +89,7 @@
 }]
 ```
 
-.create-merge table [WaterLevelObservation] (
+.create-merge table ['nl.rws.waterwebservices.WaterLevelObservation'] (
    [station_code]: string,
    [location_name]: string,
    [timestamp]: datetime,
@@ -106,9 +106,9 @@
    [___subject]: string
 );
 
-.alter table [WaterLevelObservation] docstring "{\"description\": \"WaterLevelObservation\"}";
+.alter table ['nl.rws.waterwebservices.WaterLevelObservation'] docstring "{\"description\": \"WaterLevelObservation\"}";
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_flat"
+.create-or-alter table ['nl.rws.waterwebservices.WaterLevelObservation'] ingestion json mapping "nl.rws.waterwebservices.WaterLevelObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -128,7 +128,7 @@
 ]
 ```
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_ce_structured"
+.create-or-alter table ['nl.rws.waterwebservices.WaterLevelObservation'] ingestion json mapping "nl.rws.waterwebservices.WaterLevelObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -148,13 +148,13 @@
 ]
 ```
 
-.drop materialized-view WaterLevelObservationLatest ifexists;
+.drop materialized-view ['nl.rws.waterwebservices.WaterLevelObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelObservationLatest on table WaterLevelObservation {
-    WaterLevelObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['nl.rws.waterwebservices.WaterLevelObservationLatest'] on table ['nl.rws.waterwebservices.WaterLevelObservation'] {
+    ['nl.rws.waterwebservices.WaterLevelObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevelObservation] policy update
+.alter table ['nl.rws.waterwebservices.WaterLevelObservation'] policy update
 ```
 [{
   "IsEnabled": true,

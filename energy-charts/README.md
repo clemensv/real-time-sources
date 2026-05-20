@@ -30,6 +30,13 @@ See [EVENTS.md](EVENTS.md) for the full event schema documentation.
 pip install .
 ```
 
+## Hosting options
+
+- **Docker** — see [CONTAINER.md](CONTAINER.md) for image/registry details.
+- **Azure Container Instance** — use `azure-template.json`.
+- **Fabric notebook hosting** — schedule a single-cycle run with `notebook/energy-charts-feed.ipynb`, deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
+
 ## Usage
 
 ### With a connection string (Event Hubs / Fabric)

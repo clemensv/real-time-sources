@@ -86,3 +86,22 @@ class TestMapRow:
         rows = parse_dwd_csv(SAMPLE_CSV_AIR_TEMP)
         mapped = map_row(rows[0], "air_temperature")
         assert mapped["pressure_station_level"] is None
+
+    def test_extreme_wind_mapping(self):
+        rows = parse_dwd_csv("""\
+STATIONS_ID;MESS_DATUM;QN;FX_10;FNX_10;DX_10;eor
+         164;202604010000;3;13.5;2.0;225;eor
+""")
+        mapped = map_row(rows[0], "extreme_wind")
+        assert mapped["wind_speed_maximum"] == pytest.approx(13.5)
+        assert mapped["wind_speed_minimum"] == pytest.approx(2.0)
+        assert mapped["wind_direction_at_maximum"] == pytest.approx(225)
+
+    def test_extreme_temperature_mapping(self):
+        rows = parse_dwd_csv("""\
+STATIONS_ID;MESS_DATUM;QN;TX_10;TN_10;eor
+          44;202604010000;3;8.5;-1.5;eor
+""")
+        mapped = map_row(rows[0], "extreme_temperature")
+        assert mapped["air_temperature_maximum_2m"] == pytest.approx(8.5)
+        assert mapped["air_temperature_minimum_5cm"] == pytest.approx(-1.5)

@@ -34,7 +34,7 @@
     }
   },
   "variables": {
-    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg'), 24)]",
+    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
     "imageName": "ghcr.io/clemensv/real-time-sources-energidataservice-dk:latest",
     "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
