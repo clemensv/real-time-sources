@@ -187,20 +187,52 @@ if ($Workspace -match $guidRx) {
 $wsInfo = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
 Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
 
-# 2. Resolve eventhouse + database
-Write-Step "2/4" "Resolving KQL database..."
+# 2. Resolve eventhouse + database (auto-create on a clean workspace)
+Write-Step "2/4" "Resolving Eventhouse and KQL database..."
 $ehList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
 if ($Eventhouse -match $guidRx) {
     $eh = $ehList.value | Where-Object { $_.id -eq $Eventhouse } | Select-Object -First 1
 } else {
     $eh = $ehList.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
 }
-if (-not $eh) { throw "Eventhouse '$Eventhouse' not found in workspace." }
+if (-not $eh) {
+    if ($Eventhouse -match $guidRx) {
+        throw "Eventhouse with id '$Eventhouse' not found in workspace (cannot auto-create by GUID)."
+    }
+    Write-Host "  Creating Eventhouse '$Eventhouse'..." -ForegroundColor Yellow
+    Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses" -Body @{ displayName = $Eventhouse } | Out-Null
+    for ($i = 0; $i -lt 12 -and -not $eh; $i++) {
+        Start-Sleep -Seconds 5
+        $ehList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+        $eh = $ehList.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+    }
+    if (-not $eh) { throw "Failed to create Eventhouse '$Eventhouse'." }
+}
+# Fetch full details (queryServiceUri populates lazily right after create)
+$ehDetails = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$($eh.id)"
+for ($i = 0; $i -lt 6 -and (-not $ehDetails -or -not $ehDetails.properties.queryServiceUri); $i++) {
+    Start-Sleep -Seconds 5
+    $ehDetails = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$($eh.id)"
+}
+if (-not $ehDetails -or -not $ehDetails.properties.queryServiceUri) {
+    throw "Eventhouse '$($eh.displayName)' has no queryServiceUri after wait."
+}
+$eh = $ehDetails
 Write-OK "Eventhouse: $($eh.displayName) ($($eh.id))"
 
 $dbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
 $db = $dbList.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
-if (-not $db) { throw "KQL database '$DatabaseName' not found. Run deploy-fabric.ps1 first." }
+if (-not $db) {
+    Write-Host "  Creating KQL database '$DatabaseName'..." -ForegroundColor Yellow
+    $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $eh.id; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
+    Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Body @{ displayName = $DatabaseName; creationPayload = $dbProps } | Out-Null
+    for ($i = 0; $i -lt 12 -and -not $db; $i++) {
+        Start-Sleep -Seconds 5
+        $dbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+        $db = $dbList.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+    }
+    if (-not $db) { throw "Failed to create KQL database '$DatabaseName'." }
+}
 Write-OK "KQL database: $($db.displayName) ($($db.id))"
 
 $queryUri = $eh.properties.queryServiceUri

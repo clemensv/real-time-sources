@@ -16,7 +16,7 @@ integration. Runs in Azure Cloud Shell.
                            │
 ┌──────────────────────────▼─────────────────────────────────────┐
 │  Steps 2–3: Fabric REST API + KQL                              │
-│   → KQL database in existing Eventhouse                        │
+│   → Eventhouse (auto-created if missing) + KQL database         │
 │   → _cloudevents_dispatch table + typed tables + update         │
 │     policies + materialized views (from source kql/ script)    │
 └──────────────────────────┬─────────────────────────────────────┘
@@ -85,8 +85,8 @@ Example: see [`dwd/fabric/post-deploy.ps1`](../../dwd/fabric/post-deploy.ps1)
 ## Prerequisites
 
 - Azure Cloud Shell (PowerShell) — already authenticated via `az`
-- An existing Microsoft Fabric **Workspace** (you need the workspace ID)
-- An existing **Eventhouse** in that workspace (you need the eventhouse ID)
+- A Microsoft Fabric **Workspace** (you need the workspace ID)
+- *(Optional)* An existing **Eventhouse** in that workspace. If you don't pass `-Eventhouse`, or pass a name that doesn't exist yet, the script will create one with the source name. Pass an existing Eventhouse name or GUID to reuse one.
 - Contributor access to an Azure subscription / resource group
 
 ## Usage
