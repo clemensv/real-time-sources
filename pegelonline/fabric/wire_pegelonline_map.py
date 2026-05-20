@@ -169,13 +169,20 @@ LABEL_OPTIONS_BASE = {
 
 
 def _line_options() -> dict:
-    """Reusable lineOptions block: thick, rounded, data-driven."""
+    """Reusable lineOptions block.
+
+    Schema (Fabric Map v2.0.0, additionalProperties:false on lineOptions):
+    - ``strokeColor`` accepts a CSS string OR a data-driven expression
+      (``$ref: colorDefinition``).
+    - ``strokeWidth`` is ``type: number`` only — expressions are silently
+      rejected and the entire layer fails to render.
+    - ``lineJoin``/``lineCap`` are NOT in the schema; including them invalidates
+      the layer (we used to, hence the empty map).
+    """
     return {
         "strokeColor": ["get", "stroke_color"],
-        "strokeWidth": ["get", "stroke_weight"],
+        "strokeWidth": 5,
         "strokeOpacity": 0.9,
-        "lineJoin": "round",
-        "lineCap": "round",
     }
 
 
@@ -227,7 +234,6 @@ def _state_layer(default_visible: bool) -> dict:
         "options": {
             "type": "vector",
             "visible": default_visible,
-            "color": ["get", "stroke_color"],
             "lineOptions": _line_options(),
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
@@ -248,7 +254,6 @@ def _navigation_layer() -> dict:
         "options": {
             "type": "vector",
             "visible": False,
-            "color": ["get", "stroke_color"],
             "lineOptions": _line_options(),
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
@@ -276,7 +281,6 @@ def _trend_layer(window: str = "24h") -> dict:
         "options": {
             "type": "vector",
             "visible": False,
-            "color": ["get", "stroke_color"],
             "lineOptions": _line_options(),
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
@@ -297,7 +301,6 @@ def _freshness_layer() -> dict:
         "options": {
             "type": "vector",
             "visible": False,
-            "color": ["get", "stroke_color"],
             "lineOptions": _line_options(),
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
