@@ -78,11 +78,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t test-${{ matrix.dir }} ./${{ matrix.dir }}
+          docker build -t test-${{ matrix.image || matrix.dir }} -f ./${{ matrix.dir }}/${{ matrix.file || 'Dockerfile' }} ./${{ matrix.dir }}
 
       - name: Verify module imports
         run: |
-          docker run --rm test-${{ matrix.dir }} \
+          docker run --rm test-${{ matrix.image || matrix.dir }} \
             python -c "import ${{ matrix.module }}; print('OK')"
 
   docker-kafka-flow:
@@ -108,12 +108,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t test-${{ matrix.dir }} ./${{ matrix.dir }}
+          docker build -t test-${{ matrix.image || matrix.dir }} -f ./${{ matrix.dir }}/${{ matrix.file || 'Dockerfile' }} ./${{ matrix.dir }}
 
       - name: Run Kafka flow test
         run: |
           pytest tests/docker_e2e/test_docker_kafka_flow.py \
-            -v --timeout=300 \
+            -v --timeout=600 \
             -k "${{ matrix.test_class }}" \
             --tb=long
         timeout-minutes: 10

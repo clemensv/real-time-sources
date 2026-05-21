@@ -18,7 +18,7 @@ jobs:
     defaults:
       run:
         working-directory: ./pegelonline
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -29,35 +29,41 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install Poetry
+      - name: Install test runner
+        run: pip install pytest pytest-cov pytest-asyncio requests-mock
+
+      - name: Install generated producer packages
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          pip install -e ./pegelonline_producer/pegelonline_producer_data
+          pip install -e ./pegelonline_producer/pegelonline_producer_kafka_producer
+          pip install -e ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_data
+          pip install -e ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_mqtt_client
 
-      - name: Configure Poetry
+      - name: Install transport-agnostic core and transport apps
         run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
-
-      - name: Cache Poetry dependencies
-        uses: actions/cache@v5
-        with:
-          path: ./pegelonline/.venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            venv-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-ansi
+          pip install -e ./pegelonline_core
+          pip install -e ./pegelonline_kafka
+          pip install -e ./pegelonline_mqtt
 
       - name: Run unit tests
-        run: poetry run pytest tests/test_pegelonline_unit.py -v --tb=short
+        run: pytest tests/test_pegelonline_unit.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
 
       - name: Run integration tests
-        run: poetry run pytest tests/test_pegelonline_integration.py -v --tb=short
+        run: pytest tests/test_pegelonline_integration.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
+
+      - name: Run Kafka app tests
+        run: pytest tests/test_pegelonline_kafka_app.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
+
+      - name: Run MQTT app tests
+        run: pytest tests/test_pegelonline_mqtt_app.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
 
       - name: Run all tests with coverage
-        run: poetry run pytest tests/ -v --cov=pegelonline --cov-report=term-missing --cov-report=xml --cov-fail-under=20
+        run: |
+          pytest tests/ -v \
+            --ignore=tests/test_pegelonline_e2e.py \
+            --cov=pegelonline_core --cov=pegelonline_kafka --cov=pegelonline_mqtt \
+            --cov-report=term-missing --cov-report=xml --cov-fail-under=20 \
+            -p no:cacheprovider --override-ini="addopts="
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v6

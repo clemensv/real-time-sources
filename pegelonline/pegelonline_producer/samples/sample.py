@@ -32,7 +32,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineEventProducer
+from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineKafkaEventProducer
 
 # imports for the data classes for each event
 
@@ -51,27 +51,27 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        de_wsv_pegelonline_event_producer = DeWsvPegelonlineEventProducer.from_connection_string(connection_string, topic, 'binary')
+        de_wsv_pegelonline_kafka_event_producer = DeWsvPegelonlineKafkaEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        de_wsv_pegelonline_event_producer = DeWsvPegelonlineEventProducer(kafka_producer, topic, 'binary')
+        de_wsv_pegelonline_kafka_event_producer = DeWsvPegelonlineKafkaEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- de.wsv.pegelonline.Station ----
-    # TODO: Supply event data for the de.wsv.pegelonline.Station event
+    # ---- de.wsv.pegelonline.kafka.Station ----
+    # TODO: Supply event data for the de.wsv.pegelonline.kafka.Station event
     _station = Station()
 
-    # sends the 'de.wsv.pegelonline.Station' event to Kafka topic.
-    await de_wsv_pegelonline_event_producer.send_de_wsv_pegelonline_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
-    print(f"Sent 'de.wsv.pegelonline.Station' event: {_station.to_json()}")
+    # sends the 'de.wsv.pegelonline.kafka.Station' event to Kafka topic.
+    await de_wsv_pegelonline_kafka_event_producer.send_de_wsv_pegelonline_kafka_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'de.wsv.pegelonline.kafka.Station' event: {_station.to_json()}")
 
-    # ---- de.wsv.pegelonline.CurrentMeasurement ----
-    # TODO: Supply event data for the de.wsv.pegelonline.CurrentMeasurement event
+    # ---- de.wsv.pegelonline.kafka.CurrentMeasurement ----
+    # TODO: Supply event data for the de.wsv.pegelonline.kafka.CurrentMeasurement event
     _current_measurement = CurrentMeasurement()
 
-    # sends the 'de.wsv.pegelonline.CurrentMeasurement' event to Kafka topic.
-    await de_wsv_pegelonline_event_producer.send_de_wsv_pegelonline_current_measurement(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _current_measurement)
-    print(f"Sent 'de.wsv.pegelonline.CurrentMeasurement' event: {_current_measurement.to_json()}")
+    # sends the 'de.wsv.pegelonline.kafka.CurrentMeasurement' event to Kafka topic.
+    await de_wsv_pegelonline_kafka_event_producer.send_de_wsv_pegelonline_kafka_current_measurement(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _current_measurement)
+    print(f"Sent 'de.wsv.pegelonline.kafka.CurrentMeasurement' event: {_current_measurement.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

@@ -10,7 +10,7 @@ from cloudevents.http import CloudEvent
 from pegelonline_producer_data import Station
 from pegelonline_producer_data import CurrentMeasurement
 
-class DeWsvPegelonlineEventProducer:
+class DeWsvPegelonlineKafkaEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
         """
         Initializes the Kafka producer
@@ -41,9 +41,9 @@ class DeWsvPegelonlineEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_de_wsv_pegelonline_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_de_wsv_pegelonline_kafka_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
-        Sends the 'de.wsv.pegelonline.Station' event to the Kafka topic
+        Sends the 'de.wsv.pegelonline.kafka.Station' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -74,9 +74,9 @@ class DeWsvPegelonlineEventProducer:
             self.producer.flush()
 
 
-    def send_de_wsv_pegelonline_current_measurement(self,_feedurl : str, _station_id : str, data: CurrentMeasurement, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentMeasurement], str]=None) -> None:
+    def send_de_wsv_pegelonline_kafka_current_measurement(self,_feedurl : str, _station_id : str, data: CurrentMeasurement, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentMeasurement], str]=None) -> None:
         """
-        Sends the 'de.wsv.pegelonline.CurrentMeasurement' event to the Kafka topic
+        Sends the 'de.wsv.pegelonline.kafka.CurrentMeasurement' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -137,7 +137,7 @@ class DeWsvPegelonlineEventProducer:
         return config_dict, kafka_topic
 
     @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'DeWsvPegelonlineEventProducer':
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'DeWsvPegelonlineKafkaEventProducer':
         """
         Create a Kafka producer from a connection string and a topic name.
 

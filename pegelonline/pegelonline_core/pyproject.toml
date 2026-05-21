@@ -1,0 +1,16 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pegelonline_core"
+version = "0.1.0"
+description = "Transport-agnostic acquisition and config for the PegelOnline bridge."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "pegelonline_core" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+urllib3 = ">=2.7.0"
+idna = ">=3.15"

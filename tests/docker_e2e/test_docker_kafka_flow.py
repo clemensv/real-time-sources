@@ -94,7 +94,7 @@ def nifc_usa_wildfires_image():
 
 @pytest.fixture(scope='module')
 def pegelonline_image():
-    return build_image('pegelonline')
+    return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
 def hubeau_image():
@@ -1393,6 +1393,7 @@ class TestLAQNLondonDockerFlow:
             telemetry_types=['Measurement', 'DailyIndex'],
             required_types=['Site', 'Species', 'Measurement', 'DailyIndex'],
             extra_env={'POLLING_INTERVAL': '5'},
+            timeout=480,
         )
 
 

@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the Pegelonline bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+    "description": "Deploys the Pegelonline Kafka bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics. Bring your own Kafka or Event Hubs connection string."
   },
   "parameters": {
     "connectionString": {
@@ -32,7 +32,7 @@
   "variables": {
     "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
-    "imageName": "ghcr.io/clemensv/real-time-sources-pegelonline:latest",
+    "imageName": "ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
   "resources": [

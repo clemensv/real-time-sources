@@ -13,12 +13,32 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "pegelonline",
-          "key": "{station_id}"
+          "topic": "pegelonline"
         }
       },
       "messagegroups": [
-        "#/messagegroups/de.wsv.pegelonline"
+        "#/messagegroups/de.wsv.pegelonline.kafka"
+      ]
+    },
+    "de.wsv.pegelonline.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/de.wsv.pegelonline.mqtt"
       ]
     }
   },
@@ -64,6 +84,84 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement"
+        }
+      }
+    },
+    "de.wsv.pegelonline.kafka": {
+      "description": "Kafka-transport variants of the PegelOnline CloudEvents, adding per-message Kafka key for partitioning.",
+      "messages": {
+        "de.wsv.pegelonline.kafka.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "protocol": "KAFKA",
+          "protocolmetadata": {
+            "key": {
+              "type": "uritemplate",
+              "value": "{station_id}",
+              "description": "Kafka partition key — stable station identifier matching the CloudEvent subject."
+            }
+          }
+        },
+        "de.wsv.pegelonline.kafka.CurrentMeasurement": {
+          "name": "CurrentMeasurement",
+          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "protocol": "KAFKA",
+          "protocolmetadata": {
+            "key": {
+              "type": "uritemplate",
+              "value": "{station_id}",
+              "description": "Kafka partition key — stable station identifier matching the CloudEvent subject."
+            }
+          }
+        }
+      }
+    },
+    "de.wsv.pegelonline.mqtt": {
+      "description": "MQTT/5.0 transport variants of the PegelOnline CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/pegelonline/...",
+      "messages": {
+        "de.wsv.pegelonline.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "properties": {
+              "topic": {
+                "type": "uritemplate",
+                "value": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info",
+                "description": "Unified Namespace topic carrying the station's identity and location as a retained last-known-value."
+              },
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
+            }
+          }
+        },
+        "de.wsv.pegelonline.mqtt.CurrentMeasurement": {
+          "name": "CurrentMeasurement",
+          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "properties": {
+              "topic": {
+                "type": "uritemplate",
+                "value": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level",
+                "description": "Unified Namespace topic carrying the station's latest water-level measurement as a retained last-known-value."
+              },
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
+            }
+          }
         }
       }
     }

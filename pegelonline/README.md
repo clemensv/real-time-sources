@@ -1,33 +1,83 @@
-# PegelOnline Usage Guide
+# PegelOnline → Apache Kafka & MQTT/UNS
 
 ## Overview
 
-**PegelOnline** is a tool designed to interact with the German WSV PegelOnline API to fetch water level data for rivers in Germany. The tool can retrieve water level data from individual stations, list available stations, or continuously poll the API to send water level updates to a Kafka topic.
+**PegelOnline** is a bridge that polls the German WSV PegelOnline REST API
+and re-emits both the station catalog and the live water-level measurements
+as CloudEvents. The source ships in two transport variants from a single
+upstream poller:
 
-## Key Features:
-- **Water Level Fetching**: Retrieve current water level data for specific stations from the PegelOnline API.
-- **Station Listing**: List all available monitoring stations.
-- **Kafka Integration**: Send water level updates as CloudEvents to a Kafka topic, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree under `hydro/de/wsv/pegelonline/{water}/{station}/...`, JSON body, CloudEvent attributes as MQTT 5 user properties, retained at QoS 1 |
 
-## Installation
+Both variants share:
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or get it from the Microsoft Store if you are on Windows.
+* The upstream poller (`pegelonline_core`).
+* The xRegistry contract (`xreg/pegelonline.xreg.json`).
+* The CloudEvents schemas for the `Station` reference event and the
+  `CurrentMeasurement` telemetry event.
 
-### Installation Steps
+## Key Features
+- **Station catalog** emitted at startup as reference CloudEvents.
+- **Live water-level measurements** with ETag-aware polling and per-station
+  dedup state.
+- **Two transport binaries** with identical configuration knobs upstream
+  (polling interval, state file, once-mode).
+- **Microsoft Event Hubs / Fabric Event Stream** ready via standard
+  connection strings (Kafka variant).
+- **Unified Namespace** ready out of the box with retained MQTT 5.0 binary
+  CloudEvents (MQTT variant).
 
-Once Python is installed, you can install the tool from the command line as follows:
+## Repository Layout
 
-```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=pegelonline
+```
+pegelonline/
+  xreg/pegelonline.xreg.json     # shared xRegistry contract
+  pegelonline_core/              # transport-agnostic poller
+  pegelonline_kafka/             # Kafka feeder application
+  pegelonline_mqtt/              # MQTT/UNS feeder application
+  pegelonline_producer/          # xrcg-generated Kafka producer
+  pegelonline_mqtt_producer/     # xrcg-generated MQTT producer
+  Dockerfile.kafka               # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  tests/                         # unit + integration tests
 ```
 
-If you clone the repository, you can install the tool as follows:
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/pegelonline
-pip install .
+docker run --rm \
+  -e CONNECTION_STRING="$EVENT_HUBS_CONNECTION_STRING" \
+  ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
 ```
+
+### MQTT / UNS
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL=mqtts://broker.example.com:8883 \
+  -e MQTT_USERNAME=alice \
+  -e MQTT_PASSWORD=secret \
+  ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
+```
+
+Topics published (retained, QoS 1):
+
+```
+hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info          # Station reference
+hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level   # CurrentMeasurement telemetry
+```
+
+The legacy single-image deployment (`Dockerfile`) has been retired in favor
+of the two transport-specific images above. Existing Kafka-side environment
+variables (`CONNECTION_STRING`, `KAFKA_*`, `SASL_*`, `POLLING_INTERVAL`,
+`STATE_FILE`, `ONCE_MODE`) are preserved unchanged on the Kafka variant.
+
+## Local development
 
 For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
 

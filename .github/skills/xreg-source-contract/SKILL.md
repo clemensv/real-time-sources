@@ -12,6 +12,10 @@ argument-hint: "Describe the source, event families, stable identifier shape, an
 - Change CloudEvents subject or Kafka key modeling.
 - Split one source into multiple message groups or endpoints.
 - Refresh generated producers after contract changes.
+- **Adding an MQTT messagegroup alongside the existing Kafka one** —
+  invoke the `mqtt-uns-feeder` skill for the MQTT-specific contract
+  pattern (topic uritemplate, qos, retain, basemessageurl back to the
+  transport-neutral group).
 
 ## Inputs
 
