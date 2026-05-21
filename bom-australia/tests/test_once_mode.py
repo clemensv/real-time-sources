@@ -1,5 +1,6 @@
 """Unit test for the ``--once`` single-cycle execution mode added to support
-Fabric notebook hosting (see notebook-feeder-retrofit skill)."""
+Fabric notebook hosting (see stream-bridge-implementation skill,
+Fabric Notebook Hosting section)."""
 
 import sys
 import types

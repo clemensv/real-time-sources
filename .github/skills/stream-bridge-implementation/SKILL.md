@@ -1,16 +1,31 @@
 ---
 name: stream-bridge-implementation
-description: "Use when implementing the runtime bridge for a source in this repo. Covers pollers, websocket or MQTT clients, raw TCP decoders, family-aware normalization, generated producer wiring, state and dedupe logic, and source-local testing."
-argument-hint: "Describe the transport, auth, polling or reconnect behavior, resume state needs, and the event families the runtime must emit."
+description: "Use when implementing the runtime bridge (feeder) for a source in this repo. Covers pollers, websocket or MQTT clients, raw TCP decoders, family-aware normalization, generated producer wiring, state and dedupe logic, source-local testing, mandatory expert review of the contract and generated schemas, and the Fabric notebook hosting option for poll-based sources (both new sources and retrofits of already-shipped sources)."
+argument-hint: "Describe the transport, auth, polling or reconnect behavior, resume state needs, and the event families the runtime must emit. For a notebook-only retrofit, pass the source id and the literal 'retrofit'."
 ---
 
 # Stream Bridge Implementation
+
+This is the **main skill for building feeders** in this repo. It covers
+both the runtime bridge implementation and the Fabric notebook hosting
+option that poll-based feeders must ship alongside the container. The
+notebook flow used to live in a separate `notebook-feeder-retrofit`
+skill; it has been folded in here so a single skill owns the whole
+feeder.
 
 ## When to Use
 
 - Implement a new runtime bridge after the xreg contract is clear.
 - Refactor a runtime to align with regenerated producer output.
 - Add state, dedupe, reconnect, or emit-order logic.
+- Add Fabric notebook hosting to a brand-new poll-based source
+  (concurrent with bridge implementation).
+- **Retrofit** an already-shipped poll-based source with a Fabric
+  notebook (the dedicated retrofit workflow lives in
+  [Fabric Notebook Hosting → Retrofit Workflow](#retrofit-workflow-for-already-shipped-sources)
+  below). When dispatching a fleet of retrofit agents in parallel,
+  invoke this skill once per source and scope each agent to the
+  retrofit workflow.
 
 ## Inputs
 
@@ -59,6 +74,8 @@ argument-hint: "Describe the transport, auth, polling or reconnect behavior, res
     - **For multi-group sources, add a one-cycle feed test that exercises every emitted family.** Mock upstream responses for each family, use fake producer classes per generated message group, and assert the runtime emits at least one event through each expected `send_*` path. This catches bridges that import or instantiate only one generated producer class and then call methods owned by another class.
 9. **Update Docker E2E test to validate both reference and telemetry event types.** Use `reference_types` and `telemetry_types` parameters in `_run_kafka_flow_test` to verify both categories are emitted.
 10. Run the relevant Docker E2E test and treat failures there as unfinished implementation work, not optional follow-up.
+11. **If the source is a poller, add Fabric notebook hosting** as described in [Fabric Notebook Hosting](#fabric-notebook-hosting-poll-based-feeders) below: author `<source>/notebook/<source>-feed.ipynb` from the canonical pegelonline template, set `notebook: true` in `catalog.json`, and run the notebook validation block. Streaming bridges skip this step.
+12. **Dispatch the mandatory expert review** described in [Mandatory Expert Review](#mandatory-expert-review-gate-before-declaring-the-feeder-done) below. Do not declare the feeder done until the xRegistry Expert, JSON Structure Expert, and Avro Schema Expert have each signed off.
 
 ## Outputs
 
@@ -67,7 +84,346 @@ argument-hint: "Describe the transport, auth, polling or reconnect behavior, res
 - consistent producer calls with explicit placeholder values
 - source-local tests that cover parsing, state, and emission behavior
 - a passing repo-level Docker E2E test when the source participates in the shared container suite
+- a Fabric notebook (`<source>/notebook/<source>-feed.ipynb`) and `catalog.json` `notebook: true` flag for every poll-based source
+- a clean expert-review pass from the xRegistry, JSON Structure, and Avro Schema reviewers before the feeder is declared done
+
+## Mandatory Expert Review (gate before declaring the feeder done)
+
+Before opening or merging a PR that ships a new bridge or that changes
+the contract a bridge emits against, **dispatch a review by all three
+of the following expert agents** and act on every finding they raise:
+
+1. **xRegistry Expert** — reviews `xreg/<source>.xreg.json`. Validates
+   message group layout, CloudEvents type / source / subject modeling,
+   Kafka endpoint configuration, key templates aligning with subject
+   templates, reference-data event types appearing alongside telemetry
+   in the same message group, and the manifest's overall compliance
+   with xRegistry spec. Reviewer must read the actual checked-in
+   manifest, not paraphrased prose.
+2. **JSON Structure Expert** — reviews every embedded JsonStructure
+   schema in the manifest. Confirms exhaustive schema-level and
+   field-level descriptions grounded in upstream docs; correct use of
+   native extended primitives (`datetime`, `date`, `time`, `duration`,
+   `uri`, `uuid`, `binary`, `jsonpointer`) instead of `string + format`
+   where a native type exists; correct nullability via type unions
+   (no `anyOf`); `$ref` nested inside `type`; units/symbols on
+   measured values; `altnames` for upstream JSON key names;
+   `altenums`/`descriptions` for documented labels; validation
+   keywords for ranges/formats/patterns. Every schema must pass
+   `jstruct check` and the reviewer must confirm it.
+3. **Avro Schema Expert** — reviews the Avro shape that `xrcg`
+   generates from the JsonStructure schemas (or that the manifest
+   declares directly when a source ships an avro group). Validates
+   that the Avro schema is round-trip-stable through the Kafka
+   producer, that nullable fields in the JsonStructure manifest
+   produce `["null", T]` unions in Avro and vice versa, that field
+   names are valid Avro identifiers (no hyphens, no reserved words),
+   that enum symbols are valid, that record namespaces do not
+   collide, and that the generated `_data` and `_kafka_producer`
+   sub-packages are byte-stable across regenerations (a noisy diff
+   on regeneration usually points at a contract problem the Avro
+   expert should flag).
+
+### How to dispatch the review
+
+Use the `task` tool with `agent_type` set to the named custom agent
+("xRegistry Expert", "JSON Structure Expert", "Avro Schema Expert").
+Provide each agent with:
+
+- The path(s) to the xreg manifest and generated producer.
+- A short summary of the upstream source, the event families, and
+  the bridge's transport pattern.
+- A direct prompt to inspect the files in the working tree, not to
+  rely on hearsay or the prose summary alone.
+- A request for an explicit go/no-go verdict plus a list of any
+  blocking findings.
+
+These reviews are **mandatory**, not advisory. A `nit:` from any of
+the three reviewers can be deferred; a blocking finding must be fixed
+before the PR is merged. Record the verdict from each reviewer in the
+PR body so the maintainer can see all three signed off.
+
+### When the review must be re-run
+
+Re-run the relevant expert reviews whenever:
+
+- A schema in the xreg manifest gains, loses, or renames a field.
+- A subject or key template changes.
+- A new message group or event family is added.
+- The producer is regenerated against a new `xrcg` version.
+- A Docker E2E test surfaces a schema, key, or subject mismatch that
+  the bridge is being changed to accommodate (the reviewer must
+  confirm the fix is in the contract, not just papered over in the
+  bridge).
+
+A bridge change that does not touch the contract (e.g., adding a
+retry policy or restructuring an internal helper) does not require
+re-review.
+
+## Fabric Notebook Hosting (poll-based feeders)
+
+Every poll-based feeder ships a Fabric notebook hosting option
+alongside the container. The notebook is **not** an alternative to
+the Docker bridge — it is a second deployment surface that runs the
+same bridge code on a Fabric schedule. Streaming bridges
+(WebSocket / MQTT / raw TCP / SSE firehose) are out of scope for the
+notebook flow and must skip this artifact.
+
+The deployment pipeline this notebook plugs into is documented in
+[`fabric-notebook-deployment`](../fabric-notebook-deployment/SKILL.md).
+This skill owns the *authoring* of the notebook; the fabric skill
+owns the deployment plumbing.
+
+### Eligibility (gate before adding a notebook)
+
+A source qualifies for notebook hosting if **all** of the following
+are true:
+
+1. `<SOURCE>/` exists and contains `<SOURCE>/pyproject.toml`,
+   `xreg/<SOURCE>.xreg.json`, and a bridge module exposing
+   `def main()`.
+2. The bridge supports **single-cycle execution** — either via a
+   `--once` CLI flag (preferred) or via an `ONCE_MODE` environment
+   variable that exits after one polling cycle. For new sources,
+   build `--once` in from day one. For retrofits, verify by grepping
+   the bridge module for `--once|once_mode|ONCE_MODE`.
+3. The bridge is **poll-based**, not a long-lived stream. Heuristic:
+   the bridge calls `time.sleep`, `asyncio.sleep`, or has a
+   `POLLING_INTERVAL` env var, and does **not** open a persistent
+   socket.
+4. The source has (or will have) a Docker E2E test that passes on
+   `main`. Without that, the bridge's contract is unverified and the
+   notebook will inherit the same drift.
+5. `<SOURCE>/notebook/<SOURCE>-feed.ipynb` does **not** already exist
+   (retrofit-only check; new sources create it as part of bootstrap).
+
+### Authoring the notebook
+
+The canonical template is
+`pegelonline/notebook/pegelonline-feed.ipynb`. **Copy verbatim**, then
+perform the substitutions in
+[`references/notebook-substitution-table.md`](references/notebook-substitution-table.md).
+The substitutions are exact and mechanical; do not paraphrase.
+
+Critical substitutions:
+
+| From (pegelonline) | To |
+|---|---|
+| `from pegelonline import pegelonline as feeder` | `from <PKG> import <MODULE> as feeder` |
+| `sys.argv = ['pegelonline', 'feed', '--once']` | `sys.argv = [<bridge argv-0>, <subcommand>, '--once']` |
+| `sys.argv = ['pegelonline', 'feed']` (else branch) | same as above without `--once` |
+| `/lakehouse/default/Files/feeder-state/pegelonline/` | `/lakehouse/default/Files/feeder-state/<SOURCE>/` |
+| `Pegelonline Feeder (Fabric Notebook)` (title) | `<Display Name> Feeder (Fabric Notebook)` |
+| `pegelonline-ingest` (default `EVENTSTREAM_NAME`) | `<SOURCE>-ingest` (the deploy script overwrites this) |
+| Markdown copy describing the source | one-paragraph adaptation from `<SOURCE>/README.md` |
+
+Resolve `<PKG>`, `<MODULE>`, `<bridge argv-0>`, and `<subcommand>` by
+inspecting `<SOURCE>/pyproject.toml` (`[tool.poetry.scripts]` or the
+package layout) and the bridge module's `argparse` setup. **Do not
+guess.** If the bridge has no CLI subcommand (calls `main()` with no
+args), drop the subcommand element and use
+`sys.argv = ['<SOURCE>', '--once']` instead.
+
+Do **not** change the four-cell structure, the CS-lookup cell, the
+worker-thread run cell, or the OneLake log path layout. Those are
+load-bearing — see
+[`fabric-notebook-deployment`](../fabric-notebook-deployment/SKILL.md).
+
+### Three notebook-only invariants (load-bearing)
+
+These rules come from the Fabric kernel and the deploy pipeline; they
+are non-negotiable:
+
+- **No `asyncio.run()` in cells.** The Fabric kernel owns the loop;
+  run `feeder.main()` in a worker thread.
+- **No `%pip install` in cells.** Wheels live in the per-source
+  Environment; the deploy script builds and uploads them.
+- **OneLake is the only diagnostic channel** for scheduled runs. The
+  notebook must log to
+  `/lakehouse/default/Files/feeder-state/<source>/last-run.log` and
+  call `notebookutils.notebook.exit("FAIL: …")` on error — Fabric
+  REST does not expose cell output.
+
+### Catalog flag
+
+Edit `catalog.json` to add `"notebook": true` to the `<SOURCE>` entry.
+Keep the existing key order; insert `notebook` after `kql`. If the
+entry does not exist, the source is not published in the portal and
+should not have a notebook button — fix that first or abort.
+
+### Notebook validation (run before opening a PR)
+
+```powershell
+# Notebook JSON well-formed
+python -c "import json; json.load(open('$SOURCE/notebook/$SOURCE-feed.ipynb'))"
+
+# Bridge unit tests still pass
+cd $SOURCE; python -m pytest tests/ -x --no-header -q; cd ..
+
+# If you added --once, run the new unit test specifically:
+cd $SOURCE; python -m pytest tests/test_once_mode.py -v; cd ..
+
+# Notebook params cell actually contains the placeholders the deploy script patches
+$nb = Get-Content "$SOURCE/notebook/$SOURCE-feed.ipynb" -Raw
+foreach ($k in 'EVENTSTREAM_NAME','STATE_FILE','POLLING_INTERVAL','ONCE_MODE','WORKSPACE_ID') {
+    if ($nb -notmatch "(?m)^\s*$k\s*=") { throw "Missing placeholder: $k" }
+}
+
+# Notebook does NOT contain forbidden patterns
+foreach ($bad in 'asyncio\.run\(','%pip install','CONNECTION_STRING\s*=\s*"','primaryConnectionString.*=') {
+    if ($nb -match $bad) { throw "Forbidden pattern present: $bad" }
+}
+```
+
+### Documentation touch
+
+Add a one-sentence "Fabric notebook hosting" bullet to
+`<SOURCE>/README.md` linking to
+`tools/deploy-fabric/deploy-feeder-notebook.ps1`. Do **not** create a
+separate doc, and do **not** edit `EVENTS.md` or `CONTAINER.md` just
+for the notebook addition.
+
+### Retrofit workflow (for already-shipped sources)
+
+When the bridge already exists on `main` and only needs notebook
+hosting added (the case the old `notebook-feeder-retrofit` skill
+covered), follow this scoped workflow. It is designed to be
+dispatched in parallel — one agent per source — by an orchestrator.
+
+**Single-source scope.** One agent processes one source. Do not loop
+over sources in a single agent. Bundling multiple sources into one
+PR is not allowed.
+
+1. **Branch + folder**
+
+   ```powershell
+   git checkout main
+   git pull --ff-only
+   git checkout -b notebook-retrofit-$SOURCE
+   New-Item -ItemType Directory -Force -Path "$SOURCE/notebook" | Out-Null
+   ```
+
+2. **Run the eligibility gate.** If any check fails, write a
+   one-line skip reason to `tmp/notebook-retrofit-skipped.log`
+   (append) and call `task_complete` with the reason. Do **not** open
+   a PR. The discovery helper at
+   [`references/notebook-eligibility-discovery.ps1`](references/notebook-eligibility-discovery.ps1)
+   prints the eligible-source set for the orchestrator.
+
+3. **Add `--once` if missing.** If the eligibility gate fails on the
+   single-cycle requirement but the bridge is clearly a poller, you
+   may add a `--once` flag to the argparse setup and a single-cycle
+   exit branch in the polling loop, modeled after
+   `pegelonline/pegelonline/pegelonline.py`. Add a unit test that
+   asserts `--once` causes `main()` to return after exactly one cycle
+   (mock the upstream HTTP). If the bridge is not written with a
+   clean polling loop you can interrupt, abort instead.
+
+4. **Author the notebook and flip the catalog flag** per the
+   sections above.
+
+5. **Run the notebook validation block** above; fix and re-run on any
+   failure.
+
+6. **Commit and open the PR.**
+
+   ```powershell
+   git add "$SOURCE/notebook/" "$SOURCE/README.md" catalog.json
+   # include bridge + test changes only if you added --once
+   git commit -m "feat($SOURCE): Fabric notebook hosting option
+
+   Adds notebook/$SOURCE-feed.ipynb following the pegelonline pattern.
+   Flips catalog.json notebook flag so the gh-pages portal exposes the
+   Fabric Notebook deploy button.
+
+   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+   git push -u origin notebook-retrofit-$SOURCE
+   gh pr create --base main --title "feat($SOURCE): Fabric notebook hosting option" `
+     --body "Retrofit by stream-bridge-implementation skill (notebook hosting section). Validated locally: notebook JSON ok, bridge tests pass, parameters cell complete, no forbidden patterns. The wheel-bundle workflow (.github/workflows/publish-notebook-wheels.yml) will pick up this source on next push to main and publish wheels to the notebook-wheels release."
+   ```
+
+7. **Do not run a live Fabric deployment from the retrofit agent.**
+   The wheel-publish workflow runs on PR merge and the portal
+   exposes the button once `update-ghpages-catalog.yml` syncs the
+   flag. End-to-end Fabric validation is performed manually by the
+   maintainer (or by a separate verification agent) once the PR is
+   merged. Each Fabric deployment consumes capacity time, creates
+   workspaces/environments/notebooks, and competes with other agents
+   for the shared workspace; serial verification is cheaper than
+   parallel deployment.
+
+### Optional: Post-Deploy Hook
+
+If the source needs **additional Fabric wiring** beyond the generic
+deployer's 6 steps (e.g. wiring Map layers, importing a Dashboard,
+attaching an Environment), drop a `<SOURCE>/fabric/post-deploy.ps1`
+script. Both `deploy-fabric.ps1` and `deploy-feeder-notebook.ps1`
+auto-discover the hook (local working tree first, raw-GitHub fallback)
+and invoke it with a populated `-Context` hashtable as the **last
+deployment step**.
+
+This is **opt-in**: most sources do not need a hook and should not
+add one. Add a hook only if your source genuinely has post-bootstrap
+wiring that today is a manual portal click and that you can automate
+via REST or a Kusto control command.
+
+**Hook contract:** the script accepts a `[hashtable] $Context`
+parameter with all relevant IDs the deployer created. Common keys:
+`Source`, `Mode` (`notebook` for the notebook deployer, absent for the
+container deployer), `WorkspaceId`, `WorkspaceName`, `EventhouseId`,
+`EventhouseClusterUri`, `DatabaseId`, `DatabaseName`, `RawBase`,
+`Repo`, `Branch`, `TempDir`. Container deployer additionally provides
+`EventstreamId`, `ContainerGroupName`, `ConnectionString`. Notebook
+deployer additionally provides `NotebookId`, `NotebookName`. Hooks
+must also accept explicit named parameters so they can be re-run
+standalone; must `exit 0` when there is no work to do; and must throw
+on real failure (the deployer treats hook failure as deployment
+failure). Reference implementation: `dwd/fabric/post-deploy.ps1`. Full
+documentation: `tools/deploy-fabric/README.md`.
+
+### Notebook-hosting things that are not allowed
+
+- Deploying to Fabric from the agent. Hand-off to manual verification.
+- Editing wheels, the deploy script, the publish workflow, or anything
+  under `tools/deploy-fabric/`. Those are infrastructure; this skill
+  only consumes them.
+- Editing [`fabric-notebook-deployment`](../fabric-notebook-deployment/SKILL.md)
+  or `.github/copilot-instructions.md` from a feeder retrofit — the
+  feeder agent is a consumer of those.
+- Bundling multiple sources into one notebook retrofit PR. One source,
+  one PR.
+- Skipping the eligibility gate.
+- Inventing new notebook cell structure, alternative CS-lookup
+  techniques, or new log-file locations. Copy verbatim from
+  `pegelonline`.
+- Forcing a streaming bridge (websocket/MQTT/SSE) into the polling
+  notebook model. Abort instead.
+- Calling `asyncio.run()` inside a notebook cell.
+- Adding a `CONNECTION_STRING` parameter to a Fabric notebook (look
+  it up at runtime via the Topology API instead).
+
+### Known notebook pitfalls
+
+- **Hyphenated source ids** (e.g. `bafu-hydro`): the bridge package and
+  generated producer dir use underscores (`bafu_hydro_producer`).
+  `deploy-feeder-notebook.ps1` handles this; the wheel-publish workflow
+  was patched to handle it in #249. If you see
+  `Missing generated producer for <src>` in CI, that's the same class
+  of bug — hyphen-vs-underscore in another consumer.
+- **Lakehouse attachment** is automatic. The deploy script auto-binds
+  the workspace's only Lakehouse (or aborts if there are 0 or 2+). Do
+  **not** add Lakehouse-selection logic to the notebook itself.
+- **Stage A connection-string warning is harmless.** If
+  `Get-EventStreamConnectionString` in `deploy-fabric.ps1` fails with
+  a JSON parse warning, the notebook flow still succeeds — the
+  notebook resolves the CS at runtime via the Topology API.
 
 ## References
 
 - [Runtime checklist](references/runtime-checklist.md)
+- [Notebook substitution table](references/notebook-substitution-table.md)
+- [Notebook eligibility discovery](references/notebook-eligibility-discovery.ps1)
+- [`fabric-notebook-deployment`](../fabric-notebook-deployment/SKILL.md) — deployment pipeline the notebook plugs into
+- [`xreg-source-contract`](../xreg-source-contract/SKILL.md) — contract authoring (consumed by the mandatory expert review)
+- `pegelonline/notebook/pegelonline-feed.ipynb` — canonical notebook template
+- `tools/deploy-fabric/deploy-feeder-notebook.ps1` — parameter names the deploy script overwrites; the notebook MUST declare all of them

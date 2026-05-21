@@ -1,15 +1,17 @@
 <#
 .SYNOPSIS
-  Discovers which sources in this repo are eligible for the
-  notebook-feeder-retrofit agent.
+  Discovers which sources in this repo are eligible for Fabric
+  notebook hosting retrofit, as defined in the
+  stream-bridge-implementation skill.
 
 .DESCRIPTION
   Prints a JSON array of source ids that pass the eligibility gate
-  defined in SKILL.md. Use to fan out a fleet of retrofit agents.
+  defined in stream-bridge-implementation/SKILL.md (Fabric Notebook
+  Hosting section). Use to fan out a fleet of retrofit agents.
 
 .EXAMPLE
-  pwsh .github/skills/notebook-feeder-retrofit/references/eligibility-discovery.ps1
-  pwsh .github/skills/notebook-feeder-retrofit/references/eligibility-discovery.ps1 -Format Table
+  pwsh .github/skills/stream-bridge-implementation/references/notebook-eligibility-discovery.ps1
+  pwsh .github/skills/stream-bridge-implementation/references/notebook-eligibility-discovery.ps1 -Format Table
 #>
 [CmdletBinding()]
 param(

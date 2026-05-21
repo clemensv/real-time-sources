@@ -20,7 +20,7 @@
 - runtime package like `<source>/<source>.py` or `bridge.py`
 - generated producer output like `<source>_producer/` or `<source>_producer_tmp/`
 - `tests/`
-- `notebook/<source>-feed.ipynb` — **required for poll-based sources**; copied from `pegelonline/notebook/pegelonline-feed.ipynb` with the substitutions from the `notebook-feeder-retrofit` skill. Skipped for streaming bridges (WebSocket / MQTT / raw TCP / SSE).
+- `notebook/<source>-feed.ipynb` — **required for poll-based sources**; copied from `pegelonline/notebook/pegelonline-feed.ipynb` with the substitutions from the Fabric Notebook Hosting section of [`stream-bridge-implementation`](../../stream-bridge-implementation/SKILL.md). Skipped for streaming bridges (WebSocket / MQTT / raw TCP / SSE).
 - optional `azure-template.json`, `generate-template.ps1`, `kql/`, or `fabric/`
 
 In addition:
