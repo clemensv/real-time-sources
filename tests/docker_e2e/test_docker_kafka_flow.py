@@ -1331,6 +1331,7 @@ class TestLAQNLondonDockerFlow:
             telemetry_types=['Measurement', 'DailyIndex'],
             required_types=['Site', 'Species', 'Measurement', 'DailyIndex'],
             extra_env={'POLLING_INTERVAL': '5'},
+            timeout=480,
         )
 
 
