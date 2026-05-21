@@ -5,14 +5,16 @@
 - `Dockerfile`
 - `CONTAINER.md`
 - `EVENTS.md`
+- `kql/<source>.kql` — generated from the xreg via `tools/generate-kql-from-xreg.ps1 -Qualified`; **mandatory**, reviewed by the KQL Optimizer agent. Without it, deployed Fabric KQL databases skip the schema step and have no typed tables.
+- `kql/create-kql-script.ps1` — thin wrapper that re-runs the generator after xreg changes.
 - source-local tests
 - root `README.md` entry if the source is new
+- `catalog.json` entry includes a `kql` reference to the generated script.
 
 ## Common Additional Assets
 
 - `azure-template.json`
 - `generate-template.ps1`
-- `kql/<source>.kql`
 - `fabric/README.md`
 
 ## Dockerfile Checklist
@@ -55,6 +57,8 @@
 
 - Shipping a new source without container docs.
 - Leaving `EVENTS.md` stale after changing xreg.
+- **Shipping a source without `kql/<source>.kql`.** The Fabric deployers print "No KQL script — database schema step will be skipped" and the deployed database has only the auto-provisioned `_cloudevents_dispatch` table; every typed-table consumer (Eventhouse Maps, Activator rules, materialized `*Latest` views, KQL dashboards) is broken. Generate with `tools/generate-kql-from-xreg.ps1 -Qualified`.
+- **Forgetting to add the `kql` key to the source's `catalog.json` entry.** Even when the file is committed, the gh-pages portal won't surface the schema until the catalog reference exists.
 - Adding a Dockerfile that does not match the env var contract described in the docs.
 - Forgetting to expose the source through the root `README.md` catalog when it is a new addition.
 - **Not adding `avro` to `pyproject.toml`.** The generated `_data` sub-package imports `avro` at runtime. Without it, the container crashes immediately with `ModuleNotFoundError: No module named 'avro'`.

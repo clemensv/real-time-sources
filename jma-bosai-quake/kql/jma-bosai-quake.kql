@@ -1,0 +1,184 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['JP.JMA.Quake.EarthquakeReport'] (
+   [event_id]: string,
+   [report_id]: string,
+   [serial]: int,
+   [info_type]: string,
+   [report_datetime]: string,
+   [report_datetime_local]: string,
+   [control_datetime]: string,
+   [control_datetime_local]: string,
+   [origin_datetime]: string,
+   [origin_datetime_local]: string,
+   [title_jp]: string,
+   [title_en]: string,
+   [epicenter_area_code]: string,
+   [epicenter_area_jp]: string,
+   [epicenter_area_en]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [depth_km]: real,
+   [magnitude]: real,
+   [max_intensity]: string,
+   [bulletin_type]: string,
+   [detail_url]: string,
+   [affected_prefectures]: dynamic,
+   [affected_cities]: dynamic,
+   [tsunami_possible]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['JP.JMA.Quake.EarthquakeReport'] docstring "{\"description\": \"A JMA Bosai earthquake report record built from the recent earthquake list endpoint and, when available, the matching full detail JSON bulletin. The record is keyed by the stable JMA event id plus report serial so updates, corrections, and cancellations for the same earthquake remain distinct stream records.\"}";
+
+.alter table ['JP.JMA.Quake.EarthquakeReport'] column-docstrings (
+   [event_id]: "{\"description\": \"Stable JMA earthquake event identifier copied from list.json eid and detail Head.EventID. JMA uses the earthquake origin time in YYYYMMDDHHMMSS form as the event id, so multiple serial reports for the same earthquake share this value.\"}",
+   [report_id]: "{\"description\": \"Composite report identifier formed as event_id, an underscore, and the JMA serial number. It distinguishes initial, corrected, and subsequent bulletins for the same earthquake event.\"}",
+   [serial]: "{\"description\": \"JMA report serial number parsed from list.json ser and detail Head.Serial. The serial identifies the revision sequence for bulletins sharing the same event id.\"}",
+   [info_type]: "{\"description\": \"Normalized information type derived from the Japanese JMA ift field: ISSUED for \\u767a\\u8868, CORRECTED for \\u8a02\\u6b63, and CANCELLED for \\u53d6\\u6d88.\"}",
+   [report_datetime]: "{\"description\": \"Report publication time converted from list.json rdt to an RFC3339 UTC timestamp. JMA publishes rdt with a local offset for the report release time.\"}",
+   [report_datetime_local]: "{\"description\": \"Original JMA report publication timestamp copied from list.json rdt, preserving the local offset supplied by the JMA Bosai feed.\"}",
+   [control_datetime]: "{\"description\": \"JMA control timestamp \\u2014 when the bulletin was published to the JMA distribution system, distinct from `report_datetime` which is the event report time. This field converts the compact list.json ctt value from JST to an RFC3339 UTC timestamp.\"}",
+   [control_datetime_local]: "{\"description\": \"JMA control timestamp \\u2014 when the bulletin was published to the JMA distribution system, distinct from `report_datetime` which is the event report time. This field preserves the compact list.json ctt value as an RFC3339 timestamp with the Japan Standard Time offset.\"}",
+   [origin_datetime]: "{\"description\": \"Earthquake origin time converted from list.json at to an RFC3339 UTC timestamp. JMA uses this time as the basis for the event id.\"}",
+   [origin_datetime_local]: "{\"description\": \"Original JMA earthquake origin timestamp copied from list.json at, preserving the local offset supplied by the JMA Bosai feed.\"}",
+   [title_jp]: "{\"description\": \"Japanese JMA bulletin title copied from list.json ttl, such as \\u9707\\u6e90\\u30fb\\u9707\\u5ea6\\u60c5\\u5831 for earthquake and seismic intensity information.\"}",
+   [title_en]: "{\"description\": \"English bulletin title copied from list.json en_ttl when supplied by the multilingual JMA Bosai feed. Null is emitted when en_ttl is absent, including some \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [epicenter_area_code]: "{\"description\": \"JMA hypocenter or epicenter area code copied from list.json acd and detail Body.Earthquake.Hypocenter.Area.Code. Null is emitted when the source bulletin omits hypocenter metadata, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [epicenter_area_jp]: "{\"description\": \"Japanese epicenter area name copied from list.json anm and detail Body.Earthquake.Hypocenter.Area.Name. Null is emitted when the source bulletin omits hypocenter metadata, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [epicenter_area_en]: "{\"description\": \"English epicenter area name copied from list.json en_anm when supplied by the multilingual JMA Bosai feed. Null is emitted when the source bulletin omits hypocenter metadata, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [latitude]: "{\"description\": \"Hypocenter latitude in WGS84 decimal degrees parsed from the ISO 6709 coordinate string in list.json cod or detail Body.Earthquake.Hypocenter.Area.Coordinate. Null is emitted when the coordinate is absent or cannot be parsed; null is also emitted when list.json cod is absent, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [longitude]: "{\"description\": \"Hypocenter longitude in WGS84 decimal degrees parsed from the ISO 6709 coordinate string in list.json cod or detail Body.Earthquake.Hypocenter.Area.Coordinate. Null is emitted when the coordinate is absent or cannot be parsed; null is also emitted when list.json cod is absent, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [depth_km]: "{\"description\": \"Hypocenter depth in kilometres parsed from the third component of the ISO 6709 coordinate string. JMA encodes depth in metres with a sign in cod; this field divides the absolute metre value by 1000 so +35.0+135.5-10000/ becomes 10.0 km. Null is emitted when list.json cod is absent, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [magnitude]: "{\"description\": \"Dimensionless JMA earthquake magnitude parsed from list.json mag or detail Body.Earthquake.Magnitude and expressed on the JMA magnitude scale, which is similar to Richter magnitude for shallow events. Null is emitted when the source bulletin omits magnitude, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [max_intensity]: "{\"description\": \"Maximum observed JMA seismic intensity for the report copied from list.json maxi or detail Body.Intensity.Observation.MaxInt. Null is emitted when the bulletin has no observed intensity summary, including \\u9707\\u5ea6\\u901f\\u5831, \\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831, and \\u9855\\u8457\\u306a\\u5730\\u9707\\u306e\\u9707\\u6e90\\u8981\\u7d20\\u66f4\\u65b0\\u306e\\u304a\\u77e5\\u3089\\u305b bulletins.\"}",
+   [bulletin_type]: "{\"description\": \"JMA detail bulletin product code parsed from the detail JSON filename. Supported earthquake-related JMA Bosai codes are VXSE51 (\\u9707\\u5ea6\\u901f\\u5831), VXSE52 (\\u9707\\u6e90\\u306b\\u95a2\\u3059\\u308b\\u60c5\\u5831), VXSE53 (\\u9707\\u6e90\\u30fb\\u9707\\u5ea6\\u306b\\u95a2\\u3059\\u308b\\u60c5\\u5831), VXSE5k (\\u9707\\u6e90\\u30fb\\u9707\\u5ea6\\u60c5\\u5831 Bosai variant), VXSE61 (\\u9577\\u5468\\u671f\\u5730\\u9707\\u52d5\\u306b\\u95a2\\u3059\\u308b\\u89b3\\u6e2c\\u60c5\\u5831), and VYSE52 (\\u5357\\u6d77\\u30c8\\u30e9\\u30d5\\u5730\\u9707\\u95a2\\u9023\\u89e3\\u8aac\\u60c5\\u5831). Tsunami-specific VTSE products are deliberately not modeled by this source.\"}",
+   [detail_url]: "{\"description\": \"Absolute URL for the full JMA Bosai earthquake detail JSON referenced by list.json json.\"}",
+   [affected_prefectures]: "{\"description\": \"Prefecture intensity summaries derived from list.json int[]. Each entry includes the JMA prefecture code and maximum JMA seismic intensity reported for that prefecture.\", \"schema\": {\"type\": \"array\", \"description\": \"Prefecture intensity summaries derived from list.json int[]. Each entry includes the JMA prefecture code and maximum JMA seismic intensity reported for that prefecture.\", \"items\": {\"$ref\": \"#/definitions/AffectedPrefecture\"}, \"altnames\": {\"jma-bosai\": \"int\"}}}",
+   [affected_cities]: "{\"description\": \"City intensity summaries flattened from list.json int[].city[]. Each entry carries its parent prefecture code, city code, and maximum JMA seismic intensity for the city.\", \"schema\": {\"type\": \"array\", \"description\": \"City intensity summaries flattened from list.json int[].city[]. Each entry carries its parent prefecture code, city code, and maximum JMA seismic intensity for the city.\", \"items\": {\"$ref\": \"#/definitions/AffectedCity\"}, \"altnames\": {\"jma-bosai\": \"int.city\"}}}",
+   [tsunami_possible]: "{\"description\": \"Interpretation of tsunami-related text in the full detail JSON comments. True means the detail bulletin text indicates tsunami attention or possibility; false means the detail explicitly states there is no tsunami concern; null means no tsunami-related detail text was available or fetched.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['JP.JMA.Quake.EarthquakeReport'] ingestion json mapping "JP.JMA.Quake.EarthquakeReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "report_id", "path": "$.report_id"},
+  {"column": "serial", "path": "$.serial"},
+  {"column": "info_type", "path": "$.info_type"},
+  {"column": "report_datetime", "path": "$.report_datetime"},
+  {"column": "report_datetime_local", "path": "$.report_datetime_local"},
+  {"column": "control_datetime", "path": "$.control_datetime"},
+  {"column": "control_datetime_local", "path": "$.control_datetime_local"},
+  {"column": "origin_datetime", "path": "$.origin_datetime"},
+  {"column": "origin_datetime_local", "path": "$.origin_datetime_local"},
+  {"column": "title_jp", "path": "$.title_jp"},
+  {"column": "title_en", "path": "$.title_en"},
+  {"column": "epicenter_area_code", "path": "$.epicenter_area_code"},
+  {"column": "epicenter_area_jp", "path": "$.epicenter_area_jp"},
+  {"column": "epicenter_area_en", "path": "$.epicenter_area_en"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "depth_km", "path": "$.depth_km"},
+  {"column": "magnitude", "path": "$.magnitude"},
+  {"column": "max_intensity", "path": "$.max_intensity"},
+  {"column": "bulletin_type", "path": "$.bulletin_type"},
+  {"column": "detail_url", "path": "$.detail_url"},
+  {"column": "affected_prefectures", "path": "$.affected_prefectures"},
+  {"column": "affected_cities", "path": "$.affected_cities"},
+  {"column": "tsunami_possible", "path": "$.tsunami_possible"},
+]
+```
+
+.create-or-alter table ['JP.JMA.Quake.EarthquakeReport'] ingestion json mapping "JP.JMA.Quake.EarthquakeReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "report_id", "path": "$.data.report_id"},
+  {"column": "serial", "path": "$.data.serial"},
+  {"column": "info_type", "path": "$.data.info_type"},
+  {"column": "report_datetime", "path": "$.data.report_datetime"},
+  {"column": "report_datetime_local", "path": "$.data.report_datetime_local"},
+  {"column": "control_datetime", "path": "$.data.control_datetime"},
+  {"column": "control_datetime_local", "path": "$.data.control_datetime_local"},
+  {"column": "origin_datetime", "path": "$.data.origin_datetime"},
+  {"column": "origin_datetime_local", "path": "$.data.origin_datetime_local"},
+  {"column": "title_jp", "path": "$.data.title_jp"},
+  {"column": "title_en", "path": "$.data.title_en"},
+  {"column": "epicenter_area_code", "path": "$.data.epicenter_area_code"},
+  {"column": "epicenter_area_jp", "path": "$.data.epicenter_area_jp"},
+  {"column": "epicenter_area_en", "path": "$.data.epicenter_area_en"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "depth_km", "path": "$.data.depth_km"},
+  {"column": "magnitude", "path": "$.data.magnitude"},
+  {"column": "max_intensity", "path": "$.data.max_intensity"},
+  {"column": "bulletin_type", "path": "$.data.bulletin_type"},
+  {"column": "detail_url", "path": "$.data.detail_url"},
+  {"column": "affected_prefectures", "path": "$.data.affected_prefectures"},
+  {"column": "affected_cities", "path": "$.data.affected_cities"},
+  {"column": "tsunami_possible", "path": "$.data.tsunami_possible"},
+]
+```
+
+.drop materialized-view ['JP.JMA.Quake.EarthquakeReportLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['JP.JMA.Quake.EarthquakeReportLatest'] on table ['JP.JMA.Quake.EarthquakeReport'] {
+    ['JP.JMA.Quake.EarthquakeReport'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['JP.JMA.Quake.EarthquakeReport'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.JMA.Quake.EarthquakeReport') | project['event_id'] = tostring(data.['event_id']),['report_id'] = tostring(data.['report_id']),['serial'] = toint(data.['serial']),['info_type'] = tostring(data.['info_type']),['report_datetime'] = tostring(data.['report_datetime']),['report_datetime_local'] = tostring(data.['report_datetime_local']),['control_datetime'] = tostring(data.['control_datetime']),['control_datetime_local'] = tostring(data.['control_datetime_local']),['origin_datetime'] = tostring(data.['origin_datetime']),['origin_datetime_local'] = tostring(data.['origin_datetime_local']),['title_jp'] = tostring(data.['title_jp']),['title_en'] = tostring(data.['title_en']),['epicenter_area_code'] = tostring(data.['epicenter_area_code']),['epicenter_area_jp'] = tostring(data.['epicenter_area_jp']),['epicenter_area_en'] = tostring(data.['epicenter_area_en']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['depth_km'] = toreal(data.['depth_km']),['magnitude'] = toreal(data.['magnitude']),['max_intensity'] = tostring(data.['max_intensity']),['bulletin_type'] = tostring(data.['bulletin_type']),['detail_url'] = tostring(data.['detail_url']),['affected_prefectures'] = todynamic(data.['affected_prefectures']),['affected_cities'] = todynamic(data.['affected_cities']),['tsunami_possible'] = tobool(data.['tsunami_possible']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

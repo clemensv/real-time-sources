@@ -371,7 +371,11 @@ class JmaBosaiWarningAPI:
         for record in self.office_records():
             _call_send(warning_producer, ("send_jp_jma_warning_office", "send_office"), _feedurl=AREA_CATALOG_URL, _office_code=record["office_code"], _area_code=record["area_code"], data=_construct_data(office_class, record), flush_producer=False)
             count += 1
-        if kafka_producer.flush(timeout=30) != 0:
+            if count % 100 == 0:
+                kafka_producer.poll(0)
+                if kafka_producer.flush(timeout=120) != 0:
+                    raise RuntimeError("Kafka flush failed while emitting office reference records")
+        if kafka_producer.flush(timeout=120) != 0:
             raise RuntimeError("Kafka flush failed while emitting office reference records")
         return count
 
@@ -392,7 +396,7 @@ class JmaBosaiWarningAPI:
                 _call_send(warning_producer, ("send_jp_jma_warning_weather_warning", "send_weather_warning"), _feedurl=WARNING_URL_TEMPLATE.format(office_code=office_code), _office_code=record["office_code"], _area_code=record["area_code"], data=_construct_data(weather_class, record), flush_producer=False)
                 pending.append(dedupe_key)
                 emitted += 1
-        if emitted and kafka_producer.flush(timeout=30) != 0:
+        if emitted and kafka_producer.flush(timeout=120) != 0:
             raise RuntimeError("Kafka flush failed while emitting weather warnings")
         state.seen_weather = _cap_list(state.seen_weather + pending)
         return emitted
@@ -419,7 +423,7 @@ class JmaBosaiWarningAPI:
             _call_send(tsunami_producer, ("send_jp_jma_tsunami_tsunami_alert", "send_tsunami_alert"), _feedurl=record["detail_url"] or TSUNAMI_LIST_URL, _event_id=record["event_id"], _serial=record["serial"], data=_construct_data(tsunami_class, record), flush_producer=False)
             pending.append(dedupe_key)
             emitted += 1
-        if emitted and kafka_producer.flush(timeout=30) != 0:
+        if emitted and kafka_producer.flush(timeout=120) != 0:
             raise RuntimeError("Kafka flush failed while emitting tsunami alerts")
         state.seen_tsunami = _cap_list(state.seen_tsunami + pending)
         return emitted
@@ -445,9 +449,9 @@ def run_feed(args: argparse.Namespace) -> None:
         kafka_config.pop("security.protocol", None)
     if "bootstrap.servers" not in kafka_config:
         raise ValueError("Kafka bootstrap servers are required via --kafka-bootstrap-servers or CONNECTION_STRING")
-    topic_warning = args.kafka_topic_warning or kafka_config.get("kafka_topic") or "jma-bosai-warning"
-    topic_tsunami = args.kafka_topic_tsunami or "jma-bosai-tsunami"
-    kafka_config.pop("kafka_topic", None)
+    entity_topic = kafka_config.pop("kafka_topic", None)
+    topic_warning = entity_topic or args.kafka_topic_warning or "jma-bosai-warning"
+    topic_tsunami = entity_topic or args.kafka_topic_tsunami or "jma-bosai-tsunami"
 
     Office, WeatherWarning, TsunamiAlert, WarningProducer, TsunamiProducer = _import_generated()
     producer = Producer(kafka_config)

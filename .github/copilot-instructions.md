@@ -21,7 +21,7 @@ in its own top-level directory.
   tests/
   azure-template.json               # optional
   generate-template.ps1             # optional
-  kql/                              # optional
+  kql/<source>.kql                  # MANDATORY (generated from xreg; KQL Optimizer review required)
   fabric/                           # optional
 ```
 
@@ -200,9 +200,10 @@ Reference implementation: `pegelonline/notebook/pegelonline-feed.ipynb`.
 ### Retrofitting existing pollers (fleet operation)
 
 To add notebook hosting to an **already-shipped** poll-based source,
-use the dedicated upgrade agent specified in
-`.github/skills/notebook-feeder-retrofit/SKILL.md`. It is designed to
-be dispatched in parallel — one agent per source — by an orchestrator.
+use the retrofit workflow folded into
+`.github/skills/stream-bridge-implementation/SKILL.md` (the "Fabric
+Notebook Hosting → Retrofit Workflow" section). It is designed to be
+dispatched in parallel — one agent per source — by an orchestrator.
 The agent copies the canonical `pegelonline` notebook, performs an
 exact substitution table, flips `catalog.json` `notebook: true`,
 validates locally, and opens a PR. It does **not** deploy to Fabric.
@@ -210,11 +211,24 @@ validates locally, and opens a PR. It does **not** deploy to Fabric.
 To discover the eligible-source set:
 
 ```powershell
-pwsh .github/skills/notebook-feeder-retrofit/references/eligibility-discovery.ps1 -Format Lines
+pwsh .github/skills/stream-bridge-implementation/references/notebook-eligibility-discovery.ps1 -Format Lines
 ```
 
 Sources in `skip:streaming` (websocket/MQTT) or `skip:not-a-poller`
 (no polling loop) are out of scope for notebook hosting.
+
+### Mandatory expert review
+
+Every feeder PR that adds a new source or changes a contract must be
+reviewed by all three of the following expert agents before it merges:
+**xRegistry Expert** (manifest layout, CloudEvents modeling, key /
+subject alignment), **JSON Structure Expert** (schema correctness,
+native primitives, descriptions, validation extensions), and **Avro
+Schema Expert** (Avro shape round-trip stability, nullability mirror,
+identifier validity). The full review contract — what each agent
+checks, when re-runs are required, and how to dispatch them — lives in
+`.github/skills/stream-bridge-implementation/SKILL.md` under "Mandatory
+Expert Review". Record each reviewer's verdict in the PR body.
 
 ## Things That Are Not Allowed
 
@@ -231,7 +245,10 @@ Sources in `skip:streaming` (websocket/MQTT) or `skip:not-a-poller`
 - Adding a `CONNECTION_STRING` parameter to a Fabric notebook (look it up
   at runtime via the Topology API instead).
 - Using the legacy MWC token chain for Event Stream connection strings.
-- Bundling multiple sources into one notebook-retrofit PR. The
-  `notebook-feeder-retrofit` agent must produce one PR per source.
+- Bundling multiple sources into one notebook-retrofit PR. The notebook
+  retrofit workflow must produce one PR per source.
 - Deploying notebook-retrofit PRs to Fabric from the retrofit agent
   itself. End-to-end Fabric verification is a separate, serial step.
+- Merging a new-source or contract-changing PR without the three
+  mandatory expert reviews (xRegistry, JSON Structure, Avro Schema)
+  having signed off.
