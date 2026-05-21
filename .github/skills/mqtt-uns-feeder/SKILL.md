@@ -356,8 +356,9 @@ Provisions, in order:
   `reference(<namespaceResourceId>, '2025-07-15-preview').topicSpacesConfiguration.hostname`.
   Do not assemble it from the region — the Event Grid team has reserved
   the right to change the suffix.
-- `imageRegistryCredentials` for optional ACR pulls:
-  `[if(empty(parameters('imageRegistryServer')), json('[]'), createArray(createObject(...)))]`.
+- The container image defaults to the public ghcr.io image published by
+  the repo build; no `imageRegistryCredentials` are needed. Add them back
+  only if you fork and host the image in a private registry.
 
 Use `pegelonline/azure-template-with-eventgrid-mqtt.json` as the
 template — copy and adapt the namePrefix / topicRoot / imageName.

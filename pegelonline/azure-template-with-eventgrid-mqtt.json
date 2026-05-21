@@ -49,28 +49,7 @@
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest",
       "metadata": {
-        "description": "Container image reference. Override to point at a private registry."
-      }
-    },
-    "imageRegistryServer": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional container registry server (e.g. myacr.azurecr.io) for imagePull credentials."
-      }
-    },
-    "imageRegistryUsername": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional container registry username."
-      }
-    },
-    "imageRegistryPassword": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional container registry password."
+        "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
       }
     }
   },
@@ -242,7 +221,6 @@
             }
           }
         ],
-        "imageRegistryCredentials": "[if(empty(parameters('imageRegistryServer')), json('[]'), createArray(createObject('server', parameters('imageRegistryServer'), 'username', parameters('imageRegistryUsername'), 'password', parameters('imageRegistryPassword'))))]",
         "volumes": [
           {
             "name": "bridge-state",
