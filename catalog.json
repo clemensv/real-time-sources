@@ -850,6 +850,7 @@
     "cat": "Weather",
     "key": false,
     "desc": "Japan — ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API",
+    "kql": true,
     "notebook": true
   },
   {
@@ -858,6 +859,7 @@
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
     "desc": "Japan — JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)",
+    "kql": true,
     "notebook": true
   },
   {
@@ -866,6 +868,7 @@
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
     "desc": "Japan — 111 volcanoes, alert levels, eruption observations",
+    "kql": true,
     "notebook": true
   },
   {
@@ -874,6 +877,7 @@
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
     "desc": "Japan — per-prefecture weather warnings + tsunami alerts",
+    "kql": true,
     "notebook": true
   },
   {
@@ -882,6 +886,7 @@
     "cat": "Energy and Infrastructure",
     "key": false,
     "desc": "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar",
+    "kql": true,
     "notebook": true
   }
 ]
