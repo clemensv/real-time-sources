@@ -865,7 +865,8 @@
     "name": "JMA Bosai Volcano",
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
-    "desc": "Japan — 111 volcanoes, alert levels, eruption observations"
+    "desc": "Japan — 111 volcanoes, alert levels, eruption observations",
+    "notebook": true
   },
   {
     "id": "jma-bosai-warning",

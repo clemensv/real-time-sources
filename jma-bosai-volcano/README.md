@@ -33,3 +33,5 @@ jma-bosai-volcano feed --kafka-bootstrap-servers localhost:9092 --kafka-topic jm
 ```
 
 Configuration is also available through environment variables: `CONNECTION_STRING`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`, `POLLING_INTERVAL`, `VOLCANO_METADATA_REFRESH_HOURS`, `STATE_FILE`, `ONCE_MODE`, and `KAFKA_ENABLE_TLS`.
+
+- Fabric notebook hosting: deploy `notebook/jma-bosai-volcano-feed.ipynb` with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
