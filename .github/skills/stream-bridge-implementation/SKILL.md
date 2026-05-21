@@ -45,6 +45,7 @@ feeder.
 - The bridge must emit Kafka keys, CloudEvent subjects, and payload shapes that satisfy the checked-in xreg contract, including nullability behavior.
 - **HTTP pollers must use bounded retry handling for transient upstream failures.** A long-running `requests` poller is not allowed to rely on a bare `requests.Session()` with no `HTTPAdapter`/`Retry` policy for connect resets, read timeouts, 429s, and 5xx responses.
 - **State and dedupe must advance only after Kafka delivery succeeds.** If the bridge batches `send_*` calls with `flush_producer=False`, it must treat `producer.flush(timeout=...)` returning a non-zero remainder as a failed poll and leave dedupe state, resume cursors, `last_seen` timestamps, and persisted checkpoints untouched. Do not mark rows, incidents, or event IDs as seen before delivery is durable.
+- **Size flush timeouts to the batch, and chunk-flush large reference emits.** A flush of one polling cycle's worth of telemetry usually completes in seconds, but a startup reference emit of several hundred records (e.g. JMA Bosai office catalog is ~700 rows) regularly exceeds 30 s against the Fabric Eventstream Kafka endpoint and surfaces as `Kafka flush failed while emitting <reference> records`, killing the notebook before it ever reaches the telemetry loop. Use a flush timeout of **at least 120 s** for any flush that may carry more than ~100 messages, and chunk the emit with an intermediate `producer.poll(0)` + `producer.flush(timeout=120)` every 100 records so the librdkafka send buffer drains incrementally instead of all at once. Apply the same 120 s timeout to the per-cycle telemetry and reference-refresh flushes so behaviour is consistent. Repo analog of the chunked pattern: `jma-bosai-warning/jma_bosai_warning/jma_bosai_warning.py:emit_offices`.
 - **The bridge must emit reference data as events, not just telemetry.** If the xreg contract defines reference event types (station metadata, sensor catalogs, zone definitions, route tables, task type catalogs), the bridge must fetch that data via REST at startup and emit it as CloudEvents before or alongside the telemetry stream. Reference data should be re-fetched periodically (typically every few hours or daily, depending on the source) so downstream consumers can maintain temporally consistent views. Reference data goes to the same Kafka topic as the telemetry it contextualizes, using the same key model. Repo analogs: `pegelonline` (stations at startup), `usgs-iv` (sites refreshed weekly), `chmi-hydro` (stations before observations), `noaa-ndbc` (buoy stations). See: https://vasters.com/clemens/2024/10/30/streamifying-reference-data-for-temporal-consistency-with-telemetry-events
 - **A failed reference refresh must not discard a still-usable cached catalog.** Station, site, community, route, and timeseries metadata should be refreshed into a new snapshot and swapped in only after success. If refresh fails and a prior cache exists, keep polling with the cached reference data instead of turning a transient metadata outage into a full bridge outage.
 - **Multi-endpoint pollers must isolate failures to the failing slice whenever possible.** One bad dataset, station batch, endpoint, or reference-detail lookup should not abort the rest of the cycle if the remaining slices can still emit valid events.
@@ -69,7 +70,7 @@ feeder.
     - **Build refreshed reference catalogs separately and swap them in only after success.** If the refresh fails and an older cache exists, keep using the older cache and continue polling unaffected telemetry slices.
     - **Catch upstream failures at the smallest practical boundary.** Skip the failing dataset, endpoint, or batch, log it, and continue with the rest of the cycle whenever the remaining work is still valid.
 8. Add unit and integration tests, and keep Docker compatibility in mind if the source should join the repo-wide container tests.
-    - **When the bridge batches sends with `flush_producer=False`, add a flush-failure unit test.** Mock `producer.flush(timeout=...)` (or `producer.producer.flush(timeout=...)`) to return a non-zero remainder and assert that dedupe state, `last_seen` markers, resume cursors, and persisted checkpoints do not advance. If the bridge retries on the next poll, assert the same records are still eligible to send.
+    - **When the bridge batches sends with `flush_producer=False`, add a flush-failure unit test.** Mock `producer.flush(timeout=...)` (or `producer.producer.flush(timeout=...)`) to return a non-zero remainder and assert that dedupe state, `last_seen` markers, resume cursors, and persisted checkpoints do not advance. If the bridge retries on the next poll, assert the same records are still eligible to send. **If the bridge chunk-flushes a large reference emit, also assert the chunking boundary** — e.g. mock `flush` to count invocations and assert it was called at least `ceil(N/100)` times for an N-record emit, so a future refactor cannot silently regress to one giant 30 s flush.
     - **For HTTP pollers, add two resilience tests, not one vague one.** First, simulate a timeout or connection reset during reference refresh and assert that the old cached station, community, site, route, or timeseries catalog remains in use instead of being cleared. Second, simulate one failed dataset, endpoint, or station batch inside a multi-slice poll and assert that only the failing slice is skipped while unaffected slices still emit.
     - **For multi-group sources, add a one-cycle feed test that exercises every emitted family.** Mock upstream responses for each family, use fake producer classes per generated message group, and assert the runtime emits at least one event through each expected `send_*` path. This catches bridges that import or instantiate only one generated producer class and then call methods owned by another class.
 9. **Update Docker E2E test to validate both reference and telemetry event types.** Use `reference_types` and `telemetry_types` parameters in `_run_kafka_flow_test` to verify both categories are emitted.
@@ -202,6 +203,100 @@ irm "$cluster/v1/rest/mgmt" -Method POST -Headers @{
 
 The script is idempotent thanks to `.create-merge` and
 `.create-or-alter` — running it twice does no harm.
+
+### KQL deployment hazards (lessons from live deploys)
+
+These pitfalls have all been observed in production deploys against
+ContosoRealTimeTest and silently produced "bridge ran, dashboard
+empty" outcomes. Check for them every time you apply a regenerated
+script to a database that already has data flowing.
+
+1. **`_cloudevents_dispatch` column-type conflict with the auto-provisioned
+   Eventstream table.** Fabric Eventstream's Eventhouse destination
+   auto-creates `_cloudevents_dispatch` with `time:string`, but the
+   generated DDL declares `time:datetime`. `.create-merge` cannot alter
+   a column type and the apply fails with a Kusto "schema mismatch"
+   error against that one table. Workaround: `.drop table
+   _cloudevents_dispatch ifexists` first, then re-apply. **This has a
+   serious side effect** — see hazard 2.
+
+2. **Dropping `_cloudevents_dispatch` corrupts the Eventstream
+   destination column mapping.** After a drop+recreate, the
+   Eventstream's column mapping for that destination caches the old
+   columns and starts writing the wrong field into `type` (we have
+   observed the source URL landing in the `type` column for an entire
+   amedas deploy, after which every update-policy filter on
+   `type == 'JP.JMA.Amedas.Observation'` matched zero rows). There is
+   no REST fix; the destination has to be deleted and recreated in the
+   Fabric portal. Avoid the situation by getting the dispatch column
+   types right in the generator on the first apply.
+
+3. **Re-applying with a different qualified-table-name shape does NOT
+   drop the old tables.** If a source was first deployed without
+   `-Namespace` (producing e.g. `Volcano`, `VolcanicWarning`) and is
+   later regenerated with `-Namespace JP.JMA.Volcano` (producing
+   `['JP.JMA.Volcano.Volcano']`, `['JP.JMA.Volcano.VolcanicWarning']`),
+   the apply creates the new qualified tables but leaves the old
+   unqualified tables in place with their stale row counts. The update
+   policy points only at the new tables, so the old ones go cold and
+   confuse anyone querying. After a name-shape change, explicitly
+   `.drop table <oldname> ifexists` for every superseded table in the
+   re-apply or in a follow-up cleanup script.
+
+4. **Update policies are forward-only.** `IsTransactional = false` means
+   the policy fires only on new ingestion into `_cloudevents_dispatch`.
+   Rows that were already in dispatch before a re-apply will not be
+   backfilled into the typed tables. If a backfill is needed, run a
+   one-shot `.set-or-append` from dispatch into the typed table with
+   the same projection the update policy uses.
+
+### Post-deploy verification (mandatory before declaring success)
+
+After applying a generated KQL script to a live Eventhouse, run this
+verification within ~15 minutes (one or two polling cycles) and treat
+any failure as a deployment defect, not an "it'll catch up" non-issue:
+
+```kusto
+// 1. Dispatch is receiving events with the RIGHT type token
+_cloudevents_dispatch
+| summarize c = count() by type
+| order by c desc
+```
+
+The `type` column must contain the PascalCase `<Namespace>.<TypeName>`
+tokens the bridge emits (e.g. `JP.TEPCO.Denkiyoho.SupplyCapacity`).
+If you see lowercase, or a URL, or anything other than the
+CloudEvents `type`, **stop and fix it** — the typed tables will never
+populate:
+
+- **Lowercase token** (e.g. `jp.tepco.denkiyoho.SupplyCapacity`) means
+  the bridge or the producer is emitting with the wrong case. Most
+  likely the producer was generated from a stale xreg where the
+  `envelopemetadata.type.value` differs from what the KQL update
+  policy filters on. Regenerate both producer and KQL with consistent
+  case, then re-deploy.
+- **URL or other non-token value** in `type` means an Eventstream
+  destination column-mapping corruption (hazard 2 above). Recreate the
+  destination in the portal.
+- **No rows at all** means the Eventstream destination is unbound, the
+  bridge has not started, the connection string lookup is failing, or
+  the bridge is crashing before the first flush — check the notebook
+  run status and the OneLake `last-run.log`.
+
+```kusto
+// 2. Every typed table the source defines is receiving rows
+union withsource=tname ['<Namespace>.<Type1>'], ['<Namespace>.<Type2>']
+| summarize c = count() by tname
+```
+
+Every typed table the script created must show a non-zero count within
+two polling intervals (rare-event tables like `EarthquakeReport`,
+`VolcanicEruption`, `TsunamiAlert` may legitimately stay at zero — note
+these explicitly and verify them on the next real event). If a
+high-volume typed table stays at zero while `_cloudevents_dispatch` is
+receiving correctly-typed rows, the update policy filter does not
+match the dispatch `type` value — re-check `-Namespace` and
+regenerate.
 
 ### catalog.json
 
