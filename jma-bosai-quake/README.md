@@ -8,6 +8,7 @@ This source polls the Japan Meteorological Agency (JMA / 気象庁) Bosai earthq
 - Authentication: none
 - License: Japanese government open data
 - Cadence: reports appear as earthquakes occur, with updates and corrections; the bridge polls every 60 seconds by default.
+- Fabric notebook hosting: deploy the scheduled notebook feeder with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
 
 ## Reviewed data channels
 
