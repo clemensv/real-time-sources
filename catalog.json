@@ -857,7 +857,8 @@
     "name": "JMA Bosai Quake",
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
-    "desc": "Japan — JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)"
+    "desc": "Japan — JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)",
+    "notebook": true
   },
   {
     "id": "jma-bosai-volcano",
