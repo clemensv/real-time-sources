@@ -9,9 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_producer_data.tsunamialert import TsunamiAlert
+from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
 from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
 from jma_bosai_warning_producer_data.affectedcoastalregion import AffectedCoastalRegion
-from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
+import datetime
 
 
 class Test_TsunamiAlert(unittest.TestCase):
@@ -31,15 +32,15 @@ class Test_TsunamiAlert(unittest.TestCase):
         Create instance of TsunamiAlert for testing
         """
         instance = TsunamiAlert(
-            event_id='eghtowqlcakxgqgcbqli',
-            serial=int(60),
+            event_id='vmcyjuctlfreufczkifb',
+            serial=int(92),
             info_type=InfoTypeenum.ISSUED,
-            report_datetime='lyigwnlpoirzsfrxmugy',
-            report_datetime_local='yahzpagumcrenjvqnzqa',
-            title_jp='ifsxbjdfxiomwmlkzsfz',
-            title_en='pubvuysevqttgnygpkze',
-            bulletin_type='idxlkfrpfzcfmiirimuq',
-            detail_url='bngzravpakrwwvavrfgo',
+            report_datetime=datetime.datetime.now(datetime.timezone.utc),
+            report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            title_jp='vpnqenreccvlbyicxjzw',
+            title_en='qdtswpawebsymdegyzsl',
+            bulletin_type='ppponecruompycssloht',
+            detail_url='axirwdcpoqfgitvhkzen',
             affected_coastal_regions=[None, None, None, None],
             observations=[None, None]
         )
@@ -50,7 +51,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'eghtowqlcakxgqgcbqli'
+        test_value = 'vmcyjuctlfreufczkifb'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -58,7 +59,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test serial property
         """
-        test_value = int(60)
+        test_value = int(92)
         self.instance.serial = test_value
         self.assertEqual(self.instance.serial, test_value)
     
@@ -74,7 +75,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test report_datetime property
         """
-        test_value = 'lyigwnlpoirzsfrxmugy'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.report_datetime = test_value
         self.assertEqual(self.instance.report_datetime, test_value)
     
@@ -82,7 +83,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test report_datetime_local property
         """
-        test_value = 'yahzpagumcrenjvqnzqa'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.report_datetime_local = test_value
         self.assertEqual(self.instance.report_datetime_local, test_value)
     
@@ -90,7 +91,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_jp property
         """
-        test_value = 'ifsxbjdfxiomwmlkzsfz'
+        test_value = 'vpnqenreccvlbyicxjzw'
         self.instance.title_jp = test_value
         self.assertEqual(self.instance.title_jp, test_value)
     
@@ -98,7 +99,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_en property
         """
-        test_value = 'pubvuysevqttgnygpkze'
+        test_value = 'qdtswpawebsymdegyzsl'
         self.instance.title_en = test_value
         self.assertEqual(self.instance.title_en, test_value)
     
@@ -106,7 +107,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test bulletin_type property
         """
-        test_value = 'idxlkfrpfzcfmiirimuq'
+        test_value = 'ppponecruompycssloht'
         self.instance.bulletin_type = test_value
         self.assertEqual(self.instance.bulletin_type, test_value)
     
@@ -114,7 +115,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test detail_url property
         """
-        test_value = 'bngzravpakrwwvavrfgo'
+        test_value = 'axirwdcpoqfgitvhkzen'
         self.instance.detail_url = test_value
         self.assertEqual(self.instance.detail_url, test_value)
     

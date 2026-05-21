@@ -224,13 +224,11 @@
                               "description": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map."
                             },
                             "observed_at": {
-                              "type": "string",
-                              "format": "date-time",
+                              "type": "datetime",
                               "description": "Observation snapshot timestamp converted from JMA latest_time.txt to UTC and serialized as RFC3339. AMeDAS map snapshots are published every ten minutes."
                             },
                             "observed_at_local": {
-                              "type": "string",
-                              "format": "date-time",
+                              "type": "datetime",
                               "description": "Original JMA latest_time.txt timestamp in Japan Standard Time with +09:00 offset, serialized as RFC3339."
                             },
                             "temp": {
@@ -378,10 +376,9 @@
                             },
                             "wind_gust_time": {
                               "type": [
-                                "string",
+                                "datetime",
                                 "null"
                               ],
-                              "format": "date-time",
                               "description": "UTC RFC3339 timestamp for the maximum instantaneous wind gust time from the JMA Bosai per-station gustTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
                               "altnames": {
                                 "jma-bosai": "gustTime"
@@ -400,10 +397,9 @@
                             },
                             "max_temp_time": {
                               "type": [
-                                "string",
+                                "datetime",
                                 "null"
                               ],
-                              "format": "date-time",
                               "description": "UTC RFC3339 timestamp for the maximum air temperature time from the JMA Bosai per-station maxTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
                               "altnames": {
                                 "jma-bosai": "maxTempTime"
@@ -422,10 +418,9 @@
                             },
                             "min_temp_time": {
                               "type": [
-                                "string",
+                                "datetime",
                                 "null"
                               ],
-                              "format": "date-time",
                               "description": "UTC RFC3339 timestamp for the minimum air temperature time from the JMA Bosai per-station minTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC.",
                               "altnames": {
                                 "jma-bosai": "minTempTime"

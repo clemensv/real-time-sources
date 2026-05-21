@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from jma_bosai_amedas_producer_kafka_producer.producer import JPJMAAmedasEventProducer
 from jma_bosai_amedas_producer_data import Station
-from test_jma_bosai_amedas_producer_data_jp_jma_amedas_station import Test_Station
+from test_jma_bosai_amedas_producer_data_station import Test_Station
 from jma_bosai_amedas_producer_data import Observation
-from test_jma_bosai_amedas_producer_data_jp_jma_amedas_observation import Test_Observation
+from test_jma_bosai_amedas_producer_data_observation import Test_Observation
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

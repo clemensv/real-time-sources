@@ -29,11 +29,11 @@ class Test_Office(unittest.TestCase):
         Create instance of Office for testing
         """
         instance = Office(
-            office_code='beefzkmamsfncelryvra',
-            area_code='erneivaadkrlqhcpczmp',
-            name_jp='zorxkdsgkvhrbgrkjpva',
-            name_en='stmboanwgdwwbezlxjjn',
-            parent_office_code='bzpqspponyqifbmbgmyt',
+            office_code='cjvkgwksnxnhuyeienhh',
+            area_code='zrlcnfatzsiuqkvngzvb',
+            name_jp='jwmqqnasqpcelkntahdi',
+            name_en='qmuquimxogqzepclnnih',
+            parent_office_code='ixfonklewtcdcwdfnsra',
             office_type=OfficeTypeenum.PREFECTURE
         )
         return instance
@@ -43,7 +43,7 @@ class Test_Office(unittest.TestCase):
         """
         Test office_code property
         """
-        test_value = 'beefzkmamsfncelryvra'
+        test_value = 'cjvkgwksnxnhuyeienhh'
         self.instance.office_code = test_value
         self.assertEqual(self.instance.office_code, test_value)
     
@@ -51,7 +51,7 @@ class Test_Office(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'erneivaadkrlqhcpczmp'
+        test_value = 'zrlcnfatzsiuqkvngzvb'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -59,7 +59,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_jp property
         """
-        test_value = 'zorxkdsgkvhrbgrkjpva'
+        test_value = 'jwmqqnasqpcelkntahdi'
         self.instance.name_jp = test_value
         self.assertEqual(self.instance.name_jp, test_value)
     
@@ -67,7 +67,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'stmboanwgdwwbezlxjjn'
+        test_value = 'qmuquimxogqzepclnnih'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
@@ -75,7 +75,7 @@ class Test_Office(unittest.TestCase):
         """
         Test parent_office_code property
         """
-        test_value = 'bzpqspponyqifbmbgmyt'
+        test_value = 'ixfonklewtcdcwdfnsra'
         self.instance.parent_office_code = test_value
         self.assertEqual(self.instance.parent_office_code, test_value)
     

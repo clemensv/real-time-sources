@@ -10,10 +10,12 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
 from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
 from jma_bosai_warning_producer_data.affectedcoastalregion import AffectedCoastalRegion
-from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -26,8 +28,8 @@ class TsunamiAlert:
         event_id (str)
         serial (int)
         info_type (InfoTypeenum)
-        report_datetime (str)
-        report_datetime_local (str)
+        report_datetime (datetime.datetime)
+        report_datetime_local (datetime.datetime)
         title_jp (str)
         title_en (str)
         bulletin_type (str)
@@ -40,8 +42,8 @@ class TsunamiAlert:
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     serial: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serial"))
     info_type: InfoTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_type"))
-    report_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime"))
-    report_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local"))
+    report_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    report_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     title_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title_jp"))
     title_en: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title_en"))
     bulletin_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bulletin_type"))
@@ -174,15 +176,15 @@ class TsunamiAlert:
             An instance of the dataclass.
         """
         return cls(
-            event_id='eghtowqlcakxgqgcbqli',
-            serial=int(60),
+            event_id='vmcyjuctlfreufczkifb',
+            serial=int(92),
             info_type=InfoTypeenum.ISSUED,
-            report_datetime='lyigwnlpoirzsfrxmugy',
-            report_datetime_local='yahzpagumcrenjvqnzqa',
-            title_jp='ifsxbjdfxiomwmlkzsfz',
-            title_en='pubvuysevqttgnygpkze',
-            bulletin_type='idxlkfrpfzcfmiirimuq',
-            detail_url='bngzravpakrwwvavrfgo',
+            report_datetime=datetime.datetime.now(datetime.timezone.utc),
+            report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            title_jp='vpnqenreccvlbyicxjzw',
+            title_en='qdtswpawebsymdegyzsl',
+            bulletin_type='ppponecruompycssloht',
+            detail_url='axirwdcpoqfgitvhkzen',
             affected_coastal_regions=[None, None, None, None],
             observations=[None, None]
         )

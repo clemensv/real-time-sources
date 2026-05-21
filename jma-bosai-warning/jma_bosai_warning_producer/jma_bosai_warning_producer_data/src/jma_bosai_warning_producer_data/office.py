@@ -162,10 +162,10 @@ class Office:
             An instance of the dataclass.
         """
         return cls(
-            office_code='beefzkmamsfncelryvra',
-            area_code='erneivaadkrlqhcpczmp',
-            name_jp='zorxkdsgkvhrbgrkjpva',
-            name_en='stmboanwgdwwbezlxjjn',
-            parent_office_code='bzpqspponyqifbmbgmyt',
+            office_code='cjvkgwksnxnhuyeienhh',
+            area_code='zrlcnfatzsiuqkvngzvb',
+            name_jp='jwmqqnasqpcelkntahdi',
+            name_en='qmuquimxogqzepclnnih',
+            parent_office_code='ixfonklewtcdcwdfnsra',
             office_type=OfficeTypeenum.PREFECTURE
         )

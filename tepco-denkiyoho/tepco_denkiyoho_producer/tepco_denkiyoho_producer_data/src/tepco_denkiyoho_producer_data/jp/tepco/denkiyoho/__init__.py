@@ -1,6 +1,6 @@
-from .peakdemandforecast import PeakDemandForecast
-from .supplycapacity import SupplyCapacity
-from .demandactual import DemandActual
 from .demandforecast import DemandForecast
+from .supplycapacity import SupplyCapacity
+from .peakdemandforecast import PeakDemandForecast
+from .demandactual import DemandActual
 
-__all__ = ["PeakDemandForecast", "SupplyCapacity", "DemandActual", "DemandForecast"]
+__all__ = ["DemandForecast", "SupplyCapacity", "PeakDemandForecast", "DemandActual"]

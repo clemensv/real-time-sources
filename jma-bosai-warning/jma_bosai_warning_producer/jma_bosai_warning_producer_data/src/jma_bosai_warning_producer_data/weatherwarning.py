@@ -10,8 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
 from jma_bosai_warning_producer_data.warningitem import WarningItem
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -24,22 +26,22 @@ class WeatherWarning:
         office_code (str)
         area_code (str)
         area_name (str)
-        report_datetime (str)
-        report_datetime_local (str)
+        report_datetime (datetime.datetime)
+        report_datetime_local (datetime.datetime)
         headline_text (typing.Optional[str])
         warnings (typing.List[WarningItem])
-        time_defines (typing.List[str])
+        time_defines (typing.List[datetime.datetime])
     """
     
     
     office_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="office_code"))
     area_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
     area_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name"))
-    report_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime"))
-    report_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local"))
+    report_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    report_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     headline_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="headline_text"))
     warnings: typing.List[WarningItem]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warnings"))
-    time_defines: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_defines"))
+    time_defines: typing.List[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_defines"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherWarning':
@@ -166,12 +168,12 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            office_code='nvwxpzwbyrxcjfxkvkgo',
-            area_code='uxqiyexcyccvtzubfbvq',
-            area_name='dinelvxqucpnzhucgiok',
-            report_datetime='pubpllflrybuwdtxtsvs',
-            report_datetime_local='fszpsafomucciscxbxxr',
-            headline_text='udnziwhrwkqsyohkjufx',
-            warnings=[None, None, None, None, None],
-            time_defines=['vsbnloqzrpwicmbveygd', 'hcewqmqyinnridkfjnlb', 'jxblojkgzxdsuxijrgtn', 'bnsmwojcxiybldwkfzzo']
+            office_code='mpqgrgufzcgweojbiwve',
+            area_code='fvyxbdkbqgxuoapyrqsu',
+            area_name='ayikcndysykmiwkfmwta',
+            report_datetime=datetime.datetime.now(datetime.timezone.utc),
+            report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            headline_text='kzdxnjwrnnfacuzbxvvn',
+            warnings=[None, None],
+            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

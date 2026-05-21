@@ -10,8 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
 from jma_bosai_warning_producer_data.categoryenum import CategoryEnum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -25,8 +27,8 @@ class AffectedCoastalRegion:
         name (str)
         category (CategoryEnum)
         expected_max_wave_height_m (typing.Optional[float])
-        expected_arrival_datetime (typing.Optional[str])
-        expected_arrival_datetime_local (typing.Optional[str])
+        expected_arrival_datetime (typing.Optional[datetime.datetime])
+        expected_arrival_datetime_local (typing.Optional[datetime.datetime])
     """
     
     
@@ -34,8 +36,8 @@ class AffectedCoastalRegion:
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     category: CategoryEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="category"))
     expected_max_wave_height_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expected_max_wave_height_m"))
-    expected_arrival_datetime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expected_arrival_datetime"))
-    expected_arrival_datetime_local: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expected_arrival_datetime_local"))
+    expected_arrival_datetime: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expected_arrival_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    expected_arrival_datetime_local: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expected_arrival_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'AffectedCoastalRegion':
@@ -162,10 +164,10 @@ class AffectedCoastalRegion:
             An instance of the dataclass.
         """
         return cls(
-            code='ursxisqjxsucfrukxefp',
-            name='uopktvnnhswbuvbvperu',
+            code='ysvejmuudewntpbajcig',
+            name='uoumgegikwqguqqvlkzx',
             category=CategoryEnum.MAJOR_WARNING,
-            expected_max_wave_height_m=float(47.940533289276345),
-            expected_arrival_datetime='xizieqegeclucorzcexd',
-            expected_arrival_datetime_local='ctphmcgkequtbvigtwvu'
+            expected_max_wave_height_m=float(52.857835539122455),
+            expected_arrival_datetime=datetime.datetime.now(datetime.timezone.utc),
+            expected_arrival_datetime_local=datetime.datetime.now(datetime.timezone.utc)
         )

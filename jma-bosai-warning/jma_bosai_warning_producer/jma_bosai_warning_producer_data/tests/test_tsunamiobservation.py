@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
 from jma_bosai_warning_producer_data.arrivalstatusenum import ArrivalStatusenum
+import datetime
 
 
 class Test_TsunamiObservation(unittest.TestCase):
@@ -29,12 +30,12 @@ class Test_TsunamiObservation(unittest.TestCase):
         Create instance of TsunamiObservation for testing
         """
         instance = TsunamiObservation(
-            station_code='abkoeheptcxdjfxowlgq',
-            station_name_jp='oextmaxwtccsxjcrvztu',
-            station_name_en='vrpewblinzeqoyzeopwv',
-            observed_max_wave_height_m=float(63.16023945719127),
-            observed_at='ivefumgdtcexibytjuko',
-            observed_at_local='blszczorajricnlnelbq',
+            station_code='mhzlwcazoqtxvltvystd',
+            station_name_jp='vnntvraxhynmhlbzdpwc',
+            station_name_en='bsnospvdtoqnnlxzupvy',
+            observed_max_wave_height_m=float(91.64369297776543),
+            observed_at=datetime.datetime.now(datetime.timezone.utc),
+            observed_at_local=datetime.datetime.now(datetime.timezone.utc),
             arrival_status=ArrivalStatusenum.ESTIMATED
         )
         return instance
@@ -44,7 +45,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'abkoeheptcxdjfxowlgq'
+        test_value = 'mhzlwcazoqtxvltvystd'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -52,7 +53,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test station_name_jp property
         """
-        test_value = 'oextmaxwtccsxjcrvztu'
+        test_value = 'vnntvraxhynmhlbzdpwc'
         self.instance.station_name_jp = test_value
         self.assertEqual(self.instance.station_name_jp, test_value)
     
@@ -60,7 +61,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test station_name_en property
         """
-        test_value = 'vrpewblinzeqoyzeopwv'
+        test_value = 'bsnospvdtoqnnlxzupvy'
         self.instance.station_name_en = test_value
         self.assertEqual(self.instance.station_name_en, test_value)
     
@@ -68,7 +69,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test observed_max_wave_height_m property
         """
-        test_value = float(63.16023945719127)
+        test_value = float(91.64369297776543)
         self.instance.observed_max_wave_height_m = test_value
         self.assertEqual(self.instance.observed_max_wave_height_m, test_value)
     
@@ -76,7 +77,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test observed_at property
         """
-        test_value = 'ivefumgdtcexibytjuko'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.observed_at = test_value
         self.assertEqual(self.instance.observed_at, test_value)
     
@@ -84,7 +85,7 @@ class Test_TsunamiObservation(unittest.TestCase):
         """
         Test observed_at_local property
         """
-        test_value = 'blszczorajricnlnelbq'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.observed_at_local = test_value
         self.assertEqual(self.instance.observed_at_local, test_value)
     

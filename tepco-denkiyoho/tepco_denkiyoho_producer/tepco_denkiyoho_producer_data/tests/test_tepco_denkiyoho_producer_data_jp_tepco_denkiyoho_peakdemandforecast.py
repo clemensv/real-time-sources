@@ -28,16 +28,16 @@ class Test_PeakDemandForecast(unittest.TestCase):
         Create instance of PeakDemandForecast for testing
         """
         instance = PeakDemandForecast(
-            date='hutjrydgjkfiiccljyng',
-            time='odsfcsvoxisevhretycb',
-            peak_demand_forecast_mw=float(37.69695482010344),
-            peak_demand_forecast_jp_unit_value=int(43),
-            peak_time_slot='qqyoragqqhmhufliqawj',
-            update_datetime='zpbvawnmtkxlsyfnuyaz',
-            update_datetime_local='wsinylsntsfgebkgxlly',
-            area_code='mbkgrmsknuokdosldwae',
-            area_name_jp='sgkwaysdmhclntlpqroj',
-            area_name_en='rbaotsyxlohvclxvyvib'
+            date='njqdfiepijvhwfsltkra',
+            time='itjebowilswbrwovfnzb',
+            peak_demand_forecast_mw=float(36.11018277119265),
+            peak_demand_forecast_jp_unit_value=int(75),
+            peak_time_slot='nolxreascjqjmchixqka',
+            update_datetime='ylziwycmdxxucebaqbhw',
+            update_datetime_local='apdgmzhvlabfqbowugsp',
+            area_code='kiqdekpgukcqobjagndx',
+            area_name_jp='pjptzfevwcsjpuappsea',
+            area_name_en='tftqaslrxwhxnbzvhsjm'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'hutjrydgjkfiiccljyng'
+        test_value = 'njqdfiepijvhwfsltkra'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     
@@ -54,7 +54,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test time property
         """
-        test_value = 'odsfcsvoxisevhretycb'
+        test_value = 'itjebowilswbrwovfnzb'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -62,7 +62,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test peak_demand_forecast_mw property
         """
-        test_value = float(37.69695482010344)
+        test_value = float(36.11018277119265)
         self.instance.peak_demand_forecast_mw = test_value
         self.assertEqual(self.instance.peak_demand_forecast_mw, test_value)
     
@@ -70,7 +70,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test peak_demand_forecast_jp_unit_value property
         """
-        test_value = int(43)
+        test_value = int(75)
         self.instance.peak_demand_forecast_jp_unit_value = test_value
         self.assertEqual(self.instance.peak_demand_forecast_jp_unit_value, test_value)
     
@@ -78,7 +78,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test peak_time_slot property
         """
-        test_value = 'qqyoragqqhmhufliqawj'
+        test_value = 'nolxreascjqjmchixqka'
         self.instance.peak_time_slot = test_value
         self.assertEqual(self.instance.peak_time_slot, test_value)
     
@@ -86,7 +86,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test update_datetime property
         """
-        test_value = 'zpbvawnmtkxlsyfnuyaz'
+        test_value = 'ylziwycmdxxucebaqbhw'
         self.instance.update_datetime = test_value
         self.assertEqual(self.instance.update_datetime, test_value)
     
@@ -94,7 +94,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test update_datetime_local property
         """
-        test_value = 'wsinylsntsfgebkgxlly'
+        test_value = 'apdgmzhvlabfqbowugsp'
         self.instance.update_datetime_local = test_value
         self.assertEqual(self.instance.update_datetime_local, test_value)
     
@@ -102,7 +102,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'mbkgrmsknuokdosldwae'
+        test_value = 'kiqdekpgukcqobjagndx'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -110,7 +110,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test area_name_jp property
         """
-        test_value = 'sgkwaysdmhclntlpqroj'
+        test_value = 'pjptzfevwcsjpuappsea'
         self.instance.area_name_jp = test_value
         self.assertEqual(self.instance.area_name_jp, test_value)
     
@@ -118,7 +118,7 @@ class Test_PeakDemandForecast(unittest.TestCase):
         """
         Test area_name_en property
         """
-        test_value = 'rbaotsyxlohvclxvyvib'
+        test_value = 'tftqaslrxwhxnbzvhsjm'
         self.instance.area_name_en = test_value
         self.assertEqual(self.instance.area_name_en, test_value)
     

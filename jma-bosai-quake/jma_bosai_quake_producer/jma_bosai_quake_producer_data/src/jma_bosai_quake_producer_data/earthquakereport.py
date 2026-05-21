@@ -10,12 +10,14 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
-from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
 from jma_bosai_quake_producer_data.affectedcity import AffectedCity
 from jma_bosai_quake_producer_data.bulletintypeenum import BulletinTypeenum
-from jma_bosai_quake_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
 from jma_bosai_quake_producer_data.affectedprefecture import AffectedPrefecture
+from jma_bosai_quake_producer_data.infotypeenum import InfoTypeenum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -29,12 +31,12 @@ class EarthquakeReport:
         report_id (str)
         serial (int)
         info_type (InfoTypeenum)
-        report_datetime (str)
-        report_datetime_local (str)
-        control_datetime (str)
-        control_datetime_local (str)
-        origin_datetime (str)
-        origin_datetime_local (str)
+        report_datetime (datetime.datetime)
+        report_datetime_local (datetime.datetime)
+        control_datetime (datetime.datetime)
+        control_datetime_local (datetime.datetime)
+        origin_datetime (datetime.datetime)
+        origin_datetime_local (datetime.datetime)
         title_jp (str)
         title_en (typing.Optional[str])
         epicenter_area_code (typing.Optional[str])
@@ -57,12 +59,12 @@ class EarthquakeReport:
     report_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_id"))
     serial: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serial"))
     info_type: InfoTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_type"))
-    report_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime"))
-    report_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local"))
-    control_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="control_datetime"))
-    control_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="control_datetime_local"))
-    origin_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_datetime"))
-    origin_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_datetime_local"))
+    report_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    report_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    control_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="control_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    control_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="control_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    origin_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    origin_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     title_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title_jp"))
     title_en: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title_en"))
     epicenter_area_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="epicenter_area_code"))
@@ -204,29 +206,29 @@ class EarthquakeReport:
             An instance of the dataclass.
         """
         return cls(
-            event_id='fhshtvvomuwdmgdoykvv',
-            report_id='jyfbmkriilqtqceggvyf',
-            serial=int(4),
+            event_id='nmjnkehkaxhkjjypmwrz',
+            report_id='ncetlepvrbwfmekpdaar',
+            serial=int(9),
             info_type=InfoTypeenum.ISSUED,
-            report_datetime='hezpvcintshlhrctnrfh',
-            report_datetime_local='mcxreihwvipcftvxfdvv',
-            control_datetime='ukpbfwcvjgubnqmxofvz',
-            control_datetime_local='ybrxlonnsxyzflaulcqw',
-            origin_datetime='uovkpbwozmgjxmehxjjd',
-            origin_datetime_local='gxrhjlrzajdzhepbrvje',
-            title_jp='afgdoynrvznphjmhjpxn',
-            title_en='oqptxajftqhovlnzaiwm',
-            epicenter_area_code='fdnfbrvkpsfactfuxopz',
-            epicenter_area_jp='ewunopfzxpiauecjyxrj',
-            epicenter_area_en='svvwamndicyzlwuqmdec',
-            latitude=float(14.23024798511776),
-            longitude=float(92.95344357434054),
-            depth_km=float(46.95282655333888),
-            magnitude=float(33.571653896577345),
+            report_datetime=datetime.datetime.now(datetime.timezone.utc),
+            report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            control_datetime=datetime.datetime.now(datetime.timezone.utc),
+            control_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            origin_datetime=datetime.datetime.now(datetime.timezone.utc),
+            origin_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            title_jp='uwriibukbqfhgfcuzvsr',
+            title_en='eihchxyaoxnobbfylcyq',
+            epicenter_area_code='jfyjjcqywszsfeksvdyz',
+            epicenter_area_jp='mqxrvkbygjlcrlmtdxmr',
+            epicenter_area_en='moabzdzvksobdgjgtyzz',
+            latitude=float(54.35843844852665),
+            longitude=float(78.48300847064665),
+            depth_km=float(99.51775973508927),
+            magnitude=float(65.21015194411662),
             max_intensity=MaxIntensityenum.INTENSITY_1,
             bulletin_type=BulletinTypeenum.VXSE51,
-            detail_url='doginybyvqvjxwflgazo',
-            affected_prefectures=[None, None, None, None],
-            affected_cities=[None, None, None, None],
+            detail_url='jhmzyriieqtpdqwbiklb',
+            affected_prefectures=[None, None, None],
+            affected_cities=[None],
             tsunami_possible=True
         )
