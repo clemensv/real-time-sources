@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Office] (
+.create-merge table ['JP.JMA.BosaiWarning.Office'] (
    [office_code]: string,
    [area_code]: string,
    [name_jp]: string,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [Office] docstring "{\"description\": \"JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.\"}";
+.alter table ['JP.JMA.BosaiWarning.Office'] docstring "{\"description\": \"JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.\"}";
 
-.alter table [Office] column-docstrings (
+.alter table ['JP.JMA.BosaiWarning.Office'] column-docstrings (
    [office_code]: "{\"description\": \"Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events.\"}",
    [area_code]: "{\"description\": \"Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry.\"}",
    [name_jp]: "{\"description\": \"Japanese office or warning-region name from area.json offices[].name, such as \\u6771\\u4eac\\u90fd or \\u5b97\\u8c37\\u5730\\u65b9.\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Office] ingestion json mapping "Office_json_flat"
+.create-or-alter table ['JP.JMA.BosaiWarning.Office'] ingestion json mapping "JP.JMA.BosaiWarning.Office_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [Office] ingestion json mapping "Office_json_ce_structured"
+.create-or-alter table ['JP.JMA.BosaiWarning.Office'] ingestion json mapping "JP.JMA.BosaiWarning.Office_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view OfficeLatest ifexists;
+.drop materialized-view ['JP.JMA.BosaiWarning.OfficeLatest'] ifexists;
 
-.create materialized-view with (backfill=true) OfficeLatest on table Office {
-    Office | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.BosaiWarning.OfficeLatest'] on table ['JP.JMA.BosaiWarning.Office'] {
+    ['JP.JMA.BosaiWarning.Office'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Office] policy update
+.alter table ['JP.JMA.BosaiWarning.Office'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -106,7 +106,7 @@
 }]
 ```
 
-.create-merge table [WeatherWarning] (
+.create-merge table ['JP.JMA.BosaiWarning.WeatherWarning'] (
    [office_code]: string,
    [area_code]: string,
    [area_name]: string,
@@ -122,9 +122,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherWarning] docstring "{\"description\": \"JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.\"}";
+.alter table ['JP.JMA.BosaiWarning.WeatherWarning'] docstring "{\"description\": \"JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.\"}";
 
-.alter table [WeatherWarning] column-docstrings (
+.alter table ['JP.JMA.BosaiWarning.WeatherWarning'] column-docstrings (
    [office_code]: "{\"description\": \"Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component.\"}",
    [area_code]: "{\"description\": \"JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry.\"}",
    [area_name]: "{\"description\": \"Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code.\"}",
@@ -140,7 +140,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherWarning] ingestion json mapping "WeatherWarning_json_flat"
+.create-or-alter table ['JP.JMA.BosaiWarning.WeatherWarning'] ingestion json mapping "JP.JMA.BosaiWarning.WeatherWarning_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -159,7 +159,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherWarning] ingestion json mapping "WeatherWarning_json_ce_structured"
+.create-or-alter table ['JP.JMA.BosaiWarning.WeatherWarning'] ingestion json mapping "JP.JMA.BosaiWarning.WeatherWarning_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -178,13 +178,13 @@
 ]
 ```
 
-.drop materialized-view WeatherWarningLatest ifexists;
+.drop materialized-view ['JP.JMA.BosaiWarning.WeatherWarningLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherWarningLatest on table WeatherWarning {
-    WeatherWarning | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.BosaiWarning.WeatherWarningLatest'] on table ['JP.JMA.BosaiWarning.WeatherWarning'] {
+    ['JP.JMA.BosaiWarning.WeatherWarning'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherWarning] policy update
+.alter table ['JP.JMA.BosaiWarning.WeatherWarning'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -195,7 +195,7 @@
 }]
 ```
 
-.create-merge table [TsunamiAlert] (
+.create-merge table ['JP.JMA.BosaiWarning.TsunamiAlert'] (
    [event_id]: string,
    [serial]: int,
    [info_type]: string,
@@ -214,9 +214,9 @@
    [___subject]: string
 );
 
-.alter table [TsunamiAlert] docstring "{\"description\": \"Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.\"}";
+.alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] docstring "{\"description\": \"Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.\"}";
 
-.alter table [TsunamiAlert] column-docstrings (
+.alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] column-docstrings (
    [event_id]: "{\"description\": \"Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component.\"}",
    [serial]: "{\"description\": \"JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component.\"}",
    [info_type]: "{\"description\": \"Normalized information type derived from JMA ift text: ISSUED for \\u767a\\u8868, CORRECTED for \\u8a02\\u6b63, and CANCELLED for \\u53d6\\u6d88.\"}",
@@ -235,7 +235,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TsunamiAlert] ingestion json mapping "TsunamiAlert_json_flat"
+.create-or-alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] ingestion json mapping "JP.JMA.BosaiWarning.TsunamiAlert_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -257,7 +257,7 @@
 ]
 ```
 
-.create-or-alter table [TsunamiAlert] ingestion json mapping "TsunamiAlert_json_ce_structured"
+.create-or-alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] ingestion json mapping "JP.JMA.BosaiWarning.TsunamiAlert_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -279,13 +279,13 @@
 ]
 ```
 
-.drop materialized-view TsunamiAlertLatest ifexists;
+.drop materialized-view ['JP.JMA.BosaiWarning.TsunamiAlertLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TsunamiAlertLatest on table TsunamiAlert {
-    TsunamiAlert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.BosaiWarning.TsunamiAlertLatest'] on table ['JP.JMA.BosaiWarning.TsunamiAlert'] {
+    ['JP.JMA.BosaiWarning.TsunamiAlert'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TsunamiAlert] policy update
+.alter table ['JP.JMA.BosaiWarning.TsunamiAlert'] policy update
 ```
 [{
   "IsEnabled": true,

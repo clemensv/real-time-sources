@@ -449,9 +449,9 @@ def run_feed(args: argparse.Namespace) -> None:
         kafka_config.pop("security.protocol", None)
     if "bootstrap.servers" not in kafka_config:
         raise ValueError("Kafka bootstrap servers are required via --kafka-bootstrap-servers or CONNECTION_STRING")
-    topic_warning = args.kafka_topic_warning or kafka_config.get("kafka_topic") or "jma-bosai-warning"
-    topic_tsunami = args.kafka_topic_tsunami or "jma-bosai-tsunami"
-    kafka_config.pop("kafka_topic", None)
+    entity_topic = kafka_config.pop("kafka_topic", None)
+    topic_warning = entity_topic or args.kafka_topic_warning or "jma-bosai-warning"
+    topic_tsunami = entity_topic or args.kafka_topic_tsunami or "jma-bosai-tsunami"
 
     Office, WeatherWarning, TsunamiAlert, WarningProducer, TsunamiProducer = _import_generated()
     producer = Producer(kafka_config)
