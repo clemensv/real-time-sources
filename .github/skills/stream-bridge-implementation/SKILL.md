@@ -56,6 +56,7 @@ feeder.
 ## Procedure
 
 1. Choose the runtime pattern that matches the source: poller, websocket, MQTT, or raw TCP.
+   - **If the source will emit to MQTT** (either as a sibling to a Kafka feeder or as the primary transport), invoke the `mqtt-uns-feeder` skill for the topic-tree, contract, runtime auth, and deployment-template specifics. This skill remains the home for acquisition, state, dedupe, and tests; `mqtt-uns-feeder` covers the MQTT delta.
 2. Structure the bridge using the runtime patterns in [runtime checklist](references/runtime-checklist.md).
 3. Parse source configuration and Kafka configuration from CLI args and environment variables.
 4. **Emit reference data first.** If the contract defines reference event types, fetch the metadata via REST at startup and emit it as CloudEvents before entering the telemetry loop. Track when reference data was last emitted and re-fetch periodically (interval depends on the source's metadata volatility). Reference events use the same producer topic and key model as the related telemetry.

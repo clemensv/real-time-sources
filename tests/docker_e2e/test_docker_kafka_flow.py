@@ -94,7 +94,7 @@ def nifc_usa_wildfires_image():
 
 @pytest.fixture(scope='module')
 def pegelonline_image():
-    return build_image('pegelonline')
+    return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
 def hubeau_image():

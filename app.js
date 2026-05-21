@@ -22,7 +22,7 @@ const SOURCES = [
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true },
   { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations" },
   { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true },
-  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true },
+  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true },
   { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true },
   { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", notebook: true },
   { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", notebook: true },
@@ -147,6 +147,8 @@ const $deployBar = document.getElementById("deploy-bar");
 const $deployBarFabric = document.getElementById("deploy-bar-fabric");
 const $btnContainer = document.getElementById("btn-container");
 const $btnContainerEH = document.getElementById("btn-container-eh");
+const $btnContainerMqtt = document.getElementById("btn-container-mqtt");
+const $btnContainerMqttEG = document.getElementById("btn-container-mqtt-eg");
 const $btnFabric = document.getElementById("btn-container-eh-adx");
 const $btnFabricNotebook = document.getElementById("btn-fabric-notebook");
 const $deployPane = document.getElementById("deploy-pane");
@@ -234,6 +236,22 @@ async function selectSource(s) {
     const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   };
+  if ($btnContainerMqtt) {
+    // MQTT BYO-broker deploy is opt-in per source (requires azure-template-mqtt.json).
+    $btnContainerMqtt.style.display = s.mqtt ? "" : "none";
+    $btnContainerMqtt.onclick = () => {
+      const url = `${RAW}/${s.id}/azure-template-mqtt.json`;
+      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    };
+  }
+  if ($btnContainerMqttEG) {
+    // MQTT + Event Grid namespace deploy is opt-in per source (requires azure-template-with-eventgrid-mqtt.json).
+    $btnContainerMqttEG.style.display = s.mqtt ? "" : "none";
+    $btnContainerMqttEG.onclick = () => {
+      const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    };
+  }
   $btnFabric.onclick      = () => openDeployForm(s, "fabric-aci");
   if ($btnFabricNotebook) {
     // Notebook deploy is opt-in per source (requires <source>/notebook/<source>-feed.ipynb).
@@ -491,7 +509,11 @@ renderList();
    #<id>/azure               → select source + launch Azure ARM deploy
                                (azure-template-with-eventhub.json)
    #<id>/azure-byoeh         → select source + launch Azure ARM deploy
-                               (azure-template.json, bring-your-own Event Hub) */
+                               (azure-template.json, bring-your-own Event Hub)
+   #<id>/azure-mqtt          → select source + launch Azure ARM deploy
+                               (azure-template-mqtt.json, bring-your-own MQTT broker)
+   #<id>/azure-mqtt-eg       → select source + launch Azure ARM deploy
+                               (azure-template-with-eventgrid-mqtt.json, Event Grid MQTT broker) */
 async function selectFromHash() {
   const raw = (location.hash || "").replace(/^#/, "").trim();
   if (!raw) return;
@@ -510,6 +532,12 @@ async function selectFromHash() {
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-byoeh") {
     const url = `${RAW}/${s.id}/azure-template.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  } else if (action === "azure-mqtt") {
+    const url = `${RAW}/${s.id}/azure-template-mqtt.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  } else if (action === "azure-mqtt-eg") {
+    const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   }
 }

@@ -15,7 +15,7 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - DeWsvPegelonlineEventDispatcher
+3. [Quick Start](#quick-start)    - DeWsvPegelonlineKafkaEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -38,7 +38,7 @@ methods to handle various types of events.
 
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
-- DeWsvPegelonlineProducersolution for event-driven applications.
+- DeWsvPegelonlineKafkaProducersolution for event-driven applications.
 
 
 
@@ -54,11 +54,11 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - **Provides durability** through log-based storage with configurable retention
 
-- **Scales horizontally** across multiple brokers and partitions### DeWsvPegelonlineEventDispatcher
+- **Scales horizontally** across multiple brokers and partitions### DeWsvPegelonlineKafkaEventDispatcher
 
 - **Enables pub/sub messaging** with topic-based routing
 
-`DeWsvPegelonlineEventDispatcher` handles events for the de.wsv.pegelonline message group.
+`DeWsvPegelonlineKafkaEventDispatcher` handles events for the de.wsv.pegelonline.kafka message group.
 
 Use cases: Event streaming, log aggregation, real-time analytics, data integration.
 
@@ -86,13 +86,13 @@ Initializes the dispatcher.
 
 ```python
 
-from pegelonline_producer import DeWsvPegelonlineProducer```python
+from pegelonline_producer import DeWsvPegelonlineKafkaProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
 # Create producer```
 
-producer = DeWsvPegelonlineProducer(
+producer = DeWsvPegelonlineKafkaProducer(
 
     bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
 
@@ -106,7 +106,7 @@ producer = DeWsvPegelonlineProducer(
 
 # Send single message
 
-await producer.send_de_wsv_pegelonline_station(```python
+await producer.send_de_wsv_pegelonline_kafka_station(```python
 
     data=Station(...),add_consumer(self, consumer: KafkaConsumer)
 
@@ -126,29 +126,29 @@ await producer.close()- `consumer`: The Kafka consumer.
 
 ### With SSL/SASL
 
-The DeWsvPegelonlineEventDispatcher defines the following event handler hooks.
+The DeWsvPegelonlineKafkaEventDispatcher defines the following event handler hooks.
 
 ```python
 
-producer = DeWsvPegelonlineProducer(
+producer = DeWsvPegelonlineKafkaProducer(
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `de_wsv_pegelonline_station_async`
+    security_protocol='SASL_SSL',##### `de_wsv_pegelonline_kafka_station_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'de_wsv_pegelonline_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
-Awaitable[None]]
+    sasl_password='your-password'de_wsv_pegelonline_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.Station`: PegelOnline station metadata with location and water body
-information.
+Asynchronous handler hook for `de.wsv.pegelonline.kafka.Station`: PegelOnline station metadata with location and water
+body information.
 
 ## Generated Producer Classes
 
@@ -158,21 +158,22 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DeWsvPegelonlineProducer- `data`: The event data of type `pegelonline_producer_data.Station`.
+### DeWsvPegelonlineKafkaProducer- `data`: The event data of type `pegelonline_producer_data.Station`.
 
 
 
-Producer for `de.wsv.pegelonline` message group.Example:
+Producer for `de.wsv.pegelonline.kafka` message group.Example:
 
 
 
 #### Constructor```python
 
-async def de_wsv_pegelonline_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def de_wsv_pegelonline_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
 
 ```python    # Process the event data
 
-DeWsvPegelonlineProducer(    await some_processing_function(record, cloud_event, data)
+DeWsvPegelonlineKafkaProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -185,7 +186,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_wsv_pegelonline_dispatcher.de_wsv_pegelonline_station_async = de_wsv_pegelonline_station_event
+de_wsv_pegelonline_kafka_dispatcher.de_wsv_pegelonline_kafka_station_async = de_wsv_pegelonline_kafka_station_event
 
 **Parameters:**```
 
@@ -197,20 +198,21 @@ de_wsv_pegelonline_dispatcher.de_wsv_pegelonline_station_async = de_wsv_pegelonl
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `de_wsv_pegelonline_current_measurement_async`
+    security_protocol='SASL_SSL',##### `de_wsv_pegelonline_kafka_current_measurement_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'de_wsv_pegelonline_current_measurement_async:  Callable[[ConsumerRecord, CloudEvent,
-CurrentMeasurement], Awaitable[None]]
+    sasl_password='your-password'de_wsv_pegelonline_kafka_current_measurement_async:  Callable[[ConsumerRecord,
+CloudEvent, CurrentMeasurement], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.CurrentMeasurement`: PegelOnline current water level measurement.
+Asynchronous handler hook for `de.wsv.pegelonline.kafka.CurrentMeasurement`: PegelOnline current water level
+measurement.
 
 ## Generated Producer Classes
 
@@ -220,22 +222,22 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DeWsvPegelonlineProducer- `data`: The event data of type `pegelonline_producer_data.CurrentMeasurement`.
+### DeWsvPegelonlineKafkaProducer- `data`: The event data of type `pegelonline_producer_data.CurrentMeasurement`.
 
 
 
-Producer for `de.wsv.pegelonline` message group.Example:
+Producer for `de.wsv.pegelonline.kafka` message group.Example:
 
 
 
 #### Constructor```python
 
-async def de_wsv_pegelonline_current_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+async def de_wsv_pegelonline_kafka_current_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
 CurrentMeasurement) -> None:
 
 ```python    # Process the event data
 
-DeWsvPegelonlineProducer(    await some_processing_function(record, cloud_event, data)
+DeWsvPegelonlineKafkaProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -248,8 +250,8 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-de_wsv_pegelonline_dispatcher.de_wsv_pegelonline_current_measurement_async =
-de_wsv_pegelonline_current_measurement_event
+de_wsv_pegelonline_kafka_dispatcher.de_wsv_pegelonline_kafka_current_measurement_async =
+de_wsv_pegelonline_kafka_current_measurement_event
 
 **Parameters:**```
 
@@ -267,13 +269,13 @@ de_wsv_pegelonline_current_measurement_event
 
 ### Dispatchers
 
-##### `send_de_wsv_pegelonline_station`Dispatchers have the following protected methods:
+##### `send_de_wsv_pegelonline_kafka_station`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_de_wsv_pegelonline_station(
+async def send_de_wsv_pegelonline_kafka_station(
 
     self,##### `_process_event`
 
@@ -291,7 +293,7 @@ async def send_de_wsv_pegelonline_station(
 
 
 
-Send a single `de.wsv.pegelonline.Station` message. PegelOnline station metadata with location and water body
+Send a single `de.wsv.pegelonline.kafka.Station` message. PegelOnline station metadata with location and water body
 information.Args:
 
 - `record`: The Kafka record.
@@ -314,7 +316,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_de_wsv_pegelonline_station(
+await producer.send_de_wsv_pegelonline_kafka_station(
 
     data=Station(...),Args:
 
@@ -326,7 +328,29 @@ await producer.send_de_wsv_pegelonline_station(
 
 ```
 
-Send multiple `de.wsv.pegelonline.Station` messages in a batch.
+##### `send_de_wsv_pegelonline_kafka_station_batch`##### `_dispatch_record`
+
+
+
+```python```python
+
+async def send_de_wsv_pegelonline_kafka_station_batch(_dispatch_record(self, record)
+
+    self,```
+
+    messages: List[Station],
+
+    partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
+
+    headers: Optional[Dict[str, str]] = None,
+
+    topic: Optional[str] = NoneArgs:
+
+) -> None- `record`: The Kafka record.
+
+```
+
+Send multiple `de.wsv.pegelonline.kafka.Station` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -349,7 +373,7 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_de_wsv_pegelonline_station_batch(```
+await producer.send_de_wsv_pegelonline_kafka_station_batch(```
 
     messages=[
 
@@ -371,13 +395,13 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_de_wsv_pegelonline_current_measurement`Dispatchers have the following protected methods:
+##### `send_de_wsv_pegelonline_kafka_current_measurement`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_de_wsv_pegelonline_current_measurement(
+async def send_de_wsv_pegelonline_kafka_current_measurement(
 
     self,##### `_process_event`
 
@@ -395,7 +419,7 @@ async def send_de_wsv_pegelonline_current_measurement(
 
 
 
-Send a single `de.wsv.pegelonline.CurrentMeasurement` message. PegelOnline current water level measurement.Args:
+Send a single `de.wsv.pegelonline.kafka.CurrentMeasurement` message. PegelOnline current water level measurement.Args:
 
 - `record`: The Kafka record.
 
@@ -417,7 +441,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_de_wsv_pegelonline_current_measurement(
+await producer.send_de_wsv_pegelonline_kafka_current_measurement(
 
     data=CurrentMeasurement(...),Args:
 
@@ -429,7 +453,29 @@ await producer.send_de_wsv_pegelonline_current_measurement(
 
 ```
 
-Send multiple `de.wsv.pegelonline.CurrentMeasurement` messages in a batch.
+##### `send_de_wsv_pegelonline_kafka_current_measurement_batch`##### `_dispatch_record`
+
+
+
+```python```python
+
+async def send_de_wsv_pegelonline_kafka_current_measurement_batch(_dispatch_record(self, record)
+
+    self,```
+
+    messages: List[CurrentMeasurement],
+
+    partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
+
+    headers: Optional[Dict[str, str]] = None,
+
+    topic: Optional[str] = NoneArgs:
+
+) -> None- `record`: The Kafka record.
+
+```
+
+Send multiple `de.wsv.pegelonline.kafka.CurrentMeasurement` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -452,7 +498,7 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_de_wsv_pegelonline_current_measurement_batch(```
+await producer.send_de_wsv_pegelonline_kafka_current_measurement_batch(```
 
     messages=[
 

@@ -11,6 +11,10 @@ argument-hint: "Describe the source, its runtime package, required environment v
 - Package a new source for Docker-based use.
 - Bring a source up to repo merge quality.
 - Add Azure Container Instance, Fabric, or KQL delivery assets.
+- **Packaging an MQTT sibling alongside a Kafka feeder** (separate
+  `Dockerfile.mqtt`, MQTT-specific pyproject, the two MQTT ARM
+  templates, MQTT Docker E2E, and the `mqtt: true` portal flag) — see
+  the `mqtt-uns-feeder` skill for the MQTT delta over this baseline.
 
 ## Inputs
 

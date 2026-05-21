@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/pegelonline"
+LABEL org.opencontainers.image.title="WSV PegelOnline → Apache Kafka bridge"
+LABEL org.opencontainers.image.description="Polls the German WSV PegelOnline REST API for station catalog and water level measurements and forwards CloudEvents to Apache Kafka or any Kafka-compatible service that supports TLS + SASL/PLAIN (Confluent Cloud, Microsoft Fabric Event Streams, Azure Event Hubs)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/pegelonline/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+# Bring in the local pegelonline source tree. Generated producer packages plus
+# the transport-specific app are installed sequentially to avoid path-resolution
+# races in Poetry-driven local installs.
+COPY . /app
+
+RUN pip install --no-cache-dir ./pegelonline_producer/pegelonline_producer_data \
+ && pip install --no-cache-dir ./pegelonline_producer/pegelonline_producer_kafka_producer \
+ && pip install --no-cache-dir ./pegelonline_core \
+ && pip install --no-cache-dir ./pegelonline_kafka
+
+ENV CONNECTION_STRING=""
+
+CMD ["python", "-m", "pegelonline_kafka", "feed"]

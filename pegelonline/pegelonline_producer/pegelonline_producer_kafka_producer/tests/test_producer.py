@@ -18,7 +18,7 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineEventProducer
+from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineKafkaEventProducer
 from pegelonline_producer_data import Station
 from test_pegelonline_producer_data_station import Test_Station
 from pegelonline_producer_data import CurrentMeasurement
@@ -56,8 +56,8 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
     return ce
 
 
-def test_de_wsv_pegelonline_dewsvpegelonlinestation(kafka_emulator):
-    """Test the DeWsvPegelonlineStation event from the De.Wsv.Pegelonline message group"""
+def test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkastation(kafka_emulator):
+    """Test the DeWsvPegelonlineKafkaStation event from the De.Wsv.Pegelonline.Kafka message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -65,7 +65,7 @@ def test_de_wsv_pegelonline_dewsvpegelonlinestation(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_de_wsv_pegelonline_dewsvpegelonlinestation',  # Unique group per test
+        'group.id': 'test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkastation',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -95,17 +95,17 @@ def test_de_wsv_pegelonline_dewsvpegelonlinestation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.wsv.pegelonline.Station":
+            if cloudevent['type'] == "de.wsv.pegelonline.kafka.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = DeWsvPegelonlineEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = DeWsvPegelonlineKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Station.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_wsv_pegelonline_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_wsv_pegelonline_kafka_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -119,8 +119,8 @@ def test_de_wsv_pegelonline_dewsvpegelonlinestation(kafka_emulator):
     consumer.close()
 
 
-def test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement(kafka_emulator):
-    """Test the DeWsvPegelonlineCurrentMeasurement event from the De.Wsv.Pegelonline message group"""
+def test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkacurrentmeasurement(kafka_emulator):
+    """Test the DeWsvPegelonlineKafkaCurrentMeasurement event from the De.Wsv.Pegelonline.Kafka message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -128,7 +128,7 @@ def test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement',  # Unique group per test
+        'group.id': 'test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkacurrentmeasurement',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -158,17 +158,17 @@ def test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.wsv.pegelonline.CurrentMeasurement":
+            if cloudevent['type'] == "de.wsv.pegelonline.kafka.CurrentMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = DeWsvPegelonlineEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = DeWsvPegelonlineKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_CurrentMeasurement.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_wsv_pegelonline_current_measurement(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_wsv_pegelonline_kafka_current_measurement(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -179,61 +179,4 @@ def test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement(kafka_emulator):
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{station_id}".format(station_id=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
-    consumer.close()
-
-
-def test_de_wsv_pegelonline_cross_event_type_kafka_key(kafka_emulator):
-    """Test that different event types in De.Wsv.Pegelonline produce the same Kafka key for the same placeholder values"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_de_wsv_pegelonline_cross_key',
-        'auto.offset.reset': 'latest'
-    })
-    consumer.subscribe([topic])
-
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    # Drain any pre-existing messages before producing our test messages
-    drain_timeout = time.time() + 3
-    while time.time() < drain_timeout:
-        msg = consumer.poll(0.5)
-    time.sleep(1)
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = DeWsvPegelonlineEventProducer(kafka_producer, topic, 'binary')
-
-    shared_key_value = "shared_entity_42"
-    data1 = Test_Station.create_instance()
-    data2 = Test_CurrentMeasurement.create_instance()
-
-    producer_instance.send_de_wsv_pegelonline_station(_feedurl = shared_key_value, _station_id = shared_key_value, data = data1)
-    producer_instance.send_de_wsv_pegelonline_current_measurement(_feedurl = shared_key_value, _station_id = shared_key_value, data = data2)
-    kafka_producer.flush(timeout=5.0)
-
-    # Collect keys from both messages
-    collected_keys = []
-    timeout = time.time() + 20
-    while len(collected_keys) < 2 and time.time() < timeout:
-        msg = consumer.poll(1.0)
-        if msg is None or msg.error():
-            continue
-        cloudevent = parse_cloudevent(msg)
-        if cloudevent['type'] in ["de.wsv.pegelonline.Station", "de.wsv.pegelonline.CurrentMeasurement"]:
-            key = msg.key().decode('utf-8') if msg.key() else None
-            collected_keys.append(key)
-
-    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
-    assert collected_keys[0] == collected_keys[1], \
-        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
-    expected_key = "{station_id}".format(station_id=shared_key_value)
-    assert collected_keys[0] == expected_key, \
-        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

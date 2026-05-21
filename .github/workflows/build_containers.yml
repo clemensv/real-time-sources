@@ -30,10 +30,25 @@ jobs:
       - name: Find all container projects
         id: get-dockerfiles
         run: |
-          CONTAINERS_JSON=$(find . -name 'Dockerfile' -exec dirname {} \; \
+          # Discover Dockerfile and Dockerfile.<variant> across the repo.
+          # The image suffix for a plain Dockerfile is its directory name with
+          # slashes replaced by dashes; for a Dockerfile.<variant> we append
+          # "-<variant>" so each transport variant publishes its own image.
+          CONTAINERS_JSON=$(find . \( -name 'Dockerfile' -o -name 'Dockerfile.*' \) -type f \
             | sed 's|^\./||' \
             | sort \
-            | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({path: ., image: (gsub("/"; "-"))})')
+            | jq -R -s -c '
+                split("\n")
+                | map(select(length > 0))
+                | map(
+                    capture("^(?<path>.*)/(?<file>Dockerfile(?<variant>\\..+)?)$")
+                    | . + {
+                        image: (
+                          (.path | gsub("/"; "-"))
+                          + (if .variant then (.variant | gsub("^\\."; "-")) else "" end)
+                        )
+                      }
+                  )')
           echo "containers=${CONTAINERS_JSON}" >> $GITHUB_OUTPUT
 
   build:
@@ -88,7 +103,7 @@ jobs:
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: ./${{ matrix.container.path }}
-          file: ./${{ matrix.container.path }}/Dockerfile
+          file: ./${{ matrix.container.path }}/${{ matrix.container.file }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -1,25 +1,23 @@
-# WSV Pegelonline API Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# WSV PegelOnline → Apache Kafka & MQTT/UNS
 
-This container image provides a bridge between the WSV Pegelonline API and
-Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge reads
-real-time water level data from the WSV Pegelonline API and writes it to a Kafka
-topic.
+This source ships two container images backed by the same upstream poller
+and the same xRegistry contract:
 
-## WSV Pegelonline API
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x (Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree `hydro/de/wsv/pegelonline/{water}/{station}/...`, retained QoS 1, CloudEvent attributes as MQTT 5 user properties |
 
-The WSV Pegelonline API is a service provided by the Federal Waterways and
-Shipping Administration of Germany (Wasserstraßen- und Schifffahrtsverwaltung
-des Bundes, WSV). It offers real-time water level data for German rivers and
-waterways, essential for navigation, flood prediction, and environmental
-monitoring.
+Both images consume the WSV PegelOnline REST API (German Federal Waterways
+and Shipping Administration) and re-emit two CloudEvent types:
 
-## Functionality
+* `de.wsv.pegelonline.Station` — station catalog (reference, emitted at
+  startup; retained on MQTT).
+* `de.wsv.pegelonline.CurrentMeasurement` — live water-level telemetry.
 
-The bridge fetches water level data from the WSV Pegelonline API and writes the
-data to a Kafka topic as structured JSON [CloudEvents](https://cloudevents.io/)
-in a JSON format documented in [EVENTS.md](EVENTS.md). You can configure the
-bridge to handle multiple stations by supplying their identifiers in the
-configuration.
+The on-the-wire schemas live in [EVENTS.md](EVENTS.md). The container images
+work with any Apache Kafka–compatible server or service that supports TLS
+with SASL/PLAIN, and with any MQTT 5.0 broker.
 
 ## Database Schemas and Handling
 
@@ -27,25 +25,20 @@ If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
-## Installing the Container Image
+## Installing the Container Images
 
-Pull the container image from the GitHub Container Registry:
+Pull the container images from the GitHub Container Registry:
 
 ```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline:latest
+$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
+$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-pegelonline:latest
-```
-
-## Using the Container Image
-
-The container image defines a single command that starts the bridge. It reads
-data from the WSV Pegelonline API and writes it to a Kafka topic, Azure Event
-Hubs, or Fabric Event Streams.
+The Kafka image (`…-pegelonline-kafka`) reads data from the WSV Pegelonline
+API and writes JSON CloudEvents (binary mode) to a Kafka topic. It works
+with Apache Kafka 2.x, Azure Event Hubs, and Microsoft Fabric Event Streams.
 
 ### With a Kafka Broker
 
@@ -58,67 +51,125 @@ $ docker run --rm \
     -e KAFKA_TOPIC='<kafka-topic>' \
     -e SASL_USERNAME='<sasl-username>' \
     -e SASL_PASSWORD='<sasl-password>' \
-    -e STATIONS='<station-ids>' \
-    ghcr.io/clemensv/real-time-sources-pegelonline:latest
+    ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
 ```
 
 ### With Azure Event Hubs or Fabric Event Streams
 
-Use the connection string to establish a connection to the service. Obtain the
-connection string from the Azure portal, Azure CLI, or the "custom endpoint" of
-a Fabric Event Stream.
+Use the connection string to establish a connection to the service. Obtain
+the connection string from the Azure portal, Azure CLI, or the "custom
+endpoint" of a Fabric Event Stream.
 
 ```shell
 $ docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
-    -e STATIONS='<station-ids>' \
-    ghcr.io/clemensv/real-time-sources-pegelonline:latest
+    ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
+```
+
+## Using the MQTT image
+
+The MQTT image (`…-pegelonline-mqtt`) publishes MQTT 5.0 binary-mode
+CloudEvents into a Unified-Namespace topic tree
+(`hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/{info|water-level}`)
+at QoS 1 with retained=true on each leaf. It works against any MQTT 5
+broker (Mosquitto, EMQX, HiveMQ, …) and against the
+[Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview)
+including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+
+### With a generic MQTT 5 broker (username/password)
+
+```shell
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
+    -e MQTT_USERNAME='<username>' \
+    -e MQTT_PASSWORD='<password>' \
+    ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
+```
+
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
+
+When the host is an Azure VM, Container Instance, App Service, etc. with a
+managed identity that holds the **EventGrid TopicSpaces Publisher** role on
+the target topic space, the feeder uses MQTT v5 enhanced authentication
+(`OAUTH2-JWT`) to authenticate with a token issued for audience
+`https://eventgrid.azure.net/`.
+
+```shell
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
+    -e MQTT_AUTH_MODE=entra \
+    -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+    -e MQTT_CLIENT_ID='<unique-client-id>' \
+    ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
 ```
 
 ## Environment Variables
 
-### `CONNECTION_STRING`
+### Kafka image
 
-An Azure Event Hubs-style connection string used to establish a connection to
-Azure Event Hubs or Fabric Event Streams. This replaces the need for
-`KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Azure Event Hubs / Fabric Event Stream–style connection string. Supersedes `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, `SASL_PASSWORD`. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated `host:port` list of TLS-enabled Kafka brokers. |
+| `KAFKA_TOPIC` | Target Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+| `POLLING_INTERVAL` | Seconds between polling cycles (default `60`). |
+| `STATE_FILE` | Path to the dedupe state file. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. |
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### MQTT image
 
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with
-TLS-enabled Kafka brokers.
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication. Ensure your Kafka brokers support SASL
-PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional credentials when `MQTT_AUTH_MODE=password` (default). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra JWT. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `POLLING_INTERVAL` | Seconds between polling cycles (default `60`). |
+| `STATE_FILE` | Path to the dedupe state file. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Four one-click deployment templates are available:
 
-### Option 1: Bring your own Event Hub
+### Kafka — bring your own Event Hub / Kafka
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event
+Stream connection string. The template creates a storage account and file
+share for persistent state.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy the Kafka container together with a new Event Hubs namespace (Standard
+SKU, 1 throughput unit) and event hub. The connection string is wired
+automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventhub.json)
+
+### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker. You provide
+the `mqtts://` URL and optional credentials.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid namespace MQTT broker
+
+Deploy the MQTT container together with a new
+[Azure Event Grid namespace](https://learn.microsoft.com/azure/event-grid/mqtt-overview)
+with the MQTT broker enabled, a topic space rooted at `hydro/#`, a
+user-assigned managed identity, and a role assignment granting the
+identity the **EventGrid TopicSpaces Publisher** role on the topic space.
+The feeder authenticates to the broker using MQTT v5 enhanced authentication
+(`OAUTH2-JWT`) with tokens minted by the managed identity for audience
+`https://eventgrid.azure.net/`.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventgrid-mqtt.json)

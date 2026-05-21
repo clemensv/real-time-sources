@@ -303,6 +303,33 @@ def _resolve_json_pointer(document: Dict[str, Any], pointer: str) -> Any:
     return current
 
 
+def _resolve_message_inheritance(
+    document: Dict[str, Any],
+    message: Dict[str, Any],
+    depth: int = 0,
+) -> Dict[str, Any]:
+    """Flatten a message through any ``basemessageurl`` chain.
+
+    A messagegroup may declare transport-specific child messages that inherit
+    schema and envelope metadata from a transport-agnostic parent via
+    ``basemessageurl``. Child fields win over parent fields.
+    """
+    if depth > 5:
+        raise AssertionError('basemessageurl chain too deep')
+    base_url = message.get('basemessageurl')
+    if not base_url:
+        return message
+    base_pointer = '#' + base_url if base_url.startswith('/') else base_url
+    base_message = _resolve_json_pointer(document, base_pointer)
+    base_resolved = _resolve_message_inheritance(document, base_message, depth + 1)
+    merged = dict(base_resolved)
+    for key, value in message.items():
+        if key == 'basemessageurl':
+            continue
+        merged[key] = value
+    return merged
+
+
 def _render_template(template: str, context: Mapping[str, Any]) -> str:
     missing: List[str] = []
 
@@ -361,9 +388,22 @@ def _load_project_contract(project_dir: str) -> Dict[str, Dict[str, Any]]:
                 )
 
             for event_type, message in group.get('messages', {}).items():
-                dataschema_uri = message.get('dataschemauri')
+                resolved_message = _resolve_message_inheritance(document, message)
+                dataschema_uri = resolved_message.get('dataschemauri')
                 if not dataschema_uri:
                     raise AssertionError(f'Message {event_type!r} is missing dataschemauri')
+
+                # The on-wire CloudEvents ``type`` comes from the resolved
+                # envelopemetadata.type.value (so transport-specific child
+                # messages inherit the base message's type value). Keying the
+                # contract by the resolved CE type is what lets us match
+                # against records coming back from Kafka.
+                envelope_type = (
+                    resolved_message.get('envelopemetadata', {})
+                    .get('type', {})
+                    .get('value')
+                )
+                contract_key = envelope_type or event_type
 
                 schema_record = _resolve_json_pointer(document, dataschema_uri)
                 default_version = schema_record.get('defaultversionid')
@@ -383,8 +423,8 @@ def _load_project_contract(project_dir: str) -> Dict[str, Dict[str, Any]]:
                         )
                     validators[dataschema_uri] = InstanceValidator(schema, extended=True)
 
-                subject_template = message.get('envelopemetadata', {}).get('subject', {}).get('value')
-                existing = contracts.get(event_type)
+                subject_template = resolved_message.get('envelopemetadata', {}).get('subject', {}).get('value')
+                existing = contracts.get(contract_key)
                 if existing is not None:
                     if (
                         existing['key_template'] != key_template
@@ -392,11 +432,11 @@ def _load_project_contract(project_dir: str) -> Dict[str, Dict[str, Any]]:
                         or existing['dataschema_uri'] != dataschema_uri
                     ):
                         raise AssertionError(
-                            f'Conflicting Kafka contract declarations for {event_type!r} in {xreg_path}'
+                            f'Conflicting Kafka contract declarations for {contract_key!r} in {xreg_path}'
                         )
                     continue
 
-                contracts[event_type] = {
+                contracts[contract_key] = {
                     'key_template': key_template,
                     'subject_template': subject_template,
                     'dataschema_uri': dataschema_uri,

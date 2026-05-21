@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pegelonline_kafka"
+version = "0.1.0"
+description = "Kafka feeder for the WSV PegelOnline API."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "pegelonline_kafka" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+pegelonline_core = { path = "../pegelonline_core" }
+pegelonline_producer_data = { path = "../pegelonline_producer/pegelonline_producer_data" }
+pegelonline_producer_kafka_producer = { path = "../pegelonline_producer/pegelonline_producer_kafka_producer" }
+
+[tool.poetry.scripts]
+pegelonline-kafka = "pegelonline_kafka.app:main"
