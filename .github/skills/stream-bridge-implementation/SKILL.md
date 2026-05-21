@@ -250,6 +250,52 @@ script to a database that already has data flowing.
    one-shot `.set-or-append` from dispatch into the typed table with
    the same projection the update policy uses.
 
+### Bridge runtime hazards (silent topic mis-routing)
+
+These are runtime bugs in the bridge code that produce the same "bridge
+ran, dashboard empty" symptom as the KQL hazards above, but the root
+cause is in `run_feed` (or its equivalent), not the KQL DDL. Audit
+every new and existing bridge for these patterns.
+
+1. **EntityPath must win over the `--kafka-topic*` default.** When the
+   bridge is configured via `CONNECTION_STRING` (the only supported mode
+   in Fabric notebook hosting), `parse_connection_string` extracts the
+   Event Hub entity name into `kafka_config["kafka_topic"]`. That value
+   is the **only** topic the broker exposes via the Kafka head — the
+   Eventstream's display name is not a valid Kafka topic. If the bridge
+   resolves topics with this priority chain:
+
+   ```python
+   # WRONG — args default ('jma-bosai-warning') is non-empty,
+   # so EntityPath is never consulted
+   topic = args.kafka_topic or kafka_config.get("kafka_topic") or DEFAULT
+   ```
+
+   the producer writes to a topic the broker doesn't expose.
+   confluent-kafka logs `Unknown topic` asynchronously but `produce()`
+   does **not** raise, and the bridge proceeds to "Cycle complete" with
+   zero events ever reaching `_cloudevents_dispatch`. Use this priority
+   instead, matching `amedas`, `quake`, `volcano`, `tepco`:
+
+   ```python
+   entity_topic = kafka_config.pop("kafka_topic", None)
+   topic = entity_topic or args.kafka_topic or DEFAULT
+   ```
+
+   For multi-messagegroup sources (e.g. `jma-bosai-warning` with both
+   weather and tsunami), the **same** EntityPath applies to all
+   producers — assign `topic_x = entity_topic or args.kafka_topic_x or
+   default_x` for each. Do not let any per-group argument default
+   shadow the EntityPath.
+
+2. **Producer `.produce()` errors are async by default.** confluent-kafka
+   reports unknown-topic, auth, and broker errors via delivery
+   callbacks, not exceptions on `produce()`. The bridge must either
+   register a `error_cb` on the Producer config that raises, or treat a
+   non-zero `flush()` return value as fatal and surface the broker's
+   last error. A bridge that ignores `flush()` returns will silently
+   fail on a misconfigured topic exactly as in hazard 1.
+
 ### Post-deploy verification (mandatory before declaring success)
 
 After applying a generated KQL script to a live Eventhouse, run this
