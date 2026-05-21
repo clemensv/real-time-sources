@@ -97,7 +97,11 @@ class LAQNLondonAPI:
         self.session = requests.Session()
 
     def _get_json(self, path: str) -> Dict[str, Any]:
-        response = self.session.get(f"{self.base_url}{path}", timeout=60)
+        # Per-request 15s timeout: the LAQN API usually responds in <1s, and
+        # the bridge's per-site measurement loop iterates ~120 sites. A long
+        # timeout on a single hung request can blow past the Docker E2E
+        # 300s budget; fail-fast lets the per-site error handler skip it.
+        response = self.session.get(f"{self.base_url}{path}", timeout=15)
         response.raise_for_status()
         return response.json()
 
@@ -315,6 +319,7 @@ class LAQNLondonAPI:
                 logging.warning("Skipping measurements for site %s after upstream error: %s", site_code, exc)
                 continue
 
+            site_emitted = 0
             for raw_measurement in raw_measurements:
                 measurement = self.normalize_measurement(site_code, raw_measurement)
                 if measurement is None:
@@ -331,9 +336,13 @@ class LAQNLondonAPI:
                 )
                 measurement_state[dedupe_key] = True
                 emitted += 1
+                site_emitted += 1
 
-        if emitted:
-            self._flush_producer(producer)
+            # Flush after each site so consumers (and Docker E2E flow tests)
+            # see Measurement events promptly instead of waiting for the
+            # entire ~120-site loop to finish.
+            if site_emitted:
+                self._flush_producer(producer)
         return emitted
 
     def emit_daily_index(
@@ -392,6 +401,12 @@ class LAQNLondonAPI:
                 today = datetime.now(timezone.utc).date()
                 yesterday = today - timedelta(days=1)
 
+                # Emit the cheap single-request Daily AQI bulletin first so
+                # downstream consumers (and CI flow tests) observe all event
+                # categories quickly, before the per-site measurement loop
+                # which can take several minutes when iterating ~120 sites.
+                daily_index_count = self.emit_daily_index(site_event_producer, state["daily_index"])
+
                 measurement_count = self.emit_measurements(
                     active_site_codes,
                     site_event_producer,
@@ -399,7 +414,6 @@ class LAQNLondonAPI:
                     yesterday,
                     today,
                 )
-                daily_index_count = self.emit_daily_index(site_event_producer, state["daily_index"])
 
                 kafka_producer.flush()
                 _save_state(state_file, state)
