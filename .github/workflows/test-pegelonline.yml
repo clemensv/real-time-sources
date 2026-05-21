@@ -34,16 +34,16 @@ jobs:
 
       - name: Install generated producer packages
         run: |
-          pip install ./pegelonline_producer/pegelonline_producer_data
-          pip install ./pegelonline_producer/pegelonline_producer_kafka_producer
-          pip install ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_data
-          pip install ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_mqtt_client
+          pip install -e ./pegelonline_producer/pegelonline_producer_data
+          pip install -e ./pegelonline_producer/pegelonline_producer_kafka_producer
+          pip install -e ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_data
+          pip install -e ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_mqtt_client
 
       - name: Install transport-agnostic core and transport apps
         run: |
-          pip install ./pegelonline_core
-          pip install ./pegelonline_kafka
-          pip install ./pegelonline_mqtt
+          pip install -e ./pegelonline_core
+          pip install -e ./pegelonline_kafka
+          pip install -e ./pegelonline_mqtt
 
       - name: Run unit tests
         run: pytest tests/test_pegelonline_unit.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
