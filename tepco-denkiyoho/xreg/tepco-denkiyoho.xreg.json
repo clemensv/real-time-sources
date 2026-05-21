@@ -1,0 +1,940 @@
+{
+  "endpoints": {
+    "JP.TEPCO.Denkiyoho.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "tepco-denkiyoho",
+          "key": "jp.tepco.denkiyoho/{date}/{time}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.TEPCO.Denkiyoho"
+      ]
+    }
+  },
+  "messagegroups": {
+    "JP.TEPCO.Denkiyoho": {
+      "messages": {
+        "jp.tepco.denkiyoho.SupplyCapacity": {
+          "name": "SupplyCapacity",
+          "envelope": "CloudEvents/1.0",
+          "description": "Daily TEPCO Electricity Forecast supply capability reference record for the Tokyo service area.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.TEPCO.Denkiyoho.SupplyCapacity"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.SupplyCapacity"
+        },
+        "jp.tepco.denkiyoho.PeakDemandForecast": {
+          "name": "PeakDemandForecast",
+          "envelope": "CloudEvents/1.0",
+          "description": "Daily TEPCO Electricity Forecast maximum-demand forecast record for the Tokyo service area.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.TEPCO.Denkiyoho.PeakDemandForecast"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.PeakDemandForecast"
+        },
+        "jp.tepco.denkiyoho.DemandActual": {
+          "name": "DemandActual",
+          "envelope": "CloudEvents/1.0",
+          "description": "Actual electricity demand record from TEPCO Electricity Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows with section 5 solar context.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.TEPCO.Denkiyoho.DemandActual"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.DemandActual"
+        },
+        "jp.tepco.denkiyoho.DemandForecast": {
+          "name": "DemandForecast",
+          "envelope": "CloudEvents/1.0",
+          "description": "Hourly electricity demand forecast record from TEPCO Electricity Forecast for the Tokyo service area.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.TEPCO.Denkiyoho.DemandForecast"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.DemandForecast"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "jp.tepco.denkiyoho.jstruct": {
+      "schemas": {
+        "jp.tepco.denkiyoho.SupplyCapacity": {
+          "name": "SupplyCapacity",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.tepco.co.jp/schemas/denkiyoho/SupplyCapacity",
+                "name": "SupplyCapacity",
+                "$root": "#/definitions/jp/tepco/denkiyoho/SupplyCapacity",
+                "definitions": {
+                  "jp": {
+                    "tepco": {
+                      "denkiyoho": {
+                        "SupplyCapacity": {
+                          "name": "SupplyCapacity",
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "description": "Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day.",
+                              "format": "date"
+                            },
+                            "time": {
+                              "type": "string",
+                              "description": "Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events.",
+                              "pattern": "^([0-9]{2}:[0-9]{2}|_supply_capacity_|_peak_forecast_)$"
+                            },
+                            "peak_supply_capacity_mw": {
+                              "type": "double",
+                              "description": "Peak-time available supply capability for the Tokyo service area shown by TEPCO as ピーク時供給力(万kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "peak_supply_capacity_jp_unit_value": {
+                              "type": "int32",
+                              "description": "Original integer value from TEPCO's ピーク時供給力(万kW) header field. TEPCO publishes demand and supply values in 万kW, where one unit is 10,000 kilowatts, equal to 10 megawatts.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "peak_time_slot": {
+                              "type": "string",
+                              "description": "Local Japan Standard Time hour range from TEPCO's section 1 時間帯 column indicating the peak supply-capability time slot, normalized to an ASCII hyphen such as 13:00-14:00."
+                            },
+                            "peak_reserve_margin_pct": {
+                              "type": "double",
+                              "description": "Peak-time reserve margin percentage from TEPCO's section 1 ピーク時予備率(%) column for the published peak supply-capability slot.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "peak_usage_pct": {
+                              "type": "double",
+                              "description": "Peak-time usage percentage from TEPCO's section 1 ピーク時使用率(%) column for the published peak supply-capability slot.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "daily_max_usage_pct": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Daily maximum usage percentage from TEPCO's section 4 最大使用率(%) summary row. The field is null when that section is absent or blank in the CSV.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "daily_max_usage_time_slot": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Local Japan Standard Time hour range from TEPCO's section 4 時間帯 column for the daily maximum usage percentage, normalized to an ASCII hyphen such as 4:00-5:00. The field is null when that section is absent or blank."
+                            },
+                            "update_datetime": {
+                              "type": "string",
+                              "description": "Section 1 supply-capability information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 供給力情報更新日 and 供給力情報更新時刻.",
+                              "format": "date-time"
+                            },
+                            "update_datetime_local": {
+                              "type": "string",
+                              "description": "Section 1 supply-capability information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 供給力情報更新日 and 供給力情報更新時刻 columns.",
+                              "format": "date-time"
+                            },
+                            "area_code": {
+                              "type": "string",
+                              "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                            },
+                            "area_name_jp": {
+                              "type": "string",
+                              "description": "Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River."
+                            },
+                            "area_name_en": {
+                              "type": "string",
+                              "description": "English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto)."
+                            }
+                          },
+                          "required": [
+                            "date",
+                            "time",
+                            "peak_supply_capacity_mw",
+                            "peak_supply_capacity_jp_unit_value",
+                            "peak_time_slot",
+                            "peak_reserve_margin_pct",
+                            "peak_usage_pct",
+                            "daily_max_usage_pct",
+                            "daily_max_usage_time_slot",
+                            "update_datetime",
+                            "update_datetime_local",
+                            "area_code",
+                            "area_name_jp",
+                            "area_name_en"
+                          ],
+                          "description": "Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.PeakDemandForecast": {
+          "name": "PeakDemandForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.tepco.co.jp/schemas/denkiyoho/PeakDemandForecast",
+                "name": "PeakDemandForecast",
+                "$root": "#/definitions/jp/tepco/denkiyoho/PeakDemandForecast",
+                "definitions": {
+                  "jp": {
+                    "tepco": {
+                      "denkiyoho": {
+                        "PeakDemandForecast": {
+                          "name": "PeakDemandForecast",
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "description": "Operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD). This is the stable date key component.",
+                              "format": "date"
+                            },
+                            "time": {
+                              "type": "string",
+                              "description": "Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement.",
+                              "pattern": "^([0-9]{2}:[0-9]{2}|_supply_capacity_|_peak_forecast_)$"
+                            },
+                            "peak_demand_forecast_mw": {
+                              "type": "double",
+                              "description": "Forecast maximum electricity demand for the Tokyo service area from TEPCO's section 2 予想最大電力(万kW) row, converted from 万kW to megawatts by multiplying by 10.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "peak_demand_forecast_jp_unit_value": {
+                              "type": "int32",
+                              "description": "Original integer peak-demand forecast value from TEPCO's section 2 予想最大電力(万kW) field.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "peak_time_slot": {
+                              "type": "string",
+                              "description": "Local Japan Standard Time hour range from TEPCO's section 2 時間帯 column indicating when the forecast maximum demand is expected, normalized to an ASCII hyphen such as 13:00-14:00."
+                            },
+                            "update_datetime": {
+                              "type": "string",
+                              "description": "Section 2 peak-demand forecast information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 予想最大電力情報更新日 and 予想最大電力情報更新時刻.",
+                              "format": "date-time"
+                            },
+                            "update_datetime_local": {
+                              "type": "string",
+                              "description": "Section 2 peak-demand forecast information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 予想最大電力情報更新日 and 予想最大電力情報更新時刻 columns.",
+                              "format": "date-time"
+                            },
+                            "area_code": {
+                              "type": "string",
+                              "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                            },
+                            "area_name_jp": {
+                              "type": "string",
+                              "description": "Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River."
+                            },
+                            "area_name_en": {
+                              "type": "string",
+                              "description": "English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto)."
+                            }
+                          },
+                          "required": [
+                            "date",
+                            "time",
+                            "peak_demand_forecast_mw",
+                            "peak_demand_forecast_jp_unit_value",
+                            "peak_time_slot",
+                            "update_datetime",
+                            "update_datetime_local",
+                            "area_code",
+                            "area_name_jp",
+                            "area_name_en"
+                          ],
+                          "description": "Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.DemandActual": {
+          "name": "DemandActual",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.tepco.co.jp/schemas/denkiyoho/DemandActual",
+                "name": "DemandActual",
+                "$root": "#/definitions/jp/tepco/denkiyoho/DemandActual",
+                "definitions": {
+                  "jp": {
+                    "tepco": {
+                      "denkiyoho": {
+                        "DemandActual": {
+                          "name": "DemandActual",
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "description": "Operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.",
+                              "format": "date"
+                            },
+                            "time": {
+                              "type": "string",
+                              "description": "Local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. This is the second stable key component.",
+                              "pattern": "^([0-9]{2}:[0-9]{2}|_supply_capacity_|_peak_forecast_)$"
+                            },
+                            "datetime": {
+                              "type": "string",
+                              "description": "Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.",
+                              "format": "date-time"
+                            },
+                            "datetime_local": {
+                              "type": "string",
+                              "description": "Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row.",
+                              "format": "date-time"
+                            },
+                            "actual_demand_mw": {
+                              "type": "double",
+                              "description": "Actual electricity demand for the Tokyo service area, converted to megawatts from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column by multiplying by 10.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "actual_demand_jp_unit_value": {
+                              "type": "int32",
+                              "description": "Original integer value from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column. Rows with 0 or blank actual-demand values are future or unavailable measurements and are skipped by the bridge.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "solar_generation_mw": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Solar generation actual value converted to megawatts from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "solar_generation_jp_unit_value": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "Original integer solar generation actual value from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "solar_share_pct": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Solar generation percentage of electricity usage from TEPCO's section 5 太陽光発電量(電力使用量に対する割合)(%) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar-share cell.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "usage_pct": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandActual rows derived from section 3; it is null for five-minute rows derived from section 5. TEPCO may leave future-hour usage blank until actual demand is available.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "minimum": 0
+                            },
+                            "supply_capacity_mw": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "supply_capacity_jp_unit_value": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "area_code": {
+                              "type": "string",
+                              "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                            }
+                          },
+                          "required": [
+                            "date",
+                            "time",
+                            "datetime",
+                            "datetime_local",
+                            "actual_demand_mw",
+                            "actual_demand_jp_unit_value",
+                            "solar_generation_mw",
+                            "solar_generation_jp_unit_value",
+                            "solar_share_pct",
+                            "usage_pct",
+                            "supply_capacity_mw",
+                            "supply_capacity_jp_unit_value",
+                            "area_code"
+                          ],
+                          "description": "Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.DemandForecast": {
+          "name": "DemandForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.tepco.co.jp/schemas/denkiyoho/DemandForecast",
+                "name": "DemandForecast",
+                "$root": "#/definitions/jp/tepco/denkiyoho/DemandForecast",
+                "definitions": {
+                  "jp": {
+                    "tepco": {
+                      "denkiyoho": {
+                        "DemandForecast": {
+                          "name": "DemandForecast",
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "description": "Operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.",
+                              "format": "date"
+                            },
+                            "time": {
+                              "type": "string",
+                              "description": "Local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. This is the second stable key component.",
+                              "pattern": "^([0-9]{2}:[0-9]{2}|_supply_capacity_|_peak_forecast_)$"
+                            },
+                            "datetime": {
+                              "type": "string",
+                              "description": "Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.",
+                              "format": "date-time"
+                            },
+                            "datetime_local": {
+                              "type": "string",
+                              "description": "Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row.",
+                              "format": "date-time"
+                            },
+                            "forecast_demand_mw": {
+                              "type": "double",
+                              "description": "Hourly forecast electricity demand for the Tokyo service area, converted to megawatts from TEPCO's section 3 予測値(万kW) column by multiplying by 10.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "forecast_demand_jp_unit_value": {
+                              "type": "int32",
+                              "description": "Original integer value from TEPCO's section 3 予測値(万kW) hourly forecast column. The bridge uses this value in forecast de-duplication so revised forecasts for the same date and hour are emitted again.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "usage_pct": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3 and can be null when TEPCO leaves future-hour usage blank until actual demand is available.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "minimum": 0
+                            },
+                            "supply_capacity_mw": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3.",
+                              "unit": "MW",
+                              "symbol": "MW",
+                              "minimum": 0
+                            },
+                            "supply_capacity_jp_unit_value": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3.",
+                              "unit": "10MW",
+                              "symbol": "万kW",
+                              "minimum": 0
+                            },
+                            "area_code": {
+                              "type": "string",
+                              "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page."
+                            }
+                          },
+                          "required": [
+                            "date",
+                            "time",
+                            "datetime",
+                            "datetime_local",
+                            "forecast_demand_mw",
+                            "forecast_demand_jp_unit_value",
+                            "usage_pct",
+                            "supply_capacity_mw",
+                            "supply_capacity_jp_unit_value",
+                            "area_code"
+                          ],
+                          "description": "Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "jp.tepco.denkiyoho.avro": {
+      "schemas": {
+        "jp.tepco.denkiyoho.SupplyCapacity": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SupplyCapacity",
+                "namespace": "jp.tepco.denkiyoho",
+                "doc": "Daily reference schema for TEPCO Electricity Forecast supply capability and maximum usage summary.",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Service date in ISO 8601 calendar-date form."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Stable key time component; supply capacity uses _supply_capacity_."
+                  },
+                  {
+                    "name": "peak_supply_capacity_mw",
+                    "type": "double",
+                    "doc": "Peak-time available supply capability converted from 万kW to MW."
+                  },
+                  {
+                    "name": "peak_supply_capacity_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original peak supply capability value in 万kW."
+                  },
+                  {
+                    "name": "peak_time_slot",
+                    "type": "string",
+                    "doc": "Peak supply-capability time slot."
+                  },
+                  {
+                    "name": "peak_reserve_margin_pct",
+                    "type": "double",
+                    "doc": "Peak-time reserve margin percentage."
+                  },
+                  {
+                    "name": "peak_usage_pct",
+                    "type": "double",
+                    "doc": "Peak-time usage percentage."
+                  },
+                  {
+                    "name": "daily_max_usage_pct",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Daily maximum usage percentage.",
+                    "default": null
+                  },
+                  {
+                    "name": "daily_max_usage_time_slot",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Time slot for the daily maximum usage percentage.",
+                    "default": null
+                  },
+                  {
+                    "name": "update_datetime",
+                    "type": "string",
+                    "doc": "Supply-capability update timestamp converted to UTC RFC 3339."
+                  },
+                  {
+                    "name": "update_datetime_local",
+                    "type": "string",
+                    "doc": "Supply-capability update timestamp in JST RFC 3339."
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant TEPCO area code."
+                  },
+                  {
+                    "name": "area_name_jp",
+                    "type": "string",
+                    "doc": "Japanese TEPCO service area name."
+                  },
+                  {
+                    "name": "area_name_en",
+                    "type": "string",
+                    "doc": "English TEPCO service area name."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.PeakDemandForecast": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PeakDemandForecast",
+                "namespace": "jp.tepco.denkiyoho",
+                "doc": "Daily peak demand forecast record from TEPCO Electricity Forecast.",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Operating date in ISO 8601 calendar-date form."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Stable key time component; peak demand forecast uses _peak_forecast_."
+                  },
+                  {
+                    "name": "peak_demand_forecast_mw",
+                    "type": "double",
+                    "doc": "Forecast maximum demand converted from 万kW to MW."
+                  },
+                  {
+                    "name": "peak_demand_forecast_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original forecast maximum demand value in 万kW."
+                  },
+                  {
+                    "name": "peak_time_slot",
+                    "type": "string",
+                    "doc": "Forecast maximum-demand time slot."
+                  },
+                  {
+                    "name": "update_datetime",
+                    "type": "string",
+                    "doc": "Peak-demand forecast update timestamp converted to UTC RFC 3339."
+                  },
+                  {
+                    "name": "update_datetime_local",
+                    "type": "string",
+                    "doc": "Peak-demand forecast update timestamp in JST RFC 3339."
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant TEPCO area code."
+                  },
+                  {
+                    "name": "area_name_jp",
+                    "type": "string",
+                    "doc": "Japanese TEPCO service area name."
+                  },
+                  {
+                    "name": "area_name_en",
+                    "type": "string",
+                    "doc": "English TEPCO service area name."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.DemandActual": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DemandActual",
+                "namespace": "jp.tepco.denkiyoho",
+                "doc": "Actual electricity demand record from TEPCO Electricity Forecast.",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Operating date in ISO 8601 calendar-date form."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "JST HH:MM clock time and stable key component."
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "Measurement timestamp converted to UTC RFC 3339."
+                  },
+                  {
+                    "name": "datetime_local",
+                    "type": "string",
+                    "doc": "Measurement timestamp in JST RFC 3339."
+                  },
+                  {
+                    "name": "actual_demand_mw",
+                    "type": "double",
+                    "doc": "Actual electricity demand converted from 万kW to MW."
+                  },
+                  {
+                    "name": "actual_demand_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original actual demand value in 万kW."
+                  },
+                  {
+                    "name": "solar_generation_mw",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Solar generation converted from 万kW to MW for five-minute rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "solar_generation_jp_unit_value",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Original solar generation value in 万kW for five-minute rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "solar_share_pct",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Solar generation percentage of electricity usage for five-minute rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "usage_pct",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Usage percentage for hourly rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "supply_capacity_mw",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Supply capacity converted from 万kW to MW for hourly rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "supply_capacity_jp_unit_value",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Original supply capacity value in 万kW for hourly rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant TEPCO area code."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "jp.tepco.denkiyoho.DemandForecast": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DemandForecast",
+                "namespace": "jp.tepco.denkiyoho",
+                "doc": "Hourly forecast electricity demand record from TEPCO Electricity Forecast.",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Operating date in ISO 8601 calendar-date form."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "JST HH:MM clock time and stable key component."
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "Forecast timestamp converted to UTC RFC 3339."
+                  },
+                  {
+                    "name": "datetime_local",
+                    "type": "string",
+                    "doc": "Forecast timestamp in JST RFC 3339."
+                  },
+                  {
+                    "name": "forecast_demand_mw",
+                    "type": "double",
+                    "doc": "Forecast demand converted from 万kW to MW."
+                  },
+                  {
+                    "name": "forecast_demand_jp_unit_value",
+                    "type": "int",
+                    "doc": "Original forecast demand value in 万kW."
+                  },
+                  {
+                    "name": "usage_pct",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Usage percentage for hourly rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "supply_capacity_mw",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Supply capacity converted from 万kW to MW for hourly rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "supply_capacity_jp_unit_value",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Original supply capacity value in 万kW for hourly rows.",
+                    "default": null
+                  },
+                  {
+                    "name": "area_code",
+                    "type": "string",
+                    "doc": "Constant TEPCO area code."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

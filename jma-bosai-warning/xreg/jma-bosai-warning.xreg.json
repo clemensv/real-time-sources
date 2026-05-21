@@ -1,0 +1,672 @@
+{
+  "endpoints": {
+    "JP.JMA.Warning.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "jma-bosai-warning",
+          "key": "jp.jma.warning/{office_code}/{area_code}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Warning"
+      ]
+    },
+    "JP.JMA.Tsunami.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "jma-bosai-tsunami",
+          "key": "jp.jma.tsunami/{event_id}/{serial}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Tsunami"
+      ]
+    }
+  },
+  "messagegroups": {
+    "JP.JMA.Warning": {
+      "messages": {
+        "JP.JMA.Warning.Office": {
+          "name": "Office",
+          "envelope": "CloudEvents/1.0",
+          "description": "JMA Bosai warning office reference data from area.json offices.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.JMA.Warning.Office"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.jma.warning/{office_code}/{area_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.Office"
+        },
+        "JP.JMA.Warning.WeatherWarning": {
+          "name": "WeatherWarning",
+          "envelope": "CloudEvents/1.0",
+          "description": "JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.JMA.Warning.WeatherWarning"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.jma.warning/{office_code}/{area_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.WeatherWarning"
+        }
+      }
+    },
+    "JP.JMA.Tsunami": {
+      "messages": {
+        "JP.JMA.Tsunami.TsunamiAlert": {
+          "name": "TsunamiAlert",
+          "envelope": "CloudEvents/1.0",
+          "description": "JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.",
+          "envelopemetadata": {
+            "type": {
+              "value": "JP.JMA.Tsunami.TsunamiAlert"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "jp.jma.tsunami/{event_id}/{serial}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/JP.JMA.Tsunami.jstruct/schemas/JP.JMA.Tsunami.TsunamiAlert"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "JP.JMA.Warning.jstruct": {
+      "schemas": {
+        "JP.JMA.Warning.Office": {
+          "name": "Office",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.jma.go.jp/schemas/bosai/warning/Office",
+                "name": "Office",
+                "type": "object",
+                "description": "JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.",
+                "properties": {
+                  "office_code": {
+                    "type": "string",
+                    "description": "Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events.",
+                    "pattern": "^[0-9]{6}$",
+                    "altnames": {
+                      "jma-bosai": "offices key"
+                    }
+                  },
+                  "area_code": {
+                    "type": "string",
+                    "description": "Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry.",
+                    "pattern": "^[0-9]{6,7}$"
+                  },
+                  "name_jp": {
+                    "type": "string",
+                    "description": "Japanese office or warning-region name from area.json offices[].name, such as 東京都 or 宗谷地方."
+                  },
+                  "name_en": {
+                    "type": "string",
+                    "description": "English office or warning-region name from area.json offices[].enName, such as Tokyo or Soya."
+                  },
+                  "parent_office_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent.",
+                    "pattern": "^[0-9]{6}$"
+                  },
+                  "office_type": {
+                    "type": "string",
+                    "description": "Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries.",
+                    "enum": [
+                      "PREFECTURE",
+                      "SUBREGION",
+                      "OFFICE"
+                    ]
+                  }
+                },
+                "required": [
+                  "office_code",
+                  "area_code",
+                  "name_jp",
+                  "name_en",
+                  "parent_office_code",
+                  "office_type"
+                ]
+              }
+            }
+          }
+        },
+        "JP.JMA.Warning.WeatherWarning": {
+          "name": "WeatherWarning",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.jma.go.jp/schemas/bosai/warning/WeatherWarning",
+                "name": "WeatherWarning",
+                "type": "object",
+                "description": "JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.",
+                "properties": {
+                  "office_code": {
+                    "type": "string",
+                    "description": "Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component.",
+                    "pattern": "^[0-9]{6}$",
+                    "altnames": {
+                      "jma-bosai": "targetArea"
+                    }
+                  },
+                  "area_code": {
+                    "type": "string",
+                    "description": "JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry.",
+                    "pattern": "^[0-9]{6,7}$",
+                    "altnames": {
+                      "jma-bosai": "timeSeries[].areas[].code"
+                    }
+                  },
+                  "area_name": {
+                    "type": "string",
+                    "description": "Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code."
+                  },
+                  "report_datetime": {
+                    "type": "string",
+                    "description": "JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "reportDatetime"
+                    }
+                  },
+                  "report_datetime_local": {
+                    "type": "string",
+                    "description": "Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00).",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "reportDatetime"
+                    }
+                  },
+                  "headline_text": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline.",
+                    "altnames": {
+                      "jma-bosai": "headlineText"
+                    }
+                  },
+                  "warnings": {
+                    "type": "array",
+                    "description": "All JMA warning/advisory items published for the inner area in this bulletin. WarningItem is intentionally defined inline to avoid duplicate schema definitions during Avro and producer generation.",
+                    "items": {
+                      "name": "WarningItem",
+                      "type": "object",
+                      "description": "Single JMA warning/advisory item for an inner forecast area. JMA warning area entries may either carry a hazard code plus status, or carry only the status 発表警報・注意報はなし when no warnings or advisories are in effect.",
+                      "properties": {
+                        "code": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "JMA weather warning category code from warnings[].code when a hazard is present. Null is emitted for JMA no-warning items such as {status: 発表警報・注意報はなし} that intentionally omit a code.",
+                          "altenums": {
+                            "jma_label": {
+                              "03": "大雨",
+                              "04": "洪水",
+                              "05": "暴風",
+                              "06": "暴風雪",
+                              "07": "大雪",
+                              "08": "波浪",
+                              "10": "雷",
+                              "12": "強風",
+                              "13": "風雪",
+                              "14": "濃霧",
+                              "15": "乾燥",
+                              "16": "なだれ",
+                              "17": "着氷",
+                              "18": "着雪",
+                              "19": "融雪",
+                              "20": "高潮",
+                              "21": "低温",
+                              "22": "霜",
+                              "23": "着氷・着雪",
+                              "24": "大雨・洪水",
+                              "25": "大雨・強風",
+                              "32": "大雨特別警報",
+                              "33": "大雪特別警報",
+                              "35": "暴風特別警報",
+                              "36": "暴風雪特別警報",
+                              "37": "波浪特別警報",
+                              "38": "高潮特別警報",
+                              "W": "注意報・警報"
+                            },
+                            "english_label": {
+                              "03": "Heavy rain",
+                              "04": "Flood",
+                              "05": "Storm",
+                              "06": "Snow storm",
+                              "07": "Heavy snow",
+                              "08": "High waves",
+                              "10": "Thunderstorm",
+                              "12": "Strong wind",
+                              "13": "Snow and wind",
+                              "14": "Dense fog",
+                              "15": "Dry air",
+                              "16": "Avalanche",
+                              "17": "Ice accretion",
+                              "18": "Snow accretion",
+                              "19": "Snow melt",
+                              "20": "Storm surge",
+                              "21": "Low temperature",
+                              "22": "Frost",
+                              "23": "Ice and snow accretion",
+                              "24": "Heavy rain and flood",
+                              "25": "Heavy rain and strong wind",
+                              "32": "Emergency heavy rain warning",
+                              "33": "Emergency heavy snow warning",
+                              "35": "Emergency storm warning",
+                              "36": "Emergency snow storm warning",
+                              "37": "Emergency high wave warning",
+                              "38": "Emergency storm surge warning",
+                              "W": "Advisory or warning aggregate"
+                            }
+                          },
+                          "altnames": {
+                            "jma-bosai": "warnings[].code"
+                          },
+                          "pattern": "^(03|04|05|06|07|08|10|12|13|14|15|16|17|18|19|20|21|22|23|24|25|32|33|35|36|37|38|W)$"
+                        },
+                        "code_description_jp": {
+                          "type": "string",
+                          "description": "Japanese hazard name corresponding to the JMA warning code, or 発表警報・注意報はなし for the upstream no-warning status item."
+                        },
+                        "code_description_en": {
+                          "type": "string",
+                          "description": "English hazard name corresponding to the JMA warning code, or No warnings or advisories for the upstream no-warning status item."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Normalized status or alert class for the JMA warning item. Values preserve the documented JMA status set using Python/Avro-safe symbols; lang:ja altenums carries the original JMA labels including 発表警報・注意報はなし.",
+                          "enum": [
+                            "ISSUED",
+                            "CONTINUED",
+                            "CANCELLED",
+                            "NO_WARNINGS_OR_ADVISORIES",
+                            "WARNING",
+                            "ADVISORY",
+                            "EMERGENCY_WARNING"
+                          ],
+                          "altenums": {
+                            "lang:ja": {
+                              "ISSUED": "発表",
+                              "CONTINUED": "継続",
+                              "CANCELLED": "解除",
+                              "NO_WARNINGS_OR_ADVISORIES": "発表警報・注意報はなし",
+                              "WARNING": "警報",
+                              "ADVISORY": "注意報",
+                              "EMERGENCY_WARNING": "特別警報"
+                            },
+                            "lang:en": {
+                              "ISSUED": "Issued",
+                              "CONTINUED": "Continued",
+                              "CANCELLED": "Cancelled",
+                              "NO_WARNINGS_OR_ADVISORIES": "No warnings or advisories",
+                              "WARNING": "Warning",
+                              "ADVISORY": "Advisory",
+                              "EMERGENCY_WARNING": "Emergency Warning"
+                            }
+                          }
+                        },
+                        "severity": {
+                          "type": "string",
+                          "description": "Normalized severity derived from the JMA status text and special-warning codes. NONE represents 発表警報・注意報はなし, ADVISORY represents 注意報-level notices, WARNING represents 警報/発表/継続 items, and EMERGENCY_WARNING represents 特別警報 or special-warning category codes 32-38.",
+                          "enum": [
+                            "NONE",
+                            "ADVISORY",
+                            "WARNING",
+                            "EMERGENCY_WARNING"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "code_description_jp",
+                        "code_description_en",
+                        "status",
+                        "severity"
+                      ]
+                    },
+                    "altnames": {
+                      "jma-bosai": "warnings"
+                    }
+                  },
+                  "time_defines": {
+                    "type": "array",
+                    "description": "Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.",
+                    "items": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "altnames": {
+                      "jma-bosai": "timeSeries[].timeDefines"
+                    }
+                  }
+                },
+                "required": [
+                  "office_code",
+                  "area_code",
+                  "area_name",
+                  "report_datetime",
+                  "report_datetime_local",
+                  "headline_text",
+                  "warnings",
+                  "time_defines"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Tsunami.jstruct": {
+      "schemas": {
+        "JP.JMA.Tsunami.TsunamiAlert": {
+          "name": "TsunamiAlert",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://www.jma.go.jp/schemas/bosai/warning/TsunamiAlert",
+                "name": "TsunamiAlert",
+                "type": "object",
+                "description": "Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.",
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "description": "Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component.",
+                    "pattern": "^[0-9]{14}$",
+                    "altnames": {
+                      "jma-bosai": "eid"
+                    }
+                  },
+                  "serial": {
+                    "type": "integer",
+                    "description": "JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component.",
+                    "minimum": 0,
+                    "altnames": {
+                      "jma-bosai": "ser"
+                    }
+                  },
+                  "info_type": {
+                    "type": "string",
+                    "description": "Normalized information type derived from JMA ift text: ISSUED for 発表, CORRECTED for 訂正, and CANCELLED for 取消.",
+                    "enum": [
+                      "ISSUED",
+                      "CORRECTED",
+                      "CANCELLED"
+                    ],
+                    "altenums": {
+                      "jma_label": {
+                        "ISSUED": "発表",
+                        "CORRECTED": "訂正",
+                        "CANCELLED": "取消"
+                      }
+                    },
+                    "altnames": {
+                      "jma-bosai": "ift"
+                    }
+                  },
+                  "report_datetime": {
+                    "type": "string",
+                    "description": "JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "rdt"
+                    }
+                  },
+                  "report_datetime_local": {
+                    "type": "string",
+                    "description": "Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.",
+                    "format": "date-time",
+                    "altnames": {
+                      "jma-bosai": "rdt"
+                    }
+                  },
+                  "title_jp": {
+                    "type": "string",
+                    "description": "Japanese JMA tsunami bulletin title copied from list.json ttl."
+                  },
+                  "title_en": {
+                    "type": "string",
+                    "description": "English tsunami title generated from the known JMA title class when no English list title is present."
+                  },
+                  "bulletin_type": {
+                    "type": "string",
+                    "description": "JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52.",
+                    "altnames": {
+                      "jma-bosai": "json"
+                    }
+                  },
+                  "detail_url": {
+                    "type": "string",
+                    "description": "Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.",
+                    "format": "uri",
+                    "altnames": {
+                      "jma-bosai": "json"
+                    }
+                  },
+                  "affected_coastal_regions": {
+                    "type": "array",
+                    "description": "Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation.",
+                    "items": {
+                      "name": "AffectedCoastalRegion",
+                      "type": "object",
+                      "description": "Coastal forecast region item parsed from a JMA tsunami detail bulletin when active tsunami information is available. It preserves region identity, per-region tsunami category, expected first-arrival time, and expected maximum wave height when those fields appear in VTSE detail JSON.",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "JMA tsunami coastal forecast region code from detail bulletin area entries.",
+                          "pattern": "^[0-9]{3,7}$"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Japanese coastal forecast region name from the tsunami detail bulletin."
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Per-region tsunami forecast category from VTSE41 detail bulletins, normalized from JMA 大津波警報, 津波警報, 津波注意報, or 津波予報 text.",
+                          "enum": [
+                            "MAJOR_WARNING",
+                            "WARNING",
+                            "ADVISORY",
+                            "FORECAST"
+                          ],
+                          "altenums": {
+                            "lang:ja": {
+                              "MAJOR_WARNING": "大津波警報",
+                              "WARNING": "津波警報",
+                              "ADVISORY": "津波注意報",
+                              "FORECAST": "津波予報"
+                            }
+                          }
+                        },
+                        "expected_max_wave_height_m": {
+                          "type": [
+                            "double",
+                            "null"
+                          ],
+                          "description": "Expected maximum tsunami wave height in meters parsed from JMA detail values. Null is emitted when the bulletin describes the height textually or omits it.",
+                          "unit": "meter",
+                          "symbol": "m",
+                          "minimum": 0
+                        },
+                        "expected_arrival_datetime": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Expected first tsunami arrival time converted to RFC3339 UTC when available in the detail bulletin.",
+                          "format": "date-time"
+                        },
+                        "expected_arrival_datetime_local": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Original expected first tsunami arrival time from the JMA detail bulletin preserving its local offset when available.",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "name",
+                        "category",
+                        "expected_max_wave_height_m",
+                        "expected_arrival_datetime",
+                        "expected_arrival_datetime_local"
+                      ]
+                    }
+                  },
+                  "observations": {
+                    "type": "array",
+                    "description": "Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present.",
+                    "items": {
+                      "name": "TsunamiObservation",
+                      "type": "object",
+                      "description": "Observed tsunami station measurement parsed from JMA VTSE51/VTSE52 observed-wave bulletins and embedded in the alert revision that carries the same event id and serial. Keeping observations inside TsunamiAlert preserves one generated top-level dataclass and one {event_id}/{serial} Kafka identity for all tsunami bulletin revisions.",
+                      "properties": {
+                        "station_code": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "JMA observation station code from the observed tsunami bulletin when the station entry exposes a code; null is emitted for text-only station entries."
+                        },
+                        "station_name_jp": {
+                          "type": "string",
+                          "description": "Japanese tsunami observation station name from the observed-wave bulletin."
+                        },
+                        "station_name_en": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "English observation station name when supplied by JMA or mapped by the bridge; null when the upstream bulletin only contains Japanese station text."
+                        },
+                        "observed_max_wave_height_m": {
+                          "type": [
+                            "double",
+                            "null"
+                          ],
+                          "description": "Observed maximum tsunami wave height at the station in meters. Null is emitted for qualitative or not-yet-available observed-wave entries.",
+                          "unit": "meter",
+                          "symbol": "m",
+                          "minimum": 0
+                        },
+                        "observed_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Observed wave time converted to RFC3339 UTC when the station entry includes an observation time.",
+                          "format": "date-time"
+                        },
+                        "observed_at_local": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Original observed wave time preserving the local offset when available in the station entry.",
+                          "format": "date-time"
+                        },
+                        "arrival_status": {
+                          "type": "string",
+                          "description": "Normalized observation lifecycle for station wave entries: ESTIMATED for expected or pending arrivals, FIRST_WAVE_OBSERVED when the first wave has arrived, and MAX_WAVE_OBSERVED when a maximum wave height is reported.",
+                          "enum": [
+                            "ESTIMATED",
+                            "FIRST_WAVE_OBSERVED",
+                            "MAX_WAVE_OBSERVED"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "station_code",
+                        "station_name_jp",
+                        "station_name_en",
+                        "observed_max_wave_height_m",
+                        "observed_at",
+                        "observed_at_local",
+                        "arrival_status"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "event_id",
+                  "serial",
+                  "info_type",
+                  "report_datetime",
+                  "report_datetime_local",
+                  "title_jp",
+                  "title_en",
+                  "bulletin_type",
+                  "detail_url",
+                  "affected_coastal_regions",
+                  "observations"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
