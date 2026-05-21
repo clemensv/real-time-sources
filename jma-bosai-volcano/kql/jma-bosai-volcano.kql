@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Volcano] (
+.create-merge table ['JP.JMA.Volcano.Volcano'] (
    [volcano_code]: string,
    [name_jp]: string,
    [name_en]: string,
@@ -40,9 +40,9 @@
    [___subject]: string
 );
 
-.alter table [Volcano] docstring "{\"description\": \"Reference record for one volcano in the JMA Bosai volcano catalog. JMA publishes the catalog to provide volcano names, coordinates, and whether the five-level eruption alert system operates for that volcano.\"}";
+.alter table ['JP.JMA.Volcano.Volcano'] docstring "{\"description\": \"Reference record for one volcano in the JMA Bosai volcano catalog. JMA publishes the catalog to provide volcano names, coordinates, and whether the five-level eruption alert system operates for that volcano.\"}";
 
-.alter table [Volcano] column-docstrings (
+.alter table ['JP.JMA.Volcano.Volcano'] column-docstrings (
    [volcano_code]: "{\"description\": \"Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.\"}",
    [name_jp]: "{\"description\": \"Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code.\"}",
    [name_en]: "{\"description\": \"English volcano name from the JMA Bosai volcano catalog, used as a display label for international consumers.\"}",
@@ -57,7 +57,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Volcano] ingestion json mapping "Volcano_json_flat"
+.create-or-alter table ['JP.JMA.Volcano.Volcano'] ingestion json mapping "JP.JMA.Volcano.Volcano_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -75,7 +75,7 @@
 ]
 ```
 
-.create-or-alter table [Volcano] ingestion json mapping "Volcano_json_ce_structured"
+.create-or-alter table ['JP.JMA.Volcano.Volcano'] ingestion json mapping "JP.JMA.Volcano.Volcano_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -93,13 +93,13 @@
 ]
 ```
 
-.drop materialized-view VolcanoLatest ifexists;
+.drop materialized-view ['JP.JMA.Volcano.VolcanoLatest'] ifexists;
 
-.create materialized-view with (backfill=true) VolcanoLatest on table Volcano {
-    Volcano | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.Volcano.VolcanoLatest'] on table ['JP.JMA.Volcano.Volcano'] {
+    ['JP.JMA.Volcano.Volcano'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Volcano] policy update
+.alter table ['JP.JMA.Volcano.Volcano'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -110,7 +110,7 @@
 }]
 ```
 
-.create-merge table [VolcanicWarning] (
+.create-merge table ['JP.JMA.Volcano.VolcanicWarning'] (
    [volcano_code]: string,
    [event_id]: string,
    [report_datetime]: datetime,
@@ -128,9 +128,9 @@
    [___subject]: string
 );
 
-.alter table [VolcanicWarning] docstring "{\"description\": \"Active JMA Bosai volcanic warning or forecast for the target volcano. JMA eruption alert levels express the volcanic activity state, area needing caution, and expected disaster-prevention actions.\"}";
+.alter table ['JP.JMA.Volcano.VolcanicWarning'] docstring "{\"description\": \"Active JMA Bosai volcanic warning or forecast for the target volcano. JMA eruption alert levels express the volcanic activity state, area needing caution, and expected disaster-prevention actions.\"}";
 
-.alter table [VolcanicWarning] column-docstrings (
+.alter table ['JP.JMA.Volcano.VolcanicWarning'] column-docstrings (
    [volcano_code]: "{\"description\": \"Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.\"}",
    [event_id]: "{\"description\": \"JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano.\"}",
    [report_datetime]: "{\"description\": \"Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics.\"}",
@@ -148,7 +148,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [VolcanicWarning] ingestion json mapping "VolcanicWarning_json_flat"
+.create-or-alter table ['JP.JMA.Volcano.VolcanicWarning'] ingestion json mapping "JP.JMA.Volcano.VolcanicWarning_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -169,7 +169,7 @@
 ]
 ```
 
-.create-or-alter table [VolcanicWarning] ingestion json mapping "VolcanicWarning_json_ce_structured"
+.create-or-alter table ['JP.JMA.Volcano.VolcanicWarning'] ingestion json mapping "JP.JMA.Volcano.VolcanicWarning_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -190,13 +190,13 @@
 ]
 ```
 
-.drop materialized-view VolcanicWarningLatest ifexists;
+.drop materialized-view ['JP.JMA.Volcano.VolcanicWarningLatest'] ifexists;
 
-.create materialized-view with (backfill=true) VolcanicWarningLatest on table VolcanicWarning {
-    VolcanicWarning | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.Volcano.VolcanicWarningLatest'] on table ['JP.JMA.Volcano.VolcanicWarning'] {
+    ['JP.JMA.Volcano.VolcanicWarning'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [VolcanicWarning] policy update
+.alter table ['JP.JMA.Volcano.VolcanicWarning'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -207,7 +207,7 @@
 }]
 ```
 
-.create-merge table [VolcanicEruption] (
+.create-merge table ['JP.JMA.Volcano.VolcanicEruption'] (
    [volcano_code]: string,
    [event_id]: string,
    [report_datetime]: datetime,
@@ -233,9 +233,9 @@
    [___subject]: string
 );
 
-.alter table [VolcanicEruption] docstring "{\"description\": \"Discrete JMA Bosai volcanic eruption observation report for a target volcano. The live eruption.json endpoint was empty when reviewed, so structured eruption observation fields are based on JMA documentation for \\u5674\\u706b\\u306b\\u95a2\\u3059\\u308b\\u706b\\u5c71\\u89b3\\u6e2c\\u5831, which states that reports include eruption occurrence time, plume height, plume direction, and volcanic phenomena observed with the eruption; field names also align with observed JMA HTML bulletin examples.\"}";
+.alter table ['JP.JMA.Volcano.VolcanicEruption'] docstring "{\"description\": \"Discrete JMA Bosai volcanic eruption observation report for a target volcano. The live eruption.json endpoint was empty when reviewed, so structured eruption observation fields are based on JMA documentation for \\u5674\\u706b\\u306b\\u95a2\\u3059\\u308b\\u706b\\u5c71\\u89b3\\u6e2c\\u5831, which states that reports include eruption occurrence time, plume height, plume direction, and volcanic phenomena observed with the eruption; field names also align with observed JMA HTML bulletin examples.\"}";
 
-.alter table [VolcanicEruption] column-docstrings (
+.alter table ['JP.JMA.Volcano.VolcanicEruption'] column-docstrings (
    [volcano_code]: "{\"description\": \"Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key.\"}",
    [event_id]: "{\"description\": \"JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations.\"}",
    [report_datetime]: "{\"description\": \"Eruption report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp.\"}",
@@ -261,7 +261,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [VolcanicEruption] ingestion json mapping "VolcanicEruption_json_flat"
+.create-or-alter table ['JP.JMA.Volcano.VolcanicEruption'] ingestion json mapping "JP.JMA.Volcano.VolcanicEruption_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -290,7 +290,7 @@
 ]
 ```
 
-.create-or-alter table [VolcanicEruption] ingestion json mapping "VolcanicEruption_json_ce_structured"
+.create-or-alter table ['JP.JMA.Volcano.VolcanicEruption'] ingestion json mapping "JP.JMA.Volcano.VolcanicEruption_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -319,13 +319,13 @@
 ]
 ```
 
-.drop materialized-view VolcanicEruptionLatest ifexists;
+.drop materialized-view ['JP.JMA.Volcano.VolcanicEruptionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) VolcanicEruptionLatest on table VolcanicEruption {
-    VolcanicEruption | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.Volcano.VolcanicEruptionLatest'] on table ['JP.JMA.Volcano.VolcanicEruption'] {
+    ['JP.JMA.Volcano.VolcanicEruption'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [VolcanicEruption] policy update
+.alter table ['JP.JMA.Volcano.VolcanicEruption'] policy update
 ```
 [{
   "IsEnabled": true,

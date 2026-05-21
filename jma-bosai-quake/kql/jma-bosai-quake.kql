@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [EarthquakeReport] (
+.create-merge table ['JP.JMA.Quake.EarthquakeReport'] (
    [event_id]: string,
    [report_id]: string,
    [serial]: int,
@@ -58,9 +58,9 @@
    [___subject]: string
 );
 
-.alter table [EarthquakeReport] docstring "{\"description\": \"A JMA Bosai earthquake report record built from the recent earthquake list endpoint and, when available, the matching full detail JSON bulletin. The record is keyed by the stable JMA event id plus report serial so updates, corrections, and cancellations for the same earthquake remain distinct stream records.\"}";
+.alter table ['JP.JMA.Quake.EarthquakeReport'] docstring "{\"description\": \"A JMA Bosai earthquake report record built from the recent earthquake list endpoint and, when available, the matching full detail JSON bulletin. The record is keyed by the stable JMA event id plus report serial so updates, corrections, and cancellations for the same earthquake remain distinct stream records.\"}";
 
-.alter table [EarthquakeReport] column-docstrings (
+.alter table ['JP.JMA.Quake.EarthquakeReport'] column-docstrings (
    [event_id]: "{\"description\": \"Stable JMA earthquake event identifier copied from list.json eid and detail Head.EventID. JMA uses the earthquake origin time in YYYYMMDDHHMMSS form as the event id, so multiple serial reports for the same earthquake share this value.\"}",
    [report_id]: "{\"description\": \"Composite report identifier formed as event_id, an underscore, and the JMA serial number. It distinguishes initial, corrected, and subsequent bulletins for the same earthquake event.\"}",
    [serial]: "{\"description\": \"JMA report serial number parsed from list.json ser and detail Head.Serial. The serial identifies the revision sequence for bulletins sharing the same event id.\"}",
@@ -93,7 +93,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [EarthquakeReport] ingestion json mapping "EarthquakeReport_json_flat"
+.create-or-alter table ['JP.JMA.Quake.EarthquakeReport'] ingestion json mapping "JP.JMA.Quake.EarthquakeReport_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -129,7 +129,7 @@
 ]
 ```
 
-.create-or-alter table [EarthquakeReport] ingestion json mapping "EarthquakeReport_json_ce_structured"
+.create-or-alter table ['JP.JMA.Quake.EarthquakeReport'] ingestion json mapping "JP.JMA.Quake.EarthquakeReport_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -165,13 +165,13 @@
 ]
 ```
 
-.drop materialized-view EarthquakeReportLatest ifexists;
+.drop materialized-view ['JP.JMA.Quake.EarthquakeReportLatest'] ifexists;
 
-.create materialized-view with (backfill=true) EarthquakeReportLatest on table EarthquakeReport {
-    EarthquakeReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.JMA.Quake.EarthquakeReportLatest'] on table ['JP.JMA.Quake.EarthquakeReport'] {
+    ['JP.JMA.Quake.EarthquakeReport'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [EarthquakeReport] policy update
+.alter table ['JP.JMA.Quake.EarthquakeReport'] policy update
 ```
 [{
   "IsEnabled": true,

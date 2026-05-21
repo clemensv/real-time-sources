@@ -122,17 +122,38 @@ New-Item -ItemType Directory -Force -Path kql | Out-Null
 ..\tools\generate-kql-from-xreg.ps1 `
     -XregPath xreg\<source>.xreg.json `
     -OutputPath kql\<source>.kql `
-    -Qualified
+    -Qualified `
+    -Namespace <PascalCase.Namespace>
 ```
 
-The `-Qualified` switch produces fully-qualified table, mapping, and
-materialized-view names of the form `['<lowered.namespace>.<TypeName>']`
-so the same Eventhouse can host multiple sources without collision.
-Always use it.
+**Always pass both `-Qualified` and `-Namespace`.** They are not optional.
+
+- `-Qualified` forwards `--qualified-table-names` to avrotize `s2k`/`a2k`,
+  producing fully-qualified table, mapping, and materialized-view names of
+  the form `['<namespace>.<TypeName>']` so the same Eventhouse can host
+  multiple sources without collision.
+- `-Namespace <PascalCase.Namespace>` forwards `--namespace` to avrotize
+  so the emitted KQL tables AND the update-policy `where type == '...'`
+  filter use the **exact same token the bridge emits as the CloudEvents
+  `type` attribute**. Without this, avrotize derives the namespace from
+  the JsonStructure schema's `$root`/`namespace`, which is often lowercase
+  (`jp.tepco.denkiyoho.SupplyCapacity`) while bridges emit PascalCase
+  (`JP.TEPCO.Denkiyoho.SupplyCapacity`) — the case mismatch silently
+  breaks every update policy and **no typed table ever receives a row**.
+
+Choose the `-Namespace` value to **match the `envelopemetadata.type.value`
+prefix** in the xreg manifest. For sources with a single messagegroup,
+this is the messagegroup name (e.g., `JP.JMA.Amedas`, `DE.DWD.Pollenflug`,
+`JP.TEPCO.Denkiyoho`). For sources with multiple messagegroups in
+different namespaces (e.g., `jma-bosai-warning` has both `JP.JMA.Warning`
+and `JP.JMA.Tsunami`), omit `-Namespace` and rely on the generator's
+per-schema rewrite — verify the resulting `type ==` literals match the
+bridge's emitted types before deploying.
 
 Also commit a thin `kql/create-kql-script.ps1` wrapper modeled on
 `dwd/kql/create-kql-script.ps1` so regeneration after xreg changes is
-a one-liner.
+a one-liner. The wrapper must pass `-Qualified` and (where applicable)
+`-Namespace`.
 
 ### What the generated script contains
 

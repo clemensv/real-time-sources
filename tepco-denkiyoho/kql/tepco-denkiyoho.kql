@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['jp.tepco.denkiyoho.SupplyCapacity'] (
+.create-merge table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] (
    [date]: string,
    [time]: string,
    [peak_supply_capacity_mw]: real,
@@ -47,9 +47,9 @@
    [___subject]: string
 );
 
-.alter table ['jp.tepco.denkiyoho.SupplyCapacity'] docstring "{\"description\": \"Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area.\"}";
+.alter table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] docstring "{\"description\": \"Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area.\"}";
 
-.alter table ['jp.tepco.denkiyoho.SupplyCapacity'] column-docstrings (
+.alter table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] column-docstrings (
    [date]: "{\"description\": \"Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day.\"}",
    [time]: "{\"description\": \"Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events.\"}",
    [peak_supply_capacity_mw]: "{\"description\": \"Peak-time available supply capability for the Tokyo service area shown by TEPCO as \\u30d4\\u30fc\\u30af\\u6642\\u4f9b\\u7d66\\u529b(\\u4e07kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10.\"}",
@@ -71,7 +71,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['jp.tepco.denkiyoho.SupplyCapacity'] ingestion json mapping "jp.tepco.denkiyoho.SupplyCapacity_json_flat"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] ingestion json mapping "JP.TEPCO.Denkiyoho.SupplyCapacity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -96,7 +96,7 @@
 ]
 ```
 
-.create-or-alter table ['jp.tepco.denkiyoho.SupplyCapacity'] ingestion json mapping "jp.tepco.denkiyoho.SupplyCapacity_json_ce_structured"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] ingestion json mapping "JP.TEPCO.Denkiyoho.SupplyCapacity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -121,24 +121,24 @@
 ]
 ```
 
-.drop materialized-view ['jp.tepco.denkiyoho.SupplyCapacityLatest'] ifexists;
+.drop materialized-view ['JP.TEPCO.Denkiyoho.SupplyCapacityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ['jp.tepco.denkiyoho.SupplyCapacityLatest'] on table ['jp.tepco.denkiyoho.SupplyCapacity'] {
-    ['jp.tepco.denkiyoho.SupplyCapacity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.TEPCO.Denkiyoho.SupplyCapacityLatest'] on table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] {
+    ['JP.TEPCO.Denkiyoho.SupplyCapacity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['jp.tepco.denkiyoho.SupplyCapacity'] policy update
+.alter table ['JP.TEPCO.Denkiyoho.SupplyCapacity'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'jp.tepco.denkiyoho.SupplyCapacity') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['peak_supply_capacity_mw'] = toreal(data.['peak_supply_capacity_mw']),['peak_supply_capacity_jp_unit_value'] = toint(data.['peak_supply_capacity_jp_unit_value']),['peak_time_slot'] = tostring(data.['peak_time_slot']),['peak_reserve_margin_pct'] = toreal(data.['peak_reserve_margin_pct']),['peak_usage_pct'] = toreal(data.['peak_usage_pct']),['daily_max_usage_pct'] = toreal(data.['daily_max_usage_pct']),['daily_max_usage_time_slot'] = tostring(data.['daily_max_usage_time_slot']),['update_datetime'] = tostring(data.['update_datetime']),['update_datetime_local'] = tostring(data.['update_datetime_local']),['area_code'] = tostring(data.['area_code']),['area_name_jp'] = tostring(data.['area_name_jp']),['area_name_en'] = tostring(data.['area_name_en']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.TEPCO.Denkiyoho.SupplyCapacity') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['peak_supply_capacity_mw'] = toreal(data.['peak_supply_capacity_mw']),['peak_supply_capacity_jp_unit_value'] = toint(data.['peak_supply_capacity_jp_unit_value']),['peak_time_slot'] = tostring(data.['peak_time_slot']),['peak_reserve_margin_pct'] = toreal(data.['peak_reserve_margin_pct']),['peak_usage_pct'] = toreal(data.['peak_usage_pct']),['daily_max_usage_pct'] = toreal(data.['daily_max_usage_pct']),['daily_max_usage_time_slot'] = tostring(data.['daily_max_usage_time_slot']),['update_datetime'] = tostring(data.['update_datetime']),['update_datetime_local'] = tostring(data.['update_datetime_local']),['area_code'] = tostring(data.['area_code']),['area_name_jp'] = tostring(data.['area_name_jp']),['area_name_en'] = tostring(data.['area_name_en']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table ['jp.tepco.denkiyoho.PeakDemandForecast'] (
+.create-merge table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] (
    [date]: string,
    [time]: string,
    [peak_demand_forecast_mw]: real,
@@ -156,9 +156,9 @@
    [___subject]: string
 );
 
-.alter table ['jp.tepco.denkiyoho.PeakDemandForecast'] docstring "{\"description\": \"Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area.\"}";
+.alter table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] docstring "{\"description\": \"Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area.\"}";
 
-.alter table ['jp.tepco.denkiyoho.PeakDemandForecast'] column-docstrings (
+.alter table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] column-docstrings (
    [date]: "{\"description\": \"Operating date for TEPCO's section 2 peak-demand forecast, normalized from \\u4e88\\u60f3\\u6700\\u5927\\u96fb\\u529b\\u60c5\\u5831\\u66f4\\u65b0\\u65e5 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD). This is the stable date key component.\"}",
    [time]: "{\"description\": \"Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement.\"}",
    [peak_demand_forecast_mw]: "{\"description\": \"Forecast maximum electricity demand for the Tokyo service area from TEPCO's section 2 \\u4e88\\u60f3\\u6700\\u5927\\u96fb\\u529b(\\u4e07kW) row, converted from \\u4e07kW to megawatts by multiplying by 10.\"}",
@@ -176,7 +176,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['jp.tepco.denkiyoho.PeakDemandForecast'] ingestion json mapping "jp.tepco.denkiyoho.PeakDemandForecast_json_flat"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] ingestion json mapping "JP.TEPCO.Denkiyoho.PeakDemandForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -197,7 +197,7 @@
 ]
 ```
 
-.create-or-alter table ['jp.tepco.denkiyoho.PeakDemandForecast'] ingestion json mapping "jp.tepco.denkiyoho.PeakDemandForecast_json_ce_structured"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] ingestion json mapping "JP.TEPCO.Denkiyoho.PeakDemandForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -218,24 +218,24 @@
 ]
 ```
 
-.drop materialized-view ['jp.tepco.denkiyoho.PeakDemandForecastLatest'] ifexists;
+.drop materialized-view ['JP.TEPCO.Denkiyoho.PeakDemandForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ['jp.tepco.denkiyoho.PeakDemandForecastLatest'] on table ['jp.tepco.denkiyoho.PeakDemandForecast'] {
-    ['jp.tepco.denkiyoho.PeakDemandForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.TEPCO.Denkiyoho.PeakDemandForecastLatest'] on table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] {
+    ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['jp.tepco.denkiyoho.PeakDemandForecast'] policy update
+.alter table ['JP.TEPCO.Denkiyoho.PeakDemandForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'jp.tepco.denkiyoho.PeakDemandForecast') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['peak_demand_forecast_mw'] = toreal(data.['peak_demand_forecast_mw']),['peak_demand_forecast_jp_unit_value'] = toint(data.['peak_demand_forecast_jp_unit_value']),['peak_time_slot'] = tostring(data.['peak_time_slot']),['update_datetime'] = tostring(data.['update_datetime']),['update_datetime_local'] = tostring(data.['update_datetime_local']),['area_code'] = tostring(data.['area_code']),['area_name_jp'] = tostring(data.['area_name_jp']),['area_name_en'] = tostring(data.['area_name_en']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.TEPCO.Denkiyoho.PeakDemandForecast') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['peak_demand_forecast_mw'] = toreal(data.['peak_demand_forecast_mw']),['peak_demand_forecast_jp_unit_value'] = toint(data.['peak_demand_forecast_jp_unit_value']),['peak_time_slot'] = tostring(data.['peak_time_slot']),['update_datetime'] = tostring(data.['update_datetime']),['update_datetime_local'] = tostring(data.['update_datetime_local']),['area_code'] = tostring(data.['area_code']),['area_name_jp'] = tostring(data.['area_name_jp']),['area_name_en'] = tostring(data.['area_name_en']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table ['jp.tepco.denkiyoho.DemandActual'] (
+.create-merge table ['JP.TEPCO.Denkiyoho.DemandActual'] (
    [date]: string,
    [time]: string,
    [datetime]: string,
@@ -256,9 +256,9 @@
    [___subject]: string
 );
 
-.alter table ['jp.tepco.denkiyoho.DemandActual'] docstring "{\"description\": \"Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context.\"}";
+.alter table ['JP.TEPCO.Denkiyoho.DemandActual'] docstring "{\"description\": \"Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context.\"}";
 
-.alter table ['jp.tepco.denkiyoho.DemandActual'] column-docstrings (
+.alter table ['JP.TEPCO.Denkiyoho.DemandActual'] column-docstrings (
    [date]: "{\"description\": \"Operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.\"}",
    [time]: "{\"description\": \"Local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. This is the second stable key component.\"}",
    [datetime]: "{\"description\": \"Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.\"}",
@@ -279,7 +279,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['jp.tepco.denkiyoho.DemandActual'] ingestion json mapping "jp.tepco.denkiyoho.DemandActual_json_flat"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.DemandActual'] ingestion json mapping "JP.TEPCO.Denkiyoho.DemandActual_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -303,7 +303,7 @@
 ]
 ```
 
-.create-or-alter table ['jp.tepco.denkiyoho.DemandActual'] ingestion json mapping "jp.tepco.denkiyoho.DemandActual_json_ce_structured"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.DemandActual'] ingestion json mapping "JP.TEPCO.Denkiyoho.DemandActual_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -327,24 +327,24 @@
 ]
 ```
 
-.drop materialized-view ['jp.tepco.denkiyoho.DemandActualLatest'] ifexists;
+.drop materialized-view ['JP.TEPCO.Denkiyoho.DemandActualLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ['jp.tepco.denkiyoho.DemandActualLatest'] on table ['jp.tepco.denkiyoho.DemandActual'] {
-    ['jp.tepco.denkiyoho.DemandActual'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.TEPCO.Denkiyoho.DemandActualLatest'] on table ['JP.TEPCO.Denkiyoho.DemandActual'] {
+    ['JP.TEPCO.Denkiyoho.DemandActual'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['jp.tepco.denkiyoho.DemandActual'] policy update
+.alter table ['JP.TEPCO.Denkiyoho.DemandActual'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'jp.tepco.denkiyoho.DemandActual') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['datetime'] = tostring(data.['datetime']),['datetime_local'] = tostring(data.['datetime_local']),['actual_demand_mw'] = toreal(data.['actual_demand_mw']),['actual_demand_jp_unit_value'] = toint(data.['actual_demand_jp_unit_value']),['solar_generation_mw'] = toreal(data.['solar_generation_mw']),['solar_generation_jp_unit_value'] = toint(data.['solar_generation_jp_unit_value']),['solar_share_pct'] = toreal(data.['solar_share_pct']),['usage_pct'] = toreal(data.['usage_pct']),['supply_capacity_mw'] = toreal(data.['supply_capacity_mw']),['supply_capacity_jp_unit_value'] = toint(data.['supply_capacity_jp_unit_value']),['area_code'] = tostring(data.['area_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.TEPCO.Denkiyoho.DemandActual') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['datetime'] = tostring(data.['datetime']),['datetime_local'] = tostring(data.['datetime_local']),['actual_demand_mw'] = toreal(data.['actual_demand_mw']),['actual_demand_jp_unit_value'] = toint(data.['actual_demand_jp_unit_value']),['solar_generation_mw'] = toreal(data.['solar_generation_mw']),['solar_generation_jp_unit_value'] = toint(data.['solar_generation_jp_unit_value']),['solar_share_pct'] = toreal(data.['solar_share_pct']),['usage_pct'] = toreal(data.['usage_pct']),['supply_capacity_mw'] = toreal(data.['supply_capacity_mw']),['supply_capacity_jp_unit_value'] = toint(data.['supply_capacity_jp_unit_value']),['area_code'] = tostring(data.['area_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table ['jp.tepco.denkiyoho.DemandForecast'] (
+.create-merge table ['JP.TEPCO.Denkiyoho.DemandForecast'] (
    [date]: string,
    [time]: string,
    [datetime]: string,
@@ -362,9 +362,9 @@
    [___subject]: string
 );
 
-.alter table ['jp.tepco.denkiyoho.DemandForecast'] docstring "{\"description\": \"Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3.\"}";
+.alter table ['JP.TEPCO.Denkiyoho.DemandForecast'] docstring "{\"description\": \"Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3.\"}";
 
-.alter table ['jp.tepco.denkiyoho.DemandForecast'] column-docstrings (
+.alter table ['JP.TEPCO.Denkiyoho.DemandForecast'] column-docstrings (
    [date]: "{\"description\": \"Operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.\"}",
    [time]: "{\"description\": \"Local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. This is the second stable key component.\"}",
    [datetime]: "{\"description\": \"Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.\"}",
@@ -382,7 +382,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['jp.tepco.denkiyoho.DemandForecast'] ingestion json mapping "jp.tepco.denkiyoho.DemandForecast_json_flat"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.DemandForecast'] ingestion json mapping "JP.TEPCO.Denkiyoho.DemandForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -403,7 +403,7 @@
 ]
 ```
 
-.create-or-alter table ['jp.tepco.denkiyoho.DemandForecast'] ingestion json mapping "jp.tepco.denkiyoho.DemandForecast_json_ce_structured"
+.create-or-alter table ['JP.TEPCO.Denkiyoho.DemandForecast'] ingestion json mapping "JP.TEPCO.Denkiyoho.DemandForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -424,18 +424,18 @@
 ]
 ```
 
-.drop materialized-view ['jp.tepco.denkiyoho.DemandForecastLatest'] ifexists;
+.drop materialized-view ['JP.TEPCO.Denkiyoho.DemandForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ['jp.tepco.denkiyoho.DemandForecastLatest'] on table ['jp.tepco.denkiyoho.DemandForecast'] {
-    ['jp.tepco.denkiyoho.DemandForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['JP.TEPCO.Denkiyoho.DemandForecastLatest'] on table ['JP.TEPCO.Denkiyoho.DemandForecast'] {
+    ['JP.TEPCO.Denkiyoho.DemandForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['jp.tepco.denkiyoho.DemandForecast'] policy update
+.alter table ['JP.TEPCO.Denkiyoho.DemandForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'jp.tepco.denkiyoho.DemandForecast') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['datetime'] = tostring(data.['datetime']),['datetime_local'] = tostring(data.['datetime_local']),['forecast_demand_mw'] = toreal(data.['forecast_demand_mw']),['forecast_demand_jp_unit_value'] = toint(data.['forecast_demand_jp_unit_value']),['usage_pct'] = toreal(data.['usage_pct']),['supply_capacity_mw'] = toreal(data.['supply_capacity_mw']),['supply_capacity_jp_unit_value'] = toint(data.['supply_capacity_jp_unit_value']),['area_code'] = tostring(data.['area_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.TEPCO.Denkiyoho.DemandForecast') | project['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['datetime'] = tostring(data.['datetime']),['datetime_local'] = tostring(data.['datetime_local']),['forecast_demand_mw'] = toreal(data.['forecast_demand_mw']),['forecast_demand_jp_unit_value'] = toint(data.['forecast_demand_jp_unit_value']),['usage_pct'] = toreal(data.['usage_pct']),['supply_capacity_mw'] = toreal(data.['supply_capacity_mw']),['supply_capacity_jp_unit_value'] = toint(data.['supply_capacity_jp_unit_value']),['area_code'] = tostring(data.['area_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
