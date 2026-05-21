@@ -38,3 +38,5 @@ python -m jma_bosai_amedas feed --connection-string "BootstrapServer=localhost:9
 ```
 
 Configuration is available through CLI flags and environment variables. `CONNECTION_STRING` is required for container use unless explicit Kafka settings are supplied. `KAFKA_TOPIC` defaults to `jma-bosai-amedas`, `POLLING_INTERVAL` defaults to `600`, `STATION_METADATA_REFRESH_HOURS` defaults to `168`, and `STATE_FILE` defaults to `./state/jma-bosai-amedas.json`. `POINT_STATION_CODES` is empty by default; set it to comma-separated station codes or `all` to fetch per-station detail files, with `POINT_REQUEST_DELAY` defaulting to `0.25` seconds between detail requests.
+
+- Fabric notebook hosting is available through [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for scheduled single-cycle polling in Microsoft Fabric.

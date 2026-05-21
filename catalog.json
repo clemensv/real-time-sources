@@ -849,7 +849,8 @@
     "name": "JMA Bosai AMeDAS",
     "cat": "Weather",
     "key": false,
-    "desc": "Japan — ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API"
+    "desc": "Japan — ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API",
+    "notebook": true
   },
   {
     "id": "jma-bosai-quake",
