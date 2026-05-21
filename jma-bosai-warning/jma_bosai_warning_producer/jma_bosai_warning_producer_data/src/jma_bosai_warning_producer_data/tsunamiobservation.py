@@ -10,8 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
 from jma_bosai_warning_producer_data.arrivalstatusenum import ArrivalStatusenum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -25,8 +27,8 @@ class TsunamiObservation:
         station_name_jp (str)
         station_name_en (typing.Optional[str])
         observed_max_wave_height_m (typing.Optional[float])
-        observed_at (typing.Optional[str])
-        observed_at_local (typing.Optional[str])
+        observed_at (typing.Optional[datetime.datetime])
+        observed_at_local (typing.Optional[datetime.datetime])
         arrival_status (ArrivalStatusenum)
     """
     
@@ -35,8 +37,8 @@ class TsunamiObservation:
     station_name_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name_jp"))
     station_name_en: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name_en"))
     observed_max_wave_height_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed_max_wave_height_m"))
-    observed_at: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed_at"))
-    observed_at_local: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed_at_local"))
+    observed_at: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed_at", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    observed_at_local: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed_at_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     arrival_status: ArrivalStatusenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arrival_status"))
 
     @classmethod
@@ -164,11 +166,11 @@ class TsunamiObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='abkoeheptcxdjfxowlgq',
-            station_name_jp='oextmaxwtccsxjcrvztu',
-            station_name_en='vrpewblinzeqoyzeopwv',
-            observed_max_wave_height_m=float(63.16023945719127),
-            observed_at='ivefumgdtcexibytjuko',
-            observed_at_local='blszczorajricnlnelbq',
+            station_code='mhzlwcazoqtxvltvystd',
+            station_name_jp='vnntvraxhynmhlbzdpwc',
+            station_name_en='bsnospvdtoqnnlxzupvy',
+            observed_max_wave_height_m=float(91.64369297776543),
+            observed_at=datetime.datetime.now(datetime.timezone.utc),
+            observed_at_local=datetime.datetime.now(datetime.timezone.utc),
             arrival_status=ArrivalStatusenum.ESTIMATED
         )

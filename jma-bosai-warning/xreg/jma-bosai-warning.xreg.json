@@ -216,17 +216,15 @@
                     "description": "Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code."
                   },
                   "report_datetime": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "reportDatetime"
                     }
                   },
                   "report_datetime_local": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00).",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "reportDatetime"
                     }
@@ -389,8 +387,7 @@
                     "type": "array",
                     "description": "Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.",
                     "items": {
-                      "type": "string",
-                      "format": "date-time"
+                      "type": "datetime"
                     },
                     "altnames": {
                       "jma-bosai": "timeSeries[].timeDefines"
@@ -465,17 +462,15 @@
                     }
                   },
                   "report_datetime": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "rdt"
                     }
                   },
                   "report_datetime_local": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "rdt"
                     }
@@ -496,9 +491,8 @@
                     }
                   },
                   "detail_url": {
-                    "type": "string",
+                    "type": "uri",
                     "description": "Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.",
-                    "format": "uri",
                     "altnames": {
                       "jma-bosai": "json"
                     }
@@ -550,19 +544,17 @@
                         },
                         "expected_arrival_datetime": {
                           "type": [
-                            "string",
+                            "datetime",
                             "null"
                           ],
-                          "description": "Expected first tsunami arrival time converted to RFC3339 UTC when available in the detail bulletin.",
-                          "format": "date-time"
+                          "description": "Expected first tsunami arrival time converted to RFC3339 UTC when available in the detail bulletin."
                         },
                         "expected_arrival_datetime_local": {
                           "type": [
-                            "string",
+                            "datetime",
                             "null"
                           ],
-                          "description": "Original expected first tsunami arrival time from the JMA detail bulletin preserving its local offset when available.",
-                          "format": "date-time"
+                          "description": "Original expected first tsunami arrival time from the JMA detail bulletin preserving its local offset when available."
                         }
                       },
                       "required": [
@@ -613,19 +605,17 @@
                         },
                         "observed_at": {
                           "type": [
-                            "string",
+                            "datetime",
                             "null"
                           ],
-                          "description": "Observed wave time converted to RFC3339 UTC when the station entry includes an observation time.",
-                          "format": "date-time"
+                          "description": "Observed wave time converted to RFC3339 UTC when the station entry includes an observation time."
                         },
                         "observed_at_local": {
                           "type": [
-                            "string",
+                            "datetime",
                             "null"
                           ],
-                          "description": "Original observed wave time preserving the local offset when available in the station entry.",
-                          "format": "date-time"
+                          "description": "Original observed wave time preserving the local offset when available in the station entry."
                         },
                         "arrival_status": {
                           "type": "string",

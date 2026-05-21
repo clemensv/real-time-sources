@@ -103,49 +103,43 @@
                     }
                   },
                   "report_datetime": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "Report publication time converted from list.json rdt to an RFC3339 UTC timestamp. JMA publishes rdt with a local offset for the report release time.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "rdt"
                     }
                   },
                   "report_datetime_local": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "Original JMA report publication timestamp copied from list.json rdt, preserving the local offset supplied by the JMA Bosai feed.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "rdt"
                     }
                   },
                   "control_datetime": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "JMA control timestamp — when the bulletin was published to the JMA distribution system, distinct from `report_datetime` which is the event report time. This field converts the compact list.json ctt value from JST to an RFC3339 UTC timestamp.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "ctt"
                     }
                   },
                   "control_datetime_local": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "JMA control timestamp — when the bulletin was published to the JMA distribution system, distinct from `report_datetime` which is the event report time. This field preserves the compact list.json ctt value as an RFC3339 timestamp with the Japan Standard Time offset.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "ctt"
                     }
                   },
                   "origin_datetime": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "Earthquake origin time converted from list.json at to an RFC3339 UTC timestamp. JMA uses this time as the basis for the event id.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "at"
                     }
                   },
                   "origin_datetime_local": {
-                    "type": "string",
+                    "type": "datetime",
                     "description": "Original JMA earthquake origin timestamp copied from list.json at, preserving the local offset supplied by the JMA Bosai feed.",
-                    "format": "date-time",
                     "altnames": {
                       "jma-bosai": "at"
                     }
@@ -310,9 +304,8 @@
                     }
                   },
                   "detail_url": {
-                    "type": "string",
+                    "type": "uri",
                     "description": "Absolute URL for the full JMA Bosai earthquake detail JSON referenced by list.json json.",
-                    "format": "uri",
                     "altnames": {
                       "jma-bosai": "json"
                     }

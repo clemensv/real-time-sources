@@ -28,16 +28,16 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_code='bnqtdzolehfcpdgcdelw',
-            kj_name='mcgjczggjyvghwvuxsaz',
-            kana='xgfxfwwjjqodbsxiezom',
-            en_name='ltwutsjaemvaqsflffaw',
-            latitude=float(75.59788951844027),
-            longitude=float(27.619626336862346),
-            altitude_m=float(74.81991074660424),
-            station_type='tssuwmlqhdqjgzpqjesa',
-            elems_bitmask='lwfevpdqtilsjorazmzb',
-            enabled_measurements=['qarttyecawfrsvoveoxd', 'fdcwvbtijrnbrjqffusz']
+            station_code='teraxezuboofvgtasrhc',
+            kj_name='wvzvqbjnbdbndvmyzbdv',
+            kana='thjqtcjsumfyuqomddky',
+            en_name='kvqdzbtfifpzwiqpkctx',
+            latitude=float(47.83670335548255),
+            longitude=float(30.01453638181767),
+            altitude_m=float(56.239958671239464),
+            station_type='ovyhppgdhtuvvsvbdkvd',
+            elems_bitmask='txauekbjeecfgrcpmlhv',
+            enabled_measurements=['iywiodjdrsezemikuwxg', 'mlhhidktzklfsuelalhp']
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'bnqtdzolehfcpdgcdelw'
+        test_value = 'teraxezuboofvgtasrhc'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -54,7 +54,7 @@ class Test_Station(unittest.TestCase):
         """
         Test kj_name property
         """
-        test_value = 'mcgjczggjyvghwvuxsaz'
+        test_value = 'wvzvqbjnbdbndvmyzbdv'
         self.instance.kj_name = test_value
         self.assertEqual(self.instance.kj_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_Station(unittest.TestCase):
         """
         Test kana property
         """
-        test_value = 'xgfxfwwjjqodbsxiezom'
+        test_value = 'thjqtcjsumfyuqomddky'
         self.instance.kana = test_value
         self.assertEqual(self.instance.kana, test_value)
     
@@ -70,7 +70,7 @@ class Test_Station(unittest.TestCase):
         """
         Test en_name property
         """
-        test_value = 'ltwutsjaemvaqsflffaw'
+        test_value = 'kvqdzbtfifpzwiqpkctx'
         self.instance.en_name = test_value
         self.assertEqual(self.instance.en_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(75.59788951844027)
+        test_value = float(47.83670335548255)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(27.619626336862346)
+        test_value = float(30.01453638181767)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -94,7 +94,7 @@ class Test_Station(unittest.TestCase):
         """
         Test altitude_m property
         """
-        test_value = float(74.81991074660424)
+        test_value = float(56.239958671239464)
         self.instance.altitude_m = test_value
         self.assertEqual(self.instance.altitude_m, test_value)
     
@@ -102,7 +102,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_type property
         """
-        test_value = 'tssuwmlqhdqjgzpqjesa'
+        test_value = 'ovyhppgdhtuvvsvbdkvd'
         self.instance.station_type = test_value
         self.assertEqual(self.instance.station_type, test_value)
     
@@ -110,7 +110,7 @@ class Test_Station(unittest.TestCase):
         """
         Test elems_bitmask property
         """
-        test_value = 'lwfevpdqtilsjorazmzb'
+        test_value = 'txauekbjeecfgrcpmlhv'
         self.instance.elems_bitmask = test_value
         self.assertEqual(self.instance.elems_bitmask, test_value)
     
@@ -118,7 +118,7 @@ class Test_Station(unittest.TestCase):
         """
         Test enabled_measurements property
         """
-        test_value = ['qarttyecawfrsvoveoxd', 'fdcwvbtijrnbrjqffusz']
+        test_value = ['iywiodjdrsezemikuwxg', 'mlhhidktzklfsuelalhp']
         self.instance.enabled_measurements = test_value
         self.assertEqual(self.instance.enabled_measurements, test_value)
     

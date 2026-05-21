@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from jma_bosai_warning_producer_data.affectedcoastalregion import AffectedCoastalRegion
 from jma_bosai_warning_producer_data.categoryenum import CategoryEnum
+import datetime
 
 
 class Test_AffectedCoastalRegion(unittest.TestCase):
@@ -29,12 +30,12 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         Create instance of AffectedCoastalRegion for testing
         """
         instance = AffectedCoastalRegion(
-            code='ursxisqjxsucfrukxefp',
-            name='uopktvnnhswbuvbvperu',
+            code='ysvejmuudewntpbajcig',
+            name='uoumgegikwqguqqvlkzx',
             category=CategoryEnum.MAJOR_WARNING,
-            expected_max_wave_height_m=float(47.940533289276345),
-            expected_arrival_datetime='xizieqegeclucorzcexd',
-            expected_arrival_datetime_local='ctphmcgkequtbvigtwvu'
+            expected_max_wave_height_m=float(52.857835539122455),
+            expected_arrival_datetime=datetime.datetime.now(datetime.timezone.utc),
+            expected_arrival_datetime_local=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
@@ -43,7 +44,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'ursxisqjxsucfrukxefp'
+        test_value = 'ysvejmuudewntpbajcig'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -51,7 +52,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'uopktvnnhswbuvbvperu'
+        test_value = 'uoumgegikwqguqqvlkzx'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -67,7 +68,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test expected_max_wave_height_m property
         """
-        test_value = float(47.940533289276345)
+        test_value = float(52.857835539122455)
         self.instance.expected_max_wave_height_m = test_value
         self.assertEqual(self.instance.expected_max_wave_height_m, test_value)
     
@@ -75,7 +76,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test expected_arrival_datetime property
         """
-        test_value = 'xizieqegeclucorzcexd'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.expected_arrival_datetime = test_value
         self.assertEqual(self.instance.expected_arrival_datetime, test_value)
     
@@ -83,7 +84,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test expected_arrival_datetime_local property
         """
-        test_value = 'ctphmcgkequtbvigtwvu'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.expected_arrival_datetime_local = test_value
         self.assertEqual(self.instance.expected_arrival_datetime_local, test_value)
     
