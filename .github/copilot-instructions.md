@@ -21,7 +21,7 @@ in its own top-level directory.
   tests/
   azure-template.json               # optional
   generate-template.ps1             # optional
-  kql/                              # optional
+  kql/<source>.kql                  # MANDATORY (generated from xreg; KQL Optimizer review required)
   fabric/                           # optional
 ```
 

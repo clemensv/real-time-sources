@@ -1,6 +1,6 @@
 ---
 name: stream-bridge-implementation
-description: "Use when implementing the runtime bridge (feeder) for a source in this repo. Covers pollers, websocket or MQTT clients, raw TCP decoders, family-aware normalization, generated producer wiring, state and dedupe logic, source-local testing, mandatory expert review of the contract and generated schemas, and the Fabric notebook hosting option for poll-based sources (both new sources and retrofits of already-shipped sources)."
+description: "Use when implementing the runtime bridge (feeder) for a source in this repo. Covers pollers, websocket or MQTT clients, raw TCP decoders, family-aware normalization, generated producer wiring, state and dedupe logic, source-local testing, mandatory KQL schema generation and KQL Optimizer review, mandatory expert review of the contract and generated schemas, and the Fabric notebook hosting option for poll-based sources (both new sources and retrofits of already-shipped sources)."
 argument-hint: "Describe the transport, auth, polling or reconnect behavior, resume state needs, and the event families the runtime must emit. For a notebook-only retrofit, pass the source id and the literal 'retrofit'."
 ---
 
@@ -74,8 +74,9 @@ feeder.
     - **For multi-group sources, add a one-cycle feed test that exercises every emitted family.** Mock upstream responses for each family, use fake producer classes per generated message group, and assert the runtime emits at least one event through each expected `send_*` path. This catches bridges that import or instantiate only one generated producer class and then call methods owned by another class.
 9. **Update Docker E2E test to validate both reference and telemetry event types.** Use `reference_types` and `telemetry_types` parameters in `_run_kafka_flow_test` to verify both categories are emitted.
 10. Run the relevant Docker E2E test and treat failures there as unfinished implementation work, not optional follow-up.
-11. **If the source is a poller, add Fabric notebook hosting** as described in [Fabric Notebook Hosting](#fabric-notebook-hosting-poll-based-feeders) below: author `<source>/notebook/<source>-feed.ipynb` from the canonical pegelonline template, set `notebook: true` in `catalog.json`, and run the notebook validation block. Streaming bridges skip this step.
-12. **Dispatch the mandatory expert review** described in [Mandatory Expert Review](#mandatory-expert-review-gate-before-declaring-the-feeder-done) below. Do not declare the feeder done until the xRegistry Expert, JSON Structure Expert, and Avro Schema Expert have each signed off.
+11. **Generate the mandatory KQL DDL** for the source as described in [Mandatory KQL Schema](#mandatory-kql-schema-not-optional) below. Run `tools/generate-kql-from-xreg.ps1` to produce `<source>/kql/<source>.kql` from the xreg manifest, commit it, and ensure the source's `catalog.json` entry has a `kql` reference. The KQL script defines the `_cloudevents_dispatch` ingestion table, per-event-type typed tables, JSON mappings, materialized views, and update policies that fan out events from the dispatch table into typed tables. Without it, deployed KQL databases land everything in a single untyped `_cloudevents_dispatch` and downstream queries / Eventhouse Maps / Activator rules cannot work.
+12. **If the source is a poller, add Fabric notebook hosting** as described in [Fabric Notebook Hosting](#fabric-notebook-hosting-poll-based-feeders) below: author `<source>/notebook/<source>-feed.ipynb` from the canonical pegelonline template, set `notebook: true` in `catalog.json`, and run the notebook validation block. Streaming bridges skip this step.
+13. **Dispatch the mandatory expert review** described in [Mandatory Expert Review](#mandatory-expert-review-gate-before-declaring-the-feeder-done) below. Do not declare the feeder done until the xRegistry Expert, JSON Structure Expert, Avro Schema Expert, **and KQL Optimizer** have each signed off.
 
 ## Outputs
 
@@ -84,8 +85,119 @@ feeder.
 - consistent producer calls with explicit placeholder values
 - source-local tests that cover parsing, state, and emission behavior
 - a passing repo-level Docker E2E test when the source participates in the shared container suite
+- a generated, committed `<source>/kql/<source>.kql` script with `_cloudevents_dispatch` + per-event-type typed tables + JSON mappings + update policies, reviewed by the KQL Optimizer
 - a Fabric notebook (`<source>/notebook/<source>-feed.ipynb`) and `catalog.json` `notebook: true` flag for every poll-based source
-- a clean expert-review pass from the xRegistry, JSON Structure, and Avro Schema reviewers before the feeder is declared done
+- a clean expert-review pass from the xRegistry, JSON Structure, Avro Schema, and KQL Optimizer reviewers before the feeder is declared done
+
+## Mandatory KQL Schema (not optional)
+
+Every source MUST ship a `<source>/kql/<source>.kql` script that is
+applied to the source's Eventhouse KQL database at deploy time. The
+script is generated from the xreg manifest; you do not hand-write it.
+
+### Why this is mandatory
+
+The Fabric `deploy-fabric.ps1` and `deploy-feeder-notebook.ps1`
+deployers look up `<source>/kql/<source>.kql` on the `main` branch
+and apply it via `.execute database script <|` when present. When it
+is absent, both deployers print **"No KQL script — database schema
+step will be skipped"** and the database is left with only the
+auto-provisioned `_cloudevents_dispatch` table. Downstream
+consumers — Fabric Maps tied to per-type Kusto data sources, Activator
+rules, materialized `*Latest` views, KQL-backed dashboards, time
+filters on typed columns — all fail because there are no typed tables
+to query. The bridge silently appears to "work" while the data is
+unusable for the actual analytical scenarios the source exists for.
+
+A source without a KQL script is **not done**, regardless of whether
+Docker E2E passes.
+
+### How to generate it
+
+Run the canonical generator:
+
+```powershell
+cd <source>
+New-Item -ItemType Directory -Force -Path kql | Out-Null
+..\tools\generate-kql-from-xreg.ps1 `
+    -XregPath xreg\<source>.xreg.json `
+    -OutputPath kql\<source>.kql `
+    -Qualified
+```
+
+The `-Qualified` switch produces fully-qualified table, mapping, and
+materialized-view names of the form `['<lowered.namespace>.<TypeName>']`
+so the same Eventhouse can host multiple sources without collision.
+Always use it.
+
+Also commit a thin `kql/create-kql-script.ps1` wrapper modeled on
+`dwd/kql/create-kql-script.ps1` so regeneration after xreg changes is
+a one-liner.
+
+### What the generated script contains
+
+For each schema in the xreg manifest the generator emits, in order:
+
+1. `.create-merge table [_cloudevents_dispatch]` — the dispatch
+   ingestion table (specversion, type, source, id, time, subject,
+   datacontenttype, dataschema, data) with a JSON mapping that pulls
+   `$.specversion` … `$.data`. Idempotent across multiple `.kql`
+   scripts in the same DB.
+2. `.create-merge table ['<ns>.<Type>']` — one typed table per
+   message type with Kusto columns derived from the JsonStructure
+   schema fields plus the envelope columns `___type`, `___source`,
+   `___id`, `___time`, `___subject`.
+3. JSON mappings: a `..._json_flat` mapping for direct ingestion of
+   the data payload, and a `..._json_ce_structured` mapping for
+   CloudEvents-structured ingestion that pulls fields from `$.data.*`.
+4. Materialized `*Latest` views for reference event types
+   (`arg_max(___time, *) by ___type, ___source, ___subject`).
+5. Update policy on each typed table that filters
+   `_cloudevents_dispatch` by `specversion == '1.0' and type ==
+   '<Type>'`, projects every field with the right type coercion, and
+   propagates the envelope columns. `IsTransactional = false`,
+   `PropagateIngestionProperties = true`.
+
+### Applying it to existing deployed databases
+
+If a source was deployed before the KQL script existed, apply the
+script post-hoc:
+
+```powershell
+# Get the Eventhouse cluster URI from the Fabric API:
+$tok = az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken -o tsv
+$eh  = irm "https://api.fabric.microsoft.com/v1/workspaces/$WsId/eventhouses/$EhId" -Headers @{Authorization="Bearer $tok"}
+$cluster = $eh.properties.queryServiceUri
+
+# Apply the .kql script using the dispatch-style mgmt call:
+$kustoTok = az account get-access-token --resource https://kusto.kusto.windows.net --query accessToken -o tsv
+$csl  = ".execute database script <|`n" + (Get-Content "<source>/kql/<source>.kql" -Raw)
+$body = @{ db = "<source_db>"; csl = $csl } | ConvertTo-Json -Compress
+irm "$cluster/v1/rest/mgmt" -Method POST -Headers @{
+    Authorization  = "Bearer $kustoTok"
+    "Content-Type" = "application/json"
+} -Body $body
+```
+
+The script is idempotent thanks to `.create-merge` and
+`.create-or-alter` — running it twice does no harm.
+
+### catalog.json
+
+After generating the script, add a `kql` reference to the source's
+`catalog.json` entry so the gh-pages portal surfaces the schema:
+
+```jsonc
+{
+  "source": "<source>",
+  ...
+  "kql": "<source>/kql/<source>.kql",
+  ...
+}
+```
+
+Keep the existing key order. If a `notebook` flag is set, the `kql`
+key precedes it.
 
 ## Mandatory Expert Review (gate before declaring the feeder done)
 
@@ -123,14 +235,37 @@ of the following expert agents** and act on every finding they raise:
    sub-packages are byte-stable across regenerations (a noisy diff
    on regeneration usually points at a contract problem the Avro
    expert should flag).
+4. **KQL Optimizer** — reviews `<source>/kql/<source>.kql` and any
+   handwritten KQL functions or update policies shipped alongside it.
+   Validates that the `_cloudevents_dispatch` ingestion table and
+   mapping match the CloudEvents structured envelope; that one typed
+   table exists per CloudEvent type with the correct column types
+   derived from the JsonStructure schema; that JSON ingestion mappings
+   include both flat and CE-structured variants where the source
+   ingests via either path; that update policies fan out from
+   `_cloudevents_dispatch` filtered on `specversion == '1.0' and type
+   == '<TYPE>'`, project every schema field with the right Kusto type
+   coercion (`toreal`, `toint`, `todatetime`, `tostring`, `todynamic`,
+   `tobool`), and propagate the CloudEvents envelope columns
+   (`___type`, `___source`, `___id`, `___time`, `___subject`); that
+   materialized `*Latest` views are defined for reference event types
+   (SCD-1 via `arg_max(___time, *)` on the natural key); that table,
+   mapping, and view names use the qualified-namespace form
+   (`['<lowered.namespace>.<TypeName>']`) so multiple sources can
+   share an Eventhouse without collisions; and that update-policy
+   queries are efficient (no unnecessary `mv-expand`, no
+   `tostring(dynamic)` round-trips when the source column is already
+   typed). Reviewer must read the actual generated `.kql` and the
+   xreg manifest, not paraphrased prose.
 
 ### How to dispatch the review
 
 Use the `task` tool with `agent_type` set to the named custom agent
-("xRegistry Expert", "JSON Structure Expert", "Avro Schema Expert").
-Provide each agent with:
+("xRegistry Expert", "JSON Structure Expert", "Avro Schema Expert",
+"KQL Optimizer"). Provide each agent with:
 
-- The path(s) to the xreg manifest and generated producer.
+- The path(s) to the xreg manifest, generated producer, and (for the
+  KQL Optimizer) the generated `<source>/kql/<source>.kql`.
 - A short summary of the upstream source, the event families, and
   the bridge's transport pattern.
 - A direct prompt to inspect the files in the working tree, not to
@@ -139,7 +274,7 @@ Provide each agent with:
   blocking findings.
 
 These reviews are **mandatory**, not advisory. A `nit:` from any of
-the three reviewers can be deferred; a blocking finding must be fixed
+the four reviewers can be deferred; a blocking finding must be fixed
 before the PR is merged. Record the verdict from each reviewer in the
 PR body so the maintainer can see all three signed off.
 

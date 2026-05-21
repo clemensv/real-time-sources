@@ -1,6 +1,6 @@
 ---
 name: container-and-delivery
-description: "Use when packaging or finishing a source for merge in this repo. Covers Dockerfile patterns, CONTAINER.md authoring, Azure Container Instance templates, optional Fabric or KQL assets, EVENTS.md generation, and repo-level delivery checks including Docker E2E validation."
+description: "Use when packaging or finishing a source for merge in this repo. Covers Dockerfile patterns, CONTAINER.md authoring, Azure Container Instance templates, mandatory KQL schema script generation + KQL Optimizer review, optional Fabric assets, EVENTS.md generation, and repo-level delivery checks including Docker E2E validation."
 argument-hint: "Describe the source, its runtime package, required environment variables, deployment target, and whether it needs Azure ACI, Fabric, or KQL artifacts."
 ---
 
@@ -27,16 +27,19 @@ argument-hint: "Describe the source, its runtime package, required environment v
 - Do not dismiss key, subject, or schema failures there as harness noise; they usually mean contract or runtime drift that must be fixed before merge.
 - Delivery work must package and install `xrcg`-generated producer artifacts as generated. Do not copy patched generated Python into the runtime package or rely on post-generation fixups as a container workaround.
 - The Docker E2E harness must offer an explicit opt-in parameter for writing consumed Kafka messages and container logs to disk when delivery verification artifacts are needed.
+- **`<source>/kql/<source>.kql` is mandatory, not optional.** Generated from the xreg manifest via `tools/generate-kql-from-xreg.ps1 -Qualified`, committed to the repo, referenced from `catalog.json`, and reviewed by the **KQL Optimizer** agent. Without it, the Fabric deployers log "No KQL script — database schema step will be skipped" and the deployed database has no typed tables, no update policies, and no `*Latest` materialized views — every downstream KQL consumer is broken. See the **Mandatory KQL Schema** section in [stream-bridge-implementation](../stream-bridge-implementation/SKILL.md#mandatory-kql-schema-not-optional).
 
 ## Procedure
 
 1. Add or update the Dockerfile using the delivery patterns in [delivery checklist](references/delivery-checklist.md).
 2. Write or update `CONTAINER.md` so the deployment contract matches the runtime behavior.
-3. Add `azure-template.json`, `generate-template.ps1`, `kql/`, or `fabric/` assets when the source needs them.
-4. Refresh `EVENTS.md` from the xreg manifest.
-5. Update the source `README.md` and add the source to the root catalog when it is new.
-6. Run the delivery validation checklist before commit or PR.
-7. Run the source's Docker E2E test and do not treat the source as finished until it passes the full contract-aware checks.
+3. **Generate `<source>/kql/<source>.kql`** from the xreg manifest with `tools/generate-kql-from-xreg.ps1 -Qualified`. Commit the script and a thin `kql/create-kql-script.ps1` wrapper. Add the `kql` key to the source's `catalog.json` entry.
+4. Add `azure-template.json`, `generate-template.ps1`, or `fabric/` assets when the source needs them.
+5. Refresh `EVENTS.md` from the xreg manifest.
+6. Update the source `README.md` and add the source to the root catalog when it is new.
+7. Run the delivery validation checklist before commit or PR.
+8. Run the source's Docker E2E test and do not treat the source as finished until it passes the full contract-aware checks.
+9. **Dispatch a KQL Optimizer review** of the generated `<source>/kql/<source>.kql` before opening the delivery PR. The reviewer must read the actual script and the xreg manifest, confirm that every event type has a typed table + update policy + JSON mappings, confirm reference event types have `*Latest` materialized views, and call out inefficient projections or missing type coercions. Treat blocking findings as merge blockers.
 
 ## Outputs
 

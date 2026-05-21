@@ -21,7 +21,9 @@
 - generated producer output like `<source>_producer/` or `<source>_producer_tmp/`
 - `tests/`
 - `notebook/<source>-feed.ipynb` — **required for poll-based sources**; copied from `pegelonline/notebook/pegelonline-feed.ipynb` with the substitutions from the Fabric Notebook Hosting section of [`stream-bridge-implementation`](../../stream-bridge-implementation/SKILL.md). Skipped for streaming bridges (WebSocket / MQTT / raw TCP / SSE).
-- optional `azure-template.json`, `generate-template.ps1`, `kql/`, or `fabric/`
+- `kql/<source>.kql` — **required for every source**, generated from the xreg via `tools/generate-kql-from-xreg.ps1 -Qualified`. Reviewed by the KQL Optimizer agent before merge. See the *Mandatory KQL Schema* section in [`stream-bridge-implementation`](../../stream-bridge-implementation/SKILL.md#mandatory-kql-schema-not-optional).
+- `kql/create-kql-script.ps1` — thin wrapper that re-runs the generator.
+- optional `azure-template.json`, `generate-template.ps1`, or `fabric/`
 
 In addition:
 
