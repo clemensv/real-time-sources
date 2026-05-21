@@ -63,9 +63,10 @@ class ADSBClient(TcpClient):
         try:
             if self.stop_flag:
                 return
-            if (len(self.task_queue ) + 1) > 200:
-                logger.warning("Dropping input. Queue capacity exceeded.")   
-                return             
+            queue_cap = int(os.environ.get('MODE_S_QUEUE_CAPACITY', '20000'))
+            if (len(self.task_queue) + 1) > queue_cap:
+                logger.warning("Dropping input. Queue capacity exceeded (cap=%d).", queue_cap)
+                return
             msgs = []
             for msg, ts in messages:
                 try:
@@ -167,7 +168,9 @@ class ADSBClient(TcpClient):
                             content_type="application/json",
                             flush_producer=False
                         )
-                        if (datetime.now() - last_flush) > timedelta(seconds=1) or self.records_since_last_flush >= 1000:
+                        flush_interval_s = int(os.environ.get('MODE_S_FLUSH_INTERVAL_SECONDS', '10'))
+                        flush_record_threshold = int(os.environ.get('MODE_S_FLUSH_RECORD_THRESHOLD', '50000'))
+                        if (datetime.now() - last_flush) > timedelta(seconds=flush_interval_s) or self.records_since_last_flush >= flush_record_threshold:
                             if last_info_log < datetime.now() - timedelta(seconds=5*60):
                                 logger.info("Messages %d, records %d, queue length is %d", messages_since_last_log, records_since_last_log, len(self.task_queue))
                                 last_info_log = datetime.now()
@@ -309,6 +312,23 @@ async def run():
             kafka_config = {
                 'bootstrap.servers': kafka_bootstrap_servers,
             }
+            # Optional librdkafka tuning. These are intentionally unset by
+            # default: Azure Event Hubs' Kafka surface rejects produce requests
+            # that batch records into a newer message-format version (broker
+            # returns UNSUPPORTED_FOR_MESSAGE_FORMAT, code 43). Operators who
+            # target a vanilla Kafka cluster can opt in via env vars.
+            _opt = {
+                'linger.ms': os.environ.get('KAFKA_LINGER_MS'),
+                'batch.num.messages': os.environ.get('KAFKA_BATCH_NUM_MESSAGES'),
+                'queue.buffering.max.messages': os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_MESSAGES'),
+                'queue.buffering.max.kbytes': os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_KBYTES'),
+                'compression.type': os.environ.get('KAFKA_COMPRESSION_TYPE'),
+                'socket.send.buffer.bytes': os.environ.get('KAFKA_SOCKET_SEND_BUFFER_BYTES'),
+            }
+            for _k, _v in _opt.items():
+                if _v is None or _v == '':
+                    continue
+                kafka_config[_k] = int(_v) if _k != 'compression.type' else _v
             if sasl_username and sasl_password:
                 kafka_config.update({
                     'sasl.mechanisms': 'PLAIN',
