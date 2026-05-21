@@ -870,7 +870,8 @@
     "name": "JMA Bosai Warning & Tsunami",
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
-    "desc": "Japan — per-prefecture weather warnings + tsunami alerts"
+    "desc": "Japan — per-prefecture weather warnings + tsunami alerts",
+    "notebook": true
   },
   {
     "id": "tepco-denkiyoho",

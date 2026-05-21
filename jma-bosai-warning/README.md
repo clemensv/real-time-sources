@@ -17,6 +17,8 @@ Weather warnings and tsunami alerts use different stable identity shapes, so the
 
 See [EVENTS.md](EVENTS.md) for CloudEvents type, subject, key, and payload details.
 
+- Fabric notebook hosting is available via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Runtime
 
 ```powershell
