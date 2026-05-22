@@ -10,7 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from dmi_producer_data.countryenum import CountryEnum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -22,23 +25,23 @@ class TidewaterStation:
     Attributes:
         station_id (str)
         name (typing.Optional[str])
-        country (typing.Optional[str])
+        country (typing.Optional[CountryEnum])
         owner (typing.Optional[str])
         latitude (float)
         longitude (float)
-        valid_from (typing.Optional[str])
-        valid_to (typing.Optional[str])
+        valid_from (typing.Optional[datetime.datetime])
+        valid_to (typing.Optional[datetime.datetime])
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    country: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
+    country: typing.Optional[CountryEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    valid_from: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_from"))
-    valid_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_to"))
+    valid_from: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    valid_to: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TidewaterStation':
@@ -165,12 +168,12 @@ class TidewaterStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='kizltcwqbopybibfucfu',
-            name='beymzzmzxygsaphhttsm',
-            country='suluzmuisjocrekigksq',
-            owner='wiqkawstatqekstzrmwi',
-            latitude=float(28.421634914311454),
-            longitude=float(49.499276254894795),
-            valid_from='fzvecgwelrnhxcvicpid',
-            valid_to='cfdkroxjrjndcuvwmurr'
+            station_id='cslemeijdlltszckvdzl',
+            name='jglauccphfsalfprejnd',
+            country=CountryEnum.DNK,
+            owner='heibgzeykyapsqkxjasf',
+            latitude=float(47.76242949619493),
+            longitude=float(21.351318451788725),
+            valid_from=datetime.datetime.now(datetime.timezone.utc),
+            valid_to=datetime.datetime.now(datetime.timezone.utc)
         )

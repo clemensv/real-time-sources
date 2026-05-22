@@ -9,6 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from dmi_mqtt_producer_data.oceanstation import OceanStation
+from dmi_mqtt_producer_data.countryenum import CountryEnum
+import datetime
 
 
 class Test_OceanStation(unittest.TestCase):
@@ -28,21 +30,21 @@ class Test_OceanStation(unittest.TestCase):
         Create instance of OceanStation for testing
         """
         instance = OceanStation(
-            station_id='pxavwnkrppgdraeewstz',
-            name='uhunlhjrydbcxojtiihc',
-            country='mbkvowlpsiriwizopjqi',
-            owner='mneckqfrflbnhybubysy',
-            type='ikwzfkqafjmqrehlshmg',
-            status='scefynvdnypyzipxdodi',
-            parameter_id=['nmyojewhgrgbyuwjknat', 'tdcwpgokvelrixdwvddk', 'dugxbdiymemzjuzwfkfg'],
-            latitude=float(99.60075588692003),
-            longitude=float(68.50124886434143),
-            valid_from='xqzyjkijnlsxzsvaixgs',
-            valid_to='vbkzhjqfaqwamzkqarce',
-            operation_from='zjlyndietiivrhqctaqv',
-            operation_to='nkcwzyodxtogefolhjmj',
-            created='askkmzhulqqbjfcxktph',
-            updated='pqhkxjgmeignxduhbotc'
+            station_id='lpzyldwghjxnqbyohbhq',
+            name='gaydixoqtmfxwxukikeo',
+            country=CountryEnum.DNK,
+            owner='jaqhfwdssnqeupgnmmjr',
+            type='jdpvlszhsrymqrurmukn',
+            status='uuixywvrxqpfbutfwljg',
+            parameter_id=['mmixuictcihtsacgpymd', 'xjproffwhlygjzpqltyc'],
+            latitude=float(28.924836920283028),
+            longitude=float(48.83263530764861),
+            valid_from=datetime.datetime.now(datetime.timezone.utc),
+            valid_to=datetime.datetime.now(datetime.timezone.utc),
+            operation_from=datetime.datetime.now(datetime.timezone.utc),
+            operation_to=datetime.datetime.now(datetime.timezone.utc),
+            created=datetime.datetime.now(datetime.timezone.utc),
+            updated=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
@@ -51,7 +53,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'pxavwnkrppgdraeewstz'
+        test_value = 'lpzyldwghjxnqbyohbhq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -59,7 +61,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'uhunlhjrydbcxojtiihc'
+        test_value = 'gaydixoqtmfxwxukikeo'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -67,7 +69,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'mbkvowlpsiriwizopjqi'
+        test_value = CountryEnum.DNK
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -75,7 +77,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'mneckqfrflbnhybubysy'
+        test_value = 'jaqhfwdssnqeupgnmmjr'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -83,7 +85,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'ikwzfkqafjmqrehlshmg'
+        test_value = 'jdpvlszhsrymqrurmukn'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -91,7 +93,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'scefynvdnypyzipxdodi'
+        test_value = 'uuixywvrxqpfbutfwljg'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -99,7 +101,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = ['nmyojewhgrgbyuwjknat', 'tdcwpgokvelrixdwvddk', 'dugxbdiymemzjuzwfkfg']
+        test_value = ['mmixuictcihtsacgpymd', 'xjproffwhlygjzpqltyc']
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     
@@ -107,7 +109,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(99.60075588692003)
+        test_value = float(28.924836920283028)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -115,7 +117,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(68.50124886434143)
+        test_value = float(48.83263530764861)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -123,7 +125,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test valid_from property
         """
-        test_value = 'xqzyjkijnlsxzsvaixgs'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.valid_from = test_value
         self.assertEqual(self.instance.valid_from, test_value)
     
@@ -131,7 +133,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test valid_to property
         """
-        test_value = 'vbkzhjqfaqwamzkqarce'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.valid_to = test_value
         self.assertEqual(self.instance.valid_to, test_value)
     
@@ -139,7 +141,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test operation_from property
         """
-        test_value = 'zjlyndietiivrhqctaqv'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.operation_from = test_value
         self.assertEqual(self.instance.operation_from, test_value)
     
@@ -147,7 +149,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test operation_to property
         """
-        test_value = 'nkcwzyodxtogefolhjmj'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.operation_to = test_value
         self.assertEqual(self.instance.operation_to, test_value)
     
@@ -155,7 +157,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test created property
         """
-        test_value = 'askkmzhulqqbjfcxktph'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.created = test_value
         self.assertEqual(self.instance.created, test_value)
     
@@ -163,7 +165,7 @@ class Test_OceanStation(unittest.TestCase):
         """
         Test updated property
         """
-        test_value = 'pqhkxjgmeignxduhbotc'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.updated = test_value
         self.assertEqual(self.instance.updated, test_value)
     

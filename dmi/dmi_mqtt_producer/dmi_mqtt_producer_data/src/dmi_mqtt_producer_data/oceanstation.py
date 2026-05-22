@@ -10,7 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from dmi_mqtt_producer_data.countryenum import CountryEnum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -22,37 +25,37 @@ class OceanStation:
     Attributes:
         station_id (str)
         name (str)
-        country (typing.Optional[str])
+        country (typing.Optional[CountryEnum])
         owner (typing.Optional[str])
         type (typing.Optional[str])
         status (typing.Optional[str])
         parameter_id (typing.Optional[typing.List[str]])
         latitude (float)
         longitude (float)
-        valid_from (typing.Optional[str])
-        valid_to (typing.Optional[str])
-        operation_from (typing.Optional[str])
-        operation_to (typing.Optional[str])
-        created (typing.Optional[str])
-        updated (typing.Optional[str])
+        valid_from (typing.Optional[datetime.datetime])
+        valid_to (typing.Optional[datetime.datetime])
+        operation_from (typing.Optional[datetime.datetime])
+        operation_to (typing.Optional[datetime.datetime])
+        created (typing.Optional[datetime.datetime])
+        updated (typing.Optional[datetime.datetime])
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    country: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
+    country: typing.Optional[CountryEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
     status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
     parameter_id: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_id"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    valid_from: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_from"))
-    valid_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_to"))
-    operation_from: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_from"))
-    operation_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_to"))
-    created: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created"))
-    updated: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
+    valid_from: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    valid_to: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    operation_from: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    operation_to: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    created: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    updated: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'OceanStation':
@@ -179,19 +182,19 @@ class OceanStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='pxavwnkrppgdraeewstz',
-            name='uhunlhjrydbcxojtiihc',
-            country='mbkvowlpsiriwizopjqi',
-            owner='mneckqfrflbnhybubysy',
-            type='ikwzfkqafjmqrehlshmg',
-            status='scefynvdnypyzipxdodi',
-            parameter_id=['nmyojewhgrgbyuwjknat', 'tdcwpgokvelrixdwvddk', 'dugxbdiymemzjuzwfkfg'],
-            latitude=float(99.60075588692003),
-            longitude=float(68.50124886434143),
-            valid_from='xqzyjkijnlsxzsvaixgs',
-            valid_to='vbkzhjqfaqwamzkqarce',
-            operation_from='zjlyndietiivrhqctaqv',
-            operation_to='nkcwzyodxtogefolhjmj',
-            created='askkmzhulqqbjfcxktph',
-            updated='pqhkxjgmeignxduhbotc'
+            station_id='lpzyldwghjxnqbyohbhq',
+            name='gaydixoqtmfxwxukikeo',
+            country=CountryEnum.DNK,
+            owner='jaqhfwdssnqeupgnmmjr',
+            type='jdpvlszhsrymqrurmukn',
+            status='uuixywvrxqpfbutfwljg',
+            parameter_id=['mmixuictcihtsacgpymd', 'xjproffwhlygjzpqltyc'],
+            latitude=float(28.924836920283028),
+            longitude=float(48.83263530764861),
+            valid_from=datetime.datetime.now(datetime.timezone.utc),
+            valid_to=datetime.datetime.now(datetime.timezone.utc),
+            operation_from=datetime.datetime.now(datetime.timezone.utc),
+            operation_to=datetime.datetime.now(datetime.timezone.utc),
+            created=datetime.datetime.now(datetime.timezone.utc),
+            updated=datetime.datetime.now(datetime.timezone.utc)
         )

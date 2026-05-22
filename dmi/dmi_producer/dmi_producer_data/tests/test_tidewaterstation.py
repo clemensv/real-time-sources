@@ -9,6 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from dmi_producer_data.tidewaterstation import TidewaterStation
+from dmi_producer_data.countryenum import CountryEnum
+import datetime
 
 
 class Test_TidewaterStation(unittest.TestCase):
@@ -28,14 +30,14 @@ class Test_TidewaterStation(unittest.TestCase):
         Create instance of TidewaterStation for testing
         """
         instance = TidewaterStation(
-            station_id='kizltcwqbopybibfucfu',
-            name='beymzzmzxygsaphhttsm',
-            country='suluzmuisjocrekigksq',
-            owner='wiqkawstatqekstzrmwi',
-            latitude=float(28.421634914311454),
-            longitude=float(49.499276254894795),
-            valid_from='fzvecgwelrnhxcvicpid',
-            valid_to='cfdkroxjrjndcuvwmurr'
+            station_id='cslemeijdlltszckvdzl',
+            name='jglauccphfsalfprejnd',
+            country=CountryEnum.DNK,
+            owner='heibgzeykyapsqkxjasf',
+            latitude=float(47.76242949619493),
+            longitude=float(21.351318451788725),
+            valid_from=datetime.datetime.now(datetime.timezone.utc),
+            valid_to=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
@@ -44,7 +46,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kizltcwqbopybibfucfu'
+        test_value = 'cslemeijdlltszckvdzl'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +54,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'beymzzmzxygsaphhttsm'
+        test_value = 'jglauccphfsalfprejnd'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -60,7 +62,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'suluzmuisjocrekigksq'
+        test_value = CountryEnum.DNK
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -68,7 +70,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'wiqkawstatqekstzrmwi'
+        test_value = 'heibgzeykyapsqkxjasf'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -76,7 +78,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(28.421634914311454)
+        test_value = float(47.76242949619493)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -84,7 +86,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(49.499276254894795)
+        test_value = float(21.351318451788725)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -92,7 +94,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test valid_from property
         """
-        test_value = 'fzvecgwelrnhxcvicpid'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.valid_from = test_value
         self.assertEqual(self.instance.valid_from, test_value)
     
@@ -100,7 +102,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test valid_to property
         """
-        test_value = 'cfdkroxjrjndcuvwmurr'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.valid_to = test_value
         self.assertEqual(self.instance.valid_to, test_value)
     

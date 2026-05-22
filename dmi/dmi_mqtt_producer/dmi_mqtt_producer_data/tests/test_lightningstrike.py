@@ -9,6 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from dmi_mqtt_producer_data.lightningstrike import LightningStrike
+import datetime
 
 
 class Test_LightningStrike(unittest.TestCase):
@@ -28,15 +29,15 @@ class Test_LightningStrike(unittest.TestCase):
         Create instance of LightningStrike for testing
         """
         instance = LightningStrike(
-            strike_id='jyitfpcafctpvtkoiamf',
-            observed='ufqxxvyatptesthbhnit',
-            created='liinctyytudjtkcfnuzr',
-            type=int(31),
-            amp=float(16.913983353890515),
-            strokes=int(7),
-            sensors='qjipsdnirdjbqblwxqlj',
-            latitude=float(11.586440479320803),
-            longitude=float(92.01325797802205)
+            strike_id='umaamttyjepvrwhuapuc',
+            observed=datetime.datetime.now(datetime.timezone.utc),
+            created=datetime.datetime.now(datetime.timezone.utc),
+            type=int(33),
+            amp=float(91.82665528864162),
+            strokes=int(57),
+            sensors='nfahutgwvxucpujynlzr',
+            latitude=float(51.93553981184006),
+            longitude=float(3.937811361554866)
         )
         return instance
 
@@ -45,7 +46,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test strike_id property
         """
-        test_value = 'jyitfpcafctpvtkoiamf'
+        test_value = 'umaamttyjepvrwhuapuc'
         self.instance.strike_id = test_value
         self.assertEqual(self.instance.strike_id, test_value)
     
@@ -53,7 +54,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test observed property
         """
-        test_value = 'ufqxxvyatptesthbhnit'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.observed = test_value
         self.assertEqual(self.instance.observed, test_value)
     
@@ -61,7 +62,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test created property
         """
-        test_value = 'liinctyytudjtkcfnuzr'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.created = test_value
         self.assertEqual(self.instance.created, test_value)
     
@@ -69,7 +70,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test type property
         """
-        test_value = int(31)
+        test_value = int(33)
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -77,7 +78,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test amp property
         """
-        test_value = float(16.913983353890515)
+        test_value = float(91.82665528864162)
         self.instance.amp = test_value
         self.assertEqual(self.instance.amp, test_value)
     
@@ -85,7 +86,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test strokes property
         """
-        test_value = int(7)
+        test_value = int(57)
         self.instance.strokes = test_value
         self.assertEqual(self.instance.strokes, test_value)
     
@@ -93,7 +94,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test sensors property
         """
-        test_value = 'qjipsdnirdjbqblwxqlj'
+        test_value = 'nfahutgwvxucpujynlzr'
         self.instance.sensors = test_value
         self.assertEqual(self.instance.sensors, test_value)
     
@@ -101,7 +102,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(11.586440479320803)
+        test_value = float(51.93553981184006)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -109,7 +110,7 @@ class Test_LightningStrike(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(92.01325797802205)
+        test_value = float(3.937811361554866)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

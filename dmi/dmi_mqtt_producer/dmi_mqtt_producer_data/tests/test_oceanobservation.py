@@ -9,6 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from dmi_mqtt_producer_data.oceanobservation import OceanObservation
+from dmi_mqtt_producer_data.parameteridenum import ParameterIdenum
+import datetime
 
 
 class Test_OceanObservation(unittest.TestCase):
@@ -28,13 +30,13 @@ class Test_OceanObservation(unittest.TestCase):
         Create instance of OceanObservation for testing
         """
         instance = OceanObservation(
-            observation_id='pzwmwrjwthvkncfebgzu',
-            station_id='xkxtqurnjjjnvbjghhag',
-            parameter_id='vlolobdijzsruvoevcnd',
-            observed='zsfptzikkejbsthgcezp',
-            value=float(55.709332720361594),
-            latitude=float(42.85085470783048),
-            longitude=float(66.0055627543637)
+            observation_id='aubxwfahdltatiizfrhe',
+            station_id='gfghoozajgfrcjbnzxyp',
+            parameter_id=ParameterIdenum.temp_dry,
+            observed=datetime.datetime.now(datetime.timezone.utc),
+            value=float(92.14648234335634),
+            latitude=float(46.224642991662776),
+            longitude=float(83.14122939491428)
         )
         return instance
 
@@ -43,7 +45,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test observation_id property
         """
-        test_value = 'pzwmwrjwthvkncfebgzu'
+        test_value = 'aubxwfahdltatiizfrhe'
         self.instance.observation_id = test_value
         self.assertEqual(self.instance.observation_id, test_value)
     
@@ -51,7 +53,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'xkxtqurnjjjnvbjghhag'
+        test_value = 'gfghoozajgfrcjbnzxyp'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -59,7 +61,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = 'vlolobdijzsruvoevcnd'
+        test_value = ParameterIdenum.temp_dry
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     
@@ -67,7 +69,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test observed property
         """
-        test_value = 'zsfptzikkejbsthgcezp'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.observed = test_value
         self.assertEqual(self.instance.observed, test_value)
     
@@ -75,7 +77,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(55.709332720361594)
+        test_value = float(92.14648234335634)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +85,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(42.85085470783048)
+        test_value = float(46.224642991662776)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +93,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(66.0055627543637)
+        test_value = float(83.14122939491428)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

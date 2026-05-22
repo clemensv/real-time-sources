@@ -10,7 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from dmi_mqtt_producer_data.countryenum import CountryEnum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -24,7 +27,7 @@ class MetObsStation:
         wmo_station_id (typing.Optional[str])
         wmo_country_code (typing.Optional[str])
         name (str)
-        country (str)
+        country (CountryEnum)
         owner (typing.Optional[str])
         region_id (typing.Optional[str])
         type (typing.Optional[str])
@@ -35,12 +38,12 @@ class MetObsStation:
         station_height (typing.Optional[float])
         barometer_height (typing.Optional[float])
         anemometer_height (typing.Optional[float])
-        valid_from (typing.Optional[str])
-        valid_to (typing.Optional[str])
-        operation_from (typing.Optional[str])
-        operation_to (typing.Optional[str])
-        created (typing.Optional[str])
-        updated (typing.Optional[str])
+        valid_from (typing.Optional[datetime.datetime])
+        valid_to (typing.Optional[datetime.datetime])
+        operation_from (typing.Optional[datetime.datetime])
+        operation_to (typing.Optional[datetime.datetime])
+        created (typing.Optional[datetime.datetime])
+        updated (typing.Optional[datetime.datetime])
     """
     
     
@@ -48,7 +51,7 @@ class MetObsStation:
     wmo_station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wmo_station_id"))
     wmo_country_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wmo_country_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
+    country: CountryEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
     region_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
@@ -59,12 +62,12 @@ class MetObsStation:
     station_height: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_height"))
     barometer_height: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="barometer_height"))
     anemometer_height: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="anemometer_height"))
-    valid_from: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_from"))
-    valid_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_to"))
-    operation_from: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_from"))
-    operation_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_to"))
-    created: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created"))
-    updated: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
+    valid_from: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    valid_to: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    operation_from: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    operation_to: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operation_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    created: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    updated: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'MetObsStation':
@@ -191,25 +194,25 @@ class MetObsStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rqouvyznitomdxvmmmsy',
-            wmo_station_id='uylcmkhpbrgluuuryzws',
-            wmo_country_code='gacrkpdvgpmhwkhvtrrz',
-            name='ebogxltgroyfmivvibbc',
-            country='hvarfbxbkpgmrgqgdwwp',
-            owner='vkkfhlhgpmupaynonwyc',
-            region_id='achdvbmkzopprdijgvyb',
-            type='bzjiedtkzmvxrpqevvju',
-            status='ttkskxdixrzvvmqxubxe',
-            parameter_id=['jvewahaafblylbfwlqri', 'hdcpgoizptglrilusfgx', 'uyellueckhzrclfqnvmg', 'cotljbwuzhpojlyblwon'],
-            latitude=float(92.32917749498361),
-            longitude=float(39.68803864090916),
-            station_height=float(71.8382398644434),
-            barometer_height=float(85.91004805919218),
-            anemometer_height=float(43.36528922676811),
-            valid_from='oqmwblhmtdpoyczebvgu',
-            valid_to='cykhciljkgxzwouyckor',
-            operation_from='yqzdtyaghykpjwoizsfw',
-            operation_to='fkeaolahouzhesrazkhg',
-            created='nvexeyrtkypvyqqyybnk',
-            updated='gtbfmkhwnyicvuzuceux'
+            station_id='npfizblpuownmwdinzsa',
+            wmo_station_id='khfgkhrrcviaqkfjvlww',
+            wmo_country_code='qhcsanjpzmaxelaandji',
+            name='fbqxgpzfcnmvsvobtgfe',
+            country=CountryEnum.DNK,
+            owner='fomnjmdqfifedgutqxkx',
+            region_id='zberckixivtekfugpptq',
+            type='fsafvndwjowavbekdftc',
+            status='lociggeztunrzvhvjerq',
+            parameter_id=['ehdttnxervtgogvautia', 'kwmtwwfnqkdalchjtret', 'famoqvxpcrwfqlcrifiu', 'cgtsuxnavxjxmwzijfyu', 'ykmreamhslnawenoxiqf'],
+            latitude=float(22.383119038698553),
+            longitude=float(84.0274897177452),
+            station_height=float(27.042369034369973),
+            barometer_height=float(29.155218957175066),
+            anemometer_height=float(70.70147433234077),
+            valid_from=datetime.datetime.now(datetime.timezone.utc),
+            valid_to=datetime.datetime.now(datetime.timezone.utc),
+            operation_from=datetime.datetime.now(datetime.timezone.utc),
+            operation_to=datetime.datetime.now(datetime.timezone.utc),
+            created=datetime.datetime.now(datetime.timezone.utc),
+            updated=datetime.datetime.now(datetime.timezone.utc)
         )

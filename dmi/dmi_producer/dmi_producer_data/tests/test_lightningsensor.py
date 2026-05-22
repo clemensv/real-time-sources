@@ -9,6 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from dmi_producer_data.lightningsensor import LightningSensor
+from dmi_producer_data.countryenum import CountryEnum
+import datetime
 
 
 class Test_LightningSensor(unittest.TestCase):
@@ -28,14 +30,14 @@ class Test_LightningSensor(unittest.TestCase):
         Create instance of LightningSensor for testing
         """
         instance = LightningSensor(
-            sensor_id='fsahxgjnlrlhfoidmpmh',
-            name='sbqniuvstyjmgzkwuyft',
-            owner='hkesigwidbepxfgfrbuq',
-            country='zznvlmuypefpucgpfkzp',
-            latitude=float(36.45344000604158),
-            longitude=float(66.76659968264096),
-            active_from='ekrmkummemhuifwcxwvz',
-            active_to='zafvnzxtouxupqnmfhjj'
+            sensor_id='qdwkhsjhqxrvmdwbxmtd',
+            name='cnlnmcigaulmsbddrbyc',
+            owner='jvjkwklmrpkmhdqbpksk',
+            country=CountryEnum.DNK,
+            latitude=float(72.6076991155564),
+            longitude=float(75.8934993515423),
+            active_from=datetime.datetime.now(datetime.timezone.utc),
+            active_to=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
@@ -44,7 +46,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = 'fsahxgjnlrlhfoidmpmh'
+        test_value = 'qdwkhsjhqxrvmdwbxmtd'
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -52,7 +54,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'sbqniuvstyjmgzkwuyft'
+        test_value = 'cnlnmcigaulmsbddrbyc'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -60,7 +62,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'hkesigwidbepxfgfrbuq'
+        test_value = 'jvjkwklmrpkmhdqbpksk'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -68,7 +70,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'zznvlmuypefpucgpfkzp'
+        test_value = CountryEnum.DNK
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -76,7 +78,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(36.45344000604158)
+        test_value = float(72.6076991155564)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -84,7 +86,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(66.76659968264096)
+        test_value = float(75.8934993515423)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -92,7 +94,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test active_from property
         """
-        test_value = 'ekrmkummemhuifwcxwvz'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.active_from = test_value
         self.assertEqual(self.instance.active_from, test_value)
     
@@ -100,7 +102,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test active_to property
         """
-        test_value = 'zafvnzxtouxupqnmfhjj'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.active_to = test_value
         self.assertEqual(self.instance.active_to, test_value)
     

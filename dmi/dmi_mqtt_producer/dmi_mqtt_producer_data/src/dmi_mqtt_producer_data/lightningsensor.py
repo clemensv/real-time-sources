@@ -10,7 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from dmi_mqtt_producer_data.countryenum import CountryEnum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -23,22 +26,22 @@ class LightningSensor:
         sensor_id (str)
         name (typing.Optional[str])
         owner (typing.Optional[str])
-        country (typing.Optional[str])
+        country (typing.Optional[CountryEnum])
         latitude (float)
         longitude (float)
-        active_from (typing.Optional[str])
-        active_to (typing.Optional[str])
+        active_from (typing.Optional[datetime.datetime])
+        active_to (typing.Optional[datetime.datetime])
     """
     
     
     sensor_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sensor_id"))
     name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
-    country: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
+    country: typing.Optional[CountryEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    active_from: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_from"))
-    active_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_to"))
+    active_from: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    active_to: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LightningSensor':
@@ -165,12 +168,12 @@ class LightningSensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='zxwnybjxfphcdpanwzcr',
-            name='kafzustmciarjdnbnyip',
-            owner='cevvbawokpdlzfaxzweo',
-            country='qoqmbphpvajeorvznhkh',
-            latitude=float(58.70484516461401),
-            longitude=float(24.598809169975677),
-            active_from='ilithnhurlfmedtndeyu',
-            active_to='ndcnhmlhxckcszgkebtg'
+            sensor_id='umaijqwcrrjsyknuigdg',
+            name='cysfjpcjjphxqumtaoxz',
+            owner='ohqerebsskjvepvsxhdo',
+            country=CountryEnum.DNK,
+            latitude=float(78.75728583844574),
+            longitude=float(94.76778875433813),
+            active_from=datetime.datetime.now(datetime.timezone.utc),
+            active_to=datetime.datetime.now(datetime.timezone.utc)
         )

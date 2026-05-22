@@ -218,7 +218,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningStrike"
         }
-      }
+      },
+      "description": "Reference sensors (`LightningSensor`, keyed `{sensor_id}`) and per-strike telemetry (`LightningStrike`, keyed `{strike_id}`) share this messagegroup and the single `dmi` Kafka topic by design: both belong to the lightningData event family, but a triangulated strike is computed from many sensors and cannot be naturally keyed by a single one. Downstream consumers branch on `ce_type`."
     },
     "dk.dmi.metObs.kafka": {
       "messages": {
@@ -517,12 +518,17 @@
                     "type": "string",
                     "description": "ISO 3166-1 alpha-3 country code: 'DNK' (Denmark), 'GRL' (Greenland), 'FRO' (Faroe Islands).",
                     "altenums": {
-                      "iso3166-1-alpha-3": {
+                      "lang:en": {
                         "DNK": "Denmark",
                         "GRL": "Greenland",
                         "FRO": "Faroe Islands"
                       }
-                    }
+                    },
+                    "enum": [
+                      "DNK",
+                      "GRL",
+                      "FRO"
+                    ]
                   },
                   "owner": {
                     "type": [
@@ -556,9 +562,9 @@
                     "description": "Operational status (e.g. 'Active', 'Inactive')."
                   },
                   "parameter_id": {
-                    "type": {
-                      "type": "array",
-                      "items": "string"
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
                     "description": "List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).",
                     "altnames": {
@@ -568,12 +574,16 @@
                   "latitude": {
                     "type": "double",
                     "description": "Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1].",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": "double",
                     "description": "Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0].",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   },
                   "station_height": {
                     "type": [
@@ -610,10 +620,9 @@
                   },
                   "valid_from": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp from which this station-metadata version is valid.",
                     "altnames": {
                       "json": "validFrom"
@@ -621,10 +630,9 @@
                   },
                   "valid_to": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp after which this station-metadata version is no longer valid; null while current.",
                     "altnames": {
                       "json": "validTo"
@@ -632,10 +640,9 @@
                   },
                   "operation_from": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp from which the station began operating.",
                     "altnames": {
                       "json": "operationFrom"
@@ -643,10 +650,9 @@
                   },
                   "operation_to": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp at which the station stopped operating; null while operational.",
                     "altnames": {
                       "json": "operationTo"
@@ -654,18 +660,16 @@
                   },
                   "created": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp when this metadata row was created by DMI."
                   },
                   "updated": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp when this metadata row was last updated by DMI."
                   }
                 }
@@ -715,11 +719,47 @@
                     "description": "DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').",
                     "altnames": {
                       "json": "parameterId"
-                    }
+                    },
+                    "enum": [
+                      "temp_dry",
+                      "temp_dew",
+                      "temp_grass",
+                      "temp_soil_10cm",
+                      "temp_mean_past1h",
+                      "temp_max_past1h",
+                      "temp_min_past1h",
+                      "humidity",
+                      "humidity_past1h",
+                      "pressure",
+                      "pressure_at_sea",
+                      "wind_dir",
+                      "wind_dir_past1h",
+                      "wind_speed",
+                      "wind_speed_past1h",
+                      "wind_max",
+                      "wind_min",
+                      "wind_max_per10min_past1h",
+                      "wind_min_past1h",
+                      "gust_always_past1h",
+                      "precip_past1h",
+                      "precip_past10min",
+                      "precip_past24h",
+                      "snow_depth_man",
+                      "snow_cover_man",
+                      "visibility",
+                      "visib_mean_last10min",
+                      "cloud_cover",
+                      "cloud_height",
+                      "weather",
+                      "leav_hum_dur_past10min",
+                      "radia_glob",
+                      "radia_glob_past1h",
+                      "sun_last10min_glob",
+                      "sun_last1h_glob"
+                    ]
                   },
                   "observed": {
-                    "type": "string",
-                    "format": "date-time",
+                    "type": "datetime",
                     "description": "Timestamp at which the value was observed (UTC, ISO 8601)."
                   },
                   "value": {
@@ -732,7 +772,9 @@
                       "null"
                     ],
                     "description": "Station latitude (decimal degrees, WGS84) at observation time.",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": [
@@ -740,7 +782,9 @@
                       "null"
                     ],
                     "description": "Station longitude (decimal degrees, WGS84) at observation time.",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   }
                 }
               }
@@ -785,12 +829,17 @@
                     ],
                     "description": "ISO 3166-1 alpha-3 country code (DNK, GRL, FRO).",
                     "altenums": {
-                      "iso3166-1-alpha-3": {
+                      "lang:en": {
                         "DNK": "Denmark",
                         "GRL": "Greenland",
                         "FRO": "Faroe Islands"
                       }
-                    }
+                    },
+                    "enum": [
+                      "DNK",
+                      "GRL",
+                      "FRO"
+                    ]
                   },
                   "owner": {
                     "type": [
@@ -814,9 +863,9 @@
                     "description": "Operational status."
                   },
                   "parameter_id": {
-                    "type": {
-                      "type": "array",
-                      "items": "string"
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
                     "description": "Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).",
                     "altnames": {
@@ -826,19 +875,22 @@
                   "latitude": {
                     "type": "double",
                     "description": "Station latitude (decimal degrees, WGS84).",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": "double",
                     "description": "Station longitude (decimal degrees, WGS84).",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   },
                   "valid_from": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Metadata-validity start.",
                     "altnames": {
                       "json": "validFrom"
@@ -846,10 +898,9 @@
                   },
                   "valid_to": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Metadata-validity end.",
                     "altnames": {
                       "json": "validTo"
@@ -857,37 +908,33 @@
                   },
                   "operation_from": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "altnames": {
                       "json": "operationFrom"
                     }
                   },
                   "operation_to": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "altnames": {
                       "json": "operationTo"
                     }
                   },
                   "created": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
-                    ],
-                    "format": "date-time"
+                    ]
                   },
                   "updated": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
-                    ],
-                    "format": "date-time"
+                    ]
                   }
                 }
               }
@@ -932,7 +979,19 @@
                       "string",
                       "null"
                     ],
-                    "description": "ISO 3166-1 alpha-3 country code."
+                    "description": "ISO 3166-1 alpha-3 country code.",
+                    "enum": [
+                      "DNK",
+                      "GRL",
+                      "FRO"
+                    ],
+                    "altenums": {
+                      "lang:en": {
+                        "DNK": "Denmark",
+                        "GRL": "Greenland",
+                        "FRO": "Faroe Islands"
+                      }
+                    }
                   },
                   "owner": {
                     "type": [
@@ -944,29 +1003,31 @@
                   "latitude": {
                     "type": "double",
                     "description": "Prediction-point latitude (decimal degrees, WGS84).",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": "double",
                     "description": "Prediction-point longitude (decimal degrees, WGS84).",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   },
                   "valid_from": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "altnames": {
                       "json": "validFrom"
                     }
                   },
                   "valid_to": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "altnames": {
                       "json": "validTo"
                     }
@@ -1025,11 +1086,16 @@
                         "sea_reg": "Sea level registration by Kystdirektoratet (cm)",
                         "tw": "Water temperature (deg C)"
                       }
-                    }
+                    },
+                    "enum": [
+                      "sealev_dvr",
+                      "sealev_ln",
+                      "sea_reg",
+                      "tw"
+                    ]
                   },
                   "observed": {
-                    "type": "string",
-                    "format": "date-time"
+                    "type": "datetime"
                   },
                   "value": {
                     "type": "double",
@@ -1040,14 +1106,18 @@
                       "double",
                       "null"
                     ],
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   }
                 }
               }
@@ -1100,8 +1170,7 @@
                     }
                   },
                   "prediction_time": {
-                    "type": "string",
-                    "format": "date-time",
+                    "type": "datetime",
                     "description": "Target time for which the value is predicted.",
                     "altnames": {
                       "json": "predictionTime"
@@ -1109,21 +1178,27 @@
                   },
                   "value": {
                     "type": "double",
-                    "description": "Predicted sea level (cm vs DVR90 unless otherwise noted)."
+                    "description": "Predicted sea level (cm vs DVR90 unless otherwise noted).",
+                    "unit": "cm",
+                    "symbol": "cm"
                   },
                   "latitude": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   }
                 }
               }
@@ -1175,32 +1250,46 @@
                       "string",
                       "null"
                     ],
-                    "description": "ISO 3166-1 alpha-3 country code (typically 'DNK')."
+                    "description": "ISO 3166-1 alpha-3 country code (typically 'DNK').",
+                    "enum": [
+                      "DNK",
+                      "GRL",
+                      "FRO"
+                    ],
+                    "altenums": {
+                      "lang:en": {
+                        "DNK": "Denmark",
+                        "GRL": "Greenland",
+                        "FRO": "Faroe Islands"
+                      }
+                    }
                   },
                   "latitude": {
                     "type": "double",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": "double",
-                    "unit": "deg"
+                    "unit": "deg",
+                    "minimum": -180,
+                    "maximum": 180
                   },
                   "active_from": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "altnames": {
                       "json": "activeFrom"
                     }
                   },
                   "active_to": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "altnames": {
                       "json": "activeTo"
                     }
@@ -1239,16 +1328,14 @@
                     }
                   },
                   "observed": {
-                    "type": "string",
-                    "format": "date-time",
+                    "type": "datetime",
                     "description": "Strike timestamp (UTC, microsecond precision)."
                   },
                   "created": {
                     "type": [
-                      "string",
+                      "datetime",
                       "null"
                     ],
-                    "format": "date-time",
                     "description": "Timestamp when DMI ingested the strike."
                   },
                   "type": {
@@ -1275,7 +1362,8 @@
                       "integer",
                       "null"
                     ],
-                    "description": "Number of return strokes."
+                    "description": "Number of return strokes.",
+                    "minimum": 1
                   },
                   "sensors": {
                     "type": [
@@ -1287,12 +1375,16 @@
                   "latitude": {
                     "type": "double",
                     "unit": "deg",
-                    "description": "Strike latitude (decimal degrees, WGS84)."
+                    "description": "Strike latitude (decimal degrees, WGS84).",
+                    "minimum": -90,
+                    "maximum": 90
                   },
                   "longitude": {
                     "type": "double",
                     "unit": "deg",
-                    "description": "Strike longitude (decimal degrees, WGS84)."
+                    "description": "Strike longitude (decimal degrees, WGS84).",
+                    "minimum": -180,
+                    "maximum": 180
                   }
                 }
               }

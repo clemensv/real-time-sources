@@ -1,6 +1,4 @@
-# DMI Open Data Bridge Events
-
-This document describes the events emitted by the DMI Open Data observation triad bridge (metObs + oceanObs + lightning).
+# Table of Contents
 
 - [dk.dmi.metObs](#message-group-dkdmimetobs)
   - [dk.dmi.metObs.MetObsStation](#message-dkdmimetobsmetobsstation)
@@ -60,18 +58,18 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `region_id` | *string* (optional) | - | `False` | DMI region identifier within the country. |
 | `type` | *string* (optional) | - | `False` | Station type as classified by DMI (e.g. 'Synop', 'PluvioSync'). |
 | `status` | *string* (optional) | - | `False` | Operational status (e.g. 'Active', 'Inactive'). |
-| `parameter_id` | *unknown* | - | `False` | List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']). |
+| `parameter_id` | array of *string* | - | `False` | List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']). |
 | `latitude` | *double* | deg | `True` | Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1]. |
 | `longitude` | *double* | deg | `True` | Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0]. |
 | `station_height` | *double* (optional) | m | `False` | Height of the station above mean sea level. |
 | `barometer_height` | *double* (optional) | m | `False` | Height of the barometer above mean sea level. |
 | `anemometer_height` | *double* (optional) | m | `False` | Height of the anemometer above ground level. |
-| `valid_from` | *string* (optional) | - | `False` | Timestamp from which this station-metadata version is valid. |
-| `valid_to` | *string* (optional) | - | `False` | Timestamp after which this station-metadata version is no longer valid; null while current. |
-| `operation_from` | *string* (optional) | - | `False` | Timestamp from which the station began operating. |
-| `operation_to` | *string* (optional) | - | `False` | Timestamp at which the station stopped operating; null while operational. |
-| `created` | *string* (optional) | - | `False` | Timestamp when this metadata row was created by DMI. |
-| `updated` | *string* (optional) | - | `False` | Timestamp when this metadata row was last updated by DMI. |
+| `valid_from` | *datetime* (optional) | - | `False` | Timestamp from which this station-metadata version is valid. |
+| `valid_to` | *datetime* (optional) | - | `False` | Timestamp after which this station-metadata version is no longer valid; null while current. |
+| `operation_from` | *datetime* (optional) | - | `False` | Timestamp from which the station began operating. |
+| `operation_to` | *datetime* (optional) | - | `False` | Timestamp at which the station stopped operating; null while operational. |
+| `created` | *datetime* (optional) | - | `False` | Timestamp when this metadata row was created by DMI. |
+| `updated` | *datetime* (optional) | - | `False` | Timestamp when this metadata row was last updated by DMI. |
 ---
 ### Message: dk.dmi.metObs.MetObsObservation
 *A single meteorological observation value reported by a station for one parameter at a specific observed time. Cadence depends on parameter (10-minute or hourly).*
@@ -90,7 +88,7 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `observation_id` | *string* (optional) | - | `False` | DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency. |
 | `station_id` | *string* | - | `True` | Reporting station identifier (foreign key to Station). |
 | `parameter_id` | *string* | - | `True` | DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea'). |
-| `observed` | *string* | - | `True` | Timestamp at which the value was observed (UTC, ISO 8601). |
+| `observed` | *datetime* | - | `True` | Timestamp at which the value was observed (UTC, ISO 8601). |
 | `value` | *double* | - | `True` | Numeric measurement value. Units depend on parameter_id (see DMI documentation). |
 | `latitude` | *double* (optional) | deg | `False` | Station latitude (decimal degrees, WGS84) at observation time. |
 | `longitude` | *double* (optional) | deg | `False` | Station longitude (decimal degrees, WGS84) at observation time. |
@@ -116,15 +114,15 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `owner` | *string* (optional) | - | `False` | Operating agency (e.g. 'DMI', 'Kystdirektoratet'). |
 | `type` | *string* (optional) | - | `False` | Station type (e.g. 'Tide-gauge-primary'). |
 | `status` | *string* (optional) | - | `False` | Operational status. |
-| `parameter_id` | *unknown* | - | `False` | Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}). |
+| `parameter_id` | array of *string* | - | `False` | Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}). |
 | `latitude` | *double* | deg | `True` | Station latitude (decimal degrees, WGS84). |
 | `longitude` | *double* | deg | `True` | Station longitude (decimal degrees, WGS84). |
-| `valid_from` | *string* (optional) | - | `False` | Metadata-validity start. |
-| `valid_to` | *string* (optional) | - | `False` | Metadata-validity end. |
-| `operation_from` | *string* (optional) | - | `False` |  |
-| `operation_to` | *string* (optional) | - | `False` |  |
-| `created` | *string* (optional) | - | `False` |  |
-| `updated` | *string* (optional) | - | `False` |  |
+| `valid_from` | *datetime* (optional) | - | `False` | Metadata-validity start. |
+| `valid_to` | *datetime* (optional) | - | `False` | Metadata-validity end. |
+| `operation_from` | *datetime* (optional) | - | `False` |  |
+| `operation_to` | *datetime* (optional) | - | `False` |  |
+| `created` | *datetime* (optional) | - | `False` |  |
+| `updated` | *datetime* (optional) | - | `False` |  |
 ---
 ### Message: dk.dmi.oceanObs.TidewaterStation
 *Reference data for a station/grid-point at which DMI publishes tidewater (sea-level) predictions. The set partially overlaps physical tide gauges but also includes prediction-only grid points (e.g. Faroes).*
@@ -146,8 +144,8 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `owner` | *string* (optional) | - | `False` | Operating agency. |
 | `latitude` | *double* | deg | `True` | Prediction-point latitude (decimal degrees, WGS84). |
 | `longitude` | *double* | deg | `True` | Prediction-point longitude (decimal degrees, WGS84). |
-| `valid_from` | *string* (optional) | - | `False` |  |
-| `valid_to` | *string* (optional) | - | `False` |  |
+| `valid_from` | *datetime* (optional) | - | `False` |  |
+| `valid_to` | *datetime* (optional) | - | `False` |  |
 ---
 ### Message: dk.dmi.oceanObs.OceanObservation
 *A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR90 datum, cm), sealev_ln (sea level vs local zero, cm), sea_reg (registered sea level by Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute cadence.*
@@ -166,7 +164,7 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `observation_id` | *string* (optional) | - | `False` | DMI-assigned row identifier (not stable across re-ingestions). |
 | `station_id` | *string* | - | `True` |  |
 | `parameter_id` | *string* | - | `True` | One of sealev_dvr, sealev_ln, sea_reg, tw. |
-| `observed` | *string* | - | `True` |  |
+| `observed` | *datetime* | - | `True` |  |
 | `value` | *double* | - | `True` | Numeric value. cm for sealev_*/sea_reg, deg C for tw. |
 | `latitude` | *double* (optional) | deg | `False` |  |
 | `longitude` | *double* (optional) | deg | `False` |  |
@@ -188,8 +186,8 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `prediction_id` | *string* (optional) | - | `False` | DMI-assigned row identifier. |
 | `station_id` | *string* | - | `True` |  |
 | `prediction_type` | *string* (optional) | - | `False` | Granularity of the prediction series (typically '10minutes'). |
-| `prediction_time` | *string* | - | `True` | Target time for which the value is predicted. |
-| `value` | *double* | - | `True` | Predicted sea level (cm vs DVR90 unless otherwise noted). |
+| `prediction_time` | *datetime* | - | `True` | Target time for which the value is predicted. |
+| `value` | *double* | cm | `True` | Predicted sea level (cm vs DVR90 unless otherwise noted). |
 | `latitude` | *double* (optional) | deg | `False` |  |
 | `longitude` | *double* (optional) | deg | `False` |  |
 ## Message Group: dk.dmi.lightning
@@ -214,8 +212,8 @@ This document describes the events emitted by the DMI Open Data observation tria
 | `country` | *string* (optional) | - | `False` | ISO 3166-1 alpha-3 country code (typically 'DNK'). |
 | `latitude` | *double* | deg | `True` |  |
 | `longitude` | *double* | deg | `True` |  |
-| `active_from` | *string* (optional) | - | `False` |  |
-| `active_to` | *string* (optional) | - | `False` |  |
+| `active_from` | *datetime* (optional) | - | `False` |  |
+| `active_to` | *datetime* (optional) | - | `False` |  |
 ---
 ### Message: dk.dmi.lightning.LightningStrike
 *A single triangulated lightning strike. Type 0 = cloud-to-ground negative, 1 = cloud-to-ground positive, 2 = cloud-to-cloud. amp is signed peak current in kA. observed timestamps have microsecond precision.*
@@ -232,8 +230,8 @@ This document describes the events emitted by the DMI Open Data observation tria
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `strike_id` | *string* | - | `True` | Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03'). |
-| `observed` | *string* | - | `True` | Strike timestamp (UTC, microsecond precision). |
-| `created` | *string* (optional) | - | `False` | Timestamp when DMI ingested the strike. |
+| `observed` | *datetime* | - | `True` | Strike timestamp (UTC, microsecond precision). |
+| `created` | *datetime* (optional) | - | `False` | Timestamp when DMI ingested the strike. |
 | `type` | *integer* | - | `True` | Strike type code. |
 | `amp` | *double* (optional) | kA | `False` | Signed peak current. |
 | `strokes` | *integer* (optional) | - | `False` | Number of return strokes. |

@@ -10,7 +10,10 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from dmi_producer_data.parameteridenum import ParameterIdenum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -22,8 +25,8 @@ class OceanObservation:
     Attributes:
         observation_id (typing.Optional[str])
         station_id (str)
-        parameter_id (str)
-        observed (str)
+        parameter_id (ParameterIdenum)
+        observed (datetime.datetime)
         value (float)
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
@@ -32,8 +35,8 @@ class OceanObservation:
     
     observation_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_id"))
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    parameter_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_id"))
-    observed: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed"))
+    parameter_id: ParameterIdenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_id"))
+    observed: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
@@ -163,11 +166,11 @@ class OceanObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='kkwmpmavvicrmxrjjpen',
-            station_id='vyauyybybetbcnvzfppt',
-            parameter_id='ssfizkzwtofnskzmdboi',
-            observed='hdwfgumajtgkcbzoseyy',
-            value=float(85.42660404971075),
-            latitude=float(83.01550031745658),
-            longitude=float(30.9842833885141)
+            observation_id='eunpdeljenbzgmkgqzdz',
+            station_id='ycxrlkgpudvklofybhjy',
+            parameter_id=ParameterIdenum.sealev_dvr,
+            observed=datetime.datetime.now(datetime.timezone.utc),
+            value=float(21.760560437637967),
+            latitude=float(37.05373138195436),
+            longitude=float(2.3134548295571933)
         )

@@ -10,7 +10,9 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -21,8 +23,8 @@ class LightningStrike:
     
     Attributes:
         strike_id (str)
-        observed (str)
-        created (typing.Optional[str])
+        observed (datetime.datetime)
+        created (typing.Optional[datetime.datetime])
         type (int)
         amp (typing.Optional[float])
         strokes (typing.Optional[int])
@@ -33,8 +35,8 @@ class LightningStrike:
     
     
     strike_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="strike_id"))
-    observed: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed"))
-    created: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created"))
+    observed: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    created: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     type: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
     amp: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="amp"))
     strokes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="strokes"))
@@ -167,13 +169,13 @@ class LightningStrike:
             An instance of the dataclass.
         """
         return cls(
-            strike_id='jyitfpcafctpvtkoiamf',
-            observed='ufqxxvyatptesthbhnit',
-            created='liinctyytudjtkcfnuzr',
-            type=int(31),
-            amp=float(16.913983353890515),
-            strokes=int(7),
-            sensors='qjipsdnirdjbqblwxqlj',
-            latitude=float(11.586440479320803),
-            longitude=float(92.01325797802205)
+            strike_id='umaamttyjepvrwhuapuc',
+            observed=datetime.datetime.now(datetime.timezone.utc),
+            created=datetime.datetime.now(datetime.timezone.utc),
+            type=int(33),
+            amp=float(91.82665528864162),
+            strokes=int(57),
+            sensors='nfahutgwvxucpujynlzr',
+            latitude=float(51.93553981184006),
+            longitude=float(3.937811361554866)
         )

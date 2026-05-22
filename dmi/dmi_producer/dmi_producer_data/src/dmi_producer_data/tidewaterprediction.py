@@ -10,7 +10,9 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -23,7 +25,7 @@ class TidewaterPrediction:
         prediction_id (typing.Optional[str])
         station_id (str)
         prediction_type (typing.Optional[str])
-        prediction_time (str)
+        prediction_time (datetime.datetime)
         value (float)
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
@@ -33,7 +35,7 @@ class TidewaterPrediction:
     prediction_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prediction_id"))
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     prediction_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prediction_type"))
-    prediction_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prediction_time"))
+    prediction_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prediction_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
@@ -163,11 +165,11 @@ class TidewaterPrediction:
             An instance of the dataclass.
         """
         return cls(
-            prediction_id='evpwurhpjrnhwedmdjrr',
-            station_id='rdvsdlzfgoroxqbmoszl',
-            prediction_type='valxiyqkrekydfezmhih',
-            prediction_time='fpbxyarivvbpsxbbuokb',
-            value=float(18.61994413205741),
-            latitude=float(18.300972184844888),
-            longitude=float(35.3515356627042)
+            prediction_id='wmmywmmxapldfnxkkpie',
+            station_id='mcdkuoizlzibiupxbvcw',
+            prediction_type='rbvpulhqeiruwmgjmdof',
+            prediction_time=datetime.datetime.now(datetime.timezone.utc),
+            value=float(96.15559693797468),
+            latitude=float(86.59711050566631),
+            longitude=float(21.33759571717244)
         )

@@ -9,6 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from dmi_producer_data.oceanobservation import OceanObservation
+from dmi_producer_data.parameteridenum import ParameterIdenum
+import datetime
 
 
 class Test_OceanObservation(unittest.TestCase):
@@ -28,13 +30,13 @@ class Test_OceanObservation(unittest.TestCase):
         Create instance of OceanObservation for testing
         """
         instance = OceanObservation(
-            observation_id='kkwmpmavvicrmxrjjpen',
-            station_id='vyauyybybetbcnvzfppt',
-            parameter_id='ssfizkzwtofnskzmdboi',
-            observed='hdwfgumajtgkcbzoseyy',
-            value=float(85.42660404971075),
-            latitude=float(83.01550031745658),
-            longitude=float(30.9842833885141)
+            observation_id='eunpdeljenbzgmkgqzdz',
+            station_id='ycxrlkgpudvklofybhjy',
+            parameter_id=ParameterIdenum.sealev_dvr,
+            observed=datetime.datetime.now(datetime.timezone.utc),
+            value=float(21.760560437637967),
+            latitude=float(37.05373138195436),
+            longitude=float(2.3134548295571933)
         )
         return instance
 
@@ -43,7 +45,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test observation_id property
         """
-        test_value = 'kkwmpmavvicrmxrjjpen'
+        test_value = 'eunpdeljenbzgmkgqzdz'
         self.instance.observation_id = test_value
         self.assertEqual(self.instance.observation_id, test_value)
     
@@ -51,7 +53,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vyauyybybetbcnvzfppt'
+        test_value = 'ycxrlkgpudvklofybhjy'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -59,7 +61,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = 'ssfizkzwtofnskzmdboi'
+        test_value = ParameterIdenum.sealev_dvr
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     
@@ -67,7 +69,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test observed property
         """
-        test_value = 'hdwfgumajtgkcbzoseyy'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.observed = test_value
         self.assertEqual(self.instance.observed, test_value)
     
@@ -75,7 +77,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(85.42660404971075)
+        test_value = float(21.760560437637967)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +85,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(83.01550031745658)
+        test_value = float(37.05373138195436)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +93,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(30.9842833885141)
+        test_value = float(2.3134548295571933)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
