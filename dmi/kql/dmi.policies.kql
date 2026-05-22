@@ -1,0 +1,45 @@
+// DMI Eventhouse policies
+//
+// Per-table caching, retention, partitioning, and ingestion-batching
+// policies for the DMI observation triad (metObs + oceanObs + lightning).
+//
+// Apply *after* `dmi.kql` has been deployed. These policies are kept
+// separate because they target the runtime environment, not the schema,
+// and `dmi.kql` is generator output (`tools/generate-kql-from-xreg.ps1`)
+// that is overwritten on every regeneration.
+
+// -- Slowly changing dimensions (reference data) --------------------------
+.alter table MetObsStation     policy caching hot = 365d
+.alter table OceanStation      policy caching hot = 365d
+.alter table TidewaterStation  policy caching hot = 365d
+.alter table LightningSensor   policy caching hot = 365d
+
+.alter-merge table MetObsStation     policy retention softdelete = 3650d
+.alter-merge table OceanStation      policy retention softdelete = 3650d
+.alter-merge table TidewaterStation  policy retention softdelete = 3650d
+.alter-merge table LightningSensor   policy retention softdelete = 3650d
+
+// -- High-frequency telemetry --------------------------------------------
+.alter table MetObsObservation    policy caching hot = 90d
+.alter table OceanObservation     policy caching hot = 90d
+.alter table TidewaterPrediction  policy caching hot = 30d
+.alter table LightningStrike      policy caching hot = 90d
+
+.alter-merge table MetObsObservation    policy retention softdelete = 1825d
+.alter-merge table OceanObservation     policy retention softdelete = 1825d
+.alter-merge table TidewaterPrediction  policy retention softdelete = 365d
+.alter-merge table LightningStrike      policy retention softdelete = 730d
+
+// -- Lightning ingestion batching for burst tolerance --------------------
+// During storms lightning can exceed 100 strikes/sec. Tighten batching so
+// the dispatch->table latency stays under 15s while still amortizing
+// extent creation.
+.alter table LightningStrike policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:10", "MaximumNumberOfItems": 50000, "MaximumRawDataSizeMB": 1024 }
+```
+
+// -- Dispatch retention --------------------------------------------------
+// _cloudevents_dispatch holds the raw envelope; the typed tables hold
+// the projected data. Seven days is plenty for replay/debug.
+.alter-merge table _cloudevents_dispatch policy retention softdelete = 7d recoverability = disabled

@@ -124,6 +124,16 @@
     "mqtt": true
   },
   {
+    "id": "dmi",
+    "name": "DMI",
+    "cat": "Weather",
+    "key": true,
+    "desc": "Denmark — DMI observation triad (metObs + oceanObs + lightning)",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true
+  },
+  {
     "id": "rws-waterwebservices",
     "name": "RWS Waterwebservices",
     "cat": "Hydrology",

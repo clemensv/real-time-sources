@@ -177,6 +177,13 @@ def _build_lightning_sensor(raw: Dict[str, Any]) -> LightningSensor:
 
 
 def _build_lightning_strike(raw: Dict[str, Any]) -> LightningStrike:
+    sensors_raw = raw.get("sensors")
+    if sensors_raw is None:
+        sensors_value: Optional[str] = None
+    elif isinstance(sensors_raw, (list, tuple)):
+        sensors_value = ",".join(str(s) for s in sensors_raw)
+    else:
+        sensors_value = str(sensors_raw)
     return LightningStrike(
         strike_id=str(raw.get("id") or ""),
         observed=str(raw.get("observed") or ""),
@@ -184,7 +191,7 @@ def _build_lightning_strike(raw: Dict[str, Any]) -> LightningStrike:
         type=int(raw.get("type") or 0),
         amp=float(raw.get("amp") or 0.0),
         strokes=int(raw.get("strokes") or 0),
-        sensors=int(raw.get("sensors") or 0),
+        sensors=sensors_value,
         latitude=float(raw.get("latitude") or 0.0),
         longitude=float(raw.get("longitude") or 0.0),
     )
