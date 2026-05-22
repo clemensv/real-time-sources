@@ -7,12 +7,14 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
-from dmi_producer_data import Station
-from dmi_producer_data import Observation
+from dmi_producer_data import MetObsStation
+from dmi_producer_data import MetObsObservation
+from dmi_producer_data import OceanStation
 from dmi_producer_data import TidewaterStation
+from dmi_producer_data import OceanObservation
 from dmi_producer_data import TidewaterPrediction
-from dmi_producer_data import Sensor
-from dmi_producer_data import Strike
+from dmi_producer_data import LightningSensor
+from dmi_producer_data import LightningStrike
 
 class DkDmiMetObsKafkaEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -45,22 +47,22 @@ class DkDmiMetObsKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_dk_dmi_met_obs_kafka_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_dk_dmi_met_obs_kafka_station(self,_feedurl : str, _station_id : str, data: MetObsStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MetObsStation], str]=None) -> None:
         """
         Sends the 'dk.dmi.metObs.kafka.Station' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
-            data: (Station): The event data to be sent
+            data: (MetObsStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, MetObsStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
         """
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
-             "type":"dk.dmi.metObs.Station",
+             "type":"dk.dmi.metObs.MetObsStation",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{station_id}".format(station_id = _station_id)
         }
@@ -78,7 +80,7 @@ class DkDmiMetObsKafkaEventProducer:
             self.producer.flush()
 
 
-    def send_dk_dmi_met_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: Observation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Observation], str]=None) -> None:
+    def send_dk_dmi_met_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: MetObsObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MetObsObservation], str]=None) -> None:
         """
         Sends the 'dk.dmi.metObs.kafka.Observation' event to the Kafka topic
 
@@ -86,15 +88,15 @@ class DkDmiMetObsKafkaEventProducer:
             _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
             _parameter_id(str):  Value for placeholder parameter_id in attribute subject
-            data: (Observation): The event data to be sent
+            data: (MetObsObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Observation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, MetObsObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}/{parameter_id}'
         """
         kafka_key = "{station_id}/{parameter_id}".format(station_id=_station_id, parameter_id=_parameter_id)
         attributes = {
-             "type":"dk.dmi.metObs.Observation",
+             "type":"dk.dmi.metObs.MetObsObservation",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{station_id}/{parameter_id}".format(station_id = _station_id,parameter_id = _parameter_id)
         }
@@ -194,22 +196,22 @@ class DkDmiOceanObsKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_dk_dmi_ocean_obs_kafka_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_dk_dmi_ocean_obs_kafka_station(self,_feedurl : str, _station_id : str, data: OceanStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, OceanStation], str]=None) -> None:
         """
         Sends the 'dk.dmi.oceanObs.kafka.Station' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
-            data: (Station): The event data to be sent
+            data: (OceanStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, OceanStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
         """
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
-             "type":"dk.dmi.oceanObs.Station",
+             "type":"dk.dmi.oceanObs.OceanStation",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{station_id}".format(station_id = _station_id)
         }
@@ -260,7 +262,7 @@ class DkDmiOceanObsKafkaEventProducer:
             self.producer.flush()
 
 
-    def send_dk_dmi_ocean_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: Observation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Observation], str]=None) -> None:
+    def send_dk_dmi_ocean_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: OceanObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, OceanObservation], str]=None) -> None:
         """
         Sends the 'dk.dmi.oceanObs.kafka.Observation' event to the Kafka topic
 
@@ -268,15 +270,15 @@ class DkDmiOceanObsKafkaEventProducer:
             _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
             _parameter_id(str):  Value for placeholder parameter_id in attribute subject
-            data: (Observation): The event data to be sent
+            data: (OceanObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Observation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, OceanObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}/{parameter_id}'
         """
         kafka_key = "{station_id}/{parameter_id}".format(station_id=_station_id, parameter_id=_parameter_id)
         attributes = {
-             "type":"dk.dmi.oceanObs.Observation",
+             "type":"dk.dmi.oceanObs.OceanObservation",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{station_id}/{parameter_id}".format(station_id = _station_id,parameter_id = _parameter_id)
         }
@@ -409,22 +411,22 @@ class DkDmiLightningKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_dk_dmi_lightning_kafka_sensor(self,_feedurl : str, _sensor_id : str, data: Sensor, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Sensor], str]=None) -> None:
+    def send_dk_dmi_lightning_kafka_sensor(self,_feedurl : str, _sensor_id : str, data: LightningSensor, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LightningSensor], str]=None) -> None:
         """
         Sends the 'dk.dmi.lightning.kafka.Sensor' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
             _sensor_id(str):  Value for placeholder sensor_id in attribute subject
-            data: (Sensor): The event data to be sent
+            data: (LightningSensor): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Sensor], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, LightningSensor], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{sensor_id}'
         """
         kafka_key = "{sensor_id}".format(sensor_id=_sensor_id)
         attributes = {
-             "type":"dk.dmi.lightning.Sensor",
+             "type":"dk.dmi.lightning.LightningSensor",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{sensor_id}".format(sensor_id = _sensor_id)
         }
@@ -442,22 +444,22 @@ class DkDmiLightningKafkaEventProducer:
             self.producer.flush()
 
 
-    def send_dk_dmi_lightning_kafka_strike(self,_feedurl : str, _strike_id : str, data: Strike, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Strike], str]=None) -> None:
+    def send_dk_dmi_lightning_kafka_strike(self,_feedurl : str, _strike_id : str, data: LightningStrike, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LightningStrike], str]=None) -> None:
         """
         Sends the 'dk.dmi.lightning.kafka.Strike' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
             _strike_id(str):  Value for placeholder strike_id in attribute subject
-            data: (Strike): The event data to be sent
+            data: (LightningStrike): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Strike], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, LightningStrike], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{strike_id}'
         """
         kafka_key = "{strike_id}".format(strike_id=_strike_id)
         attributes = {
-             "type":"dk.dmi.lightning.Strike",
+             "type":"dk.dmi.lightning.LightningStrike",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{strike_id}".format(strike_id = _strike_id)
         }

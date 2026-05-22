@@ -15,12 +15,16 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../dmi_mqtt_producer_mqtt_client/src')))
 
 import dmi_mqtt_producer_data
-from dmi_mqtt_producer_data import Station
-from test_dmi_mqtt_producer_data_station import Test_Station
-from dmi_mqtt_producer_data import Observation
-from test_dmi_mqtt_producer_data_observation import Test_Observation
+from dmi_mqtt_producer_data import MetObsStation
+from test_dmi_mqtt_producer_data_metobsstation import Test_MetObsStation
+from dmi_mqtt_producer_data import MetObsObservation
+from test_dmi_mqtt_producer_data_metobsobservation import Test_MetObsObservation
+from dmi_mqtt_producer_data import OceanStation
+from test_dmi_mqtt_producer_data_oceanstation import Test_OceanStation
 from dmi_mqtt_producer_data import TidewaterStation
 from test_dmi_mqtt_producer_data_tidewaterstation import Test_TidewaterStation
+from dmi_mqtt_producer_data import OceanObservation
+from test_dmi_mqtt_producer_data_oceanobservation import Test_OceanObservation
 from dmi_mqtt_producer_data import TidewaterPrediction
 from test_dmi_mqtt_producer_data_tidewaterprediction import Test_TidewaterPrediction
 from dmi_mqtt_producer_mqtt_client import DkDmiMetObsMqttMqttClient
@@ -55,7 +59,7 @@ async def test_dk_dmi_metobs_mqtt_dk_dmi_met_obs_mqtt_station_py(mosquitto_broke
     """Test publishing and receiving dk.dmi.metObs.mqtt.Station message via MQTT."""
     broker_host, broker_port = mosquitto_broker
     # Create valid test data using the test helper
-    test_data = Test_Station.create_instance()
+    test_data = Test_MetObsStation.create_instance()
     
     # Create subscriber client
     subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
@@ -70,10 +74,10 @@ async def test_dk_dmi_metobs_mqtt_dk_dmi_met_obs_mqtt_station_py(mosquitto_broke
     received_data = []
     received_event = asyncio.Event()
     
-    async def on_dk_dmi_met_obs_mqtt_station(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.Station, topic_params: dict):
+    async def on_dk_dmi_met_obs_mqtt_station(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.MetObsStation, topic_params: dict):
         """Handler for dk.dmi.metObs.mqtt.Station messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "dk.dmi.metObs.Station"
+        assert cloud_event['type'] == "dk.dmi.metObs.MetObsStation"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -121,7 +125,7 @@ async def test_dk_dmi_metobs_mqtt_dk_dmi_met_obs_mqtt_observation_py(mosquitto_b
     """Test publishing and receiving dk.dmi.metObs.mqtt.Observation message via MQTT."""
     broker_host, broker_port = mosquitto_broker
     # Create valid test data using the test helper
-    test_data = Test_Observation.create_instance()
+    test_data = Test_MetObsObservation.create_instance()
     
     # Create subscriber client
     subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
@@ -136,10 +140,10 @@ async def test_dk_dmi_metobs_mqtt_dk_dmi_met_obs_mqtt_observation_py(mosquitto_b
     received_data = []
     received_event = asyncio.Event()
     
-    async def on_dk_dmi_met_obs_mqtt_observation(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.Observation, topic_params: dict):
+    async def on_dk_dmi_met_obs_mqtt_observation(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.MetObsObservation, topic_params: dict):
         """Handler for dk.dmi.metObs.mqtt.Observation messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "dk.dmi.metObs.Observation"
+        assert cloud_event['type'] == "dk.dmi.metObs.MetObsObservation"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -191,7 +195,7 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_station_py(mosquitto_b
     """Test publishing and receiving dk.dmi.oceanObs.mqtt.Station message via MQTT."""
     broker_host, broker_port = mosquitto_broker
     # Create valid test data using the test helper
-    test_data = Test_Station.create_instance()
+    test_data = Test_OceanStation.create_instance()
     
     # Create subscriber client
     subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
@@ -206,10 +210,10 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_station_py(mosquitto_b
     received_data = []
     received_event = asyncio.Event()
     
-    async def on_dk_dmi_ocean_obs_mqtt_station(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.Station, topic_params: dict):
+    async def on_dk_dmi_ocean_obs_mqtt_station(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.OceanStation, topic_params: dict):
         """Handler for dk.dmi.oceanObs.mqtt.Station messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "dk.dmi.oceanObs.Station"
+        assert cloud_event['type'] == "dk.dmi.oceanObs.OceanStation"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -323,7 +327,7 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_observation_py(mosquit
     """Test publishing and receiving dk.dmi.oceanObs.mqtt.Observation message via MQTT."""
     broker_host, broker_port = mosquitto_broker
     # Create valid test data using the test helper
-    test_data = Test_Observation.create_instance()
+    test_data = Test_OceanObservation.create_instance()
     
     # Create subscriber client
     subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
@@ -338,10 +342,10 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_observation_py(mosquit
     received_data = []
     received_event = asyncio.Event()
     
-    async def on_dk_dmi_ocean_obs_mqtt_observation(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.Observation, topic_params: dict):
+    async def on_dk_dmi_ocean_obs_mqtt_observation(mqtt_msg, cloud_event, data: dmi_mqtt_producer_data.OceanObservation, topic_params: dict):
         """Handler for dk.dmi.oceanObs.mqtt.Observation messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "dk.dmi.oceanObs.Observation"
+        assert cloud_event['type'] == "dk.dmi.oceanObs.OceanObservation"
         if len(received_data) >= 5:
             received_event.set()
     

@@ -163,11 +163,11 @@ class OceanObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='vxkjyylmxadusfhvbvjh',
-            station_id='gszvlwmpbmewhglrettt',
-            parameter_id='ekupjjwupfkjyrcwyqll',
-            observed='yrqvrisfcffqjapfmwic',
-            value=float(60.92042654134065),
-            latitude=float(98.28252399868575),
-            longitude=float(67.21709250700877)
+            observation_id='kkwmpmavvicrmxrjjpen',
+            station_id='vyauyybybetbcnvzfppt',
+            parameter_id='ssfizkzwtofnskzmdboi',
+            observed='hdwfgumajtgkcbzoseyy',
+            value=float(85.42660404971075),
+            latitude=float(83.01550031745658),
+            longitude=float(30.9842833885141)
         )

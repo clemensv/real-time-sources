@@ -154,7 +154,7 @@ make build
 
 ## Test```python
 
-dk_dmi_met_obs_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, Station], Awaitable[None]]
+dk_dmi_met_obs_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, MetObsStation], Awaitable[None]]
 
 ```bash```
 
@@ -170,13 +170,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `dmi_mqtt_producer_data.Station`.
+- `data`: The event data of type `dmi_mqtt_producer_data.MetObsStation`.
 
 Example:
 
 ```python
 async def dk_dmi_met_obs_mqtt_station_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: Station) -> None:
+CloudEvent, data: MetObsStation) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -198,7 +198,7 @@ make build
 
 ## Test```python
 
-dk_dmi_met_obs_mqtt_observation_async:  Callable[[PartitionContext, EventData, CloudEvent, Observation],
+dk_dmi_met_obs_mqtt_observation_async:  Callable[[PartitionContext, EventData, CloudEvent, MetObsObservation],
 Awaitable[None]]
 
 ```bash```
@@ -214,13 +214,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `dmi_mqtt_producer_data.Observation`.
+- `data`: The event data of type `dmi_mqtt_producer_data.MetObsObservation`.
 
 Example:
 
 ```python
 async def dk_dmi_met_obs_mqtt_observation_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: Observation) -> None:
+CloudEvent, data: MetObsObservation) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -346,7 +346,7 @@ make build
 
 ## Test```python
 
-dk_dmi_ocean_obs_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, Station], Awaitable[None]]
+dk_dmi_ocean_obs_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, OceanStation], Awaitable[None]]
 
 ```bash```
 
@@ -361,13 +361,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `dmi_mqtt_producer_data.Station`.
+- `data`: The event data of type `dmi_mqtt_producer_data.OceanStation`.
 
 Example:
 
 ```python
 async def dk_dmi_ocean_obs_mqtt_station_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: Station) -> None:
+CloudEvent, data: OceanStation) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -435,7 +435,7 @@ make build
 
 ## Test```python
 
-dk_dmi_ocean_obs_mqtt_observation_async:  Callable[[PartitionContext, EventData, CloudEvent, Observation],
+dk_dmi_ocean_obs_mqtt_observation_async:  Callable[[PartitionContext, EventData, CloudEvent, OceanObservation],
 Awaitable[None]]
 
 ```bash```
@@ -452,13 +452,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `dmi_mqtt_producer_data.Observation`.
+- `data`: The event data of type `dmi_mqtt_producer_data.OceanObservation`.
 
 Example:
 
 ```python
 async def dk_dmi_ocean_obs_mqtt_observation_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: Observation) -> None:
+CloudEvent, data: OceanObservation) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```

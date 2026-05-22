@@ -165,12 +165,12 @@ class TidewaterStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='evhxmdfzanfurknyphtp',
-            name='ocbrlijedizypawxirev',
-            country='jprxlibgtnsphfzuiuau',
-            owner='pvujhvheawrbffvbhucx',
-            latitude=float(96.78715953016473),
-            longitude=float(39.533943096580636),
-            valid_from='mvumryqmlqayxqfufxre',
-            valid_to='rrvzpklvmzjmwnbkdtwf'
+            station_id='zjvvqifoczlaocjawbxi',
+            name='xmkpyvsimycpordiabar',
+            country='iucqbmvaabtehrmwxpel',
+            owner='slxwyhbezaqbvbbrfmhn',
+            latitude=float(60.3986084880564),
+            longitude=float(13.95397764879207),
+            valid_from='quntuvyuenfdsocqrgke',
+            valid_to='qpnxhwsypjotpvctdymm'
         )

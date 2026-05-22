@@ -17,9 +17,11 @@ except Exception:  # pragma: no cover - paho < 2 fallback
 from cloudevents.conversion import to_binary, to_structured
 from cloudevents.http import CloudEvent
 import dmi_mqtt_producer_data
-from dmi_mqtt_producer_data import Station
-from dmi_mqtt_producer_data import Observation
+from dmi_mqtt_producer_data import MetObsStation
+from dmi_mqtt_producer_data import MetObsObservation
+from dmi_mqtt_producer_data import OceanStation
 from dmi_mqtt_producer_data import TidewaterStation
+from dmi_mqtt_producer_data import OceanObservation
 from dmi_mqtt_producer_data import TidewaterPrediction
 
 
@@ -243,9 +245,9 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         
         # Message handler callbacks (Dispatcher pattern)
         
-        self.dk_dmi_met_obs_mqtt_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.Station, Dict[str, str]], Awaitable[None]]] = None
+        self.dk_dmi_met_obs_mqtt_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.MetObsStation, Dict[str, str]], Awaitable[None]]] = None
         
-        self.dk_dmi_met_obs_mqtt_observation_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.Observation, Dict[str, str]], Awaitable[None]]] = None
+        self.dk_dmi_met_obs_mqtt_observation_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.MetObsObservation, Dict[str, str]], Awaitable[None]]] = None
         
         
         # Attach message callback
@@ -290,24 +292,24 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         event_type = cloud_event['type']
         
         
-        if event_type == "dk.dmi.metObs.Station":
+        if event_type == "dk.dmi.metObs.MetObsStation":
             if self.dk_dmi_met_obs_mqtt_station_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
                     # CloudEvent.data is now a dict or string, not bytes
-                    data = dmi_mqtt_producer_data.Station.from_data(cloud_event.data, content_type)
+                    data = dmi_mqtt_producer_data.MetObsStation.from_data(cloud_event.data, content_type)
                     topic_params = self._extract_topic_params(mqtt_message.topic, "dk.dmi.metObs.mqtt.Station")
                     await self.dk_dmi_met_obs_mqtt_station_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
                     print(f"Error in dk_dmi_met_obs_mqtt_station handler: {e}")
             return
         
-        if event_type == "dk.dmi.metObs.Observation":
+        if event_type == "dk.dmi.metObs.MetObsObservation":
             if self.dk_dmi_met_obs_mqtt_observation_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
                     # CloudEvent.data is now a dict or string, not bytes
-                    data = dmi_mqtt_producer_data.Observation.from_data(cloud_event.data, content_type)
+                    data = dmi_mqtt_producer_data.MetObsObservation.from_data(cloud_event.data, content_type)
                     topic_params = self._extract_topic_params(mqtt_message.topic, "dk.dmi.metObs.mqtt.Observation")
                     await self.dk_dmi_met_obs_mqtt_observation_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
@@ -361,7 +363,7 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
     async def publish_dk_dmi_met_obs_mqtt_station(self,
         feedurl: str,
         station_id: str,
-        data: dmi_mqtt_producer_data.Station,
+        data: dmi_mqtt_producer_data.MetObsStation,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
@@ -376,8 +378,8 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'dk.dmi.metObs.mqtt.Station'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default ().
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "dk.dmi.metObs.mqtt.Station"
@@ -389,7 +391,7 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"dk.dmi.metObs.Station",
+             "type":"dk.dmi.metObs.MetObsStation",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"{station_id}".format(station_id = station_id)
         }
@@ -397,8 +399,8 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos =  if qos is None else qos
-        _effective_retain = False if retain is None else retain
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,
@@ -422,7 +424,7 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         feedurl: str,
         station_id: str,
         parameter_id: str,
-        data: dmi_mqtt_producer_data.Observation,
+        data: dmi_mqtt_producer_data.MetObsObservation,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
@@ -438,8 +440,8 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'dk.dmi.metObs.mqtt.Observation'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default ().
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "dk.dmi.metObs.mqtt.Observation"
@@ -452,7 +454,7 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"dk.dmi.metObs.Observation",
+             "type":"dk.dmi.metObs.MetObsObservation",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"{station_id}/{parameter_id}".format(station_id = station_id,parameter_id = parameter_id)
         }
@@ -460,8 +462,8 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos =  if qos is None else qos
-        _effective_retain = False if retain is None else retain
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,
@@ -547,11 +549,11 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         
         # Message handler callbacks (Dispatcher pattern)
         
-        self.dk_dmi_ocean_obs_mqtt_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.Station, Dict[str, str]], Awaitable[None]]] = None
+        self.dk_dmi_ocean_obs_mqtt_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.OceanStation, Dict[str, str]], Awaitable[None]]] = None
         
         self.dk_dmi_ocean_obs_mqtt_tidewater_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.TidewaterStation, Dict[str, str]], Awaitable[None]]] = None
         
-        self.dk_dmi_ocean_obs_mqtt_observation_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.Observation, Dict[str, str]], Awaitable[None]]] = None
+        self.dk_dmi_ocean_obs_mqtt_observation_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.OceanObservation, Dict[str, str]], Awaitable[None]]] = None
         
         self.dk_dmi_ocean_obs_mqtt_tidewater_prediction_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, dmi_mqtt_producer_data.TidewaterPrediction, Dict[str, str]], Awaitable[None]]] = None
         
@@ -598,12 +600,12 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         event_type = cloud_event['type']
         
         
-        if event_type == "dk.dmi.oceanObs.Station":
+        if event_type == "dk.dmi.oceanObs.OceanStation":
             if self.dk_dmi_ocean_obs_mqtt_station_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
                     # CloudEvent.data is now a dict or string, not bytes
-                    data = dmi_mqtt_producer_data.Station.from_data(cloud_event.data, content_type)
+                    data = dmi_mqtt_producer_data.OceanStation.from_data(cloud_event.data, content_type)
                     topic_params = self._extract_topic_params(mqtt_message.topic, "dk.dmi.oceanObs.mqtt.Station")
                     await self.dk_dmi_ocean_obs_mqtt_station_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
@@ -622,12 +624,12 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
                     print(f"Error in dk_dmi_ocean_obs_mqtt_tidewater_station handler: {e}")
             return
         
-        if event_type == "dk.dmi.oceanObs.Observation":
+        if event_type == "dk.dmi.oceanObs.OceanObservation":
             if self.dk_dmi_ocean_obs_mqtt_observation_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
                     # CloudEvent.data is now a dict or string, not bytes
-                    data = dmi_mqtt_producer_data.Observation.from_data(cloud_event.data, content_type)
+                    data = dmi_mqtt_producer_data.OceanObservation.from_data(cloud_event.data, content_type)
                     topic_params = self._extract_topic_params(mqtt_message.topic, "dk.dmi.oceanObs.mqtt.Observation")
                     await self.dk_dmi_ocean_obs_mqtt_observation_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
@@ -693,7 +695,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
     async def publish_dk_dmi_ocean_obs_mqtt_station(self,
         feedurl: str,
         station_id: str,
-        data: dmi_mqtt_producer_data.Station,
+        data: dmi_mqtt_producer_data.OceanStation,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
@@ -708,8 +710,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.Station'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default ().
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.Station"
@@ -721,7 +723,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"dk.dmi.oceanObs.Station",
+             "type":"dk.dmi.oceanObs.OceanStation",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"{station_id}".format(station_id = station_id)
         }
@@ -729,8 +731,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos =  if qos is None else qos
-        _effective_retain = False if retain is None else retain
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,
@@ -768,8 +770,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.TidewaterStation'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default ().
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.TidewaterStation"
@@ -789,8 +791,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos =  if qos is None else qos
-        _effective_retain = False if retain is None else retain
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,
@@ -814,7 +816,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         feedurl: str,
         station_id: str,
         parameter_id: str,
-        data: dmi_mqtt_producer_data.Observation,
+        data: dmi_mqtt_producer_data.OceanObservation,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
@@ -830,8 +832,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.Observation'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default ().
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.Observation"
@@ -844,7 +846,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"dk.dmi.oceanObs.Observation",
+             "type":"dk.dmi.oceanObs.OceanObservation",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"{station_id}/{parameter_id}".format(station_id = station_id,parameter_id = parameter_id)
         }
@@ -852,8 +854,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos =  if qos is None else qos
-        _effective_retain = False if retain is None else retain
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,
@@ -891,8 +893,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.TidewaterPrediction'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default ().
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.TidewaterPrediction"
@@ -912,8 +914,8 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos =  if qos is None else qos
-        _effective_retain = False if retain is None else retain
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
             "qos": _effective_qos,

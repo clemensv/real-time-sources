@@ -1,4 +1,4 @@
-""" Observation dataclass. """
+""" MetObsObservation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,7 +15,7 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Observation:
+class MetObsObservation:
     """
     A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north).
     
@@ -39,7 +39,7 @@ class Observation:
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Observation':
+    def from_serializer_dict(cls, data: dict) -> 'MetObsObservation':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -112,7 +112,7 @@ class Observation:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Observation']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['MetObsObservation']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -149,13 +149,13 @@ class Observation:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Observation.from_serializer_dict(_record)
+                return MetObsObservation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Observation':
+    def create_instance(cls) -> 'MetObsObservation':
         """
         Creates an instance of the dataclass with test values.
         
@@ -163,11 +163,11 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='cuaeiasxdtprjnoeyyzb',
-            station_id='sdojrtcjiqdyvsugscyj',
-            parameter_id='yfziuizgrudqfznhjtcf',
-            observed='xrsrmkdjbjivzxjivdpw',
-            value=float(26.71185335950653),
-            latitude=float(24.38531949845698),
-            longitude=float(6.185448908443414)
+            observation_id='tpckpjlllzpbazchoukt',
+            station_id='rzljgsmfivantlysnrgf',
+            parameter_id='lkrqxubxoevnpneveaxd',
+            observed='wizvluusxgdlbasyufpw',
+            value=float(71.66578739703111),
+            latitude=float(77.97059752243543),
+            longitude=float(12.408786897222612)
         )

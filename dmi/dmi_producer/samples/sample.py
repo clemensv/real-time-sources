@@ -38,12 +38,14 @@ from dmi_producer_kafka_producer.producer import DkDmiLightningKafkaEventProduce
 
 # imports for the data classes for each event
 
-from dmi_producer_data.station import Station
-from dmi_producer_data.observation import Observation
+from dmi_producer_data.metobsstation import MetObsStation
+from dmi_producer_data.metobsobservation import MetObsObservation
+from dmi_producer_data.oceanstation import OceanStation
 from dmi_producer_data.tidewaterstation import TidewaterStation
+from dmi_producer_data.oceanobservation import OceanObservation
 from dmi_producer_data.tidewaterprediction import TidewaterPrediction
-from dmi_producer_data.sensor import Sensor
-from dmi_producer_data.strike import Strike
+from dmi_producer_data.lightningsensor import LightningSensor
+from dmi_producer_data.lightningstrike import LightningStrike
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -65,19 +67,19 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
 
     # ---- dk.dmi.metObs.kafka.Station ----
     # TODO: Supply event data for the dk.dmi.metObs.kafka.Station event
-    _station = Station()
+    _met_obs_station = MetObsStation()
 
     # sends the 'dk.dmi.metObs.kafka.Station' event to Kafka topic.
-    await dk_dmi_met_obs_kafka_event_producer.send_dk_dmi_met_obs_kafka_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
-    print(f"Sent 'dk.dmi.metObs.kafka.Station' event: {_station.to_json()}")
+    await dk_dmi_met_obs_kafka_event_producer.send_dk_dmi_met_obs_kafka_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _met_obs_station)
+    print(f"Sent 'dk.dmi.metObs.kafka.Station' event: {_met_obs_station.to_json()}")
 
     # ---- dk.dmi.metObs.kafka.Observation ----
     # TODO: Supply event data for the dk.dmi.metObs.kafka.Observation event
-    _observation = Observation()
+    _met_obs_observation = MetObsObservation()
 
     # sends the 'dk.dmi.metObs.kafka.Observation' event to Kafka topic.
-    await dk_dmi_met_obs_kafka_event_producer.send_dk_dmi_met_obs_kafka_observation(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _parameter_id = 'TODO: replace me', data = _observation)
-    print(f"Sent 'dk.dmi.metObs.kafka.Observation' event: {_observation.to_json()}")
+    await dk_dmi_met_obs_kafka_event_producer.send_dk_dmi_met_obs_kafka_observation(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _parameter_id = 'TODO: replace me', data = _met_obs_observation)
+    print(f"Sent 'dk.dmi.metObs.kafka.Observation' event: {_met_obs_observation.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
@@ -89,11 +91,11 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
 
     # ---- dk.dmi.oceanObs.kafka.Station ----
     # TODO: Supply event data for the dk.dmi.oceanObs.kafka.Station event
-    _station = Station()
+    _ocean_station = OceanStation()
 
     # sends the 'dk.dmi.oceanObs.kafka.Station' event to Kafka topic.
-    await dk_dmi_ocean_obs_kafka_event_producer.send_dk_dmi_ocean_obs_kafka_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
-    print(f"Sent 'dk.dmi.oceanObs.kafka.Station' event: {_station.to_json()}")
+    await dk_dmi_ocean_obs_kafka_event_producer.send_dk_dmi_ocean_obs_kafka_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _ocean_station)
+    print(f"Sent 'dk.dmi.oceanObs.kafka.Station' event: {_ocean_station.to_json()}")
 
     # ---- dk.dmi.oceanObs.kafka.TidewaterStation ----
     # TODO: Supply event data for the dk.dmi.oceanObs.kafka.TidewaterStation event
@@ -105,11 +107,11 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
 
     # ---- dk.dmi.oceanObs.kafka.Observation ----
     # TODO: Supply event data for the dk.dmi.oceanObs.kafka.Observation event
-    _observation = Observation()
+    _ocean_observation = OceanObservation()
 
     # sends the 'dk.dmi.oceanObs.kafka.Observation' event to Kafka topic.
-    await dk_dmi_ocean_obs_kafka_event_producer.send_dk_dmi_ocean_obs_kafka_observation(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _parameter_id = 'TODO: replace me', data = _observation)
-    print(f"Sent 'dk.dmi.oceanObs.kafka.Observation' event: {_observation.to_json()}")
+    await dk_dmi_ocean_obs_kafka_event_producer.send_dk_dmi_ocean_obs_kafka_observation(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _parameter_id = 'TODO: replace me', data = _ocean_observation)
+    print(f"Sent 'dk.dmi.oceanObs.kafka.Observation' event: {_ocean_observation.to_json()}")
 
     # ---- dk.dmi.oceanObs.kafka.TidewaterPrediction ----
     # TODO: Supply event data for the dk.dmi.oceanObs.kafka.TidewaterPrediction event
@@ -129,19 +131,19 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
 
     # ---- dk.dmi.lightning.kafka.Sensor ----
     # TODO: Supply event data for the dk.dmi.lightning.kafka.Sensor event
-    _sensor = Sensor()
+    _lightning_sensor = LightningSensor()
 
     # sends the 'dk.dmi.lightning.kafka.Sensor' event to Kafka topic.
-    await dk_dmi_lightning_kafka_event_producer.send_dk_dmi_lightning_kafka_sensor(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor)
-    print(f"Sent 'dk.dmi.lightning.kafka.Sensor' event: {_sensor.to_json()}")
+    await dk_dmi_lightning_kafka_event_producer.send_dk_dmi_lightning_kafka_sensor(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _lightning_sensor)
+    print(f"Sent 'dk.dmi.lightning.kafka.Sensor' event: {_lightning_sensor.to_json()}")
 
     # ---- dk.dmi.lightning.kafka.Strike ----
     # TODO: Supply event data for the dk.dmi.lightning.kafka.Strike event
-    _strike = Strike()
+    _lightning_strike = LightningStrike()
 
     # sends the 'dk.dmi.lightning.kafka.Strike' event to Kafka topic.
-    await dk_dmi_lightning_kafka_event_producer.send_dk_dmi_lightning_kafka_strike(_feedurl = 'TODO: replace me', _strike_id = 'TODO: replace me', data = _strike)
-    print(f"Sent 'dk.dmi.lightning.kafka.Strike' event: {_strike.to_json()}")
+    await dk_dmi_lightning_kafka_event_producer.send_dk_dmi_lightning_kafka_strike(_feedurl = 'TODO: replace me', _strike_id = 'TODO: replace me', data = _lightning_strike)
+    print(f"Sent 'dk.dmi.lightning.kafka.Strike' event: {_lightning_strike.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

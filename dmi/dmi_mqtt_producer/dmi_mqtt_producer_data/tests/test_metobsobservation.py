@@ -1,5 +1,5 @@
 """
-Test case for Observation
+Test case for MetObsObservation
 """
 
 import os
@@ -8,33 +8,33 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from dmi_producer_data.observation import Observation
+from dmi_mqtt_producer_data.metobsobservation import MetObsObservation
 
 
-class Test_Observation(unittest.TestCase):
+class Test_MetObsObservation(unittest.TestCase):
     """
-    Test case for Observation
+    Test case for MetObsObservation
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Observation.create_instance()
+        self.instance = Test_MetObsObservation.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Observation for testing
+        Create instance of MetObsObservation for testing
         """
-        instance = Observation(
-            observation_id='cuaeiasxdtprjnoeyyzb',
-            station_id='sdojrtcjiqdyvsugscyj',
-            parameter_id='yfziuizgrudqfznhjtcf',
-            observed='xrsrmkdjbjivzxjivdpw',
-            value=float(26.71185335950653),
-            latitude=float(24.38531949845698),
-            longitude=float(6.185448908443414)
+        instance = MetObsObservation(
+            observation_id='nxsbmgfecyucyvuekazq',
+            station_id='wlsyjzpugxbfrcmzyigu',
+            parameter_id='lemxgkaeisgilvmsvuva',
+            observed='vnmedlvlhcsgwcaiwnrt',
+            value=float(91.19465028923457),
+            latitude=float(72.53574560186553),
+            longitude=float(56.2129621059834)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test observation_id property
         """
-        test_value = 'cuaeiasxdtprjnoeyyzb'
+        test_value = 'nxsbmgfecyucyvuekazq'
         self.instance.observation_id = test_value
         self.assertEqual(self.instance.observation_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'sdojrtcjiqdyvsugscyj'
+        test_value = 'wlsyjzpugxbfrcmzyigu'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = 'yfziuizgrudqfznhjtcf'
+        test_value = 'lemxgkaeisgilvmsvuva'
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test observed property
         """
-        test_value = 'xrsrmkdjbjivzxjivdpw'
+        test_value = 'vnmedlvlhcsgwcaiwnrt'
         self.instance.observed = test_value
         self.assertEqual(self.instance.observed, test_value)
     
@@ -75,7 +75,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(26.71185335950653)
+        test_value = float(91.19465028923457)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +83,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(24.38531949845698)
+        test_value = float(72.53574560186553)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +91,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(6.185448908443414)
+        test_value = float(56.2129621059834)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -101,7 +101,7 @@ class Test_Observation(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Observation.from_data(bytes_data, media_type)
+        new_instance = MetObsObservation.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -110,7 +110,7 @@ class Test_Observation(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = Observation.from_json(json_data)
+        new_instance = MetObsObservation.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 

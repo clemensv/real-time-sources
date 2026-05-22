@@ -179,19 +179,19 @@ class OceanStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='jmxiisoeagncpeylqnad',
-            name='cudnvxdobeylpwmmdmad',
-            country='eyjyyvqyoqfrltmonfka',
-            owner='htkoxfvesceqbkwdajdv',
-            type='dsumrntbvfcewzqopbdh',
-            status='ojbzujvoouwdxbwawkbq',
-            parameter_id=['dwlfiosyhypxwpptrepw', 'egmobtmtfxwpmkthkhev', 'dskfsrosemsxrhiovcpg', 'draplgrjlnbhxxjqfykb', 'susirtaffvvhraoxpjyx'],
-            latitude=float(27.165094135734048),
-            longitude=float(33.35981186176876),
-            valid_from='winbblsjffrohebvpytx',
-            valid_to='pkmebppsjzbibmcgxrct',
-            operation_from='vqgmbavckuwpvluslpeb',
-            operation_to='flukjwiuhptylcsygfen',
-            created='uqvwvubnamzxdgppbchm',
-            updated='nidkatkblyzrdwxvvukg'
+            station_id='gpnoihgjmdxpixzjyccg',
+            name='adelvikdzcxpzhgjwxsf',
+            country='bnollwsyxujlozqcfasf',
+            owner='zbqehaiczojwvcwserxj',
+            type='lfvstpeugihbruxepslz',
+            status='cveupidtnvtjkreguama',
+            parameter_id=['hqqphpcjjpeiifnorhmw', 'vtemqzwtzrkkuhcsikcg', 'wccxoorwyuoysgmlefpr', 'ypnmmfscfipkistrppfa'],
+            latitude=float(84.85317904474944),
+            longitude=float(90.0248961330952),
+            valid_from='bpkjvknuwlriuojjzmyy',
+            valid_to='xtcuwbzzycxkqvcywsnq',
+            operation_from='izwzezjvesilqobjnwrh',
+            operation_to='olplkwphyqsetcjgxaks',
+            created='acosavqwmsmhwujrjzgk',
+            updated='zctmxvntcvdgwajziiaa'
         )

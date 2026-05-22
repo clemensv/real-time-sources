@@ -4,7 +4,9 @@
   "documentation": "Danmarks Meteorologiske Institut (DMI) open-data triad: meteorological observations (metObs), oceanographic observations + tidewater predictions (oceanObs), and triangulated lightning strikes (lightningData). All payloads ride a single Kafka topic 'dmi' multiplexed by ce_type. The MQTT endpoint carries metObs + oceanObs only as retained QoS-1 last-known-value (LKV) topics; lightning is excluded from MQTT because per-strike events do not fit LKV semantics.",
   "endpoints": {
     "dk.dmi.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -23,7 +25,9 @@
       ]
     },
     "dk.dmi.Mqtt": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "MQTT/5.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -46,78 +50,126 @@
   "messagegroups": {
     "dk.dmi.metObs": {
       "messages": {
-        "dk.dmi.metObs.Station": {
+        "dk.dmi.metObs.MetObsStation": {
           "name": "Station",
           "envelope": "CloudEvents/1.0",
           "description": "Reference data for a DMI meteorological observation station. Emitted at feeder startup and refreshed daily. Stations cover Denmark, Greenland (DNK/GRL) and the Faroe Islands (FRO).",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.metObs.Station"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.metObs.MetObsStation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.metObs.Station"
+          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.metObs.MetObsStation"
         },
-        "dk.dmi.metObs.Observation": {
+        "dk.dmi.metObs.MetObsObservation": {
           "name": "Observation",
           "envelope": "CloudEvents/1.0",
           "description": "A single meteorological observation value reported by a station for one parameter at a specific observed time. Cadence depends on parameter (10-minute or hourly).",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.metObs.Observation"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{station_id}/{parameter_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.metObs.MetObsObservation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}/{parameter_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.metObs.Observation"
+          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.metObs.MetObsObservation"
         }
       }
     },
     "dk.dmi.oceanObs": {
       "messages": {
-        "dk.dmi.oceanObs.Station": {
+        "dk.dmi.oceanObs.OceanStation": {
           "name": "OceanStation",
           "envelope": "CloudEvents/1.0",
           "description": "Reference data for an oceanographic observation station (tide gauge or other coastal sensor). Owners include DMI and Kystdirektoratet (Danish Coastal Authority).",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.oceanObs.Station"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.oceanObs.OceanStation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.Station"
+          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.OceanStation"
         },
         "dk.dmi.oceanObs.TidewaterStation": {
           "name": "TidewaterStation",
           "envelope": "CloudEvents/1.0",
           "description": "Reference data for a station/grid-point at which DMI publishes tidewater (sea-level) predictions. The set partially overlaps physical tide gauges but also includes prediction-only grid points (e.g. Faroes).",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.oceanObs.TidewaterStation"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.oceanObs.TidewaterStation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.TidewaterStation"
         },
-        "dk.dmi.oceanObs.Observation": {
+        "dk.dmi.oceanObs.OceanObservation": {
           "name": "OceanObservation",
           "envelope": "CloudEvents/1.0",
           "description": "A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR90 datum, cm), sealev_ln (sea level vs local zero, cm), sea_reg (registered sea level by Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute cadence.",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.oceanObs.Observation"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{station_id}/{parameter_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.oceanObs.OceanObservation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}/{parameter_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.Observation"
+          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.OceanObservation"
         },
         "dk.dmi.oceanObs.TidewaterPrediction": {
           "name": "TidewaterPrediction",
           "envelope": "CloudEvents/1.0",
           "description": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. predictionType is typically '10minutes'; predictions are issued forward ~30 days.",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.oceanObs.TidewaterPrediction"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.oceanObs.TidewaterPrediction"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.TidewaterPrediction"
@@ -126,29 +178,45 @@
     },
     "dk.dmi.lightning": {
       "messages": {
-        "dk.dmi.lightning.Sensor": {
+        "dk.dmi.lightning.LightningSensor": {
           "name": "LightningSensor",
           "envelope": "CloudEvents/1.0",
           "description": "Reference data for one of DMI's lightning detection sensors. Six DMI-owned sensors cover Denmark; third-party sensor IDs that appear in observation.sensors are not catalogued here.",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.lightning.Sensor"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{sensor_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.lightning.LightningSensor"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{sensor_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.Sensor"
+          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningSensor"
         },
-        "dk.dmi.lightning.Strike": {
+        "dk.dmi.lightning.LightningStrike": {
           "name": "LightningStrike",
           "envelope": "CloudEvents/1.0",
           "description": "A single triangulated lightning strike. Type 0 = cloud-to-ground negative, 1 = cloud-to-ground positive, 2 = cloud-to-cloud. amp is signed peak current in kA. observed timestamps have microsecond precision.",
           "envelopemetadata": {
-            "type": {"value": "dk.dmi.lightning.Strike"},
-            "source": {"value": "{feedurl}", "type": "uritemplate"},
-            "subject": {"value": "{strike_id}", "type": "uritemplate"}
+            "type": {
+              "value": "dk.dmi.lightning.LightningStrike"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{strike_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.Strike"
+          "dataschemauri": "#/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningStrike"
         }
       }
     },
@@ -156,7 +224,7 @@
       "messages": {
         "dk.dmi.metObs.kafka.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.Station",
+          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -168,7 +236,7 @@
         },
         "dk.dmi.metObs.kafka.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.Observation",
+          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -184,10 +252,13 @@
       "messages": {
         "dk.dmi.oceanObs.kafka.Station": {
           "name": "OceanStation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.Station",
+          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
           "protocol": "KAFKA",
           "protocolmetadata": {
-            "key": {"type": "uritemplate", "value": "{station_id}"}
+            "key": {
+              "type": "uritemplate",
+              "value": "{station_id}"
+            }
           }
         },
         "dk.dmi.oceanObs.kafka.TidewaterStation": {
@@ -195,15 +266,21 @@
           "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
           "protocol": "KAFKA",
           "protocolmetadata": {
-            "key": {"type": "uritemplate", "value": "{station_id}"}
+            "key": {
+              "type": "uritemplate",
+              "value": "{station_id}"
+            }
           }
         },
         "dk.dmi.oceanObs.kafka.Observation": {
           "name": "OceanObservation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.Observation",
+          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
           "protocol": "KAFKA",
           "protocolmetadata": {
-            "key": {"type": "uritemplate", "value": "{station_id}/{parameter_id}"}
+            "key": {
+              "type": "uritemplate",
+              "value": "{station_id}/{parameter_id}"
+            }
           }
         },
         "dk.dmi.oceanObs.kafka.TidewaterPrediction": {
@@ -211,7 +288,10 @@
           "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
           "protocol": "KAFKA",
           "protocolmetadata": {
-            "key": {"type": "uritemplate", "value": "{station_id}"}
+            "key": {
+              "type": "uritemplate",
+              "value": "{station_id}"
+            }
           }
         }
       }
@@ -220,15 +300,18 @@
       "messages": {
         "dk.dmi.lightning.kafka.Sensor": {
           "name": "LightningSensor",
-          "basemessageurl": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.Sensor",
+          "basemessageurl": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
           "protocol": "KAFKA",
           "protocolmetadata": {
-            "key": {"type": "uritemplate", "value": "{sensor_id}"}
+            "key": {
+              "type": "uritemplate",
+              "value": "{sensor_id}"
+            }
           }
         },
         "dk.dmi.lightning.kafka.Strike": {
           "name": "LightningStrike",
-          "basemessageurl": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.Strike",
+          "basemessageurl": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -244,7 +327,7 @@
       "messages": {
         "dk.dmi.metObs.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.Station",
+          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -253,14 +336,20 @@
                 "value": "weather/dk/dmi/met-obs/{station_id}/info",
                 "description": "Unified Namespace topic carrying the station's identity and location as a retained last-known-value."
               },
-              "qos": {"type": "integer", "value": 1},
-              "retain": {"type": "boolean", "value": true}
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
             }
           }
         },
         "dk.dmi.metObs.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.Observation",
+          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -269,8 +358,14 @@
                 "value": "weather/dk/dmi/met-obs/{station_id}/{parameter_id}",
                 "description": "Unified Namespace topic carrying the latest meteorological observation value for one (station, parameter) pair as a retained LKV."
               },
-              "qos": {"type": "integer", "value": 1},
-              "retain": {"type": "boolean", "value": true}
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
             }
           }
         }
@@ -280,13 +375,22 @@
       "messages": {
         "dk.dmi.oceanObs.mqtt.Station": {
           "name": "OceanStation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.Station",
+          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {"type": "uritemplate", "value": "ocean/dk/dmi/ocean-obs/{station_id}/info"},
-              "qos": {"type": "integer", "value": 1},
-              "retain": {"type": "boolean", "value": true}
+              "topic": {
+                "type": "uritemplate",
+                "value": "ocean/dk/dmi/ocean-obs/{station_id}/info"
+              },
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
             }
           }
         },
@@ -296,21 +400,39 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {"type": "uritemplate", "value": "ocean/dk/dmi/tidewater/{station_id}/info"},
-              "qos": {"type": "integer", "value": 1},
-              "retain": {"type": "boolean", "value": true}
+              "topic": {
+                "type": "uritemplate",
+                "value": "ocean/dk/dmi/tidewater/{station_id}/info"
+              },
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
             }
           }
         },
         "dk.dmi.oceanObs.mqtt.Observation": {
           "name": "OceanObservation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.Observation",
+          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {"type": "uritemplate", "value": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}"},
-              "qos": {"type": "integer", "value": 1},
-              "retain": {"type": "boolean", "value": true}
+              "topic": {
+                "type": "uritemplate",
+                "value": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}"
+              },
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
             }
           }
         },
@@ -320,9 +442,18 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {"type": "uritemplate", "value": "ocean/dk/dmi/tidewater/{station_id}/prediction"},
-              "qos": {"type": "integer", "value": 1},
-              "retain": {"type": "boolean", "value": true}
+              "topic": {
+                "type": "uritemplate",
+                "value": "ocean/dk/dmi/tidewater/{station_id}/prediction"
+              },
+              "qos": {
+                "type": "integer",
+                "value": 1
+              },
+              "retain": {
+                "type": "boolean",
+                "value": true
+              }
             }
           }
         }
@@ -332,7 +463,7 @@
   "schemagroups": {
     "dk.dmi.jstruct": {
       "schemas": {
-        "dk.dmi.metObs.Station": {
+        "dk.dmi.metObs.MetObsStation": {
           "format": "JsonStructure/draft-02",
           "versions": {
             "1": {
@@ -340,25 +471,43 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/metObs/Station",
-                "name": "Station",
+                "name": "MetObsStation",
                 "type": "object",
                 "description": "A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo.",
-                "required": ["station_id", "name", "country", "latitude", "longitude"],
+                "required": [
+                  "station_id",
+                  "name",
+                  "country",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
                     "description": "Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject.",
-                    "altnames": {"json": "stationId"}
+                    "altnames": {
+                      "json": "stationId"
+                    }
                   },
                   "wmo_station_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "World Meteorological Organization (WMO) station identifier when registered with WMO.",
-                    "altnames": {"json": "wmoStationId"}
+                    "altnames": {
+                      "json": "wmoStationId"
+                    }
                   },
                   "wmo_country_code": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "WMO country code as an integer string (e.g. '06' for Denmark).",
-                    "altnames": {"json": "wmoCountryCode"}
+                    "altnames": {
+                      "json": "wmoCountryCode"
+                    }
                   },
                   "name": {
                     "type": "string",
@@ -376,26 +525,45 @@
                     }
                   },
                   "owner": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Organisation that owns/operates the station (typically 'DMI')."
                   },
                   "region_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "DMI region identifier within the country.",
-                    "altnames": {"json": "regionId"}
+                    "altnames": {
+                      "json": "regionId"
+                    }
                   },
                   "type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Station type as classified by DMI (e.g. 'Synop', 'PluvioSync')."
                   },
                   "status": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Operational status (e.g. 'Active', 'Inactive')."
                   },
                   "parameter_id": {
-                    "type": {"type": "array", "items": "string"},
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
                     "description": "List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).",
-                    "altnames": {"json": "parameterId"}
+                    "altnames": {
+                      "json": "parameterId"
+                    }
                   },
                   "latitude": {
                     "type": "double",
@@ -408,54 +576,95 @@
                     "unit": "deg"
                   },
                   "station_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Height of the station above mean sea level.",
                     "unit": "m",
-                    "altnames": {"json": "stationHeight"}
+                    "altnames": {
+                      "json": "stationHeight"
+                    }
                   },
                   "barometer_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Height of the barometer above mean sea level.",
                     "unit": "m",
-                    "altnames": {"json": "barometerHeight"}
+                    "altnames": {
+                      "json": "barometerHeight"
+                    }
                   },
                   "anemometer_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Height of the anemometer above ground level.",
                     "unit": "m",
-                    "altnames": {"json": "anemometerHeight"}
+                    "altnames": {
+                      "json": "anemometerHeight"
+                    }
                   },
                   "valid_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp from which this station-metadata version is valid.",
-                    "altnames": {"json": "validFrom"}
+                    "altnames": {
+                      "json": "validFrom"
+                    }
                   },
                   "valid_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp after which this station-metadata version is no longer valid; null while current.",
-                    "altnames": {"json": "validTo"}
+                    "altnames": {
+                      "json": "validTo"
+                    }
                   },
                   "operation_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp from which the station began operating.",
-                    "altnames": {"json": "operationFrom"}
+                    "altnames": {
+                      "json": "operationFrom"
+                    }
                   },
                   "operation_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp at which the station stopped operating; null while operational.",
-                    "altnames": {"json": "operationTo"}
+                    "altnames": {
+                      "json": "operationTo"
+                    }
                   },
                   "created": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp when this metadata row was created by DMI."
                   },
                   "updated": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp when this metadata row was last updated by DMI."
                   }
@@ -464,7 +673,7 @@
             }
           }
         },
-        "dk.dmi.metObs.Observation": {
+        "dk.dmi.metObs.MetObsObservation": {
           "format": "JsonStructure/draft-02",
           "versions": {
             "1": {
@@ -472,25 +681,39 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/metObs/Observation",
-                "name": "Observation",
+                "name": "MetObsObservation",
                 "type": "object",
                 "description": "A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north).",
-                "required": ["station_id", "parameter_id", "observed", "value"],
+                "required": [
+                  "station_id",
+                  "parameter_id",
+                  "observed",
+                  "value"
+                ],
                 "properties": {
                   "observation_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency.",
-                    "altnames": {"json": "id"}
+                    "altnames": {
+                      "json": "id"
+                    }
                   },
                   "station_id": {
                     "type": "string",
                     "description": "Reporting station identifier (foreign key to Station).",
-                    "altnames": {"json": "stationId"}
+                    "altnames": {
+                      "json": "stationId"
+                    }
                   },
                   "parameter_id": {
                     "type": "string",
                     "description": "DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').",
-                    "altnames": {"json": "parameterId"}
+                    "altnames": {
+                      "json": "parameterId"
+                    }
                   },
                   "observed": {
                     "type": "string",
@@ -502,12 +725,18 @@
                     "description": "Numeric measurement value. Units depend on parameter_id (see DMI documentation)."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station latitude (decimal degrees, WGS84) at observation time.",
                     "unit": "deg"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station longitude (decimal degrees, WGS84) at observation time.",
                     "unit": "deg"
                   }
@@ -516,7 +745,7 @@
             }
           }
         },
-        "dk.dmi.oceanObs.Station": {
+        "dk.dmi.oceanObs.OceanStation": {
           "format": "JsonStructure/draft-02",
           "versions": {
             "1": {
@@ -527,19 +756,29 @@
                 "name": "OceanStation",
                 "type": "object",
                 "description": "An oceanographic observation station (typically a tide gauge). Owners include DMI and Kystdirektoratet (Danish Coastal Authority). See https://opendatadocs.dmi.govcloud.dk/en/Data/Oceanographic_Observation_Data.",
-                "required": ["station_id", "name", "latitude", "longitude"],
+                "required": [
+                  "station_id",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
                     "description": "Stable DMI ocean station identifier.",
-                    "altnames": {"json": "stationId"}
+                    "altnames": {
+                      "json": "stationId"
+                    }
                   },
                   "name": {
                     "type": "string",
                     "description": "Human-readable station name."
                   },
                   "country": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "ISO 3166-1 alpha-3 country code (DNK, GRL, FRO).",
                     "altenums": {
                       "iso3166-1-alpha-3": {
@@ -550,21 +789,35 @@
                     }
                   },
                   "owner": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Operating agency (e.g. 'DMI', 'Kystdirektoratet')."
                   },
                   "type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Station type (e.g. 'Tide-gauge-primary')."
                   },
                   "status": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Operational status."
                   },
                   "parameter_id": {
-                    "type": {"type": "array", "items": "string"},
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
                     "description": "Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).",
-                    "altnames": {"json": "parameterId"}
+                    "altnames": {
+                      "json": "parameterId"
+                    }
                   },
                   "latitude": {
                     "type": "double",
@@ -577,33 +830,59 @@
                     "unit": "deg"
                   },
                   "valid_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Metadata-validity start.",
-                    "altnames": {"json": "validFrom"}
+                    "altnames": {
+                      "json": "validFrom"
+                    }
                   },
                   "valid_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Metadata-validity end.",
-                    "altnames": {"json": "validTo"}
+                    "altnames": {
+                      "json": "validTo"
+                    }
                   },
                   "operation_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
-                    "altnames": {"json": "operationFrom"}
+                    "altnames": {
+                      "json": "operationFrom"
+                    }
                   },
                   "operation_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
-                    "altnames": {"json": "operationTo"}
+                    "altnames": {
+                      "json": "operationTo"
+                    }
                   },
                   "created": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time"
                   },
                   "updated": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time"
                   }
                 }
@@ -622,23 +901,38 @@
                 "name": "TidewaterStation",
                 "type": "object",
                 "description": "A station or virtual grid point at which DMI publishes tidewater (sea-level) predictions. The catalog includes both physical tide gauges and prediction-only points.",
-                "required": ["station_id", "latitude", "longitude"],
+                "required": [
+                  "station_id",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
                     "description": "Stable identifier of the tidewater prediction station/grid-point.",
-                    "altnames": {"json": "stationId"}
+                    "altnames": {
+                      "json": "stationId"
+                    }
                   },
                   "name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable station name where available."
                   },
                   "country": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "ISO 3166-1 alpha-3 country code."
                   },
                   "owner": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Operating agency."
                   },
                   "latitude": {
@@ -652,21 +946,31 @@
                     "unit": "deg"
                   },
                   "valid_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
-                    "altnames": {"json": "validFrom"}
+                    "altnames": {
+                      "json": "validFrom"
+                    }
                   },
                   "valid_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
-                    "altnames": {"json": "validTo"}
+                    "altnames": {
+                      "json": "validTo"
+                    }
                   }
                 }
               }
             }
           }
         },
-        "dk.dmi.oceanObs.Observation": {
+        "dk.dmi.oceanObs.OceanObservation": {
           "format": "JsonStructure/draft-02",
           "versions": {
             "1": {
@@ -677,21 +981,35 @@
                 "name": "OceanObservation",
                 "type": "object",
                 "description": "A single oceanographic measurement. parameter_id is one of: sealev_dvr (sea level vs DVR90 datum, cm; preferred since 1997), sealev_ln (sea level vs local zero, cm; preferred before 1997), sea_reg (sea-level registration by Kystdirektoratet, cm), tw (water temperature, deg C; indicative).",
-                "required": ["station_id", "parameter_id", "observed", "value"],
+                "required": [
+                  "station_id",
+                  "parameter_id",
+                  "observed",
+                  "value"
+                ],
                 "properties": {
                   "observation_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "DMI-assigned row identifier (not stable across re-ingestions).",
-                    "altnames": {"json": "id"}
+                    "altnames": {
+                      "json": "id"
+                    }
                   },
                   "station_id": {
                     "type": "string",
-                    "altnames": {"json": "stationId"}
+                    "altnames": {
+                      "json": "stationId"
+                    }
                   },
                   "parameter_id": {
                     "type": "string",
                     "description": "One of sealev_dvr, sealev_ln, sea_reg, tw.",
-                    "altnames": {"json": "parameterId"},
+                    "altnames": {
+                      "json": "parameterId"
+                    },
                     "altenums": {
                       "descriptions": {
                         "sealev_dvr": "Sea level relative to DVR90 datum (cm)",
@@ -710,11 +1028,17 @@
                     "description": "Numeric value. cm for sealev_*/sea_reg, deg C for tw."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "unit": "deg"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "unit": "deg"
                   }
                 }
@@ -733,38 +1057,62 @@
                 "name": "TidewaterPrediction",
                 "type": "object",
                 "description": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. Predictions are issued every model cycle and span ~30 days at 10-minute granularity.",
-                "required": ["station_id", "prediction_time", "value"],
+                "required": [
+                  "station_id",
+                  "prediction_time",
+                  "value"
+                ],
                 "properties": {
                   "prediction_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "DMI-assigned row identifier.",
-                    "altnames": {"json": "id"}
+                    "altnames": {
+                      "json": "id"
+                    }
                   },
                   "station_id": {
                     "type": "string",
-                    "altnames": {"json": "stationId"}
+                    "altnames": {
+                      "json": "stationId"
+                    }
                   },
                   "prediction_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Granularity of the prediction series (typically '10minutes').",
-                    "altnames": {"json": "predictionType"}
+                    "altnames": {
+                      "json": "predictionType"
+                    }
                   },
                   "prediction_time": {
                     "type": "string",
                     "format": "date-time",
                     "description": "Target time for which the value is predicted.",
-                    "altnames": {"json": "predictionTime"}
+                    "altnames": {
+                      "json": "predictionTime"
+                    }
                   },
                   "value": {
                     "type": "double",
                     "description": "Predicted sea level (cm vs DVR90 unless otherwise noted)."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "unit": "deg"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "unit": "deg"
                   }
                 }
@@ -772,7 +1120,7 @@
             }
           }
         },
-        "dk.dmi.lightning.Sensor": {
+        "dk.dmi.lightning.LightningSensor": {
           "format": "JsonStructure/draft-02",
           "versions": {
             "1": {
@@ -783,23 +1131,38 @@
                 "name": "LightningSensor",
                 "type": "object",
                 "description": "A DMI lightning detection sensor site. Six DMI-owned sensors cover Denmark; third-party sensors that contribute to triangulation are not catalogued here but their IDs appear in Strike.sensors.",
-                "required": ["sensor_id", "latitude", "longitude"],
+                "required": [
+                  "sensor_id",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "sensor_id": {
                     "type": "string",
                     "description": "Stable sensor identifier (1..6 for DMI-owned sensors).",
-                    "altnames": {"json": "sensorId"}
+                    "altnames": {
+                      "json": "sensorId"
+                    }
                   },
                   "name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable sensor site name."
                   },
                   "owner": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Operating agency (typically 'DMI')."
                   },
                   "country": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "ISO 3166-1 alpha-3 country code (typically 'DNK')."
                   },
                   "latitude": {
@@ -811,21 +1174,31 @@
                     "unit": "deg"
                   },
                   "active_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
-                    "altnames": {"json": "activeFrom"}
+                    "altnames": {
+                      "json": "activeFrom"
+                    }
                   },
                   "active_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
-                    "altnames": {"json": "activeTo"}
+                    "altnames": {
+                      "json": "activeTo"
+                    }
                   }
                 }
               }
             }
           }
         },
-        "dk.dmi.lightning.Strike": {
+        "dk.dmi.lightning.LightningStrike": {
           "format": "JsonStructure/draft-02",
           "versions": {
             "1": {
@@ -836,12 +1209,20 @@
                 "name": "LightningStrike",
                 "type": "object",
                 "description": "A single triangulated lightning strike. See https://opendatadocs.dmi.govcloud.dk/en/Data/Lightning_Data. observed timestamps have microsecond precision; location accuracy is approximately +/- 500-2000 m.",
-                "required": ["strike_id", "observed", "type", "latitude", "longitude"],
+                "required": [
+                  "strike_id",
+                  "observed",
+                  "type",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "strike_id": {
                     "type": "string",
                     "description": "Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').",
-                    "altnames": {"json": "id"}
+                    "altnames": {
+                      "json": "id"
+                    }
                   },
                   "observed": {
                     "type": "string",
@@ -849,7 +1230,10 @@
                     "description": "Strike timestamp (UTC, microsecond precision)."
                   },
                   "created": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "format": "date-time",
                     "description": "Timestamp when DMI ingested the strike."
                   },
@@ -865,16 +1249,25 @@
                     }
                   },
                   "amp": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Signed peak current.",
                     "unit": "kA"
                   },
                   "strokes": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Number of return strokes."
                   },
                   "sensors": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog)."
                   },
                   "latitude": {

@@ -1,4 +1,4 @@
-""" Station dataclass. """
+""" MetObsStation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,7 +15,7 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Station:
+class MetObsStation:
     """
     A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo.
     
@@ -67,7 +67,7 @@ class Station:
     updated: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Station':
+    def from_serializer_dict(cls, data: dict) -> 'MetObsStation':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -140,7 +140,7 @@ class Station:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Station']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['MetObsStation']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -177,13 +177,13 @@ class Station:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Station.from_serializer_dict(_record)
+                return MetObsStation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Station':
+    def create_instance(cls) -> 'MetObsStation':
         """
         Creates an instance of the dataclass with test values.
         
@@ -191,25 +191,25 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='hkyzflvqvvmmgvvnqrll',
-            wmo_station_id='uytwpdivgvuwzndkfxnh',
-            wmo_country_code='elihyqzfysiwjuexyzek',
-            name='geuuziaeyudyfwjdfjdb',
-            country='vlgpvmjshfqnhanxpzoj',
-            owner='zswjjqoixjsbdkntwdhn',
-            region_id='gbpfljvoqwhumandrvqu',
-            type='jqkdnnmvjjjxnbzcozjf',
-            status='wktiktvwgjsulsftlfey',
-            parameter_id=['zohsvnhkujjtwwjzmjfc', 'akcduqmwodwupblrtjej', 'ufzaawauyhsvkkdtmizh', 'nworsybmpuamjwvaaecy', 'vkxuubainwkurhyuiefv'],
-            latitude=float(99.50102052634274),
-            longitude=float(25.28144739060635),
-            station_height=float(24.110025366952726),
-            barometer_height=float(89.6709240355987),
-            anemometer_height=float(74.49331251233386),
-            valid_from='wmozzoysstkxlaedtkcj',
-            valid_to='zphbnwlwwavkkkiggjzn',
-            operation_from='vmcbitxmfszenwcluwyi',
-            operation_to='qitjpfeugtcbiuetaupe',
-            created='jwgkgauedjhbdzuyctne',
-            updated='iwqdmkhanhpkeavmzzcv'
+            station_id='ucufzskxxbjzasavnjbd',
+            wmo_station_id='fyaupfpaijrefztlkbsv',
+            wmo_country_code='qjhiiodinsaxpshlowlx',
+            name='xtkorvgypftjwvxgvjmf',
+            country='hqtbsxybijepydkzpbzr',
+            owner='mbsthafnntdntewlazqo',
+            region_id='awymtufkupjgwkzaawfc',
+            type='fjywhcalxnttymwhmnmh',
+            status='ehdsaccguwbtejeygwxa',
+            parameter_id=['ljnxzbeojacdhjfcgkco', 'jtljenfniqzfwvfabmny', 'zknvaxazavkbfkrjrglh', 'eqwijxtnbitkyhpfgxii'],
+            latitude=float(26.717665369122656),
+            longitude=float(44.9890222143601),
+            station_height=float(92.87611330390226),
+            barometer_height=float(30.84244164035126),
+            anemometer_height=float(26.787822701252274),
+            valid_from='rqtsaalnoitnbqgqrvaj',
+            valid_to='sdchpsdogjrzgoajvtje',
+            operation_from='hxevahgadshhfeshvjig',
+            operation_to='iqfmnlxwuhtluftxzaju',
+            created='osyavlevwymuxdpjzpnn',
+            updated='vhfwxyjlxklyodtomjov'
         )

@@ -19,20 +19,24 @@ from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from dmi_producer_kafka_producer.producer import DkDmiMetObsKafkaEventProducer
-from dmi_producer_data import Station
-from test_dmi_producer_data_station import Test_Station
-from dmi_producer_data import Observation
-from test_dmi_producer_data_observation import Test_Observation
+from dmi_producer_data import MetObsStation
+from test_dmi_producer_data_metobsstation import Test_MetObsStation
+from dmi_producer_data import MetObsObservation
+from test_dmi_producer_data_metobsobservation import Test_MetObsObservation
 from dmi_producer_kafka_producer.producer import DkDmiOceanObsKafkaEventProducer
+from dmi_producer_data import OceanStation
+from test_dmi_producer_data_oceanstation import Test_OceanStation
 from dmi_producer_data import TidewaterStation
 from test_dmi_producer_data_tidewaterstation import Test_TidewaterStation
+from dmi_producer_data import OceanObservation
+from test_dmi_producer_data_oceanobservation import Test_OceanObservation
 from dmi_producer_data import TidewaterPrediction
 from test_dmi_producer_data_tidewaterprediction import Test_TidewaterPrediction
 from dmi_producer_kafka_producer.producer import DkDmiLightningKafkaEventProducer
-from dmi_producer_data import Sensor
-from test_dmi_producer_data_sensor import Test_Sensor
-from dmi_producer_data import Strike
-from test_dmi_producer_data_strike import Test_Strike
+from dmi_producer_data import LightningSensor
+from test_dmi_producer_data_lightningsensor import Test_LightningSensor
+from dmi_producer_data import LightningStrike
+from test_dmi_producer_data_lightningstrike import Test_LightningStrike
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -111,7 +115,7 @@ def test_dk_dmi_metobs_kafka_dkdmimetobskafkastation(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DkDmiMetObsKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Station.create_instance()
+    event_data = Test_MetObsStation.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
@@ -174,7 +178,7 @@ def test_dk_dmi_metobs_kafka_dkdmimetobskafkaobservation(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DkDmiMetObsKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Observation.create_instance()
+    event_data = Test_MetObsObservation.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
@@ -237,7 +241,7 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkastation(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DkDmiOceanObsKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Station.create_instance()
+    event_data = Test_OceanStation.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
@@ -363,7 +367,7 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkaobservation(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DkDmiOceanObsKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Observation.create_instance()
+    event_data = Test_OceanObservation.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
@@ -489,7 +493,7 @@ def test_dk_dmi_lightning_kafka_dkdmilightningkafkasensor(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DkDmiLightningKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Sensor.create_instance()
+    event_data = Test_LightningSensor.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
@@ -552,7 +556,7 @@ def test_dk_dmi_lightning_kafka_dkdmilightningkafkastrike(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DkDmiLightningKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Strike.create_instance()
+    event_data = Test_LightningStrike.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):

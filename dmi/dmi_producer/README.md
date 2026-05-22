@@ -120,7 +120,7 @@ producer = DkDmiMetObsKafkaProducer(
 
 await producer.send_dk_dmi_met_obs_kafka_station(```python
 
-    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+    data=MetObsStation(...),add_consumer(self, consumer: KafkaConsumer)
 
     partition_key='device-123'```
 
@@ -152,8 +152,8 @@ producer = DkDmiMetObsKafkaProducer(
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'dk_dmi_met_obs_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
-Awaitable[None]]
+    sasl_password='your-password'dk_dmi_met_obs_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent,
+MetObsStation], Awaitable[None]]
 
 )```
 
@@ -171,7 +171,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Station`.
+### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.MetObsStation`.
 
 
 
@@ -181,7 +181,8 @@ Producer for `dk.dmi.metObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_met_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def dk_dmi_met_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MetObsStation) ->
+None:
 
 ```python    # Process the event data
 
@@ -208,7 +209,7 @@ dk_dmi_met_obs_kafka_dispatcher.dk_dmi_met_obs_kafka_station_async = dk_dmi_met_
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Station`.
+### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.MetObsStation`.
 
 
 
@@ -218,7 +219,8 @@ Producer for `dk.dmi.oceanObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_met_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def dk_dmi_met_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MetObsStation) ->
+None:
 
 ```python    # Process the event data
 
@@ -245,7 +247,7 @@ dk_dmi_ocean_obs_kafka_dispatcher.dk_dmi_met_obs_kafka_station_async = dk_dmi_me
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.Station`.
+### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.MetObsStation`.
 
 
 
@@ -255,7 +257,8 @@ Producer for `dk.dmi.lightning.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_met_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def dk_dmi_met_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MetObsStation) ->
+None:
 
 ```python    # Process the event data
 
@@ -291,7 +294,7 @@ dk_dmi_lightning_kafka_dispatcher.dk_dmi_met_obs_kafka_station_async = dk_dmi_me
     sasl_username='your-username',```python
 
     sasl_password='your-password'dk_dmi_met_obs_kafka_observation_async:  Callable[[ConsumerRecord, CloudEvent,
-Observation], Awaitable[None]]
+MetObsObservation], Awaitable[None]]
 
 )```
 
@@ -308,7 +311,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Observation`.
+### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.MetObsObservation`.
 
 
 
@@ -318,8 +321,8 @@ Producer for `dk.dmi.metObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_met_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
-None:
+async def dk_dmi_met_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MetObsObservation) -> None:
 
 ```python    # Process the event data
 
@@ -346,7 +349,7 @@ dk_dmi_met_obs_kafka_dispatcher.dk_dmi_met_obs_kafka_observation_async = dk_dmi_
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Observation`.
+### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.MetObsObservation`.
 
 
 
@@ -356,8 +359,8 @@ Producer for `dk.dmi.oceanObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_met_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
-None:
+async def dk_dmi_met_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MetObsObservation) -> None:
 
 ```python    # Process the event data
 
@@ -384,7 +387,7 @@ dk_dmi_ocean_obs_kafka_dispatcher.dk_dmi_met_obs_kafka_observation_async = dk_dm
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.Observation`.
+### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.MetObsObservation`.
 
 
 
@@ -394,8 +397,8 @@ Producer for `dk.dmi.lightning.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_met_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
-None:
+async def dk_dmi_met_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MetObsObservation) -> None:
 
 ```python    # Process the event data
 
@@ -440,7 +443,7 @@ async def send_dk_dmi_met_obs_kafka_station(
 
     self,##### `_process_event`
 
-    data: Station,
+    data: MetObsStation,
 
     partition_key: Optional[str] = None,```python
 
@@ -462,7 +465,7 @@ Emitted at feeder startup and refreshed daily. Stations cover Denmark, Greenland
 
 **Parameters:**
 
-- `data`: Message data of type `Station`
+- `data`: Message data of type `MetObsStation`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -480,7 +483,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 await producer.send_dk_dmi_met_obs_kafka_station(
 
-    data=Station(...),Args:
+    data=MetObsStation(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -500,7 +503,7 @@ async def send_dk_dmi_met_obs_kafka_station_batch(_dispatch_record(self, record)
 
     self,```
 
-    messages: List[Station],
+    messages: List[MetObsStation],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -539,11 +542,11 @@ await producer.send_dk_dmi_met_obs_kafka_station_batch(```
 
     messages=[
 
-        Station(...),Initializes the runner with a Kafka consumer.
+        MetObsStation(...),Initializes the runner with a Kafka consumer.
 
-        Station(...),
+        MetObsStation(...),
 
-        Station(...)Args:
+        MetObsStation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -567,7 +570,7 @@ async def send_dk_dmi_met_obs_kafka_observation(
 
     self,##### `_process_event`
 
-    data: Observation,
+    data: MetObsObservation,
 
     partition_key: Optional[str] = None,```python
 
@@ -588,7 +591,7 @@ for one parameter at a specific observed time. Cadence depends on parameter (10-
 
 **Parameters:**
 
-- `data`: Message data of type `Observation`
+- `data`: Message data of type `MetObsObservation`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -606,7 +609,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 await producer.send_dk_dmi_met_obs_kafka_observation(
 
-    data=Observation(...),Args:
+    data=MetObsObservation(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -626,7 +629,7 @@ async def send_dk_dmi_met_obs_kafka_observation_batch(_dispatch_record(self, rec
 
     self,```
 
-    messages: List[Observation],
+    messages: List[MetObsObservation],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -665,11 +668,11 @@ await producer.send_dk_dmi_met_obs_kafka_observation_batch(```
 
     messages=[
 
-        Observation(...),Initializes the runner with a Kafka consumer.
+        MetObsObservation(...),Initializes the runner with a Kafka consumer.
 
-        Observation(...),
+        MetObsObservation(...),
 
-        Observation(...)Args:
+        MetObsObservation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -745,7 +748,7 @@ producer = DkDmiMetObsKafkaProducer(
 
 await producer.send_dk_dmi_met_obs_kafka_station(```python
 
-    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+    data=MetObsStation(...),add_consumer(self, consumer: KafkaConsumer)
 
     partition_key='device-123'```
 
@@ -777,8 +780,8 @@ producer = DkDmiMetObsKafkaProducer(
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'dk_dmi_ocean_obs_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
-Awaitable[None]]
+    sasl_password='your-password'dk_dmi_ocean_obs_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent,
+OceanStation], Awaitable[None]]
 
 )```
 
@@ -795,7 +798,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Station`.
+### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.OceanStation`.
 
 
 
@@ -805,7 +808,8 @@ Producer for `dk.dmi.metObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_ocean_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def dk_dmi_ocean_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: OceanStation) ->
+None:
 
 ```python    # Process the event data
 
@@ -832,7 +836,7 @@ dk_dmi_met_obs_kafka_dispatcher.dk_dmi_ocean_obs_kafka_station_async = dk_dmi_oc
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Station`.
+### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.OceanStation`.
 
 
 
@@ -842,7 +846,8 @@ Producer for `dk.dmi.oceanObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_ocean_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def dk_dmi_ocean_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: OceanStation) ->
+None:
 
 ```python    # Process the event data
 
@@ -869,7 +874,7 @@ dk_dmi_ocean_obs_kafka_dispatcher.dk_dmi_ocean_obs_kafka_station_async = dk_dmi_
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.Station`.
+### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.OceanStation`.
 
 
 
@@ -879,7 +884,8 @@ Producer for `dk.dmi.lightning.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_ocean_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+async def dk_dmi_ocean_obs_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: OceanStation) ->
+None:
 
 ```python    # Process the event data
 
@@ -1059,7 +1065,7 @@ dk_dmi_ocean_obs_kafka_tidewater_station_event
     sasl_username='your-username',```python
 
     sasl_password='your-password'dk_dmi_ocean_obs_kafka_observation_async:  Callable[[ConsumerRecord, CloudEvent,
-Observation], Awaitable[None]]
+OceanObservation], Awaitable[None]]
 
 )```
 
@@ -1077,7 +1083,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Observation`.
+### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.OceanObservation`.
 
 
 
@@ -1087,8 +1093,8 @@ Producer for `dk.dmi.metObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_ocean_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
--> None:
+async def dk_dmi_ocean_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+OceanObservation) -> None:
 
 ```python    # Process the event data
 
@@ -1115,7 +1121,7 @@ dk_dmi_met_obs_kafka_dispatcher.dk_dmi_ocean_obs_kafka_observation_async = dk_dm
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Observation`.
+### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.OceanObservation`.
 
 
 
@@ -1125,8 +1131,8 @@ Producer for `dk.dmi.oceanObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_ocean_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
--> None:
+async def dk_dmi_ocean_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+OceanObservation) -> None:
 
 ```python    # Process the event data
 
@@ -1153,7 +1159,7 @@ dk_dmi_ocean_obs_kafka_dispatcher.dk_dmi_ocean_obs_kafka_observation_async = dk_
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.Observation`.
+### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.OceanObservation`.
 
 
 
@@ -1163,8 +1169,8 @@ Producer for `dk.dmi.lightning.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_ocean_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
--> None:
+async def dk_dmi_ocean_obs_kafka_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+OceanObservation) -> None:
 
 ```python    # Process the event data
 
@@ -1353,7 +1359,7 @@ async def send_dk_dmi_ocean_obs_kafka_station(
 
     self,##### `_process_event`
 
-    data: Station,
+    data: OceanStation,
 
     partition_key: Optional[str] = None,```python
 
@@ -1374,7 +1380,7 @@ gauge or other coastal sensor). Owners include DMI and Kystdirektoratet (Danish 
 
 **Parameters:**
 
-- `data`: Message data of type `Station`
+- `data`: Message data of type `OceanStation`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -1392,7 +1398,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 await producer.send_dk_dmi_ocean_obs_kafka_station(
 
-    data=Station(...),Args:
+    data=OceanStation(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -1412,7 +1418,7 @@ async def send_dk_dmi_ocean_obs_kafka_station_batch(_dispatch_record(self, recor
 
     self,```
 
-    messages: List[Station],
+    messages: List[OceanStation],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -1451,11 +1457,11 @@ await producer.send_dk_dmi_ocean_obs_kafka_station_batch(```
 
     messages=[
 
-        Station(...),Initializes the runner with a Kafka consumer.
+        OceanStation(...),Initializes the runner with a Kafka consumer.
 
-        Station(...),
+        OceanStation(...),
 
-        Station(...)Args:
+        OceanStation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -1606,7 +1612,7 @@ async def send_dk_dmi_ocean_obs_kafka_observation(
 
     self,##### `_process_event`
 
-    data: Observation,
+    data: OceanObservation,
 
     partition_key: Optional[str] = None,```python
 
@@ -1628,7 +1634,7 @@ Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute cadence.Args
 
 **Parameters:**
 
-- `data`: Message data of type `Observation`
+- `data`: Message data of type `OceanObservation`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -1646,7 +1652,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 await producer.send_dk_dmi_ocean_obs_kafka_observation(
 
-    data=Observation(...),Args:
+    data=OceanObservation(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -1666,7 +1672,7 @@ async def send_dk_dmi_ocean_obs_kafka_observation_batch(_dispatch_record(self, r
 
     self,```
 
-    messages: List[Observation],
+    messages: List[OceanObservation],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -1705,11 +1711,11 @@ await producer.send_dk_dmi_ocean_obs_kafka_observation_batch(```
 
     messages=[
 
-        Observation(...),Initializes the runner with a Kafka consumer.
+        OceanObservation(...),Initializes the runner with a Kafka consumer.
 
-        Observation(...),
+        OceanObservation(...),
 
-        Observation(...)Args:
+        OceanObservation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -1912,7 +1918,7 @@ producer = DkDmiMetObsKafkaProducer(
 
 await producer.send_dk_dmi_met_obs_kafka_station(```python
 
-    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+    data=MetObsStation(...),add_consumer(self, consumer: KafkaConsumer)
 
     partition_key='device-123'```
 
@@ -1944,8 +1950,8 @@ producer = DkDmiMetObsKafkaProducer(
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'dk_dmi_lightning_kafka_sensor_async:  Callable[[ConsumerRecord, CloudEvent, Sensor],
-Awaitable[None]]
+    sasl_password='your-password'dk_dmi_lightning_kafka_sensor_async:  Callable[[ConsumerRecord, CloudEvent,
+LightningSensor], Awaitable[None]]
 
 )```
 
@@ -1963,7 +1969,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Sensor`.
+### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.LightningSensor`.
 
 
 
@@ -1973,7 +1979,8 @@ Producer for `dk.dmi.metObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_lightning_kafka_sensor_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Sensor) -> None:
+async def dk_dmi_lightning_kafka_sensor_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LightningSensor) ->
+None:
 
 ```python    # Process the event data
 
@@ -2000,7 +2007,7 @@ dk_dmi_met_obs_kafka_dispatcher.dk_dmi_lightning_kafka_sensor_async = dk_dmi_lig
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Sensor`.
+### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.LightningSensor`.
 
 
 
@@ -2010,7 +2017,8 @@ Producer for `dk.dmi.oceanObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_lightning_kafka_sensor_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Sensor) -> None:
+async def dk_dmi_lightning_kafka_sensor_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LightningSensor) ->
+None:
 
 ```python    # Process the event data
 
@@ -2037,7 +2045,7 @@ dk_dmi_ocean_obs_kafka_dispatcher.dk_dmi_lightning_kafka_sensor_async = dk_dmi_l
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.Sensor`.
+### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.LightningSensor`.
 
 
 
@@ -2047,7 +2055,8 @@ Producer for `dk.dmi.lightning.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_lightning_kafka_sensor_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Sensor) -> None:
+async def dk_dmi_lightning_kafka_sensor_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LightningSensor) ->
+None:
 
 ```python    # Process the event data
 
@@ -2082,8 +2091,8 @@ dk_dmi_lightning_kafka_dispatcher.dk_dmi_lightning_kafka_sensor_async = dk_dmi_l
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'dk_dmi_lightning_kafka_strike_async:  Callable[[ConsumerRecord, CloudEvent, Strike],
-Awaitable[None]]
+    sasl_password='your-password'dk_dmi_lightning_kafka_strike_async:  Callable[[ConsumerRecord, CloudEvent,
+LightningStrike], Awaitable[None]]
 
 )```
 
@@ -2101,7 +2110,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Strike`.
+### DkDmiMetObsKafkaProducer- `data`: The event data of type `dmi_producer_data.LightningStrike`.
 
 
 
@@ -2111,7 +2120,8 @@ Producer for `dk.dmi.metObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_lightning_kafka_strike_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Strike) -> None:
+async def dk_dmi_lightning_kafka_strike_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LightningStrike) ->
+None:
 
 ```python    # Process the event data
 
@@ -2138,7 +2148,7 @@ dk_dmi_met_obs_kafka_dispatcher.dk_dmi_lightning_kafka_strike_async = dk_dmi_lig
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.Strike`.
+### DkDmiOceanObsKafkaProducer- `data`: The event data of type `dmi_producer_data.LightningStrike`.
 
 
 
@@ -2148,7 +2158,8 @@ Producer for `dk.dmi.oceanObs.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_lightning_kafka_strike_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Strike) -> None:
+async def dk_dmi_lightning_kafka_strike_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LightningStrike) ->
+None:
 
 ```python    # Process the event data
 
@@ -2175,7 +2186,7 @@ dk_dmi_ocean_obs_kafka_dispatcher.dk_dmi_lightning_kafka_strike_async = dk_dmi_l
 
 - `cloud_event`: The CloudEvent.
 
-### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.Strike`.
+### DkDmiLightningKafkaProducer- `data`: The event data of type `dmi_producer_data.LightningStrike`.
 
 
 
@@ -2185,7 +2196,8 @@ Producer for `dk.dmi.lightning.kafka` message group.Example:
 
 #### Constructor```python
 
-async def dk_dmi_lightning_kafka_strike_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Strike) -> None:
+async def dk_dmi_lightning_kafka_strike_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LightningStrike) ->
+None:
 
 ```python    # Process the event data
 
@@ -2230,7 +2242,7 @@ async def send_dk_dmi_lightning_kafka_sensor(
 
     self,##### `_process_event`
 
-    data: Sensor,
+    data: LightningSensor,
 
     partition_key: Optional[str] = None,```python
 
@@ -2251,7 +2263,7 @@ DMI-owned sensors cover Denmark; third-party sensor IDs that appear in observati
 
 **Parameters:**
 
-- `data`: Message data of type `Sensor`
+- `data`: Message data of type `LightningSensor`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -2269,7 +2281,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 await producer.send_dk_dmi_lightning_kafka_sensor(
 
-    data=Sensor(...),Args:
+    data=LightningSensor(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -2289,7 +2301,7 @@ async def send_dk_dmi_lightning_kafka_sensor_batch(_dispatch_record(self, record
 
     self,```
 
-    messages: List[Sensor],
+    messages: List[LightningSensor],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -2328,11 +2340,11 @@ await producer.send_dk_dmi_lightning_kafka_sensor_batch(```
 
     messages=[
 
-        Sensor(...),Initializes the runner with a Kafka consumer.
+        LightningSensor(...),Initializes the runner with a Kafka consumer.
 
-        Sensor(...),
+        LightningSensor(...),
 
-        Sensor(...)Args:
+        LightningSensor(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -2356,7 +2368,7 @@ async def send_dk_dmi_lightning_kafka_strike(
 
     self,##### `_process_event`
 
-    data: Strike,
+    data: LightningStrike,
 
     partition_key: Optional[str] = None,```python
 
@@ -2378,7 +2390,7 @@ microsecond precision.Args:
 
 **Parameters:**
 
-- `data`: Message data of type `Strike`
+- `data`: Message data of type `LightningStrike`
 
 - `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
 
@@ -2396,7 +2408,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 await producer.send_dk_dmi_lightning_kafka_strike(
 
-    data=Strike(...),Args:
+    data=LightningStrike(...),Args:
 
     partition_key='device-001',- `record`: The Kafka record.
 
@@ -2416,7 +2428,7 @@ async def send_dk_dmi_lightning_kafka_strike_batch(_dispatch_record(self, record
 
     self,```
 
-    messages: List[Strike],
+    messages: List[LightningStrike],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -2455,11 +2467,11 @@ await producer.send_dk_dmi_lightning_kafka_strike_batch(```
 
     messages=[
 
-        Strike(...),Initializes the runner with a Kafka consumer.
+        LightningStrike(...),Initializes the runner with a Kafka consumer.
 
-        Strike(...),
+        LightningStrike(...),
 
-        Strike(...)Args:
+        LightningStrike(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

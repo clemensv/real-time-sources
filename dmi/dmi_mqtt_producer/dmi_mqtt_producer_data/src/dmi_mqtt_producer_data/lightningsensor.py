@@ -165,12 +165,12 @@ class LightningSensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='koanzabxeeezidulaidd',
-            name='lpvlgchbsqjfepjycjyd',
-            owner='ikqdfhaslgxskgfbnafb',
-            country='ahjrcjujklexmrepxngn',
-            latitude=float(0.807217502799007),
-            longitude=float(30.946320075980427),
-            active_from='vgawcgvzkighxtfriqgv',
-            active_to='sxpjujkgwnwfjutwuluj'
+            sensor_id='zxwnybjxfphcdpanwzcr',
+            name='kafzustmciarjdnbnyip',
+            owner='cevvbawokpdlzfaxzweo',
+            country='qoqmbphpvajeorvznhkh',
+            latitude=float(58.70484516461401),
+            longitude=float(24.598809169975677),
+            active_from='ilithnhurlfmedtndeyu',
+            active_to='ndcnhmlhxckcszgkebtg'
         )
