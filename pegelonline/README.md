@@ -1,16 +1,17 @@
-# PegelOnline → Apache Kafka & MQTT/UNS
+# PegelOnline → Apache Kafka, MQTT/UNS & AMQP 1.0
 
 ## Overview
 
 **PegelOnline** is a bridge that polls the German WSV PegelOnline REST API
 and re-emits both the station catalog and the live water-level measurements
-as CloudEvents. The source ships in two transport variants from a single
+as CloudEvents. The source ships in three transport variants from a single
 upstream poller:
 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
 | **Kafka** | `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
 | **MQTT** | `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree under `hydro/de/wsv/pegelonline/{water}/{station}/...`, JSON body, CloudEvent attributes as MQTT 5 user properties, retained at QoS 1 |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-pegelonline-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | Single AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers or Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs |
 
 Both variants share:
 
@@ -23,12 +24,14 @@ Both variants share:
 - **Station catalog** emitted at startup as reference CloudEvents.
 - **Live water-level measurements** with ETag-aware polling and per-station
   dedup state.
-- **Two transport binaries** with identical configuration knobs upstream
+- **Three transport binaries** with identical configuration knobs upstream
   (polling interval, state file, once-mode).
 - **Microsoft Event Hubs / Fabric Event Stream** ready via standard
   connection strings (Kafka variant).
 - **Unified Namespace** ready out of the box with retained MQTT 5.0 binary
   CloudEvents (MQTT variant).
+- **Azure Service Bus / Event Hubs over AMQP 1.0 with Microsoft Entra ID**
+  (no SAS-key rotation) via the AMQP variant's CBS put-token flow.
 
 ## Repository Layout
 
@@ -38,10 +41,13 @@ pegelonline/
   pegelonline_core/              # transport-agnostic poller
   pegelonline_kafka/             # Kafka feeder application
   pegelonline_mqtt/              # MQTT/UNS feeder application
+  pegelonline_amqp/              # AMQP 1.0 feeder application
   pegelonline_producer/          # xrcg-generated Kafka producer
   pegelonline_mqtt_producer/     # xrcg-generated MQTT producer
+  pegelonline_amqp_producer/     # xrcg-generated AMQP producer
   Dockerfile.kafka               # builds the Kafka feeder image
   Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
   tests/                         # unit + integration tests
 ```
 

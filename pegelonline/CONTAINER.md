@@ -7,6 +7,7 @@ and the same xRegistry contract:
 |---|---|---|
 | `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x (Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
 | `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree `hydro/de/wsv/pegelonline/{water}/{station}/...`, retained QoS 1, CloudEvent attributes as MQTT 5 user properties |
+| `ghcr.io/clemensv/real-time-sources-pegelonline-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | One AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs |
 
 Both images consume the WSV PegelOnline REST API (German Federal Waterways
 and Shipping Administration) and re-emit two CloudEvent types:
@@ -32,6 +33,7 @@ Pull the container images from the GitHub Container Registry:
 ```shell
 $ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
 $ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
+$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
 ```
 
 ## Using the Kafka image
@@ -103,6 +105,46 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
 ```
 
+## Using the AMQP image
+
+The AMQP image (`…-pegelonline-amqp`) publishes CloudEvents over AMQP 1.0
+to a single AMQP node (queue, topic, or address). It targets two
+deployment shapes:
+
+### Generic AMQP 1.0 brokers (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch)
+
+Use SASL PLAIN with a connection URL:
+
+```shell
+$ docker run --rm \
+    -e AMQP_BROKER_URL='amqp://user:pw@broker.example.com:5672/pegelonline' \
+    ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
+```
+
+For TLS-enabled brokers use `amqps://...:5671/...`.
+
+### Azure Service Bus / Event Hubs (Microsoft Entra ID, no SAS keys)
+
+Run the image with `AMQP_AUTH_MODE=entra` against a user-assigned
+managed identity. The identity must hold the **Azure Service Bus Data
+Sender** role (or **Azure Event Hubs Data Sender** for Event Hubs) on
+the target queue / hub:
+
+```shell
+$ docker run --rm \
+    -e AMQP_HOST='myns.servicebus.windows.net' \
+    -e AMQP_PORT=5671 -e AMQP_TLS=true \
+    -e AMQP_ADDRESS='pegelonline' \
+    -e AMQP_AUTH_MODE=entra \
+    -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+    -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+    ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
+```
+
+The bridge mints an Entra access token via `DefaultAzureCredential` and
+hands it to the broker through the AMQP CBS (Claims-Based Security) put-
+token control link — no SAS-key rotation required.
+
 ## Environment Variables
 
 ### Kafka image
@@ -130,6 +172,22 @@ $ docker run --rm \
 | `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. |
 | `MQTT_CLIENT_ID` | MQTT client identifier. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `POLLING_INTERVAL` | Seconds between polling cycles (default `60`). |
+| `STATE_FILE` | Path to the dedupe state file. |
+| `ONCE_MODE` | `true` runs a single polling cycle and exits. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL, e.g. `amqp://user:pw@host:5672/address` or `amqps://host:5671/address`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level alternative to `AMQP_BROKER_URL` (default port 5672, or 5671 with `AMQP_TLS=true`). |
+| `AMQP_ADDRESS` | AMQP node (queue / topic) name (default `pegelonline`). |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs). |
+| `AMQP_ENTRA_AUDIENCE` | Token audience (default `https://servicebus.azure.net/.default`). Use `https://eventhubs.azure.net/.default` for Event Hubs. |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 | `POLLING_INTERVAL` | Seconds between polling cycles (default `60`). |
 | `STATE_FILE` | Path to the dedupe state file. |
 | `ONCE_MODE` | `true` runs a single polling cycle and exits. |

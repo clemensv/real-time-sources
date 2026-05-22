@@ -40,6 +40,27 @@
       "messagegroups": [
         "#/messagegroups/de.wsv.pegelonline.mqtt"
       ]
+    },
+    "de.wsv.pegelonline.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/pegelonline"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/de.wsv.pegelonline.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -159,6 +180,51 @@
               "retain": {
                 "type": "boolean",
                 "value": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "de.wsv.pegelonline.amqp": {
+      "description": "AMQP 1.0 transport variants of the PegelOnline CloudEvents, sent in binary CloudEvents mode to a single AMQP node ('pegelonline') — works with generic brokers (ActiveMQ, RabbitMQ AMQP 1.0 plugin) and with Azure Service Bus / Event Hubs via CBS + Entra ID.",
+      "messages": {
+        "de.wsv.pegelonline.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate."
+              }
+            },
+            "application_properties": {
+              "water_shortname": {
+                "type": "string",
+                "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); copied here so message routers/filters don't have to crack the JSON body."
+              }
+            }
+          }
+        },
+        "de.wsv.pegelonline.amqp.CurrentMeasurement": {
+          "name": "CurrentMeasurement",
+          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate."
+              }
+            },
+            "application_properties": {
+              "water_shortname": {
+                "type": "string",
+                "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); copied here so message routers/filters don't have to crack the JSON body."
               }
             }
           }

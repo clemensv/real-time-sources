@@ -26,6 +26,7 @@
     { "dir": "noaa-nws", "module": "noaa_nws" },
     { "dir": "pegelonline", "image": "pegelonline-kafka", "file": "Dockerfile.kafka", "module": "pegelonline_kafka" },
     { "dir": "pegelonline", "image": "pegelonline-mqtt", "file": "Dockerfile.mqtt", "module": "pegelonline_mqtt" },
+    { "dir": "pegelonline", "image": "pegelonline-amqp", "file": "Dockerfile.amqp", "module": "pegelonline_amqp" },
     { "dir": "rss", "module": "rssbridge" },
     { "dir": "rws-waterwebservices", "module": "rws_waterwebservices" },
     { "dir": "seattle-911", "module": "seattle_911" },

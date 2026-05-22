@@ -22,3 +22,12 @@ xrcg generate `
     --endpoint de.wsv.pegelonline.Mqtt `
     --projectname pegelonline_mqtt_producer `
     --output pegelonline_mqtt_producer
+
+xrcg generate `
+    --style amqpproducer `
+    --language py `
+    --definitions xreg\pegelonline.xreg.json `
+    --endpoint de.wsv.pegelonline.Amqp `
+    --projectname pegelonline_amqp_producer `
+    --template-args azure_cbs_target=servicebus `
+    --output pegelonline_amqp_producer
