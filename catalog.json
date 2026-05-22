@@ -121,7 +121,8 @@
     "desc": "Germany — federal waterways, ~3,000 stations",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "rws-waterwebservices",
