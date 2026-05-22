@@ -441,12 +441,40 @@ class DeWsvPegelonlineAmqpProducer:
         if data is None:
             return b''
         if hasattr(data, 'to_byte_array'):
-            return data.to_byte_array(content_type)
-        if hasattr(data, 'to_dict'):
-            return json.dumps(data.to_dict()).encode('utf-8')
-        if isinstance(data, (bytes, bytearray)):
-            return bytes(data)
-        return json.dumps(data).encode('utf-8')
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
 
     
     
@@ -493,14 +521,16 @@ class DeWsvPegelonlineAmqpProducer:
                 msg_body = body
             else:
                 msg_body = str(body).encode('utf-8')
-            amqp_msg = Message(body=msg_body)
+            amqp_msg = Message(body=msg_body, inferred=True)
             amqp_msg.content_type = self.format_type or headers.get('content-type')
         else:  # binary mode
             headers, body = to_binary(cloud_event)
-            amqp_msg = Message(body=body)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
             amqp_msg.content_type = content_type
             if headers:
-                amqp_msg.properties = headers
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -569,14 +599,16 @@ class DeWsvPegelonlineAmqpProducer:
                 msg_body = body
             else:
                 msg_body = str(body).encode('utf-8')
-            amqp_msg = Message(body=msg_body)
+            amqp_msg = Message(body=msg_body, inferred=True)
             amqp_msg.content_type = self.format_type or headers.get('content-type')
         else:  # binary mode
             headers, body = to_binary(cloud_event)
-            amqp_msg = Message(body=body)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
             amqp_msg.content_type = content_type
             if headers:
-                amqp_msg.properties = headers
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
         
         # Send message
         if getattr(self, "_handler", None) is not None:

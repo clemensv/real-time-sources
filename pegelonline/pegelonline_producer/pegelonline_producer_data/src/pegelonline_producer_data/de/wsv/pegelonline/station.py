@@ -1,18 +1,16 @@
 """ Station dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 from pegelonline_producer_data.de.wsv.pegelonline.water import Water
 
 
@@ -21,16 +19,19 @@ from pegelonline_producer_data.de.wsv.pegelonline.water import Water
 class Station:
     """
     Schema representing a PEGELONLINE station with location and water body information.
+    
     Attributes:
-        station_id (str): Unique immutable identifier of the station.
-        number (str): Station number representing the unique code of the station.
-        shortname (str): Short name of the station (maximum 40 characters).
-        longname (str): Full name of the station (maximum 255 characters).
-        km (float): River kilometer marking of the station location.
-        agency (str): Waterways and Shipping Office responsible for the station.
-        longitude (float): Longitude coordinate of the station in WGS84 decimal notation.
-        latitude (float): Latitude coordinate of the station in WGS84 decimal notation.
-        water (Water): """
+        station_id (str)
+        number (str)
+        shortname (str)
+        longname (str)
+        km (float)
+        agency (str)
+        longitude (float)
+        latitude (float)
+        water (Water)
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
@@ -41,23 +42,6 @@ class Station:
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     water: Water=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing a PEGELONLINE station with location and water body information.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"number\", \"type\": \"string\", \"doc\": \"Station number representing the unique code of the station.\"}, {\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the station (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the station (maximum 255 characters).\"}, {\"name\": \"km\", \"type\": \"double\", \"doc\": \"River kilometer marking of the station location.\"}, {\"name\": \"agency\", \"type\": \"string\", \"doc\": \"Waterways and Shipping Office responsible for the station.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Longitude coordinate of the station in WGS84 decimal notation.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Latitude coordinate of the station in WGS84 decimal notation.\"}, {\"name\": \"water\", \"type\": {\"type\": \"record\", \"name\": \"Water\", \"doc\": \"Details of the water body associated with the station.\", \"fields\": [{\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the water body (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the water body (maximum 255 characters).\"}]}}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.number=str(self.number)
-        self.shortname=str(self.shortname)
-        self.longname=str(self.longname)
-        self.km=float(self.km)
-        self.agency=str(self.agency)
-        self.longitude=float(self.longitude)
-        self.latitude=float(self.latitude)
-        value_water = self.water
-        self.water = value_water if isinstance(value_water, Water) else Water.from_serializer_dict(value_water) if value_water else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -68,7 +52,7 @@ class Station:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -87,7 +71,7 @@ class Station:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -101,8 +85,6 @@ class Station:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -115,12 +97,6 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -149,10 +125,6 @@ class Station:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -178,18 +150,6 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Station.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -197,5 +157,24 @@ class Station:
                 return Station.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Station':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='vibwonipvisdxcdtiouq',
+            number='gcahiebakctebtpdfujc',
+            shortname='jrotbawrdtasclimdsxl',
+            longname='okiuiaxkkeeqaoblmcxd',
+            km=float(20.766200146052338),
+            agency='umzwxqtvcvvlkkuaonsa',
+            longitude=float(94.74643002084908),
+            latitude=float(19.361565623793652),
+            water=None
+        )

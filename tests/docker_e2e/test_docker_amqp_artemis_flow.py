@@ -177,18 +177,16 @@ def _extract_ce_attrs(msg: Any) -> Dict[str, Any]:
 
     The CloudEvents AMQP 1.0 binding (binary mode) maps CE context
     attributes into application_properties, prefixed with ``cloudEvents:``
-    per the spec, or ``ce-`` in many implementations. The Qpid Proton
-    Python binding exposes application_properties as ``msg.properties``.
+    per §3.1 of the spec. The Qpid Proton Python binding exposes
+    application_properties as ``msg.properties``.
     """
     attrs: Dict[str, Any] = {}
     app_props = getattr(msg, "properties", None) or {}
     for k, v in dict(app_props).items():
         if not isinstance(k, str):
             continue
-        for prefix in ("cloudEvents:", "ce-", "cloudEvents_"):
-            if k.startswith(prefix):
-                attrs[k[len(prefix):]] = v
-                break
+        if k.startswith("cloudEvents:"):
+            attrs[k[len("cloudEvents:"):]] = v
         else:
             attrs[k] = v
     subj = getattr(msg, "subject", None)
@@ -201,6 +199,12 @@ def _extract_ce_attrs(msg: Any) -> Dict[str, Any]:
 
 
 def _body_to_obj(msg: Any) -> Any:
+    """Decode the AMQP message body as JSON.
+
+    With xrcg ≥ 0.10.4 (which fixed the ``to_byte_array`` bytes/string
+    regression) the body is sent as an AMQP binary section containing
+    the raw UTF-8 JSON document. A single ``json.loads`` is sufficient.
+    """
     body = msg.body
     if isinstance(body, memoryview):
         body = bytes(body)
@@ -208,19 +212,9 @@ def _body_to_obj(msg: Any) -> Any:
         body = body.decode("utf-8", errors="replace")
     if isinstance(body, str):
         try:
-            parsed = json.loads(body)
+            return json.loads(body)
         except json.JSONDecodeError:
             return body
-        # The generated dataclass to_byte_array("application/json") currently
-        # returns the JSON *text*, which the AMQP binary encoder then sends
-        # as the message body. Subscribers therefore see the JSON object as
-        # a JSON string literal — one extra json.loads round-trip is needed.
-        if isinstance(parsed, str):
-            try:
-                return json.loads(parsed)
-            except json.JSONDecodeError:
-                return parsed
-        return parsed
     return body
 
 

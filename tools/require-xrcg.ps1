@@ -1,4 +1,4 @@
-$script:RequiredXrcgVersion = '0.10.2.dev34'
+$script:RequiredXrcgVersion = '0.10.4'
 
 function Assert-XrcgVersion {
     param(

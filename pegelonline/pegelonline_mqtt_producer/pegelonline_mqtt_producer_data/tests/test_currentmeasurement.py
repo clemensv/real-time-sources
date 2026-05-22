@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
+from pegelonline_mqtt_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
 
 
 class Test_CurrentMeasurement(unittest.TestCase):
@@ -28,11 +28,11 @@ class Test_CurrentMeasurement(unittest.TestCase):
         Create instance of CurrentMeasurement for testing
         """
         instance = CurrentMeasurement(
-            station_id='dtvfqfpgeowvwmsizalr',
-            timestamp='nbeqmimdmbkykwgiwtfd',
-            value=float(33.72747914137708),
-            stateMnwMhw='xgvlmkjrisjksslmaoud',
-            stateNswHsw='jzelzsnruhnitnnnnmwc'
+            station_id='fcnumelvjmfnctnbghkf',
+            timestamp='fujnnanaztkjkgnxznoc',
+            value=float(1.6593806078304074),
+            stateMnwMhw='oypdxlzpqiqhfudupyij',
+            stateNswHsw='qevoandnaxmgaxhzgmwu'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'dtvfqfpgeowvwmsizalr'
+        test_value = 'fcnumelvjmfnctnbghkf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'nbeqmimdmbkykwgiwtfd'
+        test_value = 'fujnnanaztkjkgnxznoc'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(33.72747914137708)
+        test_value = float(1.6593806078304074)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -65,7 +65,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test stateMnwMhw property
         """
-        test_value = 'xgvlmkjrisjksslmaoud'
+        test_value = 'oypdxlzpqiqhfudupyij'
         self.instance.stateMnwMhw = test_value
         self.assertEqual(self.instance.stateMnwMhw, test_value)
     
@@ -73,17 +73,26 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test stateNswHsw property
         """
-        test_value = 'jzelzsnruhnitnnnnmwc'
+        test_value = 'qevoandnaxmgaxhzgmwu'
         self.instance.stateNswHsw = test_value
         self.assertEqual(self.instance.stateNswHsw, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = CurrentMeasurement.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = CurrentMeasurement.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
 

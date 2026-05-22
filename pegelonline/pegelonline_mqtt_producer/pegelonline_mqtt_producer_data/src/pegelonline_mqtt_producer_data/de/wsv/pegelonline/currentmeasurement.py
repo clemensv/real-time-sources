@@ -1,18 +1,16 @@
 """ CurrentMeasurement dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,30 +18,21 @@ import avro.io
 class CurrentMeasurement:
     """
     Schema representing the current measurement for a PEGELONLINE station.
+    
     Attributes:
-        station_id (str): Unique immutable identifier of the station.
-        timestamp (str): Timestamp of the current measurement encoded in ISO_8601 format.
-        value (float): Current measured value as a decimal number in the unit defined by the station's timeseries.
-        stateMnwMhw (str): State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.
-        stateNswHsw (str): State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."""
+        station_id (str)
+        timestamp (str)
+        value (float)
+        stateMnwMhw (str)
+        stateNswHsw (str)
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     stateMnwMhw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
     stateNswHsw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"CurrentMeasurement\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing the current measurement for a PEGELONLINE station.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"doc\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}, {\"name\": \"stateMnwMhw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}, {\"name\": \"stateNswHsw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.timestamp=str(self.timestamp)
-        self.value=float(self.value)
-        self.stateMnwMhw=str(self.stateMnwMhw)
-        self.stateNswHsw=str(self.stateNswHsw)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CurrentMeasurement':
@@ -54,7 +43,7 @@ class CurrentMeasurement:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -73,7 +62,7 @@ class CurrentMeasurement:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -87,8 +76,6 @@ class CurrentMeasurement:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -101,12 +88,6 @@ class CurrentMeasurement:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -135,10 +116,6 @@ class CurrentMeasurement:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -164,18 +141,6 @@ class CurrentMeasurement:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return CurrentMeasurement.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -183,5 +148,20 @@ class CurrentMeasurement:
                 return CurrentMeasurement.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'CurrentMeasurement':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='fcnumelvjmfnctnbghkf',
+            timestamp='fujnnanaztkjkgnxznoc',
+            value=float(1.6593806078304074),
+            stateMnwMhw='oypdxlzpqiqhfudupyij',
+            stateNswHsw='qevoandnaxmgaxhzgmwu'
+        )
