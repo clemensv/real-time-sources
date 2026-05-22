@@ -159,9 +159,9 @@ class CurrentMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='yhtvpjklhjgqxosadbxv',
-            timestamp='pyyjznmeqelkflaxztqt',
-            value=float(74.0613001268084),
-            stateMnwMhw='pbmlfnqglcmycdeovuwm',
-            stateNswHsw='qlekgtnvivwnbqhhcyiv'
+            station_id='qefqwtzaqefdfshyllrr',
+            timestamp='gptvzflxeonhrryljmgb',
+            value=float(8.88179384919442),
+            stateMnwMhw='rkehjvbfnxcqkezuwmda',
+            stateNswHsw='eucpxhzikqzwnhelcfuh'
         )

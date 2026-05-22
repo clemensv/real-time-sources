@@ -23,14 +23,95 @@ from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
 
-# --- Azure CBS / Entra ID support (azure_cbs_target=servicebus) ---
+# --- Azure CBS support (azure_cbs_target=servicebus) ---
+# Two CBS auth modes are supported:
+#   1. Entra ID (Azure AD) JWT bearer via an azure-identity TokenCredential
+#      (``type=jwt``) -- works against live Azure Service Bus / Event Hubs.
+#   2. SAS token (``type=servicebus.windows.net:sastoken``) -- works against
+#      both live Azure namespaces configured for SAS and the local Service Bus
+#      emulator, which validates the ``type`` field strictly and refuses JWT.
+import base64
+import hashlib
+import hmac
 import logging
+import time as _cbs_time
+from urllib.parse import quote
 from proton import Endpoint, symbol
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
-from azure.core.credentials import TokenCredential
+
+try:  # azure-identity is optional when only SAS auth is used
+    from azure.core.credentials import TokenCredential  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    TokenCredential = typing.Any  # type: ignore
 
 _cbs_logger = logging.getLogger("amqp.cbs")
+
+
+class _CbsTokenProvider:
+    """Abstract provider that mints a CBS put-token body + metadata."""
+
+    token_type: str = ""
+
+    def acquire(self) -> typing.Tuple[str, int]:
+        """Return (token_body, absolute_expiry_unix_seconds)."""
+        raise NotImplementedError
+
+
+class _JwtTokenProvider(_CbsTokenProvider):
+    """Entra ID JWT acquired from an azure-identity ``TokenCredential``."""
+
+    token_type = "jwt"
+
+    def __init__(self, credential, audience: str):
+        self._credential = credential
+        self._audience = audience
+
+    def acquire(self) -> typing.Tuple[str, int]:
+        token = self._credential.get_token(self._audience)
+        return token.token, int(token.expires_on)
+
+
+class _SasTokenProvider(_CbsTokenProvider):
+    """SAS token minted from a shared-access key + key name.
+
+    Produces a token of the form::
+
+        SharedAccessSignature sr=<url-quoted resource_uri>
+                              &sig=<url-quoted base64 HMAC-SHA256>
+                              &se=<expiry-unix-seconds>
+                              &skn=<key name>
+    """
+
+    token_type = "servicebus.windows.net:sastoken"
+
+    def __init__(self, key_name: str, key: str, resource_uri: str,
+                 ttl_seconds: int = 3600):
+        if not key_name or not key:
+            raise ValueError("SAS auth requires both key_name and key")
+        self._key_name = key_name
+        self._key = key
+        self._resource_uri = resource_uri
+        self._ttl = int(ttl_seconds)
+
+    def acquire(self) -> typing.Tuple[str, int]:
+        expiry = int(_cbs_time.time()) + self._ttl
+        encoded_uri = quote(self._resource_uri, safe="")
+        string_to_sign = (encoded_uri + "\n" + str(expiry)).encode("utf-8")
+        try:
+            signing_key = self._key.encode("utf-8")
+        except AttributeError:
+            signing_key = bytes(self._key)
+        signature = base64.b64encode(
+            hmac.new(signing_key, string_to_sign, hashlib.sha256).digest()
+        )
+        encoded_sig = quote(signature, safe="")
+        token = (
+            "SharedAccessSignature "
+            f"sr={encoded_uri}&sig={encoded_sig}&se={expiry}"
+            f"&skn={quote(self._key_name, safe='')}"
+        )
+        return token, expiry
 
 
 class _CbsAzureHandler(MessagingHandler):
@@ -49,14 +130,13 @@ class _CbsAzureHandler(MessagingHandler):
       8. ``on_disconnected``         -> fail everything (v1: no reconnect).
     """
 
-    def __init__(self, host, port, address, credential, audience, use_tls,
+    def __init__(self, host, port, address, token_provider, use_tls,
                  init_future, send_queue, close_event):
         super().__init__(auto_settle=False, auto_accept=False)
         self._host = host
         self._port = port
         self._address = address
-        self._credential = credential
-        self._audience = audience
+        self._token_provider = token_provider
         self._use_tls = use_tls
         self._init_future = init_future
         self._send_queue = send_queue
@@ -131,24 +211,27 @@ class _CbsAzureHandler(MessagingHandler):
             self._fail_init(exc)
 
     def _send_put_token(self):
-        _cbs_logger.debug("[cbs] _send_put_token: acquiring token")
+        _cbs_logger.debug(
+            "[cbs] _send_put_token: acquiring token (type=%s)",
+            self._token_provider.token_type,
+        )
         try:
-            token = self._credential.get_token(self._audience)
+            token_body, expires_on = self._token_provider.acquire()
         except Exception as exc:
             self._fail_init(exc)
             return
-        _cbs_logger.debug(f"[cbs] _send_put_token: token len={len(token.token)} exp={token.expires_on}")
+        _cbs_logger.debug(f"[cbs] _send_put_token: token len={len(token_body)} exp={expires_on}")
         resource_uri = f"sb://{self._host}/{self._address}"
         self._cbs_request_id = str(uuid.uuid4())
-        msg = Message(body=token.token)
+        msg = Message(body=token_body)
         msg.address = "$cbs"
         msg.reply_to = "$cbs"
         msg.id = self._cbs_request_id
         msg.properties = {
             "operation": "put-token",
-            "type": "jwt",
+            "type": self._token_provider.token_type,
             "name": resource_uri,
-            "expiration": int(token.expires_on),
+            "expiration": int(expires_on),
         }
         try:
             self._cbs_sender.send(msg)
@@ -329,6 +412,9 @@ class DeWsvPegelonlineAmqpProducer:
                  format_type: str = 'application/json',
                  credential: typing.Optional["TokenCredential"] = None,
                  entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
                  use_tls: bool = True,
                  ):
         """
@@ -344,14 +430,23 @@ class DeWsvPegelonlineAmqpProducer:
             format_type (str): Content type format for structured mode (default: 'application/json')
             credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
                 (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
-                Entra ID JWT is presented via AMQP CBS put-token. Mutually exclusive with
-                username/password.
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
             entra_audience (str): AAD scope used to acquire the JWT
                 (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
                 Override only when targeting a non-standard cloud or cross-targeting (e.g.
                 an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
             use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
-                is explicitly set. Required for Azure servicebus.
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
         """
         self.host = host
         self.port = port
@@ -362,16 +457,31 @@ class DeWsvPegelonlineAmqpProducer:
         self.format_type = format_type
         self._credential = credential
         self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
         self._use_tls = use_tls
-        if self._credential is not None and (self.username or self.password):
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
             raise ValueError(
-                "credential is mutually exclusive with username/password. "
-                "Provide either an Azure TokenCredential OR SASL PLAIN credentials."
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
             )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
         if self._credential is not None and port == 5672:
             # Default to AMQPS for Entra path; caller can override explicitly.
             self.port = 5671
-        if self._credential is not None:
+        if self._cbs_enabled:
             self._init_reactor()
         else:
             connection_url = self._build_connection_url()
@@ -384,6 +494,17 @@ class DeWsvPegelonlineAmqpProducer:
         On failure, the exception is propagated out of ``__init__`` so callers
         get a clean error rather than discovering the problem on first send.
         """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
         self._send_queue: "queue.Queue" = queue.Queue()
         self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
         self._close_event = threading.Event()
@@ -391,8 +512,7 @@ class DeWsvPegelonlineAmqpProducer:
             host=self.host,
             port=self.port,
             address=self.address,
-            credential=self._credential,
-            audience=self._entra_audience,
+            token_provider=token_provider,
             use_tls=self._use_tls,
             init_future=self._init_future,
             send_queue=self._send_queue,

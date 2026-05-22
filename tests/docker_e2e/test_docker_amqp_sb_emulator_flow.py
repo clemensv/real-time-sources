@@ -1,16 +1,11 @@
 """Docker E2E test for the pegelonline AMQP 1.0 feeder against the
 Azure Service Bus emulator (``mcr.microsoft.com/azure-messaging/servicebus-emulator``).
 
-**Status: currently skipped.** The Service Bus emulator authenticates
-exclusively via the AMQP CBS link with a SAS-token put-token
-(``type=servicebus.windows.net:sastoken``). The xrcg-generated Python AMQP
-producer currently only supports JWT-bearer CBS (``type=jwt``) — see
-xregistry/codegen#290. Once that ships, the ``@pytest.mark.skip`` decorator
-below should be removed.
-
-The fixture infrastructure is kept in place so the test is ready to run
-the moment the upstream gap closes. It is also useful as a working
-testcontainers reference for the Azure Service Bus emulator.
+The Service Bus emulator authenticates exclusively via the AMQP CBS link
+with a SAS-token put-token (``type=servicebus.windows.net:sastoken``).
+xrcg 0.10.5 added that path to the generated Python AMQP producer
+(xregistry/codegen#291), and the pegelonline AMQP feeder exposes it via
+``--auth-mode=sas`` / ``AMQP_SAS_KEY_NAME`` + ``AMQP_SAS_KEY``.
 
 Topology:
 
@@ -169,20 +164,23 @@ def sb_emulator():
             },
         )
 
-        deadline = time.time() + 120
+        deadline = time.time() + 180
         ready = False
         while time.time() < deadline:
             try:
-                with closing(socket.create_connection(("127.0.0.1", host_port), timeout=1)):
+                emu_logs = emu_container.logs().decode("utf-8", errors="replace")
+                if "Emulator Service is Successfully Up" in emu_logs:
                     ready = True
                     break
-            except OSError:
+            except docker.errors.APIError:
                 pass
             time.sleep(2)
         if not ready:
             tail = emu_container.logs().decode("utf-8", errors="replace")[-2000:]
             pytest.skip(f"SB emulator not ready. Tail:\n{tail}")
-        time.sleep(3)
+        # Even after "Successfully Up", the AMQP listener may need a moment
+        # before it accepts the first connection cleanly.
+        time.sleep(5)
 
         yield {
             "internal_host": "pegelonline-sbemu-e2e-emu",
@@ -240,24 +238,16 @@ def _receive_via_sdk(host_port: int, queue: str, sas_key_name: str, sas_key_valu
     return received
 
 
-@pytest.mark.skip(
-    reason=(
-        "Blocked on xregistry/codegen#290: generated AMQP producer's CBS "
-        "handshake only supports type=jwt, but Service Bus emulator requires "
-        "type=servicebus.windows.net:sastoken. Remove this skip once xrcg "
-        "ships SAS-token CBS support."
-    )
-)
+@pytest.mark.docker_e2e
 class TestPegelonlineAmqpSbEmulatorFlow:
     """End-to-end: feeder pushes CloudEvents to Service Bus emulator over AMQP 1.0."""
 
     def test_emits_cloudevents_to_sb_emulator_queue(self, sb_emulator, pegelonline_amqp_image):
         client = docker.from_env()
 
-        # Once xrcg #290 lands, the feeder will accept a SAS connection
-        # string via AMQP_CONNECTION_STRING or equivalent. The exact env
-        # shape depends on the xrcg template surface chosen — placeholder
-        # values below mirror the SDK conn-string format for the emulator.
+        # Feeder wired for SAS CBS auth — uses xrcg 0.10.5+ which adds
+        # the type=servicebus.windows.net:sastoken CBS path required by
+        # the Service Bus emulator.
         feeder = client.containers.run(
             pegelonline_amqp_image.id,
             detach=True,
@@ -267,7 +257,7 @@ class TestPegelonlineAmqpSbEmulatorFlow:
                 "AMQP_HOST": sb_emulator["internal_host"],
                 "AMQP_PORT": str(sb_emulator["internal_port"]),
                 "AMQP_ADDRESS": sb_emulator["queue"],
-                "AMQP_AUTH_MODE": "sas",  # NEW: post-#290 template surface
+                "AMQP_AUTH_MODE": "sas",
                 "AMQP_SAS_KEY_NAME": sb_emulator["sas_key_name"],
                 "AMQP_SAS_KEY": sb_emulator["sas_key_value"],
                 "POLLING_INTERVAL": "60",

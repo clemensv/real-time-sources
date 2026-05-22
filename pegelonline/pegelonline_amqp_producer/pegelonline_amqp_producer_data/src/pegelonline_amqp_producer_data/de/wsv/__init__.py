@@ -1,3 +1,3 @@
-from .pegelonline import Water, Station, CurrentMeasurement
+from .pegelonline import CurrentMeasurement, Water, Station
 
-__all__ = ["Water", "Station", "CurrentMeasurement"]
+__all__ = ["CurrentMeasurement", "Water", "Station"]

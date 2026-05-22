@@ -93,6 +93,8 @@ def _build_producer(
     password: Optional[str],
     entra_audience: str,
     entra_client_id: Optional[str],
+    sas_key_name: Optional[str],
+    sas_key: Optional[str],
 ) -> DeWsvPegelonlineAmqpProducer:
     if auth_mode == "entra":
         # Lazy import so the package still installs when azure-identity
@@ -121,6 +123,26 @@ def _build_producer(
             content_mode=content_mode,  # type: ignore[arg-type]
             credential=credential,
             entra_audience=entra_audience,
+            use_tls=use_tls,
+        )
+
+    if auth_mode == "sas":
+        if not sas_key_name or not sas_key:
+            raise RuntimeError(
+                "auth-mode=sas requires --sas-key-name and --sas-key "
+                "(or AMQP_SAS_KEY_NAME / AMQP_SAS_KEY env vars)."
+            )
+        logger.info(
+            "Using SAS auth via CBS (host=%s, address=%s, tls=%s, key_name=%s)",
+            host, address, use_tls, sas_key_name,
+        )
+        return DeWsvPegelonlineAmqpProducer(
+            host=host,
+            address=address,
+            port=port,
+            content_mode=content_mode,  # type: ignore[arg-type]
+            sas_key_name=sas_key_name,
+            sas_key=sas_key,
             use_tls=use_tls,
         )
 
@@ -250,10 +272,12 @@ def _build_arg_parser() -> argparse.ArgumentParser:
                              help="Exit after one polling cycle.")
     feed_parser.add_argument("--auth-mode", type=str,
                              default=os.getenv("AMQP_AUTH_MODE", "password"),
-                             choices=["password", "entra"],
-                             help="Authentication mode: 'password' (default, SASL PLAIN) or 'entra' "
-                                  "(AMQP CBS with Azure Entra ID via DefaultAzureCredential). "
-                                  "'entra' targets Azure Service Bus / Event Hubs.")
+                             choices=["password", "entra", "sas"],
+                             help="Authentication mode: 'password' (default, SASL PLAIN), "
+                                  "'entra' (AMQP CBS with Azure Entra ID via DefaultAzureCredential, "
+                                  "targets Azure Service Bus / Event Hubs), or 'sas' (AMQP CBS with "
+                                  "a Shared Access Signature, for SAS-only namespaces or the Service "
+                                  "Bus emulator).")
     feed_parser.add_argument("--entra-audience", type=str,
                              default=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS),
                              help=f"Entra token audience. Default: {DEFAULT_ENTRA_AUDIENCE_SERVICEBUS} "
@@ -261,6 +285,12 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--entra-client-id", type=str, default=os.getenv("AMQP_ENTRA_CLIENT_ID"),
                              help="Optional user-assigned managed identity client id; "
                                   "defaults to DefaultAzureCredential resolution.")
+    feed_parser.add_argument("--sas-key-name", type=str, default=os.getenv("AMQP_SAS_KEY_NAME"),
+                             help="SAS policy / key name (e.g. RootManageSharedAccessKey). "
+                                  "Required with --auth-mode=sas.")
+    feed_parser.add_argument("--sas-key", type=str, default=os.getenv("AMQP_SAS_KEY"),
+                             help="SAS key value (base64) used to sign tokens. "
+                                  "Required with --auth-mode=sas.")
     return parser
 
 
@@ -306,6 +336,8 @@ def main(argv: Optional[list] = None) -> None:
         password=password,
         entra_audience=args.entra_audience,
         entra_client_id=args.entra_client_id,
+        sas_key_name=args.sas_key_name,
+        sas_key=args.sas_key,
     )
 
     feed(
