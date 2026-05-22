@@ -22,7 +22,7 @@ const SOURCES = [
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true },
   { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations" },
   { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true },
-  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true },
+  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true, amqp: true },
   { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true },
   { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", notebook: true },
   { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", notebook: true },
@@ -149,6 +149,7 @@ const $btnContainer = document.getElementById("btn-container");
 const $btnContainerEH = document.getElementById("btn-container-eh");
 const $btnContainerMqtt = document.getElementById("btn-container-mqtt");
 const $btnContainerMqttEG = document.getElementById("btn-container-mqtt-eg");
+const $btnContainerAmqpSB = document.getElementById("btn-container-amqp-sb");
 const $btnFabric = document.getElementById("btn-container-eh-adx");
 const $btnFabricNotebook = document.getElementById("btn-fabric-notebook");
 const $deployPane = document.getElementById("deploy-pane");
@@ -249,6 +250,14 @@ async function selectSource(s) {
     $btnContainerMqttEG.style.display = s.mqtt ? "" : "none";
     $btnContainerMqttEG.onclick = () => {
       const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    };
+  }
+  if ($btnContainerAmqpSB) {
+    // AMQP 1.0 + Service Bus namespace deploy is opt-in per source (requires azure-template-with-servicebus.json).
+    $btnContainerAmqpSB.style.display = s.amqp ? "" : "none";
+    $btnContainerAmqpSB.onclick = () => {
+      const url = `${RAW}/${s.id}/azure-template-with-servicebus.json`;
       window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
     };
   }
@@ -513,7 +522,9 @@ renderList();
    #<id>/azure-mqtt          → select source + launch Azure ARM deploy
                                (azure-template-mqtt.json, bring-your-own MQTT broker)
    #<id>/azure-mqtt-eg       → select source + launch Azure ARM deploy
-                               (azure-template-with-eventgrid-mqtt.json, Event Grid MQTT broker) */
+                               (azure-template-with-eventgrid-mqtt.json, Event Grid MQTT broker)
+   #<id>/azure-amqp-sb       → select source + launch Azure ARM deploy
+                               (azure-template-with-servicebus.json, Service Bus AMQP 1.0 broker) */
 async function selectFromHash() {
   const raw = (location.hash || "").replace(/^#/, "").trim();
   if (!raw) return;
@@ -538,6 +549,9 @@ async function selectFromHash() {
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-mqtt-eg") {
     const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  } else if (action === "azure-amqp-sb") {
+    const url = `${RAW}/${s.id}/azure-template-with-servicebus.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   }
 }

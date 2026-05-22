@@ -231,3 +231,16 @@ The feeder authenticates to the broker using MQTT v5 enhanced authentication
 `https://eventgrid.azure.net/`.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP 1.0 — provision a new Azure Service Bus namespace
+
+Deploy the AMQP container together with a new
+[Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview)
+with a queue named `pegelonline`, a user-assigned managed identity, and a
+role assignment granting the identity the **Azure Service Bus Data Sender**
+role on the queue. The feeder authenticates to the broker using AMQP 1.0
+claims-based security (CBS) with tokens minted by the managed identity for
+audience `https://servicebus.azure.net/`. Works the same way against an
+Event Hubs namespace by changing the audience and endpoint.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-servicebus.json)
