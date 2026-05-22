@@ -564,7 +564,7 @@ function renderWelcome() {
     </div>
 
     <div class="welcome-section">
-      <h3>Three ways to deploy &mdash; one click each</h3>
+      <h3>Four ways to deploy &mdash; one click each</h3>
       <div class="welcome-deploys">
         <div class="welcome-deploy">
           <div class="welcome-deploy-title">Azure Container &rarr; Event Hubs</div>
@@ -646,9 +646,10 @@ function renderWelcome() {
 }
 
 /* ── Boot ──────────────────────────────────────────────────────────────── */
-renderWelcome();
 renderPills();
 renderList();
+// selectFromHash() handles both the no-hash case (renders welcome) and the
+// hash-present case (selects the source). No need to call renderWelcome here.
 
 /* ── Hash deep-linking ────────────────────────────────────────────────────
    #<id>                     → select source, show docs
@@ -673,6 +674,8 @@ async function selectFromHash() {
     $deployBar.style.display = "none";
     $deployBarFabric.style.display = "none";
     closeDeployPane();
+    // selectSource() overwrote $content.innerHTML, so recreate the welcome host.
+    $content.innerHTML = '<div id="welcome" class="welcome welcome-rich"></div>';
     renderWelcome();
     return;
   }
