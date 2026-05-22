@@ -305,6 +305,9 @@ $schemaEventTypes = @{}
 foreach ($messageGroupProperty in $xregDocument.messagegroups.PSObject.Properties) {
     foreach ($messageProperty in $messageGroupProperty.Value.messages.PSObject.Properties) {
         $message = $messageProperty.Value
+        if (-not ($message.PSObject.Properties.Name -contains 'dataschemaformat')) {
+            continue
+        }
         if ($message.dataschemaformat -notlike 'JsonStructure*') {
             continue
         }

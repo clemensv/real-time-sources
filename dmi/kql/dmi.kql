@@ -1,0 +1,794 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [MetObsStation] (
+   [station_id]: string,
+   [wmo_station_id]: string,
+   [wmo_country_code]: string,
+   [name]: string,
+   [country]: string,
+   [owner]: string,
+   [region_id]: string,
+   [type]: string,
+   [status]: string,
+   [parameter_id]: dynamic,
+   [latitude]: real,
+   [longitude]: real,
+   [station_height]: real,
+   [barometer_height]: real,
+   [anemometer_height]: real,
+   [valid_from]: string,
+   [valid_to]: string,
+   [operation_from]: string,
+   [operation_to]: string,
+   [created]: string,
+   [updated]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MetObsStation] docstring "{\"description\": \"A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo.\"}";
+
+.alter table [MetObsStation] column-docstrings (
+   [station_id]: "{\"description\": \"Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject.\"}",
+   [wmo_station_id]: "{\"description\": \"World Meteorological Organization (WMO) station identifier when registered with WMO.\"}",
+   [wmo_country_code]: "{\"description\": \"WMO country code as an integer string (e.g. '06' for Denmark).\"}",
+   [name]: "{\"description\": \"Human-readable station name.\"}",
+   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code: 'DNK' (Denmark), 'GRL' (Greenland), 'FRO' (Faroe Islands).\"}",
+   [owner]: "{\"description\": \"Organisation that owns/operates the station (typically 'DMI').\"}",
+   [region_id]: "{\"description\": \"DMI region identifier within the country.\"}",
+   [type]: "{\"description\": \"Station type as classified by DMI (e.g. 'Synop', 'PluvioSync').\"}",
+   [status]: "{\"description\": \"Operational status (e.g. 'Active', 'Inactive').\"}",
+   [parameter_id]: "{\"description\": \"List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1].\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0].\"}",
+   [station_height]: "{\"description\": \"Height of the station above mean sea level.\"}",
+   [barometer_height]: "{\"description\": \"Height of the barometer above mean sea level.\"}",
+   [anemometer_height]: "{\"description\": \"Height of the anemometer above ground level.\"}",
+   [valid_from]: "{\"description\": \"Timestamp from which this station-metadata version is valid.\"}",
+   [valid_to]: "{\"description\": \"Timestamp after which this station-metadata version is no longer valid; null while current.\"}",
+   [operation_from]: "{\"description\": \"Timestamp from which the station began operating.\"}",
+   [operation_to]: "{\"description\": \"Timestamp at which the station stopped operating; null while operational.\"}",
+   [created]: "{\"description\": \"Timestamp when this metadata row was created by DMI.\"}",
+   [updated]: "{\"description\": \"Timestamp when this metadata row was last updated by DMI.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MetObsStation] ingestion json mapping "MetObsStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "wmo_station_id", "path": "$.wmo_station_id"},
+  {"column": "wmo_country_code", "path": "$.wmo_country_code"},
+  {"column": "name", "path": "$.name"},
+  {"column": "country", "path": "$.country"},
+  {"column": "owner", "path": "$.owner"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "type", "path": "$.type"},
+  {"column": "status", "path": "$.status"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "station_height", "path": "$.station_height"},
+  {"column": "barometer_height", "path": "$.barometer_height"},
+  {"column": "anemometer_height", "path": "$.anemometer_height"},
+  {"column": "valid_from", "path": "$.valid_from"},
+  {"column": "valid_to", "path": "$.valid_to"},
+  {"column": "operation_from", "path": "$.operation_from"},
+  {"column": "operation_to", "path": "$.operation_to"},
+  {"column": "created", "path": "$.created"},
+  {"column": "updated", "path": "$.updated"},
+]
+```
+
+.create-or-alter table [MetObsStation] ingestion json mapping "MetObsStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "wmo_station_id", "path": "$.data.wmo_station_id"},
+  {"column": "wmo_country_code", "path": "$.data.wmo_country_code"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "owner", "path": "$.data.owner"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "station_height", "path": "$.data.station_height"},
+  {"column": "barometer_height", "path": "$.data.barometer_height"},
+  {"column": "anemometer_height", "path": "$.data.anemometer_height"},
+  {"column": "valid_from", "path": "$.data.valid_from"},
+  {"column": "valid_to", "path": "$.data.valid_to"},
+  {"column": "operation_from", "path": "$.data.operation_from"},
+  {"column": "operation_to", "path": "$.data.operation_to"},
+  {"column": "created", "path": "$.data.created"},
+  {"column": "updated", "path": "$.data.updated"},
+]
+```
+
+.drop materialized-view MetObsStationLatest ifexists;
+
+.create materialized-view with (backfill=true) MetObsStationLatest on table MetObsStation {
+    MetObsStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MetObsStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.metObs.MetObsStation') | project['station_id'] = tostring(data.['station_id']),['wmo_station_id'] = tostring(data.['wmo_station_id']),['wmo_country_code'] = tostring(data.['wmo_country_code']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['owner'] = tostring(data.['owner']),['region_id'] = tostring(data.['region_id']),['type'] = tostring(data.['type']),['status'] = tostring(data.['status']),['parameter_id'] = todynamic(data.['parameter_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['station_height'] = toreal(data.['station_height']),['barometer_height'] = toreal(data.['barometer_height']),['anemometer_height'] = toreal(data.['anemometer_height']),['valid_from'] = tostring(data.['valid_from']),['valid_to'] = tostring(data.['valid_to']),['operation_from'] = tostring(data.['operation_from']),['operation_to'] = tostring(data.['operation_to']),['created'] = tostring(data.['created']),['updated'] = tostring(data.['updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MetObsObservation] (
+   [observation_id]: string,
+   [station_id]: string,
+   [parameter_id]: string,
+   [observed]: string,
+   [value]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MetObsObservation] docstring "{\"description\": \"A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north).\"}";
+
+.alter table [MetObsObservation] column-docstrings (
+   [observation_id]: "{\"description\": \"DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency.\"}",
+   [station_id]: "{\"description\": \"Reporting station identifier (foreign key to Station).\"}",
+   [parameter_id]: "{\"description\": \"DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').\"}",
+   [observed]: "{\"description\": \"Timestamp at which the value was observed (UTC, ISO 8601).\"}",
+   [value]: "{\"description\": \"Numeric measurement value. Units depend on parameter_id (see DMI documentation).\"}",
+   [latitude]: "{\"description\": \"Station latitude (decimal degrees, WGS84) at observation time.\"}",
+   [longitude]: "{\"description\": \"Station longitude (decimal degrees, WGS84) at observation time.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MetObsObservation] ingestion json mapping "MetObsObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_id", "path": "$.observation_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+  {"column": "observed", "path": "$.observed"},
+  {"column": "value", "path": "$.value"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [MetObsObservation] ingestion json mapping "MetObsObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_id", "path": "$.data.observation_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+  {"column": "observed", "path": "$.data.observed"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view MetObsObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) MetObsObservationLatest on table MetObsObservation {
+    MetObsObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MetObsObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.metObs.MetObsObservation') | project['observation_id'] = tostring(data.['observation_id']),['station_id'] = tostring(data.['station_id']),['parameter_id'] = tostring(data.['parameter_id']),['observed'] = tostring(data.['observed']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [OceanStation] (
+   [station_id]: string,
+   [name]: string,
+   [country]: string,
+   [owner]: string,
+   [type]: string,
+   [status]: string,
+   [parameter_id]: dynamic,
+   [latitude]: real,
+   [longitude]: real,
+   [valid_from]: string,
+   [valid_to]: string,
+   [operation_from]: string,
+   [operation_to]: string,
+   [created]: string,
+   [updated]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [OceanStation] docstring "{\"description\": \"An oceanographic observation station (typically a tide gauge). Owners include DMI and Kystdirektoratet (Danish Coastal Authority). See https://opendatadocs.dmi.govcloud.dk/en/Data/Oceanographic_Observation_Data.\"}";
+
+.alter table [OceanStation] column-docstrings (
+   [station_id]: "{\"description\": \"Stable DMI ocean station identifier.\"}",
+   [name]: "{\"description\": \"Human-readable station name.\"}",
+   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code (DNK, GRL, FRO).\"}",
+   [owner]: "{\"description\": \"Operating agency (e.g. 'DMI', 'Kystdirektoratet').\"}",
+   [type]: "{\"description\": \"Station type (e.g. 'Tide-gauge-primary').\"}",
+   [status]: "{\"description\": \"Operational status.\"}",
+   [parameter_id]: "{\"description\": \"Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).\"}",
+   [latitude]: "{\"description\": \"Station latitude (decimal degrees, WGS84).\"}",
+   [longitude]: "{\"description\": \"Station longitude (decimal degrees, WGS84).\"}",
+   [valid_from]: "{\"description\": \"Metadata-validity start.\"}",
+   [valid_to]: "{\"description\": \"Metadata-validity end.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [OceanStation] ingestion json mapping "OceanStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "country", "path": "$.country"},
+  {"column": "owner", "path": "$.owner"},
+  {"column": "type", "path": "$.type"},
+  {"column": "status", "path": "$.status"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "valid_from", "path": "$.valid_from"},
+  {"column": "valid_to", "path": "$.valid_to"},
+  {"column": "operation_from", "path": "$.operation_from"},
+  {"column": "operation_to", "path": "$.operation_to"},
+  {"column": "created", "path": "$.created"},
+  {"column": "updated", "path": "$.updated"},
+]
+```
+
+.create-or-alter table [OceanStation] ingestion json mapping "OceanStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "owner", "path": "$.data.owner"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "valid_from", "path": "$.data.valid_from"},
+  {"column": "valid_to", "path": "$.data.valid_to"},
+  {"column": "operation_from", "path": "$.data.operation_from"},
+  {"column": "operation_to", "path": "$.data.operation_to"},
+  {"column": "created", "path": "$.data.created"},
+  {"column": "updated", "path": "$.data.updated"},
+]
+```
+
+.drop materialized-view OceanStationLatest ifexists;
+
+.create materialized-view with (backfill=true) OceanStationLatest on table OceanStation {
+    OceanStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [OceanStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.OceanStation') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['owner'] = tostring(data.['owner']),['type'] = tostring(data.['type']),['status'] = tostring(data.['status']),['parameter_id'] = todynamic(data.['parameter_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['valid_from'] = tostring(data.['valid_from']),['valid_to'] = tostring(data.['valid_to']),['operation_from'] = tostring(data.['operation_from']),['operation_to'] = tostring(data.['operation_to']),['created'] = tostring(data.['created']),['updated'] = tostring(data.['updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TidewaterStation] (
+   [station_id]: string,
+   [name]: string,
+   [country]: string,
+   [owner]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [valid_from]: string,
+   [valid_to]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TidewaterStation] docstring "{\"description\": \"A station or virtual grid point at which DMI publishes tidewater (sea-level) predictions. The catalog includes both physical tide gauges and prediction-only points.\"}";
+
+.alter table [TidewaterStation] column-docstrings (
+   [station_id]: "{\"description\": \"Stable identifier of the tidewater prediction station/grid-point.\"}",
+   [name]: "{\"description\": \"Human-readable station name where available.\"}",
+   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code.\"}",
+   [owner]: "{\"description\": \"Operating agency.\"}",
+   [latitude]: "{\"description\": \"Prediction-point latitude (decimal degrees, WGS84).\"}",
+   [longitude]: "{\"description\": \"Prediction-point longitude (decimal degrees, WGS84).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TidewaterStation] ingestion json mapping "TidewaterStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "country", "path": "$.country"},
+  {"column": "owner", "path": "$.owner"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "valid_from", "path": "$.valid_from"},
+  {"column": "valid_to", "path": "$.valid_to"},
+]
+```
+
+.create-or-alter table [TidewaterStation] ingestion json mapping "TidewaterStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "owner", "path": "$.data.owner"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "valid_from", "path": "$.data.valid_from"},
+  {"column": "valid_to", "path": "$.data.valid_to"},
+]
+```
+
+.drop materialized-view TidewaterStationLatest ifexists;
+
+.create materialized-view with (backfill=true) TidewaterStationLatest on table TidewaterStation {
+    TidewaterStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TidewaterStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.TidewaterStation') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['owner'] = tostring(data.['owner']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['valid_from'] = tostring(data.['valid_from']),['valid_to'] = tostring(data.['valid_to']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [OceanObservation] (
+   [observation_id]: string,
+   [station_id]: string,
+   [parameter_id]: string,
+   [observed]: string,
+   [value]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [OceanObservation] docstring "{\"description\": \"A single oceanographic measurement. parameter_id is one of: sealev_dvr (sea level vs DVR90 datum, cm; preferred since 1997), sealev_ln (sea level vs local zero, cm; preferred before 1997), sea_reg (sea-level registration by Kystdirektoratet, cm), tw (water temperature, deg C; indicative).\"}";
+
+.alter table [OceanObservation] column-docstrings (
+   [observation_id]: "{\"description\": \"DMI-assigned row identifier (not stable across re-ingestions).\"}",
+   [parameter_id]: "{\"description\": \"One of sealev_dvr, sealev_ln, sea_reg, tw.\"}",
+   [value]: "{\"description\": \"Numeric value. cm for sealev_*/sea_reg, deg C for tw.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [OceanObservation] ingestion json mapping "OceanObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_id", "path": "$.observation_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+  {"column": "observed", "path": "$.observed"},
+  {"column": "value", "path": "$.value"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [OceanObservation] ingestion json mapping "OceanObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_id", "path": "$.data.observation_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+  {"column": "observed", "path": "$.data.observed"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view OceanObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) OceanObservationLatest on table OceanObservation {
+    OceanObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [OceanObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.OceanObservation') | project['observation_id'] = tostring(data.['observation_id']),['station_id'] = tostring(data.['station_id']),['parameter_id'] = tostring(data.['parameter_id']),['observed'] = tostring(data.['observed']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TidewaterPrediction] (
+   [prediction_id]: string,
+   [station_id]: string,
+   [prediction_type]: string,
+   [prediction_time]: string,
+   [value]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TidewaterPrediction] docstring "{\"description\": \"A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. Predictions are issued every model cycle and span ~30 days at 10-minute granularity.\"}";
+
+.alter table [TidewaterPrediction] column-docstrings (
+   [prediction_id]: "{\"description\": \"DMI-assigned row identifier.\"}",
+   [prediction_type]: "{\"description\": \"Granularity of the prediction series (typically '10minutes').\"}",
+   [prediction_time]: "{\"description\": \"Target time for which the value is predicted.\"}",
+   [value]: "{\"description\": \"Predicted sea level (cm vs DVR90 unless otherwise noted).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TidewaterPrediction] ingestion json mapping "TidewaterPrediction_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "prediction_id", "path": "$.prediction_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "prediction_type", "path": "$.prediction_type"},
+  {"column": "prediction_time", "path": "$.prediction_time"},
+  {"column": "value", "path": "$.value"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [TidewaterPrediction] ingestion json mapping "TidewaterPrediction_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "prediction_id", "path": "$.data.prediction_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "prediction_type", "path": "$.data.prediction_type"},
+  {"column": "prediction_time", "path": "$.data.prediction_time"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view TidewaterPredictionLatest ifexists;
+
+.create materialized-view with (backfill=true) TidewaterPredictionLatest on table TidewaterPrediction {
+    TidewaterPrediction | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TidewaterPrediction] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.oceanObs.TidewaterPrediction') | project['prediction_id'] = tostring(data.['prediction_id']),['station_id'] = tostring(data.['station_id']),['prediction_type'] = tostring(data.['prediction_type']),['prediction_time'] = tostring(data.['prediction_time']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LightningSensor] (
+   [sensor_id]: string,
+   [name]: string,
+   [owner]: string,
+   [country]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [active_from]: string,
+   [active_to]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LightningSensor] docstring "{\"description\": \"A DMI lightning detection sensor site. Six DMI-owned sensors cover Denmark; third-party sensors that contribute to triangulation are not catalogued here but their IDs appear in Strike.sensors.\"}";
+
+.alter table [LightningSensor] column-docstrings (
+   [sensor_id]: "{\"description\": \"Stable sensor identifier (1..6 for DMI-owned sensors).\"}",
+   [name]: "{\"description\": \"Human-readable sensor site name.\"}",
+   [owner]: "{\"description\": \"Operating agency (typically 'DMI').\"}",
+   [country]: "{\"description\": \"ISO 3166-1 alpha-3 country code (typically 'DNK').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LightningSensor] ingestion json mapping "LightningSensor_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "owner", "path": "$.owner"},
+  {"column": "country", "path": "$.country"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "active_from", "path": "$.active_from"},
+  {"column": "active_to", "path": "$.active_to"},
+]
+```
+
+.create-or-alter table [LightningSensor] ingestion json mapping "LightningSensor_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "owner", "path": "$.data.owner"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "active_from", "path": "$.data.active_from"},
+  {"column": "active_to", "path": "$.data.active_to"},
+]
+```
+
+.drop materialized-view LightningSensorLatest ifexists;
+
+.create materialized-view with (backfill=true) LightningSensorLatest on table LightningSensor {
+    LightningSensor | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LightningSensor] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.lightning.LightningSensor') | project['sensor_id'] = tostring(data.['sensor_id']),['name'] = tostring(data.['name']),['owner'] = tostring(data.['owner']),['country'] = tostring(data.['country']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['active_from'] = tostring(data.['active_from']),['active_to'] = tostring(data.['active_to']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LightningStrike] (
+   [strike_id]: string,
+   [observed]: string,
+   [created]: string,
+   [type]: int,
+   [amp]: real,
+   [strokes]: int,
+   [sensors]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LightningStrike] docstring "{\"description\": \"A single triangulated lightning strike. See https://opendatadocs.dmi.govcloud.dk/en/Data/Lightning_Data. observed timestamps have microsecond precision; location accuracy is approximately +/- 500-2000 m.\"}";
+
+.alter table [LightningStrike] column-docstrings (
+   [strike_id]: "{\"description\": \"Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').\"}",
+   [observed]: "{\"description\": \"Strike timestamp (UTC, microsecond precision).\"}",
+   [created]: "{\"description\": \"Timestamp when DMI ingested the strike.\"}",
+   [type]: "{\"description\": \"Strike type code.\"}",
+   [amp]: "{\"description\": \"Signed peak current.\"}",
+   [strokes]: "{\"description\": \"Number of return strokes.\"}",
+   [sensors]: "{\"description\": \"Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog).\"}",
+   [latitude]: "{\"description\": \"Strike latitude (decimal degrees, WGS84).\"}",
+   [longitude]: "{\"description\": \"Strike longitude (decimal degrees, WGS84).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LightningStrike] ingestion json mapping "LightningStrike_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "strike_id", "path": "$.strike_id"},
+  {"column": "observed", "path": "$.observed"},
+  {"column": "created", "path": "$.created"},
+  {"column": "type", "path": "$.type"},
+  {"column": "amp", "path": "$.amp"},
+  {"column": "strokes", "path": "$.strokes"},
+  {"column": "sensors", "path": "$.sensors"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [LightningStrike] ingestion json mapping "LightningStrike_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "strike_id", "path": "$.data.strike_id"},
+  {"column": "observed", "path": "$.data.observed"},
+  {"column": "created", "path": "$.data.created"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "amp", "path": "$.data.amp"},
+  {"column": "strokes", "path": "$.data.strokes"},
+  {"column": "sensors", "path": "$.data.sensors"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view LightningStrikeLatest ifexists;
+
+.create materialized-view with (backfill=true) LightningStrikeLatest on table LightningStrike {
+    LightningStrike | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LightningStrike] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'dk.dmi.lightning.LightningStrike') | project['strike_id'] = tostring(data.['strike_id']),['observed'] = tostring(data.['observed']),['created'] = tostring(data.['created']),['type'] = toint(data.['type']),['amp'] = toreal(data.['amp']),['strokes'] = toint(data.['strokes']),['sensors'] = tostring(data.['sensors']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

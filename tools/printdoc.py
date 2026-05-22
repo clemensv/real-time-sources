@@ -105,6 +105,9 @@ def process_message(msg, schemagroups):
 
     # Resolve the schema
     dataschemauri = msg.get('dataschemauri')
+    if not dataschemauri:
+        lines.append("Schema inherited from `basemessageurl`.\n")
+        return lines
     schema = resolve_schema(dataschemauri, schemagroups)
     if schema:
         lines.append("#### Schema:\n")

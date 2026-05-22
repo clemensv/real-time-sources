@@ -671,7 +671,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "MetObsStation"
         },
         "dk.dmi.metObs.MetObsObservation": {
           "format": "JsonStructure/draft-02",
@@ -743,7 +745,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "MetObsObservation"
         },
         "dk.dmi.oceanObs.OceanStation": {
           "format": "JsonStructure/draft-02",
@@ -888,7 +892,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "OceanStation"
         },
         "dk.dmi.oceanObs.TidewaterStation": {
           "format": "JsonStructure/draft-02",
@@ -968,7 +974,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "TidewaterStation"
         },
         "dk.dmi.oceanObs.OceanObservation": {
           "format": "JsonStructure/draft-02",
@@ -1044,7 +1052,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "OceanObservation"
         },
         "dk.dmi.oceanObs.TidewaterPrediction": {
           "format": "JsonStructure/draft-02",
@@ -1118,7 +1128,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "TidewaterPrediction"
         },
         "dk.dmi.lightning.LightningSensor": {
           "format": "JsonStructure/draft-02",
@@ -1196,7 +1208,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "LightningSensor"
         },
         "dk.dmi.lightning.LightningStrike": {
           "format": "JsonStructure/draft-02",
@@ -1283,7 +1297,9 @@
                 }
               }
             }
-          }
+          },
+          "defaultversionid": "1",
+          "name": "LightningStrike"
         }
       }
     }
