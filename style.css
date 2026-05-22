@@ -400,6 +400,225 @@ a:hover { text-decoration: underline; }
 .welcome p { max-width: 480px; }
 .welcome .muted { font-size: 13px; margin-top: 4px; color: var(--fg-subtle); }
 
+/* ── Rich landing welcome ─────────────────────────────────────────────── */
+.welcome.welcome-rich {
+  display: block;
+  align-items: stretch;
+  justify-content: flex-start;
+  height: auto;
+  text-align: left;
+  padding: 24px 28px 40px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.welcome-hero {
+  border-bottom: 1px solid var(--border-muted);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+.welcome-hero h2 {
+  font-size: 26px;
+  line-height: 1.25;
+  color: var(--fg-default);
+  margin: 0 0 10px;
+  max-width: none;
+  text-align: left;
+}
+.welcome-lede {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--fg-default);
+  max-width: 760px;
+  margin: 0 0 18px;
+}
+.welcome-lede a { color: var(--accent); text-decoration: none; }
+.welcome-lede a:hover { text-decoration: underline; }
+
+.welcome-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.welcome-stat {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.welcome-stat-n {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--fg-default);
+  line-height: 1.1;
+}
+.welcome-stat-l {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fg-subtle);
+  margin-top: 2px;
+}
+
+.welcome-section { margin: 28px 0; }
+.welcome-section h3 {
+  font-size: 16px;
+  color: var(--fg-default);
+  margin: 0 0 10px;
+  border-bottom: 1px solid var(--border-muted);
+  padding-bottom: 6px;
+}
+.welcome-section p {
+  font-size: 14px;
+  color: var(--fg-muted);
+  max-width: 760px;
+  margin: 0 0 12px;
+}
+
+.welcome-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.welcome-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--fg-default);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.welcome-cat:hover { background: var(--bg-surface); border-color: var(--accent); }
+.welcome-cat-n {
+  background: var(--accent);
+  color: white;
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.welcome-deploys {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.welcome-deploy {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-muted);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+.welcome-deploy-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-default);
+  margin-bottom: 6px;
+}
+.welcome-deploy-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+.welcome-deploy-body em { color: var(--fg-default); font-style: normal; font-weight: 500; }
+.welcome-deploy-body code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(127,127,127,0.12);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.welcome-bullets {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.welcome-bullets li {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+  margin: 8px 0;
+  max-width: 800px;
+}
+.welcome-bullets strong { color: var(--fg-default); }
+.welcome-bullets a { color: var(--accent); text-decoration: none; }
+.welcome-bullets a:hover { text-decoration: underline; }
+.welcome-bullets code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(127,127,127,0.12);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.welcome-quicks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+.welcome-quick {
+  display: block;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  padding: 10px 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.1s, background 0.1s;
+}
+.welcome-quick:hover { border-color: var(--accent); background: var(--bg-surface); }
+.welcome-quick-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg-default);
+  margin-bottom: 4px;
+}
+.welcome-quick-key {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  vertical-align: middle;
+  font-weight: 600;
+  margin-left: 4px;
+}
+.welcome-quick-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
+
+.welcome-foot {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-muted);
+  font-size: 12px;
+  color: var(--fg-subtle);
+  text-align: center;
+}
+.welcome-foot a { color: var(--fg-muted); text-decoration: none; }
+.welcome-foot a:hover { color: var(--accent); text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .welcome.welcome-rich { padding: 16px; }
+  .welcome-hero h2 { font-size: 20px; }
+  .welcome-lede { font-size: 14px; }
+  .welcome-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 /* ── Markdown content styling ──────────────────────────────────────────── */
 .md-body h1 { font-size: 22px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin: 0 0 16px; }
 .md-body h2 { font-size: 18px; border-bottom: 1px solid var(--border-muted); padding-bottom: 6px; margin: 24px 0 12px; }
