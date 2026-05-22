@@ -252,3 +252,40 @@ Expert Review". Record each reviewer's verdict in the PR body.
 - Merging a new-source or contract-changing PR without the three
   mandatory expert reviews (xRegistry, JSON Structure, Avro Schema)
   having signed off.
+
+## Real Bugs Are Blockers — Never Gloss Over Them
+
+If during E2E work you discover a bug in a generated artifact, an
+upstream tool (xrcg, avrotize, xregistry), a producer/consumer template,
+or a spec-compliance issue (e.g. CloudEvents bindings, AMQP/MQTT/Kafka
+protocol details), **stop and surface it**. Do not paper over it with a
+test-only workaround and move on.
+
+Examples of real bugs that must be raised, not worked around silently:
+
+- Generated AMQP/MQTT/Kafka producer emits the wrong CloudEvents prefix
+  (CE spec: `cloudEvents:` on AMQP, `ce-` on HTTP, `ce_` on Kafka).
+- Generated dataclass `to_byte_array("application/json")` returns a
+  `str` instead of `bytes`, causing the AMQP/MQTT binary body to be
+  JSON-double-encoded on the wire.
+- avrotize fails to generate dataclasses for schemas that use `$root`.
+- xrcg filter / template bugs that produce empty or malformed output.
+- Any spec-noncompliant header, key, subject, or content-type emission.
+
+The required workflow when you hit one:
+
+1. Capture the smallest reproducer (failing test, on-wire dump, or
+   diff against the spec section it violates).
+2. File or update an issue in the upstream repo (xregistry/codegen,
+   clemensv/avrotize, etc.) with the reproducer.
+3. If a temporary workaround is unavoidable to keep CI moving (e.g. a
+   double `json.loads` in a test), mark it clearly in the code with a
+   `# WORKAROUND(<upstream-issue>):` comment and link the issue.
+4. Tell the user in the same response — do not bury the finding in a
+   summary or treat it as "fixed" when only the symptom is masked.
+5. Add a follow-up to the session plan so the workaround is removed
+   once the upstream fix lands.
+
+A passing test that hides a generator or spec-compliance bug is worse
+than a failing test, because every future consumer of the generated
+code will hit the same bug in production.
