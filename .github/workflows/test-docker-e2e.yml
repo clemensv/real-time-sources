@@ -1,5 +1,9 @@
 name: Docker E2E Tests
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request' }}
+
 # Strategy: a `discover` job inspects the changed files and decides which
 # feeders to build + test. If only one feeder's files changed, only that
 # feeder's docker-build + docker-kafka-flow jobs run. If any infrastructure

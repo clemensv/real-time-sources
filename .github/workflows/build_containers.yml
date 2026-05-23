@@ -1,5 +1,9 @@
 name: Build Containers
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request' }}
+
 on:
   push:
     branches: [ "main" ]
@@ -58,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 20
+      max-parallel: 8
       matrix:
         container: ${{ fromJson(needs.find-dockerfiles.outputs.containers) }}
     permissions:

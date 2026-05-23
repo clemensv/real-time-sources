@@ -1,5 +1,9 @@
 name: Publish Notebook Wheels
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request' }}
+
 # Build per-source wheel bundles for sources marked `notebook: true` in
 # catalog.json and publish them as assets on the `notebook-wheels` release
 # so deploy-feeder-notebook.ps1 can download them from Cloud Shell without
