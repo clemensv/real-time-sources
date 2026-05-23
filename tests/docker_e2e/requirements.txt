@@ -2,5 +2,6 @@ docker
 confluent-kafka
 testcontainers[kafka]
 json-structure>=0.6.1
+paho-mqtt>=2.1.0
 pytest
 pytest-timeout
