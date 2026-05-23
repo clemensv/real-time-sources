@@ -604,6 +604,120 @@ class TestCHMIHydroMqttDockerFlow:
             level_field='water_level',
         )
 
+
+# ---------------------------------------------------------------------------
+# Hong Kong EPD AQHI -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def hongkong_epd_mqtt_image():
+    return build_image('hongkong-epd', dockerfile='Dockerfile.mqtt', tag='test-hongkong-epd-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_hongkong_epd():
+    container, network, host_port = _generic_mosquitto(
+        'hongkong-epd-mqtt-e2e', 'hongkong-epd-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'hongkong-epd-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestHongkongEpdMqttDockerFlow:
+    """Verify the hongkong-epd-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_hongkong_epd, hongkong_epd_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_hongkong_epd['internal_host']}:{mosquitto_hongkong_epd['internal_port']}"
+        feeder = client.containers.run(
+            hongkong_epd_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_hongkong_epd['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_hongkong_epd['host_port'], 'aq/hk/epd/hongkong-epd/#',
+            timeout=30.0,
+        )
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        aqhi_msgs = [m for m in messages if m['topic'].endswith('/aqhi')]
+        assert info_msgs, 'No /info reference events published'
+        assert aqhi_msgs, 'No /aqhi telemetry events published'
+
+        # Verify CloudEvents binary-mode attributes, retain and QoS
+        for sample in (info_msgs[0], aqhi_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        # Verify event types
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        aqhi_types = {m['user_properties'].get('type') for m in aqhi_msgs}
+        assert info_types == {'HK.Gov.EPD.AQHI.Station'}, info_types
+        assert aqhi_types == {'HK.Gov.EPD.AQHI.AQHIReading'}, aqhi_types
+
+        # At least one station has both /info and /aqhi
+        info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+        aqhi_stations = {m['topic'].split('/')[-2] for m in aqhi_msgs}
+        common = info_stations & aqhi_stations
+        assert common, 'No station has both info and aqhi retained leaves'
+
+        # Verify payloads contain expected fields
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        aqhi_payload = _to_dict(aqhi_msgs[0]['payload'])
+        assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+        assert aqhi_payload is not None, f"aqhi payload not parseable: {aqhi_msgs[0]['payload']!r}"
+        assert 'station_id' in info_payload, info_payload
+        assert 'district' in info_payload, info_payload
+        assert 'station_id' in aqhi_payload, aqhi_payload
+        assert 'aqhi' in aqhi_payload, aqhi_payload
+        assert 'district' in aqhi_payload, aqhi_payload
+
+        # Verify topic structure: aq/hk/epd/hongkong-epd/{district}/{station_id}/{event}
+        sample_topic = aqhi_msgs[0]['topic']
+        parts = sample_topic.split('/')
+        assert len(parts) == 7, f"Topic depth != 7: {sample_topic}"
+        assert parts[0:4] == ['aq', 'hk', 'epd', 'hongkong-epd'], parts
+
+
 # ---------------------------------------------------------------------------
 # Bluesky firehose -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
