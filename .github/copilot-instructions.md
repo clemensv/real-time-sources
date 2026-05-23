@@ -266,11 +266,41 @@ against its own work:
 3. The agent has captured the verdicts from steps 1 and 2 in the PR
    body before handing back to the user.
 
+**The agent must attempt to correct every issue raised by the reviews
+autonomously, not just record them.** When any reviewer (xRegistry
+Expert, JSON Structure Expert, Avro Schema Expert, or the
+`container-and-delivery` skill walkthrough) flags a blocker or an
+important finding, the agent's default behavior is to fix it in place
+— edit the xreg manifest, regenerate producers, rebuild the
+container, refresh the docs, re-run the Docker E2E — and then re-run
+the affected review against the corrected state. The PR body should
+report the *resolved* verdict and the fix that landed, not the original
+finding plus an unaddressed TODO.
+
+The agent should only escalate an issue back to the user (instead of
+fixing it) when one of the following is true:
+
+- The fix would change scope or contract semantics in a way the user
+  has not authorized (e.g. dropping or renaming an event type,
+  switching the keying scheme, removing a transport).
+- The fix requires an external resource the agent cannot obtain (a
+  paid API key, a vendor decision, a credential).
+- Two competing reviewer recommendations cannot both be satisfied and
+  the trade-off is a user-level judgement call.
+- The same fix has been attempted and failed verification twice in a
+  row, indicating the agent is stuck and needs human direction.
+
+In every other case — schema description gaps, missing units,
+malformed enums, missing reference data, broken codegen output,
+missing ARM template, missing KQL update policy, failing Docker E2E,
+missing portal catalog entry — the expected agent behavior is *fix,
+regenerate, re-review, re-report*, not *log and defer*.
+
 Reporting a new-source task as done while any of these reviews are
 outstanding, deferred, or known to be failing is a process violation.
-If the agent cannot complete a review (e.g. an expert agent is
-unavailable, or the Docker E2E cannot run locally), it must surface
-that explicitly as an open item rather than mark the task done.
+If the agent genuinely cannot complete or correct a review item, it
+must surface that explicitly as an open item with the reason it could
+not be fixed autonomously — never silently mark the task done.
 
 ## Things That Are Not Allowed
 
