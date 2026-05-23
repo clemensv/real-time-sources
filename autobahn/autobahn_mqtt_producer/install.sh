@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./autobahn_mqtt_producer_data
+pip install ./autobahn_mqtt_producer_mqtt_client

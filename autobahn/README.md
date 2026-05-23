@@ -24,6 +24,8 @@ and diffs the latest snapshot against its local state file to emit `appeared`,
 
 See [EVENTS.md](EVENTS.md) for the CloudEvents contract.
 
+- MQTT/UNS feeder: `autobahn_mqtt` publishes binary-mode CloudEvents under `traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}` with QoS 1 and per-family retain policy.
+
 ## Usage
 
 List the available Autobahns:

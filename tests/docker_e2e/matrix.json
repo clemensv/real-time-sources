@@ -28,6 +28,12 @@
       "module": "aisstream_mqtt"
     },
     {
+      "dir": "autobahn",
+      "image": "autobahn-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "autobahn_mqtt"
+    },
+    {
       "dir": "bfs-odl",
       "module": "bfs_odl"
     },
@@ -267,6 +273,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCHMIHydroMqttDockerFlow"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestAutobahnMqttDockerFlow"
     },
     {
       "dir": "bafu-hydro",

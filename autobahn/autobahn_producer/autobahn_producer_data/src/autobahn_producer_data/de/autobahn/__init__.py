@@ -1,7 +1,7 @@
-from .parkinglorry import ParkingLorry
-from .warningevent import WarningEvent
-from .chargingstation import ChargingStation
-from .webcam import Webcam
 from .roadevent import RoadEvent
+from .webcam import Webcam
+from .parkinglorry import ParkingLorry
+from .chargingstation import ChargingStation
+from .warningevent import WarningEvent
 
-__all__ = ["ParkingLorry", "WarningEvent", "ChargingStation", "Webcam", "RoadEvent"]
+__all__ = ["RoadEvent", "Webcam", "ParkingLorry", "ChargingStation", "WarningEvent"]

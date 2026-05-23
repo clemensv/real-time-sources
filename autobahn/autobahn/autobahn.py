@@ -270,6 +270,7 @@ def _normalize_common_fields(road_id: str, resource_type: str, raw_item: dict[st
 
     return {
         "identifier": str(identifier),
+        "road": road_id,
         "road_ids": [road_id],
         "resource_type": resource_type,
         "display_type": raw_item.get("display_type"),
@@ -357,6 +358,7 @@ def parse_charging_points(description_lines: list[str]) -> tuple[Optional[str], 
 def _build_road_event_snapshot(common: dict[str, Any]) -> dict[str, Any]:
     return {
         "identifier": common["identifier"],
+        "road": common["road"],
         "road_ids": common["road_ids"],
         "display_type": common["display_type"],
         "title": common["title"],
@@ -397,6 +399,7 @@ def _build_parking_lorry_snapshot(common: dict[str, Any]) -> dict[str, Any]:
     car_spaces, lorry_spaces = _parse_parking_counts(common["description_lines"])
     return {
         "identifier": common["identifier"],
+        "road": common["road"],
         "road_ids": common["road_ids"],
         "display_type": common["display_type"],
         "title": common["title"],
@@ -422,6 +425,7 @@ def _build_charging_station_snapshot(common: dict[str, Any]) -> dict[str, Any]:
     address_line, charging_point_count, charging_points_json = parse_charging_points(common["description_lines"])
     return {
         "identifier": common["identifier"],
+        "road": common["road"],
         "road_ids": common["road_ids"],
         "display_type": common["display_type"],
         "title": common["title"],
@@ -445,6 +449,7 @@ def _build_charging_station_snapshot(common: dict[str, Any]) -> dict[str, Any]:
 def _build_webcam_snapshot(common: dict[str, Any]) -> dict[str, Any]:
     return {
         "identifier": common["identifier"],
+        "road": common["road"],
         "road_ids": common["road_ids"],
         "display_type": common["display_type"],
         "title": common["title"],
@@ -495,7 +500,7 @@ def merge_snapshots(existing: dict[str, Any], new_snapshot: dict[str, Any]) -> d
     merged = dict(existing)
     merged["road_ids"] = sorted(set(existing.get("road_ids", [])) | set(new_snapshot.get("road_ids", [])))
     for key, value in new_snapshot.items():
-        if key == "road_ids":
+        if key in {"road", "road_ids"}:
             continue
         if key not in merged or _is_missing(merged[key]):
             merged[key] = value

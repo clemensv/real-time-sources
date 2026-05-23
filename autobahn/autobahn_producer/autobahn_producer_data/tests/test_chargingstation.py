@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from autobahn_producer_data.chargingstation import ChargingStation
-from typing import Any
 from autobahn_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -31,24 +31,25 @@ class Test_ChargingStation(unittest.TestCase):
         Create instance of ChargingStation for testing
         """
         instance = ChargingStation(
-            identifier='bszmwmaisavhwcgtrnmo',
-            road_ids=['atjnjkkxoclfwggnwrlr', 'izwnktztbdvzesgtjofo', 'alvkubjcrsoeeokcaxch'],
+            identifier='zvexpzqoqjrtekinsbpl',
+            road='plersexwwovmiikwmshq',
+            road_ids=['upolxunnbuhhxheigsdh'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='gqfavrtbanmzfzvlhgbb',
-            subtitle='nxplwiocghhtkxzohrcv',
+            display_type=DisplayTypeenum.WEBCAM,
+            title='bfyztxpiqjgqhpzisiqb',
+            subtitle='asbseskbrakkejbameig',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='ycfivbpsvbtzfxixskdc',
-            extent='cyaypphpercifpfyxfyl',
-            point='ajnaapwxgfkxspcfrfed',
-            coordinate_lat=float(41.57627757899799),
-            coordinate_lon=float(99.95600076292702),
-            address_line='fqtdjowdkinvyiefodcx',
-            charging_point_count=int(22),
-            charging_points_json='wooratufrwnrmoskcdds',
-            route_recommendation_json='iquzmmsormxdgmtnqjga',
+            is_blocked=True,
+            icon='ayaswsujeqrljfblzabt',
+            extent='qssigkqiqrjuhwlydgoc',
+            point='gxpptuslqfweefkaccss',
+            coordinate_lat=float(10.837180784626065),
+            coordinate_lon=float(54.51131856775782),
+            address_line='gzaplogjokvhfwxbknbl',
+            charging_point_count=int(15),
+            charging_points_json='slknuxskfakixeedlvno',
+            route_recommendation_json='rjgdhpwnlqcpgdgakcnb',
             footer_lines=None
         )
         return instance
@@ -58,15 +59,23 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'bszmwmaisavhwcgtrnmo'
+        test_value = 'zvexpzqoqjrtekinsbpl'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
+    
+    def test_road_property(self):
+        """
+        Test road property
+        """
+        test_value = 'plersexwwovmiikwmshq'
+        self.instance.road = test_value
+        self.assertEqual(self.instance.road, test_value)
     
     def test_road_ids_property(self):
         """
         Test road_ids property
         """
-        test_value = ['atjnjkkxoclfwggnwrlr', 'izwnktztbdvzesgtjofo', 'alvkubjcrsoeeokcaxch']
+        test_value = ['upolxunnbuhhxheigsdh']
         self.instance.road_ids = test_value
         self.assertEqual(self.instance.road_ids, test_value)
     
@@ -82,7 +91,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test display_type property
         """
-        test_value = DisplayTypeenum.ROADWORKS
+        test_value = DisplayTypeenum.WEBCAM
         self.instance.display_type = test_value
         self.assertEqual(self.instance.display_type, test_value)
     
@@ -90,7 +99,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'gqfavrtbanmzfzvlhgbb'
+        test_value = 'bfyztxpiqjgqhpzisiqb'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -98,7 +107,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'nxplwiocghhtkxzohrcv'
+        test_value = 'asbseskbrakkejbameig'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -122,7 +131,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test is_blocked property
         """
-        test_value = False
+        test_value = True
         self.instance.is_blocked = test_value
         self.assertEqual(self.instance.is_blocked, test_value)
     
@@ -130,7 +139,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'ycfivbpsvbtzfxixskdc'
+        test_value = 'ayaswsujeqrljfblzabt'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -138,7 +147,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test extent property
         """
-        test_value = 'cyaypphpercifpfyxfyl'
+        test_value = 'qssigkqiqrjuhwlydgoc'
         self.instance.extent = test_value
         self.assertEqual(self.instance.extent, test_value)
     
@@ -146,7 +155,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'ajnaapwxgfkxspcfrfed'
+        test_value = 'gxpptuslqfweefkaccss'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -154,7 +163,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test coordinate_lat property
         """
-        test_value = float(41.57627757899799)
+        test_value = float(10.837180784626065)
         self.instance.coordinate_lat = test_value
         self.assertEqual(self.instance.coordinate_lat, test_value)
     
@@ -162,7 +171,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test coordinate_lon property
         """
-        test_value = float(99.95600076292702)
+        test_value = float(54.51131856775782)
         self.instance.coordinate_lon = test_value
         self.assertEqual(self.instance.coordinate_lon, test_value)
     
@@ -170,7 +179,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test address_line property
         """
-        test_value = 'fqtdjowdkinvyiefodcx'
+        test_value = 'gzaplogjokvhfwxbknbl'
         self.instance.address_line = test_value
         self.assertEqual(self.instance.address_line, test_value)
     
@@ -178,7 +187,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test charging_point_count property
         """
-        test_value = int(22)
+        test_value = int(15)
         self.instance.charging_point_count = test_value
         self.assertEqual(self.instance.charging_point_count, test_value)
     
@@ -186,7 +195,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test charging_points_json property
         """
-        test_value = 'wooratufrwnrmoskcdds'
+        test_value = 'slknuxskfakixeedlvno'
         self.instance.charging_points_json = test_value
         self.assertEqual(self.instance.charging_points_json, test_value)
     
@@ -194,7 +203,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test route_recommendation_json property
         """
-        test_value = 'iquzmmsormxdgmtnqjga'
+        test_value = 'rjgdhpwnlqcpgdgakcnb'
         self.instance.route_recommendation_json = test_value
         self.assertEqual(self.instance.route_recommendation_json, test_value)
     
@@ -206,6 +215,15 @@ class Test_ChargingStation(unittest.TestCase):
         self.instance.footer_lines = test_value
         self.assertEqual(self.instance.footer_lines, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = ChargingStation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type
