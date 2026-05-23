@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.12-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/nws-alerts"
+LABEL org.opencontainers.image.title="NWS CAP weather alerts → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the US National Weather Service for CAP alerts and publishes MQTT 5.0 binary-mode CloudEvents into alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/nws-alerts/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./nws_alerts_mqtt_producer/nws_alerts_mqtt_producer_data \
+ && pip install --no-cache-dir ./nws_alerts_mqtt_producer/nws_alerts_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./nws_alerts_mqtt
+
+ENV MQTT_BROKER_URL=""
+ENV LOG_LEVEL="INFO"
+
+CMD ["python", "-m", "nws_alerts_mqtt", "feed"]

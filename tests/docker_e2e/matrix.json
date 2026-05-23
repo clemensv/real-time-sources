@@ -170,6 +170,12 @@
       "module": "noaa_nws"
     },
     {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nws_alerts_mqtt"
+    },
+    {
       "dir": "pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
@@ -405,6 +411,14 @@
     {
       "dir": "noaa-nws",
       "test_class": "TestNOAANwsDockerFlow"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nws_alerts_mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNwsAlertsMqttDockerFlow"
     },
     {
       "dir": "pegelonline",

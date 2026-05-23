@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from nws_alerts_producer_data.statusenum import StatusEnum
+from nws_alerts_mqtt_producer_data.statusenum import StatusEnum
 
 
 class Test_StatusEnum(unittest.TestCase):

@@ -12,6 +12,9 @@ from nws_alerts.nws_alerts import (
     _join_codes,
     _find_nws_headline,
     _find_vtec,
+    derive_state,
+    normalize_cap_severity,
+    uns_slug,
 )
 
 
@@ -95,6 +98,18 @@ class TestFindVtec:
         assert _find_vtec({}) is None
 
 
+class TestUnsFields:
+    def test_uns_slug(self):
+        assert uns_slug("Tornado Warning!") == "tornado-warning"
+
+    def test_severity_normalization(self):
+        assert normalize_cap_severity("Severe") == "severe"
+        assert normalize_cap_severity("Unexpected") == "unknown"
+
+    def test_derive_state_from_same(self):
+        assert derive_state({"geocode": {"SAME": ["024031"]}}) == "md"
+
+
 class TestNormalizeAlert:
     def test_valid(self):
         a = normalize_alert(_make_props())
@@ -102,6 +117,8 @@ class TestNormalizeAlert:
         assert a.alert_id == "urn:oid:2.49.0.1.840.0.abc123"
         assert a.event == "Tornado Warning"
         assert a.severity == "Severe"
+        assert a.state == "md"
+        assert a.event_type == "tornado-warning"
         assert a.same_codes == "024031"
         assert a.ugc_codes == "MDC031"
         assert a.vtec == "/O.NEW.KTSA.TO.W.0001.260407T1200Z-260407T2200Z/"
@@ -113,8 +130,10 @@ class TestNormalizeAlert:
     def test_no_event(self):
         assert normalize_alert(_make_props(event=None)) is None
 
-    def test_no_severity(self):
-        assert normalize_alert(_make_props(severity=None)) is None
+    def test_no_severity_defaults_unknown(self):
+        a = normalize_alert(_make_props(severity=None))
+        assert a is not None
+        assert a.severity == "Unknown"
 
     def test_minimal(self):
         a = normalize_alert({
@@ -129,6 +148,8 @@ class TestNormalizeAlert:
         })
         assert a is not None
         assert a.alert_id == "urn:oid:123"
+        assert a.state == "unknown"
+        assert a.event_type == "test"
         assert a.same_codes is None
         assert a.vtec is None
 

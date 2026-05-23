@@ -2,7 +2,8 @@
 
 This bridge polls the US National Weather Service (NWS) alerts API for active
 weather and non-weather alerts and forwards them to Apache Kafka, Azure Event
-Hubs, or Microsoft Fabric Event Streams as CloudEvents.
+Hubs, Microsoft Fabric Event Streams, or MQTT 5.0 Unified Namespace brokers as
+CloudEvents.
 
 ## Data Source
 
@@ -17,6 +18,8 @@ See [EVENTS.md](EVENTS.md) for the CloudEvents contract.
 
 ## Usage
 
+Kafka/Event Hubs:
+
 ```bash
 python -m nws_alerts --bootstrap-servers "localhost:9092" --poll-interval 120
 ```
@@ -26,6 +29,14 @@ Or use a connection string:
 ```bash
 python -m nws_alerts --connection-string "<connection-string>"
 ```
+
+MQTT/UNS:
+
+```bash
+python -m nws_alerts_mqtt feed --mqtt-broker-url "mqtt://localhost:1883" --once
+```
+
+MQTT topics use `alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert` with CAP severity baked as `minor`, `moderate`, `severe`, `extreme`, or `unknown`. Alerts are QoS 1, non-retained, binary-mode CloudEvents.
 
 ## Environment Variables
 
@@ -39,6 +50,10 @@ python -m nws_alerts --connection-string "<connection-string>"
 | `NWS_ALERTS_STATE_FILE` | State file path | `~/.nws_alerts_state.json` |
 | `NWS_ALERTS_POLL_INTERVAL` | Poll interval (seconds) | `120` |
 | `LOG_LEVEL` | Logging level | `INFO` |
+| `MQTT_BROKER_URL` | MQTT broker URL for `nws-alerts-mqtt` | `mqtt://localhost:1883` |
+| `MQTT_AUTH_MODE` | MQTT auth mode (`anonymous`, `userpass`, `tls-cert`, `entra`) | `anonymous` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT username/password | none |
+| `NWS_ALERTS_MQTT_EMIT_MOCK_CORPUS` | Emit one synthetic alert per severity for tests | `false` |
 
 ## Testing
 

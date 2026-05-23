@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from nws_alerts_producer_data.messagetypeenum import MessageTypeenum
+from nws_alerts_mqtt_producer_data.messagetypeenum import MessageTypeenum
 
 
 class Test_MessageTypeenum(unittest.TestCase):

@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/NWS.Alerts"
       ]
+    },
+    "NWS.Alerts.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NWS.Alerts.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -43,6 +64,67 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NWS.jstruct/schemas/NWS.WeatherAlert"
+        }
+      }
+    },
+    "NWS.Alerts.mqtt": {
+      "messagegroupid": "NWS.Alerts.mqtt",
+      "description": "MQTT/5.0 mirror of NWS CAP weather alerts, published into the Unified-Namespace topic tree 'alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert'. CAP severity is baked as one of five literal sub-tree partitions (minor, moderate, severe, extreme, unknown) so every template placeholder resolves from an enriched WeatherAlert schema field. Alerts are QoS-1 non-retained one-shot lifecycle events.",
+      "messages": {
+        "NWS.WeatherAlert.Minor.mqtt": {
+          "messageid": "NWS.WeatherAlert.Minor.mqtt",
+          "name": "WeatherAlertMinor",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Moderate.mqtt": {
+          "messageid": "NWS.WeatherAlert.Moderate.mqtt",
+          "name": "WeatherAlertModerate",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Severe.mqtt": {
+          "messageid": "NWS.WeatherAlert.Severe.mqtt",
+          "name": "WeatherAlertSevere",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Extreme.mqtt": {
+          "messageid": "NWS.WeatherAlert.Extreme.mqtt",
+          "name": "WeatherAlertExtreme",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Unknown.mqtt": {
+          "messageid": "NWS.WeatherAlert.Unknown.mqtt",
+          "name": "WeatherAlertUnknown",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -72,7 +154,9 @@
                   "certainty",
                   "sent",
                   "status",
-                  "message_type"
+                  "message_type",
+                  "state",
+                  "event_type"
                 ],
                 "properties": {
                   "alert_id": {
@@ -229,6 +313,14 @@
                   "web": {
                     "type": "string",
                     "description": "A URL to the full alert details."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved."
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "Lowercase kebab-case slug derived from the CAP event field for topic partitioning."
                   }
                 }
               }
