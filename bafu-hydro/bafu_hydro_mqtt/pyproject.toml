@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "bafu_hydro_mqtt"
+version = "0.1.0"
+description = "MQTT/UNS feeder for the Swiss BAFU/FOEN Hydrology data (via existenz.ch)."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "bafu_hydro_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+requests = ">=2.32.3"
+bafu_hydro = { path = ".." }
+bafu_hydro_mqtt_producer_data = { path = "../bafu_hydro_mqtt_producer/bafu_hydro_mqtt_producer_data" }
+bafu_hydro_mqtt_producer_mqtt_client = { path = "../bafu_hydro_mqtt_producer/bafu_hydro_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+bafu-hydro-mqtt = "bafu_hydro_mqtt.app:main"

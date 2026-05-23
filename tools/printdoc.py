@@ -67,7 +67,7 @@ def generate_documentation(data, title, description):
             toc.append(f"  - [{msg_name}](#{msg_anchor})")
             output_lines.append("---\n")
             output_lines.append(msg_heading)
-            output_lines.extend(process_message(msg, schemagroups))
+            output_lines.extend(process_message(msg, schemagroups, messagegroups))
 
     buffer = io.StringIO()
     buffer.write(f"# {title}\n\n")
@@ -84,8 +84,22 @@ def generate_documentation(data, title, description):
 
     return buffer.getvalue()
 
-def process_message(msg, schemagroups):
+def process_message(msg, schemagroups, messagegroups=None):
     lines = []
+
+    # If the message inherits from a base message via basemessageurl, merge
+    # the base message's envelopemetadata + dataschemauri so transport-only
+    # overlays (e.g. MQTT/AMQP) still render with full schema and CE
+    # attribute documentation.
+    if messagegroups is not None and msg.get('basemessageurl'):
+        base = _resolve_base_message(msg['basemessageurl'], messagegroups)
+        if base is not None:
+            merged_meta = dict(base.get('envelopemetadata') or {})
+            merged_meta.update(msg.get('envelopemetadata') or {})
+            merged = dict(base)
+            merged.update(msg)
+            merged['envelopemetadata'] = merged_meta
+            msg = merged
 
     if msg.get('description'):
         lines.append(f"*{msg.get('description')}*\n")
@@ -113,9 +127,23 @@ def process_message(msg, schemagroups):
         lines.append("Schema not found.\n")
     return lines
 
+def _resolve_base_message(basemessageurl, messagegroups):
+    """Resolve a ``basemessageurl`` like ``/messagegroups/NS/messages/NS.X`` to the base message dict."""
+    if not basemessageurl:
+        return None
+    parts = basemessageurl.lstrip('/').split('/')
+    # Expected shape: messagegroups/<group>/messages/<msg>
+    if len(parts) < 4 or parts[0] != 'messagegroups' or parts[2] != 'messages':
+        return None
+    group = messagegroups.get(parts[1])
+    if not group:
+        return None
+    return (group.get('messages') or {}).get(parts[3])
+
+
 def resolve_schema(dataschemauri, schemagroups):
     # dataschemauri is of the form "#/schemagroups/group_name/schemas/schema_name"
-    if not dataschemauri.startswith("#/"):
+    if not dataschemauri or not dataschemauri.startswith("#/"):
         return None
     path = dataschemauri[2:].split('/')
     node = schemagroups

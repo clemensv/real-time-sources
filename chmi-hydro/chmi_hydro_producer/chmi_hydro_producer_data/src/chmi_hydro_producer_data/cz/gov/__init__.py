@@ -1,3 +1,3 @@
-from .chmi import WaterLevelObservation, Station
+from .chmi import Station, WaterLevelObservation
 
-__all__ = ["WaterLevelObservation", "Station"]
+__all__ = ["Station", "WaterLevelObservation"]

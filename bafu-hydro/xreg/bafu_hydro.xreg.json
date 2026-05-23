@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/CH.BAFU.Hydrology"
       ]
+    },
+    "CH.BAFU.Hydrology.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CH.BAFU.Hydrology.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -60,6 +81,31 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology.jstruct/schemas/CH.BAFU.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "CH.BAFU.Hydrology.mqtt": {
+      "description": "MQTT/5.0 transport variants of the BAFU Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/... The {water_body_name} placeholder is sourced from the upstream existenz.ch station catalog (BAFU/FOEN field 'water-body-name', e.g. 'Rhein', 'Aare') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers / lakes (e.g. hydro/ch/bafu/bafu-hydro/rhein/+/water-level).",
+      "messages": {
+        "CH.BAFU.Hydrology.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "CH.BAFU.Hydrology.mqtt.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.WaterLevelObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
         }
       }
     }
@@ -121,12 +167,17 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "station_id"
+                  "station_id",
+                  "water_body_name"
                 ],
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
                     "type": "string"
+                  },
+                  "water_body_name": {
+                    "type": "string",
+                    "description": "Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
                     "type": "double"
@@ -231,6 +282,11 @@
                   {
                     "name": "station_id",
                     "type": "string"
+                  },
+                  {
+                    "name": "water_body_name",
+                    "type": "string",
+                    "doc": "Name of the water body the station observes (BAFU/FOEN 'water-body-name', e.g. 'Rhein'). Sourced by the bridge from the station catalog and propagated to telemetry so consumers can route by river/lake without a separate catalog join."
                   },
                   {
                     "name": "water_level",

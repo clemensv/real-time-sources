@@ -1,0 +1,2 @@
+pip install .\bafu_hydro_mqtt_producer_data
+pip install .\bafu_hydro_mqtt_producer_mqtt_client

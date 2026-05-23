@@ -234,3 +234,372 @@ class TestPegelonlineMqttDockerFlow:
         assert level_payload is not None, f"level payload not parseable: {level_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload and 'water' in info_payload
         assert 'station_id' in level_payload and 'value' in level_payload
+
+
+# ---------------------------------------------------------------------------
+# Hydro pilot MQTT feeders (bafu-hydro, nve-hydro, chmi-hydro)
+# ---------------------------------------------------------------------------
+
+
+def _generic_mosquitto(network_name: str, container_name: str):
+    """Spin up a throwaway mosquitto 2.x broker on a dedicated bridge network."""
+    client = docker.from_env()
+    network = client.networks.create(network_name, driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name=container_name,
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    return container, network, host_port
+
+
+def _collect_messages_topic(host: str, port: int, topic_filter: str, timeout: float = 25.0) -> List[Dict[str, Any]]:
+    """Same as ``_collect_messages`` but parameterized by topic filter."""
+    collected: List[Dict[str, Any]] = []
+    last_msg_time = [time.time()]
+
+    def on_message(client, userdata, msg):
+        last_msg_time[0] = time.time()
+        props = {}
+        if msg.properties is not None:
+            for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                props[k] = v
+            ct = getattr(msg.properties, 'ContentType', None)
+            if ct:
+                props['_contenttype'] = ct
+        try:
+            payload = json.loads(msg.payload)
+        except (TypeError, ValueError):
+            payload = None
+        collected.append({
+            'topic': msg.topic,
+            'retain': bool(msg.retain),
+            'qos': msg.qos,
+            'user_properties': props,
+            'payload': payload,
+        })
+
+    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    client.on_message = on_message
+    client.connect(host, port, 30)
+    client.subscribe(topic_filter, qos=1)
+    client.loop_start()
+    try:
+        deadline = time.time() + timeout
+        idle_threshold = 3.0
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > idle_threshold:
+                break
+    finally:
+        client.loop_stop()
+        client.disconnect()
+    return collected
+
+
+def _to_dict(p):
+    if isinstance(p, dict):
+        return p
+    if isinstance(p, str):
+        try:
+            parsed = json.loads(p)
+            return parsed if isinstance(parsed, dict) else None
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str,
+                              level_field: str, water_axis_segment_index: int = 4):
+    """Common UNS-shape assertions for the three hydro MQTT pilots.
+
+    * Both ``info`` and ``water-level`` leaves exist for at least one
+      common station.
+    * Every message carries the six required CloudEvents binary-mode user
+      properties (id, source, type, subject, time, specversion), retain=true
+      and qos=1.
+    * The ``type`` attribute matches the expected reference / telemetry
+      CloudEvents type.
+    * Both payloads contain ``station_id`` plus the expected level field on
+      the telemetry side.
+    """
+    assert messages, 'No retained messages received from broker'
+    info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+    level_msgs = [m for m in messages if m['topic'].endswith('/water-level')]
+    assert info_msgs, 'No /info reference events published'
+    assert level_msgs, 'No /water-level telemetry events published'
+
+    for sample in (info_msgs[0], level_msgs[0]):
+        up = sample['user_properties']
+        for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+            assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+        assert sample['user_properties'].get('_contenttype') == 'application/json'
+        assert sample['retain'] is True
+        assert sample['qos'] == 1
+
+    info_types = {m['user_properties'].get('type') for m in info_msgs}
+    level_types = {m['user_properties'].get('type') for m in level_msgs}
+    assert info_types == {station_type}, info_types
+    assert level_types == {telemetry_type}, level_types
+
+    info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+    level_stations = {m['topic'].split('/')[-2] for m in level_msgs}
+    common = info_stations & level_stations
+    assert common, 'No station has both info and water-level retained leaves'
+
+    info_payload = _to_dict(info_msgs[0]['payload'])
+    level_payload = _to_dict(level_msgs[0]['payload'])
+    assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+    assert level_payload is not None, f"level payload not parseable: {level_msgs[0]['payload']!r}"
+    assert 'station_id' in info_payload, info_payload
+    assert 'station_id' in level_payload, level_payload
+    assert level_field in level_payload, level_payload
+
+
+# ---- bafu-hydro --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def bafu_hydro_mqtt_image():
+    return build_image('bafu-hydro', dockerfile='Dockerfile.mqtt', tag='test-bafu-hydro-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_bafu():
+    container, network, host_port = _generic_mosquitto(
+        'bafu-hydro-mqtt-e2e', 'bafu-hydro-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'bafu-hydro-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestBafuHydroMqttDockerFlow:
+    """Verify the bafu-hydro-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_bafu, bafu_hydro_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_bafu['internal_host']}:{mosquitto_bafu['internal_port']}"
+        feeder = client.containers.run(
+            bafu_hydro_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_bafu['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_bafu['host_port'], 'hydro/ch/bafu/bafu-hydro/#'
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='CH.BAFU.Hydrology.Station',
+            telemetry_type='CH.BAFU.Hydrology.WaterLevelObservation',
+            level_field='water_level',
+        )
+
+
+# ---- nve-hydro ---------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def nve_hydro_mqtt_image():
+    return build_image('nve-hydro', dockerfile='Dockerfile.mqtt', tag='test-nve-hydro-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_nve():
+    container, network, host_port = _generic_mosquitto(
+        'nve-hydro-mqtt-e2e', 'nve-hydro-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'nve-hydro-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestNVEHydroMqttDockerFlow:
+    """Verify the nve-hydro-mqtt container publishes a valid UNS tree.
+
+    Skipped unless ``NVE_API_KEY`` is set in the environment, since the
+    HydAPI requires a registered key for any request.
+    """
+
+    def test_emits_retained_uns_topics(self, mosquitto_nve, nve_hydro_mqtt_image):
+        api_key = os.environ.get('NVE_API_KEY')
+        if not api_key:
+            pytest.skip('NVE_API_KEY not set; NVE HydAPI requires a registered key')
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_nve['internal_host']}:{mosquitto_nve['internal_port']}"
+        feeder = client.containers.run(
+            nve_hydro_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_nve['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'NVE_API_KEY': api_key,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_nve['host_port'], 'hydro/no/nve/nve-hydro/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='NO.NVE.Hydrology.Station',
+            telemetry_type='NO.NVE.Hydrology.WaterLevelObservation',
+            level_field='water_level',
+        )
+
+
+# ---- chmi-hydro --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def chmi_hydro_mqtt_image():
+    return build_image('chmi-hydro', dockerfile='Dockerfile.mqtt', tag='test-chmi-hydro-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_chmi():
+    container, network, host_port = _generic_mosquitto(
+        'chmi-hydro-mqtt-e2e', 'chmi-hydro-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'chmi-hydro-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestCHMIHydroMqttDockerFlow:
+    """Verify the chmi-hydro-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_chmi, chmi_hydro_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_chmi['internal_host']}:{mosquitto_chmi['internal_port']}"
+        feeder = client.containers.run(
+            chmi_hydro_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_chmi['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_chmi['host_port'], 'hydro/cz/chmi/chmi-hydro/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='CZ.Gov.CHMI.Hydro.Station',
+            telemetry_type='CZ.Gov.CHMI.Hydro.WaterLevelObservation',
+            level_field='water_level',
+        )

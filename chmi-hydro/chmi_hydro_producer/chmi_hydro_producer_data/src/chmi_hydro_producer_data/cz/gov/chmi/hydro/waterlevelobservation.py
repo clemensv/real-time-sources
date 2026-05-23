@@ -25,7 +25,7 @@ class WaterLevelObservation:
     Attributes:
         station_id (str): 
         station_name (str): 
-        stream_name (typing.Optional[str]): 
+        stream_name (str): Name of the watercourse / stream the station observes (Czech: 'tok'). Sourced by the bridge from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join.
         water_level (typing.Optional[float]): 
         water_level_timestamp (typing.Optional[datetime.datetime]): 
         discharge (typing.Optional[float]): 
@@ -35,7 +35,7 @@ class WaterLevelObservation:
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
-    stream_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stream_name"))
+    stream_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stream_name"))
     water_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
     water_level_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     discharge: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
@@ -44,14 +44,14 @@ class WaterLevelObservation:
     water_temperature_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"stream_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"water_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_temperature_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}], \"namespace\": \"CZ.Gov.CHMI.Hydro\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"stream_name\", \"type\": \"string\", \"doc\": \"Name of the watercourse / stream the station observes (Czech: 'tok'). Sourced by the bridge from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"water_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_temperature_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}], \"namespace\": \"CZ.Gov.CHMI.Hydro\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
         self.station_name=str(self.station_name)
-        self.stream_name=str(self.stream_name) if self.stream_name else None
+        self.stream_name=str(self.stream_name)
         self.water_level=float(self.water_level) if self.water_level else None
         self.water_level_timestamp=self.water_level_timestamp if self.water_level_timestamp else None
         self.discharge=float(self.discharge) if self.discharge else None

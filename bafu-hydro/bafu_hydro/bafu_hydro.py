@@ -178,8 +178,10 @@ def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer,
         if reading_key in previous_readings:
             continue
 
+        station_details = locations.get(station_id) or {}
         obs_data = WaterLevelObservation(
             station_id=station_id,
+            water_body_name=station_details.get('water-body-name', '') or '',
             water_level=wl_val,
             water_level_unit='m',
             water_level_timestamp=wl_ts_str,

@@ -24,6 +24,7 @@ class WaterLevelObservation:
     WaterLevelObservation
     Attributes:
         station_id (str): 
+        river_name (str): Name of the river the station observes (NVE HydAPI 'riverName' / Norwegian 'Vassdrag'). Sourced from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join.
         water_level (typing.Optional[float]): 
         water_level_unit (typing.Optional[str]): 
         water_level_timestamp (typing.Optional[datetime.datetime]): 
@@ -32,6 +33,7 @@ class WaterLevelObservation:
         discharge_timestamp (typing.Optional[datetime.datetime]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    river_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_name"))
     water_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
     water_level_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_unit"))
     water_level_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
@@ -40,12 +42,13 @@ class WaterLevelObservation:
     discharge_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}], \"namespace\": \"NO.NVE.Hydrology\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": \"string\", \"doc\": \"Name of the river the station observes (NVE HydAPI 'riverName' / Norwegian 'Vassdrag'). Sourced from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}], \"namespace\": \"NO.NVE.Hydrology\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
+        self.river_name=str(self.river_name)
         self.water_level=float(self.water_level) if self.water_level else None
         self.water_level_unit=str(self.water_level_unit) if self.water_level_unit else None
         self.water_level_timestamp=self.water_level_timestamp if self.water_level_timestamp else None
