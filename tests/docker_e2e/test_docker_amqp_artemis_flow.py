@@ -404,6 +404,7 @@ class TestNoaaSwpcL1AmqpArtemisFlow:
                 "AMQP_AUTH_MODE": "password",
                 "POLLING_INTERVAL": "60",
                 "ONCE_MODE": "true",
+                "BACKFILL_MINUTES": "1440",
                 "PYTHONUNBUFFERED": "1",
             },
         )

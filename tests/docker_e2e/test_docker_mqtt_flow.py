@@ -332,6 +332,7 @@ class TestNoaaSwpcL1MqttDockerFlow:
                 'MQTT_BROKER_URL': broker_url,
                 'POLLING_INTERVAL': '60',
                 'ONCE_MODE': 'true',
+                'BACKFILL_MINUTES': '1440',
                 'PYTHONUNBUFFERED': '1',
             },
         )

@@ -90,7 +90,7 @@ async def feed(
 
     producer = Producer(kafka_config)
     swpc_producer = GovNoaaSwpcL1KafkaEventProducer(
-        producer, kafka_topic, content_mode="binary"
+        producer, kafka_topic, content_mode="structured"
     )
 
     logger.info(
