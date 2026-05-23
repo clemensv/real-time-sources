@@ -154,6 +154,13 @@ same data shape:
                 "type": "string",
                 "description": "Short name of the water body (e.g. 'rhein'). Lets brokers like Service Bus topics filter or route by water body without cracking the payload."
               }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus / Event Hubs partition key. UTF-8 string, max 128 characters. Mirrors the CloudEvent subject and the Kafka key so all events for the same station hash to the same partition and ordering is preserved end-to-end across transports."
+              }
             }
           }
         }
@@ -169,9 +176,11 @@ Unlike MQTT (one topic template per message), AMQP 1.0 has one
 **address** per producer link — the queue or topic name. Routing
 within that address is done via:
 
-- The CloudEvent `subject` (mapped to AMQP `properties.subject`), and
+- The CloudEvent `subject` (mapped to AMQP `properties.subject`),
 - AMQP `application_properties`, which subscribers and SQL filters can
-  read.
+  read, and
+- AMQP `message-annotations`, which brokers consume for transport-level
+  behavior (partition keys, session IDs, scheduled enqueue time, etc.).
 
 For Service Bus topics with subscriptions, the natural pattern is **one
 address per source**, with consumers using subscription SQL filters on
@@ -180,12 +189,55 @@ address per source**, with consumers using subscription SQL filters on
 For Event Hubs, the address is the event hub name; there are no
 sub-addresses or filters — consumers read the whole partition stream.
 
-### Kafka key alignment is not required
+### Partition keys are required for Service Bus and Event Hubs
 
-The AMQP endpoint does not need a `protocoloptions.options.key` field
-because AMQP brokers do not partition by key. The CloudEvent `subject`
-plus `application_properties` carry all identity information consumers
-need.
+Every AMQP message group **must** declare a
+`protocoloptions.message_annotations["x-opt-partition-key"]` entry
+whose `uritemplate` value matches the CloudEvent subject and the
+Kafka key. Source: the Microsoft Python SDKs treat this annotation as
+the canonical partition-routing signal for both products.
+
+**Event Hubs** (`azure-eventhub`,
+`azure/eventhub/_constants.py:10`, `_pyamqp_transport.py:393`,
+`_utils.py:116`): the sender writes the annotation
+`b"x-opt-partition-key"` into the message annotations section; the
+broker hashes it to pick a partition. Without it, the sender uses
+round-robin and event ordering for the same logical entity is lost
+across partitions.
+
+**Service Bus** (`azure-servicebus`,
+`azure/servicebus/_common/constants.py:119`,
+`_common/message.py:331`, `_common/message.py:688`): same annotation
+key `b"x-opt-partition-key"`; the broker uses it for partitioned
+queues/topics. If `session_id` is also set, the two values **must be
+equal** (`_common/message.py:329`).
+
+Data type and constraints (verified against the SDK code):
+
+| Field        | Value                                                                          |
+|--------------|--------------------------------------------------------------------------------|
+| Annotation   | `b"x-opt-partition-key"` (AMQP symbol)                                          |
+| Value type   | UTF-8 string (`str` in Python; the EH SDK also accepts the symbol in bytes)     |
+| Max length   | 128 characters (`MESSAGE_PROPERTY_MAX_LENGTH` in `azure/servicebus/_common/constants.py:140`) |
+| Encoding     | AMQP `message-annotations` section, **not** `application_properties`            |
+| SB constraint| If `session_id` is set, `partition_key` must equal it                           |
+
+Choose the partition-key template from the same stable domain identity
+that backs the CloudEvent subject and the Kafka key — never use mutable
+names, descriptive labels, timestamps, or surrogate UUIDs. For
+multi-part identities (`{agency_cd}/{site_no}`), keep the template
+identical across all three (subject, Kafka key, partition key).
+
+> **xrcg support status.** As of xrcg 0.10.6 the Python AMQP producer
+> template reads `properties` and `application_properties` but does
+> **not** yet emit `message_annotations`. Tracked in
+> [xregistry/codegen#294](https://github.com/xregistry/codegen/issues/294).
+> Until annotation codegen lands, bridges declare the annotation in the
+> manifest (so the contract is authoritative and EVENTS.md / KQL
+> generators see it) **and** apply it in the bridge as a thin
+> post-build hook on the generated sender — see the *Partition Key
+> Bridge Workaround* section in
+> [`stream-bridge-implementation`](../stream-bridge-implementation/SKILL.md#partition-key-bridge-workaround-amqp--pending-xrcg-support).
 
 ## Producer Generation
 
