@@ -725,3 +725,61 @@ documentation: `tools/deploy-fabric/README.md`.
 - [`xreg-source-contract`](../xreg-source-contract/SKILL.md) — contract authoring (consumed by the mandatory expert review)
 - `pegelonline/notebook/pegelonline-feed.ipynb` — canonical notebook template
 - `tools/deploy-fabric/deploy-feeder-notebook.ps1` — parameter names the deploy script overwrites; the notebook MUST declare all of them
+
+## Partition Key Bridge Workaround (AMQP — pending xrcg support)
+
+Until xrcg emits `message_annotations` codegen (see the
+[`amqp-feeder`](../amqp-feeder/SKILL.md) skill, *Partition keys are
+required for Service Bus and Event Hubs*), AMQP bridges must inject
+`x-opt-partition-key` themselves by wrapping the generated sender's
+underlying `send` callable. This keeps the contract authoritative
+(the manifest declares the annotation, EVENTS.md / KQL generators see
+it) while shipping correct partition routing today.
+
+Apply the patch once, immediately after the producer is constructed
+(typically inside the bridge's `__init__` / `start()`):
+
+```python
+# pegelonline_amqp/app.py — partition-key annotation workaround
+from proton import Message  # or your AMQP client's Message type
+
+_PARTITION_KEY_SYMBOL = b"x-opt-partition-key"
+
+def _patch_partition_key(producer, subject_extractor):
+    """Wrap producer._sender.send so every outgoing message carries
+    the SB/EH partition-key annotation derived from CE subject."""
+    original_send = producer._sender.send
+
+    def send_with_partition_key(amqp_msg, *args, **kwargs):
+        subject = getattr(amqp_msg, "subject", None) or subject_extractor(amqp_msg)
+        if subject:
+            ann = dict(amqp_msg.annotations or {})
+            ann[_PARTITION_KEY_SYMBOL] = str(subject)[:128]
+            amqp_msg.annotations = ann
+        return original_send(amqp_msg, *args, **kwargs)
+
+    producer._sender.send = send_with_partition_key
+```
+
+Rules:
+
+- The annotation value is always a **UTF-8 string** truncated to **128
+  characters** (the Service Bus `MESSAGE_PROPERTY_MAX_LENGTH` limit).
+  Event Hubs accepts longer values but truncating to 128 keeps the
+  contract portable.
+- The value **must** be the same stable domain identity that backs the
+  CE subject and the Kafka key. The default extractor pulls
+  `amqp_msg.subject`; if your bridge uses a different identity for
+  partitioning, document the deviation in the source's `README.md`.
+- When `session_id` is also set (Service Bus only), the bridge must
+  set `partition_key == session_id`; the SDK rejects mismatches.
+- Remove the workaround as soon as the bridge regenerates against an
+  xrcg release that emits annotations natively, and replace it with the
+  generated code path. Track removal as part of the
+  [`feeder-release-checklist`](../feeder-release-checklist/SKILL.md)
+  housekeeping for the source.
+
+Validate the annotation reaches the broker in the AMQP Docker E2E
+(`tests/docker_e2e/test_docker_amqp_artemis_flow.py` and
+`test_docker_amqp_sb_emulator_flow.py`) by asserting on the consumer
+side: `received.annotations[b"x-opt-partition-key"] == expected_id`.
