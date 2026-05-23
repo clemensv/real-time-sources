@@ -1366,6 +1366,203 @@ class TestBlueskyMqttDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# German Autobahn REST API -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_autobahn_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'autobahn', 'xreg', 'autobahn.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemas: Dict[str, Dict[str, Any]] = {}
+    schema_group = manifest['schemagroups']['DE.Autobahn.jstruct']['schemas']
+    for message in manifest['messagegroups']['DE.Autobahn']['messages'].values():
+        ce_type = message['envelopemetadata']['type']['value']
+        schema_name = message['dataschemauri'].rsplit('/', 1)[-1]
+        schemas[ce_type] = schema_group[schema_name]['versions']['1']['schema']
+    return schemas
+
+
+@pytest.fixture(scope='module')
+def autobahn_mqtt_image():
+    return build_image('autobahn', dockerfile='Dockerfile.mqtt', tag='test-autobahn-mqtt')
+
+
+@pytest.fixture()
+def autobahn_mosquitto_container():
+    container, network, host_port = _generic_mosquitto(
+        'autobahn-mqtt-e2e', 'autobahn-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'autobahn-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestAutobahnMqttDockerFlow:
+    """Verify the autobahn-mqtt container publishes the literal UNS sub-tree."""
+
+    def test_emits_autobahn_uns_topics(self, autobahn_mosquitto_container, autobahn_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{autobahn_mosquitto_container['internal_host']}:"
+            f"{autobahn_mosquitto_container['internal_port']}"
+        )
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+                'payload_len': len(msg.payload or b''),
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('traffic/de/autobahn/autobahn/#', qos=1)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', autobahn_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            autobahn_mqtt_image.id,
+            command=['python', '-m', 'autobahn_mqtt', 'feed', '--once', '--emit-mock-corpus'],
+            detach=True,
+            remove=False,
+            network=autobahn_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No Autobahn MQTT messages received from broker'
+        expected_kinds = {
+            'roadwork', 'short-term-roadwork', 'closure', 'entry-exit-closure', 'warning',
+            'weight-limit-3-5', 'webcam', 'parking-lorry', 'electric-charging-station',
+            'strong-electric-charging-station',
+        }
+        retained_kinds = {
+            'weight-limit-3-5', 'webcam', 'parking-lorry', 'electric-charging-station',
+            'strong-electric-charging-station',
+        }
+        observed_kinds = set()
+        observed_states = set()
+        empty_resolved_kinds = set()
+        schemas = _load_autobahn_schemas()
+        from json_structure import InstanceValidator, SchemaValidator
+        schema_validator = SchemaValidator(extended=True)
+        instance_validators = {}
+
+        for sample in collected:
+            parts = sample['topic'].split('/')
+            assert len(parts) == 8, f"unexpected topic depth for {sample['topic']}"
+            assert parts[:4] == ['traffic', 'de', 'autobahn', 'autobahn'], parts
+            road, kind, identifier, state = parts[4:8]
+            observed_kinds.add(kind)
+            observed_states.add(state)
+            assert state in {'appeared', 'updated', 'resolved'}, sample
+            assert sample['qos'] == 1, sample
+            assert sample['retain'] is False, 'live MQTT messages are not retained replays'
+
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert up['subject'] == identifier, (up['subject'], identifier)
+            assert up['subject'] in sample['topic'], sample
+            assert identifier == up['subject'], 'Kafka-equivalent {identifier} key must match CE subject'
+
+            if sample['payload_len'] == 0:
+                assert kind in retained_kinds and state == 'resolved', sample
+                empty_resolved_kinds.add(kind)
+                continue
+
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            assert payload['road'] == road, payload
+            assert payload['identifier'] == identifier, payload
+            ce_type = up.get('type')
+            assert ce_type in schemas, f"unknown Autobahn CE type {ce_type}"
+            if ce_type not in instance_validators:
+                schema = schemas[ce_type]
+                assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+                instance_validators[ce_type] = InstanceValidator(schema, extended=True)
+            errors = instance_validators[ce_type].validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+        assert expected_kinds <= observed_kinds, f"missing kind topics: {expected_kinds - observed_kinds}"
+        assert observed_states, 'no lifecycle states observed'
+        assert retained_kinds <= empty_resolved_kinds, f"missing retained clear events: {retained_kinds - empty_resolved_kinds}"
+
+        retained_replay = _collect_messages_topic(
+            '127.0.0.1', autobahn_mosquitto_container['host_port'], 'traffic/de/autobahn/autobahn/#', timeout=10.0
+        )
+        assert retained_replay, 'No retained Autobahn MQTT messages replayed to late subscriber'
+        replay_kinds = {m['topic'].split('/')[5] for m in retained_replay}
+        assert replay_kinds == retained_kinds, replay_kinds
+        assert all(m['retain'] is True and m['qos'] == 1 for m in retained_replay), retained_replay
+
+
+# ---------------------------------------------------------------------------
 # AISstream.io -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
 

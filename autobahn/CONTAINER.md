@@ -50,6 +50,32 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-autobahn:latest
 ```
 
+## MQTT 5.0 / Unified-Namespace Feeder
+
+The sibling MQTT image runs `python -m autobahn_mqtt feed` and publishes binary-mode CloudEvents under:
+
+```text
+traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}
+```
+
+Run it against a broker:
+
+```shell
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtt://broker:1883' \
+    ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
+```
+
+Lifecycle traffic families (`roadwork`, `short-term-roadwork`, `closure`, `entry-exit-closure`, `warning`) use QoS 1 and `retain=false`. Stable object families (`weight-limit-3-5`, `webcam`, `parking-lorry`, `electric-charging-station`, `strong-electric-charging-station`) use QoS 1 and `retain=true`; resolved stable objects publish an empty retained payload to clear the last-known-value slot.
+
+Example wildcard subscriptions:
+
+- All Autobahn MQTT events: `traffic/de/autobahn/autobahn/#`
+- All roadworks on A1: `traffic/de/autobahn/autobahn/a1/roadwork/+/+`
+- All closures on A3: `traffic/de/autobahn/autobahn/a3/closure/+/+`
+- All webcams on all roads: `traffic/de/autobahn/autobahn/+/webcam/+/+`
+- All charging station events: `traffic/de/autobahn/autobahn/+/electric-charging-station/+/+` and `traffic/de/autobahn/autobahn/+/strong-electric-charging-station/+/+`
+
 To preserve ETags and last-seen snapshots across restarts, mount a writable
 volume and point the bridge at a state file on that volume:
 
@@ -76,6 +102,23 @@ $ docker run --rm \
 - `AUTOBAHN_RESOURCES`: Comma-separated resource list or `*`.
 - `AUTOBAHN_ROADS`: Comma-separated road list or `*`.
 - `AUTOBAHN_REQUEST_CONCURRENCY`: Maximum concurrent API requests.
+
+### MQTT environment variables
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `MQTT_BROKER_URL` | yes | — | Broker URL such as `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_ENABLE_TLS` | no | scheme/port-derived | Force TLS when set to `true`. |
+| `MQTT_AUTH_MODE` | no | `anonymous` | `anonymous`, `userpass`, `tls-cert`, or `entra`. |
+| `MQTT_USERNAME` | conditional | — | Username for `userpass`; Event Grid client name for `entra`. |
+| `MQTT_PASSWORD` | conditional | — | Password for `userpass`. |
+| `MQTT_CLIENT_CERT` | conditional | — | Client certificate PEM path for `tls-cert`. |
+| `MQTT_CLIENT_KEY` | conditional | — | Client key PEM path for `tls-cert`. |
+| `MQTT_CA_FILE` | no | system trust | Broker CA chain path. |
+| `MQTT_CLIENT_ID` | no | `autobahn-mqtt` | MQTT client identifier. |
+| `MQTT_ENTRA_CLIENT_ID` | conditional | — | Managed identity client id for Event Grid Namespace MQTT enhanced auth. |
+| `MQTT_ENTRA_AUDIENCE` | no | `https://eventgrid.azure.net/` | Entra token audience. |
+| `AUTOBAHN_MQTT_EMIT_MOCK_CORPUS` | no | `false` | Emit synthetic one-shot corpus for Docker E2E tests. |
 
 ## Deploying into Azure Container Instances
 

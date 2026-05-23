@@ -20,13 +20,13 @@ required connection information.
 
 ## Deployment models
 
-> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Two sources —
-> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**
+> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Three sources —
+> **[Autobahn](autobahn/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
+> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
 > and **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**
 > — now ship a second container image (`Dockerfile.mqtt`) that publishes
-> the same firehose into an MQTT 5.0 broker on a non-retained UNS topic
-> tree (QoS 0, `retain=false`, CloudEvents binary binding). The Kafka
-> images and contracts are unchanged.
+> into MQTT 5.0 brokers on UNS topic trees using the CloudEvents binary
+> binding. The Kafka images and contracts are unchanged.
 
 Every source can be deployed in three ways. The [interactive catalog](https://clemensv.github.io/real-time-sources)
 exposes a one-click deploy button for each supported model:
@@ -554,7 +554,8 @@ the VATSIM v3 JSON feed.
 
 **[Autobahn](autobahn/README.md)** -- German Autobahn API. Roadworks, warnings,
 closures, parking areas, charging stations, and webcams. Uses ETags and local
-state to detect changes.
+state to detect changes. Available as both a Kafka image and an MQTT/UNS image
+(topic root `traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}`).
 
 **[Digitraffic Road](digitraffic-road/README.md)** -- Finland’s Digitraffic Road
 MQTT stream. TMS sensor readings (vehicle counts and speeds from 500+ stations),
