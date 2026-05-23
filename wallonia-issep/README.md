@@ -64,7 +64,7 @@ Start the MQTT bridge:
 python -m wallonia_issep_mqtt feed --broker-url mqtt://localhost:1883
 ```
 
-Topic tree: `aq/be/wallonia/wallonia-issep/{configuration_id}/{info|observation}`
+Topic tree: `air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/{info|observation}`
 
 ## Upstream links
 

@@ -28,7 +28,8 @@ class Test_SensorConfiguration(unittest.TestCase):
         Create instance of SensorConfiguration for testing
         """
         instance = SensorConfiguration(
-            configuration_id='vhthtbdrduaqmfhuzron'
+            configuration_id='yqpwvcwlsmtbxhvecwuo',
+            province='zowvrqhcsenfsijicsol'
         )
         return instance
 
@@ -37,9 +38,17 @@ class Test_SensorConfiguration(unittest.TestCase):
         """
         Test configuration_id property
         """
-        test_value = 'vhthtbdrduaqmfhuzron'
+        test_value = 'yqpwvcwlsmtbxhvecwuo'
         self.instance.configuration_id = test_value
         self.assertEqual(self.instance.configuration_id, test_value)
+    
+    def test_province_property(self):
+        """
+        Test province property
+        """
+        test_value = 'zowvrqhcsenfsijicsol'
+        self.instance.province = test_value
+        self.assertEqual(self.instance.province, test_value)
     
     def test_to_byte_array_json(self):
         """

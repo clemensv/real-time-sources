@@ -21,10 +21,12 @@ class SensorConfiguration:
     
     Attributes:
         configuration_id (str)
+        province (str)
     """
     
     
     configuration_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="configuration_id"))
+    province: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="province"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SensorConfiguration':
@@ -151,5 +153,6 @@ class SensorConfiguration:
             An instance of the dataclass.
         """
         return cls(
-            configuration_id='vgqghiccoffedsmaxmfj'
+            configuration_id='rsjzqhoafxbclvknoyev',
+            province='ytpbzsjlmnehhtywlsjz'
         )
