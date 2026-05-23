@@ -605,6 +605,108 @@ class TestCHMIHydroMqttDockerFlow:
         )
 
 # ---------------------------------------------------------------------------
+# Wallonia ISSeP air quality -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def wallonia_issep_mqtt_image():
+    return build_image('wallonia-issep', dockerfile='Dockerfile.mqtt', tag='test-wallonia-issep-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_wallonia_issep():
+    container, network, host_port = _generic_mosquitto(
+        'wallonia-issep-mqtt-e2e', 'wallonia-issep-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'wallonia-issep-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestWalloniaIssepMqttDockerFlow:
+    """Verify the wallonia-issep-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_wallonia_issep, wallonia_issep_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_wallonia_issep['internal_host']}:{mosquitto_wallonia_issep['internal_port']}"
+        feeder = client.containers.run(
+            wallonia_issep_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_wallonia_issep['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_wallonia_issep['host_port'],
+            'aq/be/wallonia/wallonia-issep/#',
+            timeout=40.0,
+        )
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        obs_msgs = [m for m in messages if m['topic'].endswith('/observation')]
+        assert info_msgs, 'No /info reference events published'
+        assert obs_msgs, 'No /observation telemetry events published'
+
+        for sample in (info_msgs[0], obs_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        obs_types = {m['user_properties'].get('type') for m in obs_msgs}
+        assert info_types == {'be.issep.airquality.SensorConfiguration'}, info_types
+        assert obs_types == {'be.issep.airquality.Observation'}, obs_types
+
+        # Both info and observation exist for the same configuration_id
+        info_configs = {m['topic'].split('/')[-2] for m in info_msgs}
+        obs_configs = {m['topic'].split('/')[-2] for m in obs_msgs}
+        common = info_configs & obs_configs
+        assert common, 'No configuration has both info and observation retained leaves'
+
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        obs_payload = _to_dict(obs_msgs[0]['payload'])
+        assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+        assert obs_payload is not None, f"obs payload not parseable: {obs_msgs[0]['payload']!r}"
+        assert 'configuration_id' in info_payload, info_payload
+        assert 'configuration_id' in obs_payload, obs_payload
+        assert 'moment' in obs_payload, obs_payload
+
+# ---------------------------------------------------------------------------
 # Bluesky firehose -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
 
