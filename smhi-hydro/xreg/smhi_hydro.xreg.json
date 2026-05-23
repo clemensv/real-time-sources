@@ -126,6 +126,7 @@
                 "required": [
                   "station_id",
                   "name",
+                  "catchment_name",
                   "latitude",
                   "longitude"
                 ],
@@ -147,7 +148,8 @@
                     "type": "int32"
                   },
                   "catchment_name": {
-                    "type": ["string", "null"]
+                    "type": "string",
+                    "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing."
                   },
                   "catchment_number": {
                     "type": "int32"
@@ -194,8 +196,8 @@
                     "type": "string"
                   },
                   "catchment_name": {
-                    "type": ["string", "null"],
-                    "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
+                    "type": "string",
+                    "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "timestamp": {
                     "type": "datetime"
@@ -263,11 +265,8 @@
                   },
                   {
                     "name": "catchment_name",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
+                    "type": "string",
+                    "doc": "SMHI catchmentName, e.g. 'Torneälven'. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null."
                   },
                   {
                     "name": "catchment_number",
@@ -321,11 +320,8 @@
                   },
                   {
                     "name": "catchment_name",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
+                    "type": "string",
+                    "doc": "SMHI catchmentName the station belongs to. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null and the MQTT topic segment remains populated."
                   },
                   {
                     "name": "timestamp",

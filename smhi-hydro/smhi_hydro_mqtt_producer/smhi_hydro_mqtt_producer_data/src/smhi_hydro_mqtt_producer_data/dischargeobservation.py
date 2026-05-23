@@ -24,7 +24,7 @@ class DischargeObservation:
     Attributes:
         station_id (str)
         station_name (str)
-        catchment_name (typing.Optional[str])
+        catchment_name (str)
         timestamp (datetime.datetime)
         discharge (float)
         quality (typing.Optional[str])
@@ -33,7 +33,7 @@ class DischargeObservation:
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
-    catchment_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
+    catchment_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     discharge: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
     quality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
@@ -163,10 +163,10 @@ class DischargeObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='sypmtvyuoyrjbgeydfpx',
-            station_name='ylvwxlunhrldbeefomse',
-            catchment_name='gkfjfmbnijsohzjhxqne',
+            station_id='nslanabnuqhqqlloorih',
+            station_name='vprfvbetwlcebumqvrfl',
+            catchment_name='zcqfsposwbgmpbjvzspf',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(6.573797444082363),
-            quality='sgpzfqcwxmefmzmegwea'
+            discharge=float(51.5382648809713),
+            quality='oypivstpgbqxhebgoblv'
         )

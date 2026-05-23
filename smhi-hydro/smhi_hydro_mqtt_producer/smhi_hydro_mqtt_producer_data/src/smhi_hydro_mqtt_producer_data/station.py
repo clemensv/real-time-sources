@@ -25,7 +25,7 @@ class Station:
         owner (typing.Optional[str])
         measuring_stations (typing.Optional[str])
         region (typing.Optional[int])
-        catchment_name (typing.Optional[str])
+        catchment_name (str)
         catchment_number (typing.Optional[int])
         catchment_size (typing.Optional[float])
         latitude (float)
@@ -38,7 +38,7 @@ class Station:
     owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
     measuring_stations: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="measuring_stations"))
     region: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
-    catchment_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
+    catchment_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
     catchment_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_number"))
     catchment_size: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_size"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
@@ -169,14 +169,14 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='crlqznnazfozkezdjbqj',
-            name='rlcoymwfviuxcvphjvmn',
-            owner='bfwtzvbcgafbcipaftbo',
-            measuring_stations='lqurmensyboxhobyirao',
-            region=int(93),
-            catchment_name='covuvksqjleiheekcisb',
-            catchment_number=int(97),
-            catchment_size=float(32.98220544010697),
-            latitude=float(26.548272491368053),
-            longitude=float(6.9600659608)
+            station_id='dllmtecasmivdwynktrk',
+            name='psdrwaggpeshznoqrjqs',
+            owner='hjlwbclhgbbbrpuaogtd',
+            measuring_stations='joejsjzaavsjourmalnr',
+            region=int(26),
+            catchment_name='txejrkhihljdnnkwutaz',
+            catchment_number=int(43),
+            catchment_size=float(51.46192597028716),
+            latitude=float(94.32912478036232),
+            longitude=float(82.27770438208032)
         )

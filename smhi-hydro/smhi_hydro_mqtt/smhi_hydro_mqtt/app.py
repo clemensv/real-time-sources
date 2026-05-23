@@ -59,6 +59,22 @@ def _uns_slug(value: str) -> str:
     return slug or "unknown"
 
 
+_CATCHMENT_UNKNOWN = "unknown"
+
+
+def _catchment_value(station_data: dict) -> str:
+    """Return the raw catchmentName, substituting the lowercase 'unknown'
+    sentinel when the SMHI catalog has no value for the station. The sentinel
+    is applied BEFORE the record is handed to the generated MQTT producer so
+    the on-wire payload, schema-required field, and {catchment_name} topic
+    segment all stay populated and non-null."""
+    value = station_data.get("catchmentName")
+    if value is None:
+        return _CATCHMENT_UNKNOWN
+    value = str(value).strip()
+    return value or _CATCHMENT_UNKNOWN
+
+
 def _build_station(station_data: dict) -> Station:
     """Build an MQTT-producer Station from raw SMHI bulk API station dict."""
     return Station(
@@ -67,7 +83,7 @@ def _build_station(station_data: dict) -> Station:
         owner=station_data.get("owner", "") or "",
         measuring_stations=station_data.get("measuringStations", "") or "",
         region=int(station_data.get("region", 0) or 0),
-        catchment_name=station_data.get("catchmentName", "") or "",
+        catchment_name=_catchment_value(station_data),
         catchment_number=int(station_data.get("catchmentNumber", 0) or 0),
         catchment_size=float(station_data.get("catchmentSize", 0.0) or 0.0),
         latitude=float(station_data["latitude"]),
@@ -89,7 +105,7 @@ def _build_observation(station_data: dict, catchment_name: str) -> Optional[Disc
     return DischargeObservation(
         station_id=str(station_data["key"]),
         station_name=station_data.get("name", "") or "",
-        catchment_name=catchment_name,
+        catchment_name=catchment_name or _CATCHMENT_UNKNOWN,
         timestamp=ts,
         discharge=float(value),
         quality=latest.get("quality", "") or "",
@@ -101,7 +117,8 @@ async def _publish_stations(
     stations: list,
 ) -> None:
     for station_data in stations:
-        catchment_slug = _uns_slug(station_data.get("catchmentName", "") or "")
+        catchment_value = _catchment_value(station_data)
+        catchment_slug = _uns_slug(catchment_value)
         station_id = str(station_data["key"])
         await mqtt_client.publish_se_gov_smhi_hydro_mqtt_station(
             station_id=station_id,
@@ -117,7 +134,7 @@ async def _publish_observations(
 ) -> int:
     sent = 0
     for station_data in stations:
-        catchment_raw = station_data.get("catchmentName", "") or ""
+        catchment_raw = _catchment_value(station_data)
         catchment_slug = _uns_slug(catchment_raw)
         obs = _build_observation(station_data, catchment_raw)
         if obs is None:

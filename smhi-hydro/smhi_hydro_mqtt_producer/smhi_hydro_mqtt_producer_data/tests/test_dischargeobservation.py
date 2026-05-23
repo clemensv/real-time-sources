@@ -29,12 +29,12 @@ class Test_DischargeObservation(unittest.TestCase):
         Create instance of DischargeObservation for testing
         """
         instance = DischargeObservation(
-            station_id='sypmtvyuoyrjbgeydfpx',
-            station_name='ylvwxlunhrldbeefomse',
-            catchment_name='gkfjfmbnijsohzjhxqne',
+            station_id='nslanabnuqhqqlloorih',
+            station_name='vprfvbetwlcebumqvrfl',
+            catchment_name='zcqfsposwbgmpbjvzspf',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(6.573797444082363),
-            quality='sgpzfqcwxmefmzmegwea'
+            discharge=float(51.5382648809713),
+            quality='oypivstpgbqxhebgoblv'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'sypmtvyuoyrjbgeydfpx'
+        test_value = 'nslanabnuqhqqlloorih'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'ylvwxlunhrldbeefomse'
+        test_value = 'vprfvbetwlcebumqvrfl'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test catchment_name property
         """
-        test_value = 'gkfjfmbnijsohzjhxqne'
+        test_value = 'zcqfsposwbgmpbjvzspf'
         self.instance.catchment_name = test_value
         self.assertEqual(self.instance.catchment_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(6.573797444082363)
+        test_value = float(51.5382648809713)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -83,7 +83,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test quality property
         """
-        test_value = 'sgpzfqcwxmefmzmegwea'
+        test_value = 'oypivstpgbqxhebgoblv'
         self.instance.quality = test_value
         self.assertEqual(self.instance.quality, test_value)
     

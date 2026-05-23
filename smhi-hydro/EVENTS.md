@@ -1,4 +1,6 @@
-# Table of Contents
+# SMHI Hydrology API Bridge Events
+
+This document describes the events that are emitted by the SMHI Hydrology API Bridge.
 
 - [SE.Gov.SMHI.Hydro](#message-group-segovsmhihydro)
   - [SE.Gov.SMHI.Hydro.Station](#message-segovsmhihydrostation)
@@ -29,7 +31,7 @@
 | `owner` | *string* | - | `False` |  |
 | `measuring_stations` | *string* | - | `False` |  |
 | `region` | *int32* | - | `False` |  |
-| `catchment_name` | *string* (optional) | - | `False` |  |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing. |
 | `catchment_number` | *int32* | - | `False` |  |
 | `catchment_size` | *double* | - | `False` |  |
 | `latitude` | *double* | - | `True` |  |
@@ -50,7 +52,7 @@
 |----------------|----------|----------|--------------|-----------------|
 | `station_id` | *string* | - | `True` |  |
 | `station_name` | *string* | - | `True` |  |
-| `catchment_name` | *string* (optional) | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'TorneΣlven', 'DalΣlven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
 | `timestamp` | *datetime* | - | `True` |  |
 | `discharge` | *double* | - | `True` |  |
 | `quality` | *string* | - | `False` |  |
@@ -74,7 +76,7 @@
 | `owner` | *string* | - | `False` |  |
 | `measuring_stations` | *string* | - | `False` |  |
 | `region` | *int32* | - | `False` |  |
-| `catchment_name` | *string* (optional) | - | `False` |  |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing. |
 | `catchment_number` | *int32* | - | `False` |  |
 | `catchment_size` | *double* | - | `False` |  |
 | `latitude` | *double* | - | `True` |  |
@@ -95,7 +97,7 @@
 |----------------|----------|----------|--------------|-----------------|
 | `station_id` | *string* | - | `True` |  |
 | `station_name` | *string* | - | `True` |  |
-| `catchment_name` | *string* (optional) | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'TorneΣlven', 'DalΣlven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
 | `timestamp` | *datetime* | - | `True` |  |
 | `discharge` | *double* | - | `True` |  |
 | `quality` | *string* | - | `False` |  |
