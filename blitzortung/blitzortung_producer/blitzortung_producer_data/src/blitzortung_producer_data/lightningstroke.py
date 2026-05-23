@@ -52,8 +52,8 @@ class LightningStroke:
     server_delay_ms: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_delay_ms"))
     accuracy_diameter_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="accuracy_diameter_m"))
     detector_participations: typing.List[DetectorParticipation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detector_participations"))
-    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    geohash7: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash7"))
+    geohash5: str=dataclasses.field(default="00000", kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
+    geohash7: str=dataclasses.field(default="0000000", kw_only=True, metadata=dataclasses_json.config(field_name="geohash7"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'LightningStroke':

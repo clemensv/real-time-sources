@@ -211,7 +211,9 @@
                     "type": "array",
                     "description": "Detector participation entries expanded from the upstream sta object when the client asks the public live feed to include station details. An empty array means the upstream batch did not include detector participation details for this stroke.",
                     "items": {
-                      "$ref": "#/definitions/DetectorParticipation"
+                      "type": {
+                        "$ref": "#/definitions/DetectorParticipation"
+                      }
                     },
                     "altnames": {
                       "lightningmaps-live": "sta"
