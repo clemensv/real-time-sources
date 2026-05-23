@@ -22,7 +22,7 @@ const SOURCES = [
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true },
   { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations" },
   { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true },
-  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true },
+  { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true, amqp: true },
   { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true },
   { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", notebook: true },
   { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", notebook: true },
@@ -149,6 +149,7 @@ const $btnContainer = document.getElementById("btn-container");
 const $btnContainerEH = document.getElementById("btn-container-eh");
 const $btnContainerMqtt = document.getElementById("btn-container-mqtt");
 const $btnContainerMqttEG = document.getElementById("btn-container-mqtt-eg");
+const $btnContainerAmqpSB = document.getElementById("btn-container-amqp-sb");
 const $btnFabric = document.getElementById("btn-container-eh-adx");
 const $btnFabricNotebook = document.getElementById("btn-fabric-notebook");
 const $deployPane = document.getElementById("deploy-pane");
@@ -249,6 +250,14 @@ async function selectSource(s) {
     $btnContainerMqttEG.style.display = s.mqtt ? "" : "none";
     $btnContainerMqttEG.onclick = () => {
       const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+      window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+    };
+  }
+  if ($btnContainerAmqpSB) {
+    // AMQP 1.0 + Service Bus namespace deploy is opt-in per source (requires azure-template-with-servicebus.json).
+    $btnContainerAmqpSB.style.display = s.amqp ? "" : "none";
+    $btnContainerAmqpSB.onclick = () => {
+      const url = `${RAW}/${s.id}/azure-template-with-servicebus.json`;
       window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
     };
   }
@@ -496,160 +505,9 @@ function esc(s) {
   return d.innerHTML;
 }
 
-/* ── Welcome / landing panel ───────────────────────────────────────────── */
-function renderWelcome() {
-  const wel = document.getElementById("welcome");
-  if (!wel) return;
-
-  const total = SOURCES.length;
-  const keyFree = SOURCES.filter(s => !s.key).length;
-  const withMqtt = SOURCES.filter(s => s.mqtt).length;
-  const withNotebook = SOURCES.filter(s => s.notebook).length;
-
-  // Category counts, sorted by size descending
-  const catCounts = {};
-  for (const s of SOURCES) catCounts[s.cat] = (catCounts[s.cat] || 0) + 1;
-  const cats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
-
-  const catChips = cats.map(([c, n]) =>
-    `<button class="welcome-cat" data-cat="${esc(c)}">${esc(c)} <span class="welcome-cat-n">${n}</span></button>`
-  ).join("");
-
-  // Pluralization helper
-  const s = n => n === 1 ? "" : "s";
-
-  // A few curated quick-starts (all key-free unless noted)
-  const quickStarts = [
-    { id: "pegelonline", note: "Germany — 3,000 river gauges, every 15 min. Reference implementation for the Kafka + MQTT transport split." },
-    { id: "aisstream",   note: "Global — live AIS vessel positions via WebSocket. Free API key, registers in seconds." },
-    { id: "bluesky",     note: "Global — the Bluesky firehose, normalized to CloudEvents." },
-    { id: "dwd",         note: "Germany — DWD weather observations plus CAP severe-weather alerts." },
-    { id: "gtfs",        note: "Global — GTFS-Realtime transit feeds (vehicle positions, trip updates, alerts)." },
-    { id: "noaa",        note: "United States — NOAA Tides & Currents, ~3,000 coastal/estuarine stations." },
-  ].filter(q => SOURCES.find(s => s.id === q.id));
-
-  const qsCards = quickStarts.map(q => {
-    const s = SOURCES.find(x => x.id === q.id);
-    const keyBadge = s.key ? ' <span class="welcome-quick-key">key</span>' : "";
-    return `<a class="welcome-quick" href="#${esc(s.id)}">
-      <div class="welcome-quick-name">${esc(s.name)}${keyBadge}</div>
-      <div class="welcome-quick-note">${esc(q.note)}</div>
-    </a>`;
-  }).join("");
-
-  wel.innerHTML = `
-    <div class="welcome-hero">
-      <h2>Real-time data for Apache&nbsp;Kafka, Azure Event&nbsp;Hubs &amp; Microsoft&nbsp;Fabric</h2>
-      <p class="welcome-lede">
-        A curated, open-source catalog of <strong>${total} containerized bridges</strong> that pull live, public data from
-        weather services, water-level networks, transit feeds, lightning detectors, energy markets, AIS vessel
-        trackers, social firehoses, and dozens more &mdash; and emit it as binary-mode
-        <a href="https://cloudevents.io/" target="_blank" rel="noopener">CloudEvents</a> with strongly-typed
-        <a href="https://json-structure.org/" target="_blank" rel="noopener">JSON&nbsp;Structure</a> payloads
-        into any Apache Kafka–compatible endpoint. Pick a source, click <strong>Deploy</strong>,
-        you&rsquo;re streaming in a couple of minutes.
-      </p>
-      <div class="welcome-stats">
-        <div class="welcome-stat"><div class="welcome-stat-n">${total}</div><div class="welcome-stat-l">sources</div></div>
-        <div class="welcome-stat"><div class="welcome-stat-n">${keyFree}</div><div class="welcome-stat-l">no API key</div></div>
-        <div class="welcome-stat"><div class="welcome-stat-n">${withMqtt}</div><div class="welcome-stat-l">also MQTT&nbsp;/&nbsp;UNS</div></div>
-        <div class="welcome-stat"><div class="welcome-stat-n">${withNotebook}</div><div class="welcome-stat-l">Fabric notebook</div></div>
-      </div>
-    </div>
-
-    <div class="welcome-section">
-      <h3>What you&rsquo;ll find in the catalog</h3>
-      <p>Sources are organized by domain. Click a chip to filter the list on the left, or pick any row.</p>
-      <div class="welcome-cats">${catChips}</div>
-    </div>
-
-    <div class="welcome-section">
-      <h3>Four ways to deploy &mdash; one click each</h3>
-      <div class="welcome-deploys">
-        <div class="welcome-deploy">
-          <div class="welcome-deploy-title">Azure Container &rarr; Event Hubs</div>
-          <div class="welcome-deploy-body">
-            ARM templates that spin up an Azure Container Instance running the feeder, writing into an
-            Event Hubs namespace you already own &mdash; or a brand-new one provisioned alongside.
-            <em>Every source supports this.</em>
-          </div>
-        </div>
-        <div class="welcome-deploy">
-          <div class="welcome-deploy-title">Azure Container &rarr; Fabric Event Stream</div>
-          <div class="welcome-deploy-body">
-            Same ACI feeder, deployed via the portal here, writing into a Fabric Event Stream custom endpoint
-            inside a Fabric Eventhouse. The deploy script provisions the Eventhouse, KQL database, and
-            update policies for you.
-          </div>
-        </div>
-        <div class="welcome-deploy">
-          <div class="welcome-deploy-title">Fabric Notebook &mdash; no Azure subscription</div>
-          <div class="welcome-deploy-body">
-            For poll-based sources (${withNotebook} of ${total}): the feeder runs as a scheduled Fabric
-            notebook inside your workspace. Ingestion, storage, query &mdash; all in Fabric.
-            Look for the <em>Fabric Notebook Feeder</em> button.
-          </div>
-        </div>
-        <div class="welcome-deploy">
-          <div class="welcome-deploy-title">MQTT &rarr; Unified Namespace</div>
-          <div class="welcome-deploy-body">
-            ${withMqtt} source${s(withMqtt)} additionally publish${withMqtt === 1 ? "es" : ""} to MQTT 5.0 as binary-mode CloudEvents on
-            retained QoS-1 LKV topics under a hierarchical UNS tree (e.g.
-            <code>weather/dk/dmi/met-obs/&lt;station&gt;/&lt;parameter&gt;</code>).
-            Pair with Azure Event Grid&rsquo;s MQTT broker or any MQTT&nbsp;5 broker.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="welcome-section">
-      <h3>Designed for serious use, not just demos</h3>
-      <ul class="welcome-bullets">
-        <li><strong>Stable Kafka keys.</strong> Every source keys on a stable upstream identifier
-          (station ID, MMSI, gauge number, sensor ID) so partitioning, log compaction, and joins
-          work the way you expect.</li>
-        <li><strong>CloudEvents + JSON&nbsp;Structure contracts.</strong> Every source ships an
-          <a href="https://github.com/xregistry/spec" target="_blank" rel="noopener">xRegistry</a>
-          manifest with exhaustive schemas, units, validation extensions, and altnames mapping to
-          upstream field names. Browse the per-source <code>EVENTS.md</code> for the full event list.</li>
-        <li><strong>Reference data as events.</strong> Catalog data (stations, sensors, routes, zones)
-          is emitted as named CloudEvents on the same topic as telemetry &mdash; not hidden in an
-          out-of-band API. Re-emitted on a refresh cadence.</li>
-        <li><strong>KQL schemas included.</strong> Every source ships a generated
-          <code>kql/&lt;source&gt;.kql</code> with tables, materialized views, update policies,
-          and ingestion mappings for Azure Data Explorer / Fabric Eventhouse.</li>
-      </ul>
-    </div>
-
-    <div class="welcome-section">
-      <h3>Try one of these first</h3>
-      <div class="welcome-quicks">${qsCards}</div>
-    </div>
-
-    <div class="welcome-foot">
-      Built and maintained by <a href="https://github.com/clemensv" target="_blank" rel="noopener">Clemens&nbsp;Vasters</a>
-      and contributors &middot; <a href="https://github.com/clemensv/real-time-sources" target="_blank" rel="noopener">source on GitHub</a>
-      &middot; MIT-licensed.
-    </div>
-  `;
-
-  // Wire up category chips
-  wel.querySelectorAll(".welcome-cat").forEach(chip => {
-    chip.addEventListener("click", () => {
-      const cat = chip.getAttribute("data-cat");
-      selectCategory(cat);
-      const sb = document.getElementById("search-box");
-      if (sb) sb.value = "";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  });
-}
-
 /* ── Boot ──────────────────────────────────────────────────────────────── */
 renderPills();
 renderList();
-// selectFromHash() handles both the no-hash case (renders welcome) and the
-// hash-present case (selects the source). No need to call renderWelcome here.
 
 /* ── Hash deep-linking ────────────────────────────────────────────────────
    #<id>                     → select source, show docs
@@ -664,21 +522,12 @@ renderList();
    #<id>/azure-mqtt          → select source + launch Azure ARM deploy
                                (azure-template-mqtt.json, bring-your-own MQTT broker)
    #<id>/azure-mqtt-eg       → select source + launch Azure ARM deploy
-                               (azure-template-with-eventgrid-mqtt.json, Event Grid MQTT broker) */
+                               (azure-template-with-eventgrid-mqtt.json, Event Grid MQTT broker)
+   #<id>/azure-amqp-sb       → select source + launch Azure ARM deploy
+                               (azure-template-with-servicebus.json, Service Bus AMQP 1.0 broker) */
 async function selectFromHash() {
   const raw = (location.hash || "").replace(/^#/, "").trim();
-  if (!raw) {
-    // Hash cleared (e.g. clicked the site title) — return to welcome.
-    activeSource = null;
-    $list.querySelectorAll("li.active").forEach(li => li.classList.remove("active"));
-    $deployBar.style.display = "none";
-    $deployBarFabric.style.display = "none";
-    closeDeployPane();
-    // selectSource() overwrote $content.innerHTML, so recreate the welcome host.
-    $content.innerHTML = '<div id="welcome" class="welcome welcome-rich"></div>';
-    renderWelcome();
-    return;
-  }
+  if (!raw) return;
   const [id, action] = raw.split("/");
   const s = SOURCES.find(x => x.id === id);
   if (!s) return;
@@ -700,6 +549,9 @@ async function selectFromHash() {
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-mqtt-eg") {
     const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  } else if (action === "azure-amqp-sb") {
+    const url = `${RAW}/${s.id}/azure-template-with-servicebus.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   }
 }
