@@ -718,6 +718,7 @@ class TestHongkongEpdMqttDockerFlow:
         assert parts[0:4] == ['aq', 'hk', 'epd', 'hongkong-epd'], parts
 
 
+
 # ---- bfs-odl -----------------------------------------------------------
 
 
@@ -816,6 +817,80 @@ class TestBfsOdlMqttDockerFlow:
         assert 'state' in info_payload, info_payload
         assert 'station_id' in dose_payload, dose_payload
         assert 'value' in dose_payload, dose_payload
+
+
+# ---- german-waters -----------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def german_waters_mqtt_image():
+    return build_image('german-waters', dockerfile='Dockerfile.mqtt', tag='test-german-waters-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_german_waters():
+    container, network, host_port = _generic_mosquitto(
+        'german-waters-mqtt-e2e', 'german-waters-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'german-waters-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestGermanWatersMqttDockerFlow:
+    """Verify the german-waters-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_german_waters, german_waters_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_german_waters['internal_host']}:{mosquitto_german_waters['internal_port']}"
+        feeder = client.containers.run(
+            german_waters_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_german_waters['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+                'PROVIDERS': 'bayern_gkd,nrw_hygon',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_german_waters['host_port'], 'hydro/de/wsv/german-waters/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='DE.Waters.Hydrology.Station',
+            telemetry_type='DE.Waters.Hydrology.WaterLevelObservation',
+            level_field='water_level',
+        )
 
 # ---------------------------------------------------------------------------
 # Wallonia ISSeP air quality -> MQTT/UNS
