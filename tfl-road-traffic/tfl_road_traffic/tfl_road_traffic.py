@@ -16,6 +16,7 @@ import logging
 import os
 import sys
 import time
+import unicodedata
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 
@@ -115,6 +116,40 @@ def _serialize_geo(value: Any) -> Optional[str]:
     return str(value)
 
 
+def _uns_slug(value: Any) -> str:
+    raw = unicodedata.normalize("NFKD", str(value or "unknown")).encode("ascii", "ignore").decode("ascii")
+    raw = raw.lower().strip()
+    out = []
+    for ch in raw:
+        out.append(ch if ch.isalnum() else "-")
+    slug = "".join(out).strip("-")
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    return slug or "unknown"
+
+
+def _normalize_disruption_severity(value: Any, has_closures: Any = None) -> str:
+    if has_closures is True:
+        return "closure"
+    slug = _uns_slug(value)
+    aliases = {
+        "minimal": "minor",
+        "low": "minor",
+        "no-disruptions": "information",
+        "unknown": "information",
+        "info": "information",
+    }
+    normalized = aliases.get(slug, slug)
+    return normalized if normalized in {"serious", "severe", "moderate", "minor", "information", "closure"} else "information"
+
+
+def _primary_road_id(raw: dict) -> str:
+    corridor_ids = raw.get('corridorIds')
+    if isinstance(corridor_ids, list) and corridor_ids:
+        return _uns_slug(corridor_ids[0])
+    return _uns_slug(raw.get('road_id') or raw.get('roadId') or raw.get('id') or 'unknown')
+
+
 def build_road_corridor(raw: dict) -> Optional[RoadCorridor]:
     """
     Build a RoadCorridor data class from a raw TfL /Road API response dict.
@@ -132,7 +167,7 @@ def build_road_corridor(raw: dict) -> Optional[RoadCorridor]:
     if not road_id or not display_name:
         return None
     return RoadCorridor(
-        road_id=road_id,
+        road_id=_uns_slug(road_id),
         display_name=display_name,
         status_severity=raw.get('statusSeverity') or None,
         status_severity_description=raw.get('statusSeverityDescription') or None,
@@ -161,7 +196,7 @@ def build_road_status(raw: dict) -> Optional[RoadStatus]:
     if not road_id or not display_name:
         return None
     return RoadStatus(
-        road_id=road_id,
+        road_id=_uns_slug(road_id),
         display_name=display_name,
         status_severity=raw.get('statusSeverity') or None,
         status_severity_description=raw.get('statusSeverityDescription') or None,
@@ -215,10 +250,11 @@ def build_road_disruption(raw: dict) -> Optional[RoadDisruption]:
     streets = [build_street(s) for s in raw_streets] if isinstance(raw_streets, list) else None
 
     return RoadDisruption(
-        disruption_id=disruption_id,
+        road_id=_primary_road_id(raw),
+        disruption_id=_uns_slug(disruption_id),
         category=raw.get('category') or None,
         sub_category=raw.get('subCategory') or None,
-        severity=raw.get('severity') or None,
+        severity=_normalize_disruption_severity(raw.get('severity'), raw.get('hasClosures')),
         ordinal=raw.get('ordinal'),
         url=raw.get('url') or None,
         point=raw.get('point') or None,
@@ -430,7 +466,11 @@ class TflRoadTrafficPoller:
 
         for disruption in to_emit:
             self.disruptions_producer.send_uk_gov_tfl_road_road_disruption(
-                disruption.disruption_id, disruption, flush_producer=False
+                disruption.road_id,
+                disruption.severity,
+                disruption.disruption_id,
+                disruption,
+                flush_producer=False,
             )
 
         remaining = self._kafka_producer.flush(timeout=30)

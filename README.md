@@ -22,6 +22,8 @@ required connection information.
 
 > ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Seventeen sources — including
 > **[NWS Alerts](nws-alerts/CONTAINER.md)**,
+> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Selected sources — including
+> **[TfL Road Traffic](tfl-road-traffic/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
 > **[Autobahn](autobahn/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
 > **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
 > **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
@@ -30,6 +32,9 @@ required connection information.
 > now ship a second container image (`Dockerfile.mqtt`) that publishes into MQTT
 > 5.0 brokers on UNS topic trees using the CloudEvents binary binding. The Kafka
 > images and contracts are unchanged.
+> ship a second container image (`Dockerfile.mqtt`) that publishes into MQTT
+> 5.0 brokers on UNS topic trees using the CloudEvents binary binding. The
+> Kafka images remain separate.
 
 Every source can be deployed in three ways. The [interactive catalog](https://clemensv.github.io/real-time-sources)
 exposes a one-click deploy button for each supported model:

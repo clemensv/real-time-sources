@@ -330,10 +330,11 @@ class TestBuildRoadDisruption:
         disruption = build_road_disruption(SAMPLE_DISRUPTION)
         assert disruption is not None
         assert isinstance(disruption, RoadDisruption)
-        assert disruption.disruption_id == "TIMS-12345"
+        assert disruption.road_id == "a2"
+        assert disruption.disruption_id == "tims-12345"
         assert disruption.category == "RealTime"
         assert disruption.sub_category == "Incident"
-        assert disruption.severity == "Serious"
+        assert disruption.severity == "closure"
         assert disruption.ordinal == 1
         assert disruption.current_update == "Lane closed"
         assert disruption.corridor_ids == ["a2"]
@@ -373,7 +374,9 @@ class TestBuildRoadDisruption:
     def test_null_optional_fields(self):
         disruption = build_road_disruption(SAMPLE_DISRUPTION_2)
         assert disruption is not None
-        assert disruption.disruption_id == "TIMS-99999"
+        assert disruption.road_id == "tims-99999"
+        assert disruption.disruption_id == "tims-99999"
+        assert disruption.severity == "minor"
         assert disruption.comments is None
         assert disruption.corridor_ids is None
         assert disruption.streets is None
@@ -476,8 +479,10 @@ class TestTflRoadTrafficPoller:
         assert count == 1
         mock_disr.send_uk_gov_tfl_road_road_disruption.assert_called_once()
         call_args = mock_disr.send_uk_gov_tfl_road_road_disruption.call_args
-        assert call_args[0][0] == "TIMS-12345"
-        assert isinstance(call_args[0][1], RoadDisruption)
+        assert call_args[0][0] == "a2"
+        assert call_args[0][1] == "closure"
+        assert call_args[0][2] == "tims-12345"
+        assert isinstance(call_args[0][3], RoadDisruption)
         assert call_args[1].get("flush_producer") is False
 
     def test_emit_disruption_deduplication_same_modified_time_skipped(self):

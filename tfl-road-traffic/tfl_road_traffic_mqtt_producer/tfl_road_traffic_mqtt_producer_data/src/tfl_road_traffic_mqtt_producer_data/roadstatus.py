@@ -1,4 +1,4 @@
-""" RoadCorridor dataclass. """
+""" RoadStatus dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -17,9 +17,9 @@ import datetime
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class RoadCorridor:
+class RoadStatus:
     """
-    Reference record for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road endpoint at bridge startup and refreshed periodically. Each corridor is a named road segment under TfL operational control, such as the A2, A12, or M25, with its current aggregate traffic status.
+    Real-time status snapshot for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road/all/Status endpoint on each polling cycle. Each event represents the current aggregate traffic status for one corridor as computed by TfL from active disruptions.
     
     Attributes:
         road_id (str)
@@ -45,7 +45,7 @@ class RoadCorridor:
     status_aggregation_end_date: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_aggregation_end_date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'RoadCorridor':
+    def from_serializer_dict(cls, data: dict) -> 'RoadStatus':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -118,7 +118,7 @@ class RoadCorridor:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['RoadCorridor']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['RoadStatus']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -155,13 +155,13 @@ class RoadCorridor:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return RoadCorridor.from_serializer_dict(_record)
+                return RoadStatus.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'RoadCorridor':
+    def create_instance(cls) -> 'RoadStatus':
         """
         Creates an instance of the dataclass with test values.
         
@@ -169,13 +169,13 @@ class RoadCorridor:
             An instance of the dataclass.
         """
         return cls(
-            road_id='prlyeyftidnlgqbrbvtj',
-            display_name='cqsnkhejkjpqexdirylb',
-            status_severity='kkdeueghhnqadzktexno',
-            status_severity_description='zuzrdzdkvryvaeuitalr',
-            bounds='jtmclfvphdhimbuxyios',
-            envelope='antfuvhsuvikecogiqfz',
-            url='fexbkvewtpycgujzlrff',
+            road_id='xfnatrrhrininyopdokp',
+            display_name='pzagnjdvgtjqldsevvth',
+            status_severity='dwgsyjdcotwekhkrdifz',
+            status_severity_description='dkyzmwqqfefggfmwfkpu',
+            bounds='asarmcdrbtysugzpdjhf',
+            envelope='gypahmqpwkvyavftpfny',
+            url='qjxanlqcmgygbvfeorrr',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )
