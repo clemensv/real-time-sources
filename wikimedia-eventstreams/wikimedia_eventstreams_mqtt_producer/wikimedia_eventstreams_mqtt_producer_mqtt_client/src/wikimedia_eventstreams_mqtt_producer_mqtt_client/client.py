@@ -186,7 +186,7 @@ def get_default_topic_mappings_wikimedia_eventstreams_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "Wikimedia.EventStreams.RecentChange.mqtt": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change",
+        "Wikimedia.EventStreams.RecentChange.mqtt": "Wikimedia.EventStreams.RecentChange.mqtt",
     }
 
 
@@ -342,7 +342,7 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
     
     async def publish_wikimedia_event_streams_recent_change_mqtt(self,
         wiki: str,
-        namespace_bucket: str,
+        namespace: str,
         event_id: str,
         event_time: str,
         data: wikimedia_eventstreams_mqtt_producer_data.RecentChange,
@@ -356,20 +356,20 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
         Args:
         
             wiki: URI template variable for 'wiki'
-            namespace_bucket: URI template variable for 'namespace_bucket'
+            namespace: URI template variable for 'namespace'
             event_id: URI template variable for 'event_id'
             event_time: URI template variable for 'event_time'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change'
+            topic: Optional topic override. If not provided, uses default topic 'Wikimedia.EventStreams.RecentChange.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change"
+        target_topic = topic if topic is not None else "Wikimedia.EventStreams.RecentChange.mqtt"
         _topic_template_values: Dict[str, str] = {
             "wiki": str(wiki),
-            "namespace_bucket": str(namespace_bucket),
+            "namespace": str(namespace),
             "event_id": str(event_id),
             "event_time": str(event_time),
         }
@@ -379,7 +379,7 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
         attributes = {
              "type":"Wikimedia.EventStreams.RecentChange",
              "source":"https://stream.wikimedia.org/v2/stream/recentchange",
-             "subject":"{wiki}/{namespace_bucket}/{event_id}".format(wiki = wiki,namespace_bucket = namespace_bucket,event_id = event_id),
+             "subject":"{wiki}/{namespace}/{event_id}".format(wiki = wiki,namespace = namespace,event_id = event_id),
              "time":"{event_time}".format(event_time = event_time)
         }
         attributes["datacontenttype"] = content_type
@@ -393,7 +393,7 @@ class WikimediaEventStreamsMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {

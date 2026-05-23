@@ -27,7 +27,7 @@ class RecentChange:
         meta (UnnamedClass)
         id (typing.Optional[str])
         type (str)
-        namespace (int)
+        namespace_id (int)
         title (str)
         title_url (typing.Optional[str])
         comment (typing.Optional[str])
@@ -42,7 +42,7 @@ class RecentChange:
         server_name (typing.Optional[str])
         server_script_path (typing.Optional[str])
         wiki (str)
-        namespace_bucket (str)
+        namespace (str)
         parsedcomment (typing.Optional[str])
         notify_url (typing.Optional[str])
         log_type (typing.Optional[str])
@@ -59,7 +59,7 @@ class RecentChange:
     meta: UnnamedClass=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="meta"))
     id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="id"))
     type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
-    namespace: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="namespace"))
+    namespace_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="namespace_id"))
     title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
     title_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title_url"))
     comment: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="comment"))
@@ -74,7 +74,7 @@ class RecentChange:
     server_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_name"))
     server_script_path: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_script_path"))
     wiki: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wiki"))
-    namespace_bucket: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="namespace_bucket"))
+    namespace: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="namespace"))
     parsedcomment: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parsedcomment"))
     notify_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="notify_url"))
     log_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="log_type"))
@@ -208,33 +208,33 @@ class RecentChange:
             An instance of the dataclass.
         """
         return cls(
-            event_id='wrqqkzpojxiqbrzwyuir',
-            event_time='chjiobduxyxkgzobxtce',
-            schema_uri='nrynosdfgfgcsmigukyk',
+            event_id='gisbjtqtfjuihxkqlmrt',
+            event_time='edeifjjuikukrtbwzxuz',
+            schema_uri='ndumjulaslrlimhqaobh',
             meta=None,
-            id='sgtvrrhtufccnzmwuvvj',
-            type='cynsgokriuwspjrcynsd',
-            namespace=int(26),
-            title='hzavklynlvhvybqavkll',
-            title_url='hnklxcwaeaplvlfnlvxg',
-            comment='xsbtbmqpefojwnkukyzc',
-            timestamp=int(13),
-            user='tlmhrsikxxegtwfhplxt',
+            id='kdtpajcoehsjxnjesiuw',
+            type='ycjfnlbmkoixoivpkvya',
+            namespace_id=int(70),
+            title='gkthobrkhsfqbbaqpxgx',
+            title_url='kpddjuibxgajdtzzfswz',
+            comment='zzkwyylwngxocnwnfffq',
+            timestamp=int(55),
+            user='gxlhndnnaudvzluijqwh',
             bot=True,
-            minor=False,
-            patrolled=True,
+            minor=True,
+            patrolled=False,
             length=None,
             revision=None,
-            server_url='wdfmqkuujtyfsvhsyncu',
-            server_name='vrdafjdecnypfucoegxw',
-            server_script_path='wiwbzdxwjxzczepynbsb',
-            wiki='imkanrxrkesukxyiijgl',
-            namespace_bucket='qoxdcthkspfviqevlfme',
-            parsedcomment='yxtqcrjuvgivazzjkusx',
-            notify_url='wvxeavxqvttgyurgdgbd',
-            log_type='mlzhtatidqlsrkfrzmnk',
-            log_action='fiesktcjiatvzonbxxvx',
-            log_action_comment='pmayxmyelzhchgabmpij',
-            log_id='gzavyltbuozqccryxocn',
-            log_params_json='fqbhbaguekvwsoapnsfa'
+            server_url='mcmguzomxrihnzeawlye',
+            server_name='znsmsncfaacbgszxbjqj',
+            server_script_path='jejljcqheapekuofqbpg',
+            wiki='bqgtpbdabkzndpbdwdkh',
+            namespace='giwxasfpjnpegtmuwzdu',
+            parsedcomment='nxsnjohxgpriebkteqyh',
+            notify_url='ruitutxijtpxxgyprlfy',
+            log_type='krkfjdehbbdaztqaimte',
+            log_action='qrwzzvcqbxufcarxvtkk',
+            log_action_comment='fgifkratpagytxerdpba',
+            log_id='zaedipbmvgnzmbbzfzyv',
+            log_params_json='xzyytimtbaptqshtaxco'
         )

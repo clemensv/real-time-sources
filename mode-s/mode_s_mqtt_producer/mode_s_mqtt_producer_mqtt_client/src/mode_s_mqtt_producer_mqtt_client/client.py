@@ -186,12 +186,12 @@ def get_default_topic_mappings_mode_s_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "Mode_S.ADSB.mqtt": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
-        "Mode_S.AltitudeReply.mqtt": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
-        "Mode_S.IdentityReply.mqtt": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
-        "Mode_S.AcquisitionReply.mqtt": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
-        "Mode_S.CommBAltitude.mqtt": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
-        "Mode_S.CommBIdentity.mqtt": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
+        "Mode_S.ADSB.mqtt": "Mode_S.ADSB.mqtt",
+        "Mode_S.AltitudeReply.mqtt": "Mode_S.AltitudeReply.mqtt",
+        "Mode_S.IdentityReply.mqtt": "Mode_S.IdentityReply.mqtt",
+        "Mode_S.AcquisitionReply.mqtt": "Mode_S.AcquisitionReply.mqtt",
+        "Mode_S.CommBAltitude.mqtt": "Mode_S.CommBAltitude.mqtt",
+        "Mode_S.CommBIdentity.mqtt": "Mode_S.CommBIdentity.mqtt",
     }
 
 
@@ -299,7 +299,7 @@ class ModeSMqttMqttClient(_ClientBase):
         event_type = cloud_event['type']
         
         
-        if event_type == "Mode_S.mqtt.ADSB":
+        if event_type == "Mode_S.ADSB":
             if self.mode_s_adsb_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -311,7 +311,7 @@ class ModeSMqttMqttClient(_ClientBase):
                     print(f"Error in mode_s_adsb_mqtt handler: {e}")
             return
         
-        if event_type == "Mode_S.mqtt.AltitudeReply":
+        if event_type == "Mode_S.AltitudeReply":
             if self.mode_s_altitude_reply_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -323,7 +323,7 @@ class ModeSMqttMqttClient(_ClientBase):
                     print(f"Error in mode_s_altitude_reply_mqtt handler: {e}")
             return
         
-        if event_type == "Mode_S.mqtt.IdentityReply":
+        if event_type == "Mode_S.IdentityReply":
             if self.mode_s_identity_reply_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -335,7 +335,7 @@ class ModeSMqttMqttClient(_ClientBase):
                     print(f"Error in mode_s_identity_reply_mqtt handler: {e}")
             return
         
-        if event_type == "Mode_S.mqtt.AcquisitionReply":
+        if event_type == "Mode_S.AcquisitionReply":
             if self.mode_s_acquisition_reply_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -347,7 +347,7 @@ class ModeSMqttMqttClient(_ClientBase):
                     print(f"Error in mode_s_acquisition_reply_mqtt handler: {e}")
             return
         
-        if event_type == "Mode_S.mqtt.CommBAltitude":
+        if event_type == "Mode_S.CommBAltitude":
             if self.mode_s_comm_baltitude_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -359,7 +359,7 @@ class ModeSMqttMqttClient(_ClientBase):
                     print(f"Error in mode_s_comm_baltitude_mqtt handler: {e}")
             return
         
-        if event_type == "Mode_S.mqtt.CommBIdentity":
+        if event_type == "Mode_S.CommBIdentity":
             if self.mode_s_comm_bidentity_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -433,13 +433,13 @@ class ModeSMqttMqttClient(_ClientBase):
             icao24: URI template variable for 'icao24'
             receiver_id: URI template variable for 'receiver_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb'
+            topic: Optional topic override. If not provided, uses default topic 'Mode_S.ADSB.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb"
+        target_topic = topic if topic is not None else "Mode_S.ADSB.mqtt"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "icao24": str(icao24),
@@ -450,9 +450,9 @@ class ModeSMqttMqttClient(_ClientBase):
 
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.mqtt.ADSB",
+             "type":"Mode_S.ADSB",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{icao24}".format(icao24 = icao24)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = icao24,receiver_id = receiver_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -465,7 +465,7 @@ class ModeSMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
@@ -513,13 +513,13 @@ class ModeSMqttMqttClient(_ClientBase):
             icao24: URI template variable for 'icao24'
             receiver_id: URI template variable for 'receiver_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude'
+            topic: Optional topic override. If not provided, uses default topic 'Mode_S.AltitudeReply.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude"
+        target_topic = topic if topic is not None else "Mode_S.AltitudeReply.mqtt"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "icao24": str(icao24),
@@ -530,9 +530,9 @@ class ModeSMqttMqttClient(_ClientBase):
 
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.mqtt.AltitudeReply",
+             "type":"Mode_S.AltitudeReply",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{icao24}".format(icao24 = icao24)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = icao24,receiver_id = receiver_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -545,7 +545,7 @@ class ModeSMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
@@ -593,13 +593,13 @@ class ModeSMqttMqttClient(_ClientBase):
             icao24: URI template variable for 'icao24'
             receiver_id: URI template variable for 'receiver_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity'
+            topic: Optional topic override. If not provided, uses default topic 'Mode_S.IdentityReply.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity"
+        target_topic = topic if topic is not None else "Mode_S.IdentityReply.mqtt"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "icao24": str(icao24),
@@ -610,9 +610,9 @@ class ModeSMqttMqttClient(_ClientBase):
 
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.mqtt.IdentityReply",
+             "type":"Mode_S.IdentityReply",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{icao24}".format(icao24 = icao24)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = icao24,receiver_id = receiver_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -625,7 +625,7 @@ class ModeSMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
@@ -673,13 +673,13 @@ class ModeSMqttMqttClient(_ClientBase):
             icao24: URI template variable for 'icao24'
             receiver_id: URI template variable for 'receiver_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition'
+            topic: Optional topic override. If not provided, uses default topic 'Mode_S.AcquisitionReply.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition"
+        target_topic = topic if topic is not None else "Mode_S.AcquisitionReply.mqtt"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "icao24": str(icao24),
@@ -690,9 +690,9 @@ class ModeSMqttMqttClient(_ClientBase):
 
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.mqtt.AcquisitionReply",
+             "type":"Mode_S.AcquisitionReply",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{icao24}".format(icao24 = icao24)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = icao24,receiver_id = receiver_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -705,7 +705,7 @@ class ModeSMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
@@ -753,13 +753,13 @@ class ModeSMqttMqttClient(_ClientBase):
             icao24: URI template variable for 'icao24'
             receiver_id: URI template variable for 'receiver_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b'
+            topic: Optional topic override. If not provided, uses default topic 'Mode_S.CommBAltitude.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b"
+        target_topic = topic if topic is not None else "Mode_S.CommBAltitude.mqtt"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "icao24": str(icao24),
@@ -770,9 +770,9 @@ class ModeSMqttMqttClient(_ClientBase):
 
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.mqtt.CommBAltitude",
+             "type":"Mode_S.CommBAltitude",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{icao24}".format(icao24 = icao24)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = icao24,receiver_id = receiver_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -785,7 +785,7 @@ class ModeSMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
@@ -833,13 +833,13 @@ class ModeSMqttMqttClient(_ClientBase):
             icao24: URI template variable for 'icao24'
             receiver_id: URI template variable for 'receiver_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b'
+            topic: Optional topic override. If not provided, uses default topic 'Mode_S.CommBIdentity.mqtt'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b"
+        target_topic = topic if topic is not None else "Mode_S.CommBIdentity.mqtt"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "icao24": str(icao24),
@@ -850,9 +850,9 @@ class ModeSMqttMqttClient(_ClientBase):
 
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.mqtt.CommBIdentity",
+             "type":"Mode_S.CommBIdentity",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"{icao24}".format(icao24 = icao24)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = icao24,receiver_id = receiver_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -865,7 +865,7 @@ class ModeSMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = False if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {

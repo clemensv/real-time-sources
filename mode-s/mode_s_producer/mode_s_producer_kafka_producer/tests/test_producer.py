@@ -19,8 +19,9 @@ from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from mode_s_producer_kafka_producer.producer import ModeSEventProducer
-from mode_s_producer_data import Messages
-from test_mode_s_producer_data_messages import Test_Messages
+from mode_s_producer_data import Record
+from test_mode_s_producer_data_record import Test_Record
+from mode_s_producer_kafka_producer.producer import ModeSMqttEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -54,8 +55,8 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
     return ce
 
 
-def test_modes_modesmessages(kafka_emulator):
-    """Test the ModeSMessages event from the ModeS message group"""
+def test_modes_modesadsb(kafka_emulator):
+    """Test the ModeSADSB event from the ModeS message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -63,7 +64,7 @@ def test_modes_modesmessages(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_modes_modesmessages',  # Unique group per test
+        'group.id': 'test_modes_modesadsb',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -93,17 +94,17 @@ def test_modes_modesmessages(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.Messages":
+            if cloudevent['type'] == "Mode_S.ADSB":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
-    event_data = Test_Messages.create_instance()
+    event_data = Test_Record.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_messages(_feedurl = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_adsb(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _stationid = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -114,4 +115,742 @@ def test_modes_modesmessages(kafka_emulator):
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{stationid}".format(stationid=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_modes_modesaltitudereply(kafka_emulator):
+    """Test the ModeSAltitudeReply event from the ModeS message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_modesaltitudereply',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.AltitudeReply":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_altitude_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{stationid}".format(stationid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_modes_modesidentityreply(kafka_emulator):
+    """Test the ModeSIdentityReply event from the ModeS message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_modesidentityreply',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.IdentityReply":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_identity_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{stationid}".format(stationid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_modes_modesacquisitionreply(kafka_emulator):
+    """Test the ModeSAcquisitionReply event from the ModeS message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_modesacquisitionreply',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.AcquisitionReply":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_acquisition_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{stationid}".format(stationid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_modes_modescommbaltitude(kafka_emulator):
+    """Test the ModeSCommBAltitude event from the ModeS message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_modescommbaltitude',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.CommBAltitude":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_comm_baltitude(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{stationid}".format(stationid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_modes_modescommbidentity(kafka_emulator):
+    """Test the ModeSCommBIdentity event from the ModeS message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_modescommbidentity',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.CommBIdentity":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_comm_bidentity(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{stationid}".format(stationid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_modes_mqtt_modesadsbmqtt(kafka_emulator):
+    """Test the ModeSADSBMqtt event from the ModeS.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_mqtt_modesadsbmqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.ADSB.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_adsb_mqtt(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_modes_mqtt_modesaltitudereplymqtt(kafka_emulator):
+    """Test the ModeSAltitudeReplyMqtt event from the ModeS.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_mqtt_modesaltitudereplymqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.AltitudeReply.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_altitude_reply_mqtt(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_modes_mqtt_modesidentityreplymqtt(kafka_emulator):
+    """Test the ModeSIdentityReplyMqtt event from the ModeS.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_mqtt_modesidentityreplymqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.IdentityReply.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_identity_reply_mqtt(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_modes_mqtt_modesacquisitionreplymqtt(kafka_emulator):
+    """Test the ModeSAcquisitionReplyMqtt event from the ModeS.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_mqtt_modesacquisitionreplymqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.AcquisitionReply.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_acquisition_reply_mqtt(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_modes_mqtt_modescommbaltitudemqtt(kafka_emulator):
+    """Test the ModeSCommBAltitudeMqtt event from the ModeS.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_mqtt_modescommbaltitudemqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.CommBAltitude.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_comm_baltitude_mqtt(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_modes_mqtt_modescommbidentitymqtt(kafka_emulator):
+    """Test the ModeSCommBIdentityMqtt event from the ModeS.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_mqtt_modescommbidentitymqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Mode_S.CommBIdentity.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Record.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_comm_bidentity_mqtt(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_modes_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in ModeS produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_modes_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_Record.create_instance()
+    data2 = Test_Record.create_instance()
+
+    producer_instance.send_mode_s_adsb(_feedurl = shared_key_value, _icao24 = shared_key_value, _receiver_id = shared_key_value, _stationid = shared_key_value, data = data1)
+    producer_instance.send_mode_s_altitude_reply(_feedurl = shared_key_value, _icao24 = shared_key_value, _receiver_id = shared_key_value, _stationid = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["Mode_S.ADSB", "Mode_S.AltitudeReply"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{stationid}".format(stationid=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

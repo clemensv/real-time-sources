@@ -89,7 +89,7 @@ async def test_wikimedia_eventstreams_mqtt_wikimedia_event_streams_recent_change
         await publisher_client.publish_wikimedia_event_streams_recent_change_mqtt(
             topic=test_topic,
             wiki=f"test_wiki_{i}",
-            namespace_bucket=f"test_namespace_bucket_{i}",
+            namespace=f"test_namespace_{i}",
             event_id=f"test_event_id_{i}",
             event_time=f"test_event_time_{i}",
             data=test_data,

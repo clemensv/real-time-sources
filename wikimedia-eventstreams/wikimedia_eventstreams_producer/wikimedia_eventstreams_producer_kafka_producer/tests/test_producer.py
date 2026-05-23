@@ -167,7 +167,7 @@ def test_wikimedia_eventstreams_mqtt_wikimediaeventstreamsrecentchangemqtt(kafka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_wikimedia_event_streams_recent_change_mqtt(_wiki = f'test_{i}', _namespace_bucket = f'test_{i}', _event_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_wikimedia_event_streams_recent_change_mqtt(_wiki = f'test_{i}', _namespace = f'test_{i}', _event_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

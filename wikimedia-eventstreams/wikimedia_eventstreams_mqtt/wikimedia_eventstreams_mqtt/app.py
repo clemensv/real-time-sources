@@ -5,7 +5,7 @@ normalizes each event into the :class:`RecentChange` dataclass, and
 republishes it as a non-retained QoS-0 MQTT 5 binary-mode CloudEvent
 on the topic family
 
-    social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change
+    social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change
 
 The MediaWiki numeric ``namespace`` is mapped to a stable kebab-case
 ``namespace_bucket`` so subscribers can wildcard per wiki / namespace
@@ -131,8 +131,8 @@ def normalize_recent_change(change: Dict[str, Any]) -> Dict[str, Any]:
         },
         "id": _stringify_optional(change.get("id")),
         "type": change.get("type"),
-        "namespace": ns,
-        "namespace_bucket": namespace_bucket(ns),
+        "namespace_id": ns,
+        "namespace": namespace_bucket(ns),
         "title": change.get("title"),
         "title_url": change.get("title_url"),
         "comment": change.get("comment"),
@@ -192,7 +192,7 @@ class WikimediaMqttBridge:
 
         await self.client.publish_wikimedia_event_streams_recent_change_mqtt(
             wiki=_norm_segment(wiki),
-            namespace_bucket=_norm_segment(normalized["namespace_bucket"]),
+            namespace=_norm_segment(normalized["namespace"]),
             event_id=_norm_segment(str(event_id)),
             event_time=str(event_time),
             data=data,

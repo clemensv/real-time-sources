@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from mode_s_mqtt_producer_data.mode_s.record import Record
+from mode_s_producer_data.mode_s.record import Record
 
 
 class Test_Record(unittest.TestCase):
@@ -28,22 +28,22 @@ class Test_Record(unittest.TestCase):
         Create instance of Record for testing
         """
         instance = Record(
-            icao24='blztniuiqjynccndukhe',
-            receiver_id='oaivworzipugkbapzijj',
-            msg_type='tcsrnvtcarpakrpvrfbp',
-            ts=int(63),
-            df=int(81),
-            tc=int(56),
-            bcode='lnzgxcxkwazyhsislmqp',
-            alt=int(59),
-            cs='efjapgvucydspiqjcdhz',
-            sq='jjawfdibirezbiznxkxp',
-            lat=float(82.98664850630026),
-            lon=float(50.81647034196127),
-            spd=float(93.05839114331387),
-            ang=float(55.704519314861386),
-            vr=int(1),
-            rssi=float(27.261586107630052)
+            icao24='nmctpxkvpvjlgacggyoe',
+            receiver_id='eakqqgmeowmepxfsnzzi',
+            msg_type='lmjtkutmblpvplfwhjzr',
+            ts=int(3),
+            df=int(22),
+            tc=int(16),
+            bcode='cvrqccvipfekqertedby',
+            alt=int(40),
+            cs='wspnivlufkoiskrywzqy',
+            sq='cdurlcewyyiypstuvagi',
+            lat=float(71.91754031762038),
+            lon=float(67.32187138487407),
+            spd=float(78.72226491247224),
+            ang=float(84.53843833127611),
+            vr=int(60),
+            rssi=float(33.61495405371511)
         )
         return instance
 
@@ -52,7 +52,7 @@ class Test_Record(unittest.TestCase):
         """
         Test icao24 property
         """
-        test_value = 'blztniuiqjynccndukhe'
+        test_value = 'nmctpxkvpvjlgacggyoe'
         self.instance.icao24 = test_value
         self.assertEqual(self.instance.icao24, test_value)
     
@@ -60,7 +60,7 @@ class Test_Record(unittest.TestCase):
         """
         Test receiver_id property
         """
-        test_value = 'oaivworzipugkbapzijj'
+        test_value = 'eakqqgmeowmepxfsnzzi'
         self.instance.receiver_id = test_value
         self.assertEqual(self.instance.receiver_id, test_value)
     
@@ -68,7 +68,7 @@ class Test_Record(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = 'tcsrnvtcarpakrpvrfbp'
+        test_value = 'lmjtkutmblpvplfwhjzr'
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     
@@ -76,7 +76,7 @@ class Test_Record(unittest.TestCase):
         """
         Test ts property
         """
-        test_value = int(63)
+        test_value = int(3)
         self.instance.ts = test_value
         self.assertEqual(self.instance.ts, test_value)
     
@@ -84,7 +84,7 @@ class Test_Record(unittest.TestCase):
         """
         Test df property
         """
-        test_value = int(81)
+        test_value = int(22)
         self.instance.df = test_value
         self.assertEqual(self.instance.df, test_value)
     
@@ -92,7 +92,7 @@ class Test_Record(unittest.TestCase):
         """
         Test tc property
         """
-        test_value = int(56)
+        test_value = int(16)
         self.instance.tc = test_value
         self.assertEqual(self.instance.tc, test_value)
     
@@ -100,7 +100,7 @@ class Test_Record(unittest.TestCase):
         """
         Test bcode property
         """
-        test_value = 'lnzgxcxkwazyhsislmqp'
+        test_value = 'cvrqccvipfekqertedby'
         self.instance.bcode = test_value
         self.assertEqual(self.instance.bcode, test_value)
     
@@ -108,7 +108,7 @@ class Test_Record(unittest.TestCase):
         """
         Test alt property
         """
-        test_value = int(59)
+        test_value = int(40)
         self.instance.alt = test_value
         self.assertEqual(self.instance.alt, test_value)
     
@@ -116,7 +116,7 @@ class Test_Record(unittest.TestCase):
         """
         Test cs property
         """
-        test_value = 'efjapgvucydspiqjcdhz'
+        test_value = 'wspnivlufkoiskrywzqy'
         self.instance.cs = test_value
         self.assertEqual(self.instance.cs, test_value)
     
@@ -124,7 +124,7 @@ class Test_Record(unittest.TestCase):
         """
         Test sq property
         """
-        test_value = 'jjawfdibirezbiznxkxp'
+        test_value = 'cdurlcewyyiypstuvagi'
         self.instance.sq = test_value
         self.assertEqual(self.instance.sq, test_value)
     
@@ -132,7 +132,7 @@ class Test_Record(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(82.98664850630026)
+        test_value = float(71.91754031762038)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -140,7 +140,7 @@ class Test_Record(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(50.81647034196127)
+        test_value = float(67.32187138487407)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -148,7 +148,7 @@ class Test_Record(unittest.TestCase):
         """
         Test spd property
         """
-        test_value = float(93.05839114331387)
+        test_value = float(78.72226491247224)
         self.instance.spd = test_value
         self.assertEqual(self.instance.spd, test_value)
     
@@ -156,7 +156,7 @@ class Test_Record(unittest.TestCase):
         """
         Test ang property
         """
-        test_value = float(55.704519314861386)
+        test_value = float(84.53843833127611)
         self.instance.ang = test_value
         self.assertEqual(self.instance.ang, test_value)
     
@@ -164,7 +164,7 @@ class Test_Record(unittest.TestCase):
         """
         Test vr property
         """
-        test_value = int(1)
+        test_value = int(60)
         self.instance.vr = test_value
         self.assertEqual(self.instance.vr, test_value)
     
@@ -172,10 +172,19 @@ class Test_Record(unittest.TestCase):
         """
         Test rssi property
         """
-        test_value = float(27.261586107630052)
+        test_value = float(33.61495405371511)
         self.instance.rssi = test_value
         self.assertEqual(self.instance.rssi, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Record.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

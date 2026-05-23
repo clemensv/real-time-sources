@@ -148,14 +148,14 @@ A second container image, built from `Dockerfile.mqtt`, publishes the Wikimedia 
 ### Topic template
 
 ```
-social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change
+social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change
 ```
 
 * `{wiki}` – wiki database name (e.g. `enwiki`, `commonswiki`, `wikidatawiki`)
-* `{namespace_bucket}` – kebab-case bucket for the MediaWiki namespace number (`main`, `talk`, `file`, `category`, …; unknown values fall through to `ns-<n>`)
+* `{namespace}` – kebab-case bucket for the MediaWiki namespace number (`main`, `talk`, `file`, `category`, …; unknown values fall through to `ns-<n>`)
 * `{event_id}` – upstream `meta.id`
 
-Non-retained firehose: every publish is **QoS 0** with `retain=false`. Subscribers must be attached before the feeder starts. CloudEvents binary mode – CE attributes (`id`, `source`, `type`, `subject`, `time`, `specversion`) ride as MQTT 5 user properties. `ContentType=application/json`. `subject` equals `{wiki}/{namespace_bucket}/{event_id}`.
+Non-retained firehose: every publish is **QoS 0** with `retain=false`. Subscribers must be attached before the feeder starts. CloudEvents binary mode – CE attributes (`id`, `source`, `type`, `subject`, `time`, `specversion`) ride as MQTT 5 user properties. `ContentType=application/json`. `subject` equals `{wiki}/{namespace}/{event_id}`.
 
 ### Pull & run
 

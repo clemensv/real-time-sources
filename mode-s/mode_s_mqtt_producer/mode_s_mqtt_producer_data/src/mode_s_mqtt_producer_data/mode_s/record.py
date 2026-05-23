@@ -1,4 +1,4 @@
-""" UnnamedClass dataclass. """
+""" Record dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,35 +15,49 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class UnnamedClass:
+class Record:
     """
-    Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details.
+    Single Mode-S record published on the MQTT firehose. Carries the topic axes (icao24, receiver_id, msg_type) and the decoded record fields.
     
     Attributes:
-        uri (typing.Optional[str])
-        request_id (typing.Optional[str])
-        id (str)
-        domain (str)
-        stream (str)
-        topic (typing.Optional[str])
-        partition (typing.Optional[int])
-        offset (typing.Optional[str])
-        dt (str)
+        icao24 (str)
+        receiver_id (str)
+        msg_type (str)
+        ts (int)
+        df (int)
+        tc (typing.Optional[int])
+        bcode (typing.Optional[str])
+        alt (typing.Optional[int])
+        cs (typing.Optional[str])
+        sq (typing.Optional[str])
+        lat (typing.Optional[float])
+        lon (typing.Optional[float])
+        spd (typing.Optional[float])
+        ang (typing.Optional[float])
+        vr (typing.Optional[int])
+        rssi (typing.Optional[float])
     """
     
     
-    uri: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uri"))
-    request_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="request_id"))
-    id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="id"))
-    domain: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="domain"))
-    stream: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stream"))
-    topic: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="topic"))
-    partition: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="partition"))
-    offset: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="offset"))
-    dt: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dt"))
+    icao24: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="icao24"))
+    receiver_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="receiver_id"))
+    msg_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
+    ts: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts"))
+    df: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="df"))
+    tc: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tc"))
+    bcode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bcode"))
+    alt: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alt"))
+    cs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cs"))
+    sq: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sq"))
+    lat: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lat"))
+    lon: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lon"))
+    spd: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spd"))
+    ang: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ang"))
+    vr: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vr"))
+    rssi: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rssi"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'UnnamedClass':
+    def from_serializer_dict(cls, data: dict) -> 'Record':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -116,7 +130,7 @@ class UnnamedClass:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['UnnamedClass']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Record']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -153,13 +167,13 @@ class UnnamedClass:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return UnnamedClass.from_serializer_dict(_record)
+                return Record.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'UnnamedClass':
+    def create_instance(cls) -> 'Record':
         """
         Creates an instance of the dataclass with test values.
         
@@ -167,13 +181,20 @@ class UnnamedClass:
             An instance of the dataclass.
         """
         return cls(
-            uri='jabsunerjekgqhuzjffg',
-            request_id='horpyzmcevmgwrlfcgrj',
-            id='nifwzenahyfggdfbmzda',
-            domain='lbsvjcjytnezakjjxquq',
-            stream='bsdenwtfbzqjxfwkvjbm',
-            topic='ygrjcqrizbcvxznstoyf',
-            partition=int(34),
-            offset='xxcpcleixsbbmtpkjeym',
-            dt='rnerjxhwpgextflqyuhq'
+            icao24='blztniuiqjynccndukhe',
+            receiver_id='oaivworzipugkbapzijj',
+            msg_type='tcsrnvtcarpakrpvrfbp',
+            ts=int(63),
+            df=int(81),
+            tc=int(56),
+            bcode='lnzgxcxkwazyhsislmqp',
+            alt=int(59),
+            cs='efjapgvucydspiqjcdhz',
+            sq='jjawfdibirezbiznxkxp',
+            lat=float(82.98664850630026),
+            lon=float(50.81647034196127),
+            spd=float(93.05839114331387),
+            ang=float(55.704519314861386),
+            vr=int(1),
+            rssi=float(27.261586107630052)
         )

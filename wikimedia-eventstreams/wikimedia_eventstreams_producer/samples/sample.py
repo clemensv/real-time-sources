@@ -78,7 +78,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _recent_change = RecentChange()
 
     # sends the 'Wikimedia.EventStreams.RecentChange.mqtt' event to Kafka topic.
-    await wikimedia_event_streams_mqtt_event_producer.send_wikimedia_event_streams_recent_change_mqtt(_wiki = 'TODO: replace me', _namespace_bucket = 'TODO: replace me', _event_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _recent_change)
+    await wikimedia_event_streams_mqtt_event_producer.send_wikimedia_event_streams_recent_change_mqtt(_wiki = 'TODO: replace me', _namespace = 'TODO: replace me', _event_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _recent_change)
     print(f"Sent 'Wikimedia.EventStreams.RecentChange.mqtt' event: {_recent_change.to_json()}")
 
 if __name__ == "__main__":

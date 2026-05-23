@@ -1,4 +1,6 @@
-# Table of Contents
+# Wikimedia EventStreams Bridge Events
+
+Events emitted by the Wikimedia EventStreams bridge.
 
 - [Wikimedia.EventStreams](#message-group-wikimediaeventstreams)
   - [Wikimedia.EventStreams.RecentChange](#message-wikimediaeventstreamsrecentchange)
@@ -30,7 +32,7 @@
 | `meta` | [Object RecentChange.meta](#object-recentchangemeta) | - | `True` | Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details. |
 | `id` | *string* (optional) | - | `False` | MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range. |
 | `type` | *string* | - | `True` | Recentchange type such as edit, new, log, categorize, or external. |
-| `namespace` | *integer* | - | `True` | Numeric MediaWiki namespace identifier for the affected page, or -1 for special log events. |
+| `namespace_id` | *integer* | - | `True` | Numeric MediaWiki namespace identifier for the affected page (0 = main, 1 = talk, 6 = file, 14 = category, -1 for special log events). Renamed from ``namespace`` to free that name for the kebab-case bucket that is also used as the {namespace} MQTT topic axis. |
 | `title` | *string* | - | `True` | Affected page title in MediaWiki prefixed text form. |
 | `title_url` | *string* (optional) | - | `False` | Canonical page URL for the affected title when present in the upstream payload. |
 | `comment` | *string* (optional) | - | `False` | Edit or log comment as supplied by the upstream recentchange record. |
@@ -45,7 +47,7 @@
 | `server_name` | *string* (optional) | - | `False` | Server host name of the wiki that emitted the event. |
 | `server_script_path` | *string* (optional) | - | `False` | MediaWiki script path on the emitting wiki. |
 | `wiki` | *string* | - | `True` | Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki. |
-| `namespace_bucket` | *string* | - | `True` | Kebab-case bucket label for the MediaWiki namespace number (e.g. main for 0, talk for 1, file for 6, category for 14, ns-<n> for unrecognised values). Replicates the MQTT topic axis so subscribers can validate the topic segment against the payload. |
+| `namespace` | *string* | - | `True` | Kebab-case bucket label for the MediaWiki namespace (e.g. ``main`` for 0, ``talk`` for 1, ``file`` for 6, ``category`` for 14, ``ns-<n>`` for unrecognised values). Used as the {namespace} MQTT topic segment; subscribers can wildcard per wiki/namespace without parsing the integer id. |
 | `parsedcomment` | *string* (optional) | - | `False` | HTML-parsed form of the recentchange comment when Wikimedia provides it. |
 | `notify_url` | *string* (optional) | - | `False` | URL that points to a diff view or other relevant page for the change. |
 | `log_type` | *string* (optional) | - | `False` | MediaWiki log type for log events, such as move, delete, or patrol. |
@@ -93,7 +95,7 @@
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `Wikimedia.EventStreams.RecentChange` |
 | `source` |  | `` | `False` | `https://stream.wikimedia.org/v2/stream/recentchange` |
-| `subject` |  | `uritemplate` | `True` | `{wiki}/{namespace_bucket}/{event_id}` |
+| `subject` |  | `uritemplate` | `False` | `{wiki}/{namespace}/{event_id}` |
 | `time` |  | `uritemplate` | `False` | `{event_time}` |
 
 #### Schema:
@@ -107,7 +109,7 @@
 | `meta` | [Object RecentChange.meta](#object-recentchangemeta) | - | `True` | Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details. |
 | `id` | *string* (optional) | - | `False` | MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range. |
 | `type` | *string* | - | `True` | Recentchange type such as edit, new, log, categorize, or external. |
-| `namespace` | *integer* | - | `True` | Numeric MediaWiki namespace identifier for the affected page, or -1 for special log events. |
+| `namespace_id` | *integer* | - | `True` | Numeric MediaWiki namespace identifier for the affected page (0 = main, 1 = talk, 6 = file, 14 = category, -1 for special log events). Renamed from ``namespace`` to free that name for the kebab-case bucket that is also used as the {namespace} MQTT topic axis. |
 | `title` | *string* | - | `True` | Affected page title in MediaWiki prefixed text form. |
 | `title_url` | *string* (optional) | - | `False` | Canonical page URL for the affected title when present in the upstream payload. |
 | `comment` | *string* (optional) | - | `False` | Edit or log comment as supplied by the upstream recentchange record. |
@@ -122,7 +124,7 @@
 | `server_name` | *string* (optional) | - | `False` | Server host name of the wiki that emitted the event. |
 | `server_script_path` | *string* (optional) | - | `False` | MediaWiki script path on the emitting wiki. |
 | `wiki` | *string* | - | `True` | Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki. |
-| `namespace_bucket` | *string* | - | `True` | Kebab-case bucket label for the MediaWiki namespace number (e.g. main for 0, talk for 1, file for 6, category for 14, ns-<n> for unrecognised values). Replicates the MQTT topic axis so subscribers can validate the topic segment against the payload. |
+| `namespace` | *string* | - | `True` | Kebab-case bucket label for the MediaWiki namespace (e.g. ``main`` for 0, ``talk`` for 1, ``file`` for 6, ``category`` for 14, ``ns-<n>`` for unrecognised values). Used as the {namespace} MQTT topic segment; subscribers can wildcard per wiki/namespace without parsing the integer id. |
 | `parsedcomment` | *string* (optional) | - | `False` | HTML-parsed form of the recentchange comment when Wikimedia provides it. |
 | `notify_url` | *string* (optional) | - | `False` | URL that points to a diff view or other relevant page for the change. |
 | `log_type` | *string* (optional) | - | `False` | MediaWiki log type for log events, such as move, delete, or patrol. |

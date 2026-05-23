@@ -156,13 +156,13 @@ class WikimediaEventStreamsMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_wikimedia_event_streams_recent_change_mqtt(self,_wiki : str, _namespace_bucket : str, _event_id : str, _event_time : str, data: RecentChange, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RecentChange], str]=None) -> None:
+    def send_wikimedia_event_streams_recent_change_mqtt(self,_wiki : str, _namespace : str, _event_id : str, _event_time : str, data: RecentChange, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RecentChange], str]=None) -> None:
         """
         Sends the 'Wikimedia.EventStreams.RecentChange.mqtt' event to the Kafka topic
 
         Args:
             _wiki(str):  Value for placeholder wiki in attribute subject
-            _namespace_bucket(str):  Value for placeholder namespace_bucket in attribute subject
+            _namespace(str):  Value for placeholder namespace in attribute subject
             _event_id(str):  Value for placeholder event_id in attribute subject
             _event_time(str):  Value for placeholder event_time in attribute time
             data: (RecentChange): The event data to be sent
@@ -174,7 +174,7 @@ class WikimediaEventStreamsMqttEventProducer:
         attributes = {
              "type":"Wikimedia.EventStreams.RecentChange",
              "source":"https://stream.wikimedia.org/v2/stream/recentchange",
-             "subject":"{wiki}/{namespace_bucket}/{event_id}".format(wiki = _wiki,namespace_bucket = _namespace_bucket,event_id = _event_id),
+             "subject":"{wiki}/{namespace}/{event_id}".format(wiki = _wiki,namespace = _namespace,event_id = _event_id),
              "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type

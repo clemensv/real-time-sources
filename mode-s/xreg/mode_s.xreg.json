@@ -33,7 +33,6 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}",
           "qos": 0,
           "retain": false
         }
@@ -45,45 +44,136 @@
   },
   "messagegroups": {
     "Mode_S": {
-      "messagegroupid": "Mode_S",
       "messages": {
-        "Mode_S.Messages": {
-          "messageid": "Mode_S.Messages",
+        "Mode_S.ADSB": {
           "envelope": "CloudEvents/1.0",
           "protocol": "None",
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Messages",
-          "createdat": "2025-01-21T15:56:27.073019",
-          "epoch": 0,
-          "modifiedat": "2025-01-21T15:56:27.073019",
+          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Record",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
-              "type": "string",
-              "required": true,
-              "value": "1.0",
-              "description": "CloudEvents version"
+              "value": "1.0"
             },
             "type": {
-              "name": "type",
-              "type": "string",
-              "required": true,
-              "value": "Mode_S.Messages",
-              "description": "Event type"
+              "value": "Mode_S.ADSB"
             },
             "source": {
-              "name": "source",
-              "type": "uritemplate",
-              "required": true,
               "value": "{feedurl}",
-              "description": "URL of the feed"
+              "type": "uritemplate"
             },
             "subject": {
-              "name": "subject",
-              "type": "uritemplate",
-              "value": "{stationid}",
-              "required": true,
-              "description": "Partition key subject"
+              "value": "{icao24}/{receiver_id}",
+              "type": "uritemplate"
+            }
+          }
+        },
+        "Mode_S.AltitudeReply": {
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "specversion": {
+              "value": "1.0"
+            },
+            "type": {
+              "value": "Mode_S.AltitudeReply"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{icao24}/{receiver_id}",
+              "type": "uritemplate"
+            }
+          }
+        },
+        "Mode_S.IdentityReply": {
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "specversion": {
+              "value": "1.0"
+            },
+            "type": {
+              "value": "Mode_S.IdentityReply"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{icao24}/{receiver_id}",
+              "type": "uritemplate"
+            }
+          }
+        },
+        "Mode_S.AcquisitionReply": {
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "specversion": {
+              "value": "1.0"
+            },
+            "type": {
+              "value": "Mode_S.AcquisitionReply"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{icao24}/{receiver_id}",
+              "type": "uritemplate"
+            }
+          }
+        },
+        "Mode_S.CommBAltitude": {
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "specversion": {
+              "value": "1.0"
+            },
+            "type": {
+              "value": "Mode_S.CommBAltitude"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{icao24}/{receiver_id}",
+              "type": "uritemplate"
+            }
+          }
+        },
+        "Mode_S.CommBIdentity": {
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.jstruct/schemas/Mode_S.Record",
+          "envelopemetadata": {
+            "specversion": {
+              "value": "1.0"
+            },
+            "type": {
+              "value": "Mode_S.CommBIdentity"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{icao24}/{receiver_id}",
+              "type": "uritemplate"
             }
           }
         }
@@ -93,122 +183,73 @@
       "modifiedat": "2025-01-21T15:56:27.070873"
     },
     "Mode_S.mqtt": {
-      "messagegroupid": "Mode_S.mqtt",
       "description": "MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.",
       "messages": {
         "Mode_S.ADSB.mqtt": {
-          "messageid": "Mode_S.ADSB.mqtt",
-          "name": "ADSB",
+          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
-            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.ADSB" },
-            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
-            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
-          },
           "protocoloptions": {
-            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
-            "qos": 0,
-            "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+            "options": {
+              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
+              "qos": 0,
+              "retain": false
+            }
+          }
         },
         "Mode_S.AltitudeReply.mqtt": {
-          "messageid": "Mode_S.AltitudeReply.mqtt",
-          "name": "AltitudeReply",
+          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
-            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.AltitudeReply" },
-            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
-            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
-          },
           "protocoloptions": {
-            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
-            "qos": 0,
-            "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+            "options": {
+              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
+              "qos": 0,
+              "retain": false
+            }
+          }
         },
         "Mode_S.IdentityReply.mqtt": {
-          "messageid": "Mode_S.IdentityReply.mqtt",
-          "name": "IdentityReply",
+          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
-            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.IdentityReply" },
-            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
-            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
-          },
           "protocoloptions": {
-            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
-            "qos": 0,
-            "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+            "options": {
+              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
+              "qos": 0,
+              "retain": false
+            }
+          }
         },
         "Mode_S.AcquisitionReply.mqtt": {
-          "messageid": "Mode_S.AcquisitionReply.mqtt",
-          "name": "AcquisitionReply",
+          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
-            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.AcquisitionReply" },
-            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
-            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
-          },
           "protocoloptions": {
-            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
-            "qos": 0,
-            "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+            "options": {
+              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
+              "qos": 0,
+              "retain": false
+            }
+          }
         },
         "Mode_S.CommBAltitude.mqtt": {
-          "messageid": "Mode_S.CommBAltitude.mqtt",
-          "name": "CommBAltitude",
+          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
-            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.CommBAltitude" },
-            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
-            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
-          },
           "protocoloptions": {
-            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
-            "qos": 0,
-            "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+            "options": {
+              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
+              "qos": 0,
+              "retain": false
+            }
+          }
         },
         "Mode_S.CommBIdentity.mqtt": {
-          "messageid": "Mode_S.CommBIdentity.mqtt",
-          "name": "CommBIdentity",
+          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
-            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.CommBIdentity" },
-            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
-            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
-          },
           "protocoloptions": {
-            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
-            "qos": 0,
-            "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+            "options": {
+              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
+              "qos": 0,
+              "retain": false
+            }
+          }
         }
       }
     }
@@ -216,197 +257,7 @@
   "schemagroups": {
     "Mode_S.jstruct": {
       "schemas": {
-        "Mode_S.Messages": {
-          "name": "Messages",
-          "format": "JsonStructure/draft-02",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "JsonStructure/draft-02",
-              "schema": {
-                "$schema": "https://json-structure.org/meta/core/v0/#",
-                "$id": "https://example.com/schemas/Mode_S/Messages",
-                "name": "Messages",
-                "$root": "#/definitions/Mode_S/Messages",
-                "definitions": {
-                  "Mode_S": {
-                    "ModeS_ADSB_Record": {
-                      "name": "ModeS_ADSB_Record",
-                      "type": "object",
-                      "properties": {
-                        "ts": {
-                          "type": "int64",
-                          "logicalType": "timestampMillis",
-                          "description": "The timestamp of the message reception in milliseconds since the epoch. Required."
-                        },
-                        "icao": {
-                          "type": "string",
-                          "description": "The ICAO 24-bit address of the aircraft. Required."
-                        },
-                        "df": {
-                          "type": "int32",
-                          "description": "The Downlink Format (DF) of the Mode-S message, indicating the message category. Required."
-                        },
-                        "tc": {
-                          "type": "int32",
-                          "description": "The Type Code (TC) of the ADS-B message. Present for DF17 and DF18 messages; null otherwise."
-                        },
-                        "bcode": {
-                          "type": "string",
-                          "description": "The BDS (Comm-B Data Selector) code. Present for DF20 and DF21 messages; null otherwise."
-                        },
-                        "alt": {
-                          "type": "int32",
-                          "description": "Barometric altitude in feet. Present for certain BDS and ADS-B messages; null otherwise."
-                        },
-                        "cs": {
-                          "type": "string",
-                          "description": "Aircraft identification (call sign). Present for BDS20 and some ADS-B messages; null otherwise."
-                        },
-                        "sq": {
-                          "type": "string",
-                          "description": "Transponder code (Squawk). Present for BDS17 messages; null otherwise."
-                        },
-                        "lat": {
-                          "type": "double",
-                          "description": "Latitude in degrees. Present for ADS-B position messages; null otherwise."
-                        },
-                        "lon": {
-                          "type": "double",
-                          "description": "Longitude in degrees. Present for ADS-B position messages; null otherwise."
-                        },
-                        "spd": {
-                          "type": "float",
-                          "description": "Speed in knots. Present for ADS-B TC19 messages; null otherwise."
-                        },
-                        "ang": {
-                          "type": "float",
-                          "description": "Angle in degrees. Present for ADS-B TC19 messages; null otherwise."
-                        },
-                        "vr": {
-                          "type": "int32",
-                          "description": "Vertical rate in ft/min. Present for ADS-B TC19 messages; null otherwise."
-                        },
-                        "spd_type": {
-                          "type": "string",
-                          "description": "Speed type. Present for ADS-B TC19 messages; null otherwise."
-                        },
-                        "dir_src": {
-                          "type": "string",
-                          "description": "Direction source. Present for ADS-B TC19 messages; null otherwise."
-                        },
-                        "vr_src": {
-                          "type": "string",
-                          "description": "Vertical rate source. Present for ADS-B TC19 messages; null otherwise."
-                        },
-                        "ws": {
-                          "type": "int32",
-                          "description": "Wind speed in knots. Present for BDS44 messages; null otherwise."
-                        },
-                        "wd": {
-                          "type": "int32",
-                          "description": "Wind direction in degrees. Present for BDS44 messages; null otherwise."
-                        },
-                        "at": {
-                          "type": "float",
-                          "description": "Air temperature in degrees Celsius. Present for BDS44/BDS45 messages; null otherwise."
-                        },
-                        "ap": {
-                          "type": "float",
-                          "description": "Air pressure in hPa. Present for BDS44/BDS45 messages; null otherwise."
-                        },
-                        "hm": {
-                          "type": "float",
-                          "description": "Relative humidity in percentage. Present for BDS44 messages; null otherwise."
-                        },
-                        "roll": {
-                          "type": "float",
-                          "description": "Aircraft roll angle in degrees. Present for BDS50 messages; null otherwise."
-                        },
-                        "trak": {
-                          "type": "float",
-                          "description": "True track angle in degrees. Present for BDS50 messages; null otherwise."
-                        },
-                        "gs": {
-                          "type": "float",
-                          "description": "Ground speed in knots. Present for BDS50 messages; null otherwise."
-                        },
-                        "tas": {
-                          "type": "float",
-                          "description": "True airspeed in knots. Present for BDS50 messages; null otherwise."
-                        },
-                        "hd": {
-                          "type": "float",
-                          "description": "Aircraft heading in degrees. Present for BDS60 messages; null otherwise."
-                        },
-                        "ias": {
-                          "type": "float",
-                          "description": "Indicated airspeed in knots. Present for BDS60 messages; null otherwise."
-                        },
-                        "m": {
-                          "type": "float",
-                          "description": "Mach number. Present for BDS60 messages; null otherwise."
-                        },
-                        "vrb": {
-                          "type": "float",
-                          "description": "Vertical rate based on barometric altitude in ft/min. Present for BDS60 messages; null otherwise."
-                        },
-                        "vri": {
-                          "type": "float",
-                          "description": "Vertical rate based on inertial navigation system in ft/min. Present for BDS60 messages; null otherwise."
-                        },
-                        "rssi": {
-                          "type": "float",
-                          "description": "Received Signal Strength Indicator in dBFS. Present for all messages if available; null otherwise."
-                        },
-                        "emst": {
-                          "type": "string",
-                          "description": "Emergency or priority status. Present for ADS-B TC28; null otherwise."
-                        },
-                        "tgt": {
-                          "type": "string",
-                          "description": "Target state info. Present for certain BDS6,2 or ADS-B TC29; null otherwise."
-                        },
-                        "opst": {
-                          "type": "string",
-                          "description": "Operational status info. Present for certain BDS6,5 or ADS-B TC31; null otherwise."
-                        }
-                      },
-                      "required": [
-                        "ts",
-                        "icao",
-                        "df"
-                      ],
-                      "description": "A comprehensive schema for Mode-S and ADS-B decoded messages, including fields for various BDS codes and ADS-B type codes."
-                    },
-                    "Messages": {
-                      "name": "Messages",
-                      "type": "object",
-                      "properties": {
-                        "messages": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/definitions/Mode_S/ModeS_ADSB_Record"
-                          },
-                          "description": "An array of Mode-S and ADS-B decoded message records."
-                        }
-                      },
-                      "required": [
-                        "messages"
-                      ],
-                      "description": "A container for multiple Mode-S and ADS-B decoded messages."
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Mode_S.mqtt.jstruct": {
-      "schemas": {
-        "Mode_S.mqtt.Record": {
+        "Mode_S.Record": {
           "name": "Record",
           "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
@@ -415,27 +266,76 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/core/v0/#",
-                "$id": "https://example.com/schemas/Mode_S/mqtt/Record",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/Mode_S/Record",
                 "name": "Record",
                 "type": "object",
                 "description": "Single Mode-S record published on the MQTT firehose. Carries the topic axes (icao24, receiver_id, msg_type) and the decoded record fields.",
                 "properties": {
-                  "icao24": { "type": "string", "description": "ICAO 24-bit address (lowercase hex)." },
-                  "receiver_id": { "type": "string", "description": "Stable identifier of the receiver/station that decoded this message." },
-                  "msg_type": { "type": "string", "description": "Kebab-case Mode-S downlink-format family literal (df17-adsb, df4-altitude, df5-identity, df11-acquisition, df20-comm-b, df21-comm-b)." },
-                  "ts": { "type": "int64", "logicalType": "timestampMillis", "description": "Reception timestamp (epoch millis)." },
-                  "df": { "type": "int32", "description": "Downlink Format value." },
-                  "tc": { "type": "int32", "description": "Type Code (ADS-B only)." },
-                  "bcode": { "type": "string", "description": "BDS code (Comm-B only)." },
-                  "alt": { "type": "int32", "description": "Barometric altitude (ft)." },
-                  "cs": { "type": "string", "description": "Aircraft callsign." },
-                  "sq": { "type": "string", "description": "Squawk code." },
-                  "lat": { "type": "double", "description": "Latitude (deg)." },
-                  "lon": { "type": "double", "description": "Longitude (deg)." },
-                  "spd": { "type": "float", "description": "Speed (kn)." },
-                  "ang": { "type": "float", "description": "Heading angle (deg)." },
-                  "vr": { "type": "int32", "description": "Vertical rate (ft/min)." },
-                  "rssi": { "type": "float", "description": "RSSI (dBFS)." }
+                  "icao24": {
+                    "type": "string",
+                    "description": "ICAO 24-bit address (lowercase hex)."
+                  },
+                  "receiver_id": {
+                    "type": "string",
+                    "description": "Stable identifier of the receiver/station that decoded this message."
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "description": "Kebab-case Mode-S downlink-format family literal (df17-adsb, df4-altitude, df5-identity, df11-acquisition, df20-comm-b, df21-comm-b)."
+                  },
+                  "ts": {
+                    "type": "int64",
+                    "logicalType": "timestampMillis",
+                    "description": "Reception timestamp (epoch millis)."
+                  },
+                  "df": {
+                    "type": "int32",
+                    "description": "Downlink Format value."
+                  },
+                  "tc": {
+                    "type": "int32",
+                    "description": "Type Code (ADS-B only)."
+                  },
+                  "bcode": {
+                    "type": "string",
+                    "description": "BDS code (Comm-B only)."
+                  },
+                  "alt": {
+                    "type": "int32",
+                    "description": "Barometric altitude (ft)."
+                  },
+                  "cs": {
+                    "type": "string",
+                    "description": "Aircraft callsign."
+                  },
+                  "sq": {
+                    "type": "string",
+                    "description": "Squawk code."
+                  },
+                  "lat": {
+                    "type": "double",
+                    "description": "Latitude (deg)."
+                  },
+                  "lon": {
+                    "type": "double",
+                    "description": "Longitude (deg)."
+                  },
+                  "spd": {
+                    "type": "float",
+                    "description": "Speed (kn)."
+                  },
+                  "ang": {
+                    "type": "float",
+                    "description": "Heading angle (deg)."
+                  },
+                  "vr": {
+                    "type": "int32",
+                    "description": "Vertical rate (ft/min)."
+                  },
+                  "rssi": {
+                    "type": "float",
+                    "description": "RSSI (dBFS)."
+                  }
                 },
                 "required": [
                   "icao24",
@@ -443,7 +343,8 @@
                   "msg_type",
                   "ts",
                   "df"
-                ]
+                ],
+                "namespace": "Mode_S"
               }
             }
           }
@@ -452,305 +353,144 @@
     },
     "Mode_S.avro": {
       "schemas": {
-        "Mode_S.Messages": {
-          "schemaid": "Mode_S.Messages",
-          "format": "Avro",
+        "Mode_S.Record": {
+          "format": "Avro/1.11.1",
           "versions": {
             "1": {
-              "schemaid": "Mode_S.Messages",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.1",
               "schema": {
                 "type": "record",
-                "name": "Messages",
+                "name": "Record",
                 "namespace": "Mode_S",
-                "doc": "A container for multiple Mode-S and ADS-B decoded messages.",
+                "doc": "Single Mode-S record published on the MQTT firehose. Carries the topic axes (icao24, receiver_id, msg_type) and the decoded record fields.",
                 "fields": [
                   {
-                    "name": "messages",
-                    "type": {
-                      "type": "array",
-                      "items": {
-                        "type": "record",
-                        "name": "ModeS_ADSB_Record",
-                        "doc": "A comprehensive schema for Mode-S and ADS-B decoded messages, including fields for various BDS codes and ADS-B type codes.",
-                        "fields": [
-                          {
-                            "name": "ts",
-                            "type": {
-                              "type": "long",
-                              "logicalType": "timestamp-millis"
-                            },
-                            "doc": "The timestamp of the message reception in milliseconds since the epoch. Required."
-                          },
-                          {
-                            "name": "icao",
-                            "type": "string",
-                            "doc": "The ICAO 24-bit address of the aircraft. Required."
-                          },
-                          {
-                            "name": "df",
-                            "type": "int",
-                            "doc": "The Downlink Format (DF) of the Mode-S message, indicating the message category. Required."
-                          },
-                          {
-                            "name": "tc",
-                            "type": [
-                              "null",
-                              "int"
-                            ],
-                            "doc": "The Type Code (TC) of the ADS-B message. Present for DF17 and DF18 messages; null otherwise."
-                          },
-                          {
-                            "name": "bcode",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "The BDS (Comm-B Data Selector) code. Present for DF20 and DF21 messages; null otherwise."
-                          },
-                          {
-                            "name": "alt",
-                            "type": [
-                              "null",
-                              "int"
-                            ],
-                            "doc": "Barometric altitude in feet. Present for certain BDS and ADS-B messages; null otherwise."
-                          },
-                          {
-                            "name": "cs",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Aircraft identification (call sign). Present for BDS20 and some ADS-B messages; null otherwise."
-                          },
-                          {
-                            "name": "sq",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Transponder code (Squawk). Present for BDS17 messages; null otherwise."
-                          },
-                          {
-                            "name": "lat",
-                            "type": [
-                              "null",
-                              "double"
-                            ],
-                            "doc": "Latitude in degrees. Present for ADS-B position messages; null otherwise."
-                          },
-                          {
-                            "name": "lon",
-                            "type": [
-                              "null",
-                              "double"
-                            ],
-                            "doc": "Longitude in degrees. Present for ADS-B position messages; null otherwise."
-                          },
-                          {
-                            "name": "spd",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Speed in knots. Present for ADS-B TC19 messages; null otherwise."
-                          },
-                          {
-                            "name": "ang",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Angle in degrees. Present for ADS-B TC19 messages; null otherwise."
-                          },
-                          {
-                            "name": "vr",
-                            "type": [
-                              "null",
-                              "int"
-                            ],
-                            "doc": "Vertical rate in ft/min. Present for ADS-B TC19 messages; null otherwise."
-                          },
-                          {
-                            "name": "spd_type",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Speed type. Present for ADS-B TC19 messages; null otherwise."
-                          },
-                          {
-                            "name": "dir_src",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Direction source. Present for ADS-B TC19 messages; null otherwise."
-                          },
-                          {
-                            "name": "vr_src",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Vertical rate source. Present for ADS-B TC19 messages; null otherwise."
-                          },
-                          {
-                            "name": "ws",
-                            "type": [
-                              "null",
-                              "int"
-                            ],
-                            "doc": "Wind speed in knots. Present for BDS44 messages; null otherwise."
-                          },
-                          {
-                            "name": "wd",
-                            "type": [
-                              "null",
-                              "int"
-                            ],
-                            "doc": "Wind direction in degrees. Present for BDS44 messages; null otherwise."
-                          },
-                          {
-                            "name": "at",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Air temperature in degrees Celsius. Present for BDS44/BDS45 messages; null otherwise."
-                          },
-                          {
-                            "name": "ap",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Air pressure in hPa. Present for BDS44/BDS45 messages; null otherwise."
-                          },
-                          {
-                            "name": "hm",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Relative humidity in percentage. Present for BDS44 messages; null otherwise."
-                          },
-                          {
-                            "name": "roll",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Aircraft roll angle in degrees. Present for BDS50 messages; null otherwise."
-                          },
-                          {
-                            "name": "trak",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "True track angle in degrees. Present for BDS50 messages; null otherwise."
-                          },
-                          {
-                            "name": "gs",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Ground speed in knots. Present for BDS50 messages; null otherwise."
-                          },
-                          {
-                            "name": "tas",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "True airspeed in knots. Present for BDS50 messages; null otherwise."
-                          },
-                          {
-                            "name": "hd",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Aircraft heading in degrees. Present for BDS60 messages; null otherwise."
-                          },
-                          {
-                            "name": "ias",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Indicated airspeed in knots. Present for BDS60 messages; null otherwise."
-                          },
-                          {
-                            "name": "m",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Mach number. Present for BDS60 messages; null otherwise."
-                          },
-                          {
-                            "name": "vrb",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Vertical rate based on barometric altitude in ft/min. Present for BDS60 messages; null otherwise."
-                          },
-                          {
-                            "name": "vri",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Vertical rate based on inertial navigation system in ft/min. Present for BDS60 messages; null otherwise."
-                          },
-                          {
-                            "name": "rssi",
-                            "type": [
-                              "null",
-                              "float"
-                            ],
-                            "doc": "Received Signal Strength Indicator in dBFS. Present for all messages if available; null otherwise."
-                          },
-                          {
-                            "name": "emst",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Emergency or priority status. Present for ADS-B TC28; null otherwise."
-                          },
-                          {
-                            "name": "tgt",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Target state info. Present for certain BDS6,2 or ADS-B TC29; null otherwise."
-                          },
-                          {
-                            "name": "opst",
-                            "type": [
-                              "null",
-                              "string"
-                            ],
-                            "doc": "Operational status info. Present for certain BDS6,5 or ADS-B TC31; null otherwise."
-                          }
-                        ]
-                      }
-                    },
-                    "doc": "An array of Mode-S and ADS-B decoded message records."
+                    "name": "icao24",
+                    "type": "string",
+                    "doc": "ICAO 24-bit address (lowercase hex)."
+                  },
+                  {
+                    "name": "receiver_id",
+                    "type": "string",
+                    "doc": "Stable identifier of the receiver/station that decoded this message."
+                  },
+                  {
+                    "name": "msg_type",
+                    "type": "string",
+                    "doc": "Kebab-case Mode-S downlink-format family literal (df17-adsb, df4-altitude, df5-identity, df11-acquisition, df20-comm-b, df21-comm-b)."
+                  },
+                  {
+                    "name": "ts",
+                    "type": "long",
+                    "doc": "Reception timestamp (epoch millis)."
+                  },
+                  {
+                    "name": "df",
+                    "type": "int",
+                    "doc": "Downlink Format value."
+                  },
+                  {
+                    "name": "tc",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Type Code (ADS-B only).",
+                    "default": null
+                  },
+                  {
+                    "name": "bcode",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "BDS code (Comm-B only).",
+                    "default": null
+                  },
+                  {
+                    "name": "alt",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Barometric altitude (ft).",
+                    "default": null
+                  },
+                  {
+                    "name": "cs",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Aircraft callsign.",
+                    "default": null
+                  },
+                  {
+                    "name": "sq",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Squawk code.",
+                    "default": null
+                  },
+                  {
+                    "name": "lat",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude (deg).",
+                    "default": null
+                  },
+                  {
+                    "name": "lon",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude (deg).",
+                    "default": null
+                  },
+                  {
+                    "name": "spd",
+                    "type": [
+                      "null",
+                      "float"
+                    ],
+                    "doc": "Speed (kn).",
+                    "default": null
+                  },
+                  {
+                    "name": "ang",
+                    "type": [
+                      "null",
+                      "float"
+                    ],
+                    "doc": "Heading angle (deg).",
+                    "default": null
+                  },
+                  {
+                    "name": "vr",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Vertical rate (ft/min).",
+                    "default": null
+                  },
+                  {
+                    "name": "rssi",
+                    "type": [
+                      "null",
+                      "float"
+                    ],
+                    "doc": "RSSI (dBFS).",
+                    "default": null
                   }
                 ]
-              },
-              "createdat": "2025-01-21T15:56:25.342878",
-              "epoch": 0,
-              "modifiedat": "2025-01-21T15:56:25.342878"
+              }
             }
           }
         }

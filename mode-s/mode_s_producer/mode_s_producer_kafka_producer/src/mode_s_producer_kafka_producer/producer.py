@@ -7,7 +7,7 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
-from mode_s_producer_data import Messages
+from mode_s_producer_data import Record
 
 class ModeSEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -40,25 +40,207 @@ class ModeSEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_mode_s_messages(self,_feedurl : str, _stationid : str, data: Messages, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Messages], str]=None) -> None:
+    def send_mode_s_adsb(self,_feedurl : str, _icao24 : str, _receiver_id : str, _stationid: str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
         """
-        Sends the 'Mode_S.Messages' event to the Kafka topic
+        Sends the 'Mode_S.ADSB' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
-            _stationid(str):  Value for placeholder stationid in attribute subject
-            data: (Messages): The event data to be sent
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            _stationid(str): Value for Kafka key placeholder 'stationid'
+            data: (Record): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Messages], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{stationid}'
         """
         kafka_key = "{stationid}".format(stationid=_stationid)
         attributes = {
              "specversion":"1.0",
-             "type":"Mode_S.Messages",
+             "type":"Mode_S.ADSB",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"{stationid}".format(stationid = _stationid)
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_altitude_reply(self,_feedurl : str, _icao24 : str, _receiver_id : str, _stationid: str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.AltitudeReply' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            _stationid(str): Value for Kafka key placeholder 'stationid'
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{stationid}'
+        """
+        kafka_key = "{stationid}".format(stationid=_stationid)
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.AltitudeReply",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_identity_reply(self,_feedurl : str, _icao24 : str, _receiver_id : str, _stationid: str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.IdentityReply' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            _stationid(str): Value for Kafka key placeholder 'stationid'
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{stationid}'
+        """
+        kafka_key = "{stationid}".format(stationid=_stationid)
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.IdentityReply",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_acquisition_reply(self,_feedurl : str, _icao24 : str, _receiver_id : str, _stationid: str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.AcquisitionReply' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            _stationid(str): Value for Kafka key placeholder 'stationid'
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{stationid}'
+        """
+        kafka_key = "{stationid}".format(stationid=_stationid)
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.AcquisitionReply",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_comm_baltitude(self,_feedurl : str, _icao24 : str, _receiver_id : str, _stationid: str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.CommBAltitude' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            _stationid(str): Value for Kafka key placeholder 'stationid'
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{stationid}'
+        """
+        kafka_key = "{stationid}".format(stationid=_stationid)
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.CommBAltitude",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_comm_bidentity(self,_feedurl : str, _icao24 : str, _receiver_id : str, _stationid: str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.CommBIdentity' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            _stationid(str): Value for Kafka key placeholder 'stationid'
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{stationid}'
+        """
+        kafka_key = "{stationid}".format(stationid=_stationid)
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.CommBIdentity",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -105,6 +287,292 @@ class ModeSEventProducer:
 
     @classmethod
     def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'ModeSEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class ModeSMqttEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_mode_s_adsb_mqtt(self,_feedurl : str, _icao24 : str, _receiver_id : str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.ADSB.mqtt' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.ADSB",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_altitude_reply_mqtt(self,_feedurl : str, _icao24 : str, _receiver_id : str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.AltitudeReply.mqtt' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.AltitudeReply",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_identity_reply_mqtt(self,_feedurl : str, _icao24 : str, _receiver_id : str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.IdentityReply.mqtt' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.IdentityReply",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_acquisition_reply_mqtt(self,_feedurl : str, _icao24 : str, _receiver_id : str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.AcquisitionReply.mqtt' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.AcquisitionReply",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_comm_baltitude_mqtt(self,_feedurl : str, _icao24 : str, _receiver_id : str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.CommBAltitude.mqtt' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.CommBAltitude",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_mode_s_comm_bidentity_mqtt(self,_feedurl : str, _icao24 : str, _receiver_id : str, data: Record, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Record], str]=None) -> None:
+        """
+        Sends the 'Mode_S.CommBIdentity.mqtt' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _icao24(str):  Value for placeholder icao24 in attribute subject
+            _receiver_id(str):  Value for placeholder receiver_id in attribute subject
+            data: (Record): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Record], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "specversion":"1.0",
+             "type":"Mode_S.CommBIdentity",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{icao24}/{receiver_id}".format(icao24 = _icao24,receiver_id = _receiver_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'ModeSMqttEventProducer':
         """
         Create a Kafka producer from a connection string and a topic name.
 

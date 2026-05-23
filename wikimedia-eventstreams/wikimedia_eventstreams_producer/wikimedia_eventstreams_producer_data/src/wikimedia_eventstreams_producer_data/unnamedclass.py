@@ -167,13 +167,13 @@ class UnnamedClass:
             An instance of the dataclass.
         """
         return cls(
-            uri='qbgfyvehiobloiqttpvp',
-            request_id='hqprkwdjeidxtebyldqn',
-            id='idorwljhlaycdnyqabrt',
-            domain='znzqjodpgomhmvwoznpb',
-            stream='vrpmhvymroiheaxjvrry',
-            topic='hatxfnsupttibrbbrbvg',
-            partition=int(94),
-            offset='dxgwauryznzpiehmxuli',
-            dt='zpmaxxwygkfhvvtysdow'
+            uri='lwbytxedscgvejauouuq',
+            request_id='vontbjjrdlxtbhnnyzhg',
+            id='cjstojfihxlnybzpmjut',
+            domain='ucnwmpahacjoijxfmmzi',
+            stream='uzobieioolwtgauhtego',
+            topic='xuraotbirtlsfbvoxboh',
+            partition=int(44),
+            offset='bkcjfdjonjijfytiafjw',
+            dt='yhuxlkwycdpiekacrgqu'
         )

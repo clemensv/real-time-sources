@@ -145,4 +145,4 @@ configured.
 
 ## MQTT 5.0 / UNS feeder
 
-A sibling container (`Dockerfile.mqtt`) republishes the EventStreams `recentchange` feed into an MQTT 5.0 broker on a Unified-Namespace topic tree: `social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change`. The MediaWiki numeric namespace is mapped to a stable kebab-case bucket (`main`, `talk`, `file`, `category`, …; unknown values → `ns-<n>`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).
+A sibling container (`Dockerfile.mqtt`) republishes the EventStreams `recentchange` feed into an MQTT 5.0 broker on a Unified-Namespace topic tree: `social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change`. The MediaWiki numeric namespace is mapped to a stable kebab-case bucket (`main`, `talk`, `file`, `category`, …; unknown values → `ns-<n>`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).

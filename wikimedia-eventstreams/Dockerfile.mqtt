@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/wikimedia-eventstreams"
 LABEL org.opencontainers.image.title="Wikimedia EventStreams firehose → MQTT/UNS bridge"
-LABEL org.opencontainers.image.description="Subscribes to the public Wikimedia EventStreams recentchange SSE feed, normalizes each event and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change). Non-retained, QoS 0."
+LABEL org.opencontainers.image.description="Subscribes to the public Wikimedia EventStreams recentchange SSE feed, normalizes each event and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change). Non-retained, QoS 0."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/wikimedia-eventstreams/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 

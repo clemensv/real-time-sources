@@ -66,7 +66,7 @@ async def test_mode_s_mqtt_mode_s_adsb_mqtt_py(mosquitto_broker):
     async def on_mode_s_adsb_mqtt(mqtt_msg, cloud_event, data: mode_s_mqtt_producer_data.Record, topic_params: dict):
         """Handler for Mode_S.ADSB.mqtt messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "Mode_S.mqtt.ADSB"
+        assert cloud_event['type'] == "Mode_S.ADSB"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -90,6 +90,7 @@ async def test_mode_s_mqtt_mode_s_adsb_mqtt_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
+            receiver_id=f"test_receiver_id_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -132,7 +133,7 @@ async def test_mode_s_mqtt_mode_s_altitude_reply_mqtt_py(mosquitto_broker):
     async def on_mode_s_altitude_reply_mqtt(mqtt_msg, cloud_event, data: mode_s_mqtt_producer_data.Record, topic_params: dict):
         """Handler for Mode_S.AltitudeReply.mqtt messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "Mode_S.mqtt.AltitudeReply"
+        assert cloud_event['type'] == "Mode_S.AltitudeReply"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -156,6 +157,7 @@ async def test_mode_s_mqtt_mode_s_altitude_reply_mqtt_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
+            receiver_id=f"test_receiver_id_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -198,7 +200,7 @@ async def test_mode_s_mqtt_mode_s_identity_reply_mqtt_py(mosquitto_broker):
     async def on_mode_s_identity_reply_mqtt(mqtt_msg, cloud_event, data: mode_s_mqtt_producer_data.Record, topic_params: dict):
         """Handler for Mode_S.IdentityReply.mqtt messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "Mode_S.mqtt.IdentityReply"
+        assert cloud_event['type'] == "Mode_S.IdentityReply"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -222,6 +224,7 @@ async def test_mode_s_mqtt_mode_s_identity_reply_mqtt_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
+            receiver_id=f"test_receiver_id_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -264,7 +267,7 @@ async def test_mode_s_mqtt_mode_s_acquisition_reply_mqtt_py(mosquitto_broker):
     async def on_mode_s_acquisition_reply_mqtt(mqtt_msg, cloud_event, data: mode_s_mqtt_producer_data.Record, topic_params: dict):
         """Handler for Mode_S.AcquisitionReply.mqtt messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "Mode_S.mqtt.AcquisitionReply"
+        assert cloud_event['type'] == "Mode_S.AcquisitionReply"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -288,6 +291,7 @@ async def test_mode_s_mqtt_mode_s_acquisition_reply_mqtt_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
+            receiver_id=f"test_receiver_id_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -330,7 +334,7 @@ async def test_mode_s_mqtt_mode_s_comm_baltitude_mqtt_py(mosquitto_broker):
     async def on_mode_s_comm_baltitude_mqtt(mqtt_msg, cloud_event, data: mode_s_mqtt_producer_data.Record, topic_params: dict):
         """Handler for Mode_S.CommBAltitude.mqtt messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "Mode_S.mqtt.CommBAltitude"
+        assert cloud_event['type'] == "Mode_S.CommBAltitude"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -354,6 +358,7 @@ async def test_mode_s_mqtt_mode_s_comm_baltitude_mqtt_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
+            receiver_id=f"test_receiver_id_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -396,7 +401,7 @@ async def test_mode_s_mqtt_mode_s_comm_bidentity_mqtt_py(mosquitto_broker):
     async def on_mode_s_comm_bidentity_mqtt(mqtt_msg, cloud_event, data: mode_s_mqtt_producer_data.Record, topic_params: dict):
         """Handler for Mode_S.CommBIdentity.mqtt messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "Mode_S.mqtt.CommBIdentity"
+        assert cloud_event['type'] == "Mode_S.CommBIdentity"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -420,6 +425,7 @@ async def test_mode_s_mqtt_mode_s_comm_bidentity_mqtt_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
+            receiver_id=f"test_receiver_id_{i}",
             data=test_data,
             content_type="application/json"
         )
