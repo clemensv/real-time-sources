@@ -3,6 +3,10 @@
 Aggregates water level and discharge data from German state open data portals and
 emits CloudEvents to Kafka endpoints (Event Hubs, Fabric Event Streams, etc.).
 
+An **MQTT/UNS feeder** (`ghcr.io/clemensv/real-time-sources-german-waters-mqtt:latest`)
+publishes the same data as retained QoS-1 CloudEvents under
+`hydro/de/wsv/german-waters/{water_body}/{station_id}/{info|water-level}`.
+
 This bridge pulls data exclusively from **official government open data sources** —
 no commercial aggregators.
 
