@@ -394,6 +394,11 @@
                     "type": "string"
                   },
                   {
+                    "name": "water_body",
+                    "type": "string",
+                    "doc": "Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string."
+                  },
+                  {
                     "name": "water_level",
                     "type": [
                       "null",

@@ -1,4 +1,6 @@
-# Table of Contents
+# German Waters Hydrology Bridge Events
+
+Events emitted by the German Waters hydrology bridge.
 
 - [DE.Waters.Hydrology](#message-group-dewatershydrology)
   - [DE.Waters.Hydrology.Station](#message-dewatershydrologystation)
