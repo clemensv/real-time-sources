@@ -82,3 +82,25 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fblitzortung%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / UNS feeder
+
+In addition to the Kafka producer, a non-retained MQTT 5.0 feeder
+publishes the Blitzortung lightning firehose into a Unified-Namespace
+topic tree:
+
+```
+weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke
+```
+
+The MQTT contract uses a separate schemagroup
+(`Blitzortung.Lightning.mqtt.jstruct`) with one event family
+(`LightningStroke`) carrying the spatial routing axes (`geohash5`,
+`geohash7`) as required fields. The existing Kafka contract is
+untouched. QoS 0, `retain=false`. CloudEvents binary mode; CE attributes
+ride as MQTT 5 user properties; `subject` is
+`{geohash5}/{geohash7}/{stroke_id}`.
+
+See `CONTAINER.md` for the container image, environment variables, and
+wildcard subscription patterns.

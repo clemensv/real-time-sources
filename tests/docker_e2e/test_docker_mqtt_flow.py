@@ -1135,3 +1135,435 @@ class TestAisstreamMqttDockerFlow:
 
 
 
+
+
+# ---------------------------------------------------------------------------
+# Kystverket AIS -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_kystverket_ais_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
+    """Return ``{type_value: jstruct_schema}`` for all 3 kystverket-ais MQTT families."""
+    xreg_path = os.path.join(REPO_ROOT, 'kystverket-ais', 'xreg', 'ais.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemagroup = manifest['schemagroups']['NO.Kystverket.AIS.mqtt.jstruct']
+    out: Dict[str, Dict[str, Any]] = {}
+    for full_name, schema in schemagroup['schemas'].items():
+        out[full_name] = schema['versions']['1']['schema']
+    return out
+
+
+@pytest.fixture(scope='module')
+def kystverket_ais_mqtt_image():
+    return build_image('kystverket-ais', dockerfile='Dockerfile.mqtt', tag='test-kystverket-ais-mqtt')
+
+
+@pytest.fixture()
+def kystverket_ais_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('kystverket-ais-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='kystverket-ais-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'kystverket-ais-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestKystverketAisMqttDockerFlow:
+    """Verify the kystverket-ais-mqtt container publishes a valid AIS UNS tree.
+
+    Like aisstream, Kystverket AIS is a non-retained firehose. Subscriber
+    attaches first, then the feeder runs in ``--mock`` mode and emits one
+    synthetic event per family (static, position-report, aid-to-navigation).
+    """
+
+    def test_emits_non_retained_ais_firehose_topics(
+            self, kystverket_ais_mosquitto_container, kystverket_ais_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{kystverket_ais_mosquitto_container['internal_host']}:"
+            f"{kystverket_ais_mosquitto_container['internal_port']}"
+        )
+
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('maritime/no/kystverket/#', qos=0)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', kystverket_ais_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            kystverket_ais_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=kystverket_ais_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'KYSTVERKET_AIS_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No Kystverket AIS firehose messages received from broker'
+
+        expected_event_types = {
+            'NO.Kystverket.AIS.mqtt.ShipStatic',
+            'NO.Kystverket.AIS.mqtt.PositionReport',
+            'NO.Kystverket.AIS.mqtt.AidToNavigation',
+        }
+        observed_types = {m['user_properties'].get('type') for m in collected}
+        missing = expected_event_types - observed_types
+        assert not missing, (
+            f"Missing Kystverket AIS event families: {missing} ; "
+            f"observed={sorted(t for t in observed_types if t)}"
+        )
+
+        # Topic: maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attr {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+
+            parts = sample['topic'].split('/')
+            assert len(parts) == 9, (
+                f"unexpected Kystverket AIS topic depth {len(parts)} for {sample['topic']}"
+            )
+            assert parts[0:4] == ['maritime', 'no', 'kystverket', 'kystverket-ais'], parts
+            flag_seg, ship_type_seg, geohash5_seg, mmsi_seg, msg_type_seg = parts[4:9]
+            assert len(flag_seg) == 2, parts
+            assert len(geohash5_seg) == 5, parts
+            assert mmsi_seg.isdigit() and len(mmsi_seg) == 9, parts
+            assert msg_type_seg in {'position-report', 'static', 'aid-to-navigation'}, parts
+            assert up['subject'] == mmsi_seg, (up['subject'], mmsi_seg)
+
+        schemas = _load_kystverket_ais_mqtt_schemas()
+
+        def _to_dict(p):
+            if isinstance(p, dict):
+                return p
+            if isinstance(p, str):
+                try:
+                    parsed = json.loads(p)
+                    return parsed if isinstance(parsed, dict) else None
+                except json.JSONDecodeError:
+                    return None
+            return None
+
+        for sample in collected:
+            ce_type = sample['user_properties'].get('type')
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, (
+                f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            )
+            for axis in ('mmsi', 'flag', 'ship_type', 'geohash5', 'msg_type'):
+                assert axis in payload, (
+                    f"missing axis {axis} in payload for {sample['topic']}: {payload}"
+                )
+            parts = sample['topic'].split('/')
+            assert parts[4] == payload['flag'], (parts[4], payload['flag'])
+            assert parts[5] == payload['ship_type'], (parts[5], payload['ship_type'])
+            assert parts[6] == payload['geohash5'], (parts[6], payload['geohash5'])
+            assert parts[7] == payload['mmsi'], (parts[7], payload['mmsi'])
+            assert parts[8] == payload['msg_type'], (parts[8], payload['msg_type'])
+            assert ce_type in schemas, f"unknown ce_type {ce_type}"
+
+        # Verify ship_type cache mechanic: the position-report inherits the
+        # ship-type bucket published earlier by ShipStatic for the same MMSI
+        # ('cargo' in our mock corpus, MID 257 -> Norway).
+        static_msgs = [m for m in collected
+                       if m['user_properties'].get('type') == 'NO.Kystverket.AIS.mqtt.ShipStatic']
+        pos_msgs = [m for m in collected
+                    if m['user_properties'].get('type') == 'NO.Kystverket.AIS.mqtt.PositionReport']
+        assert static_msgs and pos_msgs
+        static_payload = _to_dict(static_msgs[0]['payload'])
+        pos_payload = _to_dict(pos_msgs[0]['payload'])
+        assert static_payload['ship_type'] == 'cargo'
+        assert pos_payload['ship_type'] == 'cargo', (
+            f"position-report should inherit ship_type from cached ShipStatic; "
+            f"got {pos_payload['ship_type']!r}"
+        )
+        assert pos_payload['flag'] == 'no'  # MID 257 -> Norway
+
+# ---------------------------------------------------------------------------
+# Blitzortung -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_blitzortung_mqtt_schemas():
+    xreg_path = os.path.join(REPO_ROOT, 'blitzortung', 'xreg', 'blitzortung.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemagroup = manifest['schemagroups']['Blitzortung.Lightning.mqtt.jstruct']
+    out = {}
+    for full_name, schema in schemagroup['schemas'].items():
+        out[full_name] = schema['versions']['1']['schema']
+    return out
+
+
+@pytest.fixture(scope='module')
+def blitzortung_mqtt_image():
+    return build_image('blitzortung', dockerfile='Dockerfile.mqtt', tag='test-blitzortung-mqtt')
+
+
+@pytest.fixture()
+def blitzortung_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('blitzortung-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='blitzortung-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'blitzortung-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestBlitzortungMqttDockerFlow:
+    '''Verify the blitzortung-mqtt container publishes a valid lightning UNS tree.'''
+
+    def test_emits_non_retained_lightning_firehose_topics(self, blitzortung_mosquitto_container, blitzortung_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{blitzortung_mosquitto_container['internal_host']}:"
+            f"{blitzortung_mosquitto_container['internal_port']}"
+        )
+
+        collected = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('weather/intl/blitzortung/#', qos=0)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', blitzortung_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            blitzortung_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=blitzortung_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'BLITZORTUNG_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No Blitzortung firehose messages received from broker'
+
+        schemas = _load_blitzortung_mqtt_schemas()
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attr {required} on {sample['topic']}: {up}"
+            assert up['type'] == 'Blitzortung.Lightning.mqtt.LightningStroke', up
+            assert up.get('_contenttype') == 'application/json', sample
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+
+            parts = sample['topic'].split('/')
+            assert len(parts) == 8, f"unexpected topic depth {len(parts)} for {sample['topic']}"
+            assert parts[0:4] == ['weather', 'intl', 'blitzortung', 'blitzortung'], parts
+            geohash5_seg, geohash7_seg, stroke_id_seg, leaf_seg = parts[4:8]
+            assert len(geohash5_seg) == 5, parts
+            assert len(geohash7_seg) == 7, parts
+            assert geohash7_seg.startswith(geohash5_seg), (geohash5_seg, geohash7_seg)
+            assert stroke_id_seg, parts
+            assert leaf_seg == 'stroke', parts
+            expected_subject = f"{geohash5_seg}/{geohash7_seg}/{stroke_id_seg}"
+            assert up['subject'] == expected_subject, (up['subject'], expected_subject)
+
+            payload = sample['payload']
+            assert isinstance(payload, dict), f"payload not a dict: {payload!r}"
+            for axis in ('geohash5', 'geohash7', 'stroke_id', 'latitude', 'longitude', 'event_time', 'event_timestamp_ms'):
+                assert axis in payload, f"missing axis {axis} in payload for {sample['topic']}: {payload}"
+            assert payload['geohash5'] == geohash5_seg
+            assert payload['geohash7'] == geohash7_seg
+            assert str(payload['stroke_id']) == stroke_id_seg
+            assert up['type'] in schemas

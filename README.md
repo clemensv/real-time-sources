@@ -20,9 +20,11 @@ required connection information.
 
 ## Deployment models
 
-> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Two sources —
-> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**
-> and **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**
+> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Four sources —
+> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
+> **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
+> **[Kystverket AIS](kystverket-ais/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
+> and **[Blitzortung](blitzortung/CONTAINER.md#mqtt-50--unified-namespace-feeder)**
 > — now ship a second container image (`Dockerfile.mqtt`) that publishes
 > the same firehose into an MQTT 5.0 broker on a non-retained UNS topic
 > tree (QoS 0, `retain=false`, CloudEvents binary binding). The Kafka

@@ -2,6 +2,9 @@
   "_comment": "Authoritative matrix for .github/workflows/test-docker-e2e.yml. The discover job filters this list against changed paths so per-feeder PRs run only the affected feeder's job. Infra changes (tests/docker_e2e/**, .github/workflows/test-docker-e2e.yml, tools/**, this file) force the full matrix.",
   "build": [
     { "dir": "blitzortung", "module": "blitzortung" },
+    { "dir": "blitzortung", "image": "blitzortung-mqtt", "file": "Dockerfile.mqtt", "module": "blitzortung_mqtt" },
+    { "dir": "kystverket-ais", "module": "kystverket_ais" },
+    { "dir": "kystverket-ais", "image": "kystverket-ais-mqtt", "file": "Dockerfile.mqtt", "module": "kystverket_ais_mqtt" },
     { "dir": "bluesky", "module": "bluesky" },
     { "dir": "bluesky", "image": "bluesky-mqtt", "file": "Dockerfile.mqtt", "module": "bluesky_mqtt" },
     { "dir": "aisstream", "image": "aisstream-kafka", "file": "Dockerfile", "module": "aisstream" },
@@ -49,6 +52,8 @@
   ],
   "flow": [
     { "dir": "blitzortung", "test_class": "TestBlitzortungDockerFlow" },
+    { "dir": "blitzortung", "image": "blitzortung-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestBlitzortungMqttDockerFlow" },
+    { "dir": "kystverket-ais", "image": "kystverket-ais-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestKystverketAisMqttDockerFlow" },
     { "dir": "canada-aqhi", "test_class": "TestCanadaAQHIDockerFlow" },
     { "dir": "chmi-hydro", "test_class": "TestCHMIHydroDockerFlow" },
     { "dir": "chmi-hydro", "image": "chmi-hydro-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestCHMIHydroMqttDockerFlow" },

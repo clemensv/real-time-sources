@@ -101,3 +101,63 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fblitzortung%2Fazure-template-with-eventhub.json)
+
+
+---
+
+## MQTT 5.0 / Unified-Namespace feeder
+
+A second container image, built from `Dockerfile.mqtt`, publishes the
+Blitzortung lightning firehose into an MQTT 5.0 broker using a
+Unified-Namespace topic tree. The Kafka image and the existing Kafka
+contract are **unchanged**; the MQTT sibling reuses the same
+`LightningStroke` event family extended with `geohash5`/`geohash7`
+spatial routing axes derived in the bridge from the upstream
+latitude/longitude.
+
+### Topic template
+
+```
+weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke
+```
+
+| Axis | Meaning |
+|------|---------|
+| `{geohash5}` | 5-character geohash (~5 km cell) of the strike position |
+| `{geohash7}` | 7-character geohash (~150 m cell) of the strike position |
+| `{stroke_id}` | Upstream stroke identifier, stringified |
+| `stroke` | Literal leaf for the single event family |
+
+The firehose is non-retained: every publish is **QoS 0** with
+`retain=false`. CloudEvents binary binding (attributes as MQTT 5 user
+properties); `ContentType` is `application/json`; `subject` is
+`{geohash5}/{geohash7}/{stroke_id}`.
+
+### Pull & run
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources/blitzortung-mqtt:latest
+
+docker run --rm \
+  -e MQTT_BROKER_URL=mqtt://broker:1883 \
+  ghcr.io/clemensv/real-time-sources/blitzortung-mqtt:latest
+```
+
+### Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `MQTT_BROKER_URL` | `mqtt://host:port` or `mqtts://host:port` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional broker credentials |
+| `MQTT_ENABLE_TLS` | `true` to force TLS (auto if scheme is `mqtts://`) |
+| `MQTT_CLIENT_ID` | Optional MQTT client id |
+| `BLITZORTUNG_MOCK` | `true` to emit one canned synthetic stroke and exit (used by Docker E2E) |
+
+### Wildcard subscription examples
+
+| Goal | Subscribe |
+|------|-----------|
+| Every lightning stroke worldwide | `weather/intl/blitzortung/#` |
+| Strokes in the `u0yje` 5-char cell (~Frankfurt) | `weather/intl/blitzortung/blitzortung/u0yje/+/+/stroke` |
+| Strokes in a specific 7-char cell `u0yjeyu` | `weather/intl/blitzortung/blitzortung/u0yje/u0yjeyu/+/stroke` |
+| Strokes across all of central Europe via the `u` prefix | `weather/intl/blitzortung/blitzortung/u+/+/+/stroke` (note: MQTT wildcards do not support prefix matching; instead subscribe to `weather/intl/blitzortung/#` and filter client-side) |
