@@ -45,6 +45,7 @@ const SOURCES = [
   { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", notebook: true },
   { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings" },
   { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true },
+  { id: "noaa-swpc-l1", name: "NOAA SWPC L1", cat: "Weather", key: false, desc: "Global — L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", notebook: true },
   { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov" },
   { id: "nws-forecasts", name: "NWS Forecast Zones", cat: "Weather", key: false, desc: "United States — configurable land and marine forecast zones", notebook: true },
