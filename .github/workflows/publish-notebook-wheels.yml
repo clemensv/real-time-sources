@@ -40,7 +40,20 @@ jobs:
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json, pathlib
           catalog = json.loads(pathlib.Path('catalog.json').read_text(encoding='utf-8'))
-          ids = [c['id'] for c in catalog if c.get('notebook')]
+          ids = []
+          skipped = []
+          for c in catalog:
+              if not c.get('notebook'):
+                  continue
+              sid = c['id']
+              # Some catalog entries are forward-looking and have no source
+              # directory checked in yet. Skip them so the matrix doesn't fail.
+              if not pathlib.Path(sid).is_dir():
+                  skipped.append(sid)
+                  continue
+              ids.append(sid)
+          if skipped:
+              print(f"# skipped (no source dir yet): {skipped}")
           print(f"sources={json.dumps(ids)}")
           print(f"count={len(ids)}")
           PY
