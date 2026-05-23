@@ -1,99 +1,460 @@
 {
   "_comment": "Authoritative matrix for .github/workflows/test-docker-e2e.yml. The discover job filters this list against changed paths so per-feeder PRs run only the affected feeder's job. Infra changes (tests/docker_e2e/**, .github/workflows/test-docker-e2e.yml, tools/**, this file) force the full matrix.",
   "build": [
-    { "dir": "blitzortung", "module": "blitzortung" },
-    { "dir": "bluesky", "module": "bluesky" },
-    { "dir": "bluesky", "image": "bluesky-mqtt", "file": "Dockerfile.mqtt", "module": "bluesky_mqtt" },
-    { "dir": "aisstream", "image": "aisstream-kafka", "file": "Dockerfile", "module": "aisstream" },
-    { "dir": "aisstream", "image": "aisstream-mqtt", "file": "Dockerfile.mqtt", "module": "aisstream_mqtt" },
-    { "dir": "bfs-odl", "module": "bfs_odl" },
-    { "dir": "bfs-odl", "image": "bfs-odl-mqtt", "file": "Dockerfile.mqtt", "module": "bfs_odl_mqtt" },
-    { "dir": "canada-aqhi", "module": "canada_aqhi" },
-    { "dir": "chmi-hydro", "module": "chmi_hydro" },
-    { "dir": "chmi-hydro", "image": "chmi-hydro-mqtt", "file": "Dockerfile.mqtt", "module": "chmi_hydro_mqtt" },
-    { "dir": "bafu-hydro", "image": "bafu-hydro-mqtt", "file": "Dockerfile.mqtt", "module": "bafu_hydro_mqtt" },
-    { "dir": "nve-hydro", "image": "nve-hydro-mqtt", "file": "Dockerfile.mqtt", "module": "nve_hydro_mqtt" },
-    { "dir": "wallonia-issep", "image": "wallonia-issep-mqtt", "file": "Dockerfile.mqtt", "module": "wallonia_issep_mqtt" },
-    { "dir": "german-waters", "image": "german-waters-mqtt", "file": "Dockerfile.mqtt", "module": "german_waters_mqtt" },
-    { "dir": "defra-aurn", "module": "defra_aurn" },
-    { "dir": "epa-uv", "module": "epa_uv" },
-    { "dir": "fienta", "module": "fienta" },
-    { "dir": "fmi-finland", "module": "fmi_finland" },
-    { "dir": "hongkong-epd", "module": "hongkong_epd" },
-    { "dir": "hongkong-epd", "image": "hongkong-epd-mqtt", "file": "Dockerfile.mqtt", "module": "hongkong_epd_mqtt" },
-    { "dir": "irail", "module": "irail" },
-    { "dir": "irceline-belgium", "module": "irceline_belgium" },
-    { "dir": "gtfs", "module": "gtfs_rt_bridge" },
-    { "dir": "hubeau-hydrometrie", "module": "hubeau_hydrometrie" },
-    { "dir": "imgw-hydro", "module": "imgw_hydro" },
-    { "dir": "king-county-marine", "module": "king_county_marine" },
-    { "dir": "laqn-london", "module": "laqn_london" },
-    { "dir": "luchtmeetnet-nl", "module": "luchtmeetnet_nl" },
-    { "dir": "mode-s", "module": "mode_s_kafka_bridge" },
-    { "dir": "noaa", "module": "noaa" },
-    { "dir": "noaa-goes", "module": "noaa_goes" },
-    { "dir": "noaa-ndbc", "module": "noaa_ndbc" },
-    { "dir": "noaa-nws", "module": "noaa_nws" },
-    { "dir": "pegelonline", "image": "pegelonline-kafka", "file": "Dockerfile.kafka", "module": "pegelonline_kafka" },
-    { "dir": "pegelonline", "image": "pegelonline-mqtt", "file": "Dockerfile.mqtt", "module": "pegelonline_mqtt" },
-    { "dir": "pegelonline", "image": "pegelonline-amqp", "file": "Dockerfile.amqp", "module": "pegelonline_amqp" },
-    { "dir": "rss", "module": "rssbridge" },
-    { "dir": "rws-waterwebservices", "module": "rws_waterwebservices" },
-    { "dir": "seattle-911", "module": "seattle_911" },
-    { "dir": "seattle-street-closures", "module": "seattle_street_closures" },
-    { "dir": "sensor-community", "module": "sensor_community" },
-    { "dir": "smhi-hydro", "module": "smhi_hydro" },
-    { "dir": "smhi-hydro", "image": "smhi-hydro-mqtt", "file": "Dockerfile.mqtt", "module": "smhi_hydro_mqtt" },
-    { "dir": "uk-ea-flood-monitoring", "module": "uk_ea_flood_monitoring" },
-    { "dir": "uba-airdata", "module": "uba_airdata" },
-    { "dir": "usgs-earthquakes", "module": "usgs_earthquakes" },
-    { "dir": "usgs-iv", "module": "usgs_iv" },
-    { "dir": "waterinfo-vmm", "module": "waterinfo_vmm" },
-    { "dir": "wsdot", "module": "wsdot" },
-    { "dir": "wikimedia-osm-diffs", "image": "wikimedia-osm-diffs-mqtt", "file": "Dockerfile.mqtt", "module": "wikimedia_osm_diffs_mqtt" },
-    { "dir": "xceed", "module": "xceed" }
+    {
+      "dir": "blitzortung",
+      "module": "blitzortung"
+    },
+    {
+      "dir": "bluesky",
+      "module": "bluesky"
+    },
+    {
+      "dir": "bluesky",
+      "image": "bluesky-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "bluesky_mqtt"
+    },
+    {
+      "dir": "aisstream",
+      "image": "aisstream-kafka",
+      "file": "Dockerfile",
+      "module": "aisstream"
+    },
+    {
+      "dir": "aisstream",
+      "image": "aisstream-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "aisstream_mqtt"
+    },
+    {
+      "dir": "bfs-odl",
+      "module": "bfs_odl"
+    },
+    {
+      "dir": "canada-aqhi",
+      "module": "canada_aqhi"
+    },
+    {
+      "dir": "chmi-hydro",
+      "module": "chmi_hydro"
+    },
+    {
+      "dir": "chmi-hydro",
+      "image": "chmi-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "chmi_hydro_mqtt"
+    },
+    {
+      "dir": "bafu-hydro",
+      "image": "bafu-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "bafu_hydro_mqtt"
+    },
+    {
+      "dir": "nve-hydro",
+      "image": "nve-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nve_hydro_mqtt"
+    },
+    {
+      "dir": "defra-aurn",
+      "module": "defra_aurn"
+    },
+    {
+      "dir": "epa-uv",
+      "module": "epa_uv"
+    },
+    {
+      "dir": "fienta",
+      "module": "fienta"
+    },
+    {
+      "dir": "fmi-finland",
+      "module": "fmi_finland"
+    },
+    {
+      "dir": "hongkong-epd",
+      "module": "hongkong_epd"
+    },
+    {
+      "dir": "irail",
+      "module": "irail"
+    },
+    {
+      "dir": "irceline-belgium",
+      "module": "irceline_belgium"
+    },
+    {
+      "dir": "gtfs",
+      "module": "gtfs_rt_bridge"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "module": "hubeau_hydrometrie"
+    },
+    {
+      "dir": "imgw-hydro",
+      "module": "imgw_hydro"
+    },
+    {
+      "dir": "king-county-marine",
+      "module": "king_county_marine"
+    },
+    {
+      "dir": "laqn-london",
+      "module": "laqn_london"
+    },
+    {
+      "dir": "luchtmeetnet-nl",
+      "module": "luchtmeetnet_nl"
+    },
+    {
+      "dir": "mode-s",
+      "module": "mode_s_kafka_bridge"
+    },
+    {
+      "dir": "noaa",
+      "module": "noaa"
+    },
+    {
+      "dir": "noaa-goes",
+      "module": "noaa_goes"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "module": "noaa_ndbc"
+    },
+    {
+      "dir": "noaa-nws",
+      "module": "noaa_nws"
+    },
+    {
+      "dir": "pegelonline",
+      "image": "pegelonline-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "pegelonline_kafka"
+    },
+    {
+      "dir": "pegelonline",
+      "image": "pegelonline-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "pegelonline_mqtt"
+    },
+    {
+      "dir": "pegelonline",
+      "image": "pegelonline-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "pegelonline_amqp"
+    },
+    {
+      "dir": "rss",
+      "module": "rssbridge"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "module": "rws_waterwebservices"
+    },
+    {
+      "dir": "seattle-911",
+      "module": "seattle_911"
+    },
+    {
+      "dir": "seattle-street-closures",
+      "module": "seattle_street_closures"
+    },
+    {
+      "dir": "sensor-community",
+      "module": "sensor_community"
+    },
+    {
+      "dir": "smhi-hydro",
+      "module": "smhi_hydro"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "module": "uk_ea_flood_monitoring"
+    },
+    {
+      "dir": "uba-airdata",
+      "module": "uba_airdata"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "module": "usgs_earthquakes"
+    },
+    {
+      "dir": "usgs-iv",
+      "module": "usgs_iv"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "module": "waterinfo_vmm"
+    },
+    {
+      "dir": "wsdot",
+      "module": "wsdot"
+    },
+    {
+      "dir": "xceed",
+      "module": "xceed"
+    },
+    {
+      "dir": "mode-s",
+      "image": "mode-s-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "mode_s_mqtt"
+    },
+    {
+      "dir": "wikimedia-eventstreams",
+      "image": "wikimedia-eventstreams-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "wikimedia_eventstreams_mqtt"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "bfs_odl_mqtt"
+    },
+    {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "wallonia_issep_mqtt"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "german_waters_mqtt"
+    },
+    {
+      "dir": "hongkong-epd",
+      "image": "hongkong-epd-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "hongkong_epd_mqtt"
+    },
+    {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "smhi_hydro_mqtt"
+    },
+    {
+      "dir": "wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "wikimedia_osm_diffs_mqtt"
+    }
   ],
   "flow": [
-    { "dir": "blitzortung", "test_class": "TestBlitzortungDockerFlow" },
-    { "dir": "canada-aqhi", "test_class": "TestCanadaAQHIDockerFlow" },
-    { "dir": "chmi-hydro", "test_class": "TestCHMIHydroDockerFlow" },
-    { "dir": "chmi-hydro", "image": "chmi-hydro-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestCHMIHydroMqttDockerFlow" },
-    { "dir": "bfs-odl", "image": "bfs-odl-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestBfsOdlMqttDockerFlow" },
-    { "dir": "bafu-hydro", "image": "bafu-hydro-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestBafuHydroMqttDockerFlow" },
-    { "dir": "nve-hydro", "image": "nve-hydro-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestNVEHydroMqttDockerFlow" },
-    { "dir": "wallonia-issep", "image": "wallonia-issep-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestWalloniaIssepMqttDockerFlow" },
-    { "dir": "german-waters", "image": "german-waters-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestGermanWatersMqttDockerFlow" },
-    { "dir": "defra-aurn", "test_class": "TestDefraAURNDockerFlow" },
-    { "dir": "epa-uv", "test_class": "TestEPAUVDockerFlow" },
-    { "dir": "fmi-finland", "test_class": "TestFMIFinlandDockerFlow" },
-    { "dir": "fienta", "test_class": "TestFientaDockerFlow" },
-    { "dir": "hongkong-epd", "test_class": "TestHongKongEPDDockerFlow" },
-    { "dir": "hongkong-epd", "image": "hongkong-epd-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestHongkongEpdMqttDockerFlow" },
-    { "dir": "hubeau-hydrometrie", "test_class": "TestHubeauDockerFlow" },
-    { "dir": "imgw-hydro", "test_class": "TestIMGWHydroDockerFlow" },
-    { "dir": "irceline-belgium", "test_class": "TestIrcelineBelgiumDockerFlow" },
-    { "dir": "king-county-marine", "test_class": "TestKingCountyMarineDockerFlow" },
-    { "dir": "laqn-london", "test_class": "TestLAQNLondonDockerFlow" },
-    { "dir": "luchtmeetnet-nl", "test_class": "TestLuchtmeetnetNLDockerFlow" },
-    { "dir": "noaa", "test_class": "TestNOAADockerFlow" },
-    { "dir": "noaa-goes", "test_class": "TestNOAAGoesDockerFlow" },
-    { "dir": "noaa-ndbc", "test_class": "TestNOAANdbcDockerFlow" },
-    { "dir": "noaa-nws", "test_class": "TestNOAANwsDockerFlow" },
-    { "dir": "pegelonline", "image": "pegelonline-kafka", "file": "Dockerfile.kafka", "test_class": "TestPegelonlineDockerFlow" },
-    { "dir": "rws-waterwebservices", "test_class": "TestRWSDockerFlow" },
-    { "dir": "seattle-911", "test_class": "TestSeattle911DockerFlow" },
-    { "dir": "seattle-street-closures", "test_class": "TestSeattleStreetClosuresDockerFlow" },
-    { "dir": "sensor-community", "test_class": "TestSensorCommunityDockerFlow" },
-    { "dir": "smhi-hydro", "test_class": "TestSMHIHydroDockerFlow" },
-    { "dir": "smhi-hydro", "image": "smhi-hydro-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestSmhiHydroMqttDockerFlow" },
-    { "dir": "singapore-nea", "test_class": "TestSingaporeNEAAirQualityDockerFlow" },
-    { "dir": "uba-airdata", "test_class": "TestUBAAirDataDockerFlow" },
-    { "dir": "uk-ea-flood-monitoring", "test_class": "TestUKEADockerFlow" },
-    { "dir": "usgs-earthquakes", "test_class": "TestUSGSEarthquakesDockerFlow" },
-    { "dir": "usgs-iv", "test_class": "TestUSGSIVDockerFlow" },
-    { "dir": "waterinfo-vmm", "test_class": "TestWaterinfoVMMDockerFlow" },
-    { "dir": "wsdot", "test_class": "TestWSDOTDockerFlow" },
-    { "dir": "wikimedia-osm-diffs", "image": "wikimedia-osm-diffs-mqtt", "file": "Dockerfile.mqtt", "test_file": "test_docker_mqtt_flow.py", "test_class": "TestWikimediaOsmDiffsMqttDockerFlow" },
-    { "dir": "xceed", "test_class": "TestXceedDockerFlow" }
+    {
+      "dir": "blitzortung",
+      "test_class": "TestBlitzortungDockerFlow"
+    },
+    {
+      "dir": "canada-aqhi",
+      "test_class": "TestCanadaAQHIDockerFlow"
+    },
+    {
+      "dir": "chmi-hydro",
+      "test_class": "TestCHMIHydroDockerFlow"
+    },
+    {
+      "dir": "chmi-hydro",
+      "image": "chmi-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCHMIHydroMqttDockerFlow"
+    },
+    {
+      "dir": "bafu-hydro",
+      "image": "bafu-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBafuHydroMqttDockerFlow"
+    },
+    {
+      "dir": "nve-hydro",
+      "image": "nve-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNVEHydroMqttDockerFlow"
+    },
+    {
+      "dir": "defra-aurn",
+      "test_class": "TestDefraAURNDockerFlow"
+    },
+    {
+      "dir": "epa-uv",
+      "test_class": "TestEPAUVDockerFlow"
+    },
+    {
+      "dir": "fmi-finland",
+      "test_class": "TestFMIFinlandDockerFlow"
+    },
+    {
+      "dir": "fienta",
+      "test_class": "TestFientaDockerFlow"
+    },
+    {
+      "dir": "hongkong-epd",
+      "test_class": "TestHongKongEPDDockerFlow"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "test_class": "TestHubeauDockerFlow"
+    },
+    {
+      "dir": "imgw-hydro",
+      "test_class": "TestIMGWHydroDockerFlow"
+    },
+    {
+      "dir": "irceline-belgium",
+      "test_class": "TestIrcelineBelgiumDockerFlow"
+    },
+    {
+      "dir": "king-county-marine",
+      "test_class": "TestKingCountyMarineDockerFlow"
+    },
+    {
+      "dir": "laqn-london",
+      "test_class": "TestLAQNLondonDockerFlow"
+    },
+    {
+      "dir": "luchtmeetnet-nl",
+      "test_class": "TestLuchtmeetnetNLDockerFlow"
+    },
+    {
+      "dir": "noaa",
+      "test_class": "TestNOAADockerFlow"
+    },
+    {
+      "dir": "noaa-goes",
+      "test_class": "TestNOAAGoesDockerFlow"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "test_class": "TestNOAANdbcDockerFlow"
+    },
+    {
+      "dir": "noaa-nws",
+      "test_class": "TestNOAANwsDockerFlow"
+    },
+    {
+      "dir": "pegelonline",
+      "image": "pegelonline-kafka",
+      "file": "Dockerfile.kafka",
+      "test_class": "TestPegelonlineDockerFlow"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "test_class": "TestRWSDockerFlow"
+    },
+    {
+      "dir": "seattle-911",
+      "test_class": "TestSeattle911DockerFlow"
+    },
+    {
+      "dir": "seattle-street-closures",
+      "test_class": "TestSeattleStreetClosuresDockerFlow"
+    },
+    {
+      "dir": "sensor-community",
+      "test_class": "TestSensorCommunityDockerFlow"
+    },
+    {
+      "dir": "smhi-hydro",
+      "test_class": "TestSMHIHydroDockerFlow"
+    },
+    {
+      "dir": "singapore-nea",
+      "test_class": "TestSingaporeNEAAirQualityDockerFlow"
+    },
+    {
+      "dir": "uba-airdata",
+      "test_class": "TestUBAAirDataDockerFlow"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "test_class": "TestUKEADockerFlow"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "test_class": "TestUSGSEarthquakesDockerFlow"
+    },
+    {
+      "dir": "usgs-iv",
+      "test_class": "TestUSGSIVDockerFlow"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "test_class": "TestWaterinfoVMMDockerFlow"
+    },
+    {
+      "dir": "wsdot",
+      "test_class": "TestWSDOTDockerFlow"
+    },
+    {
+      "dir": "xceed",
+      "test_class": "TestXceedDockerFlow"
+    },
+    {
+      "dir": "mode-s",
+      "image": "mode-s-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestModeSMqttDockerFlow"
+    },
+    {
+      "dir": "wikimedia-eventstreams",
+      "image": "wikimedia-eventstreams-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWikimediaEventstreamsMqttDockerFlow"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBfsOdlMqttDockerFlow"
+    },
+    {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWalloniaIssepMqttDockerFlow"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGermanWatersMqttDockerFlow"
+    },
+    {
+      "dir": "hongkong-epd",
+      "image": "hongkong-epd-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestHongkongEpdMqttDockerFlow"
+    },
+    {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSmhiHydroMqttDockerFlow"
+    },
+    {
+      "dir": "wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWikimediaOsmDiffsMqttDockerFlow"
+    }
   ]
 }

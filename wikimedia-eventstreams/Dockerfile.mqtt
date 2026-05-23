@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/wikimedia-eventstreams"
+LABEL org.opencontainers.image.title="Wikimedia EventStreams firehose → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Subscribes to the public Wikimedia EventStreams recentchange SSE feed, normalizes each event and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change). Non-retained, QoS 0."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/wikimedia-eventstreams/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./wikimedia_eventstreams_mqtt_producer/wikimedia_eventstreams_mqtt_producer_data \
+ && pip install --no-cache-dir ./wikimedia_eventstreams_mqtt_producer/wikimedia_eventstreams_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./wikimedia_eventstreams_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "wikimedia_eventstreams_mqtt", "feed"]

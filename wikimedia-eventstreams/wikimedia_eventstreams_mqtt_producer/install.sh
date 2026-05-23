@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./wikimedia_eventstreams_mqtt_producer_data
+pip install ./wikimedia_eventstreams_mqtt_producer_mqtt_client

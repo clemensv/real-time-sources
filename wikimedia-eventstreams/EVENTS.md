@@ -1,112 +1,165 @@
-# Wikimedia EventStreams RecentChange Events
+# Wikimedia EventStreams Bridge Events
 
-This document describes the event emitted by the Wikimedia EventStreams
-recentchange bridge.
+Events emitted by the Wikimedia EventStreams bridge.
 
 - [Wikimedia.EventStreams](#message-group-wikimediaeventstreams)
   - [Wikimedia.EventStreams.RecentChange](#message-wikimediaeventstreamsrecentchange)
+- [Wikimedia.EventStreams.mqtt](#message-group-wikimediaeventstreamsmqtt)
+  - [Wikimedia.EventStreams.RecentChange.mqtt](#message-wikimediaeventstreamsrecentchangemqtt)
 
 ---
 
 ## Message Group: Wikimedia.EventStreams
+---
+### Message: Wikimedia.EventStreams.RecentChange
+*Public recentchange events from Wikimedia EventStreams. Each event describes one edit, page creation, log action, categorization change, or related MediaWiki recentchanges entry from across Wikimedia projects.*
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `Wikimedia.EventStreams.RecentChange` |
+| `source` |  | `` | `False` | `https://stream.wikimedia.org/v2/stream/recentchange` |
+| `subject` |  | `uritemplate` | `False` | `{event_id}` |
+| `time` |  | `uritemplate` | `False` | `{event_time}` |
+
+#### Schema:
+##### Object: RecentChange
+*Normalized representation of Wikimedia's mediawiki/recentchange event schema. This contract preserves the documented recentchange payload while renaming the upstream $schema field to schema_uri and serializing the variant log_params field into log_params_json for stable generated types.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `event_id` | *string* | - | `True` | Top-level copy of meta.id so downstream validators and consumers can resolve the CloudEvents subject and Kafka key from the event payload itself. |
+| `event_time` | *string* | - | `True` | Top-level copy of meta.dt in ISO-8601 UTC format so downstream validators and consumers can resolve the CloudEvents time attribute from the payload itself. |
+| `schema_uri` | *string* | - | `True` | URI of the upstream Wikimedia JSON schema from the $schema field on the original event payload. |
+| `meta` | [Object RecentChange.meta](#object-recentchangemeta) | - | `True` | Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details. |
+| `id` | *string* (optional) | - | `False` | MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range. |
+| `type` | *string* | - | `True` | Recentchange type such as edit, new, log, categorize, or external. |
+| `namespace_id` | *integer* | - | `True` | Numeric MediaWiki namespace identifier for the affected page (0 = main, 1 = talk, 6 = file, 14 = category, -1 for special log events). Renamed from ``namespace`` to free that name for the kebab-case bucket that is also used as the {namespace} MQTT topic axis. |
+| `title` | *string* | - | `True` | Affected page title in MediaWiki prefixed text form. |
+| `title_url` | *string* (optional) | - | `False` | Canonical page URL for the affected title when present in the upstream payload. |
+| `comment` | *string* (optional) | - | `False` | Edit or log comment as supplied by the upstream recentchange record. |
+| `timestamp` | *integer* | - | `True` | Unix timestamp derived from the MediaWiki rc_timestamp value. |
+| `user` | *string* | - | `True` | User name or IP address associated with the change. |
+| `bot` | *boolean* (optional) | - | `False` | Whether the recentchange entry was flagged as a bot edit. |
+| `minor` | *boolean* (optional) | - | `False` | Whether the recentchange entry was flagged as a minor change. |
+| `patrolled` | *boolean* (optional) | - | `False` | Whether the recentchange entry had been patrolled when the event was emitted. |
+| `length` | [Object RecentChange.length](#object-recentchangelength) | - | `False` | Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki. |
+| `revision` | [Object RecentChange.revision](#object-recentchangerevision) | - | `False` | Old and new MediaWiki revision identifiers associated with the change. |
+| `server_url` | *string* (optional) | - | `False` | Canonical server URL for the wiki that emitted the event. |
+| `server_name` | *string* (optional) | - | `False` | Server host name of the wiki that emitted the event. |
+| `server_script_path` | *string* (optional) | - | `False` | MediaWiki script path on the emitting wiki. |
+| `wiki` | *string* | - | `True` | Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki. |
+| `namespace` | *string* | - | `True` | Kebab-case bucket label for the MediaWiki namespace (e.g. ``main`` for 0, ``talk`` for 1, ``file`` for 6, ``category`` for 14, ``ns-<n>`` for unrecognised values). Used as the {namespace} MQTT topic segment; subscribers can wildcard per wiki/namespace without parsing the integer id. |
+| `parsedcomment` | *string* (optional) | - | `False` | HTML-parsed form of the recentchange comment when Wikimedia provides it. |
+| `notify_url` | *string* (optional) | - | `False` | URL that points to a diff view or other relevant page for the change. |
+| `log_type` | *string* (optional) | - | `False` | MediaWiki log type for log events, such as move, delete, or patrol. |
+| `log_action` | *string* (optional) | - | `False` | Specific MediaWiki log action name for log events. |
+| `log_action_comment` | *string* (optional) | - | `False` | Additional comment field emitted for some MediaWiki log actions. |
+| `log_id` | *string* (optional) | - | `False` | MediaWiki log identifier associated with the event when the change is a log entry, stringified for stable cross-language handling. |
+| `log_params_json` | *string* (optional) | - | `False` | Serialized form of the upstream log_params field, which may be an object, array, or string in the raw Wikimedia payload. |
 
 ---
+##### Object: RecentChange.meta
+*Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `uri` | *string* | - | `False` | URI of the Wikimedia entity or page the event pertains to, when provided by the upstream stream. |
+| `request_id` | *string* | - | `False` | Unique request identifier assigned by Wikimedia for the request that caused the event. |
+| `id` | *string* | - | `True` | Globally unique Wikimedia event UUID for this recentchange record. |
+| `domain` | *string* | - | `True` | Wikimedia domain the event pertains to, such as www.wikipedia.org or www.wikidata.org. |
+| `stream` | *string* | - | `True` | Name of the upstream EventStreams stream that emitted the event, typically mediawiki.recentchange. |
+| `topic` | *string* | - | `False` | Underlying Wikimedia Kafka topic that carried the event before it was exposed through EventStreams. |
+| `partition` | *integer* | - | `False` | Underlying Kafka partition number from Wikimedia's internal stream metadata. |
+| `offset` | *string* (optional) | - | `False` | Underlying Kafka offset from Wikimedia's internal stream metadata, stringified to avoid range loss across generated languages and validators. |
+| `dt` | *string* | - | `True` | UTC event timestamp in ISO-8601 format from the upstream metadata block. |
 
-### Message: Wikimedia.EventStreams.RecentChange
+---
+##### Object: RecentChange.length
+*Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `old` | *integer* (optional) | - | `False` | Length of the page before the change. |
+| `new` | *integer* (optional) | - | `False` | Length of the page after the change. |
 
-Public Wikimedia recentchange event data from
-`https://stream.wikimedia.org/v2/stream/recentchange`.
+---
+##### Object: RecentChange.revision
+*Old and new MediaWiki revision identifiers associated with the change.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `old` | *string* (optional) | - | `False` | Previous revision identifier before the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range. |
+| `new` | *string* (optional) | - | `False` | New revision identifier after the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range. |
+## Message Group: Wikimedia.EventStreams.mqtt
+---
+### Message: Wikimedia.EventStreams.RecentChange.mqtt
+*Public recentchange events from Wikimedia EventStreams. Each event describes one edit, page creation, log action, categorization change, or related MediaWiki recentchanges entry from across Wikimedia projects.*
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `Wikimedia.EventStreams.RecentChange` |
+| `source` |  | `` | `False` | `https://stream.wikimedia.org/v2/stream/recentchange` |
+| `subject` |  | `uritemplate` | `False` | `{wiki}/{namespace}/{event_id}` |
+| `time` |  | `uritemplate` | `False` | `{event_time}` |
 
-#### CloudEvents Attributes
+#### Schema:
+##### Object: RecentChange
+*Normalized representation of Wikimedia's mediawiki/recentchange event schema. This contract preserves the documented recentchange payload while renaming the upstream $schema field to schema_uri and serializing the variant log_params field into log_params_json for stable generated types.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `event_id` | *string* | - | `True` | Top-level copy of meta.id so downstream validators and consumers can resolve the CloudEvents subject and Kafka key from the event payload itself. |
+| `event_time` | *string* | - | `True` | Top-level copy of meta.dt in ISO-8601 UTC format so downstream validators and consumers can resolve the CloudEvents time attribute from the payload itself. |
+| `schema_uri` | *string* | - | `True` | URI of the upstream Wikimedia JSON schema from the $schema field on the original event payload. |
+| `meta` | [Object RecentChange.meta](#object-recentchangemeta) | - | `True` | Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details. |
+| `id` | *string* (optional) | - | `False` | MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range. |
+| `type` | *string* | - | `True` | Recentchange type such as edit, new, log, categorize, or external. |
+| `namespace_id` | *integer* | - | `True` | Numeric MediaWiki namespace identifier for the affected page (0 = main, 1 = talk, 6 = file, 14 = category, -1 for special log events). Renamed from ``namespace`` to free that name for the kebab-case bucket that is also used as the {namespace} MQTT topic axis. |
+| `title` | *string* | - | `True` | Affected page title in MediaWiki prefixed text form. |
+| `title_url` | *string* (optional) | - | `False` | Canonical page URL for the affected title when present in the upstream payload. |
+| `comment` | *string* (optional) | - | `False` | Edit or log comment as supplied by the upstream recentchange record. |
+| `timestamp` | *integer* | - | `True` | Unix timestamp derived from the MediaWiki rc_timestamp value. |
+| `user` | *string* | - | `True` | User name or IP address associated with the change. |
+| `bot` | *boolean* (optional) | - | `False` | Whether the recentchange entry was flagged as a bot edit. |
+| `minor` | *boolean* (optional) | - | `False` | Whether the recentchange entry was flagged as a minor change. |
+| `patrolled` | *boolean* (optional) | - | `False` | Whether the recentchange entry had been patrolled when the event was emitted. |
+| `length` | [Object RecentChange.length](#object-recentchangelength) | - | `False` | Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki. |
+| `revision` | [Object RecentChange.revision](#object-recentchangerevision) | - | `False` | Old and new MediaWiki revision identifiers associated with the change. |
+| `server_url` | *string* (optional) | - | `False` | Canonical server URL for the wiki that emitted the event. |
+| `server_name` | *string* (optional) | - | `False` | Server host name of the wiki that emitted the event. |
+| `server_script_path` | *string* (optional) | - | `False` | MediaWiki script path on the emitting wiki. |
+| `wiki` | *string* | - | `True` | Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki. |
+| `namespace` | *string* | - | `True` | Kebab-case bucket label for the MediaWiki namespace (e.g. ``main`` for 0, ``talk`` for 1, ``file`` for 6, ``category`` for 14, ``ns-<n>`` for unrecognised values). Used as the {namespace} MQTT topic segment; subscribers can wildcard per wiki/namespace without parsing the integer id. |
+| `parsedcomment` | *string* (optional) | - | `False` | HTML-parsed form of the recentchange comment when Wikimedia provides it. |
+| `notify_url` | *string* (optional) | - | `False` | URL that points to a diff view or other relevant page for the change. |
+| `log_type` | *string* (optional) | - | `False` | MediaWiki log type for log events, such as move, delete, or patrol. |
+| `log_action` | *string* (optional) | - | `False` | Specific MediaWiki log action name for log events. |
+| `log_action_comment` | *string* (optional) | - | `False` | Additional comment field emitted for some MediaWiki log actions. |
+| `log_id` | *string* (optional) | - | `False` | MediaWiki log identifier associated with the event when the change is a log entry, stringified for stable cross-language handling. |
+| `log_params_json` | *string* (optional) | - | `False` | Serialized form of the upstream log_params field, which may be an object, array, or string in the raw Wikimedia payload. |
 
-| **Name** | **Value** |
-|----------|-----------|
-| `type` | `Wikimedia.EventStreams.RecentChange` |
-| `source` | `https://stream.wikimedia.org/v2/stream/recentchange` |
-| `subject` | `{event_id}` |
-| `time` | `{event_time}` |
+---
+##### Object: RecentChange.meta
+*Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `uri` | *string* | - | `False` | URI of the Wikimedia entity or page the event pertains to, when provided by the upstream stream. |
+| `request_id` | *string* | - | `False` | Unique request identifier assigned by Wikimedia for the request that caused the event. |
+| `id` | *string* | - | `True` | Globally unique Wikimedia event UUID for this recentchange record. |
+| `domain` | *string* | - | `True` | Wikimedia domain the event pertains to, such as www.wikipedia.org or www.wikidata.org. |
+| `stream` | *string* | - | `True` | Name of the upstream EventStreams stream that emitted the event, typically mediawiki.recentchange. |
+| `topic` | *string* | - | `False` | Underlying Wikimedia Kafka topic that carried the event before it was exposed through EventStreams. |
+| `partition` | *integer* | - | `False` | Underlying Kafka partition number from Wikimedia's internal stream metadata. |
+| `offset` | *string* (optional) | - | `False` | Underlying Kafka offset from Wikimedia's internal stream metadata, stringified to avoid range loss across generated languages and validators. |
+| `dt` | *string* | - | `True` | UTC event timestamp in ISO-8601 format from the upstream metadata block. |
 
-#### Selected Fields
+---
+##### Object: RecentChange.length
+*Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `old` | *integer* (optional) | - | `False` | Length of the page before the change. |
+| `new` | *integer* (optional) | - | `False` | Length of the page after the change. |
 
-| **Field** | **Type** | **Description** |
-|-----------|----------|-----------------|
-| `event_id` | string | Top-level copy of `meta.id`, used for Kafka key and CloudEvents subject |
-| `event_time` | string | Top-level copy of `meta.dt`, used for CloudEvents time |
-| `schema_uri` | string | Upstream Wikimedia schema URI from `$schema` |
-| `meta.id` | string | Globally unique Wikimedia event UUID |
-| `meta.dt` | string | Event timestamp in ISO-8601 UTC |
-| `meta.domain` | string | Wikimedia domain the event pertains to |
-| `meta.stream` | string | Upstream stream name, typically `mediawiki.recentchange` |
-| `id` | string? | Wikimedia recentchange row identifier (`rcid`), stringified for range safety |
-| `type` | string | Recentchange type such as `edit`, `new`, `log`, or `categorize` |
-| `namespace` | integer | MediaWiki namespace ID |
-| `title` | string | Page title in prefixed MediaWiki form |
-| `title_url` | string? | Canonical page URL |
-| `comment` | string? | Edit or log comment |
-| `timestamp` | integer | Unix timestamp derived from `rc_timestamp` |
-| `user` | string | Editing user name or anonymous IP |
-| `bot` | boolean? | Whether the change was marked as a bot edit |
-| `minor` | boolean? | Whether the change was marked minor |
-| `patrolled` | boolean? | Whether the change was patrolled |
-| `length.old` | integer? | Page length before the change |
-| `length.new` | integer? | Page length after the change |
-| `revision.old` | string? | Previous revision ID, stringified |
-| `revision.new` | string? | New revision ID, stringified |
-| `wiki` | string | Internal Wikimedia wiki identifier such as `enwiki` or `wikidatawiki` |
-| `parsedcomment` | string? | Parsed HTML rendering of the comment |
-| `notify_url` | string? | URL to a diff or log view for the change |
-| `log_type` | string? | Log type for log events |
-| `log_action` | string? | Log action for log events |
-| `log_id` | string? | Log row identifier, stringified |
-| `log_params_json` | string? | Serialized upstream `log_params` value |
-
-#### Example
-
-```json
-{
-  "specversion": "1.0",
-  "type": "Wikimedia.EventStreams.RecentChange",
-  "source": "https://stream.wikimedia.org/v2/stream/recentchange",
-  "subject": "ded39d54-8ad6-43bd-baf5-8b06c2607a56",
-  "time": "2026-04-07T10:57:48.160Z",
-  "data": {
-    "event_id": "ded39d54-8ad6-43bd-baf5-8b06c2607a56",
-    "event_time": "2026-04-07T10:57:48.160Z",
-    "schema_uri": "/mediawiki/recentchange/1.0.0",
-    "meta": {
-      "uri": "https://www.wikidata.org/wiki/Lexeme:L236207",
-      "request_id": "12c47e2c-f5b8-4b72-9747-34ef82dcc475",
-      "id": "ded39d54-8ad6-43bd-baf5-8b06c2607a56",
-      "domain": "www.wikidata.org",
-      "stream": "mediawiki.recentchange",
-      "topic": "eqiad.mediawiki.recentchange",
-      "partition": 0,
-      "offset": 6002030074,
-      "dt": "2026-04-07T10:57:48.160Z"
-    },
-    "id": 2555986212,
-    "type": "edit",
-    "namespace": 146,
-    "title": "Lexeme:L236207",
-    "title_url": "https://www.wikidata.org/wiki/Lexeme:L236207",
-    "comment": "/* wbsetqualifier-add:1| */ [[Property:P304]]: 238, [[:toollabs:quickstatements/#/batch/256383|batch #256383]]",
-    "timestamp": 1775559467,
-    "user": "Vesihiisi",
-    "bot": false,
-    "minor": false,
-    "patrolled": true,
-    "length": {
-      "old": 4191,
-      "new": 4467
-    },
-    "revision": {
-      "old": 2479093568,
-      "new": 2479093572
-    },
-    "server_url": "https://www.wikidata.org",
-    "server_name": "www.wikidata.org",
-    "server_script_path": "/w",
-    "wiki": "wikidatawiki"
-  }
-}
-```
+---
+##### Object: RecentChange.revision
+*Old and new MediaWiki revision identifiers associated with the change.*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `old` | *string* (optional) | - | `False` | Previous revision identifier before the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range. |
+| `new` | *string* (optional) | - | `False` | New revision identifier after the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range. |

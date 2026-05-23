@@ -1,0 +1,20 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "mode-s-mqtt"
+version = "0.1.0"
+description = "Mode-S firehose -> MQTT/UNS non-retained bridge"
+authors = ["clemensv"]
+packages = [{include = "mode_s_mqtt"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pyModeS = ">=2.13"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+azure-identity = ">=1.17.0"
+mode_s_mqtt_producer_data = {path = "../mode_s_mqtt_producer/mode_s_mqtt_producer_data"}
+mode_s_mqtt_producer_mqtt_client = {path = "../mode_s_mqtt_producer/mode_s_mqtt_producer_mqtt_client"}

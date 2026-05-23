@@ -141,3 +141,8 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / UNS feeder
+
+A sibling container (`Dockerfile.mqtt`) republishes the EventStreams `recentchange` feed into an MQTT 5.0 broker on a Unified-Namespace topic tree: `social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change`. The MediaWiki numeric namespace is mapped to a stable kebab-case bucket (`main`, `talk`, `file`, `category`, …; unknown values → `ns-<n>`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).
