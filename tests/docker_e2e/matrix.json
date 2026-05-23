@@ -268,6 +268,12 @@
       "image": "wikimedia-eventstreams-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wikimedia_eventstreams_mqtt"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nws_alerts_mqtt"
     }
   ],
   "flow": [
@@ -498,6 +504,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWikimediaEventstreamsMqttDockerFlow"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNwsAlertsMqttDockerFlow"
     }
   ]
 }

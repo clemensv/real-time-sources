@@ -1566,6 +1566,164 @@ class TestAutobahnMqttDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# NWS Alerts -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_nws_alerts_mqtt_schema() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'nws-alerts', 'xreg', 'nws_alerts.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schema = manifest['schemagroups']['NWS.jstruct']['schemas']['NWS.WeatherAlert']['versions']['1']['schema']
+    return {'NWS.WeatherAlert': schema}
+
+
+@pytest.fixture(scope='module')
+def nws_alerts_mqtt_image():
+    return build_image('nws-alerts', dockerfile='Dockerfile.mqtt', tag='test-nws-alerts-mqtt')
+
+
+@pytest.fixture()
+def nws_alerts_mosquitto_container():
+    container, network, host_port = _generic_mosquitto('nws-alerts-mqtt-e2e', 'nws-alerts-mqtt-e2e-broker')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'nws-alerts-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestNwsAlertsMqttDockerFlow:
+    """Verify nws-alerts-mqtt publishes valid severity-partitioned UNS alert topics."""
+
+    def test_emits_alerts_for_all_cap_severities(self, nws_alerts_mosquitto_container, nws_alerts_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{nws_alerts_mosquitto_container['internal_host']}:{nws_alerts_mosquitto_container['internal_port']}"
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+                'payload_len': len(msg.payload or b''),
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('alerts/us/noaa/nws-alerts/#', qos=1)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', nws_alerts_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            nws_alerts_mqtt_image.id,
+            command=['python', '-m', 'nws_alerts_mqtt', 'feed', '--once', '--emit-mock-corpus'],
+            detach=True,
+            remove=False,
+            network=nws_alerts_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if len(collected) >= 5 and time.time() - last_msg_time[0] > 2.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No NWS alert MQTT messages received from broker'
+        observed_severities = set()
+        expected_severities = {'minor', 'moderate', 'severe', 'extreme', 'unknown'}
+        schemas = _load_nws_alerts_mqtt_schema()
+        from json_structure import InstanceValidator, SchemaValidator
+        schema_validator = SchemaValidator(extended=True)
+        assert not schema_validator.validate(schemas['NWS.WeatherAlert']), 'Invalid NWS WeatherAlert JsonStructure schema'
+        instance_validator = InstanceValidator(schemas['NWS.WeatherAlert'], extended=True)
+
+        for sample in collected:
+            parts = sample['topic'].split('/')
+            assert len(parts) == 9, f"unexpected topic depth for {sample['topic']}"
+            assert parts[:4] == ['alerts', 'us', 'noaa', 'nws-alerts'], parts
+            state, severity, event_type, alert_id, leaf = parts[4:]
+            assert leaf == 'alert', sample
+            assert severity in expected_severities, sample
+            observed_severities.add(severity)
+            assert sample['qos'] == 1, sample
+            assert sample['retain'] is False, sample
+
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert up['type'] == 'NWS.WeatherAlert', sample
+            assert up['subject'] == alert_id, (up['subject'], alert_id)
+            assert up['subject'] in sample['topic'], sample
+            assert alert_id == up['subject'], 'Kafka-equivalent {alert_id} key must match CE subject'
+
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            assert payload['state'] == state, payload
+            assert payload['event_type'] == event_type, payload
+            assert severity == payload['severity'].lower() if payload['severity'] in {'Minor', 'Moderate', 'Severe', 'Extreme', 'Unknown'} else severity == 'unknown'
+            errors = instance_validator.validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for NWS.WeatherAlert: {errors[:3]}"
+
+        assert observed_severities == expected_severities, observed_severities
+
+# ---------------------------------------------------------------------------
 # AISstream.io -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
 

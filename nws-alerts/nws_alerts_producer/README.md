@@ -15,7 +15,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - NWSAlertsEventDispatcher
+3. [Quick Start](#quick-start)    - NWSAlertsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NWSAlertsMqttEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +41,10 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NWSAlertsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NWSAlertsMqttProducersolution for event-driven applications.
 
 
 
@@ -192,6 +198,43 @@ nws_alerts_dispatcher.nws_weather_alert_async = nws_weather_alert_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsMqttProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) -> None:
+
+```python    # Process the event data
+
+NWSAlertsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_mqtt_dispatcher.nws_weather_alert_async = nws_weather_alert_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -288,6 +331,1140 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_nws_weather_alert_batch(```
+
+    messages=[
+
+        WeatherAlert(...),Initializes the runner with a Kafka consumer.
+
+        WeatherAlert(...),
+
+        WeatherAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NWSAlertsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NWSAlertsMqttEventDispatcher` handles events for the NWS.Alerts.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from nws-alerts-producer import NWSAlertsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NWSAlertsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nws_weather_alert(```python
+
+    data=WeatherAlert(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NWSAlertsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NWSAlertsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nws_weather_alert_minor_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nws_weather_alert_minor_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WeatherAlert], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NWS.WeatherAlert.Minor.mqtt`: A weather or non-weather alert from the US National Weather
+Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
+Protocol) standard.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_minor_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_dispatcher.nws_weather_alert_minor_mqtt_async = nws_weather_alert_minor_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsMqttProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_minor_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_mqtt_dispatcher.nws_weather_alert_minor_mqtt_async = nws_weather_alert_minor_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nws_weather_alert_moderate_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nws_weather_alert_moderate_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WeatherAlert], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NWS.WeatherAlert.Moderate.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_moderate_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_dispatcher.nws_weather_alert_moderate_mqtt_async = nws_weather_alert_moderate_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsMqttProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_moderate_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_mqtt_dispatcher.nws_weather_alert_moderate_mqtt_async = nws_weather_alert_moderate_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nws_weather_alert_severe_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nws_weather_alert_severe_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WeatherAlert], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NWS.WeatherAlert.Severe.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_severe_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_dispatcher.nws_weather_alert_severe_mqtt_async = nws_weather_alert_severe_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsMqttProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_severe_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_mqtt_dispatcher.nws_weather_alert_severe_mqtt_async = nws_weather_alert_severe_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nws_weather_alert_extreme_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nws_weather_alert_extreme_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WeatherAlert], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NWS.WeatherAlert.Extreme.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_extreme_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_dispatcher.nws_weather_alert_extreme_mqtt_async = nws_weather_alert_extreme_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsMqttProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_extreme_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_mqtt_dispatcher.nws_weather_alert_extreme_mqtt_async = nws_weather_alert_extreme_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nws_weather_alert_unknown_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nws_weather_alert_unknown_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WeatherAlert], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NWS.WeatherAlert.Unknown.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_unknown_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_dispatcher.nws_weather_alert_unknown_mqtt_async = nws_weather_alert_unknown_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NWSAlertsMqttProducer- `data`: The event data of type `nws_alerts_producer_data.WeatherAlert`.
+
+
+
+Producer for `NWS.Alerts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nws_weather_alert_unknown_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherAlert) ->
+None:
+
+```python    # Process the event data
+
+NWSAlertsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nws_alerts_mqtt_dispatcher.nws_weather_alert_unknown_mqtt_async = nws_weather_alert_unknown_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nws_weather_alert_minor_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nws_weather_alert_minor_mqtt(
+
+    self,##### `_process_event`
+
+    data: WeatherAlert,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NWS.WeatherAlert.Minor.mqtt` message. A weather or non-weather alert from the US National Weather
+Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
+Protocol) standard.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherAlert`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nws_weather_alert_minor_mqtt(
+
+    data=WeatherAlert(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NWS.WeatherAlert.Minor.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nws_weather_alert_minor_mqtt_batch(```
+
+    messages=[
+
+        WeatherAlert(...),Initializes the runner with a Kafka consumer.
+
+        WeatherAlert(...),
+
+        WeatherAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nws_weather_alert_moderate_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nws_weather_alert_moderate_mqtt(
+
+    self,##### `_process_event`
+
+    data: WeatherAlert,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NWS.WeatherAlert.Moderate.mqtt` message. A weather or non-weather alert from the US National Weather
+Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
+Protocol) standard.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherAlert`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nws_weather_alert_moderate_mqtt(
+
+    data=WeatherAlert(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NWS.WeatherAlert.Moderate.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nws_weather_alert_moderate_mqtt_batch(```
+
+    messages=[
+
+        WeatherAlert(...),Initializes the runner with a Kafka consumer.
+
+        WeatherAlert(...),
+
+        WeatherAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nws_weather_alert_severe_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nws_weather_alert_severe_mqtt(
+
+    self,##### `_process_event`
+
+    data: WeatherAlert,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NWS.WeatherAlert.Severe.mqtt` message. A weather or non-weather alert from the US National Weather
+Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
+Protocol) standard.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherAlert`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nws_weather_alert_severe_mqtt(
+
+    data=WeatherAlert(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NWS.WeatherAlert.Severe.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nws_weather_alert_severe_mqtt_batch(```
+
+    messages=[
+
+        WeatherAlert(...),Initializes the runner with a Kafka consumer.
+
+        WeatherAlert(...),
+
+        WeatherAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nws_weather_alert_extreme_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nws_weather_alert_extreme_mqtt(
+
+    self,##### `_process_event`
+
+    data: WeatherAlert,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NWS.WeatherAlert.Extreme.mqtt` message. A weather or non-weather alert from the US National Weather
+Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
+Protocol) standard.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherAlert`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nws_weather_alert_extreme_mqtt(
+
+    data=WeatherAlert(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NWS.WeatherAlert.Extreme.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nws_weather_alert_extreme_mqtt_batch(```
+
+    messages=[
+
+        WeatherAlert(...),Initializes the runner with a Kafka consumer.
+
+        WeatherAlert(...),
+
+        WeatherAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nws_weather_alert_unknown_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nws_weather_alert_unknown_mqtt(
+
+    self,##### `_process_event`
+
+    data: WeatherAlert,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NWS.WeatherAlert.Unknown.mqtt` message. A weather or non-weather alert from the US National Weather
+Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
+Protocol) standard.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherAlert`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nws_weather_alert_unknown_mqtt(
+
+    data=WeatherAlert(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NWS.WeatherAlert.Unknown.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nws_weather_alert_unknown_mqtt_batch(```
 
     messages=[
 

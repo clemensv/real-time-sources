@@ -5,13 +5,18 @@
 ```bash
 docker build -t nws-alerts .
 docker run --rm -e CONNECTION_STRING="<your-connection-string>" nws-alerts
+
+# MQTT/UNS image
+docker build -f Dockerfile.mqtt -t nws-alerts-mqtt .
+docker run --rm -e MQTT_BROKER_URL="mqtt://broker:1883" nws-alerts-mqtt
 ```
 
 ## Description
 
 This container bridges active weather alerts from the US National Weather
 Service (NWS) to Kafka-compatible endpoints (Apache Kafka, Azure Event Hubs,
-Microsoft Fabric Event Streams) as CloudEvents.
+Microsoft Fabric Event Streams) as CloudEvents. The sibling `Dockerfile.mqtt`
+image publishes the same alert payloads to MQTT 5.0 Unified Namespace brokers.
 
 It polls the NWS alerts API for current warnings, watches, and advisories
 across the United States and emits them as structured CloudEvents using the
@@ -28,8 +33,12 @@ CAP (Common Alerting Protocol) schema with SAME/UGC geocodes.
 | `SASL_PASSWORD` | No | SASL password |
 | `NWS_ALERTS_STATE_FILE` | No | State file (default: `~/.nws_alerts_state.json`) |
 | `LOG_LEVEL` | No | Logging level (default: `INFO`) |
+| `MQTT_BROKER_URL` | MQTT only | Broker URL (default: `mqtt://localhost:1883`) |
+| `MQTT_AUTH_MODE` | MQTT only | `anonymous`, `userpass`, `tls-cert`, or `entra` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT only | Username/password credentials |
+| `NWS_ALERTS_MQTT_EMIT_MOCK_CORPUS` | MQTT only | Emit five synthetic alerts, one per severity, then exit |
 
-*One of `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS` is required.
+*One of `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS` is required for the Kafka image.
 
 ## Azure Container Instance
 

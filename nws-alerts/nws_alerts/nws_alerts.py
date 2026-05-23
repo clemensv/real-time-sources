@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import sys
+import unicodedata
 from typing import Any, Dict, List, Optional
 
 import aiohttp
@@ -28,6 +29,23 @@ DEFAULT_POLL_INTERVAL = 60
 DEFAULT_STATE_FILE = os.path.expanduser("~/.nws_alerts_state.json")
 DEFAULT_TOPIC = "nws-alerts"
 
+US_STATE_CODES = {
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS",
+    "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
+    "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
+    "WI", "WY", "DC", "PR", "VI", "GU", "AS", "MP",
+}
+
+FIPS_STATE_TO_POSTAL = {
+    "01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO", "09": "CT", "10": "DE",
+    "11": "DC", "12": "FL", "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN", "19": "IA",
+    "20": "KS", "21": "KY", "22": "LA", "23": "ME", "24": "MD", "25": "MA", "26": "MI", "27": "MN",
+    "28": "MS", "29": "MO", "30": "MT", "31": "NE", "32": "NV", "33": "NH", "34": "NJ", "35": "NM",
+    "36": "NY", "37": "NC", "38": "ND", "39": "OH", "40": "OK", "41": "OR", "42": "PA", "44": "RI",
+    "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA",
+    "54": "WV", "55": "WI", "56": "WY", "60": "AS", "66": "GU", "69": "MP", "72": "PR", "78": "VI",
+}
+
 
 def _safe_str(value: Any) -> Optional[str]:
     if value is None:
@@ -42,6 +60,47 @@ def _join_codes(geocode: dict, key: str) -> Optional[str]:
     if not values:
         return None
     return "; ".join(str(v) for v in values)
+
+
+def uns_slug(value: Any) -> str:
+    raw = unicodedata.normalize("NFKD", str(value or "unknown")).encode("ascii", "ignore").decode("ascii")
+    raw = raw.lower().strip()
+    out = [ch if ch.isalnum() else "-" for ch in raw]
+    slug = "".join(out).strip("-")
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    return slug or "unknown"
+
+
+def normalize_cap_severity(value: Any) -> str:
+    severity = uns_slug(value)
+    return severity if severity in {"minor", "moderate", "severe", "extreme", "unknown"} else "unknown"
+
+
+def derive_state(props: dict) -> str:
+    explicit = _safe_str(props.get("state"))
+    if explicit and explicit.upper() in US_STATE_CODES:
+        return explicit.lower()
+
+    geocode = props.get("geocode", {}) or {}
+    for ugc in geocode.get("UGC") or []:
+        code = str(ugc).strip().upper()
+        if len(code) >= 2 and code[:2] in US_STATE_CODES:
+            return code[:2].lower()
+
+    for same in geocode.get("SAME") or []:
+        digits = "".join(ch for ch in str(same) if ch.isdigit())
+        fips_state = digits[1:3] if len(digits) >= 6 else digits[:2]
+        state = FIPS_STATE_TO_POSTAL.get(fips_state)
+        if state:
+            return state.lower()
+
+    sender_name = _safe_str(props.get("senderName"))
+    if sender_name:
+        maybe_state = sender_name.split()[-1].upper()
+        if maybe_state in US_STATE_CODES:
+            return maybe_state.lower()
+    return "nostate"
 
 
 def _find_nws_headline(params: dict) -> Optional[str]:
@@ -69,14 +128,16 @@ def normalize_alert(props: dict) -> Optional[WeatherAlert]:
     """Normalize a GeoJSON feature's properties into a WeatherAlert."""
     alert_id = _safe_str(props.get("id"))
     event = _safe_str(props.get("event"))
-    severity = _safe_str(props.get("severity"))
+    severity = _safe_str(props.get("severity")) or "Unknown"
+    if severity not in {"Extreme", "Severe", "Moderate", "Minor", "Unknown"}:
+        severity = "Unknown"
     urgency = _safe_str(props.get("urgency"))
     certainty = _safe_str(props.get("certainty"))
     sent = _safe_str(props.get("sent"))
     status = _safe_str(props.get("status"))
     message_type = _safe_str(props.get("messageType"))
 
-    if not alert_id or not event or not severity or not sent or not status:
+    if not alert_id or not event or not sent or not status:
         return None
 
     geocode = props.get("geocode", {})
@@ -84,6 +145,8 @@ def normalize_alert(props: dict) -> Optional[WeatherAlert]:
 
     return WeatherAlert(
         alert_id=alert_id,
+        state=derive_state(props),
+        event_type=uns_slug(event),
         area_desc=_safe_str(props.get("areaDesc")),
         same_codes=_join_codes(geocode, "SAME"),
         ugc_codes=_join_codes(geocode, "UGC"),

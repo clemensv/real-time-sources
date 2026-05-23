@@ -1,3 +1,4 @@
+# Regenerate the NWS Alerts MQTT producer from the authoritative xreg manifest.
 $ErrorActionPreference = 'Stop'
 
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
@@ -5,9 +6,9 @@ Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xregFile = Join-Path (Join-Path $scriptDir "xreg") "nws_alerts.xreg.json"
-$outputDir = Join-Path $scriptDir "nws_alerts_producer"
+$outputDir = Join-Path $scriptDir "nws_alerts_mqtt_producer"
 
-Write-Host "Generating NWS Alerts producer from $xregFile"
+Write-Host "Generating NWS Alerts MQTT producer from $xregFile"
 
 if (-not (Test-Path $xregFile)) {
     throw "xRegistry file not found: $xregFile"
@@ -18,14 +19,15 @@ if (Test-Path $outputDir) {
 }
 
 xrcg generate `
-    --style kafkaproducer `
+    --style mqttclient `
     --language py `
-    --projectname nws-alerts-producer `
     --definitions $xregFile `
+    --endpoint NWS.Alerts.Mqtt `
+    --projectname nws_alerts_mqtt_producer `
     --output $outputDir
 
 if ($LASTEXITCODE -ne 0) {
-    throw "Producer generation failed"
+    throw "MQTT producer generation failed"
 }
 
-& (Join-Path $scriptDir "generate_mqtt_producer.ps1")
+Write-Host "NWS Alerts MQTT producer generated at $outputDir" -ForegroundColor Green
