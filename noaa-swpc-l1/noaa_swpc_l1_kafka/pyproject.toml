@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "noaa_swpc_l1_kafka"
+version = "0.1.0"
+description = "Kafka feeder for the NOAA SWPC L1 propagated solar wind product."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "noaa_swpc_l1_kafka" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+noaa_swpc_l1_core = { path = "../noaa_swpc_l1_core" }
+noaa_swpc_l1_producer_data = { path = "../noaa_swpc_l1_producer/noaa_swpc_l1_producer_data" }
+noaa_swpc_l1_producer_kafka_producer = { path = "../noaa_swpc_l1_producer/noaa_swpc_l1_producer_kafka_producer" }
+
+[tool.poetry.scripts]
+noaa-swpc-l1-kafka = "noaa_swpc_l1_kafka.app:main"

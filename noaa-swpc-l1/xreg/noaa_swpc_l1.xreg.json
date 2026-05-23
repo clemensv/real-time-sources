@@ -1,0 +1,472 @@
+{
+  "endpoints": {
+    "gov.noaa.swpc.l1.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-swpc-l1",
+          "key": "{spacecraft}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.noaa.swpc.l1.kafka"
+      ]
+    },
+    "gov.noaa.swpc.l1.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.noaa.swpc.l1.mqtt"
+      ]
+    },
+    "gov.noaa.swpc.l1.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/noaa-swpc-l1"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.noaa.swpc.l1.amqp"
+      ]
+    }
+  },
+  "messagegroups": {
+    "gov.noaa.swpc.l1": {
+      "description": "NOAA SWPC L1 solar-wind products. Single-channel time series of solar-wind plasma + magnetic field + velocity measurements taken at the Sun-Earth Lagrange-1 (L1) point, forward-propagated to the predicted Earth arrival time. L1 lies ~1.5 million km sunward of Earth; the propagation delay is the ~30-60 minute lead time that makes this product the primary input to operational geomagnetic-storm forecasts. The operational primary spacecraft is NOAA's DSCOVR; NASA's ACE serves as the backup. Sourced from `https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind.json`.",
+      "messages": {
+        "gov.noaa.swpc.l1.PropagatedSolarWind": {
+          "name": "PropagatedSolarWind",
+          "envelope": "CloudEvents/1.0",
+          "description": "One minute-resolution solar-wind observation at L1 with forward-propagated Earth-arrival timestamp. Fuses plasma (speed/density/temperature), magnetic field (Bx/By/Bz/Bt in GSM), and bulk velocity vector (Vx/Vy/Vz in GSM) into a single row per `time_tag`. The `propagated_time_tag` field is the upstream's predicted Earth arrival time for the solar-wind parcel observed at L1 at `time_tag`. The CloudEvent `time` attribute mirrors `time_tag` (the L1 observation time) — consumers that need the Earth-arrival time must read `data.propagated_time_tag` instead. Many sub-fields are nullable — instrument gaps on DSCOVR/ACE are routine, especially for the velocity components which DSCOVR does not measure reliably. Sourced from `GET https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind.json` — the document is a 7-day rolling window (~10080 rows) of array-of-arrays form with the column header at index 0.",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.swpc.l1.PropagatedSolarWind"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{spacecraft}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{time_tag}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.noaa.swpc.l1.jstruct/schemas/gov.noaa.swpc.l1.PropagatedSolarWind"
+        }
+      }
+    },
+    "gov.noaa.swpc.l1.kafka": {
+      "description": "Kafka transport variant of the NOAA SWPC L1 CloudEvents. All events for the source share a single Kafka topic `noaa-swpc-l1`; the partition key is the spacecraft id so a given spacecraft's stream is partition-ordered. DSCOVR is the operational primary; if SWPC ever discloses spacecraft per row and ACE is contributing, ACE's stream will land on a second partition naturally.",
+      "messages": {
+        "gov.noaa.swpc.l1.kafka.PropagatedSolarWind": {
+          "name": "PropagatedSolarWind",
+          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "protocol": "KAFKA",
+          "protocolmetadata": {
+            "key": {
+              "type": "uritemplate",
+              "value": "{spacecraft}",
+              "description": "Kafka partition key — stable spacecraft channel identifier (`dscovr` for the operational primary; `ace` reserved for backup). Matches the CloudEvent `subject` exactly so the partition assignment is deterministic per channel."
+            }
+          }
+        }
+      }
+    },
+    "gov.noaa.swpc.l1.mqtt": {
+      "description": "MQTT/5.0 transport variant of the NOAA SWPC L1 CloudEvents. Maps the message to a retained, QoS-1 Unified Namespace topic. The `{spacecraft}` placeholder is the only varying segment (current values: `dscovr`); each spacecraft gets its own retained slot so late-joining subscribers see the latest solar-wind state on connect.",
+      "messages": {
+        "gov.noaa.swpc.l1.mqtt.PropagatedSolarWind": {
+          "name": "PropagatedSolarWind",
+          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "space-weather/us/noaa-swpc/l1/{spacecraft}/propagated-solar-wind",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "gov.noaa.swpc.l1.amqp": {
+      "description": "AMQP 1.0 transport variant of the NOAA SWPC L1 CloudEvents, sent in binary CloudEvents mode to a single AMQP node (`noaa-swpc-l1`) — works with generic brokers (ActiveMQ Artemis, RabbitMQ AMQP 1.0 plugin, Qpid Dispatch) and with Azure Service Bus / Event Hubs via CBS + Entra ID or SAS-token. Message subject mirrors the CloudEvent subject (`{spacecraft}`). The `x-opt-partition-key` message annotation carries the same value as a UTF-8 string so Service Bus uses it as the PartitionKey and Event Hubs hashes it to pick a partition consistent with the Kafka transport.",
+      "messages": {
+        "gov.noaa.swpc.l1.amqp.PropagatedSolarWind": {
+          "name": "PropagatedSolarWind",
+          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{spacecraft}",
+                "description": "AMQP message subject — stable spacecraft channel identifier matching the CloudEvent subject so SB/EH consumers can correlate."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{spacecraft}",
+                "description": "Service Bus PartitionKey / Event Hubs partition-hash key, as a UTF-8 string. Set to the spacecraft channel id so that all messages for a given spacecraft route to the same SB/EH partition — keeps the partition assignment consistent with the Kafka transport's `{spacecraft}` key."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "gov.noaa.swpc.l1.jstruct": {
+      "schemas": {
+        "gov.noaa.swpc.l1.PropagatedSolarWind": {
+          "name": "PropagatedSolarWind",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/gov/noaa/swpc/l1/PropagatedSolarWind/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "$root": "#/definitions/gov/noaa/swpc/l1/PropagatedSolarWind",
+                "definitions": {
+                  "gov": { "noaa": { "swpc": { "l1": {
+                              "PropagatedSolarWind": {
+                                "name": "PropagatedSolarWind",
+                                "type": "object",
+                                "description": "One minute-resolution solar-wind observation at the Sun-Earth Lagrange-1 (L1) point with forward-propagated Earth-arrival timestamp. Fuses plasma (speed/density/temperature), magnetic-field (Bx/By/Bz/Bt in GSM coordinates), and bulk velocity (Vx/Vy/Vz in GSM coordinates) into one row per `time_tag`. Sourced from `GET https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind.json` — a 7-day rolling window in array-of-arrays form, with the column header at index 0 and one observation per minute thereafter. The operational primary spacecraft is NOAA's DSCOVR; NASA's ACE serves as the backup. Many sub-fields are nullable: DSCOVR's magnetometer experiences routine gaps, and DSCOVR does not measure the Vx/Vy/Vz velocity components reliably (the upstream nearly always emits null for those). Consumers must treat plasma and magnetic-field measurements as independently optional and not skip rows that have only partial values.",
+                                "properties": {
+                                  "spacecraft": {
+                                    "type": "string",
+                                    "enum": [
+                                      "dscovr",
+                                      "ace"
+                                    ],
+                                    "altenums": {
+                                      "lang:en": {
+                                        "dscovr": "NOAA Deep Space Climate Observatory — the operational primary L1 solar-wind monitor since 2016.",
+                                        "ace": "NASA Advanced Composition Explorer — the operational backup L1 monitor; engaged when DSCOVR is unavailable."
+                                      }
+                                    },
+                                    "description": "Stable channel identifier for the source spacecraft at L1. **Synthesized by the bridge — not present in the upstream payload.** Set to `dscovr` for the operational primary, `ace` for the backup. Used as the CloudEvent `subject`, the Kafka partition key, the MQTT topic `{spacecraft}` segment, the AMQP message subject, and the AMQP `x-opt-partition-key` message annotation. SWPC does not currently disclose source spacecraft per row in the propagated-solar-wind feed; the bridge sets `dscovr` by default and exposes a configuration override for operators who know the active spacecraft has switched."
+                                  },
+                                  "time_tag": {
+                                    "type": "datetime",
+                                    "description": "Wall-clock time the upstream observation was taken at L1, in ISO 8601 / RFC 3339 with explicit UTC offset. Upstream emits this in `YYYY-MM-DD HH:MM:SS.fff` form with implicit UTC; the bridge normalises to RFC 3339 with explicit `Z`. Minute-aligned. Strictly monotonic across the 7-day rolling window."
+                                  },
+                                  "propagated_time_tag": {
+                                    "type": "datetime",
+                                    "description": "Predicted wall-clock time at which the solar-wind parcel observed at L1 at `time_tag` is expected to reach Earth's magnetopause, computed by SWPC from the observed bulk speed and the L1-to-Earth distance. Typically 30-60 minutes after `time_tag` — always `propagated_time_tag > time_tag`. This lead time is the operational value of the propagated product: downstream geomagnetic-storm forecasts trigger from `propagated_time_tag`, not `time_tag`. RFC 3339 with explicit `Z`."
+                                  },
+                                  "speed": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "km/s",
+                                    "symbol": "km/s",
+                                    "minimum": 0,
+                                    "maximum": 3000,
+                                    "description": "Bulk solar-wind speed measured at L1 by the spacecraft's Faraday cup / plasma instrument. Quiet solar wind is 300-500 km/s; high-speed streams from coronal holes can reach 800 km/s; coronal-mass-ejection (CME) shock fronts have been observed above 2000 km/s. Null when the upstream plasma instrument has no valid measurement for that minute. Unit: kilometres per second."
+                                  },
+                                  "density": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "1/cm3",
+                                    "symbol": "cm⁻³",
+                                    "minimum": 0,
+                                    "maximum": 1000,
+                                    "description": "Proton number density measured at L1. Quiet solar wind is 1-10 p/cm³; CME sheath / heliospheric current sheet crossings can reach 50-100 p/cm³ briefly. Null when the upstream plasma instrument has no valid measurement. Unit: particles (protons) per cubic centimetre."
+                                  },
+                                  "temperature": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "K",
+                                    "symbol": "K",
+                                    "minimum": 0,
+                                    "maximum": 10000000,
+                                    "description": "Proton temperature at L1 in kelvin. Quiet solar wind is ~10^5 K; high-speed streams are hotter (~5×10^5 K); CME interiors are usually cooler than the ambient solar wind, while shocked sheath plasma can exceed 10^6 K. Null when the upstream plasma instrument has no valid measurement. Unit: kelvin."
+                                  },
+                                  "bx": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "nT",
+                                    "symbol": "nT",
+                                    "minimum": -100,
+                                    "maximum": 100,
+                                    "description": "Bx component of the interplanetary magnetic field at L1 in Geocentric Solar Magnetospheric (GSM) coordinates — the component pointing from Earth toward the Sun. Quiet solar wind: |Bx| typically 1-5 nT; CME magnetic clouds: up to 50 nT. Wire values are nanotesla (nT); the JsonStructure `unit` is `nT` (not the SI base unit T). Null when the upstream magnetometer has no valid measurement (DSCOVR magnetometer experiences routine gaps)."
+                                  },
+                                  "by": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "nT",
+                                    "symbol": "nT",
+                                    "minimum": -100,
+                                    "maximum": 100,
+                                    "description": "By component of the interplanetary magnetic field at L1 in GSM coordinates — the component pointing in the direction of Earth's orbital motion projected onto the magnetic equator. Quiet solar wind: |By| 1-5 nT. Wire values are nanotesla (nT); JsonStructure `unit` is `nT`. Null on magnetometer gaps."
+                                  },
+                                  "bz": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "nT",
+                                    "symbol": "nT",
+                                    "minimum": -100,
+                                    "maximum": 100,
+                                    "description": "Bz component of the interplanetary magnetic field at L1 in GSM coordinates — the component perpendicular to Earth's orbital plane, positive northward. **The single most operationally important field in this schema**: sustained southward Bz (negative values, especially Bz < -10 nT for ≥ 30 minutes) couples solar-wind energy into Earth's magnetosphere via dayside magnetic reconnection and drives geomagnetic storms. Bz is the principal input to the Dst, Kp, and Ap forecast models downstream of this feed. Wire values are nanotesla (nT); JsonStructure `unit` is `nT`. Null on magnetometer gaps — null Bz means no forecasting signal for that minute, not a quiet condition."
+                                  },
+                                  "bt": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "nT",
+                                    "symbol": "nT",
+                                    "minimum": 0,
+                                    "maximum": 200,
+                                    "description": "Total magnetic-field magnitude at L1: Bt = sqrt(Bx² + By² + Bz²). Always non-negative. Quiet solar wind: 3-8 nT; CME magnetic clouds: 20-50 nT. Wire values are nanotesla (nT); JsonStructure `unit` is `nT`. Null when any of Bx/By/Bz is null."
+                                  },
+                                  "vx": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "km/s",
+                                    "symbol": "km/s",
+                                    "minimum": -3000,
+                                    "maximum": 3000,
+                                    "description": "Vx component of the solar-wind bulk velocity at L1 in GSM coordinates — the radial (Sun-Earth) component. The dominant component of solar-wind flow; almost equal to -`speed` because the flow is nearly radially outward from the Sun (negative in GSM because GSM Vx points sunward while the wind flows anti-sunward). **DSCOVR typically does not measure this component reliably**; the upstream emits null for Vx/Vy/Vz on the majority of rows. Unit: kilometres per second."
+                                  },
+                                  "vy": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "km/s",
+                                    "symbol": "km/s",
+                                    "minimum": -3000,
+                                    "maximum": 3000,
+                                    "description": "Vy component of the solar-wind bulk velocity at L1 in GSM coordinates — the dawn-dusk component. Typically small (|Vy| ≲ 100 km/s). DSCOVR usually emits null; treat as optional. Unit: kilometres per second."
+                                  },
+                                  "vz": {
+                                    "type": [
+                                      "double",
+                                      "null"
+                                    ],
+                                    "unit": "km/s",
+                                    "symbol": "km/s",
+                                    "minimum": -3000,
+                                    "maximum": 3000,
+                                    "description": "Vz component of the solar-wind bulk velocity at L1 in GSM coordinates — the north-south component. Typically small (|Vz| ≲ 100 km/s). DSCOVR usually emits null; treat as optional. Unit: kilometres per second."
+                                  }
+                                },
+                                "required": [
+                                  "spacecraft",
+                                  "time_tag",
+                                  "propagated_time_tag"
+                                ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "gov.noaa.swpc.l1.avro": {
+      "schemas": {
+        "gov.noaa.swpc.l1.PropagatedSolarWind": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PropagatedSolarWind",
+                "namespace": "gov.noaa.swpc.l1",
+                "doc": "One minute-resolution solar-wind observation at L1 with forward-propagated Earth-arrival timestamp. Fuses plasma (speed/density/temperature), magnetic-field (Bx/By/Bz/Bt in GSM), and velocity vector (Vx/Vy/Vz in GSM) into one row per time_tag. Avro mirror of the JsonStructure PropagatedSolarWind schema - keep field semantics in sync.",
+                "fields": [
+                  {
+                    "name": "spacecraft",
+                    "type": {
+                      "type": "enum",
+                      "name": "Spacecraft",
+                      "doc": "Stable channel identifier for the source spacecraft at L1. 'dscovr' for the operational primary (NOAA Deep Space Climate Observatory, operational since 2016), 'ace' for the backup (NASA Advanced Composition Explorer, engaged when DSCOVR is unavailable). Used as CloudEvent subject, Kafka key, MQTT topic placeholder, AMQP subject, and x-opt-partition-key annotation.",
+                      "symbols": [
+                        "dscovr",
+                        "ace"
+                      ]
+                    },
+                    "doc": "Stable channel identifier for the source spacecraft at L1; synthesized by the bridge (not present in upstream payload — SWPC does not currently disclose source spacecraft per row in the propagated-solar-wind feed). Defaults to 'dscovr'; bridge exposes an override for operators who know the active spacecraft has switched to 'ace'."
+                  },
+                  {
+                    "name": "time_tag",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "Wall-clock time the upstream observation was taken at L1, encoded as Unix milliseconds since 1970-01-01T00:00:00Z. Upstream emits in 'YYYY-MM-DD HH:MM:SS.fff' form with implicit UTC; bridge normalises to UTC ms for Avro encoding. Minute-aligned."
+                  },
+                  {
+                    "name": "propagated_time_tag",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "Predicted Earth-arrival time of the solar-wind parcel observed at L1 at time_tag, computed by SWPC from observed bulk speed and L1-to-Earth distance. Typically 30-60 minutes after time_tag. Unix milliseconds since 1970-01-01T00:00:00Z."
+                  },
+                  {
+                    "name": "speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Bulk solar-wind speed at L1. Quiet 300-500, high-speed streams to 800, CME shock fronts >2000. Null on plasma-instrument gaps. Unit: km/s."
+                  },
+                  {
+                    "name": "density",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Proton number density at L1. Quiet 1-10, CME sheath crossings to 50-100. Null on plasma-instrument gaps. Unit: particles per cubic centimetre."
+                  },
+                  {
+                    "name": "temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Proton temperature at L1 in kelvin. Quiet ~10^5, high-speed streams ~5x10^5, shocked sheath plasma >10^6. Null on plasma-instrument gaps."
+                  },
+                  {
+                    "name": "bx",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Bx component of IMF at L1 in GSM coordinates (Sun-Earth axis). Reported in nanotesla; consumers should treat the unit as nT. Null on magnetometer gaps (routine on DSCOVR)."
+                  },
+                  {
+                    "name": "by",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "By component of IMF at L1 in GSM coordinates (orbital-direction axis). Reported in nanotesla. Null on magnetometer gaps."
+                  },
+                  {
+                    "name": "bz",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Bz component of IMF at L1 in GSM coordinates (perpendicular to ecliptic, positive north). Single most operationally important field: sustained southward Bz (Bz < -10 nT for >= 30 minutes) drives geomagnetic storms via dayside reconnection. Principal input to Dst/Kp/Ap forecasts. Wire values are nanotesla (nT). Null on magnetometer gaps."
+                  },
+                  {
+                    "name": "bt",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Total IMF magnitude at L1: Bt = sqrt(Bx^2 + By^2 + Bz^2). Always non-negative. Reported in nanotesla. Null when any component is null."
+                  },
+                  {
+                    "name": "vx",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Vx component of solar-wind bulk velocity at L1 in GSM (radial, negative because flow is anti-sunward). When present, |Vx| ≈ `speed` (the bulk speed is dominated by the radial component). DSCOVR typically does not measure this reliably; upstream emits null for Vx/Vy/Vz on the majority of rows. Unit: km/s."
+                  },
+                  {
+                    "name": "vy",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Vy component of solar-wind bulk velocity at L1 in GSM (dawn-dusk). Typically small. DSCOVR usually emits null. Unit: km/s."
+                  },
+                  {
+                    "name": "vz",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Vz component of solar-wind bulk velocity at L1 in GSM (north-south). Typically small. DSCOVR usually emits null. Unit: km/s."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}

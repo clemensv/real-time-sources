@@ -1,0 +1,16 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "noaa_swpc_l1_core"
+version = "0.1.0"
+description = "Transport-agnostic acquisition and config for the NOAA SWPC L1 propagated solar wind bridge."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "noaa_swpc_l1_core" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+urllib3 = ">=2.7.0"
+idna = ">=3.15"
