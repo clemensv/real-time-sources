@@ -38,12 +38,15 @@ jobs:
           pip install -e ./pegelonline_producer/pegelonline_producer_kafka_producer
           pip install -e ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_data
           pip install -e ./pegelonline_mqtt_producer/pegelonline_mqtt_producer_mqtt_client
+          pip install -e ./pegelonline_amqp_producer/pegelonline_amqp_producer_data
+          pip install -e ./pegelonline_amqp_producer/pegelonline_amqp_producer_amqp_producer
 
       - name: Install transport-agnostic core and transport apps
         run: |
           pip install -e ./pegelonline_core
           pip install -e ./pegelonline_kafka
           pip install -e ./pegelonline_mqtt
+          pip install -e ./pegelonline_amqp
 
       - name: Run unit tests
         run: pytest tests/test_pegelonline_unit.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
@@ -57,11 +60,15 @@ jobs:
       - name: Run MQTT app tests
         run: pytest tests/test_pegelonline_mqtt_app.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
 
+      - name: Run AMQP app tests
+        run: pytest tests/test_pegelonline_amqp_app.py -v --tb=short -p no:cacheprovider --override-ini="addopts="
+        if: ${{ hashFiles('pegelonline/tests/test_pegelonline_amqp_app.py') != '' }}
+
       - name: Run all tests with coverage
         run: |
           pytest tests/ -v \
             --ignore=tests/test_pegelonline_e2e.py \
-            --cov=pegelonline_core --cov=pegelonline_kafka --cov=pegelonline_mqtt \
+            --cov=pegelonline_core --cov=pegelonline_kafka --cov=pegelonline_mqtt --cov=pegelonline_amqp \
             --cov-report=term-missing --cov-report=xml --cov-fail-under=20 \
             -p no:cacheprovider --override-ini="addopts="
 
