@@ -1,69 +1,103 @@
-# SMHI Hydrological Data Bridge Events
+# SMHI Hydrology API Bridge Events
 
-This document describes the events that are emitted by the SMHI Hydrological Data Bridge.
+This document describes the events that are emitted by the SMHI Hydrology API Bridge.
 
 - [SE.Gov.SMHI.Hydro](#message-group-segovsmhihydro)
   - [SE.Gov.SMHI.Hydro.Station](#message-segovsmhihydrostation)
   - [SE.Gov.SMHI.Hydro.DischargeObservation](#message-segovsmhihydrodischargeobservation)
+- [SE.Gov.SMHI.Hydro.mqtt](#message-group-segovsmhihydromqtt)
+  - [SE.Gov.SMHI.Hydro.mqtt.Station](#message-segovsmhihydromqttstation)
+  - [SE.Gov.SMHI.Hydro.mqtt.DischargeObservation](#message-segovsmhihydromqttdischargeobservation)
 
 ---
 
 ## Message Group: SE.Gov.SMHI.Hydro
-
 ---
-
 ### Message: SE.Gov.SMHI.Hydro.Station
-
 #### CloudEvents Attributes:
-
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
 |-------------|-----------------|--------------|--------------|-----------|
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `SE.Gov.SMHI.Hydro.Station` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `https://opendata-download-hydroobs.smhi.se` |
+| `type` |  | `` | `False` | `SE.Gov.SMHI.Hydro.Station` |
+| `source` |  | `` | `False` | `https://opendata-download-hydroobs.smhi.se` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
 #### Schema:
-
-##### Record: Station
-
-*A hydrological station from SMHI.*
-
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `station_id` | *string* | Unique station identifier |
-| `name` | *string* | Station name |
-| `owner` | *string* | Station owner (e.g. SMHI) |
-| `measuring_stations` | *string* | Station type (CORE or ADDITIONAL) |
-| `region` | *integer* | Region number |
-| `catchment_name` | *string* | Catchment area name (river/watercourse) |
-| `catchment_number` | *integer* | Catchment area number |
-| `catchment_size` | *number* | Catchment area size in km² |
-| `latitude` | *number* | Latitude in WGS84 |
-| `longitude` | *number* | Longitude in WGS84 |
-
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `owner` | *string* | - | `False` |  |
+| `measuring_stations` | *string* | - | `False` |  |
+| `region` | *int32* | - | `False` |  |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing. |
+| `catchment_number` | *int32* | - | `False` |  |
+| `catchment_size` | *double* | - | `False` |  |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
 ---
-
 ### Message: SE.Gov.SMHI.Hydro.DischargeObservation
-
 #### CloudEvents Attributes:
-
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
 |-------------|-----------------|--------------|--------------|-----------|
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `SE.Gov.SMHI.Hydro.DischargeObservation` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `https://opendata-download-hydroobs.smhi.se` |
+| `type` |  | `` | `False` | `SE.Gov.SMHI.Hydro.DischargeObservation` |
+| `source` |  | `` | `False` | `https://opendata-download-hydroobs.smhi.se` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
 #### Schema:
+##### Object: DischargeObservation
+*DischargeObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `station_name` | *string* | - | `True` |  |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `timestamp` | *datetime* | - | `True` |  |
+| `discharge` | *double* | - | `True` |  |
+| `quality` | *string* | - | `False` |  |
+## Message Group: SE.Gov.SMHI.Hydro.mqtt
+---
+### Message: SE.Gov.SMHI.Hydro.mqtt.Station
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `SE.Gov.SMHI.Hydro.Station` |
+| `source` |  | `` | `False` | `https://opendata-download-hydroobs.smhi.se` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-##### Record: DischargeObservation
+#### Schema:
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `owner` | *string* | - | `False` |  |
+| `measuring_stations` | *string* | - | `False` |  |
+| `region` | *int32* | - | `False` |  |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing. |
+| `catchment_number` | *int32* | - | `False` |  |
+| `catchment_size` | *double* | - | `False` |  |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
+---
+### Message: SE.Gov.SMHI.Hydro.mqtt.DischargeObservation
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `SE.Gov.SMHI.Hydro.DischargeObservation` |
+| `source` |  | `` | `False` | `https://opendata-download-hydroobs.smhi.se` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-*A discharge observation from SMHI.*
-
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `station_id` | *string* | Station identifier |
-| `station_name` | *string* | Station name |
-| `catchment_name` | *string* | Catchment area name (river/watercourse) |
-| `timestamp` | *string* | Measurement timestamp (ISO 8601) |
-| `discharge` | *number* | Discharge (flow rate) in m³/s |
-| `quality` | *string* | Data quality flag (e.g. O = original) |
+#### Schema:
+##### Object: DischargeObservation
+*DischargeObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `station_name` | *string* | - | `True` |  |
+| `catchment_name` | *string* | - | `True` | Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `timestamp` | *datetime* | - | `True` |  |
+| `discharge` | *double* | - | `True` |  |
+| `quality` | *string* | - | `False` |  |

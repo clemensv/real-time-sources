@@ -333,10 +333,11 @@ def _to_dict(p):
 
 
 def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str,
-                              level_field: str, water_axis_segment_index: int = 4):
+                              level_field: str, water_axis_segment_index: int = 4,
+                              telemetry_leaf: str = 'water-level'):
     """Common UNS-shape assertions for the three hydro MQTT pilots.
 
-    * Both ``info`` and ``water-level`` leaves exist for at least one
+    * Both ``info`` and the telemetry leaf exist for at least one
       common station.
     * Every message carries the six required CloudEvents binary-mode user
       properties (id, source, type, subject, time, specversion), retain=true
@@ -348,9 +349,9 @@ def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str
     """
     assert messages, 'No retained messages received from broker'
     info_msgs = [m for m in messages if m['topic'].endswith('/info')]
-    level_msgs = [m for m in messages if m['topic'].endswith('/water-level')]
+    level_msgs = [m for m in messages if m['topic'].endswith('/' + telemetry_leaf)]
     assert info_msgs, 'No /info reference events published'
-    assert level_msgs, 'No /water-level telemetry events published'
+    assert level_msgs, f'No /{telemetry_leaf} telemetry events published'
 
     for sample in (info_msgs[0], level_msgs[0]):
         up = sample['user_properties']
@@ -368,7 +369,7 @@ def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str
     info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
     level_stations = {m['topic'].split('/')[-2] for m in level_msgs}
     common = info_stations & level_stations
-    assert common, 'No station has both info and water-level retained leaves'
+    assert common, f'No station has both info and {telemetry_leaf} retained leaves'
 
     info_payload = _to_dict(info_msgs[0]['payload'])
     level_payload = _to_dict(level_msgs[0]['payload'])
@@ -993,6 +994,81 @@ class TestWalloniaIssepMqttDockerFlow:
         assert 'configuration_id' in info_payload, info_payload
         assert 'configuration_id' in obs_payload, obs_payload
         assert 'moment' in obs_payload, obs_payload
+
+
+# ---- smhi-hydro --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def smhi_hydro_mqtt_image():
+    return build_image('smhi-hydro', dockerfile='Dockerfile.mqtt', tag='test-smhi-hydro-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_smhi():
+    container, network, host_port = _generic_mosquitto(
+        'smhi-hydro-mqtt-e2e', 'smhi-hydro-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'container': container,
+            'network': network.name,
+            'host_port': host_port,
+            'internal_host': container.name,
+            'internal_port': 1883,
+        }
+    finally:
+        try:
+            container.stop(timeout=5)
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestSmhiHydroMqttDockerFlow:
+    """Verify the smhi-hydro-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_smhi, smhi_hydro_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_smhi['internal_host']}:{mosquitto_smhi['internal_port']}"
+        feeder = client.containers.run(
+            smhi_hydro_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_smhi['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_smhi['host_port'], 'hydro/se/smhi/smhi-hydro/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='SE.Gov.SMHI.Hydro.Station',
+            telemetry_type='SE.Gov.SMHI.Hydro.DischargeObservation',
+            level_field='discharge',
+            telemetry_leaf='discharge',
+        )
 
 # ---------------------------------------------------------------------------
 # Bluesky firehose -> MQTT/UNS (pilot)

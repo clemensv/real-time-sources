@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from smhi_hydro_producer_data.se.gov.smhi.hydro.dischargeobservation import DischargeObservation
+from smhi_hydro_mqtt_producer_data.dischargeobservation import DischargeObservation
 import datetime
 
 
@@ -29,12 +29,12 @@ class Test_DischargeObservation(unittest.TestCase):
         Create instance of DischargeObservation for testing
         """
         instance = DischargeObservation(
-            station_id='ptnxrtkwukmtwtdyouap',
-            station_name='ukttcklaihbieubucezm',
-            catchment_name='yxjwwzfxqmsaniwuygrl',
+            station_id='nslanabnuqhqqlloorih',
+            station_name='vprfvbetwlcebumqvrfl',
+            catchment_name='zcqfsposwbgmpbjvzspf',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(38.21124745172384),
-            quality='siiybhiyippzspvrdodo'
+            discharge=float(51.5382648809713),
+            quality='oypivstpgbqxhebgoblv'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ptnxrtkwukmtwtdyouap'
+        test_value = 'nslanabnuqhqqlloorih'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'ukttcklaihbieubucezm'
+        test_value = 'vprfvbetwlcebumqvrfl'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test catchment_name property
         """
-        test_value = 'yxjwwzfxqmsaniwuygrl'
+        test_value = 'zcqfsposwbgmpbjvzspf'
         self.instance.catchment_name = test_value
         self.assertEqual(self.instance.catchment_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(38.21124745172384)
+        test_value = float(51.5382648809713)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -83,16 +83,26 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test quality property
         """
-        test_value = 'siiybhiyippzspvrdodo'
+        test_value = 'oypivstpgbqxhebgoblv'
         self.instance.quality = test_value
         self.assertEqual(self.instance.quality, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = DischargeObservation.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = DischargeObservation.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+
