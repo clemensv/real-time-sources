@@ -126,6 +126,37 @@ jobs:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          COSIGN_DOCKER_MEDIA_TYPES: "1"
+          COSIGN_REGISTRY_USERNAME: ${{ github.actor }}
+          COSIGN_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+        # against the sigstore community Fulcio instance. Retries absorb
+        # transient ghcr.io BLOB_UNKNOWN / DENIED races right after push.
+        run: |
+          set -u
+          sign_one() {
+            local ref="$1"
+            local attempt=1
+            local max=5
+            local delay=6
+            while [ "$attempt" -le "$max" ]; do
+              echo "cosign sign attempt $attempt/$max for $ref"
+              if cosign sign --yes \
+                  --registry-username "${COSIGN_REGISTRY_USERNAME}" \
+                  --registry-password "${COSIGN_REGISTRY_PASSWORD}" \
+                  "$ref"; then
+                return 0
+              fi
+              echo "cosign sign failed (attempt $attempt); sleeping ${delay}s"
+              sleep "$delay"
+              attempt=$((attempt + 1))
+            done
+            echo "::error::cosign sign failed for $ref after $max attempts"
+            return 1
+          }
+          rc=0
+          while IFS= read -r tag; do
+            [ -z "$tag" ] && continue
+            sign_one "${tag}@${DIGEST}" || rc=1
+          done <<< "${TAGS}"
+          exit "$rc"
