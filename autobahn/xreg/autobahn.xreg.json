@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/DE.Autobahn"
       ]
+    },
+    "DE.Autobahn.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.Autobahn.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -686,6 +707,342 @@
           "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
         }
       }
+    },
+    "DE.Autobahn.mqtt": {
+      "messagegroupid": "DE.Autobahn.mqtt",
+      "description": "MQTT/5.0 mirror of the DE.Autobahn CloudEvents, published into the Unified-Namespace topic tree 'traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}'. {kind} (10 values) and {state} (appeared/updated/resolved) are literally baked per-message so xrcg can resolve every placeholder from schema fields. Lifecycle-event families (roadwork, short-term-roadwork, closure, entry-exit-closure, warning) are QoS-1 non-retained — they are state-change notifications, not LKV slots. Stable-object families (weight-limit-3-5, webcam, parking-lorry, electric-charging-station, strong-electric-charging-station) are QoS-1 retained so late subscribers see the current state of every known object; the bridge publishes an empty retained payload on `resolved` to clear the slot.",
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkAppeared.mqtt",
+          "name": "RoadworkAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/appeared",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.RoadworkUpdated.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkUpdated.mqtt",
+          "name": "RoadworkUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/updated",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.RoadworkResolved.mqtt": {
+          "messageid": "DE.Autobahn.RoadworkResolved.mqtt",
+          "name": "RoadworkResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/resolved",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkAppeared.mqtt",
+          "name": "ShortTermRoadworkAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/appeared",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkUpdated.mqtt",
+          "name": "ShortTermRoadworkUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/updated",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved.mqtt": {
+          "messageid": "DE.Autobahn.ShortTermRoadworkResolved.mqtt",
+          "name": "ShortTermRoadworkResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/resolved",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.ClosureAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ClosureAppeared.mqtt",
+          "name": "ClosureAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/appeared",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.ClosureUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ClosureUpdated.mqtt",
+          "name": "ClosureUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/updated",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.ClosureResolved.mqtt": {
+          "messageid": "DE.Autobahn.ClosureResolved.mqtt",
+          "name": "ClosureResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/resolved",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.EntryExitClosureAppeared.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureAppeared.mqtt",
+          "name": "EntryExitClosureAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/appeared",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.EntryExitClosureUpdated.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureUpdated.mqtt",
+          "name": "EntryExitClosureUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/updated",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.EntryExitClosureResolved.mqtt": {
+          "messageid": "DE.Autobahn.EntryExitClosureResolved.mqtt",
+          "name": "EntryExitClosureResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/resolved",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.WarningAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WarningAppeared.mqtt",
+          "name": "WarningAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/warning/{identifier}/appeared",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.WarningUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WarningUpdated.mqtt",
+          "name": "WarningUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/warning/{identifier}/updated",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.WarningResolved.mqtt": {
+          "messageid": "DE.Autobahn.WarningResolved.mqtt",
+          "name": "WarningResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/warning/{identifier}/resolved",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt",
+          "name": "WeightLimit35RestrictionAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/appeared",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt",
+          "name": "WeightLimit35RestrictionUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/updated",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt": {
+          "messageid": "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt",
+          "name": "WeightLimit35RestrictionResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/resolved",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.WebcamAppeared.mqtt": {
+          "messageid": "DE.Autobahn.WebcamAppeared.mqtt",
+          "name": "WebcamAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/appeared",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.WebcamUpdated.mqtt": {
+          "messageid": "DE.Autobahn.WebcamUpdated.mqtt",
+          "name": "WebcamUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/updated",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.WebcamResolved.mqtt": {
+          "messageid": "DE.Autobahn.WebcamResolved.mqtt",
+          "name": "WebcamResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/resolved",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.ParkingLorryAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryAppeared.mqtt",
+          "name": "ParkingLorryAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/appeared",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.ParkingLorryUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryUpdated.mqtt",
+          "name": "ParkingLorryUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/updated",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.ParkingLorryResolved.mqtt": {
+          "messageid": "DE.Autobahn.ParkingLorryResolved.mqtt",
+          "name": "ParkingLorryResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/resolved",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationAppeared.mqtt",
+          "name": "ElectricChargingStationAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/appeared",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationUpdated.mqtt",
+          "name": "ElectricChargingStationUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/updated",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationResolved.mqtt": {
+          "messageid": "DE.Autobahn.ElectricChargingStationResolved.mqtt",
+          "name": "ElectricChargingStationResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/resolved",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt",
+          "name": "StrongElectricChargingStationAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/appeared",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt",
+          "name": "StrongElectricChargingStationUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/updated",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved.mqtt": {
+          "messageid": "DE.Autobahn.StrongElectricChargingStationResolved.mqtt",
+          "name": "StrongElectricChargingStationResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/resolved",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -706,7 +1063,9 @@
                   "StringList": {
                     "name": "StringList",
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
                 },
@@ -715,6 +1074,7 @@
                 "additionalProperties": false,
                 "required": [
                   "identifier",
+                  "road",
                   "road_ids",
                   "event_time",
                   "display_type"
@@ -727,9 +1087,16 @@
                       "autobahn-api": "identifier"
                     }
                   },
+                  "road": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$",
+                    "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
                   "road_ids": {
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "minItems": 1,
                     "uniqueItems": true,
                     "description": "Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families."
@@ -753,17 +1120,25 @@
                     }
                   },
                   "title": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable title from the Autobahn API item."
                   },
                   "subtitle": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable subtitle from the Autobahn API item."
                   },
                   "description_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -771,56 +1146,80 @@
                     }
                   },
                   "future": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the item as a future event.",
                     "altnames": {
                       "autobahn-api": "future"
                     }
                   },
                   "is_blocked": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the affected road segment as blocked.",
                     "altnames": {
                       "autobahn-api": "isBlocked"
                     }
                   },
                   "icon": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API icon identifier for the item.",
                     "altnames": {
                       "autobahn-api": "icon"
                     }
                   },
                   "start_lc_position": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment.",
                     "altnames": {
                       "autobahn-api": "startLcPosition"
                     }
                   },
                   "start_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "startTimestamp value from the Autobahn API when the item includes a scheduled or known start time.",
                     "altnames": {
                       "autobahn-api": "startTimestamp"
                     }
                   },
                   "extent": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API extent text for the affected road segment.",
                     "altnames": {
                       "autobahn-api": "extent"
                     }
                   },
                   "point": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API point text that identifies the affected point on the road segment.",
                     "altnames": {
                       "autobahn-api": "point"
                     }
                   },
                   "coordinate_lat": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -90,
                     "maximum": 90,
                     "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -829,7 +1228,10 @@
                     }
                   },
                   "coordinate_lon": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -180,
                     "maximum": 180,
                     "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -838,21 +1240,30 @@
                     }
                   },
                   "geometry_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API geometry object for the affected road segment.",
                     "altnames": {
                       "autobahn-api": "geometry"
                     }
                   },
                   "impact_lower": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Lower bound from the Autobahn API impact object.",
                     "altnames": {
                       "autobahn-api": "impact.lower"
                     }
                   },
                   "impact_upper": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Upper bound from the Autobahn API impact object.",
                     "altnames": {
                       "autobahn-api": "impact.upper"
@@ -861,7 +1272,9 @@
                   "impact_symbols": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Impact symbols from the Autobahn API impact.symbols array.",
                     "altnames": {
@@ -869,7 +1282,10 @@
                     }
                   },
                   "route_recommendation_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
                     "altnames": {
                       "autobahn-api": "routeRecommendation"
@@ -878,7 +1294,9 @@
                   "footer_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -906,7 +1324,9 @@
                   "StringList": {
                     "name": "StringList",
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
                 },
@@ -915,6 +1335,7 @@
                 "additionalProperties": false,
                 "required": [
                   "identifier",
+                  "road",
                   "road_ids",
                   "event_time",
                   "display_type"
@@ -927,9 +1348,16 @@
                       "autobahn-api": "identifier"
                     }
                   },
+                  "road": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$",
+                    "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
                   "road_ids": {
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "minItems": 1,
                     "uniqueItems": true,
                     "description": "Autobahn road identifiers for the road query that yielded this warning item."
@@ -940,24 +1368,34 @@
                   },
                   "display_type": {
                     "type": "string",
-                    "enum": ["WARNING"],
+                    "enum": [
+                      "WARNING"
+                    ],
                     "description": "Autobahn API display_type for warning items.",
                     "altnames": {
                       "autobahn-api": "display_type"
                     }
                   },
                   "title": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable title from the Autobahn API warning item."
                   },
                   "subtitle": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable subtitle from the Autobahn API warning item."
                   },
                   "description_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -965,56 +1403,80 @@
                     }
                   },
                   "future": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the warning as a future event.",
                     "altnames": {
                       "autobahn-api": "future"
                     }
                   },
                   "is_blocked": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the warning segment as blocked.",
                     "altnames": {
                       "autobahn-api": "isBlocked"
                     }
                   },
                   "icon": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API icon identifier for the warning item.",
                     "altnames": {
                       "autobahn-api": "icon"
                     }
                   },
                   "start_lc_position": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the warning segment.",
                     "altnames": {
                       "autobahn-api": "startLcPosition"
                     }
                   },
                   "start_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "startTimestamp value from the Autobahn API when the warning includes a scheduled or known start time.",
                     "altnames": {
                       "autobahn-api": "startTimestamp"
                     }
                   },
                   "extent": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API extent text for the affected road segment.",
                     "altnames": {
                       "autobahn-api": "extent"
                     }
                   },
                   "point": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API point text that identifies the affected point on the road segment.",
                     "altnames": {
                       "autobahn-api": "point"
                     }
                   },
                   "coordinate_lat": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -90,
                     "maximum": 90,
                     "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1023,7 +1485,10 @@
                     }
                   },
                   "coordinate_lon": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -180,
                     "maximum": 180,
                     "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1032,21 +1497,30 @@
                     }
                   },
                   "geometry_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API geometry object for the affected road segment.",
                     "altnames": {
                       "autobahn-api": "geometry"
                     }
                   },
                   "impact_lower": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Lower bound from the Autobahn API impact object.",
                     "altnames": {
                       "autobahn-api": "impact.lower"
                     }
                   },
                   "impact_upper": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Upper bound from the Autobahn API impact object.",
                     "altnames": {
                       "autobahn-api": "impact.upper"
@@ -1055,7 +1529,9 @@
                   "impact_symbols": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Impact symbols from the Autobahn API impact.symbols array.",
                     "altnames": {
@@ -1063,7 +1539,10 @@
                     }
                   },
                   "route_recommendation_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
                     "altnames": {
                       "autobahn-api": "routeRecommendation"
@@ -1072,7 +1551,9 @@
                   "footer_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -1080,7 +1561,10 @@
                     }
                   },
                   "delay_minutes": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "minimum": 0,
                     "unit": "min",
                     "description": "delayTimeValue from the Autobahn warning item, expressed in minutes.",
@@ -1089,7 +1573,10 @@
                     }
                   },
                   "average_speed_kmh": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "minimum": 0,
                     "unit": "km/h",
                     "description": "averageSpeed from the Autobahn warning item, expressed in kilometers per hour.",
@@ -1098,14 +1585,20 @@
                     }
                   },
                   "abnormal_traffic_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "abnormalTrafficType code from the Autobahn warning item.",
                     "altnames": {
                       "autobahn-api": "abnormalTrafficType"
                     }
                   },
                   "source_name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "source value from the Autobahn warning item that identifies the origin of the warning.",
                     "altnames": {
                       "autobahn-api": "source"
@@ -1132,7 +1625,9 @@
                   "StringList": {
                     "name": "StringList",
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
                 },
@@ -1141,6 +1636,7 @@
                 "additionalProperties": false,
                 "required": [
                   "identifier",
+                  "road",
                   "road_ids",
                   "event_time",
                   "display_type"
@@ -1153,9 +1649,16 @@
                       "autobahn-api": "identifier"
                     }
                   },
+                  "road": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$",
+                    "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
                   "road_ids": {
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "minItems": 1,
                     "uniqueItems": true,
                     "description": "Autobahn road identifiers for the road query that yielded this parking item."
@@ -1166,24 +1669,34 @@
                   },
                   "display_type": {
                     "type": "string",
-                    "enum": ["PARKING"],
+                    "enum": [
+                      "PARKING"
+                    ],
                     "description": "Autobahn API display_type for lorry parking items.",
                     "altnames": {
                       "autobahn-api": "display_type"
                     }
                   },
                   "title": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable title from the Autobahn API parking item."
                   },
                   "subtitle": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable subtitle from the Autobahn API parking item."
                   },
                   "description_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -1191,49 +1704,70 @@
                     }
                   },
                   "future": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the parking item as a future entry.",
                     "altnames": {
                       "autobahn-api": "future"
                     }
                   },
                   "is_blocked": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the parking site as blocked.",
                     "altnames": {
                       "autobahn-api": "isBlocked"
                     }
                   },
                   "icon": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API icon identifier for the parking item.",
                     "altnames": {
                       "autobahn-api": "icon"
                     }
                   },
                   "start_lc_position": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Numeric startLcPosition value emitted by the Autobahn API for the parking site location.",
                     "altnames": {
                       "autobahn-api": "startLcPosition"
                     }
                   },
                   "extent": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API extent text for the parking site.",
                     "altnames": {
                       "autobahn-api": "extent"
                     }
                   },
                   "point": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API point text that identifies the parking site location.",
                     "altnames": {
                       "autobahn-api": "point"
                     }
                   },
                   "coordinate_lat": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -90,
                     "maximum": 90,
                     "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1242,7 +1776,10 @@
                     }
                   },
                   "coordinate_lon": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -180,
                     "maximum": 180,
                     "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1251,7 +1788,10 @@
                     }
                   },
                   "route_recommendation_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location.",
                     "altnames": {
                       "autobahn-api": "routeRecommendation"
@@ -1260,7 +1800,9 @@
                   "footer_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -1270,7 +1812,9 @@
                   "amenity_descriptions": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities.",
                     "altnames": {
@@ -1278,12 +1822,18 @@
                     }
                   },
                   "car_space_count": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "minimum": 0,
                     "description": "Number of passenger-car spaces parsed from description lines that contain PKW Stellplätze."
                   },
                   "lorry_space_count": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "minimum": 0,
                     "description": "Number of lorry spaces parsed from description lines that contain LKW Stellplätze."
                   }
@@ -1308,7 +1858,9 @@
                   "StringList": {
                     "name": "StringList",
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
                 },
@@ -1317,6 +1869,7 @@
                 "additionalProperties": false,
                 "required": [
                   "identifier",
+                  "road",
                   "road_ids",
                   "event_time",
                   "display_type"
@@ -1329,9 +1882,16 @@
                       "autobahn-api": "identifier"
                     }
                   },
+                  "road": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$",
+                    "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
                   "road_ids": {
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "minItems": 1,
                     "uniqueItems": true,
                     "description": "Autobahn road identifiers for the road query that yielded this charging station item."
@@ -1352,17 +1912,25 @@
                     }
                   },
                   "title": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable title from the Autobahn API charging-station item."
                   },
                   "subtitle": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable subtitle from the Autobahn API charging-station item."
                   },
                   "description_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -1370,42 +1938,60 @@
                     }
                   },
                   "future": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the charging station item as a future entry.",
                     "altnames": {
                       "autobahn-api": "future"
                     }
                   },
                   "is_blocked": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the charging station site as blocked.",
                     "altnames": {
                       "autobahn-api": "isBlocked"
                     }
                   },
                   "icon": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API icon identifier for the charging station item.",
                     "altnames": {
                       "autobahn-api": "icon"
                     }
                   },
                   "extent": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API extent text for the charging station site.",
                     "altnames": {
                       "autobahn-api": "extent"
                     }
                   },
                   "point": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API point text that identifies the charging station site.",
                     "altnames": {
                       "autobahn-api": "point"
                     }
                   },
                   "coordinate_lat": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -90,
                     "maximum": 90,
                     "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1414,7 +2000,10 @@
                     }
                   },
                   "coordinate_lon": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -180,
                     "maximum": 180,
                     "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1423,20 +2012,32 @@
                     }
                   },
                   "address_line": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Address line parsed from the first Autobahn API description line for the charging station site."
                   },
                   "charging_point_count": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "minimum": 0,
                     "description": "Number of parsed charging point entries derived from the Autobahn API description lines."
                   },
                   "charging_points_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized array of normalized charging point entries parsed from the Autobahn API description lines."
                   },
                   "route_recommendation_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the charging station site.",
                     "altnames": {
                       "autobahn-api": "routeRecommendation"
@@ -1445,7 +2046,9 @@
                   "footer_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -1473,7 +2076,9 @@
                   "StringList": {
                     "name": "StringList",
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
                 },
@@ -1482,6 +2087,7 @@
                 "additionalProperties": false,
                 "required": [
                   "identifier",
+                  "road",
                   "road_ids",
                   "event_time",
                   "display_type"
@@ -1494,9 +2100,16 @@
                       "autobahn-api": "identifier"
                     }
                   },
+                  "road": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$",
+                    "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
                   "road_ids": {
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "minItems": 1,
                     "uniqueItems": true,
                     "description": "Autobahn road identifiers for the road query that yielded this webcam item."
@@ -1507,24 +2120,34 @@
                   },
                   "display_type": {
                     "type": "string",
-                    "enum": ["WEBCAM"],
+                    "enum": [
+                      "WEBCAM"
+                    ],
                     "description": "Autobahn API display_type for webcam items.",
                     "altnames": {
                       "autobahn-api": "display_type"
                     }
                   },
                   "title": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable title from the Autobahn API webcam item."
                   },
                   "subtitle": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable subtitle from the Autobahn API webcam item."
                   },
                   "description_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -1532,42 +2155,60 @@
                     }
                   },
                   "future": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the webcam item as a future entry.",
                     "altnames": {
                       "autobahn-api": "future"
                     }
                   },
                   "is_blocked": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the Autobahn API marks the webcam location as blocked.",
                     "altnames": {
                       "autobahn-api": "isBlocked"
                     }
                   },
                   "icon": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API icon identifier for the webcam item.",
                     "altnames": {
                       "autobahn-api": "icon"
                     }
                   },
                   "extent": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API extent text for the webcam location.",
                     "altnames": {
                       "autobahn-api": "extent"
                     }
                   },
                   "point": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Autobahn API point text that identifies the webcam location.",
                     "altnames": {
                       "autobahn-api": "point"
                     }
                   },
                   "coordinate_lat": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -90,
                     "maximum": 90,
                     "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1576,7 +2217,10 @@
                     }
                   },
                   "coordinate_lon": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "minimum": -180,
                     "maximum": 180,
                     "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
@@ -1585,7 +2229,10 @@
                     }
                   },
                   "route_recommendation_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the webcam location.",
                     "altnames": {
                       "autobahn-api": "routeRecommendation"
@@ -1594,7 +2241,9 @@
                   "footer_lines": {
                     "type": [
                       "null",
-                      { "$ref": "#/definitions/StringList" }
+                      {
+                        "$ref": "#/definitions/StringList"
+                      }
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -1602,21 +2251,30 @@
                     }
                   },
                   "operator_name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "operator value from the Autobahn API webcam item.",
                     "altnames": {
                       "autobahn-api": "operator"
                     }
                   },
                   "image_url": {
-                    "type": ["uri", "null"],
+                    "type": [
+                      "uri",
+                      "null"
+                    ],
                     "description": "imageurl value from the Autobahn API webcam item for the still image.",
                     "altnames": {
                       "autobahn-api": "imageurl"
                     }
                   },
                   "stream_url": {
-                    "type": ["uri", "null"],
+                    "type": [
+                      "uri",
+                      "null"
+                    ],
                     "description": "linkurl value from the Autobahn API webcam item for the linked stream or detail page.",
                     "altnames": {
                       "autobahn-api": "linkurl"
@@ -1646,28 +2304,183 @@
                 "namespace": "DE.Autobahn",
                 "doc": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.",
                 "fields": [
-                  { "name": "identifier", "type": "string" },
-                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
-                  { "name": "event_time", "type": "string" },
-                  { "name": "display_type", "type": "string" },
-                  { "name": "title", "type": ["null", "string"], "default": null },
-                  { "name": "subtitle", "type": ["null", "string"], "default": null },
-                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "future", "type": ["null", "boolean"], "default": null },
-                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
-                  { "name": "icon", "type": ["null", "string"], "default": null },
-                  { "name": "start_lc_position", "type": ["null", "int"], "default": null },
-                  { "name": "start_timestamp", "type": ["null", "string"], "default": null },
-                  { "name": "extent", "type": ["null", "string"], "default": null },
-                  { "name": "point", "type": ["null", "string"], "default": null },
-                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
-                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
-                  { "name": "geometry_json", "type": ["null", "string"], "default": null },
-                  { "name": "impact_lower", "type": ["null", "string"], "default": null },
-                  { "name": "impact_upper", "type": ["null", "string"], "default": null },
-                  { "name": "impact_symbols", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
-                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null }
+                  {
+                    "name": "identifier",
+                    "type": "string"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "display_type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "subtitle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "description_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "future",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_blocked",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "icon",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "start_lc_position",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "start_timestamp",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "extent",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "point",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "geometry_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "impact_lower",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "impact_upper",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "impact_symbols",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "footer_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  }
                 ]
               }
             }
@@ -1687,32 +2500,215 @@
                 "namespace": "DE.Autobahn",
                 "doc": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.",
                 "fields": [
-                  { "name": "identifier", "type": "string" },
-                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
-                  { "name": "event_time", "type": "string" },
-                  { "name": "display_type", "type": "string" },
-                  { "name": "title", "type": ["null", "string"], "default": null },
-                  { "name": "subtitle", "type": ["null", "string"], "default": null },
-                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "future", "type": ["null", "boolean"], "default": null },
-                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
-                  { "name": "icon", "type": ["null", "string"], "default": null },
-                  { "name": "start_lc_position", "type": ["null", "int"], "default": null },
-                  { "name": "start_timestamp", "type": ["null", "string"], "default": null },
-                  { "name": "extent", "type": ["null", "string"], "default": null },
-                  { "name": "point", "type": ["null", "string"], "default": null },
-                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
-                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
-                  { "name": "geometry_json", "type": ["null", "string"], "default": null },
-                  { "name": "impact_lower", "type": ["null", "string"], "default": null },
-                  { "name": "impact_upper", "type": ["null", "string"], "default": null },
-                  { "name": "impact_symbols", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
-                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "delay_minutes", "type": ["null", "int"], "default": null },
-                  { "name": "average_speed_kmh", "type": ["null", "int"], "default": null },
-                  { "name": "abnormal_traffic_type", "type": ["null", "string"], "default": null },
-                  { "name": "source_name", "type": ["null", "string"], "default": null }
+                  {
+                    "name": "identifier",
+                    "type": "string"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "display_type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "subtitle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "description_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "future",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_blocked",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "icon",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "start_lc_position",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "start_timestamp",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "extent",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "point",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "geometry_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "impact_lower",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "impact_upper",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "impact_symbols",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "footer_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "delay_minutes",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "average_speed_kmh",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "abnormal_traffic_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "source_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
                 ]
               }
             }
@@ -1732,26 +2728,167 @@
                 "namespace": "DE.Autobahn",
                 "doc": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.",
                 "fields": [
-                  { "name": "identifier", "type": "string" },
-                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
-                  { "name": "event_time", "type": "string" },
-                  { "name": "display_type", "type": "string" },
-                  { "name": "title", "type": ["null", "string"], "default": null },
-                  { "name": "subtitle", "type": ["null", "string"], "default": null },
-                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "future", "type": ["null", "boolean"], "default": null },
-                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
-                  { "name": "icon", "type": ["null", "string"], "default": null },
-                  { "name": "start_lc_position", "type": ["null", "int"], "default": null },
-                  { "name": "extent", "type": ["null", "string"], "default": null },
-                  { "name": "point", "type": ["null", "string"], "default": null },
-                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
-                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
-                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
-                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "amenity_descriptions", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "car_space_count", "type": ["null", "int"], "default": null },
-                  { "name": "lorry_space_count", "type": ["null", "int"], "default": null }
+                  {
+                    "name": "identifier",
+                    "type": "string"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "display_type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "subtitle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "description_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "future",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_blocked",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "icon",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "start_lc_position",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "extent",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "point",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "footer_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "amenity_descriptions",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "car_space_count",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "lorry_space_count",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
                 ]
               }
             }
@@ -1771,25 +2908,156 @@
                 "namespace": "DE.Autobahn",
                 "doc": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.",
                 "fields": [
-                  { "name": "identifier", "type": "string" },
-                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
-                  { "name": "event_time", "type": "string" },
-                  { "name": "display_type", "type": "string" },
-                  { "name": "title", "type": ["null", "string"], "default": null },
-                  { "name": "subtitle", "type": ["null", "string"], "default": null },
-                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "future", "type": ["null", "boolean"], "default": null },
-                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
-                  { "name": "icon", "type": ["null", "string"], "default": null },
-                  { "name": "extent", "type": ["null", "string"], "default": null },
-                  { "name": "point", "type": ["null", "string"], "default": null },
-                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
-                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
-                  { "name": "address_line", "type": ["null", "string"], "default": null },
-                  { "name": "charging_point_count", "type": ["null", "int"], "default": null },
-                  { "name": "charging_points_json", "type": ["null", "string"], "default": null },
-                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
-                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null }
+                  {
+                    "name": "identifier",
+                    "type": "string"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "display_type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "subtitle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "description_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "future",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_blocked",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "icon",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "extent",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "point",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "address_line",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "charging_point_count",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "charging_points_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "footer_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  }
                 ]
               }
             }
@@ -1809,25 +3077,156 @@
                 "namespace": "DE.Autobahn",
                 "doc": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.",
                 "fields": [
-                  { "name": "identifier", "type": "string" },
-                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
-                  { "name": "event_time", "type": "string" },
-                  { "name": "display_type", "type": "string" },
-                  { "name": "title", "type": ["null", "string"], "default": null },
-                  { "name": "subtitle", "type": ["null", "string"], "default": null },
-                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "future", "type": ["null", "boolean"], "default": null },
-                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
-                  { "name": "icon", "type": ["null", "string"], "default": null },
-                  { "name": "extent", "type": ["null", "string"], "default": null },
-                  { "name": "point", "type": ["null", "string"], "default": null },
-                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
-                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
-                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
-                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
-                  { "name": "operator_name", "type": ["null", "string"], "default": null },
-                  { "name": "image_url", "type": ["null", "string"], "default": null },
-                  { "name": "stream_url", "type": ["null", "string"], "default": null }
+                  {
+                    "name": "identifier",
+                    "type": "string"
+                  },
+                  {
+                    "name": "road",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness."
+                  },
+                  {
+                    "name": "road_ids",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    }
+                  },
+                  {
+                    "name": "event_time",
+                    "type": "string"
+                  },
+                  {
+                    "name": "display_type",
+                    "type": "string"
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "subtitle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "description_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "future",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "is_blocked",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "icon",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "extent",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "point",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lat",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "coordinate_lon",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "route_recommendation_json",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "footer_lines",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "operator_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "image_url",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "stream_url",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
                 ]
               }
             }

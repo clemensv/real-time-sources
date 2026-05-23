@@ -8,17 +8,17 @@ The **MQTT variant** (`Dockerfile.mqtt`) publishes retained, QoS-1,
 binary-mode CloudEvents into a Unified-Namespace topic tree:
 
 ```
-aq/be/wallonia/wallonia-issep/{configuration_id}/info
-aq/be/wallonia/wallonia-issep/{configuration_id}/observation
+air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/info
+air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation
 ```
 
 ### Wildcard subscriptions
 
 | Pattern | What it captures |
 |---------|-----------------|
-| `aq/be/wallonia/wallonia-issep/#` | All air-quality events for Wallonia ISSeP |
-| `aq/be/wallonia/wallonia-issep/+/info` | All sensor configuration info events |
-| `aq/be/wallonia/wallonia-issep/+/observation` | All observation events |
+| `air-quality/be/issep/wallonia-issep/#` | All air-quality events for Wallonia ISSeP |
+| `air-quality/be/issep/wallonia-issep/+/info` | All sensor configuration info events |
+| `air-quality/be/issep/wallonia-issep/+/observation` | All observation events |
 
 ### Environment variables (MQTT)
 

@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/hongkong-epd"
 LABEL org.opencontainers.image.title="Hong Kong EPD AQHI → MQTT/UNS bridge"
-LABEL org.opencontainers.image.description="Polls the Hong Kong EPD AQHI XML feed for air quality readings and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (aq/hk/epd/hongkong-epd/{district}/{station_id}/...)."
+LABEL org.opencontainers.image.description="Polls the Hong Kong EPD AQHI XML feed for air quality readings and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (air-quality/hk/epd/hongkong-epd/{district}/{station_id}/...)."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/hongkong-epd/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 LABEL source.transport="mqtt"

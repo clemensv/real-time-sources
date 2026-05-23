@@ -1,6 +1,6 @@
 
 
-# Wikimedia-osm-diffs-producer Kafka Producer# Wikimedia-osm-diffs-producer Event Dispatcher for Apache Kafka
+# Wikimedia_osm_diffs_producer Kafka Producer# Wikimedia_osm_diffs_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -98,7 +98,7 @@ Initializes the dispatcher.
 
 ```python
 
-from wikimedia-osm-diffs-producer import OrgOpenStreetMapDiffsProducer```python
+from wikimedia_osm_diffs_producer import OrgOpenStreetMapDiffsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -443,7 +443,7 @@ Initializes the dispatcher.
 
 ```python
 
-from wikimedia-osm-diffs-producer import OrgOpenStreetMapDiffsProducer```python
+from wikimedia_osm_diffs_producer import OrgOpenStreetMapDiffsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -788,7 +788,7 @@ Initializes the dispatcher.
 
 ```python
 
-from wikimedia-osm-diffs-producer import OrgOpenStreetMapDiffsProducer```python
+from wikimedia_osm_diffs_producer import OrgOpenStreetMapDiffsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

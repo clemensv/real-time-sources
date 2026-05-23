@@ -1,6 +1,6 @@
-# Wallonia ISSeP Air Quality Bridge Events
+# Wallonia ISSEP Air Quality Bridge Events
 
-This document describes the events that are emitted by the Wallonia ISSeP Air Quality Bridge.
+Events emitted by the Wallonia ISSEP bridge.
 
 - [be.issep.airquality.Sensors](#message-group-beissepairqualitysensors)
   - [be.issep.airquality.SensorConfiguration](#message-beissepairqualitysensorconfiguration)
@@ -27,6 +27,7 @@ This document describes the events that are emitted by the Wallonia ISSeP Air Qu
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `configuration_id` | *string* | - | `True` | Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key. |
+| `province` | *string* | - | `True` | Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or "unknown" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis. |
 ---
 ### Message: be.issep.airquality.Observation
 #### CloudEvents Attributes:
@@ -42,6 +43,7 @@ This document describes the events that are emitted by the Wallonia ISSeP Air Qu
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `configuration_id` | *string* | - | `True` | Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key. |
+| `province` | *string* | - | `True` | Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or "unknown" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis. |
 | `moment` | *string* | - | `True` | ISO 8601 observation timestamp from the upstream moment field, e.g. '2026-04-08T09:09:13+02:00'. Preserved as-is from the API response. |
 | `co` | *int32* (optional) | - | `False` | Raw carbon monoxide electrochemical sensor reading in internal units. |
 | `no` | *int32* (optional) | - | `False` | Raw nitric oxide electrochemical sensor reading in internal units. |
@@ -99,6 +101,7 @@ This document describes the events that are emitted by the Wallonia ISSeP Air Qu
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `configuration_id` | *string* | - | `True` | Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key. |
+| `province` | *string* | - | `True` | Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or "unknown" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis. |
 ---
 ### Message: be.issep.airquality.Sensors.mqtt.Observation
 #### CloudEvents Attributes:
@@ -114,6 +117,7 @@ This document describes the events that are emitted by the Wallonia ISSeP Air Qu
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `configuration_id` | *string* | - | `True` | Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key. |
+| `province` | *string* | - | `True` | Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or "unknown" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis. |
 | `moment` | *string* | - | `True` | ISO 8601 observation timestamp from the upstream moment field, e.g. '2026-04-08T09:09:13+02:00'. Preserved as-is from the API response. |
 | `co` | *int32* (optional) | - | `False` | Raw carbon monoxide electrochemical sensor reading in internal units. |
 | `no` | *int32* (optional) | - | `False` | Raw nitric oxide electrochemical sensor reading in internal units. |

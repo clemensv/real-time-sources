@@ -96,12 +96,35 @@ def _stringify_optional(value: Any) -> Optional[str]:
     return str(value)
 
 
+_NAMESPACE_BUCKETS: dict[int, str] = {
+    -2: "media", -1: "special",
+    0: "main", 1: "talk", 2: "user", 3: "user-talk", 4: "project", 5: "project-talk",
+    6: "file", 7: "file-talk", 8: "mediawiki", 9: "mediawiki-talk",
+    10: "template", 11: "template-talk", 12: "help", 13: "help-talk",
+    14: "category", 15: "category-talk",
+    100: "portal", 101: "portal-talk", 118: "draft", 119: "draft-talk",
+    828: "module", 829: "module-talk",
+    1198: "translations", 1199: "translations-talk",
+}
+
+
+def _namespace_bucket(ns: Any) -> str:
+    """Map a MediaWiki numeric namespace to a kebab-case bucket label."""
+
+    try:
+        n = int(ns)
+    except (TypeError, ValueError):
+        return "unknown"
+    return _NAMESPACE_BUCKETS.get(n, f"ns-{n}")
+
+
 def normalize_recent_change(change: dict[str, Any]) -> dict[str, Any]:
     """Normalize a Wikimedia recentchange payload for the generated data class."""
 
     meta = change.get("meta", {})
     length = change.get("length") or {}
     revision = change.get("revision") or {}
+    ns_value = change.get("namespace")
 
     return {
         "event_id": _stringify_optional(meta.get("id")),
@@ -120,7 +143,8 @@ def normalize_recent_change(change: dict[str, Any]) -> dict[str, Any]:
         },
         "id": _stringify_optional(change.get("id")),
         "type": change.get("type"),
-        "namespace": change.get("namespace"),
+        "namespace_id": ns_value,
+        "namespace": _namespace_bucket(ns_value),
         "title": change.get("title"),
         "title_url": change.get("title_url"),
         "comment": change.get("comment"),

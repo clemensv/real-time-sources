@@ -92,7 +92,7 @@
           "basemessageurl": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.SensorConfiguration",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "aq/be/wallonia/wallonia-issep/{configuration_id}/info",
+            "topic_name": "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/info",
             "qos": 1,
             "retain": true
           }
@@ -102,7 +102,7 @@
           "basemessageurl": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "aq/be/wallonia/wallonia-issep/{configuration_id}/observation",
+            "topic_name": "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation",
             "qos": 1,
             "retain": true
           }
@@ -129,7 +129,8 @@
                 "additionalProperties": false,
                 "description": "Reference data for one ISSeP Wallonia air quality sensor configuration. Each id_configuration identifies a deployed sensor unit. The bridge emits this event at startup for each distinct configuration seen in the data records.",
                 "required": [
-                  "configuration_id"
+                  "configuration_id",
+                  "province"
                 ],
                 "properties": {
                   "configuration_id": {
@@ -139,6 +140,10 @@
                     "altnames": {
                       "issep": "id_configuration"
                     }
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or \"unknown\" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis."
                   }
                 }
               }
@@ -162,7 +167,8 @@
                 "description": "Air quality observation from one ISSeP Wallonia sensor at a specific moment in time. Includes raw electrochemical gas readings, calibrated ppb and µg/m³ values, particulate matter concentrations, environmental parameters, reference station comparisons, and quality status flags. Negative raw values (e.g. no2=-4) are valid sensor readings and must not be filtered.",
                 "required": [
                   "configuration_id",
-                  "moment"
+                  "moment",
+                  "province"
                 ],
                 "properties": {
                   "configuration_id": {
@@ -172,6 +178,10 @@
                     "altnames": {
                       "issep": "id_configuration"
                     }
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or \"unknown\" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis."
                   },
                   "moment": {
                     "type": "string",

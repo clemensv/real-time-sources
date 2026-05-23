@@ -179,19 +179,19 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='fyifpkcphudipgpfkxra',
-            station_name='bwyyejhvnrtcvsgdqwvj',
-            water_body='uatcslbugtyvwjcekekb',
-            state='xxqrkaxgjkypmywnmyzf',
-            region='drkdlwdnrzputruubskp',
-            provider='oksnaqnwotdqxfutxqdl',
-            latitude=float(92.1469950263051),
-            longitude=float(35.262973336921945),
-            river_km=float(43.35035267656004),
-            altitude=float(27.668060216934975),
-            station_type='rbdpkdbhuwyeyjenalwe',
-            warn_level_cm=float(77.38871408818713),
-            alarm_level_cm=float(27.786740956447332),
-            warn_level_m3s=float(23.76137267055053),
-            alarm_level_m3s=float(80.34337205979571)
+            station_id='eakjxwnipngtqmluxwif',
+            station_name='pimgxeucxgrorhimhbrk',
+            water_body='rqifdaajrjonpbjejkyq',
+            state='sljtpyvodqpsjnywzrlj',
+            region='zsqhdogzuclflxhiphvz',
+            provider='asziziigzhnfbxdqcoko',
+            latitude=float(64.48818576212577),
+            longitude=float(20.34850513014034),
+            river_km=float(56.530640306623766),
+            altitude=float(98.8244265541659),
+            station_type='lpovzkudoegyfqeawhfs',
+            warn_level_cm=float(13.28843227366171),
+            alarm_level_cm=float(62.7120745244371),
+            warn_level_m3s=float(50.03185921009104),
+            alarm_level_m3s=float(3.810150209169272)
         )

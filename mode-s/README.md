@@ -132,3 +132,8 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / UNS feeder
+
+A sibling container (`Dockerfile.mqtt`) publishes each decoded Mode-S record into an MQTT 5.0 broker on a Unified-Namespace topic tree: `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}` with one of 6 DF-family literals (`df17-adsb`, `df4-altitude`, `df5-identity`, `df11-acquisition`, `df20-comm-b`, `df21-comm-b`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).
