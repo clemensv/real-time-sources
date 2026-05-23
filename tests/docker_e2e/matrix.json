@@ -170,12 +170,6 @@
       "module": "noaa_nws"
     },
     {
-      "dir": "nws-alerts",
-      "image": "nws-alerts-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "nws_alerts_mqtt"
-    },
-    {
       "dir": "pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
@@ -274,6 +268,12 @@
       "image": "wikimedia-eventstreams-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wikimedia_eventstreams_mqtt"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nws_alerts_mqtt"
     }
   ],
   "flow": [
@@ -413,14 +413,6 @@
       "test_class": "TestNOAANwsDockerFlow"
     },
     {
-      "dir": "nws-alerts",
-      "image": "nws-alerts-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "nws_alerts_mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestNwsAlertsMqttDockerFlow"
-    },
-    {
       "dir": "pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
@@ -512,6 +504,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWikimediaEventstreamsMqttDockerFlow"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNwsAlertsMqttDockerFlow"
     }
   ]
 }
