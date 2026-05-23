@@ -27,7 +27,7 @@ jobs:
       reason: ${{ steps.compute.outputs.reason }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -71,10 +71,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 20
       matrix: ${{ fromJson(needs.discover.outputs.build_matrix) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Build Docker image
         run: |
@@ -92,10 +93,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 20
       matrix: ${{ fromJson(needs.discover.outputs.flow_matrix) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
@@ -112,7 +114,7 @@ jobs:
 
       - name: Run Kafka flow test
         run: |
-          pytest tests/docker_e2e/test_docker_kafka_flow.py \
+          pytest tests/docker_e2e/${{ matrix.test_file || 'test_docker_kafka_flow.py' }} \
             -v --timeout=600 \
             -k "${{ matrix.test_class }}" \
             --tb=long
