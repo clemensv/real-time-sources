@@ -125,3 +125,50 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsmhi-hydro%2Fazure-template-with-eventhub.json)
+
+## MQTT/UNS image
+
+A sibling container image, ghcr.io/clemensv/real-time-sources-smhi-hydro-mqtt, is built from
+`Dockerfile.mqtt` and publishes the same station-catalog and discharge
+events as **MQTT 5.0 binary-mode CloudEvents** into a Unified-Namespace
+topic tree:
+
+```
+hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/info          # station reference
+hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/discharge     # latest discharge observation
+```
+
+Every leaf is published with QoS 1 and `retain=true` so any subscriber
+sees the most recent value as soon as it subscribes. The full CloudEvents
+binding (`id`, `source`, `type`, `subject`, `time`,
+`specversion`) is carried as MQTT 5 user properties; the payload is the
+`application/json` body of the same JsonStructure schema used by the
+Kafka image.
+
+### Run against a generic MQTT 5 broker
+
+```
+docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
+    -e MQTT_USERNAME='<username>' \
+    -e MQTT_PASSWORD='<password>' \
+    ghcr.io/clemensv/real-time-sources-smhi-hydro-mqtt:latest
+```
+
+Set `MQTT_TLS=true` or use the `mqtts://`/`ssl://` URL scheme to
+enable TLS. `MQTT_CLIENT_ID` is optional but recommended on shared
+brokers. `POLLING_INTERVAL` (seconds) controls how often the upstream
+HTTP service is re-polled (default 900 s).
+
+### Subscription patterns
+
+```
+# Everything from this source
+hydro/se/smhi/smhi-hydro/#
+
+# All discharge telemetry for one catchment
+hydro/se/smhi/smhi-hydro/<catchment_name>/+/discharge
+
+# Reference data for every station
+hydro/se/smhi/smhi-hydro/+/+/info
+```

@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/SE.Gov.SMHI.Hydro"
       ]
+    },
+    "SE.Gov.SMHI.Hydro.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -60,6 +81,31 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.mqtt": {
+      "description": "MQTT/5.0 transport variants of the SMHI Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/... The {catchment_name} placeholder is sourced from the SMHI station catalog (field 'catchmentName', e.g. 'Torneälven', 'Dalälven') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole catchments (e.g. hydro/se/smhi/smhi-hydro/tornealven/+/discharge).",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "SE.Gov.SMHI.Hydro.mqtt.DischargeObservation": {
+          "name": "DischargeObservation",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/discharge",
+            "qos": 1,
+            "retain": true
+          }
         }
       }
     }
@@ -135,6 +181,7 @@
                 "required": [
                   "station_id",
                   "station_name",
+                  "catchment_name",
                   "timestamp",
                   "discharge"
                 ],
@@ -147,7 +194,8 @@
                     "type": "string"
                   },
                   "catchment_name": {
-                    "type": ["string", "null"]
+                    "type": ["string", "null"],
+                    "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "timestamp": {
                     "type": "datetime"

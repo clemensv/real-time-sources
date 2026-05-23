@@ -30,6 +30,13 @@ bridge.
 
 See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
 
+### MQTT/UNS
+
+A dedicated MQTT 5.0 feeder publishes station catalog and discharge
+observations into `hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/...`
+as binary-mode CloudEvents with QoS 1 and retain. See the
+[MQTT/UNS section in CONTAINER.md](CONTAINER.md#mqttuns-image) for details.
+
 ### Fabric notebook hosting
 
 This source can also be deployed as a scheduled Microsoft Fabric notebook

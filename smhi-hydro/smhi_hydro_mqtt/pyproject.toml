@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "smhi_hydro_mqtt"
+version = "0.1.0"
+description = "MQTT/UNS feeder for the Swedish SMHI Hydrology data."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "smhi_hydro_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+requests = ">=2.32.3"
+smhi_hydro = { path = ".." }
+smhi_hydro_mqtt_producer_data = { path = "../smhi_hydro_mqtt_producer/smhi_hydro_mqtt_producer_data" }
+smhi_hydro_mqtt_producer_mqtt_client = { path = "../smhi_hydro_mqtt_producer/smhi_hydro_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+smhi-hydro-mqtt = "smhi_hydro_mqtt.app:main"
