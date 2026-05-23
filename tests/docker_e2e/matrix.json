@@ -274,6 +274,12 @@
       "image": "nws-alerts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nws_alerts_mqtt"
+    },
+    {
+      "dir": "tfl-road-traffic",
+      "image": "tfl-road-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "tfl_road_traffic_mqtt"
     }
   ],
   "flow": [
@@ -511,6 +517,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNwsAlertsMqttDockerFlow"
+    },
+    {
+      "dir": "tfl-road-traffic",
+      "image": "tfl-road-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestTflRoadTrafficMqttDockerFlow"
     }
   ]
 }

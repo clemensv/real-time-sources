@@ -1,4 +1,4 @@
-""" RoadCorridor dataclass. """
+""" Street dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,44 +10,32 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
 import json
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class RoadCorridor:
+class Street:
     """
-    Reference record for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road endpoint at bridge startup and refreshed periodically. Each corridor is a named road segment under TfL operational control, such as the A2, A12, or M25, with its current aggregate traffic status.
+    An individual street segment affected by a road disruption in London. Part of the 'streets' array in a RoadDisruption event.
 
     Attributes:
-        road_id (str)
-        display_name (str)
-        status_severity (typing.Optional[str])
-        status_severity_description (typing.Optional[str])
-        bounds (typing.Optional[str])
-        envelope (typing.Optional[str])
-        url (typing.Optional[str])
-        status_aggregation_start_date (typing.Optional[datetime.datetime])
-        status_aggregation_end_date (typing.Optional[datetime.datetime])
-        event (str)
+        name (typing.Optional[str])
+        closure (typing.Optional[str])
+        directions (typing.Optional[str])
+        source_system_id (typing.Optional[str])
+        source_system_key (typing.Optional[str])
     """
 
 
-    road_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="road_id"))
-    display_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="display_name"))
-    status_severity: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_severity"))
-    status_severity_description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_severity_description"))
-    bounds: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bounds"))
-    envelope: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="envelope"))
-    url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
-    status_aggregation_start_date: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_aggregation_start_date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    status_aggregation_end_date: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_aggregation_end_date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    event: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
+    name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
+    closure: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="closure"))
+    directions: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="directions"))
+    source_system_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_system_id"))
+    source_system_key: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_system_key"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'RoadCorridor':
+    def from_serializer_dict(cls, data: dict) -> 'Street':
         """
         Converts a dictionary to a dataclass instance.
 
@@ -120,7 +108,7 @@ class RoadCorridor:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['RoadCorridor']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Street']:
         """
         Converts the data to a dataclass based on the content type string.
 
@@ -157,13 +145,13 @@ class RoadCorridor:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return RoadCorridor.from_serializer_dict(_record)
+                return Street.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'RoadCorridor':
+    def create_instance(cls) -> 'Street':
         """
         Creates an instance of the dataclass with test values.
 
@@ -171,14 +159,9 @@ class RoadCorridor:
             An instance of the dataclass.
         """
         return cls(
-            road_id='wownvoepobgzvfxooiam',
-            display_name='axliyiginwynepbdvnrq',
-            status_severity='omntbkatahpivcvqkkyu',
-            status_severity_description='rtcmdgnvptqvcpvuoebx',
-            bounds='zsbtyxngorxpfepfffzo',
-            envelope='kqokxgpnhxxhhvhqqvrj',
-            url='wzkwxyoeogdcnomqykpz',
-            status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
-            status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc),
-            event='dvezypmbnfmedqrqlnxy'
+            name='khufvkpyxdyanqwifuir',
+            closure='zndccymdafuzoehkpwvk',
+            directions='oekuadkmvpkwhkorlcfh',
+            source_system_id='ystogdwdwmnfezvzsmyc',
+            source_system_key='buqjnfbvrslsasvasgzu'
         )

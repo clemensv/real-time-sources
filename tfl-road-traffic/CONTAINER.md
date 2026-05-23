@@ -2,7 +2,7 @@
 
 This container is a bridge between the [Transport for London (TfL) Unified API](https://api.tfl.gov.uk/) road traffic data and Apache Kafka endpoints. It polls the TfL Road API and emits road corridor reference data, corridor status telemetry, and disruption telemetry as CloudEvents.
 
-All events are structured CloudEvents. See [EVENTS.md](EVENTS.md) for the event schemas.
+The sibling MQTT image publishes binary-mode CloudEvents into a Unified Namespace topic tree. See [EVENTS.md](EVENTS.md) for the event schemas.
 
 ## Docker
 
@@ -65,7 +65,51 @@ All events are written to a single topic. The default topic name is `tfl-road-tr
 |---|---|
 | `uk.gov.tfl.road.RoadCorridor` | `roads/{road_id}` |
 | `uk.gov.tfl.road.RoadStatus` | `roads/{road_id}` |
-| `uk.gov.tfl.road.RoadDisruption` | `disruptions/{disruption_id}` |
+| `uk.gov.tfl.road.RoadDisruption` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+
+## MQTT 5.0 / Unified-Namespace Feeder
+
+The MQTT image runs `python -m tfl_road_traffic_mqtt feed` and publishes binary-mode CloudEvents under:
+
+```text
+traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}
+traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/{severity}/{disruption_id}/disruption
+```
+
+Road status events use QoS 1 with `retain=true` for last-known-value reads. Disruption events use QoS 1 with `retain=false`; severity is one of `serious`, `severe`, `moderate`, `minor`, `information`, or `closure`.
+
+Run it against a broker:
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtt://broker:1883" \
+  ghcr.io/clemensv/real-time-sources/tfl-road-traffic-mqtt:latest
+```
+
+### MQTT environment variables
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `MQTT_BROKER_URL` | yes | — | Broker URL such as `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_ENABLE_TLS` | no | scheme/port-derived | Force TLS when set to `true`. |
+| `MQTT_AUTH_MODE` | no | `anonymous` | `anonymous`, `userpass`, `tls-cert`, or `entra`. |
+| `MQTT_USERNAME` | conditional | — | Username for `userpass`; Event Grid client name for `entra`. |
+| `MQTT_PASSWORD` | conditional | — | Password for `userpass`. |
+| `MQTT_CLIENT_CERT` | conditional | — | Client certificate PEM path for `tls-cert`. |
+| `MQTT_CLIENT_KEY` | conditional | — | Client key PEM path for `tls-cert`. |
+| `MQTT_CA_FILE` | no | system trust | Broker CA chain path. |
+| `MQTT_CLIENT_ID` | no | `tfl-road-traffic-mqtt` | MQTT client identifier. |
+| `MQTT_ENTRA_CLIENT_ID` | conditional | — | Managed identity client id for Event Grid Namespace MQTT enhanced auth. |
+| `MQTT_ENTRA_AUDIENCE` | no | `https://eventgrid.azure.net/` | Entra token audience. |
+| `TFL_ROAD_TRAFFIC_MQTT_EMIT_MOCK_CORPUS` | no | `false` | Emit synthetic one-shot corpus for Docker E2E tests. |
+
+### MQTT subscription examples
+
+- All TfL road traffic messages: `traffic/gb/tfl/tfl-road-traffic/#`
+- Latest retained status for every TfL road: `traffic/gb/tfl/tfl-road-traffic/roads/+/status`
+- All disruptions for A2: `traffic/gb/tfl/tfl-road-traffic/disruptions/a2/+/+/disruption`
+- All severe disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/severe/+/disruption`
+- All closure disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/closure/+/disruption`
 
 ## Event Catalog
 

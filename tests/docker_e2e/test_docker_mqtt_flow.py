@@ -1724,6 +1724,212 @@ class TestNwsAlertsMqttDockerFlow:
         assert observed_severities == expected_severities, observed_severities
 
 # ---------------------------------------------------------------------------
+# Transport for London Road Traffic -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_tfl_road_traffic_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'tfl-road-traffic', 'xreg', 'tfl_road_traffic.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemas: Dict[str, Dict[str, Any]] = {}
+    schema_group = manifest['schemagroups']['uk.gov.tfl.road.jstruct']['schemas']
+    for group_name in ('uk.gov.tfl.road.corridors', 'uk.gov.tfl.road.disruptions'):
+        for message in manifest['messagegroups'][group_name]['messages'].values():
+            ce_type = message['envelopemetadata']['type']['value']
+            schema_name = message['dataschemauri'].rsplit('/', 1)[-1]
+            schemas[ce_type] = schema_group[schema_name]['versions']['1']['schema']
+    return schemas
+
+
+@pytest.fixture(scope='module')
+def tfl_road_traffic_mqtt_image():
+    return build_image('tfl-road-traffic', dockerfile='Dockerfile.mqtt', tag='test-tfl-road-traffic-mqtt')
+
+
+@pytest.fixture()
+def tfl_road_traffic_mosquitto_container():
+    container, network, host_port = _generic_mosquitto(
+        'tfl-road-traffic-mqtt-e2e', 'tfl-road-traffic-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'tfl-road-traffic-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestTflRoadTrafficMqttDockerFlow:
+    """Verify the tfl-road-traffic MQTT container publishes valid UNS topics."""
+
+    def test_emits_tfl_road_traffic_uns_topics(self, tfl_road_traffic_mosquitto_container, tfl_road_traffic_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{tfl_road_traffic_mosquitto_container['internal_host']}:"
+            f"{tfl_road_traffic_mosquitto_container['internal_port']}"
+        )
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('traffic/gb/tfl/tfl-road-traffic/#', qos=1)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', tfl_road_traffic_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            tfl_road_traffic_mqtt_image.id,
+            command=['python', '-m', 'tfl_road_traffic_mqtt', 'feed', '--once', '--emit-mock-corpus'],
+            detach=True,
+            remove=False,
+            network=tfl_road_traffic_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No TfL Road Traffic MQTT messages received from broker'
+        schemas = _load_tfl_road_traffic_schemas()
+        from json_structure import InstanceValidator, SchemaValidator
+        schema_validator = SchemaValidator(extended=True)
+        instance_validators = {}
+        observed_families = set()
+        observed_severities = set()
+        disruption_subjects = set()
+        road_topics = []
+        disruption_topics = []
+
+        for sample in collected:
+            topic = sample['topic']
+            parts = topic.split('/')
+            assert parts[:4] == ['traffic', 'gb', 'tfl', 'tfl-road-traffic'], parts
+            assert len(parts) <= 9, f"topic depth exceeds UNS limit: {topic}"
+            assert sample['qos'] == 1, sample
+            assert sample['retain'] is False, 'live messages should not be retained replays'
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {topic}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert up['subject'] in topic, (up['subject'], topic)
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {topic}: {sample['payload']!r}"
+            ce_type = up.get('type')
+            assert ce_type in schemas, f"unknown TfL CE type {ce_type}"
+            if ce_type not in instance_validators:
+                schema = schemas[ce_type]
+                assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+                instance_validators[ce_type] = InstanceValidator(schema, extended=True)
+            errors = instance_validators[ce_type].validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+            if parts[4] == 'roads':
+                observed_families.add('roads')
+                road_topics.append(topic)
+                assert len(parts) == 7, topic
+                _, _, _, _, _, road_id, event = parts
+                assert event in {'corridor', 'status'}, topic
+                assert road_id == payload['road_id'], payload
+                assert up['subject'] == f"roads/{road_id}"
+            elif parts[4] == 'disruptions':
+                observed_families.add('disruptions')
+                disruption_topics.append(topic)
+                assert len(parts) == 8, topic
+                _, _, _, _, _, road_id, severity, disruption_id = parts
+                assert severity in {'serious', 'severe', 'moderate', 'minor', 'information', 'closure'}
+                observed_severities.add(severity)
+                assert road_id == payload['road_id'], payload
+                assert severity == payload['severity'], payload
+                assert disruption_id == payload['disruption_id'], payload
+                expected_subject = f"disruptions/{road_id}/{severity}/{disruption_id}"
+                assert up['subject'] == expected_subject
+                disruption_subjects.add(up['subject'])
+            else:
+                raise AssertionError(f"unexpected TfL family in topic: {topic}")
+
+        assert observed_families == {'roads', 'disruptions'}
+        assert observed_severities == {'serious', 'severe', 'moderate', 'minor', 'information', 'closure'}
+        assert road_topics, 'No retained road LKV publishes observed'
+        assert disruption_topics and disruption_subjects, 'No disruption publishes observed'
+
+        replay = _collect_messages_topic(
+            '127.0.0.1', tfl_road_traffic_mosquitto_container['host_port'], 'traffic/gb/tfl/tfl-road-traffic/#', timeout=10.0
+        )
+        assert replay, 'No retained TfL Road Traffic MQTT messages replayed to late subscriber'
+        assert all(m['topic'].split('/')[4] == 'roads' for m in replay), replay
+        assert all(m['retain'] is True and m['qos'] == 1 for m in replay), replay
+
+        xreg_path = os.path.join(REPO_ROOT, 'tfl-road-traffic', 'xreg', 'tfl_road_traffic.xreg.json')
+        with open(xreg_path, 'r', encoding='utf-8') as fh:
+            manifest = json.load(fh)
+        disruption_key = manifest['endpoints']['uk.gov.tfl.road.disruptions.Kafka']['protocoloptions']['options']['key']
+        disruption_subject = manifest['messagegroups']['uk.gov.tfl.road.disruptions']['messages']['uk.gov.tfl.road.RoadDisruption']['envelopemetadata']['subject']['value']
+        assert disruption_key == disruption_subject == 'disruptions/{road_id}/{severity}/{disruption_id}'
+
+# ---------------------------------------------------------------------------
 # AISstream.io -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
 
