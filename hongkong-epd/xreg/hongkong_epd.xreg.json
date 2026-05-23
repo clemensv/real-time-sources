@@ -77,14 +77,14 @@
       }
     },
     "HK.Gov.EPD.AQHI.mqtt": {
-      "description": "MQTT/5.0 transport variants of the HK EPD AQHI CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under aq/hk/epd/hongkong-epd/{district}/{station_id}/... The {district} placeholder is the Hong Kong 18-district administrative area where the station is located, normalized to lowercase snake_case.",
+      "description": "MQTT/5.0 transport variants of the HK EPD AQHI CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under air-quality/hk/epd/hongkong-epd/{district}/{station_id}/... The {district} placeholder is the Hong Kong 18-district administrative area where the station is located, normalized to lowercase snake_case.",
       "messages": {
         "HK.Gov.EPD.AQHI.mqtt.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "aq/hk/epd/hongkong-epd/{district}/{station_id}/info",
+            "topic_name": "air-quality/hk/epd/hongkong-epd/{district}/{station_id}/info",
             "qos": 1,
             "retain": true
           }
@@ -94,7 +94,7 @@
           "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "aq/hk/epd/hongkong-epd/{district}/{station_id}/aqhi",
+            "topic_name": "air-quality/hk/epd/hongkong-epd/{district}/{station_id}/aqhi",
             "qos": 1,
             "retain": true
           }
@@ -143,7 +143,7 @@
                   },
                   "district": {
                     "type": "string",
-                    "description": "Hong Kong 18-district administrative area where the monitoring station is located, normalized to lowercase snake_case. Used as the {district} segment of the MQTT/UNS topic. Examples: central_and_western, wan_chai, yau_tsim_mong."
+                    "description": "Hong Kong 18-district administrative area where the monitoring station is located, normalized to lowercase snake_case. Used as the {district} segment of the MQTT/UNS topic. Examples: central-and-western, wan-chai, yau-tsim-mong."
                   },
                   "latitude": {
                     "type": [
