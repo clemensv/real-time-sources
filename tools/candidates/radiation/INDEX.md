@@ -122,3 +122,12 @@ A practical radiation monitoring connector would look like:
 
 Four connectors would cover most of the world's accessible radiation monitoring data. The main gap
 remains Asia-Pacific — Korea, Australia, and India have monitoring networks but no open APIs.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| FANR - Federal Authority for Nuclear Regulation (Barakah NPP Radiation Monitoring) | [ae-fanr-barakah-radiation.md](ae-fanr-barakah-radiation.md) | ?/18 | — |
+

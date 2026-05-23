@@ -83,3 +83,15 @@ GLM and MTG-LI detect total lightning (CG + IC), capturing ~5x more events than 
 ground networks. Intra-cloud lightning is a strong indicator of severe weather intensification —
 useful for nowcasting thunderstorm development. Most ground-based commercial networks
 (Vaisala, GPATS, Météorage) focus primarily on CG detection.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| NCM Lightning Detection Network (UAE) | [ae-ncm-lightning.md](ae-ncm-lightning.md) | ?/18 | — |
+| EUMETSAT MTG Lightning Imager (MTG-LI) | [eumetsat-mtg-li.md](eumetsat-mtg-li.md) | ?/18 | — |
+| EUMETSAT MTG Lightning Imager (LI) | [eumetsat-mtg-lightning-imager.md](eumetsat-mtg-lightning-imager.md) | 16/18 | — |
+| NOAA GOES Geostationary Lightning Mapper (GLM) | [noaasat-goes-glm.md](noaasat-goes-glm.md) | 12/18 | — |
+

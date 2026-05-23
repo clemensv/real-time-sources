@@ -128,3 +128,23 @@ Scouted: 2026-04-06 (Latin America research round)
 ### Latin America Seismology Summary
 
 Chile's CSN (via api.xor.cl community API) is the standout — clean JSON, no auth, high throughput. The rest of Latin America is a FDSN desert: not a single working node despite the region sitting on the Pacific Ring of Fire. USGS with geographic filtering provides M4+ coverage for the entire region.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| USGS Earthquake Data - UAE Region | [ae-usgs-earthquakes-uae-region.md](ae-usgs-earthquakes-uae-region.md) | 11/18 | — |
+| Gulf Region Seismology - USGS Coverage for Bahrain | [bh-bahrain-usgs-seismology.md](bh-bahrain-usgs-seismology.md) | 8/18 | — |
+| EMSC FDSN - Iraq/Zagros Seismic Region | [iq-emsc-fdsn-zagros.md](iq-emsc-fdsn-zagros.md) | 17/18 | ✅ |
+| Iraqi Meteorological Organization & Seismology (IMOS) - Seismological Network | [iq-imos-seismological-network.md](iq-imos-seismological-network.md) | 0/18 | ❌ |
+| USGS Earthquake Hazards Program - Iraq Coverage | [iq-usgs-earthquake-coverage.md](iq-usgs-earthquake-coverage.md) | 17/18 | ✅ |
+| Kuwait Seismic Network (KISR / KNSN) | [kw-kisr-kuwait-seismic-network.md](kw-kisr-kuwait-seismic-network.md) | ?/18 | ❌ |
+| USGS Earthquakes — Kuwait Region | [kw-usgs-earthquakes-kuwait.md](kw-usgs-earthquakes-kuwait.md) | 5/18 | ⏭️ |
+| EMSC Real-Time Earthquakes (Oman/Arabian Peninsula Region) | [om-emsc-realtime.md](om-emsc-realtime.md) | 16/18 | ✅ Build |
+| Oman National Seismic Network (FDSN OM) | [om-squ-eqmc-fdsn.md](om-squ-eqmc-fdsn.md) | 14/18 | ⚠️ Maybe |
+| Qatar-Saudi Arabia Border Seismic Sequence (EMSC) | [qa-border-earthquake-emsc.md](qa-border-earthquake-emsc.md) | 16/18 | — |
+| Persian Gulf Earthquake Catalog (USGS) | [qa-persian-gulf-usgs.md](qa-persian-gulf-usgs.md) | 16/18 | — |
+| Saudi Geological Survey (SGS) - National Seismic Network | [sa-sgs-seismic-network.md](sa-sgs-seismic-network.md) | 11/18 | ⚠️ |
+

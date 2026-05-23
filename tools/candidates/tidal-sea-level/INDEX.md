@@ -45,3 +45,13 @@ Research candidates for real-time tidal and sea level monitoring APIs.
 | [incois-india-ocean](incois-india-ocean.md) | INCOIS India | Indian Ocean | **11/18** | Tsunami warning center; 404 on tested API endpoints; high-value gap |
 
 **Key finding**: India's INCOIS operates the Indian Ocean tsunami early warning system — a critical function for 2.7 billion coastal residents. The documented API endpoints returned 404 during testing. The data exists behind government web portals but lacks a stable public REST API.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| UAE Coastal and Marine Monitoring Networks | [ae-uae-coastal-marine.md](ae-uae-coastal-marine.md) | ?/18 | — |
+| EUMETSAT Sentinel-6 / Jason-3 Sea Level Altimetry | [eumetsat-sentinel6-jason3-altimetry.md](eumetsat-sentinel6-jason3-altimetry.md) | 10/18 | — |
+

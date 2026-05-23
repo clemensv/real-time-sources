@@ -217,3 +217,22 @@ Global:       Electricity Maps (aggregator), WattTime (emissions),
 ### Latin America Energy Summary
 
 Brazil's ONS (16/18, already documented) remains the standout Latin American energy source. The region has four compelling energy stories  Argentina (nuclear + shale + Patagonian wind), Chile (Atacama solar + green hydrogen), Uruguay (97% renewable), and Costa Rica (98-99% renewable + volcano-geothermal)  but none have accessible APIs. XM Colombia (13/18) and CENACE Mexico (12/18) were previously documented. COES Peru (11/18) rounds out existing coverage.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| DEWA Mohammed bin Rashid Al Maktoum Solar Park (Real-Time Solar Generation) | [ae-dewa-mbr-solar-park.md](ae-dewa-mbr-solar-park.md) | ?/18 | — |
+| GCCIA - Gulf Cooperation Council Interconnection Authority (Pan-GCC Grid) | [ae-gccia-gcc-grid.md](ae-gccia-gcc-grid.md) | ?/18 | — |
+| Bahrain Electricity & Water Authority (EWA) - Grid and Water Network Data | [bh-bahrain-ewa-grid-water.md](bh-bahrain-ewa-grid-water.md) | 2/18 | — |
+| GCC Interconnection Authority (GCCIA) - Regional Grid Data | [bh-gccia-regional-grid.md](bh-gccia-regional-grid.md) | 2/18 | — |
+| NOAA VIIRS Nightfire - Iraq Gas Flaring | [iq-noaa-viirs-gas-flaring.md](iq-noaa-viirs-gas-flaring.md) | 11/18 | ✅ |
+| GCC Interconnection Authority (GCCIA) Grid Data | [kw-gccia-gcc-grid.md](kw-gccia-gcc-grid.md) | ?/18 | ❌ |
+| Kuwait Ministry of Electricity & Water (MEW) Load Data | [kw-mew-electricity-load.md](kw-mew-electricity-load.md) | ?/18 | ❌ |
+| GCC Interconnection Authority (GCCIA) - Regional Grid Data | [om-gccia-grid.md](om-gccia-grid.md) | 3/18 | ❌ Skip |
+| GCC Interconnection Authority (GCCIA) - Regional Grid Monitoring | [sa-gccia-regional-grid.md](sa-gccia-regional-grid.md) | 8/18 | ⏭️ |
+| King Abdullah Petroleum Studies and Research Center (KAPSARC) - Energy Data Hub | [sa-kapsarc-energy-data.md](sa-kapsarc-energy-data.md) | 5/18 | ❌ |
+| Saudi Electricity Company (SEC) - National Grid Load | [sa-sec-grid-load.md](sa-sec-grid-load.md) | 7/18 | ⏭️ |
+

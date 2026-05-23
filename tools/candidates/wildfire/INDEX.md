@@ -80,3 +80,23 @@ The three layers provide: detection ("fire exists"), operational response ("fire
 ### Key Finding
 
 INPE's TerraBrasilis GeoServer at 	errabrasilis.dpi.inpe.br is a goldmine. It serves deforestation alerts (DETER), annual deforestation (PRODES), and fire data (queimadas) for **all six Brazilian biomes** through standard OGC WFS. A single WFS adapter handles everything  change the workspace and layer name. The DETER Amazon dataset alone has 445,966 features. This is arguably the most environmentally consequential open geospatial dataset on Earth.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Copernicus CAMS Global Fire Assimilation System (GFAS) | [esa-cams-gfas-emissions.md](esa-cams-gfas-emissions.md) | 11/18 | ⚠️ **Maybe |
+| ESA EFFIS Active Fire Detection (VIIRS/MODIS) | [esa-effis-active-fires.md](esa-effis-active-fires.md) | 13/18 | ⚠️ **Maybe |
+| EFFIS Fire Weather Index (FWI) Forecast | [esa-effis-fwi-forecast.md](esa-effis-fwi-forecast.md) | 13/18 | ✅ **Build |
+| EUMETSAT LSA SAF Fire Radiative Power (FRP) | [eumetsat-lsa-saf-frp.md](eumetsat-lsa-saf-frp.md) | 15/18 | — |
+| NASA FIRMS - Iraq Wildfire and Agricultural Fire Detection | [iq-nasa-firms-fires.md](iq-nasa-firms-fires.md) | 13/18 | ✅ |
+| NASA FIRMS Wildfire Detection — Kuwait Region | [kw-nasa-firms-kuwait.md](kw-nasa-firms-kuwait.md) | 12/18 | ⏭️ |
+| NASA EONET (Earth Observatory Natural Event Tracker) | [nasa-eonet.md](nasa-eonet.md) | 16/18 | ✅ |
+| NASA FIRMS (Fire Information for Resource Management System) | [nasa-firms.md](nasa-firms.md) | ?/18 | — |
+| NASA FIRMS VIIRS Active Fire (NOAA JPSS Satellites) | [noaasat-firms-viirs-fire.md](noaasat-firms-viirs-fire.md) | 13/18 | — |
+| INPE DETER (Real-Time Deforestation Detection System) - Brazil | [spaceother-inpe-deter-deforestation.md](spaceother-inpe-deter-deforestation.md) | 15/18 | — |
+| INPE Queimadas (Brazil Fire Hotspot Monitoring) | [spaceother-inpe-queimadas-fires.md](spaceother-inpe-queimadas-fires.md) | 16/18 | — |
+| Planet NICFI Tropical Forest Monitoring Program | [spaceother-planet-nicfi.md](spaceother-planet-nicfi.md) | 12/18 | — |
+

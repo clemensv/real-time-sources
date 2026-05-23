@@ -12,3 +12,12 @@
 
 ## Summary
 Seven candidates covering South African loadshedding (EskomSePush + Eskom Direct + raw API), Québec (Hydro-Québec), UK regional (UK Power Networks), and US-wide aggregation (PowerOutage.us). The Eskom raw API provides the most upstream signal — a single integer representing the current loadshedding stage, polled in real-time with no authentication. EskomSePush adds area-specific schedules and richer metadata. South Africa's loadshedding crisis has produced Africa's most innovative power outage APIs, making it a standout for the continent.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Ministry of Electricity Iraq - Grid Load and Outages | [iq-moe-grid-outages.md](iq-moe-grid-outages.md) | 0/18 | ❌ |
+

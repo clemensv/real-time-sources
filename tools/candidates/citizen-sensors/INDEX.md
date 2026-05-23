@@ -29,3 +29,14 @@ openSenseMap, Safecast, and CWOP/MADIS round out the category with flexible plat
 | [India Mandi Commodity Prices](india-mandi-commodity-prices.md) | REST | API Key (free) | Daily | 14/18 |
 
 **Key finding**: India's data.gov.in platform exposes daily commodity prices from 17,833+ agricultural mandis (markets) nationwide. This is a unique "citizen sensor" analog — thousands of physical markets reporting prices daily for crops, vegetables, and other commodities. Confirmed working with 17,833 records in a single API call.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Sensor.Community (Luftdaten.info) - UAE Citizen Air Quality Sensors | [ae-sensor-community-uae.md](ae-sensor-community-uae.md) | ?/18 | — |
+| Royal Commission for AlUla - Heritage Site Sensors | [sa-alula-heritage-sensors.md](sa-alula-heritage-sensors.md) | 7/18 | ❌ |
+| NEOM Smart City - Sensor Networks | [sa-neom-smart-city.md](sa-neom-smart-city.md) | 9/18 | ⏭️ |
+

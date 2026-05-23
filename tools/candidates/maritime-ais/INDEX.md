@@ -153,3 +153,17 @@ freely accessible — a model that other maritime nations have not replicated.
 ### Key Finding
 
 The Panama Canal Authority does not provide public APIs for vessel transit data. This is commercially sensitive information (transit scheduling, draft restrictions, auction prices). AIS data from existing sources (Kystverket, AISHub, AISstream) provides vessel positions in the canal approaches. The most valuable single data point  Gatun Lake water level  would indicate canal capacity constraints (the 2023 drought forced transit cuts from 36 to 22 ships/day), but is not publicly available. The Strait of Magellan and major Latin American ports (Santos, Buenos Aires, Callao) are covered by global AIS aggregators.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| AISstream - UAE Maritime Traffic | [ae-aisstream-uae-maritime.md](ae-aisstream-uae-maritime.md) | 12/18 | — |
+| Bahrain Waters AIS Vessel Tracking - AISstream Coverage | [bh-bahrain-ais-aisstream.md](bh-bahrain-ais-aisstream.md) | 11/18 | — |
+| Iraq Ports (Umm Qasr, Khor Al-Zubair) - AIS Vessel Tracking | [iq-ports-umm-qasr-ais.md](iq-ports-umm-qasr-ais.md) | 0/18 | ❌ |
+| AISHub Kuwait / Persian Gulf AIS Vessel Tracking | [kw-aishub-kuwait-ais.md](kw-aishub-kuwait-ais.md) | 11/18 | ⚠️ |
+| AISstream Global Maritime (Qatar Persian Gulf) | [qa-aisstream-persian-gulf.md](qa-aisstream-persian-gulf.md) | 15/18 | — |
+| Saudi Ports Authority (Mawani) - Vessel Tracking | [sa-mawani-vessel-tracking.md](sa-mawani-vessel-tracking.md) | 6/18 | ❌ |
+

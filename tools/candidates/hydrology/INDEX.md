@@ -213,3 +213,19 @@ Sources investigated in depth but lacking public API: Italy (8), Slovakia (8), M
 ### Key Finding: Colombia IDEAM via Socrata
 
 The datos.gov.co Socrata API is the breakthrough for Colombia. Three IDEAM datasets (precipitation, atmospheric pressure, temperature) with near-real-time data confirmed (2026-04-05 23:59). Standard SoQL queries, no authentication, well-documented Socrata platform. A single Socrata adapter handles all three datasets with different resource IDs. Colombia's hydrographic zones span Amazon, Orinoco, Magdalena-Cauca, and the wettest place on Earth (Chocó/Pacific coast).
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| UAE Groundwater Monitoring Networks (Abu Dhabi, Federal) | [ae-uae-groundwater.md](ae-uae-groundwater.md) | ?/18 | — |
+| ESA SMOS Soil Moisture NRT | [esa-smos-soil-moisture.md](esa-smos-soil-moisture.md) | 10/18 | ⏭️ **Reference |
+| EUMETSAT H SAF Precipitation Products | [eumetsat-h-saf-precipitation.md](eumetsat-h-saf-precipitation.md) | 14/18 | — |
+| Ministry of Water Resources Iraq - Tigris/Euphrates Monitoring | [iq-mowr-tigris-euphrates.md](iq-mowr-tigris-euphrates.md) | 0/18 | ❌ |
+| NASA SMAP (Soil Moisture Active Passive) NRT | [nasa-smap-soil-moisture.md](nasa-smap-soil-moisture.md) | 12/18 | ⚠️ |
+| National Water Company (NWC) - Water Network Monitoring | [sa-nwc-water-network.md](sa-nwc-water-network.md) | 6/18 | ❌ |
+| Saline Water Conversion Corporation (SWCC) - Desalination Plant Telemetry | [sa-swcc-desalination.md](sa-swcc-desalination.md) | 7/18 | ❌ |
+| NASA/CNES SWOT (Surface Water and Ocean Topography Mission) | [spaceother-swot-nasa-cnes.md](spaceother-swot-nasa-cnes.md) | 15/18 | — |
+

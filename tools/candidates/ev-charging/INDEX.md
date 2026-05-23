@@ -112,3 +112,12 @@ Government registries, commercial platforms, or sources with no public API or si
 - **DATEX II EV Charging** — no longer theoretical; MobiData BW exposes a public realtime DATEX feed in Germany and Slovenia's NAP already deploys DATEX II v3.6, though the Slovenian live pull URLs are access-controlled
 - **eMI3** — EVSE ID standard (e.g., `CH*CCI*E22078`); used by OICP, increasingly by OCPI
 - **AFIREV** — French variant of eMI3 for charging point IDs
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| UAE EV Charging Networks (DEWA Green Charger, Open Charge Map) | [ae-uae-ev-charging.md](ae-uae-ev-charging.md) | 13/18 | — |
+

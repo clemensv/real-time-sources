@@ -83,3 +83,13 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 | [Istanbul IBB Traffic](istanbul-ibb-traffic.md) | Turkey — Istanbul | **15/18** | CKAN REST | Confirmed CKAN API; traffic + transit datasets; 16M city |
 
 **Key finding**: Istanbul's IBB data portal runs a standard CKAN API. Verified working with traffic and transit datasets. This is the first confirmed open data traffic API in the Middle East/Turkey region.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| RTA Dubai - Real-Time Traffic and Transport Data | [ae-rta-dubai-traffic.md](ae-rta-dubai-traffic.md) | ?/18 | — |
+| Kuwait Roads and Traffic Management | [kw-kuwait-roads-traffic.md](kw-kuwait-roads-traffic.md) | ?/18 | ❌ |
+

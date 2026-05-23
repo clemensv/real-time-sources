@@ -42,3 +42,12 @@ Research candidates for real-time reservoir and dam storage monitoring APIs.
 | [kyrgyzstan-toktogul-central-asia](kyrgyzstan-toktogul-central-asia.md) | Kyrgyzstan Toktogul / Central Asia | Central Asia (5 countries) | **3/18** | Water-energy nexus; geopolitical flashpoint; no data available |
 
 **Key finding**: Central Asian transboundary water management (Toktogul dam, Syr Darya, Amu Darya) is one of the most geopolitically sensitive resource management challenges on the planet, yet produces zero publicly accessible data APIs. This gap document catalogs why.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Mosul Dam Monitoring - USACE / Trevi Grouting Telemetry | [iq-mosul-dam-usace.md](iq-mosul-dam-usace.md) | 0/18 | ❌ |
+

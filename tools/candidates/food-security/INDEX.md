@@ -12,3 +12,12 @@ Scouted: 2026-04-06 (Africa research round)
 ## Summary
 
 Two candidates from FEWS NET (Famine Early Warning Systems Network), the primary food security monitoring system for Africa. The market price API provides weekly food commodity prices from hundreds of markets across 20+ African countries — verified live with structured JSON responses showing market locations in Kenya with coordinates and administrative regions. The IPC classification API provides the definitive food security phase classifications (Phase 1 Minimal through Phase 5 Famine) that drive humanitarian response. Together, these form the core food security early warning pipeline for the continent. Both APIs are unauthenticated and USAID-backed, operational since 1985.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| HDX (Humanitarian Data Exchange) - Iraq Datasets | [iq-hdx-humanitarian-data.md](iq-hdx-humanitarian-data.md) | 6/18 | ❌ |
+

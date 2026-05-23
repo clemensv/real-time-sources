@@ -114,3 +114,28 @@ Scouted: 2026-04-06
 ### Latin America Air Quality Summary
 
 Latin American air quality APIs remain elusive. Mexico SINAICA (already documented) and Chile SINCA (already documented) are the existing candidates. New findings: CETESB São Paulo requires registration (CPF barrier), CDMX SIMAT servers were unreachable, SIATA Medellín has no API despite being a sophisticated monitoring system. OpenAQ likely already ingests data from several of these networks  check OpenAQ coverage before building direct integrations.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Bayanat.ae - UAE Federal Open Data Portal (CKAN) | [ae-bayanat-note.md](ae-bayanat-note.md) | ?/18 | — |
+| UAE Air Quality Monitoring Networks (Federal + Emirate Level) | [ae-uae-air-quality-networks.md](ae-uae-air-quality-networks.md) | ?/18 | — |
+| Bahrain Air Quality - OpenAQ Coverage | [bh-bahrain-openaq.md](bh-bahrain-openaq.md) | 6/18 | — |
+| Copernicus CAMS European Air Quality Forecast | [esa-cams-europe-aq.md](esa-cams-europe-aq.md) | 12/18 | ⚠️ **Maybe |
+| Copernicus Atmosphere Monitoring Service (CAMS) Global Air Quality Forecast | [esa-cams-global-forecast.md](esa-cams-global-forecast.md) | 12/18 | ⚠️ **Maybe |
+| ESA Sentinel-5P TROPOMI Near-Real-Time Air Quality | [esa-sentinel5p-tropomi-nrt.md](esa-sentinel5p-tropomi-nrt.md) | 14/18 | ✅ |
+| EUMETSAT AC SAF Total Column Ozone and Trace Gases | [eumetsat-ac-saf-ozone-trace-gases.md](eumetsat-ac-saf-ozone-trace-gases.md) | 12/18 | — |
+| Ministry of Environment Iraq - Air Quality Monitoring | [iq-moe-air-quality.md](iq-moe-air-quality.md) | 0/18 | ❌ |
+| KARI GEO-KOMPSAT-2B GEMS Air Quality (NO2/SO2/Aerosol) | [kari-gems-aq.md](kari-gems-aq.md) | 8/18 | — |
+| Kuwait EPA eMISK Air Quality Platform | [kw-emisk-kuwait-epa.md](kw-emisk-kuwait-epa.md) | ?/18 | ❌ |
+| OpenAQ Kuwait Air Quality Stations | [kw-openaq-kuwait.md](kw-openaq-kuwait.md) | 7/18 | ❌ |
+| NASA OMI (Ozone Monitoring Instrument) NRT Air Quality | [nasa-omi.md](nasa-omi.md) | 11/18 | ⚠️ |
+| NASA TEMPO (Tropospheric Emissions Monitoring of POllution) Hourly Air Quality | [nasa-tempo.md](nasa-tempo.md) | 14/18 | ✅ |
+| OpenAQ - Oman Air Quality Monitoring | [om-openaq-airquality.md](om-openaq-airquality.md) | 10/18 | ❌ Skip |
+| Qatar Air Quality (Open-Meteo Copernicus CAMS) | [qa-doha-air-quality-openmeteo.md](qa-doha-air-quality-openmeteo.md) | 15/18 | — |
+| WAQI Qatar Air Quality (Limited Coverage) | [qa-waqi-limited.md](qa-waqi-limited.md) | 6/18 | — |
+| Saudi National Center for Environmental Compliance (NCEC) - Air Quality Monitoring | [sa-ncec-air-quality.md](sa-ncec-air-quality.md) | 6/18 | ❌ |
+

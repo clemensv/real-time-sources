@@ -225,3 +225,43 @@ Global:        ECMWF (16), Synoptic Data (16), Open-Meteo (15), Copernicus CDS (
 ### Latin America Weather Summary
 
 Colombia IDEAM (via datos.gov.co Socrata) is the new top find  confirmed near-real-time pressure and temperature data with standard API. INMET Brazil's expanded endpoints (station metadata with WMO codes, municipal forecasts) enhance the existing candidate. Mexico and Peru are blocked/down. Argentina's SMN (already documented) and Brazil's INMET remain the strongest Latin American weather sources.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| National Center of Meteorology (NCM) - UAE Weather Network | [ae-ncm-weather-network.md](ae-ncm-weather-network.md) | ?/18 | — |
+| Bahrain Meteorological Directorate - Official Weather Data | [bh-bahrain-weather-directorate.md](bh-bahrain-weather-directorate.md) | 3/18 | — |
+| CNSA Fengyun-4A/4B Geostationary Imagery | [cnsa-fy4-nsmc.md](cnsa-fy4-nsmc.md) | 3/18 | ❌ Skip |
+| Copernicus CAMS Solar Radiation Service | [esa-cams-solar-radiation.md](esa-cams-solar-radiation.md) | 9/18 | ❌ **Skip |
+| Copernicus CAMS UV Index Forecast | [esa-cams-uv-index.md](esa-cams-uv-index.md) | 10/18 | ⚠️ **Maybe |
+| EUMETSAT EARS (EUMETSAT Advanced Retransmission Service) | [eumetsat-ears-regional-rapid-rebroadcast.md](eumetsat-ears-regional-rapid-rebroadcast.md) | 12/18 | — |
+| EUMETSAT LSA SAF Land Surface Temperature (LST) | [eumetsat-lsa-saf-lst.md](eumetsat-lsa-saf-lst.md) | 11/18 | — |
+| EUMETSAT Metop IASI Hyperspectral Sounder | [eumetsat-metop-iasi-hyperspectral-sounder.md](eumetsat-metop-iasi-hyperspectral-sounder.md) | 11/18 | — |
+| EUMETSAT NWC SAF Cloud and Precipitation Nowcasting Products | [eumetsat-nwc-saf-nowcasting.md](eumetsat-nwc-saf-nowcasting.md) | 13/18 | — |
+| EUMETSAT ROM SAF Radio Occultation Atmospheric Profiles | [eumetsat-rom-saf-gps-ro-profiles.md](eumetsat-rom-saf-gps-ro-profiles.md) | 11/18 | — |
+| Iraqi Meteorological Organization & Seismology (IMOS) - Weather & Dust Storm Monitoring | [iq-imos-weather-dust.md](iq-imos-weather-dust.md) | 0/18 | ❌ |
+| Kurdistan Regional Government (KRG) - Meteorology and Environment | [iq-krg-meteorology.md](iq-krg-meteorology.md) | 0/18 | ❌ |
+| ISRO MOSDAC INSAT-3D/3DR Weather Imagery | [isro-insat3d-mosdac.md](isro-insat3d-mosdac.md) | 4/18 | ❌ Skip |
+| KARI GEO-KOMPSAT-2A AMI Weather Imagery | [kari-gk2a-ami.md](kari-gk2a-ami.md) | 6/18 | ❌ Skip |
+| Kuwait Meteorological Department Weather Observations | [kw-kuwait-met-department.md](kw-kuwait-met-department.md) | ?/18 | ❌ |
+| Kuwait Airport METAR Data (Aviation Weather) | [kw-metar-kuwait-airports.md](kw-metar-kuwait-airports.md) | 8/18 | ⏭️ |
+| NASA AppEEARS (Application for Extracting and Exploring Analysis Ready Samples) | [nasa-appeears.md](nasa-appeears.md) | 9/18 | ⏭️ |
+| NASA CMR (Common Metadata Repository) NRT Collections API | [nasa-cmr.md](nasa-cmr.md) | 8/18 | ⏭️ |
+| NASA CYGNSS (Cyclone Global Navigation Satellite System) | [nasa-cygnss.md](nasa-cygnss.md) | 10/18 | ⚠️ |
+| NASA DSCOVR / EPIC (Earth Polychromatic Imaging Camera) | [nasa-dscovr-epic.md](nasa-dscovr-epic.md) | 9/18 | ⏭️ |
+| NASA GIBS / Worldview WMTS Tiles | [nasa-gibs-wmts.md](nasa-gibs-wmts.md) | 10/18 | ⏭️ |
+| NASA GPM IMERG (Global Precipitation Measurement - Integrated Multi-satellitE Retrievals) | [nasa-gpm-imerg.md](nasa-gpm-imerg.md) | 13/18 | ⚠️ |
+| NASA MODAPS / LANCE NRT Data (MODIS & VIIRS Land Products) | [nasa-modaps-lance.md](nasa-modaps-lance.md) | 12/18 | ⏭️ |
+| NASA POWER (Prediction Of Worldwide Energy Resources) | [nasa-power.md](nasa-power.md) | 11/18 | ⏭️ |
+| NOAA JPSS S3 Archive (VIIRS/ATMS/CrIS/OMPS) | [noaasat-jpss-s3.md](noaasat-jpss-s3.md) | 8/18 | — |
+| Oman Directorate General of Meteorology - Weather Bulletins (Arabic) | [om-dgmet-bulletins.md](om-dgmet-bulletins.md) | 6/18 | ❌ Skip |
+| WMO SYNOP Observations (Oman Stations via OGIMET) | [om-ogimet-synop.md](om-ogimet-synop.md) | 9/18 | ⏭️ Reference |
+| Qatar Weather Forecast (Open-Meteo) | [qa-doha-weather-openmeteo.md](qa-doha-weather-openmeteo.md) | 14/18 | — |
+| Qatar Hamad International Airport METAR | [qa-hamad-airport-metar.md](qa-hamad-airport-metar.md) | 14/18 | — |
+| RainViewer Global Radar (Qatar Coverage) | [qa-rainviewer-radar.md](qa-rainviewer-radar.md) | 11/18 | — |
+| Empty Quarter (Rub' al Khali) - Desert Weather and Dust Storm Monitoring | [sa-empty-quarter-desert.md](sa-empty-quarter-desert.md) | 10/18 | ⏭️ |
+| Saudi National Center for Meteorology (NCM) - Meteomatics API | [sa-ncm-meteomatics.md](sa-ncm-meteomatics.md) | 10/18 | ⚠️ |
+

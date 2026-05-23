@@ -171,3 +171,21 @@ The RSS bridge already covers most news sources (including HN via its RSS feed).
 ### Latin America Transit Summary
 
 SPTrans São Paulo (already documented, 11/18) remains the strongest Latin American transit candidate. Santiago's RED system likely has GTFS-RT (all 6,000+ buses have GPS; historical GTFS feeds known at gtfs.transantiago.cl), but endpoints were unreachable. TransMilenio Bogotá's open data portal was also down. Mexico City Metro and Buenos Aires SUBE were not tested. The region has extensive BRT networks (TransMilenio, Metropolitano Lima, RED Santiago, Metrobús CDMX) but open data APIs lag behind European and North American cities.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Etihad Rail - Future Passenger Rail GTFS (2025–2026 Launch) | [ae-etihad-rail-future.md](ae-etihad-rail-future.md) | ?/18 | — |
+| UAE Public Transit GTFS-RT (Dubai Metro, Tram, Bus + Abu Dhabi Bus) | [ae-uae-gtfs-transit.md](ae-uae-gtfs-transit.md) | ?/18 | — |
+| Bahrain Public Transport - GTFS/GTFS-RT Coverage | [bh-bahrain-public-transport-gtfs.md](bh-bahrain-public-transport-gtfs.md) | 2/18 | — |
+| Iraq Railways - Passenger Train Tracking | [iq-railways-trains.md](iq-railways-trains.md) | 0/18 | ❌ |
+| Kuwait Public Transit GTFS Real-Time | [kw-kuwait-gtfs-kptc.md](kw-kuwait-gtfs-kptc.md) | ?/18 | ❌ |
+| Mwasalat Oman - Public Transit (GTFS / GTFS-RT) | [om-mwasalat-gtfs.md](om-mwasalat-gtfs.md) | 12/18 | ❌ Skip |
+| Qatar Public Transport Ridership (Monthly) | [qa-monthly-transit-ridership.md](qa-monthly-transit-ridership.md) | 8/18 | — |
+| Riyadh Metro - GTFS Real-Time | [sa-riyadh-metro.md](sa-riyadh-metro.md) | 12/18 | ⚠️ |
+| Saudi Public Transport Company (SAPTCO) - Bus GTFS | [sa-saptco-buses.md](sa-saptco-buses.md) | 8/18 | ⏭️ |
+| Saudi Arabian Railways (SAR) - Passenger Rail Tracking | [sa-sar-railways.md](sa-sar-railways.md) | 9/18 | ⏭️ |
+

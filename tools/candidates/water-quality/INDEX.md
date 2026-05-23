@@ -42,3 +42,13 @@ Research candidates for real-time and continuous water quality monitoring APIs.
 Real-time continuous water quality monitoring is significantly less common than real-time flow/level monitoring. Most water quality programs still rely on discrete grab samples with laboratory analysis. The USGS continuous WQ network is among the largest in the world. In Europe, real-time continuous WQ monitoring is growing but still primarily at a few hundred select stations per country.
 
 Hub'Eau (France) and Copernicus Marine represent two different approaches to filling this gap: Hub'Eau by aggregating decades of grab sample data into a superb API; Copernicus by providing satellite-derived spatially continuous water quality data. Both are valuable for different use cases.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Dubai Municipality Beach Water Quality Monitoring | [ae-dubai-beach-water-quality.md](ae-dubai-beach-water-quality.md) | ?/18 | — |
+| Bahrain Water and Environment Monitoring - SCE Network | [bh-bahrain-sce-environment.md](bh-bahrain-sce-environment.md) | 1/18 | — |
+

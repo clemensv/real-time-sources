@@ -55,3 +55,17 @@ aggregated public API exists yet.
 
 ### Future monitoring:
 10. **Drone Remote ID** — No API yet, but regulatory mandates ensure data will be available
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| ADS-B Flight Tracking - UAE Airspace (Dubai, Abu Dhabi, Sharjah Airports) | [ae-uae-adsb-airspace.md](ae-uae-adsb-airspace.md) | ?/18 | — |
+| Bahrain International Airport (OBBI) METAR - Aviation Weather API | [bh-obbi-metar-aviationweather.md](bh-obbi-metar-aviationweather.md) | 15/18 | — |
+| NOAA Aviation Weather - Iraq Airport METARs | [iq-noaa-metar-airports.md](iq-noaa-metar-airports.md) | 14/18 | ✅ |
+| Oman DGMET Aviation Weather (METARs) | [om-dgmet-metar.md](om-dgmet-metar.md) | 11/18 | ⏭️ Reference |
+| Qatar Terminal Area Forecast (TAF) | [qa-taf-forecast.md](qa-taf-forecast.md) | 13/18 | — |
+| General Authority of Civil Aviation (GACA) - METARs and Aviation Weather | [sa-gaca-metars.md](sa-gaca-metars.md) | 9/18 | ❌ |
+

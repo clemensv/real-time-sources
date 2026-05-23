@@ -68,3 +68,15 @@ Seven cargo bike share systems publish GBFS: carvelo (CH), Beryl Hackney (London
 ### Key Finding
 
 ECOBICI Mexico City is a confirmed, fully functional GBFS feed hosted by Lyft infrastructure (gbfs.mex.lyftbikes.com). Same adapter pattern as Citi Bike, Vélib', etc. The 10-second TTL confirms genuine real-time data. This is the first Latin American GBFS feed fully verified in this survey. Additional feeds likely exist for Buenos Aires, Santiago, São Paulo, and Bogotá (Tembici operates in Brazilian cities, but gbfs.tembici.com.br was unreachable).
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Careem BIKE Dubai (GBFS) | [ae-careem-bike-dubai.md](ae-careem-bike-dubai.md) | 16/18 | — |
+| Dott Abu Dhabi, Dubai, Sharjah, Ras Al Khaimah (GBFS) | [ae-dott-multi-emirate.md](ae-dott-multi-emirate.md) | 15/18 | — |
+| Yaldi Dubai (GBFS) | [ae-yaldi-dubai.md](ae-yaldi-dubai.md) | 16/18 | — |
+| Kuwait Bikeshare and Micromobility (GBFS) | [kw-kuwait-bikeshare-ev-charging.md](kw-kuwait-bikeshare-ev-charging.md) | ?/18 | ❌ |
+

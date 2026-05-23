@@ -1,0 +1,107 @@
+[
+  {
+    "File": "noaasat-dscovr-epic.md",
+    "Title": "noaasat-dscovr-epic",
+    "Topic": "imagery",
+    "Score": 0,
+    "Verdict": "SKIP"
+  },
+  {
+    "File": "noaasat-goes-abi.md",
+    "Title": "noaasat-goes-abi",
+    "Topic": "imagery",
+    "Score": 0,
+    "Verdict": "Gridded imagery"
+  },
+  {
+    "File": "noaasat-goes-glm.md",
+    "Title": "noaasat-goes-glm",
+    "Topic": "lightning",
+    "Score": 0,
+    "Verdict": "SKIP"
+  },
+  {
+    "File": "noaasat-coastwatch-sst.md",
+    "Title": "noaasat-coastwatch-sst",
+    "Topic": "oceans",
+    "Score": 0,
+    "Verdict": "Gridded data model"
+  },
+  {
+    "File": "noaasat-coral-reef-watch.md",
+    "Title": "noaasat-coral-reef-watch",
+    "Topic": "oceans",
+    "Score": 0,
+    "Verdict": "Gridded data model"
+  },
+  {
+    "File": "noaasat-f107-solar-flux.md",
+    "Title": "noaasat-f107-solar-flux",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "CONSIDER"
+  },
+  {
+    "File": "noaasat-goes-electron-flux.md",
+    "Title": "noaasat-goes-electron-flux",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "CONSIDER"
+  },
+  {
+    "File": "noaasat-goes-magnetometer.md",
+    "Title": "noaasat-goes-magnetometer",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "CONSIDER"
+  },
+  {
+    "File": "noaasat-goes-proton-flux.md",
+    "Title": "noaasat-goes-proton-flux",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "RECOMMEND"
+  },
+  {
+    "File": "noaasat-goes-xray-flux.md",
+    "Title": "noaasat-goes-xray-flux",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "RECOMMEND"
+  },
+  {
+    "File": "noaasat-kp-forecast.md",
+    "Title": "noaasat-kp-forecast",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "SKIP"
+  },
+  {
+    "File": "noaasat-ovation-aurora.md",
+    "Title": "noaasat-ovation-aurora",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "Gridded forecast"
+  },
+  {
+    "File": "noaasat-propagated-solar-wind.md",
+    "Title": "noaasat-propagated-solar-wind",
+    "Topic": "space-weather",
+    "Score": 0,
+    "Verdict": "STRONGLY RECOMMEND"
+  },
+  {
+    "File": "noaasat-jpss-s3.md",
+    "Title": "noaasat-jpss-s3",
+    "Topic": "weather",
+    "Score": 0,
+    "Verdict": "SKIP"
+  },
+  {
+    "File": "noaasat-firms-viirs-fire.md",
+    "Title": "noaasat-firms-viirs-fire",
+    "Topic": "wildfire",
+    "Score": 0,
+    "Verdict": "CONSIDER"
+  }
+]

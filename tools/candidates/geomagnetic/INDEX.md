@@ -71,3 +71,12 @@ A complete space weather monitoring picture requires at least one source from ea
 ### Key Finding
 
 INPE's EMBRACE space weather program monitors the **South Atlantic Anomaly**  where Earth's inner radiation belt dips closest to the surface, centered over Brazil. This makes EMBRACE data uniquely valuable for satellite operations and GPS accuracy (equatorial ionospheric scintillation over Brazil is the worst on Earth). All endpoints were unreachable during testing. NOAA SWPC and INTERMAGNET provide complementary global data but lack Southern Hemisphere detail.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| ESA Swarm Geomagnetic Field (VirES API) | [esa-swarm-vires.md](esa-swarm-vires.md) | 13/18 | ⚠️ **Maybe |
+

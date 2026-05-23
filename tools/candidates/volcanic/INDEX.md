@@ -85,3 +85,12 @@ The deep dive surveyed all 9 Volcanic Ash Advisory Centers worldwide. Key findin
 ### Latin America Volcanic Summary
 
 Latin America has 200+ active volcanoes across the Pacific Ring of Fire  but zero programmatic access. Ecuador (Galápagos!), Costa Rica (5 active volcanoes near San José), and Chile (90 volcanoes including Villarrica's lava lake) all monitor extensively, but none provide public APIs. MIROVA satellite thermal monitoring, Smithsonian GVP, and VAAC ash advisories provide partial coverage. The CENAPRED volcanic traffic light for Popocatépetl (Mexico) is documented in disaster-alerts/.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Harrat Volcanic Fields - Seismic and Volcanic Monitoring | [sa-harrat-volcanic-fields.md](sa-harrat-volcanic-fields.md) | 12/18 | ⚠️ |
+

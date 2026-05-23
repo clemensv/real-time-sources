@@ -58,3 +58,12 @@ The following sources were researched but did not yield open real-time parking A
 - **Australia**: Melbourne (3,309 individual bay sensors — unique dataset)
 - **Asia-Pacific**: Singapore (island-wide via LTA DataMall)
 - **EU standard**: DATEX II v3 parking extension — cross-border interoperability
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| UAE Smart Parking Systems (Dubai RTA Mawaqif, Abu Dhabi Darb) | [ae-uae-smart-parking.md](ae-uae-smart-parking.md) | ?/18 | — |
+

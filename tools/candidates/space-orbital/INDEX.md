@@ -26,3 +26,15 @@ GraceDB is the new crown jewel — a perfect 18/18 for the LIGO/Virgo/KAGRA grav
 The solar/heliophysics chain is now well-represented: DSCOVR provides real-time solar wind measurements from L1, Helioviewer serves near-real-time solar imagery (SDO, SOHO), and NOAA DONKI catalogs the events. JPL Horizons and the SBDB Close Approach API cover the solar system ephemeris and asteroid traffic. The Minor Planet Center is the authoritative asteroid/comet clearinghouse (legacy text format, but irreplaceable). AAVSO adds a century of variable star observations with a modern API.
 
 The existing sources remain strong: CelesTrak for no-auth orbital data, ZTF and GCN for streaming transient astronomy, Space-Track for authoritative orbital catalogs, and ESA DISCOSweb for physical characterization.
+
+## Round 2026-05 — Gulf + Satellite EO sweep
+
+Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/NOAA/EUMETSAT/JAXA/ISRO/KARI/CNSA/Other) research fleets.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| ESA DISCOSweb (Database and Information System Characterising Objects in Space) | [esa-discos.md](esa-discos.md) | ?/18 | — |
+| NASA DONKI (Space Weather Database of Notifications, Knowledge, Information) | [nasa-donki.md](nasa-donki.md) | ?/18 | — |
+| NASA GCN (General Coordinates Network) | [nasa-gcn.md](nasa-gcn.md) | ?/18 | — |
+| NASA Near Earth Object (NEO) Web Service | [nasa-neo.md](nasa-neo.md) | ?/18 | — |
+
