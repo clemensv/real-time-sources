@@ -202,7 +202,7 @@
           },
           "protocoloptions": {
             "topic_name": "osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/replication-state",
-            "qos": 0,
+            "qos": 1,
             "retain": true
           }
         }
@@ -239,11 +239,8 @@
                     "description": "The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity."
                   },
                   "geohash5": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. Null only on legacy payloads predating the MQTT axis."
+                    "type": "string",
+                    "description": "Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment."
                   },
                   "version": {
                     "type": "int32",
@@ -298,6 +295,7 @@
                   "change_type",
                   "element_type",
                   "element_id",
+                  "geohash5",
                   "version",
                   "timestamp",
                   "changeset_id",

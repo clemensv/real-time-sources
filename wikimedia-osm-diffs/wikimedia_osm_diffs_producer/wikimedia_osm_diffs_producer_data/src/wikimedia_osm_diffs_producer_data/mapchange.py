@@ -25,7 +25,7 @@ class MapChange:
         change_type (str)
         element_type (str)
         element_id (int)
-        geohash5 (typing.Optional[str])
+        geohash5 (str)
         version (int)
         timestamp (datetime.datetime)
         changeset_id (int)
@@ -41,7 +41,7 @@ class MapChange:
     change_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="change_type"))
     element_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_type"))
     element_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_id"))
-    geohash5: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
+    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
     version: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     changeset_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="changeset_id"))
@@ -177,17 +177,17 @@ class MapChange:
             An instance of the dataclass.
         """
         return cls(
-            change_type='etszfwfpjecxalvkejsk',
-            element_type='udqmikpptqspjubfcrkg',
-            element_id=int(38),
-            geohash5='trihytyiamzwysoboodo',
-            version=int(88),
+            change_type='fwkrldvfhqyasgmdbwka',
+            element_type='jgmfcxfvopsjvjlkuumo',
+            element_id=int(20),
+            geohash5='nqjzrhlhsmorjtxfevvq',
+            version=int(19),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(68),
-            user_name='iupminodrqjpbarcdsyh',
-            user_id=int(38),
-            latitude=float(79.79775288294415),
-            longitude=float(95.91527798692695),
-            tags='yslnqwxggghfcvyswion',
-            sequence_number=int(57)
+            changeset_id=int(46),
+            user_name='fpwvxmqrujiromacuegs',
+            user_id=int(97),
+            latitude=float(44.09570512288319),
+            longitude=float(71.30936994326764),
+            tags='msltapuulsnvxnmutyys',
+            sequence_number=int(87)
         )

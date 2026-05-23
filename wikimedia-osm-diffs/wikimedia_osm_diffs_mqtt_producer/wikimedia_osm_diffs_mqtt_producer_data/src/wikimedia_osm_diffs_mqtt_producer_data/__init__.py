@@ -1,4 +1,4 @@
-from .mapchange import MapChange
 from .replicationstate import ReplicationState
+from .mapchange import MapChange
 
-__all__ = ["MapChange", "ReplicationState"]
+__all__ = ["ReplicationState", "MapChange"]

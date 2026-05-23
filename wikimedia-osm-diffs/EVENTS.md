@@ -1,4 +1,6 @@
-# Table of Contents
+# Wikimedia OSM Diffs Bridge Events
+
+Events emitted by the Wikimedia OSM minutely diffs bridge.
 
 - [Org.OpenStreetMap.Diffs](#message-group-orgopenstreetmapdiffs)
   - [Org.OpenStreetMap.Diffs.MapChange](#message-orgopenstreetmapdiffsmapchange)
@@ -31,7 +33,7 @@
 | `change_type` | *string* | - | `True` | The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections. |
 | `element_type` | *string* | - | `True` | The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements. |
 | `element_id` | *int64* | - | `True` | The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity. |
-| `geohash5` | *string* (optional) | - | `False` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. Null only on legacy payloads predating the MQTT axis. |
+| `geohash5` | *string* | - | `True` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. |
 | `version` | *int32* | - | `True` | The version number of this element. Each edit to an element increments the version by one. |
 | `timestamp` | *datetime* | - | `True` | The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML. |
 | `changeset_id` | *int64* | - | `True` | The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user. |
@@ -79,7 +81,7 @@
 | `change_type` | *string* | - | `True` | The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections. |
 | `element_type` | *string* | - | `True` | The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements. |
 | `element_id` | *int64* | - | `True` | The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity. |
-| `geohash5` | *string* (optional) | - | `False` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. Null only on legacy payloads predating the MQTT axis. |
+| `geohash5` | *string* | - | `True` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. |
 | `version` | *int32* | - | `True` | The version number of this element. Each edit to an element increments the version by one. |
 | `timestamp` | *datetime* | - | `True` | The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML. |
 | `changeset_id` | *int64* | - | `True` | The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user. |
@@ -107,7 +109,7 @@
 | `change_type` | *string* | - | `True` | The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections. |
 | `element_type` | *string* | - | `True` | The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements. |
 | `element_id` | *int64* | - | `True` | The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity. |
-| `geohash5` | *string* (optional) | - | `False` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. Null only on legacy payloads predating the MQTT axis. |
+| `geohash5` | *string* | - | `True` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. |
 | `version` | *int32* | - | `True` | The version number of this element. Each edit to an element increments the version by one. |
 | `timestamp` | *datetime* | - | `True` | The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML. |
 | `changeset_id` | *int64* | - | `True` | The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user. |
@@ -135,7 +137,7 @@
 | `change_type` | *string* | - | `True` | The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections. |
 | `element_type` | *string* | - | `True` | The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements. |
 | `element_id` | *int64* | - | `True` | The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity. |
-| `geohash5` | *string* (optional) | - | `False` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. Null only on legacy payloads predating the MQTT axis. |
+| `geohash5` | *string* | - | `True` | Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. |
 | `version` | *int32* | - | `True` | The version number of this element. Each edit to an element increments the version by one. |
 | `timestamp` | *datetime* | - | `True` | The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML. |
 | `changeset_id` | *int64* | - | `True` | The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user. |

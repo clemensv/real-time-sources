@@ -628,7 +628,7 @@ class OrgOpenStreetMapDiffsMqttMqttClient(_ClientBase):
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/replication-state'
                 with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (0).
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
@@ -654,7 +654,7 @@ class OrgOpenStreetMapDiffsMqttMqttClient(_ClientBase):
             byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
-        _effective_qos = 0 if qos is None else qos
+        _effective_qos = 1 if qos is None else qos
         _effective_retain = True if retain is None else retain
 
         publish_kwargs: Dict[str, typing.Any] = {
