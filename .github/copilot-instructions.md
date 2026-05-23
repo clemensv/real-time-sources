@@ -230,6 +230,21 @@ checks, when re-runs are required, and how to dispatch them — lives in
 `.github/skills/stream-bridge-implementation/SKILL.md` under "Mandatory
 Expert Review". Record each reviewer's verdict in the PR body.
 
+### Mandatory container-and-delivery check (new-source PRs)
+
+Every PR that adds a **new source** must additionally pass a final
+review against the `container-and-delivery` skill
+(`.github/skills/container-and-delivery/SKILL.md`) before it merges.
+The skill is the single source of truth for the packaging-and-delivery
+contract: Dockerfile shape and labels, `CONTAINER.md` authoring,
+Azure Container Instance ARM templates, the mandatory KQL schema
+script and its KQL Optimizer review, optional Fabric assets,
+`EVENTS.md` generation, the root catalog entry, and the Docker E2E
+validation. Walk the skill end-to-end against the PR and record the
+check verdict in the PR body alongside the three expert reviews. A
+new-source PR that has not been checked against this skill must not
+be merged, even if the three expert reviews have signed off.
+
 ## Things That Are Not Allowed
 
 - Hand-editing generated producer code.
@@ -252,6 +267,8 @@ Expert Review". Record each reviewer's verdict in the PR body.
 - Merging a new-source or contract-changing PR without the three
   mandatory expert reviews (xRegistry, JSON Structure, Avro Schema)
   having signed off.
+- Merging a new-source PR without a completed check against the
+  `container-and-delivery` skill recorded in the PR body.
 
 ## Real Bugs Are Blockers — Never Gloss Over Them
 
