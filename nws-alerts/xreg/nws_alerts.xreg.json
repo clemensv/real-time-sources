@@ -68,11 +68,9 @@
       }
     },
     "NWS.Alerts.mqtt": {
-      "messagegroupid": "NWS.Alerts.mqtt",
       "description": "MQTT/5.0 mirror of NWS CAP weather alerts, published into the Unified-Namespace topic tree 'alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert'. CAP severity is baked as one of five literal sub-tree partitions (minor, moderate, severe, extreme, unknown) so every template placeholder resolves from an enriched WeatherAlert schema field. Alerts are QoS-1 non-retained one-shot lifecycle events.",
       "messages": {
         "NWS.WeatherAlert.Minor.mqtt": {
-          "messageid": "NWS.WeatherAlert.Minor.mqtt",
           "name": "WeatherAlertMinor",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
@@ -83,7 +81,6 @@
           }
         },
         "NWS.WeatherAlert.Moderate.mqtt": {
-          "messageid": "NWS.WeatherAlert.Moderate.mqtt",
           "name": "WeatherAlertModerate",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
@@ -94,7 +91,6 @@
           }
         },
         "NWS.WeatherAlert.Severe.mqtt": {
-          "messageid": "NWS.WeatherAlert.Severe.mqtt",
           "name": "WeatherAlertSevere",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
@@ -105,7 +101,6 @@
           }
         },
         "NWS.WeatherAlert.Extreme.mqtt": {
-          "messageid": "NWS.WeatherAlert.Extreme.mqtt",
           "name": "WeatherAlertExtreme",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
@@ -116,7 +111,6 @@
           }
         },
         "NWS.WeatherAlert.Unknown.mqtt": {
-          "messageid": "NWS.WeatherAlert.Unknown.mqtt",
           "name": "WeatherAlertUnknown",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
@@ -316,7 +310,7 @@
                   },
                   "state": {
                     "type": "string",
-                    "description": "Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved."
+                    "description": "Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved."
                   },
                   "event_type": {
                     "type": "string",

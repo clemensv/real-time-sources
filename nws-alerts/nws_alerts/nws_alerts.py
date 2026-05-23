@@ -100,7 +100,7 @@ def derive_state(props: dict) -> str:
         maybe_state = sender_name.split()[-1].upper()
         if maybe_state in US_STATE_CODES:
             return maybe_state.lower()
-    return "unknown"
+    return "nostate"
 
 
 def _find_nws_headline(params: dict) -> Optional[str]:

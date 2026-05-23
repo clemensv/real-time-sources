@@ -148,7 +148,7 @@ class TestNormalizeAlert:
         })
         assert a is not None
         assert a.alert_id == "urn:oid:123"
-        assert a.state == "unknown"
+        assert a.state == "nostate"
         assert a.event_type == "test"
         assert a.same_codes is None
         assert a.vtec is None

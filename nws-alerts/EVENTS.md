@@ -56,7 +56,7 @@ CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` k
 | `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
 | `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
 | `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved. |
+| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
 | `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
 ## Message Group: NWS.Alerts.mqtt
 ---
@@ -101,7 +101,7 @@ CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` k
 | `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
 | `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
 | `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved. |
+| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
 | `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
 ---
 ### Message: NWS.WeatherAlert.Moderate.mqtt
@@ -145,7 +145,7 @@ CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` k
 | `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
 | `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
 | `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved. |
+| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
 | `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
 ---
 ### Message: NWS.WeatherAlert.Severe.mqtt
@@ -189,7 +189,7 @@ CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` k
 | `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
 | `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
 | `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved. |
+| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
 | `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
 ---
 ### Message: NWS.WeatherAlert.Extreme.mqtt
@@ -233,7 +233,7 @@ CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` k
 | `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
 | `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
 | `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved. |
+| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
 | `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
 ---
 ### Message: NWS.WeatherAlert.Unknown.mqtt
@@ -277,7 +277,7 @@ CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` k
 | `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
 | `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
 | `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; unknown when no state can be resolved. |
+| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
 | `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
 
 
@@ -289,4 +289,4 @@ MQTT subscribers can use standard wildcards over the severity-partitioned UNS tr
 - All extreme severity alerts in California: `alerts/us/noaa/nws-alerts/ca/extreme/+/+/alert`
 - Tornado warnings across all states and severities: `alerts/us/noaa/nws-alerts/+/+/tornado-warning/+/alert`
 - All severe or extreme alerts in Texas: subscribe to both `alerts/us/noaa/nws-alerts/tx/severe/+/+/alert` and `alerts/us/noaa/nws-alerts/tx/extreme/+/+/alert`
-- All unknown-state alerts: `alerts/us/noaa/nws-alerts/unknown/+/+/+/alert`
+- All alerts with no resolved state: `alerts/us/noaa/nws-alerts/nostate/+/+/+/alert`
