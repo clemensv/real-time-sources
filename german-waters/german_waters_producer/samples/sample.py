@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from german_waters_producer_kafka_producer.producer import DEWatersHydrologyEventProducer
+from german_waters_producer_kafka_producer.producer import DEWatersHydrologyMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +73,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'DE.Waters.Hydrology.WaterLevelObservation' event to Kafka topic.
     await dewaters_hydrology_event_producer.send_de_waters_hydrology_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'DE.Waters.Hydrology.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        dewaters_hydrology_mqtt_event_producer = DEWatersHydrologyMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        dewaters_hydrology_mqtt_event_producer = DEWatersHydrologyMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- DE.Waters.Hydrology.mqtt.Station ----
+    # TODO: Supply event data for the DE.Waters.Hydrology.mqtt.Station event
+    _station = Station()
+
+    # sends the 'DE.Waters.Hydrology.mqtt.Station' event to Kafka topic.
+    await dewaters_hydrology_mqtt_event_producer.send_de_waters_hydrology_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'DE.Waters.Hydrology.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- DE.Waters.Hydrology.mqtt.WaterLevelObservation ----
+    # TODO: Supply event data for the DE.Waters.Hydrology.mqtt.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'DE.Waters.Hydrology.mqtt.WaterLevelObservation' event to Kafka topic.
+    await dewaters_hydrology_mqtt_event_producer.send_de_waters_hydrology_mqtt_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'DE.Waters.Hydrology.mqtt.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

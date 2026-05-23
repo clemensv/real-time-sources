@@ -25,6 +25,7 @@ class WaterLevelObservation:
     Attributes:
         station_id (str): 
         provider (str): 
+        water_body (str): Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string.
         water_level (typing.Optional[float]): 
         water_level_unit (typing.Optional[str]): 
         water_level_timestamp (typing.Optional[datetime.datetime]): 
@@ -36,6 +37,7 @@ class WaterLevelObservation:
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     provider: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="provider"))
+    water_body: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_body"))
     water_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
     water_level_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_unit"))
     water_level_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
@@ -46,13 +48,14 @@ class WaterLevelObservation:
     situation: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="situation"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"trend\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"situation\", \"type\": [\"null\", \"int\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"trend\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"situation\", \"type\": [\"null\", \"int\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
         self.provider=str(self.provider)
+        self.water_body=str(self.water_body)
         self.water_level=float(self.water_level) if self.water_level else None
         self.water_level_unit=str(self.water_level_unit) if self.water_level_unit else None
         self.water_level_timestamp=self.water_level_timestamp if self.water_level_timestamp else None
