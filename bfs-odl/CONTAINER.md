@@ -69,6 +69,45 @@ endpoint. The format is the same as Azure Event Hubs.
 - Data interface: https://odlinfo.bfs.de/ODL/EN/service/data-interface/data-interface_node.html
 - License: Open data, see https://www.imis.bfs.de/geoportal/resources/sitepolicy.html
 
+## MQTT / Unified Namespace
+
+A separate container image publishes the same data as MQTT 5.0 binary-mode
+CloudEvents into a Unified Namespace topic tree:
+
+```
+radiation/de/bfs/bfs-odl/{state}/{station_id}/info
+radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate
+```
+
+All messages are published with **QoS 1** and **retain = true**.
+
+### Subscription wildcards
+
+| Pattern | Description |
+|---|---|
+| `radiation/de/bfs/bfs-odl/#` | All BfS ODL events |
+| `radiation/de/bfs/bfs-odl/bayern/+/dose-rate` | Dose rate for all Bayern stations |
+| `radiation/de/bfs/bfs-odl/+/+/info` | Station info for all states |
+
+### Running the MQTT container
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources/bfs-odl-mqtt:latest
+
+docker run -d \
+  -e MQTT_BROKER_URL="mqtt://broker:1883" \
+  -e POLLING_INTERVAL=3600 \
+  ghcr.io/clemensv/real-time-sources/bfs-odl-mqtt:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `MQTT_BROKER_URL` | Yes | — | MQTT broker URL (mqtt:// or mqtts://) |
+| `POLLING_INTERVAL` | No | `3600` | Polling interval in seconds |
+| `ONCE_MODE` | No | `false` | Exit after one cycle |
+| `MQTT_CLIENT_ID` | No | — | MQTT client identifier |
+| `MQTT_CONTENT_MODE` | No | `binary` | CloudEvents content mode (`binary` or `structured`) |
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

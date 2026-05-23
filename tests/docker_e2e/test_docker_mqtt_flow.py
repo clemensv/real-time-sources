@@ -604,6 +604,106 @@ class TestCHMIHydroMqttDockerFlow:
             level_field='water_level',
         )
 
+
+# ---- bfs-odl -----------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def bfs_odl_mqtt_image():
+    return build_image('bfs-odl', dockerfile='Dockerfile.mqtt', tag='test-bfs-odl-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_bfs_odl():
+    container, network, host_port = _generic_mosquitto(
+        'bfs-odl-mqtt-e2e', 'bfs-odl-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'bfs-odl-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestBfsOdlMqttDockerFlow:
+    """Verify the bfs-odl-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_bfs_odl, bfs_odl_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_bfs_odl['internal_host']}:{mosquitto_bfs_odl['internal_port']}"
+        feeder = client.containers.run(
+            bfs_odl_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_bfs_odl['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/de/bfs/bfs-odl/#',
+            timeout=40.0,
+        )
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        dose_msgs = [m for m in messages if m['topic'].endswith('/dose-rate')]
+        assert info_msgs, 'No /info reference events published'
+        assert dose_msgs, 'No /dose-rate telemetry events published'
+
+        for sample in (info_msgs[0], dose_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        dose_types = {m['user_properties'].get('type') for m in dose_msgs}
+        assert info_types == {'de.bfs.odl.Station'}, info_types
+        assert dose_types == {'de.bfs.odl.DoseRateMeasurement'}, dose_types
+
+        info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+        dose_stations = {m['topic'].split('/')[-2] for m in dose_msgs}
+        common = info_stations & dose_stations
+        assert common, 'No station has both info and dose-rate retained leaves'
+
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        dose_payload = _to_dict(dose_msgs[0]['payload'])
+        assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+        assert dose_payload is not None, f"dose-rate payload not parseable: {dose_msgs[0]['payload']!r}"
+        assert 'station_id' in info_payload, info_payload
+        assert 'state' in info_payload, info_payload
+        assert 'station_id' in dose_payload, dose_payload
+        assert 'value' in dose_payload, dose_payload
+
 # ---------------------------------------------------------------------------
 # Bluesky firehose -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
