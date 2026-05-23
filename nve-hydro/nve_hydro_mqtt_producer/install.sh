@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./nve_hydro_mqtt_producer_data
+pip install ./nve_hydro_mqtt_producer_mqtt_client

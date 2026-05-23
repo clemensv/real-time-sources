@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/NO.NVE.Hydrology"
       ]
+    },
+    "NO.NVE.Hydrology.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NO.NVE.Hydrology.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -60,6 +81,31 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NO.NVE.Hydrology.jstruct/schemas/NO.NVE.Hydrology.WaterLevelObservation"
+        }
+      }
+    },
+    "NO.NVE.Hydrology.mqtt": {
+      "description": "MQTT/5.0 transport variants of the NVE Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/no/nve/nve-hydro/{river_name}/{station_id}/... The {river_name} placeholder is sourced from the NVE HydAPI station catalog field 'riverName' (Norwegian: 'Vassdrag', e.g. 'Glomma', 'Drammenselva') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/no/nve/nve-hydro/glomma/+/water-level).",
+      "messages": {
+        "NO.NVE.Hydrology.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/no/nve/nve-hydro/{river_name}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NO.NVE.Hydrology.mqtt.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.WaterLevelObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/no/nve/nve-hydro/{river_name}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
         }
       }
     }
@@ -130,12 +176,17 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "station_id"
+                  "station_id",
+                  "river_name"
                 ],
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
                     "type": "string"
+                  },
+                  "river_name": {
+                    "type": "string",
+                    "description": "Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
                     "type": "double"
@@ -255,6 +306,11 @@
                   {
                     "name": "station_id",
                     "type": "string"
+                  },
+                  {
+                    "name": "river_name",
+                    "type": "string",
+                    "doc": "Name of the river the station observes (NVE HydAPI 'riverName' / Norwegian 'Vassdrag'). Sourced from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join."
                   },
                   {
                     "name": "water_level",

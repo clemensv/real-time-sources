@@ -1,128 +1,105 @@
 # BAFU Hydrology Bridge Events
 
-This document describes the events emitted by the BAFU Hydrology Bridge.
+This document describes the events emitted by the Swiss BAFU/FOEN Hydrology bridge.
 
 - [CH.BAFU.Hydrology](#message-group-chbafuhydrology)
   - [CH.BAFU.Hydrology.Station](#message-chbafuhydrologystation)
   - [CH.BAFU.Hydrology.WaterLevelObservation](#message-chbafuhydrologywaterlevelobservation)
+- [CH.BAFU.Hydrology.mqtt](#message-group-chbafuhydrologymqtt)
+  - [CH.BAFU.Hydrology.mqtt.Station](#message-chbafuhydrologymqttstation)
+  - [CH.BAFU.Hydrology.mqtt.WaterLevelObservation](#message-chbafuhydrologymqttwaterlevelobservation)
 
 ---
 
 ## Message Group: CH.BAFU.Hydrology
-
-Events from the Swiss Federal Office for the Environment's hydrological
-monitoring network, delivered via the existenz.ch Hydro API.
-
-**Kafka topic**: `bafu-hydro`
-**Kafka key**: `{station_id}`
-**Envelope**: CloudEvents/1.0, structured JSON (`application/cloudevents+json`)
-
 ---
-
 ### Message: CH.BAFU.Hydrology.Station
-
-Station reference data for a hydrological monitoring station.
-
 #### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `CH.BAFU.Hydrology.Station` |
+| `source` |  | `` | `False` | `https://www.hydrodaten.admin.ch` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-| **Name** | **Description** | **Type** | **Required** | **Value** |
-|----------|-----------------|----------|--------------|-----------|
-| `type` | Event type | string | Yes | `CH.BAFU.Hydrology.Station` |
-| `source` | Data origin | URI | Yes | `https://www.hydrodaten.admin.ch` |
-| `subject` | Station identifier | string | Yes | `{station_id}` |
-| `datacontenttype` | Content type | string | Yes | `application/json` |
-
-#### Data Schema:
-
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `station_id` | string | Yes | BAFU station identifier |
-| `name` | string | Yes | Human-readable station name |
-| `water_body_name` | string | No | Name of the river or lake being monitored |
-| `water_body_type` | string | No | Classification of the water body |
-| `latitude` | double | Yes | WGS84 latitude of the station |
-| `longitude` | double | Yes | WGS84 longitude of the station |
-
-#### Example:
-
-```json
-{
-  "specversion": "1.0",
-  "type": "CH.BAFU.Hydrology.Station",
-  "source": "https://www.hydrodaten.admin.ch",
-  "subject": "2009",
-  "id": "...",
-  "datacontenttype": "application/json",
-  "data": {
-    "station_id": "2009",
-    "name": "Rhein - Basel, Rheinhalle",
-    "water_body_name": "Rhein",
-    "water_body_type": "river",
-    "latitude": 47.559,
-    "longitude": 7.616
-  }
-}
-```
-
+#### Schema:
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `water_body_name` | *string* | - | `False` |  |
+| `water_body_type` | *string* | - | `False` |  |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
 ---
-
 ### Message: CH.BAFU.Hydrology.WaterLevelObservation
-
-A hydrological observation containing water level, discharge, and/or water
-temperature readings from a monitoring station.
-
 #### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `CH.BAFU.Hydrology.WaterLevelObservation` |
+| `source` |  | `` | `False` | `https://www.hydrodaten.admin.ch` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-| **Name** | **Description** | **Type** | **Required** | **Value** |
-|----------|-----------------|----------|--------------|-----------|
-| `type` | Event type | string | Yes | `CH.BAFU.Hydrology.WaterLevelObservation` |
-| `source` | Data origin | URI | Yes | `https://www.hydrodaten.admin.ch` |
-| `subject` | Station identifier | string | Yes | `{station_id}` |
-| `datacontenttype` | Content type | string | Yes | `application/json` |
+#### Schema:
+##### Object: WaterLevelObservation
+*WaterLevelObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `water_body_name` | *string* | - | `True` | Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `water_level` | *double* | - | `False` |  |
+| `water_level_unit` | *string* | - | `False` |  |
+| `water_level_timestamp` | *datetime* | - | `False` |  |
+| `discharge` | *double* | - | `False` |  |
+| `discharge_unit` | *string* | - | `False` |  |
+| `discharge_timestamp` | *datetime* | - | `False` |  |
+| `water_temperature` | *double* | - | `False` |  |
+| `water_temperature_unit` | *string* | - | `False` |  |
+| `water_temperature_timestamp` | *datetime* | - | `False` |  |
+## Message Group: CH.BAFU.Hydrology.mqtt
+---
+### Message: CH.BAFU.Hydrology.mqtt.Station
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `CH.BAFU.Hydrology.Station` |
+| `source` |  | `` | `False` | `https://www.hydrodaten.admin.ch` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-#### Data Schema:
+#### Schema:
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `water_body_name` | *string* | - | `False` |  |
+| `water_body_type` | *string* | - | `False` |  |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
+---
+### Message: CH.BAFU.Hydrology.mqtt.WaterLevelObservation
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `CH.BAFU.Hydrology.WaterLevelObservation` |
+| `source` |  | `` | `False` | `https://www.hydrodaten.admin.ch` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `station_id` | string | Yes | BAFU station identifier |
-| `water_level` | double | No | Water level reading |
-| `water_level_unit` | string | No | Unit of measurement (typically `m`) |
-| `water_level_timestamp` | datetime | No | ISO 8601 timestamp of the water level reading |
-| `discharge` | double | No | Water discharge reading |
-| `discharge_unit` | string | No | Unit of measurement (typically `m3/s`) |
-| `discharge_timestamp` | datetime | No | ISO 8601 timestamp of the discharge reading |
-| `water_temperature` | double | No | Water temperature reading |
-| `water_temperature_unit` | string | No | Unit of measurement (typically `C`) |
-| `water_temperature_timestamp` | datetime | No | ISO 8601 timestamp of the temperature reading |
-
-#### Example:
-
-```json
-{
-  "specversion": "1.0",
-  "type": "CH.BAFU.Hydrology.WaterLevelObservation",
-  "source": "https://www.hydrodaten.admin.ch",
-  "subject": "2009",
-  "id": "...",
-  "datacontenttype": "application/json",
-  "data": {
-    "station_id": "2009",
-    "water_level": 245.62,
-    "water_level_unit": "m",
-    "water_level_timestamp": "2025-01-15T14:30:00+00:00",
-    "discharge": 1045.0,
-    "discharge_unit": "m3/s",
-    "discharge_timestamp": "2025-01-15T14:30:00+00:00",
-    "water_temperature": 7.2,
-    "water_temperature_unit": "C",
-    "water_temperature_timestamp": "2025-01-15T14:30:00+00:00"
-  }
-}
-```
-
-## Schema Formats
-
-The event data schemas are defined in both JSON Structure and Apache Avro
-formats in the [xRegistry manifest](xreg/bafu_hydro.xreg.json). The bridge
-defaults to JSON encoding, but the generated producer code supports both
-`application/json` and `avro/binary` content types.
+#### Schema:
+##### Object: WaterLevelObservation
+*WaterLevelObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `water_body_name` | *string* | - | `True` | Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `water_level` | *double* | - | `False` |  |
+| `water_level_unit` | *string* | - | `False` |  |
+| `water_level_timestamp` | *datetime* | - | `False` |  |
+| `discharge` | *double* | - | `False` |  |
+| `discharge_unit` | *string* | - | `False` |  |
+| `discharge_timestamp` | *datetime* | - | `False` |  |
+| `water_temperature` | *double* | - | `False` |  |
+| `water_temperature_unit` | *string* | - | `False` |  |
+| `water_temperature_timestamp` | *datetime* | - | `False` |  |

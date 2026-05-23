@@ -104,3 +104,25 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template-with-eventhub.json)
+
+## MQTT / Unified Namespace transport
+
+In addition to the Kafka image documented in `CONTAINER.md`, this source
+also ships an MQTT 5.0 feeder built from `Dockerfile.mqtt`. It publishes
+the same Station reference and WaterLevelObservation telemetry into a
+Unified-Namespace topic tree:
+
+```
+hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/info
+hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/water-level
+```
+
+All messages are sent in CloudEvents *binary* mode with QoS 1 and
+`retain=true` so any new subscriber immediately sees the latest known
+state per station. The `{stream_name}` segment is normalized to lowercase
+kebab-case (umlauts and accented characters folded to ASCII, all other
+non-alphanumeric characters replaced with `-`) so the topic is safe for
+every MQTT 5 broker.
+
+See `CONTAINER.md` for the full deployment contract (environment
+variables, broker examples, subscription patterns).

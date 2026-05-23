@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/nve-hydro"
+LABEL org.opencontainers.image.title="NVE Hydrology → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the Norwegian Water Resources and Energy Directorate (NVE) HydAPI for the active station catalog and water level / discharge observations, and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (hydro/no/nve/nve-hydro/{river_name}/{station_id}/...)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/nve-hydro/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./nve_hydro_mqtt_producer/nve_hydro_mqtt_producer_data \
+ && pip install --no-cache-dir ./nve_hydro_mqtt_producer/nve_hydro_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./nve_hydro_producer/nve_hydro_producer_data \
+ && pip install --no-cache-dir ./nve_hydro_producer/nve_hydro_producer_kafka_producer \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./nve_hydro_mqtt
+
+ENV MQTT_BROKER_URL=""
+ENV NVE_API_KEY=""
+
+CMD ["python", "-m", "nve_hydro_mqtt", "feed"]

@@ -29,14 +29,14 @@ class Test_WaterLevelObservation(unittest.TestCase):
         Create instance of WaterLevelObservation for testing
         """
         instance = WaterLevelObservation(
-            station_id='tdmraewolgzqgkvmjwuw',
-            station_name='agaynpswfdpjysqgmfeg',
-            stream_name='rfcggzloheawaodsjabj',
-            water_level=float(86.54258399737506),
+            station_id='zwnwrqbogowkvsxjvemk',
+            station_name='yzotabvdejlsmlwxalcb',
+            stream_name='multicikigtpvefjojay',
+            water_level=float(37.19217050181472),
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(78.05993360929368),
+            discharge=float(96.08953514326159),
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            water_temperature=float(89.68803223140864),
+            water_temperature=float(77.55384510397631),
             water_temperature_timestamp=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -46,7 +46,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'tdmraewolgzqgkvmjwuw'
+        test_value = 'zwnwrqbogowkvsxjvemk'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'agaynpswfdpjysqgmfeg'
+        test_value = 'yzotabvdejlsmlwxalcb'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test stream_name property
         """
-        test_value = 'rfcggzloheawaodsjabj'
+        test_value = 'multicikigtpvefjojay'
         self.instance.stream_name = test_value
         self.assertEqual(self.instance.stream_name, test_value)
     
@@ -70,7 +70,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level property
         """
-        test_value = float(86.54258399737506)
+        test_value = float(37.19217050181472)
         self.instance.water_level = test_value
         self.assertEqual(self.instance.water_level, test_value)
     
@@ -86,7 +86,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(78.05993360929368)
+        test_value = float(96.08953514326159)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -102,7 +102,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_temperature property
         """
-        test_value = float(89.68803223140864)
+        test_value = float(77.55384510397631)
         self.instance.water_temperature = test_value
         self.assertEqual(self.instance.water_temperature, test_value)
     
@@ -114,6 +114,15 @@ class Test_WaterLevelObservation(unittest.TestCase):
         self.instance.water_temperature_timestamp = test_value
         self.assertEqual(self.instance.water_temperature_timestamp, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = WaterLevelObservation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

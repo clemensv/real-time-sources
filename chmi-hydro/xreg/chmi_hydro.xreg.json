@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/CZ.Gov.CHMI.Hydro"
       ]
+    },
+    "CZ.Gov.CHMI.Hydro.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -60,6 +81,31 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.mqtt": {
+      "description": "MQTT/5.0 transport variants of the CHMI Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/... The {stream_name} placeholder is sourced from the CHMI hydrology catalog (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/cz/chmi/chmi-hydro/vltava/+/water-level).",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
         }
       }
     }
@@ -138,7 +184,8 @@
                 "type": "object",
                 "required": [
                   "station_id",
-                  "station_name"
+                  "station_name",
+                  "stream_name"
                 ],
                 "name": "WaterLevelObservation",
                 "properties": {
@@ -149,7 +196,8 @@
                     "type": "string"
                   },
                   "stream_name": {
-                    "type": ["string", "null"]
+                    "type": "string",
+                    "description": "Name of the watercourse / stream the station observes (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava'). Sourced by the bridge from the CHMI hydrology station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {stream_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
                     "type": ["double", "null"]
@@ -288,11 +336,8 @@
                   },
                   {
                     "name": "stream_name",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
+                    "type": "string",
+                    "doc": "Name of the watercourse / stream the station observes (Czech: 'tok'). Sourced by the bridge from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join."
                   },
                   {
                     "name": "water_level",

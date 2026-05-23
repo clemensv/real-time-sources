@@ -244,6 +244,8 @@ above.
 **[BAFU Hydro](bafu-hydro/README.md)** -- Swiss Federal Office for the
 Environment (BAFU/FOEN) hydrological monitoring network. Forwards water level,
 discharge, and temperature observations from approximately 300 stations.
+Available as both a Kafka image and an MQTT/UNS image (topic root
+`hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/…`).
 
 **[Canada ECCC Water Office](canada-eccc-wateroffice/README.md)** -- Environment
 and Climate Change Canada (ECCC) Water Survey of Canada. Real-time water level
@@ -256,6 +258,8 @@ over 2,600 stations operated by the Department of Water Resources.
 
 **[CHMI Hydro](chmi-hydro/README.md)** -- Czech Hydrometeorological Institute.
 Real-time water level, discharge, and temperature. Polled every 10 minutes.
+Available as both a Kafka image and an MQTT/UNS image (topic root
+`hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/…`).
 
 **[German Waters](german-waters/README.md)** -- Aggregates water level and
 discharge data from 12 German state open data portals (~2,724 stations). Polled
@@ -288,7 +292,8 @@ datasets.
 
 **[NVE Hydro](nve-hydro/README.md)** -- Norwegian Water Resources and Energy
 Directorate (NVE). Water level and discharge observations. Requires a free API
-key.
+key. Available as both a Kafka image and an MQTT/UNS image (topic root
+`hydro/no/nve/nve-hydro/{river_name}/{station_id}/…`).
 
 **[Pegelonline](pegelonline/README.md)** -- German Federal Waterways and
 Shipping Administration (WSV). Over 3,000 stations, updated every 15 minutes.
