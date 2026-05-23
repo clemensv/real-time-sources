@@ -26,7 +26,6 @@
 |----------------|----------|----------|--------------|-----------------|
 | `station_code` | *string* | - | `True` |  |
 | `name` | *string* | - | `True` |  |
-| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog and propagated onto every station event so subscribers do not need an out-of-band catalog join. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
 | `latitude` | *double* | - | `True` |  |
 | `longitude` | *double* | - | `True` |  |
 | `coordinate_system` | *string* | - | `False` |  |
@@ -45,7 +44,6 @@
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `station_code` | *string* | - | `True` |  |
-| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog at startup and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by location. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
 | `location_name` | *string* | - | `False` |  |
 | `timestamp` | *datetime* | - | `True` |  |
 | `value` | *double* | - | `True` |  |
@@ -71,7 +69,6 @@
 |----------------|----------|----------|--------------|-----------------|
 | `station_code` | *string* | - | `True` |  |
 | `name` | *string* | - | `True` |  |
-| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog and propagated onto every station event so subscribers do not need an out-of-band catalog join. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
 | `latitude` | *double* | - | `True` |  |
 | `longitude` | *double* | - | `True` |  |
 | `coordinate_system` | *string* | - | `False` |  |
@@ -90,7 +87,6 @@
 | **Field Name** | **Type** | **Unit** | **Required** | **Description** |
 |----------------|----------|----------|--------------|-----------------|
 | `station_code` | *string* | - | `True` |  |
-| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog at startup and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by location. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
 | `location_name` | *string* | - | `False` |  |
 | `timestamp` | *datetime* | - | `True` |  |
 | `value` | *double* | - | `True` |  |
@@ -99,3 +95,4 @@
 | `status` | *string* | - | `False` |  |
 | `compartment` | *string* | - | `False` |  |
 | `parameter` | *string* | - | `False` |  |
+

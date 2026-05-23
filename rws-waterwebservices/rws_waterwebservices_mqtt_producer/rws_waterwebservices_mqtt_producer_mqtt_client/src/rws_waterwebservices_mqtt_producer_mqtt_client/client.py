@@ -187,8 +187,8 @@ def get_default_topic_mappings_nl_rws_waterwebservices_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "NL.RWS.Waterwebservices.mqtt.Station": "hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/info",
-        "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation": "hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/water-level",
+        "NL.RWS.Waterwebservices.mqtt.Station": "hydro/nl/rws/rws-waterwebservices/{station_code}/info",
+        "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation": "hydro/nl/rws/rws-waterwebservices/{station_code}/water-level",
     }
 
 
@@ -358,7 +358,6 @@ class NLRWSWaterwebservicesMqttMqttClient(_ClientBase):
     
     async def publish_nl_rws_waterwebservices_mqtt_station(self,
         station_code: str,
-        water_body: str,
         data: rws_waterwebservices_mqtt_producer_data.Station,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -370,18 +369,16 @@ class NLRWSWaterwebservicesMqttMqttClient(_ClientBase):
         Args:
         
             station_code: URI template variable for 'station_code'
-            water_body: URI template variable for 'water_body'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/info'
+            topic: Optional topic override. If not provided, uses default topic 'hydro/nl/rws/rws-waterwebservices/{station_code}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/info"
+        target_topic = topic if topic is not None else "hydro/nl/rws/rws-waterwebservices/{station_code}/info"
         _topic_template_values: Dict[str, str] = {
             "station_code": str(station_code),
-            "water_body": str(water_body),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -434,7 +431,6 @@ class NLRWSWaterwebservicesMqttMqttClient(_ClientBase):
     
     async def publish_nl_rws_waterwebservices_mqtt_water_level_observation(self,
         station_code: str,
-        water_body: str,
         data: rws_waterwebservices_mqtt_producer_data.WaterLevelObservation,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -446,18 +442,16 @@ class NLRWSWaterwebservicesMqttMqttClient(_ClientBase):
         Args:
         
             station_code: URI template variable for 'station_code'
-            water_body: URI template variable for 'water_body'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/water-level'
+            topic: Optional topic override. If not provided, uses default topic 'hydro/nl/rws/rws-waterwebservices/{station_code}/water-level'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/water-level"
+        target_topic = topic if topic is not None else "hydro/nl/rws/rws-waterwebservices/{station_code}/water-level"
         _topic_template_values: Dict[str, str] = {
             "station_code": str(station_code),
-            "water_body": str(water_body),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)

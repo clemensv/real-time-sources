@@ -25,7 +25,6 @@ class WaterLevelObservation:
     
     Attributes:
         station_code (str)
-        water_body (str)
         location_name (typing.Optional[str])
         timestamp (datetime.datetime)
         value (float)
@@ -37,12 +36,11 @@ class WaterLevelObservation:
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog at startup and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by location. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.\"}, {\"name\": \"location_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"value\", \"type\": \"double\"}, {\"name\": \"unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"quality_code\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"compartment\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"parameter\", \"type\": [\"null\", \"string\"], \"default\": null}]}"
+        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"location_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"value\", \"type\": \"double\"}, {\"name\": \"unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"quality_code\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"compartment\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"parameter\", \"type\": [\"null\", \"string\"], \"default\": null}]}"
     )
     
     
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
-    water_body: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_body"))
     location_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location_name"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
@@ -81,8 +79,6 @@ class WaterLevelObservation:
         converted = data.copy()
         if 'station_code' in converted and converted['station_code'] is not None:
             value = converted['station_code']
-        if 'water_body' in converted and converted['water_body'] is not None:
-            value = converted['water_body']
         if 'location_name' in converted and converted['location_name'] is not None:
             value = converted['location_name']
         if 'timestamp' in converted and converted['timestamp'] is not None:
@@ -257,14 +253,13 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='hypifxvmqlrbcwuoxzuc',
-            water_body='cgvpxmazlialorojchvf',
-            location_name='akfupyuvyiysfzazssxi',
+            station_code='fmlytokxosojnmlsgvlr',
+            location_name='nfawgwbrhqwrqvxznake',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(16.21657806577945),
-            unit='zldbuoqyxyzqfktdggyc',
-            quality_code='cfnhckxaghvdifhyaxgo',
-            status='skkoykacegevtpkprwqy',
-            compartment='exspfckifjkxrodjykuu',
-            parameter='zrjgpfxzobbapyhtzhkt'
+            value=float(50.697599691699835),
+            unit='bxckqhelshmmhyqnxdfq',
+            quality_code='sdpknoezggfvflaezxzk',
+            status='qaevsxczyowxopcbfuer',
+            compartment='xcfmwoqxiobmdcevkeht',
+            parameter='qxevnsprbawkcxeywelh'
         )

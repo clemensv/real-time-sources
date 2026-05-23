@@ -57,7 +57,7 @@ See [EVENTS.md](EVENTS.md) for the CloudEvents message definitions.
 ## MQTT / Unified Namespace
 
 An MQTT 5.0 feeder publishes the same data into a UNS topic tree:
-`hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/{info|water-level}`.
+`hydro/nl/rws/rws-waterwebservices/{station_code}/{info|water-level}`.
 See [CONTAINER.md](CONTAINER.md) for the MQTT container image and environment variables.
 
 ## Container
@@ -109,3 +109,4 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template-with-eventhub.json)
+

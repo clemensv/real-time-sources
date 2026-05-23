@@ -66,7 +66,7 @@ class TestRWSContainerIntegration:
                 compartment="OW",
                 parameter="WATHTE",
             )
-            rws_producer.send_nl_rws_waterwebservices_water_level_observation(observation)
+            rws_producer.send_nl_rws_waterwebservices_water_level_observation("HOlv", observation)
 
             # Send a mock station
             station = Station(
@@ -76,7 +76,7 @@ class TestRWSContainerIntegration:
                 longitude=4.120,
                 coordinate_system="25831",
             )
-            rws_producer.send_nl_rws_waterwebservices_station(station)
+            rws_producer.send_nl_rws_waterwebservices_station("HOlv", station)
 
             # Consume and verify
             consumer = _create_consumer(bootstrap_servers)
@@ -128,7 +128,7 @@ class TestRWSLiveContainerIntegration:
                     longitude=float(loc.get("Lon", 0) or 0),
                     coordinate_system=loc.get("Coordinatenstelsel", ""),
                 )
-                rws_producer.send_nl_rws_waterwebservices_station(station, flush_producer=False)
+                rws_producer.send_nl_rws_waterwebservices_station(station.station_code, station, flush_producer=False)
                 sent += 1
             producer.flush()
 
@@ -176,7 +176,7 @@ class TestRWSLiveContainerIntegration:
                         compartment="OW",
                         parameter="WATHTE",
                     )
-                    rws_producer.send_nl_rws_waterwebservices_water_level_observation(obs, flush_producer=False)
+                    rws_producer.send_nl_rws_waterwebservices_water_level_observation(obs.station_code, obs, flush_producer=False)
                     sent_count += 1
                     if sent_count >= 5:
                         break
@@ -193,5 +193,5 @@ class TestRWSLiveContainerIntegration:
                 payload = json.loads(msg.value())
                 assert payload["type"] == "NL.RWS.Waterwebservices.WaterLevelObservation"
                 data = payload["data"]
-                assert data["location_code"] != ""
+                assert data["station_code"] != ""
                 assert isinstance(data["value"], (int, float))

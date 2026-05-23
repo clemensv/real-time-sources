@@ -23,27 +23,24 @@ class Station:
     Attributes:
         station_code (str): 
         name (str): 
-        water_body (str): 
         latitude (float): 
         longitude (float): 
         coordinate_system (typing.Optional[str]): """
     
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    water_body: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_body"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     coordinate_system: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="coordinate_system"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"coordinate_system\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"NL.RWS.Waterwebservices\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"coordinate_system\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"NL.RWS.Waterwebservices\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_code=str(self.station_code)
         self.name=str(self.name)
-        self.water_body=str(self.water_body)
         self.latitude=float(self.latitude)
         self.longitude=float(self.longitude)
         self.coordinate_system=str(self.coordinate_system) if self.coordinate_system else None

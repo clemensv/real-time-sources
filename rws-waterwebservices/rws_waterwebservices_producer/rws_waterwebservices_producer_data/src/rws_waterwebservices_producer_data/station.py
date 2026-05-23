@@ -24,20 +24,18 @@ class Station:
     Attributes:
         station_code (str)
         name (str)
-        water_body (str)
         latitude (float)
         longitude (float)
         coordinate_system (typing.Optional[str])
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog and propagated onto every station event so subscribers do not need an out-of-band catalog join. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"coordinate_system\", \"type\": [\"null\", \"string\"], \"default\": null}]}"
+        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"coordinate_system\", \"type\": [\"null\", \"string\"], \"default\": null}]}"
     )
     
     
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    water_body: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_body"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     coordinate_system: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="coordinate_system"))
@@ -73,8 +71,6 @@ class Station:
             value = converted['station_code']
         if 'name' in converted and converted['name'] is not None:
             value = converted['name']
-        if 'water_body' in converted and converted['water_body'] is not None:
-            value = converted['water_body']
         if 'latitude' in converted and converted['latitude'] is not None:
             value = converted['latitude']
         if 'longitude' in converted and converted['longitude'] is not None:
@@ -233,10 +229,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='zsvggbeztifzuzcfhdbb',
-            name='qswcbvofzsmokligstae',
-            water_body='xltvfkpcikkkdfzluntc',
-            latitude=float(59.6297600174767),
-            longitude=float(53.16109679479576),
-            coordinate_system='wccxcnjhmpkcuhlzvxel'
+            station_code='tqgkhfaqicmebhowrfwo',
+            name='trfxhqagkvxbnssyukkt',
+            latitude=float(88.35126242023227),
+            longitude=float(34.80065020687733),
+            coordinate_system='ltufnnhnfzkaukbszdsq'
         )

@@ -85,14 +85,14 @@
       }
     },
     "NL.RWS.Waterwebservices.mqtt": {
-      "description": "MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/... The {water_body} placeholder is sourced from the upstream RWS station catalog (Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole water bodies (e.g. hydro/nl/rws/rws-waterwebservices/hoek-van-holland/+/water-level).",
+      "description": "MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to retained, QoS-1 Unified Namespace topics under hydro/nl/rws/rws-waterwebservices/{station_code}/... RWS Waterwebservices does not expose a stable shared water-body axis in the station catalog, so the MQTT tree intentionally uses the station code as the stable subscriber axis.",
       "messages": {
         "NL.RWS.Waterwebservices.mqtt.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/info",
+            "topic_name": "hydro/nl/rws/rws-waterwebservices/{station_code}/info",
             "qos": 1,
             "retain": true
           }
@@ -102,9 +102,10 @@
           "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/water-level",
+            "topic_name": "hydro/nl/rws/rws-waterwebservices/{station_code}/water-level",
             "qos": 1,
-            "retain": true
+            "retain": true,
+            "message_expiry_interval": 3600
           }
         }
       }
@@ -126,7 +127,6 @@
                 "required": [
                   "station_code",
                   "name",
-                  "water_body",
                   "latitude",
                   "longitude"
                 ],
@@ -140,10 +140,6 @@
                     "altnames": {
                       "lang:nl": "Naam"
                     }
-                  },
-                  "water_body": {
-                    "type": "string",
-                    "description": "Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog and propagated onto every station event so subscribers do not need an out-of-band catalog join. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "latitude": {
                     "type": "double"
@@ -176,7 +172,6 @@
                 "type": "object",
                 "required": [
                   "station_code",
-                  "water_body",
                   "timestamp",
                   "value"
                 ],
@@ -184,10 +179,6 @@
                 "properties": {
                   "station_code": {
                     "type": "string"
-                  },
-                  "water_body": {
-                    "type": "string",
-                    "description": "Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog at startup and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by location. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "location_name": {
                     "type": "string",
@@ -260,10 +251,6 @@
                     "type": "string"
                   },
                   {
-                    "name": "water_body",
-                    "type": "string"
-                  },
-                  {
                     "name": "latitude",
                     "type": "double"
                   },
@@ -302,10 +289,6 @@
                     "type": "string"
                   },
                   {
-                    "name": "water_body",
-                    "type": "string"
-                  },
-                  {
                     "name": "location_name",
                     "type": [
                       "null",
@@ -315,10 +298,7 @@
                   },
                   {
                     "name": "timestamp",
-                    "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
-                    }
+                    "type": "string"
                   },
                   {
                     "name": "value",

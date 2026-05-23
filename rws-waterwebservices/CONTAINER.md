@@ -123,8 +123,8 @@ A separate container image publishes the same data as MQTT 5.0 binary-mode
 CloudEvents into a Unified Namespace topic tree:
 
 ```
-hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/info
-hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/water-level
+hydro/nl/rws/rws-waterwebservices/{station_code}/info
+hydro/nl/rws/rws-waterwebservices/{station_code}/water-level
 ```
 
 ### Installing
@@ -158,7 +158,7 @@ hydro/nl/rws/rws-waterwebservices/+/+/water-level
 Subscribe to all events from a specific water body (e.g. Hoek van Holland):
 
 ```
-hydro/nl/rws/rws-waterwebservices/hoek-van-holland/#
+hydro/nl/rws/rws-waterwebservices/{station_code}/#
 ```
 
 ### MQTT Environment Variables
@@ -206,3 +206,4 @@ Exit after one polling cycle. Set to `1`, `true`, or `yes`.
 #### `STATE_FILE`
 
 Path to the deduplication state file. Default: `~/.rws_waterwebservices_mqtt_state.json`.
+

@@ -5,10 +5,9 @@ Reuses the upstream HTTP client and station catalog logic from the existing
 package) and pushes CloudEvents into MQTT 5.0 using the xrcg-generated
 :class:`NLRWSWaterwebservicesMqttMqttClient`.
 
-Topic tree: ``hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/{info|water-level}``.
-``{water_body}`` is sourced from the RWS station catalog (``Locatie.Naam``
-field) and normalized to lowercase kebab-case by :func:`_uns_slug` so spaces
-and special characters never reach the broker.
+Topic tree: ``hydro/nl/rws/rws-waterwebservices/{station_code}/{info|water-level}``.
+RWS Waterwebservices does not expose a stable shared water-body axis in the
+station catalog, so the MQTT tree uses station code as the stable subscriber axis.
 """
 
 from __future__ import annotations
@@ -60,7 +59,7 @@ def _uns_slug(value: str) -> str:
 
 
 def _build_station_map(locations: List[Dict[str, Any]]) -> Dict[str, str]:
-    """Build station_code → water_body (raw Naam) map from catalog locations."""
+    """Build station_code → location display name map from catalog locations."""
     mapping: Dict[str, str] = {}
     for loc in locations:
         code = loc.get("Code", "")
@@ -80,18 +79,15 @@ async def _publish_stations(
         if not code:
             continue
         naam = station_map.get(code, "")
-        water_slug = _uns_slug(naam)
         station = Station(
             station_code=code,
             name=naam,
-            water_body=naam,
             latitude=float(loc.get("Lat", 0) or 0),
             longitude=float(loc.get("Lon", 0) or 0),
-            coordinate_system=loc.get("Coordinatenstelsel", ""),
+            coordinate_system=loc.get("Coordinatenstelsel") or None,
         )
         await mqtt_client.publish_nl_rws_waterwebservices_mqtt_station(
             station_code=code,
-            water_body=water_slug,
             data=station,
         )
 
@@ -125,18 +121,16 @@ async def _publish_observations(
                 continue
 
             naam = station_map.get(location_code, locatie.get("Naam", ""))
-            water_slug = _uns_slug(naam)
             metadata = meting.get("WaarnemingMetadata", {})
 
             observation = WaterLevelObservation(
                 station_code=location_code,
-                water_body=naam,
-                location_name=naam,
+                location_name=naam or None,
                 timestamp=tijdstip,
                 value=float(waarde),
                 unit=unit,
-                quality_code=metadata.get("Kwaliteitswaardecode", ""),
-                status=metadata.get("Statuswaarde", ""),
+                quality_code=metadata.get("Kwaliteitswaardecode") or None,
+                status=metadata.get("Statuswaarde") or None,
                 compartment=api.COMPARTIMENT_CODE,
                 parameter=api.GROOTHEID_CODE,
             )
@@ -144,7 +138,6 @@ async def _publish_observations(
             try:
                 await mqtt_client.publish_nl_rws_waterwebservices_mqtt_water_level_observation(
                     station_code=location_code,
-                    water_body=water_slug,
                     data=observation,
                 )
                 sent += 1
@@ -191,7 +184,7 @@ async def feed(
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
     await mqtt_client.connect(broker_host, broker_port)
 
-    # Fetch station catalog and build water_body map
+    # Fetch station catalog and build station display-name map
     locations = api.get_water_level_stations()
     station_map = _build_station_map(locations)
     station_codes = [loc.get("Code", "") for loc in locations if loc.get("Code")]

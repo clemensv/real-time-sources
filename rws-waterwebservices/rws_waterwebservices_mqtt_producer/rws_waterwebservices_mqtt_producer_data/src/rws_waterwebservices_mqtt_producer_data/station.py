@@ -22,7 +22,6 @@ class Station:
     Attributes:
         station_code (str)
         name (str)
-        water_body (str)
         latitude (float)
         longitude (float)
         coordinate_system (typing.Optional[str])
@@ -31,7 +30,6 @@ class Station:
     
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    water_body: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_body"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     coordinate_system: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="coordinate_system"))
@@ -161,10 +159,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='tgbmhzfatvgmrbyjszvx',
-            name='pzjmuczensyfaqnzlzve',
-            water_body='hxxilwvuhoarhddsavbc',
-            latitude=float(35.20762913049158),
-            longitude=float(36.39130678425012),
-            coordinate_system='aaojassnnqomaabqyiqs'
+            station_code='hthriyzefolwlnozggpt',
+            name='mgimqxckupdmradkfzfg',
+            latitude=float(14.433960121453149),
+            longitude=float(75.4557690057398),
+            coordinate_system='onsxzetxjxzqvxlnibqf'
         )

@@ -202,10 +202,9 @@ class RWSWaterwebservicesAPI:
             station = Station(
                 station_code=code,
                 name=loc.get("Naam", ""),
-                water_body=loc.get("Naam", ""),
                 latitude=float(loc.get("Lat", 0) or 0),
                 longitude=float(loc.get("Lon", 0) or 0),
-                coordinate_system=loc.get("Coordinatenstelsel", ""),
+                coordinate_system=loc.get("Coordinatenstelsel") or None,
             )
             rws_producer.send_nl_rws_waterwebservices_station(code, station, flush_producer=False)
             station_codes.append(code)
@@ -242,13 +241,12 @@ class RWSWaterwebservicesAPI:
                         metadata = meting.get("WaarnemingMetadata", {})
                         observation = WaterLevelObservation(
                             station_code=location_code,
-                            water_body=locatie.get("Naam", ""),
-                            location_name=locatie.get("Naam", ""),
+                            location_name=locatie.get("Naam") or None,
                             timestamp=tijdstip,
                             value=float(waarde),
                             unit=unit,
-                            quality_code=metadata.get("Kwaliteitswaardecode", ""),
-                            status=metadata.get("Statuswaarde", ""),
+                            quality_code=metadata.get("Kwaliteitswaardecode") or None,
+                            status=metadata.get("Statuswaarde") or None,
                             compartment=self.COMPARTIMENT_CODE,
                             parameter=self.GROOTHEID_CODE,
                         )
