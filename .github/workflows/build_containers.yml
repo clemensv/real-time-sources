@@ -25,7 +25,9 @@ jobs:
       containers: ${{ steps.get-dockerfiles.outputs.containers }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Find all container projects
         id: get-dockerfiles
@@ -56,6 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 20
       matrix:
         container: ${{ fromJson(needs.find-dockerfiles.outputs.containers) }}
     permissions:
@@ -65,7 +68,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Install cosign
         if: github.event_name != 'pull_request'
