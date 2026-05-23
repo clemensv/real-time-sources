@@ -259,15 +259,15 @@ class TestDeWsvPegelonlineAmqpProducer:
                 producer.send_station(
                     data=payload,
                     _feedurl="value",
-                
-                    _station_id="value"
-                ,
-                content_type="application/json"
+                    _station_id="value",
+                    _water_shortname="value",
+                    content_type="application/json"
                 )
 
             # Receive and verify all 5 messages
             for i in range(5):
                 received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
 
                 if True:
                     body = received.body
@@ -286,10 +286,10 @@ class TestDeWsvPegelonlineAmqpProducer:
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
-                    properties = received.properties or {}
-                    assert properties.get('subject') == 'de.wsv.pegelonline.amqp.Station'
                     # Verify message body is not empty
                     assert received.body is not None
+                assert received.subject == "{station_id}".format(station_id="value")
+                assert properties.get('water_shortname') == "{water_shortname}".format(water_shortname="value")
         finally:
             producer.close()
     
@@ -318,15 +318,15 @@ class TestDeWsvPegelonlineAmqpProducer:
                 producer.send_current_measurement(
                     data=payload,
                     _feedurl="value",
-                
-                    _station_id="value"
-                ,
-                content_type="application/json"
+                    _station_id="value",
+                    _water_shortname="value",
+                    content_type="application/json"
                 )
 
             # Receive and verify all 5 messages
             for i in range(5):
                 received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
 
                 if True:
                     body = received.body
@@ -345,10 +345,10 @@ class TestDeWsvPegelonlineAmqpProducer:
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
-                    properties = received.properties or {}
-                    assert properties.get('subject') == 'de.wsv.pegelonline.amqp.CurrentMeasurement'
                     # Verify message body is not empty
                     assert received.body is not None
+                assert received.subject == "{station_id}".format(station_id="value")
+                assert properties.get('water_shortname') == "{water_shortname}".format(water_shortname="value")
         finally:
             producer.close()
 

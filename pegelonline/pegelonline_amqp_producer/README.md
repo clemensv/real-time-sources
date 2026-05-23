@@ -164,7 +164,9 @@ The producer constructor accepts:
 
 
 ##### `send_station()`
-PegelOnline station metadata with location and water body information.
+Reference catalog entry for one WSV PegelOnline gauge installation. Emitted at bridge startup and periodically refreshed
+so downstream consumers can interpret CurrentMeasurement events without an out-of-band lookup. Sourced from `GET
+/stations.json` on the PegelOnline REST API v2.
 
 **Parameters:**
 - `data` (Station): The message data object
@@ -185,7 +187,9 @@ Send multiple Station messages in sequence.
 
 
 ##### `send_current_measurement()`
-PegelOnline current water level measurement.
+Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from `GET
+/stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Telemetry counterpart to the Station
+reference event; both share the `station_id` keying.
 
 **Parameters:**
 - `data` (CurrentMeasurement): The message data object

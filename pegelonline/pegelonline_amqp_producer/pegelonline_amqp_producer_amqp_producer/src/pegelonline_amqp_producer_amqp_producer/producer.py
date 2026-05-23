@@ -602,14 +602,16 @@ class DeWsvPegelonlineAmqpProducer:
         data: Station,
         _feedurl: str,
         _station_id: str,
+        _water_shortname: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.wsv.pegelonline.amqp.Station` message
-        PegelOnline station metadata with location and water body information.
+        Reference catalog entry for one WSV PegelOnline gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API v2.
         
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             data (Station): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -651,6 +653,15 @@ class DeWsvPegelonlineAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{station_id}".format(station_id=_station_id)
+
+        app_properties = {}
+        app_properties["water_shortname"] = "{water_shortname}".format(water_shortname=_water_shortname)
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -662,6 +673,7 @@ class DeWsvPegelonlineAmqpProducer:
         data_array: typing.List[Station],
         _feedurl: str,
         _station_id: str,
+        _water_shortname: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `de.wsv.pegelonline.amqp.Station` messages
@@ -670,24 +682,32 @@ class DeWsvPegelonlineAmqpProducer:
             data_array (typing.List[Station]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_station(data, _feedurl, _station_id, content_type)
+            self.send_station(
+                data=data,
+                _feedurl=_feedurl,
+                _station_id=_station_id,
+                _water_shortname=_water_shortname,
+                content_type=content_type)
     
     
     def send_current_measurement(self,
         data: CurrentMeasurement,
         _feedurl: str,
         _station_id: str,
+        _water_shortname: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.wsv.pegelonline.amqp.CurrentMeasurement` message
-        PegelOnline current water level measurement.
+        Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.
         
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             data (CurrentMeasurement): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -729,6 +749,15 @@ class DeWsvPegelonlineAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{station_id}".format(station_id=_station_id)
+
+        app_properties = {}
+        app_properties["water_shortname"] = "{water_shortname}".format(water_shortname=_water_shortname)
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -740,6 +769,7 @@ class DeWsvPegelonlineAmqpProducer:
         data_array: typing.List[CurrentMeasurement],
         _feedurl: str,
         _station_id: str,
+        _water_shortname: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `de.wsv.pegelonline.amqp.CurrentMeasurement` messages
@@ -748,10 +778,16 @@ class DeWsvPegelonlineAmqpProducer:
             data_array (typing.List[CurrentMeasurement]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_current_measurement(data, _feedurl, _station_id, content_type)
+            self.send_current_measurement(
+                data=data,
+                _feedurl=_feedurl,
+                _station_id=_station_id,
+                _water_shortname=_water_shortname,
+                content_type=content_type)
     
     
     def close(self) -> None:
