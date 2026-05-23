@@ -20,9 +20,55 @@
       "messagegroups": [
         "#/messagegroups/de.bfs.odl"
       ]
+    },
+    "de.bfs.odl.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/de.bfs.odl.mqtt"
+      ]
     }
   },
   "messagegroups": {
+    "de.bfs.odl.mqtt": {
+      "description": "MQTT/5.0 transport variants of the BfS ODL CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under radiation/de/bfs/bfs-odl/{state}/{station_id}/... The {state} placeholder is derived from the station's AGS-based Kennziffer (first two digits map to a German Bundesland) and normalized to lowercase kebab-case before publishing.",
+      "messages": {
+        "de.bfs.odl.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "radiation/de/bfs/bfs-odl/{state}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "de.bfs.odl.mqtt.DoseRateMeasurement": {
+          "name": "DoseRateMeasurement",
+          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
     "de.bfs.odl": {
       "messages": {
         "de.bfs.odl.Station": {
@@ -100,6 +146,10 @@
                                 "lang:de": "Kennziffer"
                               }
                             },
+                            "state": {
+                              "type": "string",
+                              "description": "German federal state (Bundesland) derived from the first two digits of the station Kennziffer (AGS prefix). Normalized to lowercase kebab-case for use as the {state} segment in the MQTT/UNS topic. Example: 'niedersachsen', 'bayern', 'nordrhein-westfalen'."
+                            },
                             "station_code": {
                               "type": "string",
                               "description": "Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area.",
@@ -159,6 +209,7 @@
                           },
                           "required": [
                             "station_id",
+                            "state",
                             "station_code",
                             "name",
                             "postal_code",
@@ -207,6 +258,10 @@
                                 "lang:de": "Kennziffer"
                               }
                             },
+                            "state": {
+                              "type": "string",
+                              "description": "German federal state (Bundesland) derived from the station Kennziffer. Propagated from station catalog so subscribers can route by state without a catalog join. Used as the {state} segment of the MQTT/UNS topic."
+                            },
                             "start_measure": {
                               "type": "string",
                               "description": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'."
@@ -253,6 +308,7 @@
                           },
                           "required": [
                             "station_id",
+                            "state",
                             "start_measure",
                             "end_measure",
                             "value",
@@ -288,6 +344,11 @@
                     "name": "station_id",
                     "type": "string",
                     "doc": "Nine-digit station identifier (Kennziffer) assigned by BfS."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "German federal state (Bundesland) derived from AGS prefix of Kennziffer."
                   },
                   {
                     "name": "station_code",
@@ -358,6 +419,11 @@
                     "name": "station_id",
                     "type": "string",
                     "doc": "Nine-digit station identifier (Kennziffer) of the measuring probe."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "German federal state (Bundesland) derived from station Kennziffer AGS prefix."
                   },
                   {
                     "name": "start_measure",
