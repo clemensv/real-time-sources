@@ -38,7 +38,7 @@ jobs:
       - id: pick
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, pathlib
+          import json, pathlib, sys
           catalog = json.loads(pathlib.Path('catalog.json').read_text(encoding='utf-8'))
           ids = []
           skipped = []
@@ -53,7 +53,7 @@ jobs:
                   continue
               ids.append(sid)
           if skipped:
-              print(f"# skipped (no source dir yet): {skipped}")
+              print(f"::notice::Skipping notebook sources without source dir: {skipped}", file=sys.stderr)
           print(f"sources={json.dumps(ids)}")
           print(f"count={len(ids)}")
           PY
