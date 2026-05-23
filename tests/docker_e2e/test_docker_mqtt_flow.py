@@ -782,11 +782,14 @@ class TestBlueskyMqttDockerFlow:
         def on_subscribe(c, u, mid, reason_codes, props):
             subscribe_ready.append(True)
 
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('social/intl/bluesky/#', qos=0)
+
         sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
         sub.on_message = on_message
         sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
         sub.connect('127.0.0.1', bluesky_mosquitto_container['host_port'], 30)
-        sub.subscribe('social/intl/bluesky/#', qos=0)
         sub.loop_start()
         # Wait for SUBACK before launching feeder.
         ready_deadline = time.time() + 10
@@ -1011,11 +1014,14 @@ class TestAisstreamMqttDockerFlow:
         def on_subscribe(c, u, mid, reason_codes, props):
             subscribe_ready.append(True)
 
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('maritime/intl/aisstream/#', qos=0)
+
         sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
         sub.on_message = on_message
         sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
         sub.connect('127.0.0.1', aisstream_mosquitto_container['host_port'], 30)
-        sub.subscribe('maritime/intl/aisstream/#', qos=0)
         sub.loop_start()
         ready_deadline = time.time() + 10
         while not subscribe_ready and time.time() < ready_deadline:
