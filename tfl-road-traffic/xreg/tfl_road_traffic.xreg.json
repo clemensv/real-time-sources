@@ -35,7 +35,7 @@
                 "deployed": false,
                 "options": {
                     "topic": "tfl-road-traffic",
-                    "key": "disruptions/{road_id}/{severity}/{disruption_id}/disruption"
+                    "key": "disruptions/{road_id}/{severity}/{disruption_id}"
                 }
             },
             "messagegroups": [
@@ -121,7 +121,7 @@
                             "value": "https://api.tfl.gov.uk/Road/all/Disruption"
                         },
                         "subject": {
-                            "value": "disruptions/{road_id}/{severity}/{disruption_id}/disruption",
+                            "value": "disruptions/{road_id}/{severity}/{disruption_id}",
                             "type": "uritemplate"
                         }
                     },
@@ -133,12 +133,22 @@
         "uk.gov.tfl.road.mqtt": {
             "description": "MQTT/5.0 binary CloudEvents for the TfL Road Traffic Unified Namespace. Roads are retained last-known-value topics; disruption severities are literal topic partitions.",
             "messages": {
-                "uk.gov.tfl.road.mqtt.Roads": {
-                    "name": "Roads",
+                "uk.gov.tfl.road.mqtt.RoadCorridor": {
+                    "name": "RoadCorridor",
+                    "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
+                    "protocol": "MQTT/5.0",
+                    "protocoloptions": {
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor",
+                        "qos": 1,
+                        "retain": true
+                    }
+                },
+                "uk.gov.tfl.road.mqtt.RoadStatus": {
+                    "name": "RoadStatus",
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status",
                         "qos": 1,
                         "retain": true
                     }
@@ -148,7 +158,7 @@
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}/disruption",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}",
                         "qos": 1,
                         "retain": false
                     }
@@ -158,7 +168,7 @@
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}/disruption",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}",
                         "qos": 1,
                         "retain": false
                     }
@@ -168,7 +178,7 @@
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}/disruption",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}",
                         "qos": 1,
                         "retain": false
                     }
@@ -178,7 +188,7 @@
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}/disruption",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}",
                         "qos": 1,
                         "retain": false
                     }
@@ -188,7 +198,7 @@
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}/disruption",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}",
                         "qos": 1,
                         "retain": false
                     }
@@ -198,7 +208,7 @@
                     "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
                     "protocol": "MQTT/5.0",
                     "protocoloptions": {
-                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}/disruption",
+                        "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}",
                         "qos": 1,
                         "retain": false
                     }
@@ -224,8 +234,7 @@
                                 "description": "Reference record for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road endpoint at bridge startup and refreshed periodically. Each corridor is a named road segment under TfL operational control, such as the A2, A12, or M25, with its current aggregate traffic status.",
                                 "required": [
                                     "road_id",
-                                    "display_name",
-                                    "event"
+                                    "display_name"
                                 ],
                                 "properties": {
                                     "road_id": {
@@ -302,10 +311,6 @@
                                         "altnames": {
                                             "upstream": "statusAggregationEndDate"
                                         }
-                                    },
-                                    "event": {
-                                        "type": "string",
-                                        "description": "Lowercase-kebab event leaf used by MQTT/UNS topics. Constant value: 'corridor'."
                                     }
                                 }
                             }
@@ -327,8 +332,7 @@
                                 "description": "Real-time status snapshot for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road/all/Status endpoint on each polling cycle. Each event represents the current aggregate traffic status for one corridor as computed by TfL from active disruptions.",
                                 "required": [
                                     "road_id",
-                                    "display_name",
-                                    "event"
+                                    "display_name"
                                 ],
                                 "properties": {
                                     "road_id": {
@@ -405,10 +409,6 @@
                                         "altnames": {
                                             "upstream": "statusAggregationEndDate"
                                         }
-                                    },
-                                    "event": {
-                                        "type": "string",
-                                        "description": "Lowercase-kebab event leaf used by MQTT/UNS topics. Constant value: 'status'."
                                     }
                                 }
                             }

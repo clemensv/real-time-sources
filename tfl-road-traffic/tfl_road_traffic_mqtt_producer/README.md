@@ -143,20 +143,65 @@ finally:- `checkpoint_container`: The name of the blob container to store checkp
 
 make build
 
-```##### `uk_gov_tfl_road_mqtt_roads_async`
+```##### `uk_gov_tfl_road_mqtt_road_corridor_async`
 
 
 
 ## Test```python
 
-uk_gov_tfl_road_mqtt_roads_async:  Callable[[PartitionContext, EventData, CloudEvent, RoadStatus], Awaitable[None]]
+uk_gov_tfl_road_mqtt_road_corridor_async:  Callable[[PartitionContext, EventData, CloudEvent, RoadCorridor],
+Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `uk.gov.tfl.road.mqtt.Roads`: Real-time status snapshot for a TfL managed road corridor
-fetched from GET /Road/all/Status.
+```Asynchronous handler hook for `uk.gov.tfl.road.mqtt.RoadCorridor`: Reference record for a TfL managed road corridor
+fetched from GET /Road.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `tfl_road_traffic_mqtt_producer_data.RoadCorridor`.
+
+Example:
+
+```python
+async def uk_gov_tfl_road_mqtt_road_corridor_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: RoadCorridor) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+uk_gov_tfl_road_mqtt_dispatcher.uk_gov_tfl_road_mqtt_road_corridor_async = uk_gov_tfl_road_mqtt_road_corridor_event
+```
+
+
+
+make build
+
+```##### `uk_gov_tfl_road_mqtt_road_status_async`
+
+
+
+## Test```python
+
+uk_gov_tfl_road_mqtt_road_status_async:  Callable[[PartitionContext, EventData, CloudEvent, RoadStatus],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `uk.gov.tfl.road.mqtt.RoadStatus`: Real-time status snapshot for a TfL managed road
+corridor fetched from GET /Road/all/Status.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -169,7 +214,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 Example:
 
 ```python
-async def uk_gov_tfl_road_mqtt_roads_event(partition_context: PartitionContext, event: EventData, cloud_event:
+async def uk_gov_tfl_road_mqtt_road_status_event(partition_context: PartitionContext, event: EventData, cloud_event:
 CloudEvent, data: RoadStatus) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
@@ -179,7 +224,7 @@ The handler functions is then assigned to the event dispatcher for the message g
 responsible for calling the appropriate handler function when a message is received. Example:
 
 ```python
-uk_gov_tfl_road_mqtt_dispatcher.uk_gov_tfl_road_mqtt_roads_async = uk_gov_tfl_road_mqtt_roads_event
+uk_gov_tfl_road_mqtt_dispatcher.uk_gov_tfl_road_mqtt_road_status_async = uk_gov_tfl_road_mqtt_road_status_event
 ```
 
 

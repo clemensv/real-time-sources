@@ -16,11 +16,15 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
 from tfl_road_traffic.tfl_road_traffic import (
     TFL_DISRUPTION_URL,
+    TFL_ROAD_URL,
     TFL_STATUS_URL,
     _make_session,
+    build_road_corridor,
     build_road_disruption,
     build_road_status,
+    _uns_slug,
 )
+from tfl_road_traffic_mqtt_producer_data import RoadCorridor as MqttRoadCorridor
 from tfl_road_traffic_mqtt_producer_data import RoadDisruption as MqttRoadDisruption
 from tfl_road_traffic_mqtt_producer_data import RoadStatus as MqttRoadStatus
 from tfl_road_traffic_mqtt_producer_mqtt_client.client import UkGovTflRoadMqttMqttClient
@@ -55,12 +59,27 @@ def _fetch_list(session: Any, url: str) -> list[dict[str, Any]]:
     return [item for item in data if isinstance(item, dict)]
 
 
+def _mqtt_corridor(corridor: Any) -> MqttRoadCorridor:
+    return MqttRoadCorridor.from_serializer_dict(corridor.to_serializer_dict())
+
+
 def _mqtt_status(status: Any) -> MqttRoadStatus:
     return MqttRoadStatus.from_serializer_dict(status.to_serializer_dict())
 
 
-def _mqtt_disruption(disruption: Any) -> MqttRoadDisruption:
-    return MqttRoadDisruption.from_serializer_dict(disruption.to_serializer_dict())
+def _mqtt_disruption(disruption: Any, road_id: str) -> MqttRoadDisruption:
+    payload = disruption.to_serializer_dict()
+    payload["road_id"] = road_id
+    return MqttRoadDisruption.from_serializer_dict(payload)
+
+
+def _disruption_road_ids(raw: dict[str, Any], fallback: str) -> list[str]:
+    corridor_ids = raw.get("corridorIds")
+    if isinstance(corridor_ids, list):
+        road_ids = [_uns_slug(value) for value in corridor_ids if value]
+        if road_ids:
+            return list(dict.fromkeys(road_ids))
+    return [fallback]
 
 
 class TflRoadTrafficMqttBridge:
@@ -70,14 +89,25 @@ class TflRoadTrafficMqttBridge:
         self.session = _make_session()
         self._seen_disruptions: dict[str, str] = {}
 
+    async def publish_corridor(self, raw: dict[str, Any]) -> bool:
+        corridor = build_road_corridor(raw)
+        if corridor is None:
+            return False
+        await self.client.publish_uk_gov_tfl_road_mqtt_road_corridor(
+            road_id=corridor.road_id,
+            data=_mqtt_corridor(corridor),
+            qos=1,
+            retain=True,
+        )
+        return True
+
     async def publish_status(self, raw: dict[str, Any]) -> bool:
         status = build_road_status(raw)
         if status is None:
             return False
         data = _mqtt_status(status)
-        await self.client.publish_uk_gov_tfl_road_mqtt_roads(
+        await self.client.publish_uk_gov_tfl_road_mqtt_road_status(
             road_id=status.road_id,
-            event=status.event,
             data=data,
             qos=1,
             retain=True,
@@ -93,20 +123,25 @@ class TflRoadTrafficMqttBridge:
         if disruption is None:
             return False
         method = getattr(self.client, f"publish_uk_gov_tfl_road_mqtt_road_disruption_{disruption.severity}")
-        await method(
-            road_id=disruption.road_id,
-            severity=disruption.severity,
-            disruption_id=disruption.disruption_id,
-            data=_mqtt_disruption(disruption),
-            qos=1,
-            retain=False,
-        )
+        for road_id in _disruption_road_ids(raw, disruption.road_id):
+            await method(
+                road_id=road_id,
+                severity=disruption.severity,
+                disruption_id=disruption.disruption_id,
+                data=_mqtt_disruption(disruption, road_id),
+                qos=1,
+                retain=False,
+            )
         if dedupe and raw_id:
             self._seen_disruptions[str(raw_id)] = last_modified
         return True
 
     async def poll_once(self) -> dict[str, int]:
-        counts = {"roads": 0, "disruptions": 0}
+        counts = {"corridors": 0, "roads": 0, "disruptions": 0}
+        corridors = await asyncio.to_thread(_fetch_list, self.session, TFL_ROAD_URL)
+        for raw in corridors:
+            if await self.publish_corridor(raw):
+                counts["corridors"] += 1
         statuses = await asyncio.to_thread(_fetch_list, self.session, TFL_STATUS_URL)
         for raw in statuses:
             if await self.publish_status(raw):
@@ -128,6 +163,13 @@ class TflRoadTrafficMqttBridge:
             await asyncio.sleep(max(0.0, self.polling_interval - elapsed))
 
     async def emit_mock_corpus(self) -> None:
+        await self.publish_corridor({
+            "id": "A2",
+            "displayName": "A2",
+            "statusSeverity": "Good",
+            "statusSeverityDescription": "Mock corridor",
+            "url": "/Road/a2",
+        })
         await self.publish_status({
             "id": "A2",
             "displayName": "A2",

@@ -168,7 +168,6 @@ def build_road_corridor(raw: dict) -> Optional[RoadCorridor]:
         return None
     return RoadCorridor(
         road_id=_uns_slug(road_id),
-        event="corridor",
         display_name=display_name,
         status_severity=raw.get('statusSeverity') or None,
         status_severity_description=raw.get('statusSeverityDescription') or None,
@@ -198,7 +197,6 @@ def build_road_status(raw: dict) -> Optional[RoadStatus]:
         return None
     return RoadStatus(
         road_id=_uns_slug(road_id),
-        event="status",
         display_name=display_name,
         status_severity=raw.get('statusSeverity') or None,
         status_severity_description=raw.get('statusSeverityDescription') or None,

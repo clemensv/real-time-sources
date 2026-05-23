@@ -21,7 +21,7 @@ import datetime
 class RoadDisruption:
     """
     Real-time road disruption event on the Transport for London (TfL) road network. Fetched from the GET /Road/all/Disruption endpoint. Each disruption represents an active incident, planned works, or road closure affecting one or more roads in London. Disruption records are deduped by ID and lastModifiedTime so only changed records are re-emitted.
-
+    
     Attributes:
         road_id (str)
         disruption_id (str)
@@ -48,8 +48,8 @@ class RoadDisruption:
         status (typing.Optional[str])
         is_active (typing.Optional[bool])
     """
-
-
+    
+    
     road_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="road_id"))
     disruption_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="disruption_id"))
     category: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="category"))
@@ -79,10 +79,10 @@ class RoadDisruption:
     def from_serializer_dict(cls, data: dict) -> 'RoadDisruption':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -101,7 +101,7 @@ class RoadDisruption:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -113,7 +113,7 @@ class RoadDisruption:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -122,11 +122,11 @@ class RoadDisruption:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -152,10 +152,10 @@ class RoadDisruption:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['RoadDisruption']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -179,7 +179,7 @@ class RoadDisruption:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -195,33 +195,33 @@ class RoadDisruption:
     def create_instance(cls) -> 'RoadDisruption':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            road_id='xjdisfymzpsyhyyxkigo',
-            disruption_id='mqusapeudnqachgzgjgg',
-            category='qvfkohieboisfyhtesco',
-            sub_category='yokfghnbmxygkfavodod',
-            severity='vcvgzbvpmbtnkwkbodnz',
-            ordinal=int(26),
-            url='gmvfponalbgrgdkpwdtq',
-            point='qljlxxmfeqzffkhrcdlg',
-            comments='icvupcebbgizndiyuagy',
-            current_update='tbeipyhxtqztwigwmucy',
+            road_id='eraxynazmgvfalnftnwp',
+            disruption_id='iabzhtqrehvohphmttcm',
+            category='oqywhlcupyicwdhzaqbf',
+            sub_category='aucaryjbsanfjicbhiuy',
+            severity='epioiufvjuxzdoszmndf',
+            ordinal=int(53),
+            url='ekhmbmsmrfbavffknnol',
+            point='yacxdpslkjtcflwmnrmi',
+            comments='qqmezoofmdjibxbizdrb',
+            current_update='zeqsrwcrwdsrxyksftsb',
             current_update_datetime=datetime.datetime.now(datetime.timezone.utc),
             corridor_ids=None,
             start_datetime=datetime.datetime.now(datetime.timezone.utc),
             end_datetime=datetime.datetime.now(datetime.timezone.utc),
             last_modified_time=datetime.datetime.now(datetime.timezone.utc),
-            level_of_interest='jizvsffeubasqdmazgrr',
-            location='xmdpkpkqsoigjydfqrxs',
+            level_of_interest='aiqyqqaqawapisioowje',
+            location='cssddwbmbwcylzjkxlne',
             is_provisional=False,
             has_closures=False,
             streets=None,
-            geography='btnrkylqmvyezepcoqok',
-            geometry='iktukoruoektzyzknbmg',
-            status='txmdzrzsdwcuzikaxncj',
-            is_active=True
+            geography='maskrawambxgdfnmuggb',
+            geometry='vcqshoglfxybpzmhppfj',
+            status='hucjjycgmegxxmyeuckg',
+            is_active=False
         )

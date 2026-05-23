@@ -28,55 +28,55 @@ class Test_Street(unittest.TestCase):
         Create instance of Street for testing
         """
         instance = Street(
-            name='hoxaqmjvldeuemipxovd',
-            closure='xdjnxlqykbefhmeahigq',
-            directions='ygaszaqjdcgrkqtuftdw',
-            source_system_id='ifvkudcfykeazlyndbct',
-            source_system_key='funzxqcfknzlulkvfulv'
+            name='uwxtamavlzcetklgrmeu',
+            closure='ykqsigaudhoemldrkbzg',
+            directions='tokljnnridegkpqyubjj',
+            source_system_id='ruoucgglsnkhvtpnapjf',
+            source_system_key='dbxbhgbutqetupockdwf'
         )
         return instance
 
-
+    
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'hoxaqmjvldeuemipxovd'
+        test_value = 'uwxtamavlzcetklgrmeu'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-
+    
     def test_closure_property(self):
         """
         Test closure property
         """
-        test_value = 'xdjnxlqykbefhmeahigq'
+        test_value = 'ykqsigaudhoemldrkbzg'
         self.instance.closure = test_value
         self.assertEqual(self.instance.closure, test_value)
-
+    
     def test_directions_property(self):
         """
         Test directions property
         """
-        test_value = 'ygaszaqjdcgrkqtuftdw'
+        test_value = 'tokljnnridegkpqyubjj'
         self.instance.directions = test_value
         self.assertEqual(self.instance.directions, test_value)
-
+    
     def test_source_system_id_property(self):
         """
         Test source_system_id property
         """
-        test_value = 'ifvkudcfykeazlyndbct'
+        test_value = 'ruoucgglsnkhvtpnapjf'
         self.instance.source_system_id = test_value
         self.assertEqual(self.instance.source_system_id, test_value)
-
+    
     def test_source_system_key_property(self):
         """
         Test source_system_key property
         """
-        test_value = 'funzxqcfknzlulkvfulv'
+        test_value = 'dbxbhgbutqetupockdwf'
         self.instance.source_system_key = test_value
         self.assertEqual(self.instance.source_system_key, test_value)
-
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

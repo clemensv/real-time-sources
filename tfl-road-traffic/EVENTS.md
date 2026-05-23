@@ -43,7 +43,6 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 | `url` | *string* (optional) | - | `False` | URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response. |
 | `status_aggregation_start_date` | *datetime* (optional) | - | `False` | Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response. |
 | `status_aggregation_end_date` | *datetime* (optional) | - | `False` | End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response. |
-| `event` | *string* | - | `True` | Lowercase-kebab event leaf used by MQTT/UNS topics. Constant value: 'corridor'. |
 ---
 ### Message: uk.gov.tfl.road.RoadStatus
 *Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status.*
@@ -68,7 +67,6 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 | `url` | *string* (optional) | - | `False` | URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response. |
 | `status_aggregation_start_date` | *datetime* (optional) | - | `False` | Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response. |
 | `status_aggregation_end_date` | *datetime* (optional) | - | `False` | End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response. |
-| `event` | *string* | - | `True` | Lowercase-kebab event leaf used by MQTT/UNS topics. Constant value: 'status'. |
 ## Message Group: uk.gov.tfl.road.disruptions
 ---
 ### Message: uk.gov.tfl.road.RoadDisruption
@@ -78,7 +76,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -134,7 +132,6 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 | `url` | *string* (optional) | - | `False` | URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response. |
 | `status_aggregation_start_date` | *datetime* (optional) | - | `False` | Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response. |
 | `status_aggregation_end_date` | *datetime* (optional) | - | `False` | End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response. |
-| `event` | *string* | - | `True` | Lowercase-kebab event leaf used by MQTT/UNS topics. Constant value: 'status'. |
 ---
 ### Message: uk.gov.tfl.road.mqtt.RoadDisruptionSerious
 *Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.*
@@ -143,7 +140,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -182,7 +179,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -221,7 +218,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -260,7 +257,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -299,7 +296,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -338,7 +335,7 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `uk.gov.tfl.road.RoadDisruption` |
 | `source` |  | `` | `False` | `https://api.tfl.gov.uk/Road/all/Disruption` |
-| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `subject` |  | `uritemplate` | `False` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 #### Schema:
 ##### Object: RoadDisruption
@@ -375,7 +372,8 @@ CloudEvents emitted by the TfL Road Traffic Kafka and MQTT/UNS feeders.
 MQTT/UNS subscribers can use these wildcard filters:
 
 - All TfL road traffic messages: `traffic/gb/tfl/tfl-road-traffic/#`
+- Retained corridor reference for every TfL road: `traffic/gb/tfl/tfl-road-traffic/roads/+/corridor`
 - Latest retained status for every TfL road: `traffic/gb/tfl/tfl-road-traffic/roads/+/status`
-- All disruptions for one road: `traffic/gb/tfl/tfl-road-traffic/disruptions/a2/+/+/disruption`
-- All severe disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/severe/+/disruption`
-- All closure disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/closure/+/disruption`
+- All disruptions for one road: `traffic/gb/tfl/tfl-road-traffic/disruptions/a2/+/+`
+- All severe disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/severe/+`
+- All closure disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/closure/+`

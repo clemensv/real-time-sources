@@ -100,13 +100,21 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
         kafka_producer = KafkaProducer(json.loads(producer_config))
         uk_gov_tfl_road_mqtt_event_producer = UkGovTflRoadMqttEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- uk.gov.tfl.road.mqtt.Roads ----
-    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.Roads event
+    # ---- uk.gov.tfl.road.mqtt.RoadCorridor ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadCorridor event
+    _road_corridor = RoadCorridor()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadCorridor' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_corridor(_road_id = 'TODO: replace me', data = _road_corridor)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadCorridor' event: {_road_corridor.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadStatus ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadStatus event
     _road_status = RoadStatus()
 
-    # sends the 'uk.gov.tfl.road.mqtt.Roads' event to Kafka topic.
-    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_roads(_road_id = 'TODO: replace me', data = _road_status)
-    print(f"Sent 'uk.gov.tfl.road.mqtt.Roads' event: {_road_status.to_json()}")
+    # sends the 'uk.gov.tfl.road.mqtt.RoadStatus' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_status(_road_id = 'TODO: replace me', data = _road_status)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadStatus' event: {_road_status.to_json()}")
 
     # ---- uk.gov.tfl.road.mqtt.RoadDisruptionSerious ----
     # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionSerious event

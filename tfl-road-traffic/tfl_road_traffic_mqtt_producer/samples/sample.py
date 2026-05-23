@@ -39,12 +39,19 @@ import signal
 from tfl_road_traffic_mqtt_producer_data import *
 from tfl_road_traffic_mqtt_producer_mqtt_client.client import UkGovTflRoadMqttProducer, UkGovTflRoadMqttDispatcher
 
-async def handle_uk_gov_tfl_road_mqtt_roads(mqtt_msg,cloud_event, uk_gov_tfl_road_mqtt_roads_data):
-    """ Handles the uk.gov.tfl.road.mqtt.Roads message """
-    print(f"Received uk.gov.tfl.road.mqtt.Roads on topic {mqtt_msg.topic}")
+async def handle_uk_gov_tfl_road_mqtt_road_corridor(mqtt_msg,cloud_event, uk_gov_tfl_road_mqtt_road_corridor_data):
+    """ Handles the uk.gov.tfl.road.mqtt.RoadCorridor message """
+    print(f"Received uk.gov.tfl.road.mqtt.RoadCorridor on topic {mqtt_msg.topic}")
     if cloud_event:
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
-    print(f"  Data: {uk_gov_tfl_road_mqtt_roads_data}")
+    print(f"  Data: {uk_gov_tfl_road_mqtt_road_corridor_data}")
+
+async def handle_uk_gov_tfl_road_mqtt_road_status(mqtt_msg,cloud_event, uk_gov_tfl_road_mqtt_road_status_data):
+    """ Handles the uk.gov.tfl.road.mqtt.RoadStatus message """
+    print(f"Received uk.gov.tfl.road.mqtt.RoadStatus on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {uk_gov_tfl_road_mqtt_road_status_data}")
 
 async def handle_uk_gov_tfl_road_mqtt_road_disruption_serious(mqtt_msg,cloud_event, uk_gov_tfl_road_mqtt_road_disruption_serious_data):
     """ Handles the uk.gov.tfl.road.mqtt.RoadDisruptionSerious message """
@@ -93,12 +100,12 @@ async def main(broker_host, broker_port, topic, username=None, password=None):
     print(f"Connecting to {broker_host}:{broker_port}...")
     print(f"Topic: {topic}")
     print("Press Ctrl+C to stop\n")
-
+    
     stop_event = asyncio.Event()
     loop = asyncio.get_running_loop()
     loop.add_signal_handler(signal.SIGTERM, lambda: stop_event.set())
     loop.add_signal_handler(signal.SIGINT, lambda: stop_event.set())
-
+    
     await stop_event.wait()
     print("\nStopping...")
 

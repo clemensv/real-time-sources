@@ -12,9 +12,9 @@ The bridge emits three event types:
 | `uk.gov.tfl.road.RoadStatus` | `GET /Road/all/Status` | Current traffic status per corridor (every poll cycle) |
 | `uk.gov.tfl.road.RoadDisruption` | `GET /Road/all/Disruption` | Active disruptions (new/changed only, deduped by `id`+`lastModifiedTime`) |
 
-All Kafka events share a single topic (`tfl-road-traffic`). Corridor events use the key `roads/{road_id}` and disruption events use `disruptions/{road_id}/{severity}/{disruption_id}/disruption`.
+All Kafka events share a single topic (`tfl-road-traffic`). Corridor events use the key `roads/{road_id}` and disruption events use `disruptions/{road_id}/{severity}/{disruption_id}`.
 
-- MQTT/UNS feeder: `tfl_road_traffic_mqtt` publishes binary-mode CloudEvents under `traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}` and `traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/{severity}/{disruption_id}/disruption` with QoS 1; road status topics are retained LKV, disruption topics are not retained.
+- MQTT/UNS feeder: `tfl_road_traffic_mqtt` publishes binary-mode CloudEvents under retained `traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor` and `traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status` topics, plus non-retained `traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/{severity}/{disruption_id}` topics, all with QoS 1.
 
 ## Upstream
 

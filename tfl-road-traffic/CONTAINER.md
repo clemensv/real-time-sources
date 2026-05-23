@@ -65,15 +65,16 @@ All events are written to a single topic. The default topic name is `tfl-road-tr
 |---|---|
 | `uk.gov.tfl.road.RoadCorridor` | `roads/{road_id}` |
 | `uk.gov.tfl.road.RoadStatus` | `roads/{road_id}` |
-| `uk.gov.tfl.road.RoadDisruption` | `disruptions/{road_id}/{severity}/{disruption_id}/disruption` |
+| `uk.gov.tfl.road.RoadDisruption` | `disruptions/{road_id}/{severity}/{disruption_id}` |
 
 ## MQTT 5.0 / Unified-Namespace Feeder
 
 The MQTT image runs `python -m tfl_road_traffic_mqtt feed` and publishes binary-mode CloudEvents under:
 
 ```text
-traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}
-traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/{severity}/{disruption_id}/disruption
+traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor
+traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status
+traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/{severity}/{disruption_id}
 ```
 
 Road status events use QoS 1 with `retain=true` for last-known-value reads. Disruption events use QoS 1 with `retain=false`; severity is one of `serious`, `severe`, `moderate`, `minor`, `information`, or `closure`.
@@ -106,10 +107,11 @@ docker run --rm \
 ### MQTT subscription examples
 
 - All TfL road traffic messages: `traffic/gb/tfl/tfl-road-traffic/#`
+- Retained corridor reference for every TfL road: `traffic/gb/tfl/tfl-road-traffic/roads/+/corridor`
 - Latest retained status for every TfL road: `traffic/gb/tfl/tfl-road-traffic/roads/+/status`
-- All disruptions for A2: `traffic/gb/tfl/tfl-road-traffic/disruptions/a2/+/+/disruption`
-- All severe disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/severe/+/disruption`
-- All closure disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/closure/+/disruption`
+- All disruptions for A2: `traffic/gb/tfl/tfl-road-traffic/disruptions/a2/+/+`
+- All severe disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/severe/+`
+- All closure disruptions: `traffic/gb/tfl/tfl-road-traffic/disruptions/+/closure/+`
 
 ## Event Catalog
 

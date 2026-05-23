@@ -29,76 +29,75 @@ class Test_RoadCorridor(unittest.TestCase):
         Create instance of RoadCorridor for testing
         """
         instance = RoadCorridor(
-            road_id='wownvoepobgzvfxooiam',
-            display_name='axliyiginwynepbdvnrq',
-            status_severity='omntbkatahpivcvqkkyu',
-            status_severity_description='rtcmdgnvptqvcpvuoebx',
-            bounds='zsbtyxngorxpfepfffzo',
-            envelope='kqokxgpnhxxhhvhqqvrj',
-            url='wzkwxyoeogdcnomqykpz',
+            road_id='prlyeyftidnlgqbrbvtj',
+            display_name='cqsnkhejkjpqexdirylb',
+            status_severity='kkdeueghhnqadzktexno',
+            status_severity_description='zuzrdzdkvryvaeuitalr',
+            bounds='jtmclfvphdhimbuxyios',
+            envelope='antfuvhsuvikecogiqfz',
+            url='fexbkvewtpycgujzlrff',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
-            status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc),
-            event='dvezypmbnfmedqrqlnxy'
+            status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
-
+    
     def test_road_id_property(self):
         """
         Test road_id property
         """
-        test_value = 'wownvoepobgzvfxooiam'
+        test_value = 'prlyeyftidnlgqbrbvtj'
         self.instance.road_id = test_value
         self.assertEqual(self.instance.road_id, test_value)
-
+    
     def test_display_name_property(self):
         """
         Test display_name property
         """
-        test_value = 'axliyiginwynepbdvnrq'
+        test_value = 'cqsnkhejkjpqexdirylb'
         self.instance.display_name = test_value
         self.assertEqual(self.instance.display_name, test_value)
-
+    
     def test_status_severity_property(self):
         """
         Test status_severity property
         """
-        test_value = 'omntbkatahpivcvqkkyu'
+        test_value = 'kkdeueghhnqadzktexno'
         self.instance.status_severity = test_value
         self.assertEqual(self.instance.status_severity, test_value)
-
+    
     def test_status_severity_description_property(self):
         """
         Test status_severity_description property
         """
-        test_value = 'rtcmdgnvptqvcpvuoebx'
+        test_value = 'zuzrdzdkvryvaeuitalr'
         self.instance.status_severity_description = test_value
         self.assertEqual(self.instance.status_severity_description, test_value)
-
+    
     def test_bounds_property(self):
         """
         Test bounds property
         """
-        test_value = 'zsbtyxngorxpfepfffzo'
+        test_value = 'jtmclfvphdhimbuxyios'
         self.instance.bounds = test_value
         self.assertEqual(self.instance.bounds, test_value)
-
+    
     def test_envelope_property(self):
         """
         Test envelope property
         """
-        test_value = 'kqokxgpnhxxhhvhqqvrj'
+        test_value = 'antfuvhsuvikecogiqfz'
         self.instance.envelope = test_value
         self.assertEqual(self.instance.envelope, test_value)
-
+    
     def test_url_property(self):
         """
         Test url property
         """
-        test_value = 'wzkwxyoeogdcnomqykpz'
+        test_value = 'fexbkvewtpycgujzlrff'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
-
+    
     def test_status_aggregation_start_date_property(self):
         """
         Test status_aggregation_start_date property
@@ -106,7 +105,7 @@ class Test_RoadCorridor(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.status_aggregation_start_date = test_value
         self.assertEqual(self.instance.status_aggregation_start_date, test_value)
-
+    
     def test_status_aggregation_end_date_property(self):
         """
         Test status_aggregation_end_date property
@@ -114,15 +113,7 @@ class Test_RoadCorridor(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.status_aggregation_end_date = test_value
         self.assertEqual(self.instance.status_aggregation_end_date, test_value)
-
-    def test_event_property(self):
-        """
-        Test event property
-        """
-        test_value = 'dvezypmbnfmedqrqlnxy'
-        self.instance.event = test_value
-        self.assertEqual(self.instance.event, test_value)
-
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

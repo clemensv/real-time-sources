@@ -200,13 +200,13 @@ class UkGovTflRoadDisruptionsEventProducer:
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, RoadDisruption], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration 'disruptions/{road_id}/{severity}/{disruption_id}/disruption'
+                The default key is derived from the xRegistry Kafka key declaration 'disruptions/{road_id}/{severity}/{disruption_id}'
         """
-        kafka_key = "disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
+        kafka_key = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -304,9 +304,40 @@ class UkGovTflRoadMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_uk_gov_tfl_road_mqtt_roads(self,_road_id : str, data: RoadStatus, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RoadStatus], str]=None) -> None:
+    def send_uk_gov_tfl_road_mqtt_road_corridor(self,_road_id : str, data: RoadCorridor, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RoadCorridor], str]=None) -> None:
         """
-        Sends the 'uk.gov.tfl.road.mqtt.Roads' event to the Kafka topic
+        Sends the 'uk.gov.tfl.road.mqtt.RoadCorridor' event to the Kafka topic
+
+        Args:
+            _road_id(str):  Value for placeholder road_id in attribute subject
+            data: (RoadCorridor): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, RoadCorridor], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"uk.gov.tfl.road.RoadCorridor",
+             "source":"https://api.tfl.gov.uk/Road",
+             "subject":"roads/{road_id}".format(road_id = _road_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_uk_gov_tfl_road_mqtt_road_status(self,_road_id : str, data: RoadStatus, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RoadStatus], str]=None) -> None:
+        """
+        Sends the 'uk.gov.tfl.road.mqtt.RoadStatus' event to the Kafka topic
 
         Args:
             _road_id(str):  Value for placeholder road_id in attribute subject
@@ -352,7 +383,7 @@ class UkGovTflRoadMqttEventProducer:
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -385,7 +416,7 @@ class UkGovTflRoadMqttEventProducer:
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -418,7 +449,7 @@ class UkGovTflRoadMqttEventProducer:
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -451,7 +482,7 @@ class UkGovTflRoadMqttEventProducer:
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -484,7 +515,7 @@ class UkGovTflRoadMqttEventProducer:
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -517,7 +548,7 @@ class UkGovTflRoadMqttEventProducer:
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = _road_id,severity = _severity,disruption_id = _disruption_id)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)

@@ -20,7 +20,7 @@ import datetime
 class RoadCorridor:
     """
     Reference record for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road endpoint at bridge startup and refreshed periodically. Each corridor is a named road segment under TfL operational control, such as the A2, A12, or M25, with its current aggregate traffic status.
-
+    
     Attributes:
         road_id (str)
         display_name (str)
@@ -31,10 +31,9 @@ class RoadCorridor:
         url (typing.Optional[str])
         status_aggregation_start_date (typing.Optional[datetime.datetime])
         status_aggregation_end_date (typing.Optional[datetime.datetime])
-        event (str)
     """
-
-
+    
+    
     road_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="road_id"))
     display_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="display_name"))
     status_severity: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_severity"))
@@ -44,16 +43,15 @@ class RoadCorridor:
     url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
     status_aggregation_start_date: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_aggregation_start_date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     status_aggregation_end_date: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status_aggregation_end_date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    event: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RoadCorridor':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -72,7 +70,7 @@ class RoadCorridor:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -84,7 +82,7 @@ class RoadCorridor:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -93,11 +91,11 @@ class RoadCorridor:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -123,10 +121,10 @@ class RoadCorridor:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['RoadCorridor']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -150,7 +148,7 @@ class RoadCorridor:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -166,19 +164,18 @@ class RoadCorridor:
     def create_instance(cls) -> 'RoadCorridor':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            road_id='jpvrjsdxpdtotjlpwaqw',
-            display_name='reaqarrdrihmdpwfutbi',
-            status_severity='ndksatjuplvgcbcvzmvw',
-            status_severity_description='ankdmglfnfvldljqjfyz',
-            bounds='upvohlxyjxxhbiodamlp',
-            envelope='njdvrctoogaxdejlfskc',
-            url='edntfawehzxrlyychujx',
+            road_id='aayiihjsxlfwtasvskhy',
+            display_name='nwmlhyszwnjpopnbhnrp',
+            status_severity='ezzqgwzijvcprzhvykqn',
+            status_severity_description='rsowpsksujeqjbsmtltn',
+            bounds='sgznguowzzxgdxwcfuui',
+            envelope='wlsontukgpdoxkkbouyw',
+            url='guclljaavdclrwtihwrh',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
-            status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc),
-            event='tsxzkdgvdecqkigoopqn'
+            status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

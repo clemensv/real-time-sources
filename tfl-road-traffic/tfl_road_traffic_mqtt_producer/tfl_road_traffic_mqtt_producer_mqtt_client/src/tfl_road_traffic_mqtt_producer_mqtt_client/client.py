@@ -17,6 +17,7 @@ except Exception:  # pragma: no cover - paho < 2 fallback
 from cloudevents.conversion import to_binary, to_structured
 from cloudevents.http import CloudEvent
 import tfl_road_traffic_mqtt_producer_data
+from tfl_road_traffic_mqtt_producer_data import RoadCorridor
 from tfl_road_traffic_mqtt_producer_data import RoadStatus
 from tfl_road_traffic_mqtt_producer_data import RoadDisruption
 
@@ -113,7 +114,7 @@ def _mqtt5_properties_to_ce_headers(properties) -> Dict[str, str]:
 
 class _ClientBase:
     """Base class for MQTT client with CloudEvent detection."""
-
+    
     @staticmethod
     def _is_cloud_event(message: mqtt.MQTTMessage) -> bool:
         """Check if the MQTT message contains a CloudEvent (structured or binary)."""
@@ -182,28 +183,29 @@ class _ClientBase:
 def get_default_topic_mappings_uk_gov_tfl_road_mqtt() -> Dict[str, str]:
     """
     Get the default topic mappings for the uk.gov.tfl.road.mqtt message group.
-
+    
     Returns:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "uk.gov.tfl.road.mqtt.Roads": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}",
-        "uk.gov.tfl.road.mqtt.RoadDisruptionSerious": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}/disruption",
-        "uk.gov.tfl.road.mqtt.RoadDisruptionSevere": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}/disruption",
-        "uk.gov.tfl.road.mqtt.RoadDisruptionModerate": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}/disruption",
-        "uk.gov.tfl.road.mqtt.RoadDisruptionMinor": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}/disruption",
-        "uk.gov.tfl.road.mqtt.RoadDisruptionInformation": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}/disruption",
-        "uk.gov.tfl.road.mqtt.RoadDisruptionClosure": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}/disruption",
+        "uk.gov.tfl.road.mqtt.RoadCorridor": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor",
+        "uk.gov.tfl.road.mqtt.RoadStatus": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status",
+        "uk.gov.tfl.road.mqtt.RoadDisruptionSerious": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}",
+        "uk.gov.tfl.road.mqtt.RoadDisruptionSevere": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}",
+        "uk.gov.tfl.road.mqtt.RoadDisruptionModerate": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}",
+        "uk.gov.tfl.road.mqtt.RoadDisruptionMinor": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}",
+        "uk.gov.tfl.road.mqtt.RoadDisruptionInformation": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}",
+        "uk.gov.tfl.road.mqtt.RoadDisruptionClosure": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}",
     }
 
 
 def get_subscription_topics_uk_gov_tfl_road_mqtt(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
     """
     Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
-
+    
     Args:
         topic_mappings: Optional topic mappings. If None, uses default mappings.
-
+        
     Returns:
         List of topic patterns suitable for MQTT subscription.
     """
@@ -218,12 +220,12 @@ def get_subscription_topics_uk_gov_tfl_road_mqtt(topic_mappings: Optional[Dict[s
 
 class UkGovTflRoadMqttMqttClient(_ClientBase):
     """MQTT Client for producing and consuming messages in the uk.gov.tfl.road.mqtt message group."""
-
+    
     def __init__(
-        self,
-        client: mqtt.Client,
+        self, 
+        client: mqtt.Client, 
         topic_mappings: Optional[Dict[str, str]] = None,
-        content_mode: typing.Literal['structured', 'binary'] = 'structured',
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
         loop: Optional[asyncio.AbstractEventLoop] = None
     ):
         """
@@ -243,24 +245,26 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         self.loop = loop
         self._topic_mappings = topic_mappings or get_default_topic_mappings_uk_gov_tfl_road_mqtt()
         self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
-
+        
         # Message handler callbacks (Dispatcher pattern)
-
-        self.uk_gov_tfl_road_mqtt_roads_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadStatus, Dict[str, str]], Awaitable[None]]] = None
-
+        
+        self.uk_gov_tfl_road_mqtt_road_corridor_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadCorridor, Dict[str, str]], Awaitable[None]]] = None
+        
+        self.uk_gov_tfl_road_mqtt_road_status_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadStatus, Dict[str, str]], Awaitable[None]]] = None
+        
         self.uk_gov_tfl_road_mqtt_road_disruption_serious_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadDisruption, Dict[str, str]], Awaitable[None]]] = None
-
+        
         self.uk_gov_tfl_road_mqtt_road_disruption_severe_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadDisruption, Dict[str, str]], Awaitable[None]]] = None
-
+        
         self.uk_gov_tfl_road_mqtt_road_disruption_moderate_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadDisruption, Dict[str, str]], Awaitable[None]]] = None
-
+        
         self.uk_gov_tfl_road_mqtt_road_disruption_minor_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadDisruption, Dict[str, str]], Awaitable[None]]] = None
-
+        
         self.uk_gov_tfl_road_mqtt_road_disruption_information_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadDisruption, Dict[str, str]], Awaitable[None]]] = None
-
+        
         self.uk_gov_tfl_road_mqtt_road_disruption_closure_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, tfl_road_traffic_mqtt_producer_data.RoadDisruption, Dict[str, str]], Awaitable[None]]] = None
-
-
+        
+        
         # Attach message callback
         self.client.on_message = self._on_message
 
@@ -268,7 +272,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
     def topic_mappings(self) -> Dict[str, str]:
         """Get the current topic mappings."""
         return self._topic_mappings.copy()
-
+    
     def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
         """Internal MQTT message callback that dispatches to async handlers."""
         loop = self.loop
@@ -278,7 +282,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
             except RuntimeError:
                 loop = asyncio.get_event_loop()
         asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
-
+    
     async def _process_message(self, message: mqtt.MQTTMessage):
         """Process incoming MQTT message and dispatch to appropriate handler."""
         try:
@@ -291,30 +295,42 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 pass
         except Exception as e:
             print(f"Error processing message: {e}")
-
+    
     def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
         """Extract URI template placeholder values from a topic."""
         if message_id in self._topic_patterns:
             return _extract_topic_parameters(topic, self._topic_patterns[message_id])
         return {}
-
+    
     async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
         """Dispatch CloudEvent to the appropriate handler based on type."""
         event_type = cloud_event['type']
-
-
+        
+        
+        if event_type == "uk.gov.tfl.road.RoadCorridor":
+            if self.uk_gov_tfl_road_mqtt_road_corridor_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = tfl_road_traffic_mqtt_producer_data.RoadCorridor.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "uk.gov.tfl.road.mqtt.RoadCorridor")
+                    await self.uk_gov_tfl_road_mqtt_road_corridor_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in uk_gov_tfl_road_mqtt_road_corridor handler: {e}")
+            return
+        
         if event_type == "uk.gov.tfl.road.RoadStatus":
-            if self.uk_gov_tfl_road_mqtt_roads_async:
+            if self.uk_gov_tfl_road_mqtt_road_status_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
                     # CloudEvent.data is now a dict or string, not bytes
                     data = tfl_road_traffic_mqtt_producer_data.RoadStatus.from_data(cloud_event.data, content_type)
-                    topic_params = self._extract_topic_params(mqtt_message.topic, "uk.gov.tfl.road.mqtt.Roads")
-                    await self.uk_gov_tfl_road_mqtt_roads_async(mqtt_message, cloud_event, data, topic_params)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "uk.gov.tfl.road.mqtt.RoadStatus")
+                    await self.uk_gov_tfl_road_mqtt_road_status_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
-                    print(f"Error in uk_gov_tfl_road_mqtt_roads handler: {e}")
+                    print(f"Error in uk_gov_tfl_road_mqtt_road_status handler: {e}")
             return
-
+        
         if event_type == "uk.gov.tfl.road.RoadDisruption":
             if self.uk_gov_tfl_road_mqtt_road_disruption_serious_async:
                 try:
@@ -326,7 +342,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in uk_gov_tfl_road_mqtt_road_disruption_serious handler: {e}")
             return
-
+        
         if event_type == "uk.gov.tfl.road.RoadDisruption":
             if self.uk_gov_tfl_road_mqtt_road_disruption_severe_async:
                 try:
@@ -338,7 +354,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in uk_gov_tfl_road_mqtt_road_disruption_severe handler: {e}")
             return
-
+        
         if event_type == "uk.gov.tfl.road.RoadDisruption":
             if self.uk_gov_tfl_road_mqtt_road_disruption_moderate_async:
                 try:
@@ -350,7 +366,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in uk_gov_tfl_road_mqtt_road_disruption_moderate handler: {e}")
             return
-
+        
         if event_type == "uk.gov.tfl.road.RoadDisruption":
             if self.uk_gov_tfl_road_mqtt_road_disruption_minor_async:
                 try:
@@ -362,7 +378,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in uk_gov_tfl_road_mqtt_road_disruption_minor handler: {e}")
             return
-
+        
         if event_type == "uk.gov.tfl.road.RoadDisruption":
             if self.uk_gov_tfl_road_mqtt_road_disruption_information_async:
                 try:
@@ -374,7 +390,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in uk_gov_tfl_road_mqtt_road_disruption_information handler: {e}")
             return
-
+        
         if event_type == "uk.gov.tfl.road.RoadDisruption":
             if self.uk_gov_tfl_road_mqtt_road_disruption_closure_async:
                 try:
@@ -386,14 +402,14 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
                 except Exception as e:
                     print(f"Error in uk_gov_tfl_road_mqtt_road_disruption_closure handler: {e}")
             return
-
-
+        
+    
     async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
         """
         Subscribe to MQTT topics.
 
         Args:
-            topics: List of topic patterns to subscribe to. If None, subscribes to all
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
                 default topics with URI template placeholders replaced by MQTT wildcards.
             qos: Quality of Service level (0, 1, or 2)
         """
@@ -401,7 +417,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
             topics = get_subscription_topics_uk_gov_tfl_road_mqtt(self._topic_mappings)
         for topic in topics:
             self.client.subscribe(topic, qos)
-
+    
     async def unsubscribe(self, topics: typing.List[str]):
         """
         Unsubscribe from MQTT topics.
@@ -411,7 +427,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         """
         for topic in topics:
             self.client.unsubscribe(topic)
-
+    
     async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
         """
         Connect to MQTT broker.
@@ -423,40 +439,110 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         """
         self.client.connect(broker, port, keepalive)
         self.client.loop_start()
-
+    
     async def disconnect(self):
         """Disconnect from MQTT broker."""
         self.client.loop_stop()
         self.client.disconnect()
 
     # Producer methods
-
-    async def publish_uk_gov_tfl_road_mqtt_roads(self,
+    
+    async def publish_uk_gov_tfl_road_mqtt_road_corridor(self,
         road_id: str,
-        event: str,
+        data: tfl_road_traffic_mqtt_producer_data.RoadCorridor,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'uk.gov.tfl.road.mqtt.RoadCorridor' event to an MQTT topic.
+
+        Args:
+        
+            road_id: URI template variable for 'road_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor"
+        _topic_template_values: Dict[str, str] = {
+            "road_id": str(road_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"uk.gov.tfl.road.RoadCorridor",
+             "source":"https://api.tfl.gov.uk/Road",
+             "subject":"roads/{road_id}".format(road_id = road_id)
+        }
+        attributes["datacontenttype"] = content_type
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+    async def publish_uk_gov_tfl_road_mqtt_road_status(self,
+        road_id: str,
         data: tfl_road_traffic_mqtt_producer_data.RoadStatus,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
         content_type: str = "application/json") -> None:
         """
-        Publish the 'uk.gov.tfl.road.mqtt.Roads' event to an MQTT topic.
+        Publish the 'uk.gov.tfl.road.mqtt.RoadStatus' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
-            event: URI template variable for 'event'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/{event}"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
-            "event": str(event),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -506,7 +592,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
     async def publish_uk_gov_tfl_road_mqtt_road_disruption_serious(self,
         road_id: str,
         severity: str,
@@ -520,18 +606,18 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         Publish the 'uk.gov.tfl.road.mqtt.RoadDisruptionSerious' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
             severity: URI template variable for 'severity'
             disruption_id: URI template variable for 'disruption_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}/disruption'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}/disruption"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
             "severity": str(severity),
@@ -543,7 +629,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -585,7 +671,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
     async def publish_uk_gov_tfl_road_mqtt_road_disruption_severe(self,
         road_id: str,
         severity: str,
@@ -599,18 +685,18 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         Publish the 'uk.gov.tfl.road.mqtt.RoadDisruptionSevere' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
             severity: URI template variable for 'severity'
             disruption_id: URI template variable for 'disruption_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}/disruption'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}/disruption"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
             "severity": str(severity),
@@ -622,7 +708,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -664,7 +750,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
     async def publish_uk_gov_tfl_road_mqtt_road_disruption_moderate(self,
         road_id: str,
         severity: str,
@@ -678,18 +764,18 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         Publish the 'uk.gov.tfl.road.mqtt.RoadDisruptionModerate' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
             severity: URI template variable for 'severity'
             disruption_id: URI template variable for 'disruption_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}/disruption'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}/disruption"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
             "severity": str(severity),
@@ -701,7 +787,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -743,7 +829,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
     async def publish_uk_gov_tfl_road_mqtt_road_disruption_minor(self,
         road_id: str,
         severity: str,
@@ -757,18 +843,18 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         Publish the 'uk.gov.tfl.road.mqtt.RoadDisruptionMinor' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
             severity: URI template variable for 'severity'
             disruption_id: URI template variable for 'disruption_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}/disruption'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}/disruption"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
             "severity": str(severity),
@@ -780,7 +866,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -822,7 +908,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
     async def publish_uk_gov_tfl_road_mqtt_road_disruption_information(self,
         road_id: str,
         severity: str,
@@ -836,18 +922,18 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         Publish the 'uk.gov.tfl.road.mqtt.RoadDisruptionInformation' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
             severity: URI template variable for 'severity'
             disruption_id: URI template variable for 'disruption_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}/disruption'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}/disruption"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
             "severity": str(severity),
@@ -859,7 +945,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -901,7 +987,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
     async def publish_uk_gov_tfl_road_mqtt_road_disruption_closure(self,
         road_id: str,
         severity: str,
@@ -915,18 +1001,18 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         Publish the 'uk.gov.tfl.road.mqtt.RoadDisruptionClosure' event to an MQTT topic.
 
         Args:
-
+        
             road_id: URI template variable for 'road_id'
             severity: URI template variable for 'severity'
             disruption_id: URI template variable for 'disruption_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}/disruption'
+            topic: Optional topic override. If not provided, uses default topic 'traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}/disruption"
+        target_topic = topic if topic is not None else "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}"
         _topic_template_values: Dict[str, str] = {
             "road_id": str(road_id),
             "severity": str(severity),
@@ -938,7 +1024,7 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
         attributes = {
              "type":"uk.gov.tfl.road.RoadDisruption",
              "source":"https://api.tfl.gov.uk/Road/all/Disruption",
-             "subject":"disruptions/{road_id}/{severity}/{disruption_id}/disruption".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
+             "subject":"disruptions/{road_id}/{severity}/{disruption_id}".format(road_id = road_id,severity = severity,disruption_id = disruption_id)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -980,4 +1066,4 @@ class UkGovTflRoadMqttMqttClient(_ClientBase):
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 
-
+    
