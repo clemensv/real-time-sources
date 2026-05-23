@@ -26,7 +26,7 @@ class SensorConfiguration:
     
     
     configuration_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="configuration_id"))
-    province: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="province"))
+    province: str=dataclasses.field(default="unknown", kw_only=True, metadata=dataclasses_json.config(field_name="province"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SensorConfiguration':
