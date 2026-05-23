@@ -21,6 +21,7 @@ class Observation:
     
     Attributes:
         configuration_id (str)
+        province (str)
         moment (str)
         co (typing.Optional[int])
         no (typing.Optional[int])
@@ -66,6 +67,7 @@ class Observation:
     
     
     configuration_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="configuration_id"))
+    province: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="province"))
     moment: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="moment"))
     co: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="co"))
     no: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="no"))
@@ -233,46 +235,47 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            configuration_id='jwrrbcvhgmwnxfycaquk',
-            moment='chudtsmfqybmcivksxlq',
-            co=int(15),
-            no=int(28),
-            no2=int(28),
-            o3no2=int(16),
-            ppbno=float(24.16994733807941),
-            ppbno_statut=int(86),
-            ppbno2=float(0.03469932648516583),
-            ppbno2_statut=int(2),
-            ppbo3=float(43.53984489647272),
-            ppbo3_statut=int(44),
-            ugpcmno=float(79.7818732296871),
-            ugpcmno_statut=int(45),
-            ugpcmno2=float(69.83135022175607),
-            ugpcmno2_statut=int(94),
-            ugpcmo3=float(32.67851827613665),
-            ugpcmo3_statut=int(42),
-            bme_t=float(15.855151754298014),
-            bme_t_statut=int(89),
-            bme_pres=int(49),
-            bme_pres_statut=int(26),
-            bme_rh=float(0.7019100399006994),
-            bme_rh_statut=int(76),
-            pm1=float(10.857443760970732),
-            pm1_statut=int(56),
-            pm25=float(73.42415285430127),
-            pm25_statut=int(36),
-            pm4=float(58.49102337347398),
-            pm4_statut=int(14),
-            pm10=float(5.3560387400305),
-            pm10_statut=int(31),
-            vbat=float(70.55150465884368),
-            vbat_statut=int(91),
-            mwh_bat=float(62.37542059954579),
-            mwh_pv=float(68.32541406295078),
-            co_rf=float(64.32048673203494),
-            no_rf=float(89.30412982130048),
-            no2_rf=float(7.951076087324138),
-            o3no2_rf=float(19.0813988784979),
-            o3_rf=float(18.519047076504602),
-            pm10_rf=float(45.97927280117505)
+            configuration_id='wdbuhfvxuccchmwriiuk',
+            province='puvcjimmajjqdgiqsuaa',
+            moment='dwakvuxjbpohuteqdjsw',
+            co=int(4),
+            no=int(17),
+            no2=int(59),
+            o3no2=int(45),
+            ppbno=float(84.9479650831437),
+            ppbno_statut=int(18),
+            ppbno2=float(28.7116783250542),
+            ppbno2_statut=int(94),
+            ppbo3=float(7.1201512423551545),
+            ppbo3_statut=int(52),
+            ugpcmno=float(22.87867316064478),
+            ugpcmno_statut=int(19),
+            ugpcmno2=float(51.42337262228529),
+            ugpcmno2_statut=int(29),
+            ugpcmo3=float(41.507834755994885),
+            ugpcmo3_statut=int(74),
+            bme_t=float(82.24890251389802),
+            bme_t_statut=int(14),
+            bme_pres=int(94),
+            bme_pres_statut=int(90),
+            bme_rh=float(61.57551054821811),
+            bme_rh_statut=int(13),
+            pm1=float(41.927053408985884),
+            pm1_statut=int(38),
+            pm25=float(20.78993052546525),
+            pm25_statut=int(86),
+            pm4=float(1.8135991933360351),
+            pm4_statut=int(56),
+            pm10=float(18.931095942028975),
+            pm10_statut=int(89),
+            vbat=float(56.04872924639533),
+            vbat_statut=int(40),
+            mwh_bat=float(58.14062731516068),
+            mwh_pv=float(55.06309207267126),
+            co_rf=float(20.466768930176094),
+            no_rf=float(1.1975561159446757),
+            no2_rf=float(40.95696333046901),
+            o3no2_rf=float(62.84542271205182),
+            o3_rf=float(51.689186569297455),
+            pm10_rf=float(75.63828798435026)
         )

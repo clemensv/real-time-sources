@@ -4,7 +4,7 @@ Reuses the upstream HTTP client logic from the existing ``wallonia_issep``
 Kafka bridge and pushes CloudEvents into MQTT 5.0 using the xrcg-generated
 :class:`BeIssepAirqualitySensorsMqttMqttClient`.
 
-Topic tree: ``aq/be/wallonia/wallonia-issep/{configuration_id}/{info|observation}``.
+Topic tree: ``air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/{info|observation}``.
 """
 
 from __future__ import annotations
@@ -35,9 +35,14 @@ async def _publish_configurations(
     """Extract and publish sensor configuration reference events."""
     configs = WalloniaISsePAPI.extract_configurations(records)
     for config in configs:
-        data = SensorConfiguration(configuration_id=config.configuration_id)
+        province = getattr(config, "province", None) or "unknown"
+        data = SensorConfiguration(
+            configuration_id=config.configuration_id,
+            province=province,
+        )
         await mqtt_client.publish_be_issep_airquality_sensors_mqtt_sensor_configuration(
             configuration_id=config.configuration_id,
+            province=province,
             data=data,
         )
     logger.info("Published %d sensor configuration info events", len(configs))
@@ -48,6 +53,7 @@ def _build_observation_data(obs) -> Observation:
     """Build an MQTT Observation dataclass from a normalized upstream observation."""
     return Observation(
         configuration_id=obs.configuration_id,
+        province=getattr(obs, "province", None) or "unknown",
         moment=obs.moment,
         co=obs.co,
         no=obs.no,
@@ -107,6 +113,7 @@ async def _publish_observations(
             data = _build_observation_data(obs)
             await mqtt_client.publish_be_issep_airquality_sensors_mqtt_observation(
                 configuration_id=obs.configuration_id,
+                province=getattr(obs, "province", None) or "unknown",
                 data=data,
             )
             count += 1
@@ -158,7 +165,7 @@ async def feed(
 
     # Initial full fetch: publish both reference data and observations
     all_records = api.fetch_all_records()
-    logger.info("Publishing sensor configuration info events under aq/be/wallonia/wallonia-issep/...")
+    logger.info("Publishing sensor configuration info events under air-quality/be/issep/wallonia-issep/...")
     await _publish_configurations(mqtt_client, all_records)
 
     # Publish observations from the initial batch (treats all as new)
@@ -170,6 +177,7 @@ async def feed(
             data = _build_observation_data(obs)
             await mqtt_client.publish_be_issep_airquality_sensors_mqtt_observation(
                 configuration_id=obs.configuration_id,
+                province=getattr(obs, "province", None) or "unknown",
                 data=data,
             )
             init_count += 1

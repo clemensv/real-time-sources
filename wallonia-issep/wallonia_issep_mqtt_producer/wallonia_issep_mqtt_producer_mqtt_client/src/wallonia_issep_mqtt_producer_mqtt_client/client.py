@@ -187,8 +187,8 @@ def get_default_topic_mappings_be_issep_airquality_sensors_mqtt() -> Dict[str, s
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "be.issep.airquality.Sensors.mqtt.SensorConfiguration": "aq/be/wallonia/wallonia-issep/{configuration_id}/info",
-        "be.issep.airquality.Sensors.mqtt.Observation": "aq/be/wallonia/wallonia-issep/{configuration_id}/observation",
+        "be.issep.airquality.Sensors.mqtt.SensorConfiguration": "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/info",
+        "be.issep.airquality.Sensors.mqtt.Observation": "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation",
     }
 
 
@@ -358,6 +358,7 @@ class BeIssepAirqualitySensorsMqttMqttClient(_ClientBase):
     
     async def publish_be_issep_airquality_sensors_mqtt_sensor_configuration(self,
         configuration_id: str,
+        province: str,
         data: wallonia_issep_mqtt_producer_data.SensorConfiguration,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -369,16 +370,18 @@ class BeIssepAirqualitySensorsMqttMqttClient(_ClientBase):
         Args:
         
             configuration_id: URI template variable for 'configuration_id'
+            province: URI template variable for 'province'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aq/be/wallonia/wallonia-issep/{configuration_id}/info'
+            topic: Optional topic override. If not provided, uses default topic 'air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aq/be/wallonia/wallonia-issep/{configuration_id}/info"
+        target_topic = topic if topic is not None else "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/info"
         _topic_template_values: Dict[str, str] = {
             "configuration_id": str(configuration_id),
+            "province": str(province),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -431,6 +434,7 @@ class BeIssepAirqualitySensorsMqttMqttClient(_ClientBase):
     
     async def publish_be_issep_airquality_sensors_mqtt_observation(self,
         configuration_id: str,
+        province: str,
         data: wallonia_issep_mqtt_producer_data.Observation,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -442,16 +446,18 @@ class BeIssepAirqualitySensorsMqttMqttClient(_ClientBase):
         Args:
         
             configuration_id: URI template variable for 'configuration_id'
+            province: URI template variable for 'province'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'aq/be/wallonia/wallonia-issep/{configuration_id}/observation'
+            topic: Optional topic override. If not provided, uses default topic 'air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "aq/be/wallonia/wallonia-issep/{configuration_id}/observation"
+        target_topic = topic if topic is not None else "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation"
         _topic_template_values: Dict[str, str] = {
             "configuration_id": str(configuration_id),
+            "province": str(province),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)

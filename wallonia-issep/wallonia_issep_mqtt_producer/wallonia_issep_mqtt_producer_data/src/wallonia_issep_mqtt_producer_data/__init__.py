@@ -1,4 +1,4 @@
-from .sensorconfiguration import SensorConfiguration
 from .observation import Observation
+from .sensorconfiguration import SensorConfiguration
 
-__all__ = ["SensorConfiguration", "Observation"]
+__all__ = ["Observation", "SensorConfiguration"]
