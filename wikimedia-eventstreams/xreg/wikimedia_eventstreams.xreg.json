@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/Wikimedia.EventStreams"
       ]
+    },
+    "Wikimedia.EventStreams.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change",
+          "qos": 0,
+          "retain": false
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Wikimedia.EventStreams.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -47,6 +68,31 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Wikimedia.EventStreams.jstruct/schemas/Wikimedia.EventStreams.RecentChange"
+        }
+      }
+    },
+    "Wikimedia.EventStreams.mqtt": {
+      "messagegroupid": "Wikimedia.EventStreams.mqtt",
+      "description": "MQTT/5.0 non-retained Wikimedia EventStreams recentchange firehose. Single family (recent-change) baked as the trailing topic segment so subscribers can wildcard per wiki/namespace/event. QoS 0, retain=false.",
+      "messages": {
+        "Wikimedia.EventStreams.RecentChange.mqtt": {
+          "messageid": "Wikimedia.EventStreams.RecentChange.mqtt",
+          "name": "RecentChange",
+          "basemessageurl": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
+          "protocol": "MQTT/5.0",
+          "envelopemetadata": {
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{wiki}/{namespace_bucket}/{event_id}"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change",
+            "qos": 0,
+            "retain": false
+          }
         }
       }
     }
@@ -258,6 +304,10 @@
                     "type": "string",
                     "description": "Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki."
                   },
+                  "namespace_bucket": {
+                    "type": "string",
+                    "description": "Kebab-case bucket label for the MediaWiki namespace number (e.g. main for 0, talk for 1, file for 6, category for 14, ns-<n> for unrecognised values). Replicates the MQTT topic axis so subscribers can validate the topic segment against the payload."
+                  },
                   "parsedcomment": {
                     "type": [
                       "null",
@@ -315,6 +365,7 @@
                   "meta",
                   "type",
                   "namespace",
+                  "namespace_bucket",
                   "title",
                   "timestamp",
                   "user",

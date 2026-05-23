@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from wikimedia_eventstreams_producer_kafka_producer.producer import WikimediaEventStreamsEventProducer
+from wikimedia_eventstreams_producer_kafka_producer.producer import WikimediaEventStreamsMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Wikimedia.EventStreams.RecentChange' event to Kafka topic.
     await wikimedia_event_streams_event_producer.send_wikimedia_event_streams_recent_change(_event_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _recent_change)
     print(f"Sent 'Wikimedia.EventStreams.RecentChange' event: {_recent_change.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        wikimedia_event_streams_mqtt_event_producer = WikimediaEventStreamsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        wikimedia_event_streams_mqtt_event_producer = WikimediaEventStreamsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Wikimedia.EventStreams.RecentChange.mqtt ----
+    # TODO: Supply event data for the Wikimedia.EventStreams.RecentChange.mqtt event
+    _recent_change = RecentChange()
+
+    # sends the 'Wikimedia.EventStreams.RecentChange.mqtt' event to Kafka topic.
+    await wikimedia_event_streams_mqtt_event_producer.send_wikimedia_event_streams_recent_change_mqtt(_wiki = 'TODO: replace me', _namespace_bucket = 'TODO: replace me', _event_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _recent_change)
+    print(f"Sent 'Wikimedia.EventStreams.RecentChange.mqtt' event: {_recent_change.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

@@ -127,3 +127,52 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template-with-eventhub.json)
+
+
+---
+
+## MQTT 5.0 / Unified-Namespace feeder
+
+A second container image, built from `Dockerfile.mqtt`, publishes each decoded Mode-S record to an MQTT 5.0 broker on a Unified-Namespace (UNS) topic tree. The Kafka image and contract are unchanged.
+
+### Topic template
+
+```
+aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}
+```
+
+* `{icao24}` – ICAO 24-bit address (lowercase hex)
+* `{receiver_id}` – stable id of the decoding station
+* `{msg_type}` – Downlink Format family literal: `df17-adsb`, `df4-altitude`, `df5-identity`, `df11-acquisition`, `df20-comm-b`, `df21-comm-b`
+
+Non-retained firehose: every publish is **QoS 0** with `retain=false`. Subscribers must be attached before the feeder starts. CloudEvents binary mode – CE attributes (`id`, `source`, `type`, `subject`, `time`, `specversion`) ride as MQTT 5 user properties. `ContentType=application/json`. `subject` equals the ICAO 24-bit address.
+
+### Pull & run
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources/mode-s-mqtt:latest
+
+docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 \
+  ghcr.io/clemensv/real-time-sources/mode-s-mqtt:latest
+```
+
+### Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `MQTT_BROKER_URL` | `mqtt://host:port` or `mqtts://host:port` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional broker credentials |
+| `MQTT_ENABLE_TLS` | `true` to force TLS (auto if scheme is `mqtts://`) |
+| `MODE_S_DUMP1090_HOST` / `MODE_S_DUMP1090_PORT` | dump1090 Beast TCP endpoint (default `localhost:30005`) |
+| `MODE_S_RECEIVER_ID` | Stable receiver identifier baked into the topic axis |
+| `MODE_S_REF_LAT` / `MODE_S_REF_LON` | Reference position for local CPR decoding |
+| `MODE_S_MOCK` | `true` to emit one canned record per DF family then exit (used by Docker E2E) |
+
+### Subscribe examples
+
+```bash
+# All Mode-S traffic
+mosquitto_sub -h broker -t 'aviation/intl/mode-s/#'
+# All ADS-B from one airframe
+mosquitto_sub -h broker -t 'aviation/intl/mode-s/mode-s/4ca7b8/+/df17-adsb'
+```

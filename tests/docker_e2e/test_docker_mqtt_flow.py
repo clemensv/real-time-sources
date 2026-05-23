@@ -1135,3 +1135,472 @@ class TestAisstreamMqttDockerFlow:
 
 
 
+
+
+
+# ---------------------------------------------------------------------------
+# Mode-S firehose -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_mode_s_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
+    """Return ``{type_value: jstruct_schema}`` for all 6 Mode-S MQTT families.
+
+    Mode-S uses a single shared Record schema across the 6 DF families;
+    we replicate it under each CE ``type`` value for symmetry with the
+    other firehose tests.
+    """
+    xreg_path = os.path.join(REPO_ROOT, 'mode-s', 'xreg', 'mode_s.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemagroup = manifest['schemagroups']['Mode_S.mqtt.jstruct']
+    record_schema = schemagroup['schemas']['Mode_S.mqtt.Record']['versions']['1']['schema']
+    return {
+        'Mode_S.mqtt.ADSB': record_schema,
+        'Mode_S.mqtt.AltitudeReply': record_schema,
+        'Mode_S.mqtt.IdentityReply': record_schema,
+        'Mode_S.mqtt.AcquisitionReply': record_schema,
+        'Mode_S.mqtt.CommBAltitude': record_schema,
+        'Mode_S.mqtt.CommBIdentity': record_schema,
+    }
+
+
+@pytest.fixture(scope='module')
+def mode_s_mqtt_image():
+    return build_image('mode-s', dockerfile='Dockerfile.mqtt', tag='test-mode-s-mqtt')
+
+
+@pytest.fixture()
+def mode_s_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('mode-s-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='mode-s-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'mode-s-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestModeSMqttDockerFlow:
+    """Verify the mode-s-mqtt container publishes a per-DF UNS firehose.
+
+    Mode-S is a non-retained per-record firehose: subscribe first, then
+    run the feeder in ``--mock`` mode and emit one synthetic record per
+    Downlink Format family (DF17 ADS-B, DF4 altitude, DF5 identity,
+    DF11 acquisition, DF20 Comm-B altitude, DF21 Comm-B identity).
+    """
+
+    def test_emits_non_retained_mode_s_firehose_topics(self, mode_s_mosquitto_container, mode_s_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{mode_s_mosquitto_container['internal_host']}:"
+            f"{mode_s_mosquitto_container['internal_port']}"
+        )
+
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('aviation/intl/mode-s/#', qos=0)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', mode_s_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            mode_s_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mode_s_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'MODE_S_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No Mode-S firehose messages received from broker'
+
+        expected_event_types = {
+            'Mode_S.mqtt.ADSB',
+            'Mode_S.mqtt.AltitudeReply',
+            'Mode_S.mqtt.IdentityReply',
+            'Mode_S.mqtt.AcquisitionReply',
+            'Mode_S.mqtt.CommBAltitude',
+            'Mode_S.mqtt.CommBIdentity',
+        }
+        observed_types = {m['user_properties'].get('type') for m in collected}
+        missing = expected_event_types - observed_types
+        assert not missing, (
+            f"Missing Mode-S event families: {missing}\n"
+            f"Observed: {sorted(t for t in observed_types if t)}"
+        )
+
+        expected_trailers = {
+            'df17-adsb', 'df4-altitude', 'df5-identity',
+            'df11-acquisition', 'df20-comm-b', 'df21-comm-b',
+        }
+        observed_trailers = set()
+
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attr {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+
+            # Topic shape: aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}
+            parts = sample['topic'].split('/')
+            assert len(parts) == 7, f"unexpected topic depth {len(parts)} for {sample['topic']}"
+            assert parts[0:4] == ['aviation', 'intl', 'mode-s', 'mode-s'], parts
+            icao_seg, receiver_seg, msg_type_seg = parts[4:7]
+            assert len(icao_seg) == 6 and all(c in '0123456789abcdef' for c in icao_seg), parts
+            assert receiver_seg, parts
+            assert msg_type_seg in expected_trailers, parts
+            observed_trailers.add(msg_type_seg)
+            # subject == icao24
+            assert up['subject'] == icao_seg, (up['subject'], icao_seg)
+
+        missing_trailers = expected_trailers - observed_trailers
+        assert not missing_trailers, f"Missing topic-trailer families: {missing_trailers}"
+
+        schemas = _load_mode_s_mqtt_schemas()
+
+        def _to_dict(p):
+            if isinstance(p, dict):
+                return p
+            if isinstance(p, str):
+                try:
+                    parsed = json.loads(p)
+                    return parsed if isinstance(parsed, dict) else None
+                except json.JSONDecodeError:
+                    return None
+            return None
+
+        for sample in collected:
+            ce_type = sample['user_properties'].get('type')
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            for axis in ('icao24', 'receiver_id', 'msg_type'):
+                assert axis in payload, f"missing axis {axis} in payload for {sample['topic']}: {payload}"
+            parts = sample['topic'].split('/')
+            assert parts[4] == payload['icao24'], (parts[4], payload['icao24'])
+            assert parts[5] == payload['receiver_id'], (parts[5], payload['receiver_id'])
+            assert parts[6] == payload['msg_type'], (parts[6], payload['msg_type'])
+            assert ce_type in schemas, f"unknown ce_type {ce_type}"
+
+
+# ---------------------------------------------------------------------------
+# Wikimedia EventStreams -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+def _load_wikimedia_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
+    """Return ``{type_value: jstruct_schema}`` for the Wikimedia MQTT family."""
+    xreg_path = os.path.join(
+        REPO_ROOT, 'wikimedia-eventstreams', 'xreg', 'wikimedia_eventstreams.xreg.json'
+    )
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemagroup = manifest['schemagroups']['Wikimedia.EventStreams.jstruct']
+    schema = schemagroup['schemas']['Wikimedia.EventStreams.RecentChange']['versions']['1']['schema']
+    return {'Wikimedia.EventStreams.RecentChange': schema}
+
+
+@pytest.fixture(scope='module')
+def wikimedia_eventstreams_mqtt_image():
+    return build_image(
+        'wikimedia-eventstreams',
+        dockerfile='Dockerfile.mqtt',
+        tag='test-wikimedia-eventstreams-mqtt',
+    )
+
+
+@pytest.fixture()
+def wikimedia_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('wikimedia-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='wikimedia-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'wikimedia-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestWikimediaEventstreamsMqttDockerFlow:
+    """Verify the wikimedia-eventstreams-mqtt container publishes a UNS tree.
+
+    Wikimedia is a non-retained single-family firehose. Subscribe first,
+    then run the feeder in ``--mock`` mode and emit a handful of
+    synthetic events covering distinct namespace buckets so we can prove
+    the ``{namespace_bucket}`` axis varies independently of ``{wiki}``.
+    """
+
+    def test_emits_non_retained_wikimedia_topics(self, wikimedia_mosquitto_container, wikimedia_eventstreams_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{wikimedia_mosquitto_container['internal_host']}:"
+            f"{wikimedia_mosquitto_container['internal_port']}"
+        )
+
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            c.subscribe('social/intl/wikimedia/#', qos=0)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', wikimedia_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            wikimedia_eventstreams_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=wikimedia_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'WIKIMEDIA_EVENTSTREAMS_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No Wikimedia EventStreams messages received from broker'
+
+        observed_types = {m['user_properties'].get('type') for m in collected}
+        assert observed_types == {'Wikimedia.EventStreams.RecentChange'}, observed_types
+
+        observed_buckets = set()
+        observed_wikis = set()
+
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attr {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+
+            # Topic shape: social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace_bucket}/{event_id}/recent-change
+            parts = sample['topic'].split('/')
+            assert len(parts) == 8, f"unexpected topic depth {len(parts)} for {sample['topic']}"
+            assert parts[0:4] == ['social', 'intl', 'wikimedia', 'wikimedia-eventstreams'], parts
+            wiki_seg, ns_bucket_seg, event_id_seg, family_seg = parts[4:8]
+            assert wiki_seg, parts
+            assert ns_bucket_seg, parts
+            assert event_id_seg, parts
+            assert family_seg == 'recent-change', parts
+            observed_wikis.add(wiki_seg)
+            observed_buckets.add(ns_bucket_seg)
+            # Subject = wiki/namespace_bucket/event_id (slashes preserved).
+            assert up['subject'] == f"{wiki_seg}/{ns_bucket_seg}/{event_id_seg}", up['subject']
+
+        # Mock corpus covers >=2 wikis and >=2 distinct namespace buckets.
+        assert len(observed_wikis) >= 2, observed_wikis
+        assert len(observed_buckets) >= 2, observed_buckets
+
+        schemas = _load_wikimedia_mqtt_schemas()
+
+        def _to_dict(p):
+            if isinstance(p, dict):
+                return p
+            if isinstance(p, str):
+                try:
+                    parsed = json.loads(p)
+                    return parsed if isinstance(parsed, dict) else None
+                except json.JSONDecodeError:
+                    return None
+            return None
+
+        for sample in collected:
+            ce_type = sample['user_properties'].get('type')
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            for axis in ('wiki', 'namespace_bucket', 'event_id'):
+                assert axis in payload, f"missing axis {axis} in payload: {payload}"
+            parts = sample['topic'].split('/')
+            assert parts[4] == payload['wiki'], (parts[4], payload['wiki'])
+            assert parts[5] == payload['namespace_bucket'], (parts[5], payload['namespace_bucket'])
+            assert parts[6] == payload['event_id'], (parts[6], payload['event_id'])
+            assert ce_type in schemas, f"unknown ce_type {ce_type}"

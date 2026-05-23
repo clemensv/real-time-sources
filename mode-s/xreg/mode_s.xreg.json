@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/Mode_S"
       ]
+    },
+    "Mode_S.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}",
+          "qos": 0,
+          "retain": false
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Mode_S.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -70,6 +91,126 @@
       "createdat": "2025-01-21T15:56:27.070873",
       "epoch": 0,
       "modifiedat": "2025-01-21T15:56:27.070873"
+    },
+    "Mode_S.mqtt": {
+      "messagegroupid": "Mode_S.mqtt",
+      "description": "MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.",
+      "messages": {
+        "Mode_S.ADSB.mqtt": {
+          "messageid": "Mode_S.ADSB.mqtt",
+          "name": "ADSB",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
+            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.ADSB" },
+            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
+            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
+          },
+          "protocoloptions": {
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+        },
+        "Mode_S.AltitudeReply.mqtt": {
+          "messageid": "Mode_S.AltitudeReply.mqtt",
+          "name": "AltitudeReply",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
+            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.AltitudeReply" },
+            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
+            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
+          },
+          "protocoloptions": {
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+        },
+        "Mode_S.IdentityReply.mqtt": {
+          "messageid": "Mode_S.IdentityReply.mqtt",
+          "name": "IdentityReply",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
+            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.IdentityReply" },
+            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
+            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
+          },
+          "protocoloptions": {
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+        },
+        "Mode_S.AcquisitionReply.mqtt": {
+          "messageid": "Mode_S.AcquisitionReply.mqtt",
+          "name": "AcquisitionReply",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
+            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.AcquisitionReply" },
+            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
+            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
+          },
+          "protocoloptions": {
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+        },
+        "Mode_S.CommBAltitude.mqtt": {
+          "messageid": "Mode_S.CommBAltitude.mqtt",
+          "name": "CommBAltitude",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
+            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.CommBAltitude" },
+            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
+            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
+          },
+          "protocoloptions": {
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+        },
+        "Mode_S.CommBIdentity.mqtt": {
+          "messageid": "Mode_S.CommBIdentity.mqtt",
+          "name": "CommBIdentity",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "specversion": { "name": "specversion", "type": "string", "required": true, "value": "1.0" },
+            "type": { "name": "type", "type": "string", "required": true, "value": "Mode_S.mqtt.CommBIdentity" },
+            "source": { "name": "source", "type": "uritemplate", "required": true, "value": "{feedurl}" },
+            "subject": { "name": "subject", "type": "uritemplate", "required": true, "value": "{icao24}" }
+          },
+          "protocoloptions": {
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Mode_S.mqtt.jstruct/schemas/Mode_S.mqtt.Record"
+        }
+      }
     }
   },
   "schemagroups": {
@@ -257,6 +398,52 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Mode_S.mqtt.jstruct": {
+      "schemas": {
+        "Mode_S.mqtt.Record": {
+          "name": "Record",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Mode_S/mqtt/Record",
+                "name": "Record",
+                "type": "object",
+                "description": "Single Mode-S record published on the MQTT firehose. Carries the topic axes (icao24, receiver_id, msg_type) and the decoded record fields.",
+                "properties": {
+                  "icao24": { "type": "string", "description": "ICAO 24-bit address (lowercase hex)." },
+                  "receiver_id": { "type": "string", "description": "Stable identifier of the receiver/station that decoded this message." },
+                  "msg_type": { "type": "string", "description": "Kebab-case Mode-S downlink-format family literal (df17-adsb, df4-altitude, df5-identity, df11-acquisition, df20-comm-b, df21-comm-b)." },
+                  "ts": { "type": "int64", "logicalType": "timestampMillis", "description": "Reception timestamp (epoch millis)." },
+                  "df": { "type": "int32", "description": "Downlink Format value." },
+                  "tc": { "type": "int32", "description": "Type Code (ADS-B only)." },
+                  "bcode": { "type": "string", "description": "BDS code (Comm-B only)." },
+                  "alt": { "type": "int32", "description": "Barometric altitude (ft)." },
+                  "cs": { "type": "string", "description": "Aircraft callsign." },
+                  "sq": { "type": "string", "description": "Squawk code." },
+                  "lat": { "type": "double", "description": "Latitude (deg)." },
+                  "lon": { "type": "double", "description": "Longitude (deg)." },
+                  "spd": { "type": "float", "description": "Speed (kn)." },
+                  "ang": { "type": "float", "description": "Heading angle (deg)." },
+                  "vr": { "type": "int32", "description": "Vertical rate (ft/min)." },
+                  "rssi": { "type": "float", "description": "RSSI (dBFS)." }
+                },
+                "required": [
+                  "icao24",
+                  "receiver_id",
+                  "msg_type",
+                  "ts",
+                  "df"
+                ]
               }
             }
           }
