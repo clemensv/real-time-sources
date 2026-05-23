@@ -4,7 +4,7 @@ Reuses the upstream HTTP client and station catalog logic from the existing
 ``hongkong_epd`` Kafka bridge and pushes CloudEvents into MQTT 5.0 using the
 xrcg-generated :class:`HKGovEPDAQHIMqttMqttClient`.
 
-Topic tree: ``aq/hk/epd/hongkong-epd/{district}/{station_id}/{info|aqhi}``.
+Topic tree: ``air-quality/hk/epd/hongkong-epd/{district}/{station_id}/{info|aqhi}``.
 ``{district}`` is the Hong Kong 18-district administrative area where the
 station is located, normalized to lowercase snake_case.
 """
@@ -34,26 +34,27 @@ from hongkong_epd_mqtt_producer_mqtt_client.client import HKGovEPDAQHIMqttMqttCl
 
 logger = logging.getLogger(__name__)
 
-# Mapping from station_id to the Hong Kong 18-district administrative area.
+# Mapping from station_id to the Hong Kong 18-district administrative area
+# (kebab-case, matching the {district} MQTT topic axis).
 STATION_ID_TO_DISTRICT: Dict[str, str] = {
-    "central_western": "central_and_western",
+    "central_western": "central-and-western",
     "eastern": "eastern",
-    "kwai_chung": "kwai_tsing",
-    "kwun_tong": "kwun_tong",
+    "kwai_chung": "kwai-tsing",
+    "kwun_tong": "kwun-tong",
     "north": "north",
-    "sha_tin": "sha_tin",
-    "sham_shui_po": "sham_shui_po",
+    "sha_tin": "sha-tin",
+    "sham_shui_po": "sham-shui-po",
     "southern": "southern",
-    "tai_po": "tai_po",
+    "tai_po": "tai-po",
     "tap_mun": "islands",
-    "tseung_kwan_o": "sai_kung",
-    "tsuen_wan": "tsuen_wan",
-    "tuen_mun": "tuen_mun",
+    "tseung_kwan_o": "sai-kung",
+    "tsuen_wan": "tsuen-wan",
+    "tuen_mun": "tuen-mun",
     "tung_chung": "islands",
-    "yuen_long": "yuen_long",
-    "causeway_bay": "wan_chai",
-    "central": "central_and_western",
-    "mong_kok": "yau_tsim_mong",
+    "yuen_long": "yuen-long",
+    "causeway_bay": "wan-chai",
+    "central": "central-and-western",
+    "mong_kok": "yau-tsim-mong",
 }
 
 
@@ -151,7 +152,7 @@ async def feed(
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
     await mqtt_client.connect(broker_host, broker_port)
 
-    logger.info("Publishing station info events under aq/hk/epd/hongkong-epd/...")
+    logger.info("Publishing station info events under air-quality/hk/epd/hongkong-epd/...")
     await _publish_stations(mqtt_client, api)
     logger.info("Finished publishing station catalog")
 

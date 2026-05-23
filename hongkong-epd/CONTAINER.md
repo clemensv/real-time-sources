@@ -75,8 +75,8 @@ events as **MQTT 5.0 binary-mode CloudEvents** into a Unified-Namespace
 topic tree:
 
 ```
-aq/hk/epd/hongkong-epd/{district}/{station_id}/info   # station reference
-aq/hk/epd/hongkong-epd/{district}/{station_id}/aqhi   # latest AQHI reading
+air-quality/hk/epd/hongkong-epd/{district}/{station_id}/info   # station reference
+air-quality/hk/epd/hongkong-epd/{district}/{station_id}/aqhi   # latest AQHI reading
 ```
 
 Every leaf is published with QoS 1 and `retain=true` so any subscriber
@@ -105,11 +105,11 @@ HTTP service is re-polled (default 3600 s).
 
 ```
 # Everything from this source
-aq/hk/epd/hongkong-epd/#
+air-quality/hk/epd/hongkong-epd/#
 
 # All AQHI readings for stations in the Central & Western district
-aq/hk/epd/hongkong-epd/central_and_western/+/aqhi
+air-quality/hk/epd/hongkong-epd/central-and-western/+/aqhi
 
 # Reference data for every station
-aq/hk/epd/hongkong-epd/+/+/info
+air-quality/hk/epd/hongkong-epd/+/+/info
 ```
