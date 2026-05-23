@@ -41,6 +41,27 @@
       "messagegroups": [
         "#/messagegroups/Org.OpenStreetMap.Diffs.State"
       ]
+    },
+    "WikimediaOsmDiffs.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Org.OpenStreetMap.Diffs.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -89,6 +110,103 @@
           "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.jstruct/schemas/Org.OpenStreetMap.Diffs.ReplicationState"
         }
       }
+    },
+    "Org.OpenStreetMap.Diffs.mqtt": {
+      "description": "MQTT/5.0 UNS variants of the Wikimedia OSM Diffs CloudEvents. The minutely diff stream is split into three non-retained firehose families (node, way, relation) under osm/intl/wikimedia/wikimedia-osm-diffs/<family>/{geohash5}/{element_id}/change with QoS 0 and retain=false, and one retained side-channel snapshot for the OSM replication sequence published to osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/replication-state with retain=true so late subscribers can see the most recent processed sequence number on connect.",
+      "messages": {
+        "Org.OpenStreetMap.Diffs.mqtt.Node": {
+          "name": "Node",
+          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Org.OpenStreetMap.Diffs.MapChange"
+            },
+            "source": {
+              "value": "https://planet.openstreetmap.org/replication/minute"
+            },
+            "subject": {
+              "value": "{geohash5}/{element_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "osm/intl/wikimedia/wikimedia-osm-diffs/node/{geohash5}/{element_id}/change",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.Way": {
+          "name": "Way",
+          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Org.OpenStreetMap.Diffs.MapChange"
+            },
+            "source": {
+              "value": "https://planet.openstreetmap.org/replication/minute"
+            },
+            "subject": {
+              "value": "{geohash5}/{element_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "osm/intl/wikimedia/wikimedia-osm-diffs/way/{geohash5}/{element_id}/change",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.Relation": {
+          "name": "Relation",
+          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Org.OpenStreetMap.Diffs.MapChange"
+            },
+            "source": {
+              "value": "https://planet.openstreetmap.org/replication/minute"
+            },
+            "subject": {
+              "value": "{geohash5}/{element_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "osm/intl/wikimedia/wikimedia-osm-diffs/relation/{geohash5}/{element_id}/change",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Org.OpenStreetMap.Diffs.mqtt.ReplicationState": {
+          "name": "ReplicationState",
+          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Org.OpenStreetMap.Diffs.ReplicationState"
+            },
+            "source": {
+              "value": "https://planet.openstreetmap.org/replication/minute"
+            },
+            "subject": {
+              "value": "replication-state",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/replication-state",
+            "qos": 0,
+            "retain": true
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -106,7 +224,7 @@
                 "$id": "https://example.com/schemas/Org/OpenStreetMap/Diffs/MapChange",
                 "name": "MapChange",
                 "type": "object",
-                "description": "An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively.",
+                "description": "An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively. The geohash5 axis is the 5-character base32 geohash of the element's representative coordinate; relations without a derivable bounding box receive the sentinel 'nogeo' so they still publish onto the UNS tree.",
                 "properties": {
                   "change_type": {
                     "type": "string",
@@ -119,6 +237,13 @@
                   "element_id": {
                     "type": "int64",
                     "description": "The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity."
+                  },
+                  "geohash5": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Five-character base32 geohash of the element's representative coordinate. For nodes, derived from latitude/longitude; for ways and relations, derived from the centroid of any embedded bbox. The sentinel 'nogeo' is emitted for elements with no resolvable coordinate (most relation deletes, member-only edits, etc.) so the UNS topic placeholder always resolves to a fixed-shape lowercase ASCII segment. Null only on legacy payloads predating the MQTT axis."
                   },
                   "version": {
                     "type": "int32",
@@ -204,6 +329,13 @@
                   "timestamp": {
                     "type": "datetime",
                     "description": "The UTC timestamp associated with the replication state, indicating the point in time up to which the diff file covers OSM edits."
+                  },
+                  "source_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "The replication state document URL from which this snapshot was parsed. Useful so subscribers can re-derive the diff file URL or compare across mirror feeds. Null when the bridge does not record the URL."
                   }
                 },
                 "required": [

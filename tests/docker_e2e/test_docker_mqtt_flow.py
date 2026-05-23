@@ -333,10 +333,11 @@ def _to_dict(p):
 
 
 def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str,
-                              level_field: str, water_axis_segment_index: int = 4):
+                              level_field: str, water_axis_segment_index: int = 4,
+                              telemetry_leaf: str = 'water-level'):
     """Common UNS-shape assertions for the three hydro MQTT pilots.
 
-    * Both ``info`` and ``water-level`` leaves exist for at least one
+    * Both ``info`` and the telemetry leaf exist for at least one
       common station.
     * Every message carries the six required CloudEvents binary-mode user
       properties (id, source, type, subject, time, specversion), retain=true
@@ -348,9 +349,9 @@ def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str
     """
     assert messages, 'No retained messages received from broker'
     info_msgs = [m for m in messages if m['topic'].endswith('/info')]
-    level_msgs = [m for m in messages if m['topic'].endswith('/water-level')]
+    level_msgs = [m for m in messages if m['topic'].endswith('/' + telemetry_leaf)]
     assert info_msgs, 'No /info reference events published'
-    assert level_msgs, 'No /water-level telemetry events published'
+    assert level_msgs, f'No /{telemetry_leaf} telemetry events published'
 
     for sample in (info_msgs[0], level_msgs[0]):
         up = sample['user_properties']
@@ -368,7 +369,7 @@ def _assert_hydro_pilot_flow(messages, *, station_type: str, telemetry_type: str
     info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
     level_stations = {m['topic'].split('/')[-2] for m in level_msgs}
     common = info_stations & level_stations
-    assert common, 'No station has both info and water-level retained leaves'
+    assert common, f'No station has both info and {telemetry_leaf} retained leaves'
 
     info_payload = _to_dict(info_msgs[0]['payload'])
     level_payload = _to_dict(level_msgs[0]['payload'])
@@ -602,6 +603,471 @@ class TestCHMIHydroMqttDockerFlow:
             station_type='CZ.Gov.CHMI.Hydro.Station',
             telemetry_type='CZ.Gov.CHMI.Hydro.WaterLevelObservation',
             level_field='water_level',
+        )
+
+
+# ---------------------------------------------------------------------------
+# Hong Kong EPD AQHI -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def hongkong_epd_mqtt_image():
+    return build_image('hongkong-epd', dockerfile='Dockerfile.mqtt', tag='test-hongkong-epd-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_hongkong_epd():
+    container, network, host_port = _generic_mosquitto(
+        'hongkong-epd-mqtt-e2e', 'hongkong-epd-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'hongkong-epd-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestHongkongEpdMqttDockerFlow:
+    """Verify the hongkong-epd-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_hongkong_epd, hongkong_epd_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_hongkong_epd['internal_host']}:{mosquitto_hongkong_epd['internal_port']}"
+        feeder = client.containers.run(
+            hongkong_epd_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_hongkong_epd['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_hongkong_epd['host_port'], 'aq/hk/epd/hongkong-epd/#',
+            timeout=30.0,
+        )
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        aqhi_msgs = [m for m in messages if m['topic'].endswith('/aqhi')]
+        assert info_msgs, 'No /info reference events published'
+        assert aqhi_msgs, 'No /aqhi telemetry events published'
+
+        # Verify CloudEvents binary-mode attributes, retain and QoS
+        for sample in (info_msgs[0], aqhi_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        # Verify event types
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        aqhi_types = {m['user_properties'].get('type') for m in aqhi_msgs}
+        assert info_types == {'HK.Gov.EPD.AQHI.Station'}, info_types
+        assert aqhi_types == {'HK.Gov.EPD.AQHI.AQHIReading'}, aqhi_types
+
+        # At least one station has both /info and /aqhi
+        info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+        aqhi_stations = {m['topic'].split('/')[-2] for m in aqhi_msgs}
+        common = info_stations & aqhi_stations
+        assert common, 'No station has both info and aqhi retained leaves'
+
+        # Verify payloads contain expected fields
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        aqhi_payload = _to_dict(aqhi_msgs[0]['payload'])
+        assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+        assert aqhi_payload is not None, f"aqhi payload not parseable: {aqhi_msgs[0]['payload']!r}"
+        assert 'station_id' in info_payload, info_payload
+        assert 'district' in info_payload, info_payload
+        assert 'station_id' in aqhi_payload, aqhi_payload
+        assert 'aqhi' in aqhi_payload, aqhi_payload
+        assert 'district' in aqhi_payload, aqhi_payload
+
+        # Verify topic structure: aq/hk/epd/hongkong-epd/{district}/{station_id}/{event}
+        sample_topic = aqhi_msgs[0]['topic']
+        parts = sample_topic.split('/')
+        assert len(parts) == 7, f"Topic depth != 7: {sample_topic}"
+        assert parts[0:4] == ['aq', 'hk', 'epd', 'hongkong-epd'], parts
+
+
+
+# ---- bfs-odl -----------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def bfs_odl_mqtt_image():
+    return build_image('bfs-odl', dockerfile='Dockerfile.mqtt', tag='test-bfs-odl-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_bfs_odl():
+    container, network, host_port = _generic_mosquitto(
+        'bfs-odl-mqtt-e2e', 'bfs-odl-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'bfs-odl-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestBfsOdlMqttDockerFlow:
+    """Verify the bfs-odl-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_bfs_odl, bfs_odl_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_bfs_odl['internal_host']}:{mosquitto_bfs_odl['internal_port']}"
+        feeder = client.containers.run(
+            bfs_odl_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_bfs_odl['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/de/bfs/bfs-odl/#',
+            timeout=40.0,
+        )
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        dose_msgs = [m for m in messages if m['topic'].endswith('/dose-rate')]
+        assert info_msgs, 'No /info reference events published'
+        assert dose_msgs, 'No /dose-rate telemetry events published'
+
+        for sample in (info_msgs[0], dose_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        dose_types = {m['user_properties'].get('type') for m in dose_msgs}
+        assert info_types == {'de.bfs.odl.Station'}, info_types
+        assert dose_types == {'de.bfs.odl.DoseRateMeasurement'}, dose_types
+
+        info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+        dose_stations = {m['topic'].split('/')[-2] for m in dose_msgs}
+        common = info_stations & dose_stations
+        assert common, 'No station has both info and dose-rate retained leaves'
+
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        dose_payload = _to_dict(dose_msgs[0]['payload'])
+        assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+        assert dose_payload is not None, f"dose-rate payload not parseable: {dose_msgs[0]['payload']!r}"
+        assert 'station_id' in info_payload, info_payload
+        assert 'state' in info_payload, info_payload
+        assert 'station_id' in dose_payload, dose_payload
+        assert 'value' in dose_payload, dose_payload
+
+
+# ---- german-waters -----------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def german_waters_mqtt_image():
+    return build_image('german-waters', dockerfile='Dockerfile.mqtt', tag='test-german-waters-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_german_waters():
+    container, network, host_port = _generic_mosquitto(
+        'german-waters-mqtt-e2e', 'german-waters-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'german-waters-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestGermanWatersMqttDockerFlow:
+    """Verify the german-waters-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_german_waters, german_waters_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_german_waters['internal_host']}:{mosquitto_german_waters['internal_port']}"
+        feeder = client.containers.run(
+            german_waters_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_german_waters['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+                'PROVIDERS': 'bayern_gkd,nrw_hygon',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_german_waters['host_port'], 'hydro/de/wsv/german-waters/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='DE.Waters.Hydrology.Station',
+            telemetry_type='DE.Waters.Hydrology.WaterLevelObservation',
+            level_field='water_level',
+        )
+
+# ---------------------------------------------------------------------------
+# Wallonia ISSeP air quality -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def wallonia_issep_mqtt_image():
+    return build_image('wallonia-issep', dockerfile='Dockerfile.mqtt', tag='test-wallonia-issep-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_wallonia_issep():
+    container, network, host_port = _generic_mosquitto(
+        'wallonia-issep-mqtt-e2e', 'wallonia-issep-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'wallonia-issep-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestWalloniaIssepMqttDockerFlow:
+    """Verify the wallonia-issep-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_wallonia_issep, wallonia_issep_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_wallonia_issep['internal_host']}:{mosquitto_wallonia_issep['internal_port']}"
+        feeder = client.containers.run(
+            wallonia_issep_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_wallonia_issep['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_wallonia_issep['host_port'],
+            'aq/be/wallonia/wallonia-issep/#',
+            timeout=40.0,
+        )
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        obs_msgs = [m for m in messages if m['topic'].endswith('/observation')]
+        assert info_msgs, 'No /info reference events published'
+        assert obs_msgs, 'No /observation telemetry events published'
+
+        for sample in (info_msgs[0], obs_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        obs_types = {m['user_properties'].get('type') for m in obs_msgs}
+        assert info_types == {'be.issep.airquality.SensorConfiguration'}, info_types
+        assert obs_types == {'be.issep.airquality.Observation'}, obs_types
+
+        # Both info and observation exist for the same configuration_id
+        info_configs = {m['topic'].split('/')[-2] for m in info_msgs}
+        obs_configs = {m['topic'].split('/')[-2] for m in obs_msgs}
+        common = info_configs & obs_configs
+        assert common, 'No configuration has both info and observation retained leaves'
+
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        obs_payload = _to_dict(obs_msgs[0]['payload'])
+        assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
+        assert obs_payload is not None, f"obs payload not parseable: {obs_msgs[0]['payload']!r}"
+        assert 'configuration_id' in info_payload, info_payload
+        assert 'configuration_id' in obs_payload, obs_payload
+        assert 'moment' in obs_payload, obs_payload
+
+
+# ---- smhi-hydro --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def smhi_hydro_mqtt_image():
+    return build_image('smhi-hydro', dockerfile='Dockerfile.mqtt', tag='test-smhi-hydro-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_smhi():
+    container, network, host_port = _generic_mosquitto(
+        'smhi-hydro-mqtt-e2e', 'smhi-hydro-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'container': container,
+            'network': network.name,
+            'host_port': host_port,
+            'internal_host': container.name,
+            'internal_port': 1883,
+        }
+    finally:
+        try:
+            container.stop(timeout=5)
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestSmhiHydroMqttDockerFlow:
+    """Verify the smhi-hydro-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_smhi, smhi_hydro_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_smhi['internal_host']}:{mosquitto_smhi['internal_port']}"
+        feeder = client.containers.run(
+            smhi_hydro_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_smhi['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_smhi['host_port'], 'hydro/se/smhi/smhi-hydro/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='SE.Gov.SMHI.Hydro.Station',
+            telemetry_type='SE.Gov.SMHI.Hydro.DischargeObservation',
+            level_field='discharge',
+            telemetry_leaf='discharge',
         )
 
 # ---------------------------------------------------------------------------
@@ -1567,3 +2033,300 @@ class TestBlitzortungMqttDockerFlow:
             assert payload['geohash7'] == geohash7_seg
             assert str(payload['stroke_id']) == stroke_id_seg
             assert up['type'] in schemas
+
+# ---------------------------------------------------------------------------
+# Wikimedia OSM Diffs -> MQTT/UNS (firehose + retained state)
+# ---------------------------------------------------------------------------
+
+
+def _load_wikimedia_osm_diffs_mqtt_schemas():
+    xreg_path = os.path.join(REPO_ROOT, 'wikimedia-osm-diffs', 'xreg', 'wikimedia_osm_diffs.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    sg = manifest['schemagroups']['Org.OpenStreetMap.Diffs.jstruct']
+    out = {}
+    for full_name, schema in sg['schemas'].items():
+        out[full_name] = schema['versions']['1']['schema']
+    return out
+
+
+@pytest.fixture(scope='module')
+def wikimedia_osm_diffs_mqtt_image():
+    return build_image('wikimedia-osm-diffs', dockerfile='Dockerfile.mqtt', tag='test-wikimedia-osm-diffs-mqtt')
+
+
+@pytest.fixture()
+def wikimedia_osm_diffs_mosquitto_container():
+    container, network, host_port = _generic_mosquitto(
+        'wikimedia-osm-diffs-mqtt-e2e', 'wikimedia-osm-diffs-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'wikimedia-osm-diffs-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestWikimediaOsmDiffsMqttDockerFlow:
+    """Verify the wikimedia-osm-diffs-mqtt container publishes a valid
+    UNS firehose tree for node/way/relation changes plus a retained
+    replication-state side-channel snapshot.
+
+    OSM diffs are a non-retained firehose, so we attach the subscriber
+    first (per the hard rule: ``c.subscribe`` is called inside the paho
+    ``on_connect`` callback so the SUBSCRIBE rides the same TCP connect
+    as the CONNECT/CONNACK), wait for SUBACK, then launch the feeder
+    container in ``--mock`` mode. The mock corpus emits exactly one
+    create-node, one modify-way (no coordinates -> geohash5='nogeo'),
+    one delete-relation (no coordinates -> 'nogeo'), and one retained
+    replication-state event.
+    """
+
+    def test_emits_firehose_and_retained_state(self, wikimedia_osm_diffs_mosquitto_container, wikimedia_osm_diffs_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{wikimedia_osm_diffs_mosquitto_container['internal_host']}:"
+            f"{wikimedia_osm_diffs_mosquitto_container['internal_port']}"
+        )
+
+        collected = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        def on_connect(c, u, flags, reason_code, props):
+            # Hard rule: subscribe inside on_connect so SUBSCRIBE rides
+            # the same TCP connect as the CONNACK and the retained
+            # replication-state snapshot is delivered to us.
+            c.subscribe('osm/intl/wikimedia/wikimedia-osm-diffs/#', qos=1)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.on_connect = on_connect
+        sub.connect('127.0.0.1', wikimedia_osm_diffs_mosquitto_container['host_port'], 30)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            wikimedia_osm_diffs_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=wikimedia_osm_diffs_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'OSM_DIFFS_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No MQTT messages received from broker'
+
+        # Bucket by topic family for clean assertions.
+        node_msgs = [m for m in collected if m['topic'].startswith('osm/intl/wikimedia/wikimedia-osm-diffs/node/')]
+        way_msgs = [m for m in collected if m['topic'].startswith('osm/intl/wikimedia/wikimedia-osm-diffs/way/')]
+        relation_msgs = [m for m in collected if m['topic'].startswith('osm/intl/wikimedia/wikimedia-osm-diffs/relation/')]
+        state_msgs = [m for m in collected if m['topic'].startswith('osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/')]
+
+        assert node_msgs, f"no node firehose messages received: {[m['topic'] for m in collected]}"
+        assert way_msgs, f"no way firehose messages received: {[m['topic'] for m in collected]}"
+        assert relation_msgs, f"no relation firehose messages received: {[m['topic'] for m in collected]}"
+        assert state_msgs, f"no replication-state retained message received: {[m['topic'] for m in collected]}"
+
+        # Required CE binary-mode user properties on every published frame.
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+
+        # Firehose families: QoS 0, retain=false. CE type is the
+        # base MapChange type regardless of element family; the family
+        # is identified by the topic.
+        for sample in node_msgs + way_msgs + relation_msgs:
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+            assert sample['user_properties'].get('type') == 'Org.OpenStreetMap.Diffs.MapChange', sample
+            parts = sample['topic'].split('/')
+            assert len(parts) == 8, f"unexpected topic depth {len(parts)} for {sample['topic']}"
+            assert parts[0:4] == ['osm', 'intl', 'wikimedia', 'wikimedia-osm-diffs'], parts
+            assert parts[4] in ('node', 'way', 'relation'), parts
+            assert parts[-1] == 'change', parts
+            geohash5_seg = parts[5]
+            element_id_seg = parts[6]
+            assert geohash5_seg, parts
+            assert element_id_seg, parts
+            # subject is the contiguous '{geohash5}/{element_id}' segment of the topic.
+            assert sample['user_properties']['subject'] == f"{geohash5_seg}/{element_id_seg}", (
+                sample['user_properties']['subject'], geohash5_seg, element_id_seg,
+            )
+
+        # Replication-state: distinct CE type, subject is the literal segment.
+        # Note: on a live MQTT delivery (subscriber already connected when the
+        # feeder publishes), the broker forwards the message with retain=False
+        # even if the publisher set retain=true. The retain flag on the wire
+        # is only set true for messages replayed from the retained store at
+        # subscription time. We verify that retention actually happened by
+        # reconnecting a fresh subscriber below.
+        state = state_msgs[0]
+        assert state['qos'] == 0, state
+        assert state['user_properties'].get('type') == 'Org.OpenStreetMap.Diffs.ReplicationState', state
+        assert state['user_properties']['subject'] == 'replication-state', state['user_properties']
+        state_parts = state['topic'].split('/')
+        assert state_parts == [
+            'osm', 'intl', 'wikimedia', 'wikimedia-osm-diffs',
+            'replication-state', 'replication-state',
+        ], state_parts
+
+        # 'nogeo' sentinel applied where OsmChange carries no coordinates.
+        assert all(m['topic'].split('/')[5] == 'nogeo' for m in way_msgs), [m['topic'] for m in way_msgs]
+        assert all(m['topic'].split('/')[5] == 'nogeo' for m in relation_msgs), [m['topic'] for m in relation_msgs]
+        # Nodes have coordinates -> geohash5 should be a non-sentinel base32 token.
+        for m in node_msgs:
+            gh = m['topic'].split('/')[5]
+            assert gh != 'nogeo', m['topic']
+            assert len(gh) == 5, m['topic']
+            assert all(c in '0123456789bcdefghjkmnpqrstuvwxyz' for c in gh), m['topic']
+
+        # Payload sanity: every diff carries the keying axes; topic axes
+        # round-trip from the payload exactly.
+        schemas = _load_wikimedia_osm_diffs_mqtt_schemas()
+        assert 'Org.OpenStreetMap.Diffs.MapChange' in schemas
+        assert 'Org.OpenStreetMap.Diffs.ReplicationState' in schemas
+
+        def _to_dict(p):
+            if isinstance(p, dict):
+                return p
+            if isinstance(p, str):
+                try:
+                    parsed = json.loads(p)
+                    return parsed if isinstance(parsed, dict) else None
+                except json.JSONDecodeError:
+                    return None
+            return None
+
+        for sample in node_msgs + way_msgs + relation_msgs:
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            for axis in ('element_type', 'element_id', 'geohash5', 'sequence_number', 'change_type'):
+                assert axis in payload, f"missing axis {axis} in payload for {sample['topic']}: {payload}"
+            parts = sample['topic'].split('/')
+            assert parts[4] == payload['element_type'], (parts[4], payload['element_type'])
+            assert parts[5] == payload['geohash5'], (parts[5], payload['geohash5'])
+            assert str(payload['element_id']) == parts[6], (payload['element_id'], parts[6])
+
+        state_payload = _to_dict(state['payload'])
+        assert state_payload is not None, f"state payload unparseable: {state['payload']!r}"
+        assert 'sequence_number' in state_payload, state_payload
+        assert 'timestamp' in state_payload, state_payload
+
+        # Verify retain semantics: reconnect a fresh subscriber AFTER the
+        # feeder has exited. The retained replication-state must be replayed
+        # from the broker's retained store with retain=True. Firehose
+        # messages must NOT be replayed (they were not retained).
+        replayed = []
+
+        def on_message2(c, u, msg):
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+            replayed.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+            })
+
+        replay_ready = []
+
+        def on_subscribe2(c, u, mid, reason_codes, props):
+            replay_ready.append(True)
+
+        def on_connect2(c, u, flags, reason_code, props):
+            c.subscribe('osm/intl/wikimedia/wikimedia-osm-diffs/#', qos=1)
+
+        sub2 = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub2.on_message = on_message2
+        sub2.on_subscribe = on_subscribe2
+        sub2.on_connect = on_connect2
+        sub2.connect('127.0.0.1', wikimedia_osm_diffs_mosquitto_container['host_port'], 30)
+        sub2.loop_start()
+        try:
+            ready_deadline = time.time() + 10
+            while not replay_ready and time.time() < ready_deadline:
+                time.sleep(0.1)
+            # Wait up to 5s to collect any replayed retained messages.
+            time.sleep(3.0)
+        finally:
+            sub2.loop_stop()
+            sub2.disconnect()
+
+        retained_state = [m for m in replayed if m['topic'].startswith('osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/')]
+        assert retained_state, (
+            f"replication-state was not retained by broker; replayed topics: {[m['topic'] for m in replayed]}"
+        )
+        for m in retained_state:
+            assert m['retain'] is True, f"retained replay must carry retain=True: {m}"
+            assert m['user_properties'].get('type') == 'Org.OpenStreetMap.Diffs.ReplicationState', m
+
+        retained_firehose = [m for m in replayed if not m['topic'].startswith('osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/')]
+        assert not retained_firehose, (
+            f"firehose messages must not be retained, but broker replayed: {[m['topic'] for m in retained_firehose]}"
+        )

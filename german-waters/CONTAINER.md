@@ -183,3 +183,68 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgerman-waters%2Fazure-template-with-eventhub.json)
+
+## MQTT/UNS image
+
+A sibling container image, ghcr.io/clemensv/real-time-sources-german-waters-mqtt, is built from
+`Dockerfile.mqtt` and publishes the same station-catalog and water-level
+events as **MQTT 5.0 binary-mode CloudEvents** into a Unified-Namespace
+topic tree:
+
+```
+hydro/de/wsv/german-waters/{water_body}/{station_id}/info          # station reference
+hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level   # latest water level / discharge
+```
+
+Every leaf is published with QoS 1 and `retain=true` so any subscriber
+sees the most recent value as soon as it subscribes. The full CloudEvents
+binding (`id`, `source`, `type`, `subject`, `time`,
+`specversion`) is carried as MQTT 5 user properties; the payload is the
+`application/json` body of the same JsonStructure schema used by the
+Kafka image.
+
+### Run against a generic MQTT 5 broker
+
+```
+docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
+    -e MQTT_USERNAME='<username>' \
+    -e MQTT_PASSWORD='<password>' \
+    ghcr.io/clemensv/real-time-sources-german-waters-mqtt:latest
+```
+
+Set `MQTT_TLS=true` or use the `mqtts://`/`ssl://` URL scheme to
+enable TLS. `MQTT_CLIENT_ID` is optional but recommended on shared
+brokers. `POLLING_INTERVAL` (seconds) controls how often the upstream
+HTTP services are re-polled (default 900 s).
+
+### MQTT Environment Variables
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Full broker URL (e.g. `mqtt://host:1883` or `mqtts://host:8883`) |
+| `MQTT_HOST` | Broker hostname (alternative to URL) |
+| `MQTT_PORT` | Broker port (alternative to URL) |
+| `MQTT_USERNAME` | MQTT username |
+| `MQTT_PASSWORD` | MQTT password |
+| `MQTT_TLS` | Enable TLS (`true`/`false`) |
+| `MQTT_CLIENT_ID` | Optional MQTT client ID |
+| `MQTT_CONTENT_MODE` | CloudEvents content mode (`binary` or `structured`, default: `binary`) |
+| `POLLING_INTERVAL` | Polling interval in seconds (default: `900`) |
+| `STATE_FILE` | De-duplication state file path (default: `~/.german_waters_mqtt_state.json`) |
+| `ONCE_MODE` | Exit after first poll cycle (`true`/`false`) |
+| `PROVIDERS` | Comma-separated provider keys to include |
+| `EXCLUDE_PROVIDERS` | Comma-separated provider keys to exclude |
+
+### Subscription patterns
+
+```
+# Everything from this source
+hydro/de/wsv/german-waters/#
+
+# All water-level telemetry on the Rhine
+hydro/de/wsv/german-waters/rhein/+/water-level
+
+# One station's info
+hydro/de/wsv/german-waters/+/{station_id}/info
+```

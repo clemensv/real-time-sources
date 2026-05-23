@@ -19,12 +19,13 @@ import datetime
 @dataclass
 class MapChange:
     """
-    An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively.
+    An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively. The geohash5 axis is the 5-character base32 geohash of the element's representative coordinate; relations without a derivable bounding box receive the sentinel 'nogeo' so they still publish onto the UNS tree.
     
     Attributes:
         change_type (str)
         element_type (str)
         element_id (int)
+        geohash5 (typing.Optional[str])
         version (int)
         timestamp (datetime.datetime)
         changeset_id (int)
@@ -40,6 +41,7 @@ class MapChange:
     change_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="change_type"))
     element_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_type"))
     element_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_id"))
+    geohash5: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
     version: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     changeset_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="changeset_id"))
@@ -175,16 +177,17 @@ class MapChange:
             An instance of the dataclass.
         """
         return cls(
-            change_type='jnrehtbsuthwqkmjbmyv',
-            element_type='svrckpwhlqzpehqgwstg',
-            element_id=int(54),
-            version=int(44),
+            change_type='etszfwfpjecxalvkejsk',
+            element_type='udqmikpptqspjubfcrkg',
+            element_id=int(38),
+            geohash5='trihytyiamzwysoboodo',
+            version=int(88),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(88),
-            user_name='vuqdlmklbanavvhplrma',
-            user_id=int(94),
-            latitude=float(36.75726797552799),
-            longitude=float(43.713786072344426),
-            tags='tqwbquxgdamyipgimwfc',
-            sequence_number=int(61)
+            changeset_id=int(68),
+            user_name='iupminodrqjpbarcdsyh',
+            user_id=int(38),
+            latitude=float(79.79775288294415),
+            longitude=float(95.91527798692695),
+            tags='yslnqwxggghfcvyswion',
+            sequence_number=int(57)
         )

@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from smhi_hydro_producer_kafka_producer.producer import SEGovSMHIHydroEventProducer
+from smhi_hydro_producer_kafka_producer.producer import SEGovSMHIHydroMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +73,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'SE.Gov.SMHI.Hydro.DischargeObservation' event to Kafka topic.
     await segov_smhihydro_event_producer.send_se_gov_smhi_hydro_discharge_observation(_station_id = 'TODO: replace me', data = _discharge_observation)
     print(f"Sent 'SE.Gov.SMHI.Hydro.DischargeObservation' event: {_discharge_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        segov_smhihydro_mqtt_event_producer = SEGovSMHIHydroMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        segov_smhihydro_mqtt_event_producer = SEGovSMHIHydroMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- SE.Gov.SMHI.Hydro.mqtt.Station ----
+    # TODO: Supply event data for the SE.Gov.SMHI.Hydro.mqtt.Station event
+    _station = Station()
+
+    # sends the 'SE.Gov.SMHI.Hydro.mqtt.Station' event to Kafka topic.
+    await segov_smhihydro_mqtt_event_producer.send_se_gov_smhi_hydro_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'SE.Gov.SMHI.Hydro.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- SE.Gov.SMHI.Hydro.mqtt.DischargeObservation ----
+    # TODO: Supply event data for the SE.Gov.SMHI.Hydro.mqtt.DischargeObservation event
+    _discharge_observation = DischargeObservation()
+
+    # sends the 'SE.Gov.SMHI.Hydro.mqtt.DischargeObservation' event to Kafka topic.
+    await segov_smhihydro_mqtt_event_producer.send_se_gov_smhi_hydro_mqtt_discharge_observation(_station_id = 'TODO: replace me', data = _discharge_observation)
+    print(f"Sent 'SE.Gov.SMHI.Hydro.mqtt.DischargeObservation' event: {_discharge_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

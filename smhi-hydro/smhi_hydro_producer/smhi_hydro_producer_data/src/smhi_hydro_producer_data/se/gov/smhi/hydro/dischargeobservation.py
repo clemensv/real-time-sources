@@ -24,27 +24,27 @@ class DischargeObservation:
     Attributes:
         station_id (str): 
         station_name (str): 
-        catchment_name (typing.Optional[str]): 
+        catchment_name (str): SMHI catchmentName the station belongs to. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null and the MQTT topic segment remains populated.
         timestamp (datetime.datetime): 
         discharge (float): 
         quality (typing.Optional[str]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
-    catchment_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
+    catchment_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     discharge: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
     quality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DischargeObservation\", \"doc\": \"DischargeObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"catchment_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"quality\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"SE.Gov.SMHI.Hydro\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"DischargeObservation\", \"doc\": \"DischargeObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"catchment_name\", \"type\": \"string\", \"doc\": \"SMHI catchmentName the station belongs to. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null and the MQTT topic segment remains populated.\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"quality\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"SE.Gov.SMHI.Hydro\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
         self.station_name=str(self.station_name)
-        self.catchment_name=str(self.catchment_name) if self.catchment_name else None
+        self.catchment_name=str(self.catchment_name)
         value_timestamp = self.timestamp
         self.timestamp = value_timestamp
         self.discharge=float(self.discharge)

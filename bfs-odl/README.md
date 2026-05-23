@@ -55,6 +55,20 @@ All events are keyed by `{station_id}` (the 9-digit `kenn` identifier), so
 both station metadata and dose rate readings for the same probe share the
 same partition.
 
+## MQTT / Unified Namespace
+
+A separate container (`bfs-odl-mqtt`) publishes the same data as MQTT 5.0
+binary-mode CloudEvents into a UNS topic tree:
+
+```
+radiation/de/bfs/bfs-odl/{state}/{station_id}/info
+radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate
+```
+
+The `{state}` axis is derived from the first two digits of the station
+Kennziffer (AGS Bundesland code). All messages are retained with QoS 1.
+See [CONTAINER.md](CONTAINER.md) for MQTT-specific details.
+
 ## Upstream Links
 
 - BfS ODL Info: https://odlinfo.bfs.de/

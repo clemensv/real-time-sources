@@ -26,7 +26,7 @@ class Station:
         owner (typing.Optional[str]): 
         measuring_stations (typing.Optional[str]): 
         region (typing.Optional[int]): 
-        catchment_name (typing.Optional[str]): 
+        catchment_name (str): SMHI catchmentName, e.g. 'Torneälven'. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null.
         catchment_number (typing.Optional[int]): 
         catchment_size (typing.Optional[float]): 
         latitude (float): 
@@ -37,14 +37,14 @@ class Station:
     owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
     measuring_stations: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="measuring_stations"))
     region: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
-    catchment_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
+    catchment_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
     catchment_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_number"))
     catchment_size: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_size"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"owner\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"measuring_stations\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"catchment_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"catchment_number\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"catchment_size\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}], \"namespace\": \"SE.Gov.SMHI.Hydro\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"owner\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"measuring_stations\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"catchment_name\", \"type\": \"string\", \"doc\": \"SMHI catchmentName, e.g. 'Torne\u00e4lven'. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null.\"}, {\"name\": \"catchment_number\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"catchment_size\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}], \"namespace\": \"SE.Gov.SMHI.Hydro\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -54,7 +54,7 @@ class Station:
         self.owner=str(self.owner) if self.owner else None
         self.measuring_stations=str(self.measuring_stations) if self.measuring_stations else None
         self.region=int(self.region) if self.region else None
-        self.catchment_name=str(self.catchment_name) if self.catchment_name else None
+        self.catchment_name=str(self.catchment_name)
         self.catchment_number=int(self.catchment_number) if self.catchment_number else None
         self.catchment_size=float(self.catchment_size) if self.catchment_size else None
         self.latitude=float(self.latitude)

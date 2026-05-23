@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "bfs_odl_mqtt"
+version = "0.1.0"
+description = "MQTT/UNS feeder for the German BfS ODL gamma dose rate monitoring network."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "bfs_odl_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+requests = ">=2.32.3"
+bfs-odl = { path = ".." }
+bfs_odl_mqtt_producer_data = { path = "../bfs_odl_mqtt_producer/bfs_odl_mqtt_producer_data" }
+bfs_odl_mqtt_producer_mqtt_client = { path = "../bfs_odl_mqtt_producer/bfs_odl_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+bfs-odl-mqtt = "bfs_odl_mqtt.app:main"
