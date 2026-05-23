@@ -1,16 +1,38 @@
-# WSV PegelOnline → Apache Kafka & MQTT/UNS
+# WSV PegelOnline → Apache Kafka, MQTT/UNS & AMQP 1.0
 
-This source ships two container images backed by the same upstream poller
-and the same xRegistry contract:
+## Why this container
+
+The German Federal Waterways and Shipping Administration (**WSV**)
+publishes [PegelOnline](https://www.pegelonline.wsv.de/), the
+authoritative real-time water-level feed for every federally
+administered inland and coastal gauge in Germany — more than 1,200
+stations on the Rhine, Elbe, Danube, Weser, Main, Mosel, Oder, Kiel
+Canal and tributaries. The feed is free and open, but it is a REST
+API: every consumer ends up writing the same polling, dedupe, schema-
+validation, retry and identity glue.
+
+These container images do that work once and re-emit the feed as
+**CloudEvents** on the messaging fabric of your choice — so flood
+agencies, inland-shipping operators (Rhine/Elbe cargo scheduling and
+fairway-depth decisions), hydropower dispatchers, environmental data
+platforms (Fabric Eventhouse / ADX / data lakes), parametric insurers
+and research consortia can subscribe to a topic instead of scraping a
+REST endpoint from inside their business systems.
+
+## What ships in the box
+
+This source ships three container images backed by the same upstream
+poller and the same xRegistry contract:
 
 | Image | Transport | Default behavior |
 |---|---|---|
 | `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x (Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
 | `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree `hydro/de/wsv/pegelonline/{water}/{station}/...`, retained QoS 1, CloudEvent attributes as MQTT 5 user properties |
-| `ghcr.io/clemensv/real-time-sources-pegelonline-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | One AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs |
+| `ghcr.io/clemensv/real-time-sources-pegelonline-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | One AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
 
-Both images consume the WSV PegelOnline REST API (German Federal Waterways
-and Shipping Administration) and re-emit two CloudEvent types:
+All three images consume the WSV PegelOnline REST API (German Federal
+Waterways and Shipping Administration) and re-emit two CloudEvent
+types:
 
 * `de.wsv.pegelonline.Station` — station catalog (reference, emitted at
   startup; retained on MQTT).
@@ -145,6 +167,28 @@ The bridge mints an Entra access token via `DefaultAzureCredential` and
 hands it to the broker through the AMQP CBS (Claims-Based Security) put-
 token control link — no SAS-key rotation required.
 
+### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
+
+For local development against the
+[Azure Service Bus emulator](https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator)
+or for Service Bus / Event Hubs namespaces still configured for SAS
+authentication (no Entra ID), use `AMQP_AUTH_MODE=sas`. The bridge
+mints a `SharedAccessSignature` token from the key + key-name and
+presents it via AMQP CBS (`type=servicebus.windows.net:sastoken`):
+
+```shell
+$ docker run --rm \
+    -e AMQP_HOST='servicebus-emulator' \
+    -e AMQP_PORT=5672 \
+    -e AMQP_ADDRESS='pegelonline' \
+    -e AMQP_AUTH_MODE=sas \
+    -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+    -e AMQP_SAS_KEY='SAS_KEY_VALUE' \
+    ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
+```
+
+For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
+
 ## Environment Variables
 
 ### Kafka image
@@ -184,9 +228,11 @@ token control link — no SAS-key rotation required.
 | `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level alternative to `AMQP_BROKER_URL` (default port 5672, or 5671 with `AMQP_TLS=true`). |
 | `AMQP_ADDRESS` | AMQP node (queue / topic) name (default `pegelonline`). |
 | `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials, used when `AMQP_AUTH_MODE=password` (default). |
-| `AMQP_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs). |
-| `AMQP_ENTRA_AUDIENCE` | Token audience (default `https://servicebus.azure.net/.default`). Use `https://eventhubs.azure.net/.default` for Event Hubs. |
-| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. |
+| `AMQP_AUTH_MODE` | `password` (default), `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs), or `sas` for SAS-token CBS (Service Bus emulator, or SAS-only namespaces). |
+| `AMQP_ENTRA_AUDIENCE` | Token audience (default `https://servicebus.azure.net/.default`). Use `https://eventhubs.azure.net/.default` for Event Hubs. Used only when `AMQP_AUTH_MODE=entra`. |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. Used only when `AMQP_AUTH_MODE=entra`. |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). **Required when `AMQP_AUTH_MODE=sas`.** |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). **Required when `AMQP_AUTH_MODE=sas`.** |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 | `POLLING_INTERVAL` | Seconds between polling cycles (default `60`). |
 | `STATE_FILE` | Path to the dedupe state file. |

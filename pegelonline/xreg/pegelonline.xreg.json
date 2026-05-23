@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "pegelonline"
+          "topic": "pegelonline",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -69,7 +70,7 @@
         "de.wsv.pegelonline.Station": {
           "name": "Station",
           "envelope": "CloudEvents/1.0",
-          "description": "PegelOnline station metadata with location and water body information.",
+          "description": "Reference catalog entry for one WSV PegelOnline gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API v2.",
           "envelopemetadata": {
             "type": {
               "value": "de.wsv.pegelonline.Station"
@@ -89,7 +90,7 @@
         "de.wsv.pegelonline.CurrentMeasurement": {
           "name": "CurrentMeasurement",
           "envelope": "CloudEvents/1.0",
-          "description": "PegelOnline current water level measurement.",
+          "description": "Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.",
           "envelopemetadata": {
             "type": {
               "value": "de.wsv.pegelonline.CurrentMeasurement"
@@ -145,21 +146,9 @@
           "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info",
-                "description": "Unified Namespace topic carrying the station's identity and location as a retained last-known-value."
-              },
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info",
+            "qos": 1,
+            "retain": true
           }
         },
         "de.wsv.pegelonline.mqtt.CurrentMeasurement": {
@@ -167,27 +156,15 @@
           "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level",
-                "description": "Unified Namespace topic carrying the station's latest water-level measurement as a retained last-known-value."
-              },
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
           }
         }
       }
     },
     "de.wsv.pegelonline.amqp": {
-      "description": "AMQP 1.0 transport variants of the PegelOnline CloudEvents, sent in binary CloudEvents mode to a single AMQP node ('pegelonline') — works with generic brokers (ActiveMQ, RabbitMQ AMQP 1.0 plugin) and with Azure Service Bus / Event Hubs via CBS + Entra ID.",
+      "description": "AMQP 1.0 transport variants of the PegelOnline CloudEvents, sent in binary CloudEvents mode to a single AMQP node ('pegelonline') — works with generic brokers (ActiveMQ Artemis, RabbitMQ AMQP 1.0 plugin, Qpid Dispatch) and with Azure Service Bus / Event Hubs via CBS + Entra ID or SAS-token. Routing key is the CloudEvent subject (`{station_id}`); per-waterway routing is exposed as the `water_shortname` AMQP application property so brokers and SB/EH subscription filters can route without cracking the JSON body.",
       "messages": {
         "de.wsv.pegelonline.amqp.Station": {
           "name": "Station",
@@ -203,8 +180,9 @@
             },
             "application_properties": {
               "water_shortname": {
-                "type": "string",
-                "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); copied here so message routers/filters don't have to crack the JSON body."
+                "type": "uritemplate",
+                "value": "{water_shortname}",
+                "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); supplied by the bridge from the station catalog so message routers / filters can route by waterway without cracking the JSON body."
               }
             }
           }
@@ -223,8 +201,9 @@
             },
             "application_properties": {
               "water_shortname": {
-                "type": "string",
-                "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); copied here so message routers/filters don't have to crack the JSON body."
+                "type": "uritemplate",
+                "value": "{water_shortname}",
+                "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); supplied by the bridge from the station catalog so message routers / filters can route by waterway without cracking the JSON body."
               }
             }
           }
@@ -243,8 +222,13 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$schema": "https://json-structure.org/meta/core/v0/#",
-                "$id": "https://example.com/schemas/de/wsv/pegelonline/Station",
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/de/wsv/pegelonline/Station/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
                 "name": "Station",
                 "$root": "#/definitions/de/wsv/pegelonline/Station",
                 "definitions": {
@@ -254,59 +238,75 @@
                         "Water": {
                           "name": "Water",
                           "type": "object",
+                          "description": "Federal waterway / water body the gauge measures, as returned in the nested `water` object of `GET /stations.json` on the PegelOnline REST API v2. Acts as the routing hierarchy for the MQTT Unified Namespace topology.",
                           "properties": {
                             "shortname": {
                               "type": "string",
-                              "description": "Short name of the water body (maximum 40 characters)."
+                              "description": "Lowercase routing token for the waterway as published by WSV — e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII-normalization for non-ASCII characters such as 'ß' → 'ss' or umlauts) as the `{water_shortname}` template variable on the MQTT topic and the AMQP application property. Sourced from the upstream `water.shortname` key. Maximum 40 characters."
                             },
                             "longname": {
                               "type": "string",
-                              "description": "Full name of the water body (maximum 255 characters)."
+                              "description": "Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream `water.longname` key. Maximum 255 characters."
                             }
                           },
                           "required": [
                             "shortname",
                             "longname"
-                          ],
-                          "description": "Details of the water body associated with the station."
+                          ]
                         },
                         "Station": {
                           "name": "Station",
                           "type": "object",
+                          "description": "WSV PegelOnline gauge installation. Each instance represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from `GET /stations.json` on the PegelOnline REST API v2 (https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Emitted as reference data at bridge startup and re-emitted periodically.",
                           "properties": {
                             "station_id": {
                               "type": "string",
-                              "description": "Unique immutable identifier of the station."
+                              "altnames": {
+                                "json": "uuid"
+                              },
+                              "description": "Stable UUID assigned by WSV to identify the gauge installation; persists across station renaming, relocation within the same Pegelmessstelle, and timeseries reconfiguration. Sourced from the upstream `uuid` field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic `{station_id}` segment, and the AMQP message subject for every event emitted by this source."
                             },
                             "number": {
                               "type": "string",
-                              "description": "Station number representing the unique code of the station."
+                              "pattern": "^[0-9]+$",
+                              "description": "Official PegelOnline station number. Carries multiple agency-scoped numbering schemes within the same field: WSV Pegelmessstellennummer (6–8 digits) for German federal gauges; partner-agency identifiers such as Austrian via-donau station numbers (4–5 digits), small Regierungspräsidium-IDs for Bodensee gauges (3-digit numbers e.g. '906' KONSTANZ), and German state-agency IDs (e.g. Ruhrverband 13-digit Messstellennummer). Numeric-only across all observed providers; length is provider-specific. National / agency-scoped identifier — not globally unique across data providers; prefer `station_id` (UUID) for cross-system joins."
                             },
                             "shortname": {
                               "type": "string",
-                              "description": "Short name of the station (maximum 40 characters)."
+                              "description": "Operator-assigned display label for the gauge (≤40 characters). May differ from the town name when multiple gauges share a town. Mutable — do not use as a routing key or stable identifier."
                             },
                             "longname": {
                               "type": "string",
-                              "description": "Full name of the station (maximum 255 characters)."
+                              "description": "Canonical gauge name as used in WSV publications (≤255 characters). Mutable — do not use as a routing key."
                             },
                             "km": {
                               "type": "double",
-                              "description": "River kilometer marking of the station location."
+                              "unit": "km",
+                              "symbol": "km",
+                              "description": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km."
                             },
                             "agency": {
                               "type": "string",
-                              "description": "Waterways and Shipping Office responsible for the station."
+                              "description": "Free-form name of the Wasserstraßen- und Schifffahrtsamt (WSA) operating the gauge — e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream `agency` field. Provided so downstream consumers can attribute observations to the operating authority; not a stable identifier and not suitable as a routing key."
                             },
                             "longitude": {
                               "type": "double",
-                              "description": "Longitude coordinate of the station in WGS84 decimal notation."
+                              "unit": "deg",
+                              "symbol": "°",
+                              "minimum": -180,
+                              "maximum": 180,
+                              "description": "WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `longitude` field."
                             },
                             "latitude": {
                               "type": "double",
-                              "description": "Latitude coordinate of the station in WGS84 decimal notation."
+                              "unit": "deg",
+                              "symbol": "°",
+                              "minimum": -90,
+                              "maximum": 90,
+                              "description": "WGS84 decimal-degree latitude of the gauge installation; positive north of the equator. Surveyed to the gauge structure, not to the river centreline. Sourced from the upstream `latitude` field."
                             },
                             "water": {
+                              "description": "Federal waterway the gauge measures. See the nested Water schema for routing semantics.",
                               "type": {
                                 "$ref": "#/definitions/de/wsv/pegelonline/Water"
                               }
@@ -317,13 +317,11 @@
                             "number",
                             "shortname",
                             "longname",
-                            "km",
                             "agency",
                             "longitude",
                             "latitude",
                             "water"
-                          ],
-                          "description": "Schema representing a PEGELONLINE station with location and water body information."
+                          ]
                         }
                       }
                     }
@@ -341,8 +339,13 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$schema": "https://json-structure.org/meta/core/v0/#",
-                "$id": "https://example.com/schemas/de/wsv/pegelonline/CurrentMeasurement",
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/de/wsv/pegelonline/CurrentMeasurement/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
                 "name": "CurrentMeasurement",
                 "$root": "#/definitions/de/wsv/pegelonline/CurrentMeasurement",
                 "definitions": {
@@ -352,36 +355,91 @@
                         "CurrentMeasurement": {
                           "name": "CurrentMeasurement",
                           "type": "object",
+                          "description": "Latest 15-minute water-level reading for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Carries only the W (water-level) timeseries; other timeseries (Q discharge, LT water temperature) are not emitted by this source.",
                           "properties": {
                             "station_id": {
                               "type": "string",
-                              "description": "Unique immutable identifier of the station."
+                              "altnames": {
+                                "json": "uuid"
+                              },
+                              "description": "Stable UUID of the gauge this reading was taken at. References the `station_id` of the corresponding Station reference event. Used as the CloudEvents `subject` and the Kafka partition key so all readings for a given gauge land on the same partition / topic key."
                             },
                             "timestamp": {
-                              "type": "string",
-                              "description": "Timestamp of the current measurement encoded in ISO_8601 format."
+                              "type": "datetime",
+                              "description": "Wall-clock time the upstream reading was taken, in ISO 8601 / RFC 3339 with an explicit UTC offset. PegelOnline publishes the value in Europe/Berlin local time, so the offset shifts between `+01:00` (CET) and `+02:00` (CEST) across the DST boundary — preserve the offset when storing. Sourced from the upstream `timestamp` field."
                             },
                             "value": {
                               "type": "double",
-                              "description": "Current measured value as a decimal number in the unit defined by the station's timeseries."
+                              "unit": "cm",
+                              "symbol": "cm",
+                              "minimum": -1000,
+                              "maximum": 2500,
+                              "description": "Water-level reading on the W (water-level) timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP — a geodetically fixed datum specific to each gauge, see https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Typical operational range is 0–1500 cm; flood events at major Rhine gauges can exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP (e.g. tidal Elbe at low water). Unit: cm."
                             },
                             "stateMnwMhw": {
                               "type": "string",
-                              "description": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+                              "enum": [
+                                "low",
+                                "normal",
+                                "high",
+                                "unknown",
+                                "commented",
+                                "out-dated"
+                              ],
+                              "altenums": {
+                                "lang:en": {
+                                  "low": "Below the gauge's mean low water (MNW) reference",
+                                  "normal": "Between MNW and the gauge's mean high water (MHW) reference",
+                                  "high": "Above MHW",
+                                  "unknown": "MNW/MHW reference values are not configured for this station",
+                                  "commented": "Value carries an operator comment overriding the automatic classification",
+                                  "out-dated": "Reading is stale relative to the gauge's configured freshness window (typically 90 minutes) — do not treat as authoritative"
+                                }
+                              },
+                              "description": "Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values, as computed by the upstream feed. Omitted by upstream when the gauge has no MNW/MHW reference series configured (treat absence as 'unknown')."
                             },
                             "stateNswHsw": {
                               "type": "string",
-                              "description": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+                              "enum": [
+                                "normal",
+                                "high",
+                                "unknown",
+                                "commented",
+                                "out-dated"
+                              ],
+                              "altenums": {
+                                "lang:en": {
+                                  "normal": "Below the highest navigable water level (HSW / Höchster Schifffahrtswasserstand)",
+                                  "high": "At or above HSW — navigation typically suspended on the affected reach",
+                                  "unknown": "HSW reference value is not configured for this station",
+                                  "commented": "Value carries an operator comment overriding the automatic classification",
+                                  "out-dated": "Reading is stale relative to the gauge's configured freshness window"
+                                }
+                              },
+                              "description": "Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series — HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown')."
+                            },
+                            "trend": {
+                              "type": ["int8", "null"],
+                              "enum": [
+                                -1,
+                                0,
+                                1
+                              ],
+                              "altenums": {
+                                "lang:en": {
+                                  "-1": "Falling — current value is below the previous reading",
+                                  "0": "Steady — within the upstream classification's noise band of the previous reading",
+                                  "1": "Rising — current value is above the previous reading"
+                                }
+                              },
+                              "description": "Short-term trend of the water level relative to the previous reading, as classified by the upstream feed. First-class signal for flood-monitoring dashboards. Sourced from the upstream `trend` field; omitted when upstream cannot compute a trend (e.g. first reading after a gap)."
                             }
                           },
                           "required": [
                             "station_id",
                             "timestamp",
-                            "value",
-                            "stateMnwMhw",
-                            "stateNswHsw"
-                          ],
-                          "description": "Schema representing the current measurement for a PEGELONLINE station."
+                            "value"
+                          ]
                         }
                       }
                     }
@@ -403,64 +461,69 @@
                 "type": "record",
                 "name": "Station",
                 "namespace": "de.wsv.pegelonline",
-                "doc": "Schema representing a PEGELONLINE station with location and water body information.",
+                "doc": "WSV PegelOnline gauge installation. Each record represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from GET /stations.json on the PegelOnline REST API v2. Emitted as reference data at bridge startup and re-emitted periodically. Avro mirror of the JsonStructure Station schema — keep field semantics in sync.",
                 "fields": [
                   {
                     "name": "station_id",
                     "type": "string",
-                    "doc": "Unique immutable identifier of the station."
+                    "doc": "Stable UUID assigned by WSV to identify the gauge installation; persists across renaming, relocation, and timeseries reconfiguration. Sourced from the upstream 'uuid' field. Used as the CloudEvents subject and the Kafka partition key."
                   },
                   {
                     "name": "number",
                     "type": "string",
-                    "doc": "Station number representing the unique code of the station."
+                    "doc": "Official WSV Pegelmessstellennummer (6-8 digit numeric identifier) used in published German hydrology bulletins. National identifier only - not globally unique outside Germany; prefer station_id for joins."
                   },
                   {
                     "name": "shortname",
                     "type": "string",
-                    "doc": "Short name of the station (maximum 40 characters)."
+                    "doc": "Operator-assigned display label for the gauge (<=40 characters). May differ from the town name when multiple gauges share a town. Mutable - do not use as a routing key or stable identifier."
                   },
                   {
                     "name": "longname",
                     "type": "string",
-                    "doc": "Full name of the station (maximum 255 characters)."
+                    "doc": "Canonical gauge name as used in WSV publications (<=255 characters). Mutable - do not use as a routing key."
                   },
                   {
                     "name": "km",
-                    "type": "double",
-                    "doc": "River kilometer marking of the station location."
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). Decimal fraction is the hectometre offset within the km. Null for tidal / coastal gauges and for waterways without a km reference. Unit: km."
                   },
                   {
                     "name": "agency",
                     "type": "string",
-                    "doc": "Waterways and Shipping Office responsible for the station."
+                    "doc": "Free-form name of the Wasserstrassen- und Schifffahrtsamt (WSA) operating the gauge - e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream 'agency' field. Not a stable identifier and not suitable as a routing key."
                   },
                   {
                     "name": "longitude",
                     "type": "double",
-                    "doc": "Longitude coordinate of the station in WGS84 decimal notation."
+                    "doc": "WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian, range -180..180. Surveyed to the gauge structure, not to the river centreline. Unit: degrees."
                   },
                   {
                     "name": "latitude",
                     "type": "double",
-                    "doc": "Latitude coordinate of the station in WGS84 decimal notation."
+                    "doc": "WGS84 decimal-degree latitude of the gauge installation; positive north of the equator, range -90..90. Surveyed to the gauge structure, not to the river centreline. Unit: degrees."
                   },
                   {
                     "name": "water",
+                    "doc": "Federal waterway the gauge measures, sourced from the upstream nested 'water' object. Acts as the routing hierarchy for the MQTT Unified Namespace topology.",
                     "type": {
                       "type": "record",
                       "name": "Water",
-                      "doc": "Details of the water body associated with the station.",
+                      "doc": "Federal waterway / water body the gauge measures, as returned in the nested 'water' object of GET /stations.json.",
                       "fields": [
                         {
                           "name": "shortname",
                           "type": "string",
-                          "doc": "Short name of the water body (maximum 40 characters)."
+                          "doc": "Lowercase routing token for the waterway as published by WSV - e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII normalization) as the {water_shortname} template variable on the MQTT topic and the AMQP application property. Sourced from the upstream water.shortname key. Maximum 40 characters."
                         },
                         {
                           "name": "longname",
                           "type": "string",
-                          "doc": "Full name of the water body (maximum 255 characters)."
+                          "doc": "Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream water.longname key. Maximum 255 characters."
                         }
                       ]
                     }
@@ -479,32 +542,75 @@
                 "type": "record",
                 "name": "CurrentMeasurement",
                 "namespace": "de.wsv.pegelonline",
-                "doc": "Schema representing the current measurement for a PEGELONLINE station.",
+                "doc": "Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from GET /stations/{uuid}/W/currentmeasurement.json on the PegelOnline REST API v2. Avro mirror of the JsonStructure CurrentMeasurement schema - keep field semantics in sync.",
                 "fields": [
                   {
                     "name": "station_id",
                     "type": "string",
-                    "doc": "Unique immutable identifier of the station."
+                    "doc": "Stable UUID of the gauge this reading was taken at. References the station_id of the corresponding Station reference event. Sourced from the upstream 'uuid' field."
                   },
                   {
                     "name": "timestamp",
-                    "type": "string",
-                    "doc": "Timestamp of the current measurement encoded in ISO_8601 format."
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "Wall-clock time the upstream reading was taken, encoded here as Unix milliseconds since 1970-01-01T00:00:00Z. PegelOnline publishes the value as ISO 8601 with an explicit Europe/Berlin offset (CET +01:00 / CEST +02:00); the bridge converts to UTC milliseconds for Avro encoding."
                   },
                   {
                     "name": "value",
                     "type": "double",
-                    "doc": "Current measured value as a decimal number in the unit defined by the station's timeseries."
+                    "doc": "Water-level reading on the W timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP - a geodetically fixed datum specific to each gauge). Typical operational range 0..1500 cm; flood events at major Rhine gauges exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP. Unit: cm."
                   },
                   {
                     "name": "stateMnwMhw",
-                    "type": "string",
-                    "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "StateMnwMhw",
+                        "doc": "Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values. Symbol 'out_dated' corresponds to the upstream label 'out-dated'.",
+                        "symbols": [
+                          "low",
+                          "normal",
+                          "high",
+                          "unknown",
+                          "commented",
+                          "out_dated"
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "MNW/MHW classification as computed by the upstream feed. Null when the gauge has no MNW/MHW reference series configured. Symbol 'out_dated' means the reading is stale relative to the gauge's freshness window (typically 90 minutes) - do not treat as authoritative."
                   },
                   {
                     "name": "stateNswHsw",
-                    "type": "string",
-                    "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "StateNswHsw",
+                        "doc": "Categorical classification of the current water level against the highest navigable water level (HSW / Hoechster Schifffahrtswasserstand). Symbol 'out_dated' corresponds to the upstream label 'out-dated'.",
+                        "symbols": [
+                          "normal",
+                          "high",
+                          "unknown",
+                          "commented",
+                          "out_dated"
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "HSW classification as computed by the upstream feed - drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Null when the gauge has no HSW reference. Upstream never emits 'low' on this series; HSW is an upper bound only."
+                  },
+                  {
+                    "name": "trend",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Short-term trend of the water level relative to the previous reading: -1 falling, 0 steady, +1 rising. Sourced from the upstream 'trend' field. Null when upstream cannot compute a trend (e.g. first reading after a gap)."
                   }
                 ]
               }
