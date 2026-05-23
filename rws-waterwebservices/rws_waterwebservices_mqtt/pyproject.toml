@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "rws_waterwebservices_mqtt"
+version = "0.1.0"
+description = "MQTT/UNS feeder for the Dutch Rijkswaterstaat Waterwebservices water level data."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "rws_waterwebservices_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+requests = ">=2.32.3"
+rws-waterwebservices = { path = ".." }
+rws_waterwebservices_mqtt_producer_data = { path = "../rws_waterwebservices_mqtt_producer/rws_waterwebservices_mqtt_producer_data" }
+rws_waterwebservices_mqtt_producer_mqtt_client = { path = "../rws_waterwebservices_mqtt_producer/rws_waterwebservices_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+rws-waterwebservices-mqtt = "rws_waterwebservices_mqtt.app:main"

@@ -1,0 +1,2 @@
+pip install .\rws_waterwebservices_mqtt_producer_data
+pip install .\rws_waterwebservices_mqtt_producer_mqtt_client

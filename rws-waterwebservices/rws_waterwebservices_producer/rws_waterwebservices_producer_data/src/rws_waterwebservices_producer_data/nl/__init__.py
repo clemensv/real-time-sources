@@ -1,3 +1,3 @@
-from .rws import Station, WaterLevelObservation
+from .rws import WaterLevelObservation, Station
 
-__all__ = ["Station", "WaterLevelObservation"]
+__all__ = ["WaterLevelObservation", "Station"]

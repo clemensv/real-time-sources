@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from rws_waterwebservices_producer_data.nl.rws.waterwebservices.station import Station
+from rws_waterwebservices_mqtt_producer_data.station import Station
 
 
 class Test_Station(unittest.TestCase):
@@ -28,12 +28,12 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_code='cdqwdpvbynxcynvevnbz',
-            name='xqkralolfntfeuyrvqhr',
-            water_body='ynhhyguoropskklkcbfd',
-            latitude=float(51.853950395769886),
-            longitude=float(86.90035758801396),
-            coordinate_system='tqdrkhixljcwrbrljalj'
+            station_code='tgbmhzfatvgmrbyjszvx',
+            name='pzjmuczensyfaqnzlzve',
+            water_body='hxxilwvuhoarhddsavbc',
+            latitude=float(35.20762913049158),
+            longitude=float(36.39130678425012),
+            coordinate_system='aaojassnnqomaabqyiqs'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'cdqwdpvbynxcynvevnbz'
+        test_value = 'tgbmhzfatvgmrbyjszvx'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -50,7 +50,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'xqkralolfntfeuyrvqhr'
+        test_value = 'pzjmuczensyfaqnzlzve'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -58,7 +58,7 @@ class Test_Station(unittest.TestCase):
         """
         Test water_body property
         """
-        test_value = 'ynhhyguoropskklkcbfd'
+        test_value = 'hxxilwvuhoarhddsavbc'
         self.instance.water_body = test_value
         self.assertEqual(self.instance.water_body, test_value)
     
@@ -66,7 +66,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(51.853950395769886)
+        test_value = float(35.20762913049158)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -74,7 +74,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(86.90035758801396)
+        test_value = float(36.39130678425012)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -82,16 +82,26 @@ class Test_Station(unittest.TestCase):
         """
         Test coordinate_system property
         """
-        test_value = 'tqdrkhixljcwrbrljalj'
+        test_value = 'aaojassnnqomaabqyiqs'
         self.instance.coordinate_system = test_value
         self.assertEqual(self.instance.coordinate_system, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = Station.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Station.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

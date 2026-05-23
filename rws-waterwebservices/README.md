@@ -54,6 +54,12 @@ python -m rws_waterwebservices feed \
 
 See [EVENTS.md](EVENTS.md) for the CloudEvents message definitions.
 
+## MQTT / Unified Namespace
+
+An MQTT 5.0 feeder publishes the same data into a UNS topic tree:
+`hydro/nl/rws/rws-waterwebservices/{water_body}/{station_code}/{info|water-level}`.
+See [CONTAINER.md](CONTAINER.md) for the MQTT container image and environment variables.
+
 ## Container
 
 See [CONTAINER.md](CONTAINER.md) for Docker container deployment info.

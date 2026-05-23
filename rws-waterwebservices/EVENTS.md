@@ -1,43 +1,101 @@
-# Events
+# Table of Contents
 
-This document describes the CloudEvents messages produced by the RWS Waterwebservices bridge.
+- [NL.RWS.Waterwebservices](#message-group-nlrwswaterwebservices)
+  - [NL.RWS.Waterwebservices.Station](#message-nlrwswaterwebservicesstation)
+  - [NL.RWS.Waterwebservices.WaterLevelObservation](#message-nlrwswaterwebserviceswaterlevelobservation)
+- [NL.RWS.Waterwebservices.mqtt](#message-group-nlrwswaterwebservicesmqtt)
+  - [NL.RWS.Waterwebservices.mqtt.Station](#message-nlrwswaterwebservicesmqttstation)
+  - [NL.RWS.Waterwebservices.mqtt.WaterLevelObservation](#message-nlrwswaterwebservicesmqttwaterlevelobservation)
+
+---
 
 ## Message Group: NL.RWS.Waterwebservices
+---
+### Message: NL.RWS.Waterwebservices.Station
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `NL.RWS.Waterwebservices.Station` |
+| `source` |  | `` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
+| `subject` |  | `uritemplate` | `False` | `{station_code}` |
 
-### NL.RWS.Waterwebservices.Station
+#### Schema:
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_code` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog and propagated onto every station event so subscribers do not need an out-of-band catalog join. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
+| `coordinate_system` | *string* | - | `False` |  |
+---
+### Message: NL.RWS.Waterwebservices.WaterLevelObservation
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `NL.RWS.Waterwebservices.WaterLevelObservation` |
+| `source` |  | `` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
+| `subject` |  | `uritemplate` | `False` | `{station_code}` |
 
-Reference data for monitoring stations.
+#### Schema:
+##### Object: WaterLevelObservation
+*WaterLevelObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_code` | *string* | - | `True` |  |
+| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog at startup and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by location. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `location_name` | *string* | - | `False` |  |
+| `timestamp` | *datetime* | - | `True` |  |
+| `value` | *double* | - | `True` |  |
+| `unit` | *string* | - | `False` |  |
+| `quality_code` | *string* | - | `False` |  |
+| `status` | *string* | - | `False` |  |
+| `compartment` | *string* | - | `False` |  |
+| `parameter` | *string* | - | `False` |  |
+## Message Group: NL.RWS.Waterwebservices.mqtt
+---
+### Message: NL.RWS.Waterwebservices.mqtt.Station
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `NL.RWS.Waterwebservices.Station` |
+| `source` |  | `` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
+| `subject` |  | `uritemplate` | `False` | `{station_code}` |
 
-- **CloudEvents Type**: `NL.RWS.Waterwebservices.Station`
-- **CloudEvents Source**: `https://waterwebservices.rijkswaterstaat.nl`
-- **Schema**: JSON
-- **Frequency**: Sent once at startup
+#### Schema:
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_code` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog and propagated onto every station event so subscribers do not need an out-of-band catalog join. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
+| `coordinate_system` | *string* | - | `False` |  |
+---
+### Message: NL.RWS.Waterwebservices.mqtt.WaterLevelObservation
+#### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `NL.RWS.Waterwebservices.WaterLevelObservation` |
+| `source` |  | `` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
+| `subject` |  | `uritemplate` | `False` | `{station_code}` |
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `code` | string | Station code (e.g., "HOlv") |
-| `name` | string | Station name (e.g., "Hoek van Holland") |
-| `latitude` | number | Latitude (Y coordinate) |
-| `longitude` | number | Longitude (X coordinate) |
-| `coordinate_system` | string | Coordinate reference system |
-
-### NL.RWS.Waterwebservices.WaterLevelObservation
-
-Real-time water level measurements.
-
-- **CloudEvents Type**: `NL.RWS.Waterwebservices.WaterLevelObservation`
-- **CloudEvents Source**: `https://waterwebservices.rijkswaterstaat.nl`
-- **Schema**: JSON
-- **Frequency**: Every 10 minutes
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `location_code` | string | Location code |
-| `location_name` | string | Location name |
-| `timestamp` | string (date-time) | Measurement timestamp in ISO 8601 |
-| `value` | number | Measured water level value in cm relative to NAP |
-| `unit` | string | Unit of measurement (e.g., "cm") |
-| `quality_code` | string | Quality value code (00=good, 99=gap) |
-| `status` | string | Status (e.g., "Ongecontroleerd") |
-| `compartment` | string | Compartment code (OW=surface water) |
-| `parameter` | string | Parameter code (WATHTE=water height) |
+#### Schema:
+##### Object: WaterLevelObservation
+*WaterLevelObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_code` | *string* | - | `True` |  |
+| `water_body` | *string* | - | `True` | Display name of the water body / monitoring location (RWS catalog Locatie.Naam field, e.g. 'Hoek van Holland', 'IJmuiden Buitenhaven'). Sourced by the bridge from the station catalog at startup and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by location. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. |
+| `location_name` | *string* | - | `False` |  |
+| `timestamp` | *datetime* | - | `True` |  |
+| `value` | *double* | - | `True` |  |
+| `unit` | *string* | - | `False` |  |
+| `quality_code` | *string* | - | `False` |  |
+| `status` | *string* | - | `False` |  |
+| `compartment` | *string* | - | `False` |  |
+| `parameter` | *string* | - | `False` |  |
