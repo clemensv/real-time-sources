@@ -24,11 +24,13 @@ class ReplicationState:
     Attributes:
         sequence_number (int)
         timestamp (datetime.datetime)
+        source_url (typing.Optional[str])
     """
     
     
     sequence_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sequence_number"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    source_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_url"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ReplicationState':
@@ -155,6 +157,7 @@ class ReplicationState:
             An instance of the dataclass.
         """
         return cls(
-            sequence_number=int(62),
-            timestamp=datetime.datetime.now(datetime.timezone.utc)
+            sequence_number=int(24),
+            timestamp=datetime.datetime.now(datetime.timezone.utc),
+            source_url='wjcdlgddtyzrynwsankg'
         )

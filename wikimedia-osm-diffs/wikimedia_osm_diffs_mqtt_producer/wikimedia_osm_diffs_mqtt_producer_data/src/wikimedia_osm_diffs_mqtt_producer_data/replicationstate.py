@@ -1,4 +1,4 @@
-""" MapChange dataclass. """
+""" ReplicationState dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -17,43 +17,23 @@ import datetime
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class MapChange:
+class ReplicationState:
     """
-    An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively. The geohash5 axis is the 5-character base32 geohash of the element's representative coordinate; relations without a derivable bounding box receive the sentinel 'nogeo' so they still publish onto the UNS tree.
+    The current replication state of the OpenStreetMap minutely diff feed. Published once per poll cycle. The sequence_number and timestamp are parsed from the Java-properties-style state.txt file at https://planet.openstreetmap.org/replication/minute/state.txt.
     
     Attributes:
-        change_type (str)
-        element_type (str)
-        element_id (int)
-        geohash5 (typing.Optional[str])
-        version (int)
-        timestamp (datetime.datetime)
-        changeset_id (int)
-        user_name (typing.Optional[str])
-        user_id (typing.Optional[int])
-        latitude (typing.Optional[float])
-        longitude (typing.Optional[float])
-        tags (str)
         sequence_number (int)
+        timestamp (datetime.datetime)
+        source_url (typing.Optional[str])
     """
     
     
-    change_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="change_type"))
-    element_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_type"))
-    element_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_id"))
-    geohash5: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    version: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
-    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    changeset_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="changeset_id"))
-    user_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_name"))
-    user_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_id"))
-    latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    tags: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tags"))
     sequence_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sequence_number"))
+    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    source_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_url"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'MapChange':
+    def from_serializer_dict(cls, data: dict) -> 'ReplicationState':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -126,7 +106,7 @@ class MapChange:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['MapChange']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['ReplicationState']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -163,13 +143,13 @@ class MapChange:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return MapChange.from_serializer_dict(_record)
+                return ReplicationState.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'MapChange':
+    def create_instance(cls) -> 'ReplicationState':
         """
         Creates an instance of the dataclass with test values.
         
@@ -177,17 +157,7 @@ class MapChange:
             An instance of the dataclass.
         """
         return cls(
-            change_type='etszfwfpjecxalvkejsk',
-            element_type='udqmikpptqspjubfcrkg',
-            element_id=int(38),
-            geohash5='trihytyiamzwysoboodo',
-            version=int(88),
+            sequence_number=int(57),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(68),
-            user_name='iupminodrqjpbarcdsyh',
-            user_id=int(38),
-            latitude=float(79.79775288294415),
-            longitude=float(95.91527798692695),
-            tags='yslnqwxggghfcvyswion',
-            sequence_number=int(57)
+            source_url='hsbvbiyenickwbhusvhm'
         )
