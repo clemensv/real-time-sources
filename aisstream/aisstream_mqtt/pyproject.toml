@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "aisstream-mqtt"
+version = "0.1.0"
+description = "AISstream.io firehose -> MQTT/UNS non-retained bridge"
+authors = ["clemensv"]
+packages = [{include = "aisstream_mqtt"}]
+include = [{ path = "aisstream_mqtt/mid_iso.csv", format = ["sdist", "wheel"] }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+websockets = ">=12.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+azure-identity = ">=1.17.0"
+aisstream_mqtt_producer_data = {path = "../aisstream_mqtt_producer/aisstream_mqtt_producer_data"}
+aisstream_mqtt_producer_mqtt_client = {path = "../aisstream_mqtt_producer/aisstream_mqtt_producer_mqtt_client"}

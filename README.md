@@ -20,6 +20,14 @@ required connection information.
 
 ## Deployment models
 
+> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Two sources —
+> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**
+> and **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**
+> — now ship a second container image (`Dockerfile.mqtt`) that publishes
+> the same firehose into an MQTT 5.0 broker on a non-retained UNS topic
+> tree (QoS 0, `retain=false`, CloudEvents binary binding). The Kafka
+> images and contracts are unchanged.
+
 Every source can be deployed in three ways. The [interactive catalog](https://clemensv.github.io/real-time-sources)
 exposes a one-click deploy button for each supported model:
 

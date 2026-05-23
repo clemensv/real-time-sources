@@ -124,3 +124,52 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template-with-eventhub.json)
+
+---
+
+## MQTT 5.0 / Unified-Namespace feeder (pilot)
+
+A second container image, built from `Dockerfile.mqtt`, publishes the same
+Bluesky firehose into an MQTT 5.0 broker using a Unified-Namespace
+(UNS) topic tree. The Kafka image and contract are unchanged; the MQTT
+sibling lives alongside, sharing nothing but the upstream subscription.
+
+### Topic template
+
+```
+social/intl/bluesky/bluesky/{collection}/{lang}/{did}/{event}
+```
+
+* `{collection}` – AT Protocol NSID, e.g. `app.bsky.feed.post`
+* `{lang}` – record language tag, lower-cased, defaults to `und`
+* `{did}` – author DID (`did:plc:…` colons preserved as-is)
+* `{event}` – literal tail baked per family: `post`, `like`, `repost`,
+  `follow`, `block`, `profile`
+
+The firehose is non-retained: every publish is **QoS 0** with
+`retain=false`. Subscribers must be attached before publishers.
+
+### CloudEvents binding
+
+Binary mode – the CloudEvents attributes (`id`, `source`, `type`,
+`subject`, `time`, `specversion`) ride as MQTT 5 user properties.
+`ContentType` is `application/json`. `subject` equals the author DID.
+
+### Pull & run
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources/bluesky-mqtt:latest
+
+docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 \
+  ghcr.io/clemensv/real-time-sources/bluesky-mqtt:latest
+```
+
+### Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `MQTT_BROKER_URL` | `mqtt://host:port` or `mqtts://host:port` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional broker credentials |
+| `MQTT_ENABLE_TLS` | `true` to force TLS (auto if scheme is `mqtts://`) |
+| `BLUESKY_FIREHOSE_URL` | Override the AT Protocol Jetstream/firehose URL |
+| `BLUESKY_MOCK` | `true` to emit one canned message per family (used by Docker E2E) |

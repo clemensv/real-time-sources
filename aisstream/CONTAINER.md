@@ -124,3 +124,74 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faisstream%2Fazure-template-with-eventhub.json)
+
+
+---
+
+## MQTT 5.0 / Unified-Namespace feeder (pilot)
+
+A second container image, built from `Dockerfile.mqtt`, publishes AIS
+traffic into an MQTT 5.0 broker using a Unified-Namespace topic tree.
+The Kafka image and the existing 23-message Kafka contract are unchanged;
+the MQTT sibling is built on a new `IO.AISstream.mqtt.jstruct`
+schemagroup (`PositionReport`, `ShipStatic`, `AidToNavigation`)
+specifically enriched with the routing axes below. No existing Kafka
+schemas were modified.
+
+### Topic template
+
+```
+maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
+```
+
+| Axis | Meaning |
+|------|---------|
+| `{flag}` | ISO-3166-1 alpha-2 (lower-case) derived from the MMSI MID; `xx` for special MMSIs (AtoN, SAR, …) or unknown MIDs |
+| `{ship_type}` | Kebab bucket: `cargo`, `tanker`, `passenger`, `fishing`, `tug`, `pleasure-craft`, `high-speed`, `pilot`, `sar`, `aton`, `other`, `unknown` |
+| `{geohash5}` | 5-character geohash of the last known position (`00000` if unknown for a static report) |
+| `{mmsi}` | 9-digit MMSI |
+| `{msg_type}` | Literal tail per family: `position-report`, `static`, `aid-to-navigation` |
+
+The firehose is non-retained: every publish is **QoS 0** with
+`retain=false`. CloudEvents binary binding (attributes as MQTT 5 user
+properties); `ContentType` is `application/json`; `subject` equals the
+MMSI.
+
+### Ship-type & position caches
+
+`ShipStatic` (Type 5 / 24) messages populate an in-memory MMSI →
+ship-type cache; subsequent `PositionReport` messages from the same MMSI
+inherit that bucket. Likewise the most recent position is cached so that
+later static reports get a real `geohash5` instead of `00000`. Caches
+are process-local and rebuild from the live stream after every restart.
+
+### MID → ISO mapping
+
+The MID-to-ISO table (`aisstream_mqtt/mid_iso.csv`) is a curated subset
+of the public **ITU-R M.585** Maritime Identification Digits registry
+(vintage `2024-01`). The ITU-R recommendation is openly published and
+the digit→state mapping it contains is factual reference data and not
+subject to copyright. Refresh the CSV when ITU publishes a new revision
+and bump `MID_ISO_VERSION` in `enrichment.py`.
+
+### Pull & run
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources/aisstream-mqtt:latest
+
+docker run --rm \
+  -e MQTT_BROKER_URL=mqtt://broker:1883 \
+  -e AISSTREAM_API_KEY=$AISSTREAM_API_KEY \
+  ghcr.io/clemensv/real-time-sources/aisstream-mqtt:latest
+```
+
+### Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `MQTT_BROKER_URL` | `mqtt://host:port` or `mqtts://host:port` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional broker credentials |
+| `MQTT_ENABLE_TLS` | `true` to force TLS (auto if scheme is `mqtts://`) |
+| `AISSTREAM_API_KEY` | Required for the AISstream.io WebSocket firehose |
+| `AISSTREAM_BBOX` | Optional comma list `lat1,lon1,lat2,lon2` of bounding boxes |
+| `AISSTREAM_MOCK` | `true` to emit one canned message per family (used by Docker E2E) |

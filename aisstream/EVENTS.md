@@ -364,3 +364,33 @@ Single-slot binary message (AIS type 25).
 |----------|-----------|
 | `type` | `IO.AISstream.SingleSlotBinaryMessage` |
 | `source` | `wss://stream.aisstream.io/v0/stream` |
+
+
+---
+
+## MQTT 5.0 / UNS events (pilot)
+
+The MQTT feeder publishes a routing-enriched subset of the AISstream
+firehose into a non-retained UNS topic tree. Topic template:
+
+```
+maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
+```
+
+QoS 0, `retain=false`, CloudEvents binary binding, `subject = mmsi`,
+`ContentType=application/json`.
+
+| `{msg_type}` | CloudEvents `type` | AIS message types collapsed |
+|--------------|--------------------|------------------------------|
+| `position-report` | `IO.AISstream.mqtt.PositionReport` | Class A Types 1/2/3, Class B Type 18, Long-range Type 27 |
+| `static` | `IO.AISstream.mqtt.ShipStatic` | Type 5 (incl. voyage destination/ETA), Type 24 A+B static report |
+| `aid-to-navigation` | `IO.AISstream.mqtt.AidToNavigation` | Type 21 (AtoN) |
+
+Schemas live in the new `IO.AISstream.mqtt.jstruct` schemagroup. They
+are deliberately separate from the existing Kafka schemas: each MQTT
+schema requires the five routing axes (`mmsi`, `flag`, `ship_type`,
+`geohash5`, `msg_type`) as first-class fields so that payload data
+matches what subscribers route on.
+
+Pilot scope note — voyage data (destination, ETA, draught) is folded
+into the `static` family rather than a fourth `voyage` event.

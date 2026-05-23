@@ -3,6 +3,9 @@
   "build": [
     { "dir": "blitzortung", "module": "blitzortung" },
     { "dir": "bluesky", "module": "bluesky" },
+    { "dir": "bluesky", "image": "bluesky-mqtt", "file": "Dockerfile.mqtt", "module": "bluesky_mqtt" },
+    { "dir": "aisstream", "image": "aisstream-kafka", "file": "Dockerfile", "module": "aisstream" },
+    { "dir": "aisstream", "image": "aisstream-mqtt", "file": "Dockerfile.mqtt", "module": "aisstream_mqtt" },
     { "dir": "bfs-odl", "module": "bfs_odl" },
     { "dir": "canada-aqhi", "module": "canada_aqhi" },
     { "dir": "chmi-hydro", "module": "chmi_hydro" },

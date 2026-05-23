@@ -236,3 +236,31 @@ A user profile update.
 | `created_at` | *string* | ISO 8601 timestamp of profile creation |
 | `indexed_at` | *string* | ISO 8601 timestamp of indexing |
 | `seq` | *long* | Firehose sequence number |
+
+
+---
+
+## MQTT 5.0 / UNS events (pilot)
+
+The MQTT feeder publishes the AT Protocol firehose into a non-retained
+UNS topic tree. Topic template:
+
+```
+social/intl/bluesky/bluesky/{collection}/{lang}/{did}/{event}
+```
+
+QoS 0, `retain=false`, CloudEvents binary binding (CE attributes ride as
+MQTT 5 user properties), `ContentType=application/json`, `subject = did`.
+
+| `{event}` | CloudEvents `type` | Description |
+|-----------|--------------------|-------------|
+| `post` | `IO.Bluesky.mqtt.Post` | `app.bsky.feed.post` record |
+| `like` | `IO.Bluesky.mqtt.Like` | `app.bsky.feed.like` record |
+| `repost` | `IO.Bluesky.mqtt.Repost` | `app.bsky.feed.repost` record |
+| `follow` | `IO.Bluesky.mqtt.Follow` | `app.bsky.graph.follow` record |
+| `block` | `IO.Bluesky.mqtt.Block` | `app.bsky.graph.block` record |
+| `profile` | `IO.Bluesky.mqtt.Profile` | `app.bsky.actor.profile` record |
+
+Each payload carries the five routing fields (`did`, `collection`,
+`lang`, plus the record body) so subscribers can filter by topic
+wildcard *and* validate the payload independently.
