@@ -44,7 +44,7 @@ def _build_station(raw: Dict[str, Any]) -> Station:
         number=raw.get("number"),
         shortname=raw.get("shortname"),
         longname=raw.get("longname"),
-        km=raw.get("km") if raw.get("km") is not None else -1,
+        km=raw.get("km"),
         agency=raw.get("agency"),
         longitude=raw.get("longitude") if raw.get("longitude") is not None else -1,
         latitude=raw.get("latitude") if raw.get("latitude") is not None else -1,
@@ -57,8 +57,9 @@ def _build_measurement(station_id: str, raw: Dict[str, Any]) -> CurrentMeasureme
         station_id=station_id,
         timestamp=raw["timestamp"],
         value=raw["value"],
-        stateMnwMhw=raw["stateMnwMhw"],
-        stateNswHsw=raw["stateNswHsw"],
+        stateMnwMhw=raw.get("stateMnwMhw"),
+        stateNswHsw=raw.get("stateNswHsw"),
+        trend=raw.get("trend"),
     )
 
 

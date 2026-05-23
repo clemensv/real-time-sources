@@ -187,8 +187,8 @@ def get_default_topic_mappings_de_wsv_pegelonline_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "de.wsv.pegelonline.mqtt.Station": "de.wsv.pegelonline.mqtt.Station",
-        "de.wsv.pegelonline.mqtt.CurrentMeasurement": "de.wsv.pegelonline.mqtt.CurrentMeasurement",
+        "de.wsv.pegelonline.mqtt.Station": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info",
+        "de.wsv.pegelonline.mqtt.CurrentMeasurement": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level",
     }
 
 
@@ -359,6 +359,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
     async def publish_de_wsv_pegelonline_mqtt_station(self,
         feedurl: str,
         station_id: str,
+        water_shortname: str,
         data: pegelonline_mqtt_producer_data.Station,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -371,17 +372,19 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
+            water_shortname: URI template variable for 'water_shortname'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'de.wsv.pegelonline.mqtt.Station'
+            topic: Optional topic override. If not provided, uses default topic 'hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "de.wsv.pegelonline.mqtt.Station"
+        target_topic = topic if topic is not None else "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
+            "water_shortname": str(water_shortname),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -435,6 +438,7 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
     async def publish_de_wsv_pegelonline_mqtt_current_measurement(self,
         feedurl: str,
         station_id: str,
+        water_shortname: str,
         data: pegelonline_mqtt_producer_data.CurrentMeasurement,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -447,17 +451,19 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
+            water_shortname: URI template variable for 'water_shortname'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'de.wsv.pegelonline.mqtt.CurrentMeasurement'
+            topic: Optional topic override. If not provided, uses default topic 'hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "de.wsv.pegelonline.mqtt.CurrentMeasurement"
+        target_topic = topic if topic is not None else "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
+            "water_shortname": str(water_shortname),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)

@@ -48,7 +48,7 @@ def _build_station(raw: Dict[str, Any]) -> Station:
         number=raw.get("number"),
         shortname=raw.get("shortname"),
         longname=raw.get("longname"),
-        km=raw.get("km") if raw.get("km") is not None else -1,
+        km=raw.get("km"),
         agency=raw.get("agency"),
         longitude=raw.get("longitude") if raw.get("longitude") is not None else -1,
         latitude=raw.get("latitude") if raw.get("latitude") is not None else -1,
@@ -61,9 +61,30 @@ def _build_measurement(station_id: str, raw: Dict[str, Any]) -> CurrentMeasureme
         station_id=station_id,
         timestamp=raw["timestamp"],
         value=raw["value"],
-        stateMnwMhw=raw["stateMnwMhw"],
-        stateNswHsw=raw["stateNswHsw"],
+        stateMnwMhw=raw.get("stateMnwMhw"),
+        stateNswHsw=raw.get("stateNswHsw"),
+        trend=raw.get("trend"),
     )
+
+
+def _water_shortname(raw_station: Dict[str, Any]) -> str:
+    """Pick the URL-safe water shortname carried as AMQP application property.
+
+    Mirrors the helper in ``pegelonline_mqtt`` so SB/EH subscription filters
+    and AMQP routers can route by waterway without cracking the JSON body.
+    """
+    water = raw_station.get("water") or {}
+    raw = (water.get("shortname") or water.get("longname") or "unknown").strip().lower()
+    out_chars = []
+    for ch in raw:
+        if ch.isalnum() or ch in ("-", "_"):
+            out_chars.append(ch)
+        else:
+            out_chars.append("-")
+    safe = "".join(out_chars).strip("-")
+    while "--" in safe:
+        safe = safe.replace("--", "-")
+    return safe or "unknown"
 
 
 def _publish_stations(
@@ -78,6 +99,7 @@ def _publish_stations(
             data=_build_station(station),
             _feedurl=f"{FEED_URL_ROOT}/stations/{station['shortname']}",
             _station_id=station["uuid"],
+            _water_shortname=_water_shortname(station),
         )
 
 
@@ -188,11 +210,13 @@ def feed(
                     if prior is not None and measurement.get("timestamp") == prior.get("timestamp"):
                         continue
                     count += 1
+                    station_meta = station_index.get(station_id) or {}
                     try:
                         producer.send_current_measurement(
                             data=_build_measurement(station_id, measurement),
                             _feedurl=f"{FEED_URL_ROOT}/stations/{station_id}/W/currentmeasurement.json",
                             _station_id=station_id,
+                            _water_shortname=_water_shortname(station_meta),
                         )
                     except Exception as e:  # pylint: disable=broad-except
                         logger.error("Error publishing measurement for %s: %s", station_id, e)

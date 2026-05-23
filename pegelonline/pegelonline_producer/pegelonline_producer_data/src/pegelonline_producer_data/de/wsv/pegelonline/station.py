@@ -18,14 +18,14 @@ from pegelonline_producer_data.de.wsv.pegelonline.water import Water
 @dataclass
 class Station:
     """
-    Schema representing a PEGELONLINE station with location and water body information.
+    WSV PegelOnline gauge installation. Each instance represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from `GET /stations.json` on the PegelOnline REST API v2 (https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json). Emitted as reference data at bridge startup and re-emitted periodically.
     
     Attributes:
         station_id (str)
         number (str)
         shortname (str)
         longname (str)
-        km (float)
+        km (typing.Optional[float])
         agency (str)
         longitude (float)
         latitude (float)
@@ -37,7 +37,7 @@ class Station:
     number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
     shortname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
     longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
-    km: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="km"))
+    km: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="km"))
     agency: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
@@ -168,13 +168,13 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='mrfcihjjrfihrjmamnac',
-            number='urbaadbztraonqqmbfmb',
-            shortname='lreqnymrgdwtomzbjiic',
-            longname='truwphwkdtgsojawpaha',
-            km=float(8.066165175873719),
-            agency='ylvfqnuffyadtobbqnrf',
-            longitude=float(37.718517858588015),
-            latitude=float(65.46958808839561),
+            station_id='axtcvpsuxnojkftuyxih',
+            number='zlgyeivbtobxxgylfgre',
+            shortname='wzxdozkctqeuaxithqhw',
+            longname='ddtqikjhhztnllowlhmd',
+            km=float(30.03655535823242),
+            agency='ofjqnqpklaykrkfibgru',
+            longitude=float(24.732418665915425),
+            latitude=float(66.03976113877803),
             water=None
         )

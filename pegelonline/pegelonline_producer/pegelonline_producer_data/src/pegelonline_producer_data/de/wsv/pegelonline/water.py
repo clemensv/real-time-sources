@@ -17,7 +17,7 @@ import json
 @dataclass
 class Water:
     """
-    Details of the water body associated with the station.
+    Federal waterway / water body the gauge measures, as returned in the nested `water` object of `GET /stations.json` on the PegelOnline REST API v2. Acts as the routing hierarchy for the MQTT Unified Namespace topology.
     
     Attributes:
         shortname (str)
@@ -153,6 +153,6 @@ class Water:
             An instance of the dataclass.
         """
         return cls(
-            shortname='ivwwawxttykdqwdjjuln',
-            longname='dcwfwzhnxwgeudjpczgf'
+            shortname='tktitqguvpexhdckrzpw',
+            longname='ehpfcavnivhgkceagdvd'
         )

@@ -10,29 +10,36 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
+from pegelonline_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
+from pegelonline_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class CurrentMeasurement:
     """
-    Schema representing the current measurement for a PEGELONLINE station.
+    Latest 15-minute water-level reading for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Carries only the W (water-level) timeseries; other timeseries (Q discharge, LT water temperature) are not emitted by this source.
     
     Attributes:
         station_id (str)
-        timestamp (str)
+        timestamp (datetime.datetime)
         value (float)
-        stateMnwMhw (str)
-        stateNswHsw (str)
+        stateMnwMhw (typing.Optional[StateMnwMhwEnum])
+        stateNswHsw (typing.Optional[StateNswHswEnum])
+        trend (typing.Optional[TrendEnum])
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    stateMnwMhw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
-    stateNswHsw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
+    stateMnwMhw: typing.Optional[StateMnwMhwEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
+    stateNswHsw: typing.Optional[StateNswHswEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
+    trend: typing.Optional[TrendEnum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'CurrentMeasurement':
@@ -159,9 +166,10 @@ class CurrentMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='qefqwtzaqefdfshyllrr',
-            timestamp='gptvzflxeonhrryljmgb',
-            value=float(8.88179384919442),
-            stateMnwMhw='rkehjvbfnxcqkezuwmda',
-            stateNswHsw='eucpxhzikqzwnhelcfuh'
+            station_id='adblcgadkupgfhgurodj',
+            timestamp=datetime.datetime.now(datetime.timezone.utc),
+            value=float(6.807940413193414),
+            stateMnwMhw=StateMnwMhwEnum.low,
+            stateNswHsw=StateNswHswEnum.normal,
+            trend=TrendEnum.VALUE_NEG_1
         )

@@ -180,3 +180,60 @@ def test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkacurrentmeasurement(kafka_
         expected_key = "{station_id}".format(station_id=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
+
+def test_de_wsv_pegelonline_kafka_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in De.Wsv.Pegelonline.Kafka produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_wsv_pegelonline_kafka_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DeWsvPegelonlineKafkaEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_Station.create_instance()
+    data2 = Test_CurrentMeasurement.create_instance()
+
+    producer_instance.send_de_wsv_pegelonline_kafka_station(_feedurl = shared_key_value, _station_id = shared_key_value, data = data1)
+    producer_instance.send_de_wsv_pegelonline_kafka_current_measurement(_feedurl = shared_key_value, _station_id = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["de.wsv.pegelonline.kafka.Station", "de.wsv.pegelonline.kafka.CurrentMeasurement"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{station_id}".format(station_id=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
+    consumer.close()

@@ -9,6 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from pegelonline_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
+from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
+from pegelonline_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
+from pegelonline_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
+import datetime
 
 
 class Test_CurrentMeasurement(unittest.TestCase):
@@ -28,11 +32,12 @@ class Test_CurrentMeasurement(unittest.TestCase):
         Create instance of CurrentMeasurement for testing
         """
         instance = CurrentMeasurement(
-            station_id='qefqwtzaqefdfshyllrr',
-            timestamp='gptvzflxeonhrryljmgb',
-            value=float(8.88179384919442),
-            stateMnwMhw='rkehjvbfnxcqkezuwmda',
-            stateNswHsw='eucpxhzikqzwnhelcfuh'
+            station_id='adblcgadkupgfhgurodj',
+            timestamp=datetime.datetime.now(datetime.timezone.utc),
+            value=float(6.807940413193414),
+            stateMnwMhw=StateMnwMhwEnum.low,
+            stateNswHsw=StateNswHswEnum.normal,
+            trend=TrendEnum.VALUE_NEG_1
         )
         return instance
 
@@ -41,7 +46,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'qefqwtzaqefdfshyllrr'
+        test_value = 'adblcgadkupgfhgurodj'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +54,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'gptvzflxeonhrryljmgb'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +62,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(8.88179384919442)
+        test_value = float(6.807940413193414)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -65,7 +70,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test stateMnwMhw property
         """
-        test_value = 'rkehjvbfnxcqkezuwmda'
+        test_value = StateMnwMhwEnum.low
         self.instance.stateMnwMhw = test_value
         self.assertEqual(self.instance.stateMnwMhw, test_value)
     
@@ -73,9 +78,17 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test stateNswHsw property
         """
-        test_value = 'eucpxhzikqzwnhelcfuh'
+        test_value = StateNswHswEnum.normal
         self.instance.stateNswHsw = test_value
         self.assertEqual(self.instance.stateNswHsw, test_value)
+    
+    def test_trend_property(self):
+        """
+        Test trend property
+        """
+        test_value = TrendEnum.VALUE_NEG_1
+        self.instance.trend = test_value
+        self.assertEqual(self.instance.trend, test_value)
     
     def test_to_byte_array_json(self):
         """

@@ -155,8 +155,10 @@ de_wsv_pegelonline_mqtt_station_async:  Callable[[PartitionContext, EventData, C
 
 make test
 
-```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.Station`: PegelOnline station metadata with location and water
-body information.
+```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.Station`: Reference catalog entry for one WSV PegelOnline
+gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret
+CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API
+v2.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -199,8 +201,9 @@ CurrentMeasurement], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.CurrentMeasurement`: PegelOnline current water level
-measurement.
+```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.CurrentMeasurement`: Latest 15-minute water-level reading (W
+timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the
+PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

@@ -147,8 +147,10 @@ Station], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.kafka.Station`: PegelOnline station metadata with location and water
-body information.
+Asynchronous handler hook for `de.wsv.pegelonline.kafka.Station`: Reference catalog entry for one WSV PegelOnline gauge
+installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret
+CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API
+v2.
 
 ## Generated Producer Classes
 
@@ -211,8 +213,9 @@ CloudEvent, CurrentMeasurement], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.kafka.CurrentMeasurement`: PegelOnline current water level
-measurement.
+Asynchronous handler hook for `de.wsv.pegelonline.kafka.CurrentMeasurement`: Latest 15-minute water-level reading (W
+timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the
+PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.
 
 ## Generated Producer Classes
 
@@ -293,8 +296,10 @@ async def send_de_wsv_pegelonline_kafka_station(
 
 
 
-Send a single `de.wsv.pegelonline.kafka.Station` message. PegelOnline station metadata with location and water body
-information.Args:
+Send a single `de.wsv.pegelonline.kafka.Station` message. Reference catalog entry for one WSV PegelOnline gauge
+installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret
+CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API
+v2.Args:
 
 - `record`: The Kafka record.
 
@@ -419,7 +424,9 @@ async def send_de_wsv_pegelonline_kafka_current_measurement(
 
 
 
-Send a single `de.wsv.pegelonline.kafka.CurrentMeasurement` message. PegelOnline current water level measurement.Args:
+Send a single `de.wsv.pegelonline.kafka.CurrentMeasurement` message. Latest 15-minute water-level reading (W timeseries)
+for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API
+v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.Args:
 
 - `record`: The Kafka record.
 

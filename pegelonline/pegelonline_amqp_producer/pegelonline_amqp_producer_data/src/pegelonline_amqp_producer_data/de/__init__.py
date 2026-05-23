@@ -1,3 +1,3 @@
-from .wsv import CurrentMeasurement, Water, Station
+from .wsv import StateMnwMhwEnum, StateNswHswEnum, TrendEnum, CurrentMeasurement, Water, Station
 
-__all__ = ["CurrentMeasurement", "Water", "Station"]
+__all__ = ["StateMnwMhwEnum", "StateNswHswEnum", "TrendEnum", "CurrentMeasurement", "Water", "Station"]
