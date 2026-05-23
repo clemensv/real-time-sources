@@ -2,6 +2,49 @@
 
 This container polls the public Wallonia ISSeP Opendatasoft air quality API and emits CloudEvents to Kafka in structured mode with `application/cloudevents+json`.
 
+## MQTT/UNS transport
+
+The **MQTT variant** (`Dockerfile.mqtt`) publishes retained, QoS-1,
+binary-mode CloudEvents into a Unified-Namespace topic tree:
+
+```
+aq/be/wallonia/wallonia-issep/{configuration_id}/info
+aq/be/wallonia/wallonia-issep/{configuration_id}/observation
+```
+
+### Wildcard subscriptions
+
+| Pattern | What it captures |
+|---------|-----------------|
+| `aq/be/wallonia/wallonia-issep/#` | All air-quality events for Wallonia ISSeP |
+| `aq/be/wallonia/wallonia-issep/+/info` | All sensor configuration info events |
+| `aq/be/wallonia/wallonia-issep/+/observation` | All observation events |
+
+### Environment variables (MQTT)
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `MQTT_BROKER_URL` | Yes | empty | MQTT broker URL, e.g. `mqtt://broker:1883` or `mqtts://broker:8883` |
+| `MQTT_HOST` | No | `localhost` | Broker host (used when `MQTT_BROKER_URL` is empty) |
+| `MQTT_PORT` | No | `1883` | Broker port |
+| `MQTT_USERNAME` | No | unset | MQTT username |
+| `MQTT_PASSWORD` | No | unset | MQTT password |
+| `MQTT_TLS` | No | `false` | Enable TLS |
+| `MQTT_CLIENT_ID` | No | auto | MQTT client ID |
+| `MQTT_CONTENT_MODE` | No | `binary` | CloudEvents content mode (`binary` or `structured`) |
+| `POLLING_INTERVAL` | No | `600` | Poll interval in seconds |
+| `STATE_FILE` | No | `~/.wallonia_issep_mqtt_state.json` | Deduplication state file |
+| `ONCE_MODE` | No | `false` | Exit after first poll cycle (for testing) |
+
+### Docker example (MQTT)
+
+```powershell
+docker run --rm `
+  -e MQTT_BROKER_URL=mqtt://host.docker.internal:1883 `
+  -e POLLING_INTERVAL=300 `
+  wallonia-issep-mqtt:latest
+```
+
 ## Environment variables
 
 | Variable | Required | Default | Description |

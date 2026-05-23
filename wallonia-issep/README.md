@@ -47,6 +47,25 @@ Then start the bridge:
 python -m wallonia_issep feed --kafka-bootstrap-servers localhost:9092 --kafka-enable-tls false
 ```
 
+## Running the MQTT/UNS bridge
+
+Generate the MQTT producer code:
+
+```powershell
+.\generate_mqtt_producer.ps1
+pip install wallonia_issep_mqtt_producer\wallonia_issep_mqtt_producer_data
+pip install wallonia_issep_mqtt_producer\wallonia_issep_mqtt_producer_mqtt_client
+pip install -e wallonia_issep_mqtt
+```
+
+Start the MQTT bridge:
+
+```powershell
+python -m wallonia_issep_mqtt feed --broker-url mqtt://localhost:1883
+```
+
+Topic tree: `aq/be/wallonia/wallonia-issep/{configuration_id}/{info|observation}`
+
 ## Upstream links
 
 - Dataset: `https://www.odwb.be/explore/dataset/last-data-capteurs-qualite-de-l-air-issep/`

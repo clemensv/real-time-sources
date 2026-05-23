@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "wallonia_issep_mqtt"
+version = "0.1.0"
+description = "MQTT/UNS feeder for the Wallonia ISSeP air quality sensor network."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "wallonia_issep_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+requests = ">=2.32.3"
+wallonia_issep = { path = ".." }
+wallonia_issep_mqtt_producer_data = { path = "../wallonia_issep_mqtt_producer/wallonia_issep_mqtt_producer_data" }
+wallonia_issep_mqtt_producer_mqtt_client = { path = "../wallonia_issep_mqtt_producer/wallonia_issep_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+wallonia-issep-mqtt = "wallonia_issep_mqtt.app:main"

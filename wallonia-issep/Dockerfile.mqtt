@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/wallonia-issep"
+LABEL org.opencontainers.image.title="Wallonia ISSeP Air Quality → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the Wallonia ISSeP air quality sensor network (via ODWB Opendatasoft) and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (aq/be/wallonia/wallonia-issep/{configuration_id}/...)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/wallonia-issep/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./wallonia_issep_mqtt_producer/wallonia_issep_mqtt_producer_data \
+ && pip install --no-cache-dir ./wallonia_issep_mqtt_producer/wallonia_issep_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./wallonia_issep_producer/wallonia_issep_producer_data \
+ && pip install --no-cache-dir ./wallonia_issep_producer/wallonia_issep_producer_kafka_producer \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./wallonia_issep_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "wallonia_issep_mqtt", "feed"]
