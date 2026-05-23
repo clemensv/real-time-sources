@@ -245,6 +245,33 @@ check verdict in the PR body alongside the three expert reviews. A
 new-source PR that has not been checked against this skill must not
 be merged, even if the three expert reviews have signed off.
 
+### Agent definition of done for new-source tasks
+
+When the coding agent is tasked with creating a new source, the task
+is **not done** — and must not be reported as done to the user — until
+the agent has itself walked, end-to-end, the full pre-merge checklist
+against its own work:
+
+1. The three mandatory expert reviews (xRegistry Expert,
+   JSON Structure Expert, Avro Schema Expert) have been dispatched
+   against the final state of the manifest and generated artifacts,
+   and every blocker raised has been addressed (or explicitly
+   justified) and re-reviewed.
+2. The `container-and-delivery` skill has been walked end-to-end
+   against the source as it stands on the branch. Every checklist
+   item the skill defines (Dockerfile, CONTAINER.md, ARM templates,
+   KQL + KQL Optimizer review, optional Fabric assets, EVENTS.md,
+   root catalog entry, Docker E2E) must be satisfied or have a
+   recorded justification.
+3. The agent has captured the verdicts from steps 1 and 2 in the PR
+   body before handing back to the user.
+
+Reporting a new-source task as done while any of these reviews are
+outstanding, deferred, or known to be failing is a process violation.
+If the agent cannot complete a review (e.g. an expert agent is
+unavailable, or the Docker E2E cannot run locally), it must surface
+that explicitly as an open item rather than mark the task done.
+
 ## Things That Are Not Allowed
 
 - Hand-editing generated producer code.
@@ -269,6 +296,10 @@ be merged, even if the three expert reviews have signed off.
   having signed off.
 - Merging a new-source PR without a completed check against the
   `container-and-delivery` skill recorded in the PR body.
+- Reporting a new-source task as done before the agent has itself
+  completed the three mandatory expert reviews **and** the
+  `container-and-delivery` skill walkthrough against its own work,
+  with the verdicts recorded in the PR body.
 
 ## Real Bugs Are Blockers — Never Gloss Over Them
 
