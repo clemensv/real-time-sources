@@ -86,6 +86,60 @@ def sequence_to_url(seq: int, base_url: str = DIFF_BASE_URL) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Geohash5 (mirrors aisstream_mqtt.enrichment.geohash5)
+# ---------------------------------------------------------------------------
+
+_GEOHASH_ALPHABET = "0123456789bcdefghjkmnpqrstuvwxyz"
+
+
+def _geohash5(latitude: Optional[float], longitude: Optional[float]) -> str:
+    """Return the 5-character base32 geohash, or 'nogeo' if unresolvable.
+
+    OSM ways and relations do not carry coordinates directly; nodes do.
+    We emit ``'nogeo'`` whenever a coordinate is missing so that downstream
+    MQTT topic placeholders always resolve to a fixed-shape lowercase ASCII
+    segment (never empty, never with a slash).
+    """
+    if latitude is None or longitude is None:
+        return "nogeo"
+    try:
+        lat = float(latitude)
+        lon = float(longitude)
+    except (TypeError, ValueError):
+        return "nogeo"
+    if not (-90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0):
+        return "nogeo"
+    precision = 5
+    lat_range = [-90.0, 90.0]
+    lon_range = [-180.0, 180.0]
+    bits: list[int] = []
+    even = True
+    while len(bits) < precision * 5:
+        if even:
+            mid = (lon_range[0] + lon_range[1]) / 2
+            if lon >= mid:
+                bits.append(1)
+                lon_range[0] = mid
+            else:
+                bits.append(0)
+                lon_range[1] = mid
+        else:
+            mid = (lat_range[0] + lat_range[1]) / 2
+            if lat >= mid:
+                bits.append(1)
+                lat_range[0] = mid
+            else:
+                bits.append(0)
+                lat_range[1] = mid
+        even = not even
+    out = []
+    for i in range(0, len(bits), 5):
+        idx = (bits[i] << 4) | (bits[i + 1] << 3) | (bits[i + 2] << 2) | (bits[i + 3] << 1) | bits[i + 4]
+        out.append(_GEOHASH_ALPHABET[idx])
+    return "".join(out)
+
+
+# ---------------------------------------------------------------------------
 # OsmChange XML parsing
 # ---------------------------------------------------------------------------
 
@@ -132,6 +186,7 @@ def parse_osmchange_xml(xml_bytes: bytes, sequence_number: int) -> list[dict[str
                 "change_type": change_type,
                 "element_type": element_type,
                 "element_id": int(elem.get("id", "0")),
+                "geohash5": _geohash5(latitude, longitude),
                 "version": int(elem.get("version", "0")),
                 "timestamp": ts,
                 "changeset_id": int(elem.get("changeset", "0")),
@@ -288,6 +343,7 @@ class OsmDiffsBridge:
         state_data = ReplicationState(
             sequence_number=current_seq,
             timestamp=current_ts,
+            source_url=sequence_to_url(current_seq, self._diff_base_url),
         )
         self._state_producer.send_org_open_street_map_diffs_replication_state(
             data=state_data,

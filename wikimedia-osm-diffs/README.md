@@ -4,7 +4,15 @@
 
 **OpenStreetMap Minutely Diffs Bridge** polls the OSM replication feed and
 forwards every element change (node, way, relation creates, modifies,
-deletes) to Kafka as [CloudEvents](https://cloudevents.io/).
+deletes) to Kafka or MQTT as [CloudEvents](https://cloudevents.io/).
+
+A second container variant (`Dockerfile.mqtt` / `wikimedia-osm-diffs-mqtt`)
+publishes the same stream to MQTT 5.0 as a non-retained QoS-0 firehose
+split into three topic families (`node`, `way`, `relation`) under
+`osm/intl/wikimedia/wikimedia-osm-diffs/{element_type}/{geohash5}/{element_id}/change`,
+plus a retained replication-state snapshot under
+`osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/replication-state`.
+See [CONTAINER.md](CONTAINER.md#mqttuns-variant-dockerfilemqtt) for details.
 
 ## Data Source
 

@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from wikimedia_osm_diffs_producer_data.replicationstate import ReplicationState
+from wikimedia_osm_diffs_mqtt_producer_data.replicationstate import ReplicationState
 import datetime
 
 
@@ -29,9 +29,9 @@ class Test_ReplicationState(unittest.TestCase):
         Create instance of ReplicationState for testing
         """
         instance = ReplicationState(
-            sequence_number=int(24),
+            sequence_number=int(57),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            source_url='wjcdlgddtyzrynwsankg'
+            source_url='hsbvbiyenickwbhusvhm'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_ReplicationState(unittest.TestCase):
         """
         Test sequence_number property
         """
-        test_value = int(24)
+        test_value = int(57)
         self.instance.sequence_number = test_value
         self.assertEqual(self.instance.sequence_number, test_value)
     
@@ -56,7 +56,7 @@ class Test_ReplicationState(unittest.TestCase):
         """
         Test source_url property
         """
-        test_value = 'wjcdlgddtyzrynwsankg'
+        test_value = 'hsbvbiyenickwbhusvhm'
         self.instance.source_url = test_value
         self.assertEqual(self.instance.source_url, test_value)
     

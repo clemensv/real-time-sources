@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./wikimedia_osm_diffs_mqtt_producer_data
+pip install ./wikimedia_osm_diffs_mqtt_producer_mqtt_client
