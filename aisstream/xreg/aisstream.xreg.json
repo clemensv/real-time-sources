@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/IO.AISstream"
       ]
+    },
+    "IO.AISstream.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}",
+          "qos": 0,
+          "retain": false
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/IO.AISstream.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -438,6 +459,86 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage"
+        }
+      }
+    },
+    "IO.AISstream.mqtt": {
+      "envelope": "CloudEvents/1.0",
+      "messages": {
+        "IO.AISstream.mqtt.PositionReport": {
+          "messageid": "IO.AISstream.mqtt.PositionReport.mqtt",
+          "name": "PositionReport",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.mqtt.PositionReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.PositionReport"
+        },
+        "IO.AISstream.mqtt.ShipStatic": {
+          "messageid": "IO.AISstream.mqtt.ShipStatic.mqtt",
+          "name": "ShipStatic",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.mqtt.ShipStatic"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.ShipStatic"
+        },
+        "IO.AISstream.mqtt.AidToNavigation": {
+          "messageid": "IO.AISstream.mqtt.AidToNavigation.mqtt",
+          "name": "AidToNavigation",
+          "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.mqtt.AidToNavigation"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "protocoloptions": {
+            "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation",
+            "qos": 0,
+            "retain": false
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.AidToNavigation"
         }
       }
     }
@@ -2166,6 +2267,319 @@
                   }
                 },
                 "$id": "https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage"
+              }
+            }
+          }
+        }
+      }
+    },
+    "IO.AISstream.mqtt.jstruct": {
+      "format": "JsonStructure/draft-02",
+      "schemas": {
+        "IO.AISstream.mqtt.PositionReport": {
+          "name": "PositionReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "PositionReport",
+                "description": "Position report (Type 1/2/3/4/9/18/19/27) projected onto the UNS axes.",
+                "required": [
+                  "mmsi",
+                  "flag",
+                  "ship_type",
+                  "geohash5",
+                  "msg_type",
+                  "user_id",
+                  "latitude",
+                  "longitude",
+                  "message_id"
+                ],
+                "properties": {
+                  "mmsi": {
+                    "type": "string",
+                    "pattern": "^[0-9]{9}$",
+                    "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
+                  },
+                  "flag": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$|^xx$",
+                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits."
+                  },
+                  "ship_type": {
+                    "type": "string",
+                    "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'."
+                  },
+                  "geohash5": {
+                    "type": "string",
+                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
+                    "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen."
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "enum": [
+                      "position-report",
+                      "static",
+                      "aid-to-navigation"
+                    ],
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                  },
+                  "user_id": {
+                    "type": "int32",
+                    "description": "Source AIS UserID (numeric MMSI, 9-digit)."
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Reported latitude in WGS-84 decimal degrees."
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Reported longitude in WGS-84 decimal degrees."
+                  },
+                  "sog": {
+                    "type": "double",
+                    "description": "Speed over ground in knots (0..102.2)."
+                  },
+                  "cog": {
+                    "type": "double",
+                    "description": "Course over ground in degrees (0..359.9)."
+                  },
+                  "true_heading": {
+                    "type": "int32",
+                    "description": "True heading in degrees (0..359, 511 = not available)."
+                  },
+                  "navigational_status": {
+                    "type": "int32",
+                    "description": "ITU navigation status code (0..15)."
+                  },
+                  "rate_of_turn": {
+                    "type": "int32",
+                    "description": "Rate of turn in AIS-encoded units."
+                  },
+                  "position_accuracy": {
+                    "type": "boolean",
+                    "description": "True if the reported position is high accuracy (DGPS)."
+                  },
+                  "timestamp": {
+                    "type": "int32",
+                    "description": "AIS report timestamp seconds-of-minute (0..59, 60..63 = special)."
+                  },
+                  "raim": {
+                    "type": "boolean",
+                    "description": "RAIM (Receiver Autonomous Integrity Monitoring) flag."
+                  },
+                  "message_id": {
+                    "type": "int32",
+                    "description": "Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27)."
+                  }
+                },
+                "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/PositionReport"
+              }
+            }
+          }
+        },
+        "IO.AISstream.mqtt.ShipStatic": {
+          "name": "ShipStatic",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "ShipStatic",
+                "description": "Static and voyage-related data (Type 5 ShipStaticData / Type 24 StaticDataReport).",
+                "required": [
+                  "mmsi",
+                  "flag",
+                  "ship_type",
+                  "geohash5",
+                  "msg_type",
+                  "user_id",
+                  "name",
+                  "ship_type_code",
+                  "message_id"
+                ],
+                "properties": {
+                  "mmsi": {
+                    "type": "string",
+                    "pattern": "^[0-9]{9}$",
+                    "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
+                  },
+                  "flag": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$|^xx$",
+                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits."
+                  },
+                  "ship_type": {
+                    "type": "string",
+                    "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'."
+                  },
+                  "geohash5": {
+                    "type": "string",
+                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
+                    "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen."
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "enum": [
+                      "position-report",
+                      "static",
+                      "aid-to-navigation"
+                    ],
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                  },
+                  "user_id": {
+                    "type": "int32",
+                    "description": "Source AIS UserID (numeric MMSI, 9-digit)."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Vessel name as broadcast (max 20 chars, trimmed of AIS '@' padding)."
+                  },
+                  "call_sign": {
+                    "type": "string",
+                    "description": "Radio call sign as broadcast (max 7 chars)."
+                  },
+                  "imo_number": {
+                    "type": "int32",
+                    "description": "IMO number (7-digit). 0 if not assigned."
+                  },
+                  "ship_type_code": {
+                    "type": "int32",
+                    "description": "Raw ITU-R M.1371 ship type code (0..99)."
+                  },
+                  "destination": {
+                    "type": "string",
+                    "description": "Voyage destination string (max 20 chars). Empty for Type 24."
+                  },
+                  "eta": {
+                    "type": "string",
+                    "description": "Voyage ETA as ISO-8601 string, derived from AIS month/day/hour/minute. Empty if absent."
+                  },
+                  "draught": {
+                    "type": "double",
+                    "description": "Maximum present static draught in metres. 0.0 if not provided."
+                  },
+                  "dim_to_bow": {
+                    "type": "int32",
+                    "description": "Distance from reference point to bow in metres."
+                  },
+                  "dim_to_stern": {
+                    "type": "int32",
+                    "description": "Distance from reference point to stern in metres."
+                  },
+                  "dim_to_port": {
+                    "type": "int32",
+                    "description": "Distance from reference point to port side in metres."
+                  },
+                  "dim_to_starboard": {
+                    "type": "int32",
+                    "description": "Distance from reference point to starboard side in metres."
+                  },
+                  "message_id": {
+                    "type": "int32",
+                    "description": "Original ITU-R M.1371 message ID (5 or 24)."
+                  }
+                },
+                "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/ShipStatic"
+              }
+            }
+          }
+        },
+        "IO.AISstream.mqtt.AidToNavigation": {
+          "name": "AidToNavigation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "AidToNavigation",
+                "description": "Aid-to-Navigation report (Type 21).",
+                "required": [
+                  "mmsi",
+                  "flag",
+                  "ship_type",
+                  "geohash5",
+                  "msg_type",
+                  "user_id",
+                  "name",
+                  "type",
+                  "latitude",
+                  "longitude",
+                  "message_id"
+                ],
+                "properties": {
+                  "mmsi": {
+                    "type": "string",
+                    "pattern": "^[0-9]{9}$",
+                    "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
+                  },
+                  "flag": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$|^xx$",
+                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits."
+                  },
+                  "ship_type": {
+                    "type": "string",
+                    "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'."
+                  },
+                  "geohash5": {
+                    "type": "string",
+                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
+                    "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen."
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "enum": [
+                      "position-report",
+                      "static",
+                      "aid-to-navigation"
+                    ],
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                  },
+                  "user_id": {
+                    "type": "int32",
+                    "description": "Source AIS UserID for the AtoN station (9-digit MMSI)."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "AtoN name as broadcast."
+                  },
+                  "type": {
+                    "type": "int32",
+                    "description": "AtoN type code (0..31) per ITU-R M.1371."
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Reported latitude in WGS-84 decimal degrees."
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Reported longitude in WGS-84 decimal degrees."
+                  },
+                  "off_position": {
+                    "type": "boolean",
+                    "description": "True if the AtoN is reported off its assigned position."
+                  },
+                  "virtual_atoN": {
+                    "type": "boolean",
+                    "description": "True if this is a virtual AtoN broadcast by a base station."
+                  },
+                  "message_id": {
+                    "type": "int32",
+                    "description": "Original ITU-R M.1371 message ID (21)."
+                  }
+                },
+                "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/AidToNavigation"
               }
             }
           }

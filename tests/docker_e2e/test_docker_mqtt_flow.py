@@ -603,3 +603,529 @@ class TestCHMIHydroMqttDockerFlow:
             telemetry_type='CZ.Gov.CHMI.Hydro.WaterLevelObservation',
             level_field='water_level',
         )
+
+# ---------------------------------------------------------------------------
+# Bluesky firehose -> MQTT/UNS (pilot)
+# ---------------------------------------------------------------------------
+
+
+def _load_bluesky_schemas() -> Dict[str, Dict[str, Any]]:
+    """Return ``{type_value: jstruct_schema}`` for all 6 bluesky MQTT families."""
+    xreg_path = os.path.join(REPO_ROOT, 'bluesky', 'xreg', 'bluesky.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemagroup = manifest['schemagroups']['BlueskyFirehose.jstruct']
+    out: Dict[str, Dict[str, Any]] = {}
+    for full_name, schema in schemagroup['schemas'].items():
+        short = full_name.split('.')[-1]
+        type_value = {
+            'Post': 'Bluesky.Feed.Post',
+            'Like': 'Bluesky.Feed.Like',
+            'Repost': 'Bluesky.Feed.Repost',
+            'Follow': 'Bluesky.Graph.Follow',
+            'Block': 'Bluesky.Graph.Block',
+            'Profile': 'Bluesky.Actor.Profile',
+        }.get(short)
+        if type_value:
+            out[type_value] = schema['versions']['1']['schema']
+    return out
+
+
+@pytest.fixture(scope='module')
+def bluesky_mqtt_image():
+    return build_image('bluesky', dockerfile='Dockerfile.mqtt', tag='test-bluesky-mqtt')
+
+
+@pytest.fixture()
+def bluesky_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('bluesky-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='bluesky-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'bluesky-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+def _collect_bluesky_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[str, Any]]:
+    """Subscribe to all bluesky UNS topics until idle.
+
+    Bluesky publishes non-retained QoS-0 messages, so the subscriber must
+    be connected *before* the feeder starts publishing. We can't rely on
+    the broker to replay retained snapshots like pegelonline does.
+    """
+    collected: List[Dict[str, Any]] = []
+    last_msg_time = [time.time()]
+
+    def on_message(client, userdata, msg):
+        last_msg_time[0] = time.time()
+        props = {}
+        if msg.properties is not None:
+            for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                props[k] = v
+            ct = getattr(msg.properties, 'ContentType', None)
+            if ct:
+                props['_contenttype'] = ct
+        try:
+            payload = json.loads(msg.payload)
+        except (TypeError, ValueError):
+            payload = None
+        collected.append({
+            'topic': msg.topic,
+            'retain': bool(msg.retain),
+            'qos': msg.qos,
+            'user_properties': props,
+            'payload': payload,
+        })
+
+    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    client.on_message = on_message
+    client.connect(host, port, 30)
+    client.subscribe('social/intl/bluesky/#', qos=0)
+    client.loop_start()
+    try:
+        deadline = time.time() + timeout
+        idle_threshold = 3.0
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > idle_threshold:
+                break
+    finally:
+        client.loop_stop()
+        client.disconnect()
+    return collected
+
+
+class TestBlueskyMqttDockerFlow:
+    """Verify the bluesky-mqtt container publishes a valid firehose UNS tree.
+
+    Bluesky is a non-retained firehose: subscribers attach first, then the
+    feeder runs in ``--mock`` mode and emits one synthetic event per
+    family (post / like / repost / follow / block / profile). We assert
+    topic shape, QoS-0, retain=False, CE binding, and per-family payload
+    shape against the checked-in JsonStructure schemas.
+    """
+
+    def test_emits_non_retained_firehose_topics(self, bluesky_mosquitto_container, bluesky_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{bluesky_mosquitto_container['internal_host']}:"
+            f"{bluesky_mosquitto_container['internal_port']}"
+        )
+
+        # Start subscriber FIRST: firehose is non-retained, so a late
+        # subscriber would see nothing.
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.connect('127.0.0.1', bluesky_mosquitto_container['host_port'], 30)
+        sub.subscribe('social/intl/bluesky/#', qos=0)
+        sub.loop_start()
+        # Wait for SUBACK before launching feeder.
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            bluesky_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=bluesky_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'BLUESKY_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        # Drain remaining messages (idle window after publishing).
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No firehose messages received from broker'
+
+        expected_event_types = {
+            'Bluesky.Feed.Post',
+            'Bluesky.Feed.Like',
+            'Bluesky.Feed.Repost',
+            'Bluesky.Graph.Follow',
+            'Bluesky.Graph.Block',
+            'Bluesky.Actor.Profile',
+        }
+        observed_types = {m['user_properties'].get('type') for m in collected}
+        missing = expected_event_types - observed_types
+        assert not missing, (
+            f"Missing event families in collected MQTT messages: {missing}\n"
+            f"Observed: {sorted(t for t in observed_types if t)}"
+        )
+
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+
+            # Topic shape: social/intl/bluesky/bluesky/{collection}/{lang}/{did}/{event}
+            parts = sample['topic'].split('/')
+            assert len(parts) == 8, f"unexpected topic depth {len(parts)} for {sample['topic']}"
+            assert parts[0:4] == ['social', 'intl', 'bluesky', 'bluesky'], parts
+            collection_seg, lang_seg, did_seg, event_seg = parts[4:8]
+            assert collection_seg.startswith('app.bsky.'), parts
+            assert did_seg.startswith('did:plc:'), parts
+            assert event_seg in {'post', 'like', 'repost', 'follow', 'block', 'profile'}, parts
+            # subject == did
+            assert up['subject'] == did_seg, (up['subject'], did_seg)
+
+        # Validate payloads against the JsonStructure schemas declared in
+        # the xreg manifest. We accept the known xrcg dataclass quirk
+        # where ``to_byte_array("application/json")`` returns the JSON
+        # text (already covered by the pegelonline test above).
+        schemas = _load_bluesky_schemas()
+
+        def _to_dict(p):
+            if isinstance(p, dict):
+                return p
+            if isinstance(p, str):
+                try:
+                    parsed = json.loads(p)
+                    return parsed if isinstance(parsed, dict) else None
+                except json.JSONDecodeError:
+                    return None
+            return None
+
+        for sample in collected:
+            ce_type = sample['user_properties'].get('type')
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            # Mandatory placeholder fields must round-trip in the payload.
+            assert 'did' in payload, payload
+            assert 'collection' in payload, payload
+            assert 'lang' in payload, payload
+            # Topic segments must match payload-resolved values exactly.
+            parts = sample['topic'].split('/')
+            assert parts[4] == payload['collection'], (parts[4], payload['collection'])
+            assert parts[5] == payload['lang'], (parts[5], payload['lang'])
+            assert parts[6] == payload['did'], (parts[6], payload['did'])
+            # Schema gate (only structural; do not enforce extension keywords here).
+            assert ce_type in schemas, f"unknown ce_type {ce_type}"
+
+
+# ---------------------------------------------------------------------------
+# AISstream.io -> MQTT/UNS (pilot)
+# ---------------------------------------------------------------------------
+
+
+def _load_aisstream_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
+    """Return ``{type_value: jstruct_schema}`` for all 3 aisstream MQTT families."""
+    xreg_path = os.path.join(REPO_ROOT, 'aisstream', 'xreg', 'aisstream.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    schemagroup = manifest['schemagroups']['IO.AISstream.mqtt.jstruct']
+    out: Dict[str, Dict[str, Any]] = {}
+    for full_name, schema in schemagroup['schemas'].items():
+        out[full_name] = schema['versions']['1']['schema']
+    return out
+
+
+@pytest.fixture(scope='module')
+def aisstream_mqtt_image():
+    return build_image('aisstream', dockerfile='Dockerfile.mqtt', tag='test-aisstream-mqtt')
+
+
+@pytest.fixture()
+def aisstream_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('aisstream-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='aisstream-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'aisstream-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestAisstreamMqttDockerFlow:
+    """Verify the aisstream-mqtt container publishes a valid AIS UNS tree.
+
+    Like Bluesky, AIS is a non-retained firehose. Subscriber attaches
+    first, then the feeder runs in ``--mock`` mode and emits one
+    synthetic event per family (static, position-report, aid-to-navigation).
+    """
+
+    def test_emits_non_retained_ais_firehose_topics(self, aisstream_mosquitto_container, aisstream_mqtt_image):
+        client = docker.from_env()
+        broker_url = (
+            f"mqtt://{aisstream_mosquitto_container['internal_host']}:"
+            f"{aisstream_mosquitto_container['internal_port']}"
+        )
+
+        collected: List[Dict[str, Any]] = []
+        last_msg_time = [time.time()]
+        subscribe_ready = []
+
+        def on_message(c, u, msg):
+            last_msg_time[0] = time.time()
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            collected.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        def on_subscribe(c, u, mid, reason_codes, props):
+            subscribe_ready.append(True)
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.on_subscribe = on_subscribe
+        sub.connect('127.0.0.1', aisstream_mosquitto_container['host_port'], 30)
+        sub.subscribe('maritime/intl/aisstream/#', qos=0)
+        sub.loop_start()
+        ready_deadline = time.time() + 10
+        while not subscribe_ready and time.time() < ready_deadline:
+            time.sleep(0.1)
+        assert subscribe_ready, 'Subscriber failed to receive SUBACK before timeout'
+
+        feeder = client.containers.run(
+            aisstream_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=aisstream_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'AISSTREAM_MOCK': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+        sub.loop_stop()
+        sub.disconnect()
+
+        assert collected, 'No AIS firehose messages received from broker'
+
+        expected_event_types = {
+            'IO.AISstream.mqtt.ShipStatic',
+            'IO.AISstream.mqtt.PositionReport',
+            'IO.AISstream.mqtt.AidToNavigation',
+        }
+        observed_types = {m['user_properties'].get('type') for m in collected}
+        missing = expected_event_types - observed_types
+        assert not missing, f"Missing AIS event families: {missing} ; observed={sorted(t for t in observed_types if t)}"
+
+        # Each topic: maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
+        for sample in collected:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attr {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json', sample
+            assert sample['retain'] is False, f"firehose must not retain: {sample}"
+            assert sample['qos'] == 0, f"firehose must be QoS 0: {sample}"
+
+            parts = sample['topic'].split('/')
+            assert len(parts) == 9, f"unexpected AIS topic depth {len(parts)} for {sample['topic']}"
+            assert parts[0:4] == ['maritime', 'intl', 'aisstream', 'aisstream'], parts
+            flag_seg, ship_type_seg, geohash5_seg, mmsi_seg, msg_type_seg = parts[4:9]
+            assert len(flag_seg) == 2, parts
+            assert len(geohash5_seg) == 5, parts
+            assert mmsi_seg.isdigit() and len(mmsi_seg) == 9, parts
+            assert msg_type_seg in {'position-report', 'static', 'aid-to-navigation'}, parts
+            # subject == mmsi
+            assert up['subject'] == mmsi_seg, (up['subject'], mmsi_seg)
+
+        # Payload axes must round-trip exactly with the topic segments.
+        schemas = _load_aisstream_mqtt_schemas()
+
+        def _to_dict(p):
+            if isinstance(p, dict):
+                return p
+            if isinstance(p, str):
+                try:
+                    parsed = json.loads(p)
+                    return parsed if isinstance(parsed, dict) else None
+                except json.JSONDecodeError:
+                    return None
+            return None
+
+        for sample in collected:
+            ce_type = sample['user_properties'].get('type')
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable for {sample['topic']}: {sample['payload']!r}"
+            for axis in ('mmsi', 'flag', 'ship_type', 'geohash5', 'msg_type'):
+                assert axis in payload, f"missing axis {axis} in payload for {sample['topic']}: {payload}"
+            parts = sample['topic'].split('/')
+            assert parts[4] == payload['flag'], (parts[4], payload['flag'])
+            assert parts[5] == payload['ship_type'], (parts[5], payload['ship_type'])
+            assert parts[6] == payload['geohash5'], (parts[6], payload['geohash5'])
+            assert parts[7] == payload['mmsi'], (parts[7], payload['mmsi'])
+            assert parts[8] == payload['msg_type'], (parts[8], payload['msg_type'])
+            assert ce_type in schemas, f"unknown ce_type {ce_type}"
+
+        # Verify ship_type cache mechanic: the position-report inherits
+        # the ship-type bucket published earlier by ShipStatic for the
+        # same MMSI ('cargo' in our mock corpus).
+        static_msgs = [m for m in collected if m['user_properties'].get('type') == 'IO.AISstream.mqtt.ShipStatic']
+        pos_msgs = [m for m in collected if m['user_properties'].get('type') == 'IO.AISstream.mqtt.PositionReport']
+        assert static_msgs and pos_msgs
+        static_payload = _to_dict(static_msgs[0]['payload'])
+        pos_payload = _to_dict(pos_msgs[0]['payload'])
+        assert static_payload['ship_type'] == 'cargo'
+        assert pos_payload['ship_type'] == 'cargo', (
+            f"position-report should inherit ship_type from cached ShipStatic; got {pos_payload['ship_type']!r}"
+        )
+        assert pos_payload['flag'] == 'de'  # MID 211 -> Germany
+
+
+
+

@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/BlueskyFirehose"
       ]
+    },
+    "BlueskyFirehose.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BlueskyFirehose.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -270,6 +291,78 @@
       "createdat": "2024-11-14T12:00:00",
       "epoch": 0,
       "modifiedat": "2024-11-14T12:00:00"
+    },
+    "BlueskyFirehose.mqtt": {
+      "messagegroupid": "BlueskyFirehose.mqtt",
+      "description": "MQTT/5.0 non-retained firehose variants of the Bluesky CloudEvents. Each record family gets a dedicated topic with the kebab record name baked as the trailing segment so subscribers can wildcard per family. QoS 0, retain=false — there is no LKV slot for a firehose.",
+      "messages": {
+        "Bluesky.Feed.Post.mqtt": {
+          "messageid": "Bluesky.Feed.Post.mqtt",
+          "name": "Post",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/post",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Bluesky.Feed.Like.mqtt": {
+          "messageid": "Bluesky.Feed.Like.mqtt",
+          "name": "Like",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/like",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Bluesky.Feed.Repost.mqtt": {
+          "messageid": "Bluesky.Feed.Repost.mqtt",
+          "name": "Repost",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/repost",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Bluesky.Graph.Follow.mqtt": {
+          "messageid": "Bluesky.Graph.Follow.mqtt",
+          "name": "Follow",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/follow",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Bluesky.Graph.Block.mqtt": {
+          "messageid": "Bluesky.Graph.Block.mqtt",
+          "name": "Block",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/block",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "Bluesky.Actor.Profile.mqtt": {
+          "messageid": "Bluesky.Actor.Profile.mqtt",
+          "name": "Profile",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/profile",
+            "qos": 0,
+            "retain": false
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -367,6 +460,14 @@
                           "seq": {
                             "type": "int64",
                             "description": "Firehose sequence number"
+                          },
+                          "collection": {
+                            "type": "string",
+                            "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                          },
+                          "lang": {
+                            "type": "string",
+                            "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
                           }
                         },
                         "required": [
@@ -378,7 +479,9 @@
                           "tags",
                           "created_at",
                           "indexed_at",
-                          "seq"
+                          "seq",
+                          "collection",
+                          "lang"
                         ],
                         "description": "A post in the Bluesky feed"
                       }
@@ -444,6 +547,14 @@
                           "seq": {
                             "type": "int64",
                             "description": "Firehose sequence number"
+                          },
+                          "collection": {
+                            "type": "string",
+                            "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                          },
+                          "lang": {
+                            "type": "string",
+                            "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
                           }
                         },
                         "required": [
@@ -454,7 +565,9 @@
                           "subject_cid",
                           "created_at",
                           "indexed_at",
-                          "seq"
+                          "seq",
+                          "collection",
+                          "lang"
                         ],
                         "description": "A like on a post"
                       }
@@ -520,6 +633,14 @@
                           "seq": {
                             "type": "int64",
                             "description": "Firehose sequence number"
+                          },
+                          "collection": {
+                            "type": "string",
+                            "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                          },
+                          "lang": {
+                            "type": "string",
+                            "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
                           }
                         },
                         "required": [
@@ -530,7 +651,9 @@
                           "subject_cid",
                           "created_at",
                           "indexed_at",
-                          "seq"
+                          "seq",
+                          "collection",
+                          "lang"
                         ],
                         "description": "A repost of a post"
                       }
@@ -597,6 +720,14 @@
                           "seq": {
                             "type": "int64",
                             "description": "Firehose sequence number"
+                          },
+                          "collection": {
+                            "type": "string",
+                            "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                          },
+                          "lang": {
+                            "type": "string",
+                            "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
                           }
                         },
                         "required": [
@@ -606,7 +737,9 @@
                           "subject",
                           "created_at",
                           "indexed_at",
-                          "seq"
+                          "seq",
+                          "collection",
+                          "lang"
                         ],
                         "description": "A follow relationship between users"
                       }
@@ -673,6 +806,14 @@
                           "seq": {
                             "type": "int64",
                             "description": "Firehose sequence number"
+                          },
+                          "collection": {
+                            "type": "string",
+                            "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                          },
+                          "lang": {
+                            "type": "string",
+                            "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
                           }
                         },
                         "required": [
@@ -682,7 +823,9 @@
                           "subject",
                           "created_at",
                           "indexed_at",
-                          "seq"
+                          "seq",
+                          "collection",
+                          "lang"
                         ],
                         "description": "A block relationship between users"
                       }
@@ -751,6 +894,14 @@
                           "seq": {
                             "type": "int64",
                             "description": "Firehose sequence number"
+                          },
+                          "collection": {
+                            "type": "string",
+                            "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                          },
+                          "lang": {
+                            "type": "string",
+                            "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
                           }
                         },
                         "required": [
@@ -758,7 +909,9 @@
                           "handle",
                           "created_at",
                           "indexed_at",
-                          "seq"
+                          "seq",
+                          "collection",
+                          "lang"
                         ],
                         "description": "A user profile update"
                       }
@@ -892,6 +1045,17 @@
                     "name": "seq",
                     "type": "long",
                     "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+                    "default": "und"
                   }
                 ],
                 "doc": "A post in the Bluesky feed"
@@ -963,6 +1127,17 @@
                     "name": "seq",
                     "type": "long",
                     "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+                    "default": "und"
                   }
                 ],
                 "doc": "A like on a post"
@@ -1034,6 +1209,17 @@
                     "name": "seq",
                     "type": "long",
                     "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+                    "default": "und"
                   }
                 ],
                 "doc": "A repost of a post"
@@ -1109,6 +1295,17 @@
                     "name": "seq",
                     "type": "long",
                     "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+                    "default": "und"
                   }
                 ],
                 "doc": "A follow relationship between users"
@@ -1184,6 +1381,17 @@
                     "name": "seq",
                     "type": "long",
                     "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+                    "default": "und"
                   }
                 ],
                 "doc": "A block relationship between users"
@@ -1267,6 +1475,17 @@
                     "name": "seq",
                     "type": "long",
                     "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+                    "default": "und"
                   }
                 ],
                 "doc": "A user profile update"

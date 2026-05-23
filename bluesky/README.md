@@ -153,3 +153,19 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / UNS feeder (pilot)
+
+In addition to the Kafka producer, a non-retained MQTT 5.0 feeder
+publishes the same firehose into a Unified-Namespace topic tree:
+
+```
+social/intl/bluesky/bluesky/{collection}/{lang}/{did}/{event}
+```
+
+`{event}` is one of `post`, `like`, `repost`, `follow`, `block`,
+`profile`. QoS 0, `retain=false`. CloudEvents binary mode; CE attributes
+ride as MQTT 5 user properties; `subject` equals the author DID.
+
+See `CONTAINER.md` for the container image and environment variables.
