@@ -38,9 +38,22 @@ jobs:
       - id: pick
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, pathlib
+          import json, pathlib, sys
           catalog = json.loads(pathlib.Path('catalog.json').read_text(encoding='utf-8'))
-          ids = [c['id'] for c in catalog if c.get('notebook')]
+          ids = []
+          skipped = []
+          for c in catalog:
+              if not c.get('notebook'):
+                  continue
+              sid = c['id']
+              # Some catalog entries are forward-looking and have no source
+              # directory checked in yet. Skip them so the matrix doesn't fail.
+              if not pathlib.Path(sid).is_dir():
+                  skipped.append(sid)
+                  continue
+              ids.append(sid)
+          if skipped:
+              print(f"::notice::Skipping notebook sources without source dir: {skipped}", file=sys.stderr)
           print(f"sources={json.dumps(ids)}")
           print(f"count={len(ids)}")
           PY
@@ -70,27 +83,73 @@ jobs:
           src="${{ matrix.source }}"
           echo "id=${src//-/_}" >> "$GITHUB_OUTPUT"
 
+      - name: Detect package layout
+        id: layout
+        # Sources used to live as a single top-level package (legacy layout):
+        #   <src>/pyproject.toml      + <src>/<id>_producer/*/
+        # After the multi-transport split (PR #338+) they look like:
+        #   <src>/<id>_kafka/pyproject.toml      (bridge / notebook target)
+        #   <src>/<id>_core/pyproject.toml       (shared package)
+        #   <src>/<id>_kafka_producer/*/         (generated producer subpkgs)
+        # Some split sources still keep the legacy <id>_producer/ tree as the
+        # source of producer path-deps; support either name.
+        run: |
+          src="${{ matrix.source }}"
+          id="${{ steps.pkg.outputs.id }}"
+          if [ -f "$src/${id}_kafka/pyproject.toml" ]; then
+            echo "split=true" >> "$GITHUB_OUTPUT"
+            echo "pkg_root=./$src/${id}_kafka" >> "$GITHUB_OUTPUT"
+          else
+            echo "split=false" >> "$GITHUB_OUTPUT"
+            echo "pkg_root=./$src" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -d "$src/${id}_core" ] && [ -f "$src/${id}_core/pyproject.toml" ]; then
+            echo "core_dir=./$src/${id}_core" >> "$GITHUB_OUTPUT"
+          else
+            echo "core_dir=" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -d "$src/${id}_kafka_producer" ]; then
+            echo "producer_dir=./$src/${id}_kafka_producer" >> "$GITHUB_OUTPUT"
+          elif [ -d "$src/${id}_producer" ]; then
+            echo "producer_dir=./$src/${id}_producer" >> "$GITHUB_OUTPUT"
+          else
+            echo "producer_dir=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Verify notebook + producer present
         run: |
           test -f "${{ matrix.source }}/notebook/${{ matrix.source }}-feed.ipynb" \
             || { echo "::error::Missing notebook for ${{ matrix.source }}"; exit 1; }
-          test -d "${{ matrix.source }}/${{ steps.pkg.outputs.id }}_producer" \
-            || { echo "::error::Missing generated producer for ${{ matrix.source }} (expected ${{ steps.pkg.outputs.id }}_producer)"; exit 1; }
+          producer_dir="${{ steps.layout.outputs.producer_dir }}"
+          if [ -z "$producer_dir" ] || [ ! -d "$producer_dir" ]; then
+            echo "::error::Missing generated producer for ${{ matrix.source }} (looked for ${{ matrix.source }}/${{ steps.pkg.outputs.id }}_kafka_producer or ${{ matrix.source }}/${{ steps.pkg.outputs.id }}_producer)"
+            exit 1
+          fi
+          echo "Using producer dir: $producer_dir"
+          echo "Using bridge pkg root: ${{ steps.layout.outputs.pkg_root }}"
+          if [ -n "${{ steps.layout.outputs.core_dir }}" ]; then
+            echo "Using core dir: ${{ steps.layout.outputs.core_dir }}"
+          fi
 
       - name: Build wheels
-        working-directory: ${{ matrix.source }}
         run: |
           python -m pip install --upgrade pip wheel poetry-core
-          mkdir -p ../_wheels-out
-          # Bridge package
+          mkdir -p _wheels-out
+          # Bridge package (notebook target — kafka sibling for split sources,
+          # top-level legacy package otherwise).
           python -m pip wheel --no-deps --no-build-isolation \
-            --wheel-dir ../_wheels-out .
-          # Producer sub-packages (skip any without pyproject.toml such as samples/)
-          for sub in ${{ steps.pkg.outputs.id }}_producer/*/ ; do
+            --wheel-dir _wheels-out "${{ steps.layout.outputs.pkg_root }}"
+          # Shared core package (split layout only).
+          if [ -n "${{ steps.layout.outputs.core_dir }}" ]; then
+            python -m pip wheel --no-deps --no-build-isolation \
+              --wheel-dir _wheels-out "${{ steps.layout.outputs.core_dir }}"
+          fi
+          # Producer sub-packages (skip any without pyproject.toml such as samples/).
+          for sub in "${{ steps.layout.outputs.producer_dir }}"/*/ ; do
             if [ -f "$sub/pyproject.toml" ]; then
               echo "Building $sub"
               python -m pip wheel --no-deps --no-build-isolation \
-                --wheel-dir ../_wheels-out "$sub"
+                --wheel-dir _wheels-out "$sub"
             fi
           done
 
