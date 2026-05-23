@@ -196,6 +196,7 @@ class BlitzortungMqttBridge:
         if data is None:
             return
         await self.client.publish_blitzortung_lightning_mqtt_lightning_stroke(
+            source_id=str(data.source_id),
             geohash5=data.geohash5,
             geohash7=data.geohash7,
             stroke_id=data.stroke_id,

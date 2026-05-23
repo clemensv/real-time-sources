@@ -292,7 +292,7 @@ class NOKystverketAISMqttMqttClient(_ClientBase):
         event_type = cloud_event['type']
         
         
-        if event_type == "NO.Kystverket.AIS.mqtt.PositionReport":
+        if event_type == "NO.Kystverket.AIS.PositionReport":
             if self.no_kystverket_ais_mqtt_position_report_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -304,7 +304,7 @@ class NOKystverketAISMqttMqttClient(_ClientBase):
                     print(f"Error in no_kystverket_ais_mqtt_position_report handler: {e}")
             return
         
-        if event_type == "NO.Kystverket.AIS.mqtt.ShipStatic":
+        if event_type == "NO.Kystverket.AIS.ShipStatic":
             if self.no_kystverket_ais_mqtt_ship_static_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -316,7 +316,7 @@ class NOKystverketAISMqttMqttClient(_ClientBase):
                     print(f"Error in no_kystverket_ais_mqtt_ship_static handler: {e}")
             return
         
-        if event_type == "NO.Kystverket.AIS.mqtt.AidToNavigation":
+        if event_type == "NO.Kystverket.AIS.AidToNavigation":
             if self.no_kystverket_ais_mqtt_aid_to_navigation_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -409,8 +409,8 @@ class NOKystverketAISMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"NO.Kystverket.AIS.mqtt.PositionReport",
-             "source":"tcp://153.44.253.27:5631",
+             "type":"NO.Kystverket.AIS.PositionReport",
+             "source":"urn:ais:kystverket:tcp",
              "subject":"{mmsi}".format(mmsi = mmsi)
         }
         attributes["datacontenttype"] = content_type
@@ -491,8 +491,8 @@ class NOKystverketAISMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"NO.Kystverket.AIS.mqtt.ShipStatic",
-             "source":"tcp://153.44.253.27:5631",
+             "type":"NO.Kystverket.AIS.ShipStatic",
+             "source":"urn:ais:kystverket:tcp",
              "subject":"{mmsi}".format(mmsi = mmsi)
         }
         attributes["datacontenttype"] = content_type
@@ -573,8 +573,8 @@ class NOKystverketAISMqttMqttClient(_ClientBase):
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"NO.Kystverket.AIS.mqtt.AidToNavigation",
-             "source":"tcp://153.44.253.27:5631",
+             "type":"NO.Kystverket.AIS.AidToNavigation",
+             "source":"urn:ais:kystverket:tcp",
              "subject":"{mmsi}".format(mmsi = mmsi)
         }
         attributes["datacontenttype"] = content_type

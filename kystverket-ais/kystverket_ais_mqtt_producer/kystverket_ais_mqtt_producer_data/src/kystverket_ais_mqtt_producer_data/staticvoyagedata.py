@@ -1,4 +1,4 @@
-""" LightningStroke dataclass. """
+""" StaticVoyageData dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,46 +11,55 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from blitzortung_mqtt_producer_data.detectorparticipation import DetectorParticipation
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class LightningStroke:
+class StaticVoyageData:
     """
-    One located lightning stroke from the public LightningMaps / Blitzortung live websocket feed. The stroke identity is the tuple of source_id and stroke_id because the upstream browser client tracks the last seen stroke id separately for each source stream.
+    StaticVoyageData
     
     Attributes:
-        source_id (int)
-        stroke_id (str)
-        event_time (str)
-        event_timestamp_ms (int)
-        latitude (float)
-        longitude (float)
-        server_id (typing.Optional[int])
-        server_delay_ms (typing.Optional[int])
-        accuracy_diameter_m (typing.Optional[float])
-        detector_participations (typing.List[DetectorParticipation])
-        geohash5 (str)
-        geohash7 (str)
+        mmsi (int)
+        imo_number (typing.Optional[int])
+        callsign (typing.Optional[str])
+        ship_name (typing.Optional[str])
+        ship_type (typing.Optional[int])
+        dimension_to_bow (typing.Optional[int])
+        dimension_to_stern (typing.Optional[int])
+        dimension_to_port (typing.Optional[int])
+        dimension_to_starboard (typing.Optional[int])
+        draught (typing.Optional[float])
+        destination (typing.Optional[str])
+        eta_month (typing.Optional[int])
+        eta_day (typing.Optional[int])
+        eta_hour (typing.Optional[int])
+        eta_minute (typing.Optional[int])
+        timestamp (str)
+        station_id (typing.Optional[str])
     """
     
     
-    source_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_id"))
-    stroke_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stroke_id"))
-    event_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_time"))
-    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    server_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_id"))
-    server_delay_ms: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_delay_ms"))
-    accuracy_diameter_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="accuracy_diameter_m"))
-    detector_participations: typing.List[DetectorParticipation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detector_participations"))
-    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    geohash7: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash7"))
+    mmsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    imo_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo_number"))
+    callsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
+    ship_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_name"))
+    ship_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
+    dimension_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_bow"))
+    dimension_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_stern"))
+    dimension_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_port"))
+    dimension_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_starboard"))
+    draught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
+    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
+    eta_month: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_month"))
+    eta_day: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_day"))
+    eta_hour: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_hour"))
+    eta_minute: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_minute"))
+    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'LightningStroke':
+    def from_serializer_dict(cls, data: dict) -> 'StaticVoyageData':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -123,7 +132,7 @@ class LightningStroke:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['LightningStroke']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['StaticVoyageData']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -160,13 +169,13 @@ class LightningStroke:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return LightningStroke.from_serializer_dict(_record)
+                return StaticVoyageData.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'LightningStroke':
+    def create_instance(cls) -> 'StaticVoyageData':
         """
         Creates an instance of the dataclass with test values.
         
@@ -174,16 +183,21 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(10),
-            stroke_id='pjvhkpzqswytuqsesiux',
-            event_time='wtwclmklimouqwnzlwqm',
-            event_timestamp_ms=int(78),
-            latitude=float(43.39925133840673),
-            longitude=float(70.0630558916229),
-            server_id=int(14),
-            server_delay_ms=int(49),
-            accuracy_diameter_m=float(36.25115082854285),
-            detector_participations=[None],
-            geohash5='svvbxerttvwwexjmdrrh',
-            geohash7='yddphqjmeqyjhjiwjuuj'
+            mmsi=int(7),
+            imo_number=int(28),
+            callsign='sfmlgqddarnlpygtmxbn',
+            ship_name='hbsmkeztudgmbzmdftaj',
+            ship_type=int(81),
+            dimension_to_bow=int(13),
+            dimension_to_stern=int(37),
+            dimension_to_port=int(33),
+            dimension_to_starboard=int(47),
+            draught=float(84.01556151540429),
+            destination='izbwsrtlbfqphdpjymog',
+            eta_month=int(30),
+            eta_day=int(68),
+            eta_hour=int(25),
+            eta_minute=int(9),
+            timestamp='falhbfjxrullvpoovmza',
+            station_id='qangyczijltpspoxsncc'
         )

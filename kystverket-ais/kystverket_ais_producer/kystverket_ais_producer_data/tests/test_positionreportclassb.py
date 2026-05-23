@@ -28,16 +28,16 @@ class Test_PositionReportClassB(unittest.TestCase):
         Create instance of PositionReportClassB for testing
         """
         instance = PositionReportClassB(
-            mmsi=int(24),
-            speed_over_ground=float(44.60388016793907),
-            position_accuracy=int(52),
-            longitude=float(43.73078024489485),
-            latitude=float(22.375695719640355),
-            course_over_ground=float(23.866173619058863),
+            mmsi=int(22),
+            speed_over_ground=float(73.24232413926678),
+            position_accuracy=int(47),
+            longitude=float(73.80083908123568),
+            latitude=float(45.17589358510914),
+            course_over_ground=float(20.932415419137563),
             true_heading=int(33),
-            timestamp='lkggeijhxurujhsxhqah',
-            station_id='cdtwsjqlvxcxvqmofifv',
-            msg_type=int(76)
+            timestamp='bcjzgxazhcepulxfrjzp',
+            station_id='ipjprjnktcpadekjzmlv',
+            msg_type=int(11)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(24)
+        test_value = int(22)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -54,7 +54,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test speed_over_ground property
         """
-        test_value = float(44.60388016793907)
+        test_value = float(73.24232413926678)
         self.instance.speed_over_ground = test_value
         self.assertEqual(self.instance.speed_over_ground, test_value)
     
@@ -62,7 +62,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test position_accuracy property
         """
-        test_value = int(52)
+        test_value = int(47)
         self.instance.position_accuracy = test_value
         self.assertEqual(self.instance.position_accuracy, test_value)
     
@@ -70,7 +70,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(43.73078024489485)
+        test_value = float(73.80083908123568)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -78,7 +78,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(22.375695719640355)
+        test_value = float(45.17589358510914)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test course_over_ground property
         """
-        test_value = float(23.866173619058863)
+        test_value = float(20.932415419137563)
         self.instance.course_over_ground = test_value
         self.assertEqual(self.instance.course_over_ground, test_value)
     
@@ -102,7 +102,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'lkggeijhxurujhsxhqah'
+        test_value = 'bcjzgxazhcepulxfrjzp'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -110,7 +110,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'cdtwsjqlvxcxvqmofifv'
+        test_value = 'ipjprjnktcpadekjzmlv'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -118,7 +118,7 @@ class Test_PositionReportClassB(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = int(76)
+        test_value = int(11)
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     

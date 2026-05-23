@@ -31,12 +31,7 @@
         "mode": "binary"
       },
       "protocoloptions": {
-        "deployed": false,
-        "options": {
-          "topic": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}",
-          "qos": 0,
-          "retain": false
-        }
+        "deployed": false
       },
       "messagegroups": [
         "#/messagegroups/NO.Kystverket.AIS.mqtt"
@@ -135,87 +130,77 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation"
+        },
+        "NO.Kystverket.AIS.PositionReport": {
+          "name": "PositionReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NO.Kystverket.AIS.PositionReport"
+            },
+            "source": {
+              "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReport"
+        },
+        "NO.Kystverket.AIS.ShipStatic": {
+          "name": "ShipStatic",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NO.Kystverket.AIS.ShipStatic"
+            },
+            "source": {
+              "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.ShipStatic"
         }
       }
     },
     "NO.Kystverket.AIS.mqtt": {
-      "messagegroupid": "NO.Kystverket.AIS.mqtt",
-      "description": "MQTT/5.0 non-retained UNS variants of the Kystverket AIS CloudEvents. Each event family (position-report, static, aid-to-navigation) gets a dedicated topic with the kebab family literal baked as the trailing segment. QoS 0, retain=false \u2014 there is no LKV slot for a firehose.",
+      "description": "MQTT/5.0 non-retained UNS variants of the Kystverket AIS CloudEvents. Each event family (position-report, static, aid-to-navigation) gets a dedicated topic with the kebab family literal baked as the trailing segment. QoS 0, retain=false — there is no LKV slot for a firehose.",
       "messages": {
         "NO.Kystverket.AIS.mqtt.PositionReport": {
-          "messageid": "NO.Kystverket.AIS.mqtt.PositionReport.mqtt",
           "name": "PositionReport",
+          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "type": {
-              "value": "NO.Kystverket.AIS.mqtt.PositionReport"
-            },
-            "source": {
-              "value": "tcp://153.44.253.27:5631"
-            },
-            "subject": {
-              "value": "{mmsi}",
-              "type": "uritemplate"
-            }
-          },
           "protocoloptions": {
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report",
             "qos": 0,
             "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.mqtt.jstruct/schemas/NO.Kystverket.AIS.mqtt.PositionReport"
+          }
         },
         "NO.Kystverket.AIS.mqtt.ShipStatic": {
-          "messageid": "NO.Kystverket.AIS.mqtt.ShipStatic.mqtt",
           "name": "ShipStatic",
+          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "type": {
-              "value": "NO.Kystverket.AIS.mqtt.ShipStatic"
-            },
-            "source": {
-              "value": "tcp://153.44.253.27:5631"
-            },
-            "subject": {
-              "value": "{mmsi}",
-              "type": "uritemplate"
-            }
-          },
           "protocoloptions": {
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/static",
             "qos": 0,
             "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.mqtt.jstruct/schemas/NO.Kystverket.AIS.mqtt.ShipStatic"
+          }
         },
         "NO.Kystverket.AIS.mqtt.AidToNavigation": {
-          "messageid": "NO.Kystverket.AIS.mqtt.AidToNavigation.mqtt",
           "name": "AidToNavigation",
+          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
           "protocol": "MQTT/5.0",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "type": {
-              "value": "NO.Kystverket.AIS.mqtt.AidToNavigation"
-            },
-            "source": {
-              "value": "tcp://153.44.253.27:5631"
-            },
-            "subject": {
-              "value": "{mmsi}",
-              "type": "uritemplate"
-            }
-          },
           "protocoloptions": {
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation",
             "qos": 0,
             "retain": false
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.mqtt.jstruct/schemas/NO.Kystverket.AIS.mqtt.AidToNavigation"
+          }
         }
       }
     }
@@ -475,50 +460,87 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
+                "name": "AidToNavigation",
+                "description": "Aid-to-Navigation report (Type 21) projected onto the UNS axes.",
                 "required": [
                   "mmsi",
-                  "longitude",
+                  "flag",
+                  "ship_type",
+                  "geohash5",
+                  "msg_type",
+                  "aid_type",
                   "latitude",
-                  "timestamp"
+                  "longitude",
+                  "ais_msg_type"
                 ],
-                "name": "AidToNavigation",
                 "properties": {
                   "mmsi": {
-                    "type": "int32"
+                    "type": "string",
+                    "pattern": "^[0-9]{9}$",
+                    "description": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
                   },
-                  "aid_type": {
-                    "type": "int32"
+                  "flag": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2}$|^xx$",
+                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country."
+                  },
+                  "ship_type": {
+                    "type": "string",
+                    "description": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet."
+                  },
+                  "geohash5": {
+                    "type": "string",
+                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
+                    "description": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'."
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "enum": [
+                      "position-report",
+                      "static",
+                      "aid-to-navigation"
+                    ],
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Aid-to-Navigation name as broadcast."
                   },
-                  "position_accuracy": {
-                    "type": "int32"
-                  },
-                  "longitude": {
-                    "type": "double"
+                  "aid_type": {
+                    "type": "int32",
+                    "description": "AtoN type code (0..31) per ITU-R M.1371."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Reported latitude in WGS-84 decimal degrees."
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Reported longitude in WGS-84 decimal degrees."
+                  },
+                  "position_accuracy": {
+                    "type": "int32",
+                    "description": "1 if high-accuracy (DGPS), else 0."
                   },
                   "timestamp": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "ISO-8601 receive time as supplied by the upstream NMEA tag."
                   },
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Kystverket base-station identifier."
+                  },
+                  "ais_msg_type": {
+                    "type": "int32",
+                    "description": "Original ITU-R M.1371 message ID (21)."
                   }
                 },
-                "$id": "https://example.com/schemas/NO/Kystverket/AIS/AidToNavigation"
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/AidToNavigation"
               }
             }
           }
-        }
-      }
-    },
-    "NO.Kystverket.AIS.mqtt.jstruct": {
-      "format": "JsonStructure/draft-02",
-      "schemas": {
-        "NO.Kystverket.AIS.mqtt.PositionReport": {
+        },
+        "NO.Kystverket.AIS.PositionReport": {
           "name": "PositionReport",
           "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
@@ -614,12 +636,12 @@
                     "description": "Original ITU-R M.1371 message ID (1, 2, 3, 18, or 19)."
                   }
                 },
-                "$id": "https://schemas.real-time-sources.dev/kystverket-ais/mqtt/PositionReport"
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/PositionReport"
               }
             }
           }
         },
-        "NO.Kystverket.AIS.mqtt.ShipStatic": {
+        "NO.Kystverket.AIS.ShipStatic": {
           "name": "ShipStatic",
           "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
@@ -726,97 +748,7 @@
                     "description": "Original ITU-R M.1371 message ID (5 or 24)."
                   }
                 },
-                "$id": "https://schemas.real-time-sources.dev/kystverket-ais/mqtt/ShipStatic"
-              }
-            }
-          }
-        },
-        "NO.Kystverket.AIS.mqtt.AidToNavigation": {
-          "name": "AidToNavigation",
-          "format": "JsonStructure/draft-02",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "JsonStructure/draft-02",
-              "schema": {
-                "$schema": "https://json-structure.org/meta/extended/v0/#",
-                "type": "object",
-                "name": "AidToNavigation",
-                "description": "Aid-to-Navigation report (Type 21) projected onto the UNS axes.",
-                "required": [
-                  "mmsi",
-                  "flag",
-                  "ship_type",
-                  "geohash5",
-                  "msg_type",
-                  "aid_type",
-                  "latitude",
-                  "longitude",
-                  "ais_msg_type"
-                ],
-                "properties": {
-                  "mmsi": {
-                    "type": "string",
-                    "pattern": "^[0-9]{9}$",
-                    "description": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject."
-                  },
-                  "flag": {
-                    "type": "string",
-                    "pattern": "^[a-z]{2}$|^xx$",
-                    "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country."
-                  },
-                  "ship_type": {
-                    "type": "string",
-                    "description": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet."
-                  },
-                  "geohash5": {
-                    "type": "string",
-                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
-                    "description": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'."
-                  },
-                  "msg_type": {
-                    "type": "string",
-                    "enum": [
-                      "position-report",
-                      "static",
-                      "aid-to-navigation"
-                    ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Aid-to-Navigation name as broadcast."
-                  },
-                  "aid_type": {
-                    "type": "int32",
-                    "description": "AtoN type code (0..31) per ITU-R M.1371."
-                  },
-                  "latitude": {
-                    "type": "double",
-                    "description": "Reported latitude in WGS-84 decimal degrees."
-                  },
-                  "longitude": {
-                    "type": "double",
-                    "description": "Reported longitude in WGS-84 decimal degrees."
-                  },
-                  "position_accuracy": {
-                    "type": "int32",
-                    "description": "1 if high-accuracy (DGPS), else 0."
-                  },
-                  "timestamp": {
-                    "type": "string",
-                    "description": "ISO-8601 receive time as supplied by the upstream NMEA tag."
-                  },
-                  "station_id": {
-                    "type": "string",
-                    "description": "Kystverket base-station identifier."
-                  },
-                  "ais_msg_type": {
-                    "type": "int32",
-                    "description": "Original ITU-R M.1371 message ID (21)."
-                  }
-                },
-                "$id": "https://schemas.real-time-sources.dev/kystverket-ais/mqtt/AidToNavigation"
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/ShipStatic"
               }
             }
           }

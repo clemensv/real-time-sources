@@ -1,4 +1,4 @@
-""" LightningStroke dataclass. """
+""" ShipStatic dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,46 +11,60 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from blitzortung_mqtt_producer_data.detectorparticipation import DetectorParticipation
+from kystverket_ais_producer_data.msgtypeenum import MsgTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class LightningStroke:
+class ShipStatic:
     """
-    One located lightning stroke from the public LightningMaps / Blitzortung live websocket feed. The stroke identity is the tuple of source_id and stroke_id because the upstream browser client tracks the last seen stroke id separately for each source stream.
+    AIS static and voyage-related data (Type 5 / Type 24) projected onto the UNS axes.
     
     Attributes:
-        source_id (int)
-        stroke_id (str)
-        event_time (str)
-        event_timestamp_ms (int)
-        latitude (float)
-        longitude (float)
-        server_id (typing.Optional[int])
-        server_delay_ms (typing.Optional[int])
-        accuracy_diameter_m (typing.Optional[float])
-        detector_participations (typing.List[DetectorParticipation])
+        mmsi (str)
+        flag (str)
+        ship_type (str)
         geohash5 (str)
-        geohash7 (str)
+        msg_type (MsgTypeenum)
+        ship_name (typing.Optional[str])
+        callsign (typing.Optional[str])
+        imo_number (typing.Optional[int])
+        ship_type_code (int)
+        destination (typing.Optional[str])
+        eta (typing.Optional[str])
+        draught (typing.Optional[float])
+        dim_to_bow (typing.Optional[int])
+        dim_to_stern (typing.Optional[int])
+        dim_to_port (typing.Optional[int])
+        dim_to_starboard (typing.Optional[int])
+        timestamp (typing.Optional[str])
+        station_id (typing.Optional[str])
+        ais_msg_type (int)
     """
     
     
-    source_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_id"))
-    stroke_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stroke_id"))
-    event_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_time"))
-    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    server_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_id"))
-    server_delay_ms: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_delay_ms"))
-    accuracy_diameter_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="accuracy_diameter_m"))
-    detector_participations: typing.List[DetectorParticipation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detector_participations"))
+    mmsi: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    flag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="flag"))
+    ship_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
     geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    geohash7: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash7"))
+    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
+    ship_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_name"))
+    callsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
+    imo_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo_number"))
+    ship_type_code: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type_code"))
+    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
+    eta: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta"))
+    draught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
+    dim_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_bow"))
+    dim_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_stern"))
+    dim_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_port"))
+    dim_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_starboard"))
+    timestamp: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    ais_msg_type: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ais_msg_type"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'LightningStroke':
+    def from_serializer_dict(cls, data: dict) -> 'ShipStatic':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -123,7 +137,7 @@ class LightningStroke:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['LightningStroke']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['ShipStatic']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -160,13 +174,13 @@ class LightningStroke:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return LightningStroke.from_serializer_dict(_record)
+                return ShipStatic.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'LightningStroke':
+    def create_instance(cls) -> 'ShipStatic':
         """
         Creates an instance of the dataclass with test values.
         
@@ -174,16 +188,23 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(10),
-            stroke_id='pjvhkpzqswytuqsesiux',
-            event_time='wtwclmklimouqwnzlwqm',
-            event_timestamp_ms=int(78),
-            latitude=float(43.39925133840673),
-            longitude=float(70.0630558916229),
-            server_id=int(14),
-            server_delay_ms=int(49),
-            accuracy_diameter_m=float(36.25115082854285),
-            detector_participations=[None],
-            geohash5='svvbxerttvwwexjmdrrh',
-            geohash7='yddphqjmeqyjhjiwjuuj'
+            mmsi='jymyauwicqmmxlzkrudk',
+            flag='hxhpvnrcchaxxghmqtvy',
+            ship_type='clkkxreiklqxncdgbdll',
+            geohash5='unmojctgbrrzogasureu',
+            msg_type=MsgTypeenum.position_report,
+            ship_name='zhukgaahocwwbapebssc',
+            callsign='adosjeopbupuffgfeuis',
+            imo_number=int(27),
+            ship_type_code=int(43),
+            destination='qtcvkysiemcnbaimvylp',
+            eta='dthtkdtqmukfshwyzbmx',
+            draught=float(44.57056892950148),
+            dim_to_bow=int(11),
+            dim_to_stern=int(17),
+            dim_to_port=int(92),
+            dim_to_starboard=int(94),
+            timestamp='ecngeyaeqnayyekxpsnb',
+            station_id='fnjwhpdqltwlqrcktcdg',
+            ais_msg_type=int(60)
         )

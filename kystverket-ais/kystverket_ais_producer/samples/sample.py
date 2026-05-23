@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISEventProducer
+from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -41,6 +42,8 @@ from kystverket_ais_producer_data.staticvoyagedata import StaticVoyageData
 from kystverket_ais_producer_data.positionreportclassb import PositionReportClassB
 from kystverket_ais_producer_data.staticdataclassb import StaticDataClassB
 from kystverket_ais_producer_data.aidtonavigation import AidToNavigation
+from kystverket_ais_producer_data.positionreport import PositionReport
+from kystverket_ais_producer_data.shipstatic import ShipStatic
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -99,6 +102,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NO.Kystverket.AIS.AidToNavigation' event to Kafka topic.
     await nokystverket_aisevent_producer.send_no_kystverket_ais_aid_to_navigation(_mmsi = 'TODO: replace me', data = _aid_to_navigation)
     print(f"Sent 'NO.Kystverket.AIS.AidToNavigation' event: {_aid_to_navigation.to_json()}")
+
+    # ---- NO.Kystverket.AIS.PositionReport ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.PositionReport event
+    _position_report = PositionReport()
+
+    # sends the 'NO.Kystverket.AIS.PositionReport' event to Kafka topic.
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_position_report(_mmsi = 'TODO: replace me', data = _position_report)
+    print(f"Sent 'NO.Kystverket.AIS.PositionReport' event: {_position_report.to_json()}")
+
+    # ---- NO.Kystverket.AIS.ShipStatic ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.ShipStatic event
+    _ship_static = ShipStatic()
+
+    # sends the 'NO.Kystverket.AIS.ShipStatic' event to Kafka topic.
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_ship_static(_mmsi = 'TODO: replace me', data = _ship_static)
+    print(f"Sent 'NO.Kystverket.AIS.ShipStatic' event: {_ship_static.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nokystverket_aismqtt_event_producer = NOKystverketAISMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nokystverket_aismqtt_event_producer = NOKystverketAISMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- NO.Kystverket.AIS.mqtt.PositionReport ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.mqtt.PositionReport event
+    _position_report = PositionReport()
+
+    # sends the 'NO.Kystverket.AIS.mqtt.PositionReport' event to Kafka topic.
+    await nokystverket_aismqtt_event_producer.send_no_kystverket_ais_mqtt_position_report(_mmsi = 'TODO: replace me', data = _position_report)
+    print(f"Sent 'NO.Kystverket.AIS.mqtt.PositionReport' event: {_position_report.to_json()}")
+
+    # ---- NO.Kystverket.AIS.mqtt.ShipStatic ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.mqtt.ShipStatic event
+    _ship_static = ShipStatic()
+
+    # sends the 'NO.Kystverket.AIS.mqtt.ShipStatic' event to Kafka topic.
+    await nokystverket_aismqtt_event_producer.send_no_kystverket_ais_mqtt_ship_static(_mmsi = 'TODO: replace me', data = _ship_static)
+    print(f"Sent 'NO.Kystverket.AIS.mqtt.ShipStatic' event: {_ship_static.to_json()}")
+
+    # ---- NO.Kystverket.AIS.mqtt.AidToNavigation ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.mqtt.AidToNavigation event
+    _aid_to_navigation = AidToNavigation()
+
+    # sends the 'NO.Kystverket.AIS.mqtt.AidToNavigation' event to Kafka topic.
+    await nokystverket_aismqtt_event_producer.send_no_kystverket_ais_mqtt_aid_to_navigation(_mmsi = 'TODO: replace me', data = _aid_to_navigation)
+    print(f"Sent 'NO.Kystverket.AIS.mqtt.AidToNavigation' event: {_aid_to_navigation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

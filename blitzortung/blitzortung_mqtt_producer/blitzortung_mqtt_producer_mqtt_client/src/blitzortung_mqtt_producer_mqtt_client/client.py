@@ -284,7 +284,7 @@ class BlitzortungLightningMqttMqttClient(_ClientBase):
         event_type = cloud_event['type']
         
         
-        if event_type == "Blitzortung.Lightning.mqtt.LightningStroke":
+        if event_type == "Blitzortung.Lightning.LightningStroke":
             if self.blitzortung_lightning_mqtt_lightning_stroke_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
@@ -341,10 +341,11 @@ class BlitzortungLightningMqttMqttClient(_ClientBase):
     # Producer methods
     
     async def publish_blitzortung_lightning_mqtt_lightning_stroke(self,
-        geohash5: str,
-        geohash7: str,
+        source_id: str,
         stroke_id: str,
         event_time: str,
+        geohash5: str,
+        geohash7: str,
         data: blitzortung_mqtt_producer_data.LightningStroke,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -355,10 +356,11 @@ class BlitzortungLightningMqttMqttClient(_ClientBase):
 
         Args:
         
-            geohash5: URI template variable for 'geohash5'
-            geohash7: URI template variable for 'geohash7'
+            source_id: URI template variable for 'source_id'
             stroke_id: URI template variable for 'stroke_id'
             event_time: URI template variable for 'event_time'
+            geohash5: URI template variable for 'geohash5'
+            geohash7: URI template variable for 'geohash7'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke'
                 with URI template placeholders substituted from the keyword arguments.
@@ -368,18 +370,19 @@ class BlitzortungLightningMqttMqttClient(_ClientBase):
         """
         target_topic = topic if topic is not None else "weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke"
         _topic_template_values: Dict[str, str] = {
-            "geohash5": str(geohash5),
-            "geohash7": str(geohash7),
+            "source_id": str(source_id),
             "stroke_id": str(stroke_id),
             "event_time": str(event_time),
+            "geohash5": str(geohash5),
+            "geohash7": str(geohash7),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
 
         attributes = {
-             "type":"Blitzortung.Lightning.mqtt.LightningStroke",
+             "type":"Blitzortung.Lightning.LightningStroke",
              "source":"wss://live.lightningmaps.org/",
-             "subject":"{geohash5}/{geohash7}/{stroke_id}".format(geohash5 = geohash5,geohash7 = geohash7,stroke_id = stroke_id),
+             "subject":"{source_id}/{stroke_id}".format(source_id = source_id,stroke_id = stroke_id),
              "time":"{event_time}".format(event_time = event_time)
         }
         attributes["datacontenttype"] = content_type

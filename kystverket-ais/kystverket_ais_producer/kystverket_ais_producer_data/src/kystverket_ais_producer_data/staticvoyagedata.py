@@ -183,21 +183,21 @@ class StaticVoyageData:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(29),
-            imo_number=int(87),
-            callsign='mhwhukdjzmpssmavptuo',
-            ship_name='pvfojemewwmymbkhgvbp',
-            ship_type=int(92),
-            dimension_to_bow=int(100),
-            dimension_to_stern=int(1),
-            dimension_to_port=int(36),
-            dimension_to_starboard=int(92),
-            draught=float(18.983977035719303),
-            destination='htzmuemrrtysqbdqqzxs',
-            eta_month=int(77),
-            eta_day=int(47),
-            eta_hour=int(71),
-            eta_minute=int(97),
-            timestamp='rohsxlbvfrnutyzhwarb',
-            station_id='odeeaghohrulnxxzgmga'
+            mmsi=int(97),
+            imo_number=int(44),
+            callsign='ehkoqprkhznuanhsofxy',
+            ship_name='fgptslisbkxofissaljd',
+            ship_type=int(13),
+            dimension_to_bow=int(38),
+            dimension_to_stern=int(43),
+            dimension_to_port=int(13),
+            dimension_to_starboard=int(62),
+            draught=float(39.516944831297074),
+            destination='nhloeungkczxefjmiwnn',
+            eta_month=int(78),
+            eta_day=int(67),
+            eta_hour=int(90),
+            eta_minute=int(20),
+            timestamp='etbpfijbcxvctxsudlav',
+            station_id='clepgfffghaugdibznon'
         )

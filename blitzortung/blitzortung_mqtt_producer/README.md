@@ -157,7 +157,10 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `Blitzortung.Lightning.mqtt.LightningStroke`:
+```Asynchronous handler hook for `Blitzortung.Lightning.mqtt.LightningStroke`: Live lightning-stroke event from the
+public LightningMaps / Blitzortung websocket feed. Each event represents one source-scoped stroke identifier with its
+observation time, coordinates, upstream delay and accuracy values, and optionally the detector participation flags
+carried in the public sta object.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

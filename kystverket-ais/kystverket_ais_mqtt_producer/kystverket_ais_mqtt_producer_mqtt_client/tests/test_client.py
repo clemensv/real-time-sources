@@ -70,7 +70,7 @@ async def test_no_kystverket_ais_mqtt_no_kystverket_ais_mqtt_position_report_py(
     async def on_no_kystverket_ais_mqtt_position_report(mqtt_msg, cloud_event, data: kystverket_ais_mqtt_producer_data.PositionReport, topic_params: dict):
         """Handler for NO.Kystverket.AIS.mqtt.PositionReport messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "NO.Kystverket.AIS.mqtt.PositionReport"
+        assert cloud_event['type'] == "NO.Kystverket.AIS.PositionReport"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -135,7 +135,7 @@ async def test_no_kystverket_ais_mqtt_no_kystverket_ais_mqtt_ship_static_py(mosq
     async def on_no_kystverket_ais_mqtt_ship_static(mqtt_msg, cloud_event, data: kystverket_ais_mqtt_producer_data.ShipStatic, topic_params: dict):
         """Handler for NO.Kystverket.AIS.mqtt.ShipStatic messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "NO.Kystverket.AIS.mqtt.ShipStatic"
+        assert cloud_event['type'] == "NO.Kystverket.AIS.ShipStatic"
         if len(received_data) >= 5:
             received_event.set()
     
@@ -200,7 +200,7 @@ async def test_no_kystverket_ais_mqtt_no_kystverket_ais_mqtt_aid_to_navigation_p
     async def on_no_kystverket_ais_mqtt_aid_to_navigation(mqtt_msg, cloud_event, data: kystverket_ais_mqtt_producer_data.AidToNavigation, topic_params: dict):
         """Handler for NO.Kystverket.AIS.mqtt.AidToNavigation messages."""
         received_data.append(data)
-        assert cloud_event['type'] == "NO.Kystverket.AIS.mqtt.AidToNavigation"
+        assert cloud_event['type'] == "NO.Kystverket.AIS.AidToNavigation"
         if len(received_data) >= 5:
             received_event.set()
     

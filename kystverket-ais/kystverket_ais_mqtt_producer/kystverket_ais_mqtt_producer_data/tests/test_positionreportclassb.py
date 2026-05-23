@@ -1,5 +1,5 @@
 """
-Test case for PositionReportClassA
+Test case for PositionReportClassB
 """
 
 import os
@@ -8,38 +8,36 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from kystverket_ais_producer_data.positionreportclassa import PositionReportClassA
+from kystverket_ais_mqtt_producer_data.positionreportclassb import PositionReportClassB
 
 
-class Test_PositionReportClassA(unittest.TestCase):
+class Test_PositionReportClassB(unittest.TestCase):
     """
-    Test case for PositionReportClassA
+    Test case for PositionReportClassB
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_PositionReportClassA.create_instance()
+        self.instance = Test_PositionReportClassB.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of PositionReportClassA for testing
+        Create instance of PositionReportClassB for testing
         """
-        instance = PositionReportClassA(
-            mmsi=int(11),
-            navigation_status=int(45),
-            rate_of_turn=float(17.416709957510268),
-            speed_over_ground=float(75.07999063469791),
-            position_accuracy=int(38),
-            longitude=float(89.33365366055398),
-            latitude=float(71.37074052841149),
-            course_over_ground=float(71.29218750145824),
-            true_heading=int(95),
-            timestamp='fnwzxehphawregprtujz',
-            station_id='vrqvudcyvaasxndxbtkp',
-            msg_type=int(18)
+        instance = PositionReportClassB(
+            mmsi=int(93),
+            speed_over_ground=float(37.424527683292084),
+            position_accuracy=int(98),
+            longitude=float(36.92920312463569),
+            latitude=float(63.40045978564526),
+            course_over_ground=float(80.46999158826421),
+            true_heading=int(42),
+            timestamp='edsejzikizlescwztxsw',
+            station_id='wfayxcvcthhpakryaqlh',
+            msg_type=int(65)
         )
         return instance
 
@@ -48,31 +46,15 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(11)
+        test_value = int(93)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
-    
-    def test_navigation_status_property(self):
-        """
-        Test navigation_status property
-        """
-        test_value = int(45)
-        self.instance.navigation_status = test_value
-        self.assertEqual(self.instance.navigation_status, test_value)
-    
-    def test_rate_of_turn_property(self):
-        """
-        Test rate_of_turn property
-        """
-        test_value = float(17.416709957510268)
-        self.instance.rate_of_turn = test_value
-        self.assertEqual(self.instance.rate_of_turn, test_value)
     
     def test_speed_over_ground_property(self):
         """
         Test speed_over_ground property
         """
-        test_value = float(75.07999063469791)
+        test_value = float(37.424527683292084)
         self.instance.speed_over_ground = test_value
         self.assertEqual(self.instance.speed_over_ground, test_value)
     
@@ -80,7 +62,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test position_accuracy property
         """
-        test_value = int(38)
+        test_value = int(98)
         self.instance.position_accuracy = test_value
         self.assertEqual(self.instance.position_accuracy, test_value)
     
@@ -88,7 +70,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(89.33365366055398)
+        test_value = float(36.92920312463569)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -96,7 +78,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(71.37074052841149)
+        test_value = float(63.40045978564526)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -104,7 +86,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test course_over_ground property
         """
-        test_value = float(71.29218750145824)
+        test_value = float(80.46999158826421)
         self.instance.course_over_ground = test_value
         self.assertEqual(self.instance.course_over_ground, test_value)
     
@@ -112,7 +94,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test true_heading property
         """
-        test_value = int(95)
+        test_value = int(42)
         self.instance.true_heading = test_value
         self.assertEqual(self.instance.true_heading, test_value)
     
@@ -120,7 +102,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'fnwzxehphawregprtujz'
+        test_value = 'edsejzikizlescwztxsw'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -128,7 +110,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vrqvudcyvaasxndxbtkp'
+        test_value = 'wfayxcvcthhpakryaqlh'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -136,7 +118,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = int(18)
+        test_value = int(65)
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     
@@ -146,7 +128,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = PositionReportClassA.from_data(bytes_data, media_type)
+        new_instance = PositionReportClassB.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -155,7 +137,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = PositionReportClassA.from_json(json_data)
+        new_instance = PositionReportClassB.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 

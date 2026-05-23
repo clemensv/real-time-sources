@@ -11,34 +11,45 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from kystverket_ais_producer_data.msgtypeenum import MsgTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class AidToNavigation:
     """
-    AidToNavigation
+    Aid-to-Navigation report (Type 21) projected onto the UNS axes.
     
     Attributes:
-        mmsi (int)
-        aid_type (typing.Optional[int])
+        mmsi (str)
+        flag (str)
+        ship_type (str)
+        geohash5 (str)
+        msg_type (MsgTypeenum)
         name (typing.Optional[str])
-        position_accuracy (typing.Optional[int])
-        longitude (float)
+        aid_type (int)
         latitude (float)
-        timestamp (str)
+        longitude (float)
+        position_accuracy (typing.Optional[int])
+        timestamp (typing.Optional[str])
         station_id (typing.Optional[str])
+        ais_msg_type (int)
     """
     
     
-    mmsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    aid_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="aid_type"))
+    mmsi: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    flag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="flag"))
+    ship_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
+    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
+    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
     name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    position_accuracy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    aid_type: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="aid_type"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    position_accuracy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
+    timestamp: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    ais_msg_type: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ais_msg_type"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'AidToNavigation':
@@ -165,12 +176,17 @@ class AidToNavigation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(14),
-            aid_type=int(32),
-            name='eonvgdgirofbmjbckotq',
-            position_accuracy=int(61),
-            longitude=float(5.857311223205541),
-            latitude=float(43.104577495457285),
-            timestamp='iflpestbzmjojfdwbjwl',
-            station_id='rrcqoeopemadatowyoyu'
+            mmsi='ggsadlvyqxjrolpoovlj',
+            flag='fjkdwdgraxabjhxezimy',
+            ship_type='ntjtgimnpfnqdeomvvkc',
+            geohash5='zoqemofnykudcedtvkna',
+            msg_type=MsgTypeenum.position_report,
+            name='lqfoinbouoidzfdgchqj',
+            aid_type=int(96),
+            latitude=float(53.87349212328557),
+            longitude=float(75.83176118480073),
+            position_accuracy=int(77),
+            timestamp='heyxtdjzcohtkthygvvi',
+            station_id='epcobpnjkfeeszvgxrqr',
+            ais_msg_type=int(24)
         )

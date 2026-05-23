@@ -1,4 +1,4 @@
-""" LightningStroke dataclass. """
+""" StaticDataClassB dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,46 +11,43 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from blitzortung_mqtt_producer_data.detectorparticipation import DetectorParticipation
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class LightningStroke:
+class StaticDataClassB:
     """
-    One located lightning stroke from the public LightningMaps / Blitzortung live websocket feed. The stroke identity is the tuple of source_id and stroke_id because the upstream browser client tracks the last seen stroke id separately for each source stream.
+    StaticDataClassB
     
     Attributes:
-        source_id (int)
-        stroke_id (str)
-        event_time (str)
-        event_timestamp_ms (int)
-        latitude (float)
-        longitude (float)
-        server_id (typing.Optional[int])
-        server_delay_ms (typing.Optional[int])
-        accuracy_diameter_m (typing.Optional[float])
-        detector_participations (typing.List[DetectorParticipation])
-        geohash5 (str)
-        geohash7 (str)
+        mmsi (int)
+        part_number (typing.Optional[int])
+        ship_name (typing.Optional[str])
+        ship_type (typing.Optional[int])
+        callsign (typing.Optional[str])
+        dimension_to_bow (typing.Optional[int])
+        dimension_to_stern (typing.Optional[int])
+        dimension_to_port (typing.Optional[int])
+        dimension_to_starboard (typing.Optional[int])
+        timestamp (str)
+        station_id (typing.Optional[str])
     """
     
     
-    source_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_id"))
-    stroke_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stroke_id"))
-    event_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_time"))
-    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    server_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_id"))
-    server_delay_ms: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_delay_ms"))
-    accuracy_diameter_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="accuracy_diameter_m"))
-    detector_participations: typing.List[DetectorParticipation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detector_participations"))
-    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    geohash7: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash7"))
+    mmsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    part_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="part_number"))
+    ship_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_name"))
+    ship_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
+    callsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
+    dimension_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_bow"))
+    dimension_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_stern"))
+    dimension_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_port"))
+    dimension_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_starboard"))
+    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'LightningStroke':
+    def from_serializer_dict(cls, data: dict) -> 'StaticDataClassB':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -123,7 +120,7 @@ class LightningStroke:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['LightningStroke']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['StaticDataClassB']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -160,13 +157,13 @@ class LightningStroke:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return LightningStroke.from_serializer_dict(_record)
+                return StaticDataClassB.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'LightningStroke':
+    def create_instance(cls) -> 'StaticDataClassB':
         """
         Creates an instance of the dataclass with test values.
         
@@ -174,16 +171,15 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(10),
-            stroke_id='pjvhkpzqswytuqsesiux',
-            event_time='wtwclmklimouqwnzlwqm',
-            event_timestamp_ms=int(78),
-            latitude=float(43.39925133840673),
-            longitude=float(70.0630558916229),
-            server_id=int(14),
-            server_delay_ms=int(49),
-            accuracy_diameter_m=float(36.25115082854285),
-            detector_participations=[None],
-            geohash5='svvbxerttvwwexjmdrrh',
-            geohash7='yddphqjmeqyjhjiwjuuj'
+            mmsi=int(50),
+            part_number=int(57),
+            ship_name='krjzqdwuknarhkkkulrm',
+            ship_type=int(1),
+            callsign='znqvscmlutuitzrpuadr',
+            dimension_to_bow=int(68),
+            dimension_to_stern=int(28),
+            dimension_to_port=int(68),
+            dimension_to_starboard=int(15),
+            timestamp='qxtamykgwiliwiluyxme',
+            station_id='kqkongtcoysaovffmvei'
         )

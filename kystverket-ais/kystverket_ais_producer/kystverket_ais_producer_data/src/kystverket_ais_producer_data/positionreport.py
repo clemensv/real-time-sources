@@ -1,4 +1,4 @@
-""" LightningStroke dataclass. """
+""" PositionReport dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,46 +11,54 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from blitzortung_mqtt_producer_data.detectorparticipation import DetectorParticipation
+from kystverket_ais_producer_data.msgtypeenum import MsgTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class LightningStroke:
+class PositionReport:
     """
-    One located lightning stroke from the public LightningMaps / Blitzortung live websocket feed. The stroke identity is the tuple of source_id and stroke_id because the upstream browser client tracks the last seen stroke id separately for each source stream.
+    AIS position report (Type 1/2/3/18/19) projected onto the UNS axes.
     
     Attributes:
-        source_id (int)
-        stroke_id (str)
-        event_time (str)
-        event_timestamp_ms (int)
+        mmsi (str)
+        flag (str)
+        ship_type (str)
+        geohash5 (str)
+        msg_type (MsgTypeenum)
         latitude (float)
         longitude (float)
-        server_id (typing.Optional[int])
-        server_delay_ms (typing.Optional[int])
-        accuracy_diameter_m (typing.Optional[float])
-        detector_participations (typing.List[DetectorParticipation])
-        geohash5 (str)
-        geohash7 (str)
+        speed_over_ground (typing.Optional[float])
+        course_over_ground (typing.Optional[float])
+        true_heading (typing.Optional[int])
+        navigation_status (typing.Optional[int])
+        rate_of_turn (typing.Optional[float])
+        position_accuracy (typing.Optional[int])
+        timestamp (typing.Optional[str])
+        station_id (typing.Optional[str])
+        ais_msg_type (int)
     """
     
     
-    source_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_id"))
-    stroke_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stroke_id"))
-    event_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_time"))
-    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms"))
+    mmsi: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    flag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="flag"))
+    ship_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
+    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
+    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    server_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_id"))
-    server_delay_ms: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_delay_ms"))
-    accuracy_diameter_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="accuracy_diameter_m"))
-    detector_participations: typing.List[DetectorParticipation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detector_participations"))
-    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
-    geohash7: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash7"))
+    speed_over_ground: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="speed_over_ground"))
+    course_over_ground: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="course_over_ground"))
+    true_heading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="true_heading"))
+    navigation_status: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="navigation_status"))
+    rate_of_turn: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rate_of_turn"))
+    position_accuracy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
+    timestamp: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    ais_msg_type: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ais_msg_type"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'LightningStroke':
+    def from_serializer_dict(cls, data: dict) -> 'PositionReport':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -123,7 +131,7 @@ class LightningStroke:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['LightningStroke']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['PositionReport']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -160,13 +168,13 @@ class LightningStroke:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return LightningStroke.from_serializer_dict(_record)
+                return PositionReport.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'LightningStroke':
+    def create_instance(cls) -> 'PositionReport':
         """
         Creates an instance of the dataclass with test values.
         
@@ -174,16 +182,20 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(10),
-            stroke_id='pjvhkpzqswytuqsesiux',
-            event_time='wtwclmklimouqwnzlwqm',
-            event_timestamp_ms=int(78),
-            latitude=float(43.39925133840673),
-            longitude=float(70.0630558916229),
-            server_id=int(14),
-            server_delay_ms=int(49),
-            accuracy_diameter_m=float(36.25115082854285),
-            detector_participations=[None],
-            geohash5='svvbxerttvwwexjmdrrh',
-            geohash7='yddphqjmeqyjhjiwjuuj'
+            mmsi='offpeznzuebulryfarzl',
+            flag='grlspbwojdeqjnmbfnlk',
+            ship_type='cpxqxctmyeenfikstkor',
+            geohash5='udekluhoniyzsfbxvjyb',
+            msg_type=MsgTypeenum.position_report,
+            latitude=float(96.2629002289527),
+            longitude=float(60.69003259276157),
+            speed_over_ground=float(28.933818252965793),
+            course_over_ground=float(63.59814190383012),
+            true_heading=int(92),
+            navigation_status=int(33),
+            rate_of_turn=float(8.203319875681025),
+            position_accuracy=int(75),
+            timestamp='fuymfqkmdntuaelvdeqx',
+            station_id='kuuyumnhtkobxcfeunot',
+            ais_msg_type=int(13)
         )
