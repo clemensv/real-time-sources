@@ -157,7 +157,7 @@ class ReplicationState:
             An instance of the dataclass.
         """
         return cls(
-            sequence_number=int(24),
+            sequence_number=int(6),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            source_url='wjcdlgddtyzrynwsankg'
+            source_url='ecebttoqqnvogideoexj'
         )
