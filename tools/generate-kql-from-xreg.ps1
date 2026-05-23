@@ -305,11 +305,12 @@ $schemaEventTypes = @{}
 foreach ($messageGroupProperty in $xregDocument.messagegroups.PSObject.Properties) {
     foreach ($messageProperty in $messageGroupProperty.Value.messages.PSObject.Properties) {
         $message = $messageProperty.Value
-        if ($message.dataschemaformat -notlike 'JsonStructure*') {
+        $dataschemaformat = if ($message.PSObject.Properties.Match('dataschemaformat').Count -gt 0) { $message.dataschemaformat } else { $null }
+        if ($dataschemaformat -notlike 'JsonStructure*') {
             continue
         }
 
-        $schemaUri = [string]$message.dataschemauri
+        $schemaUri = if ($message.PSObject.Properties.Match('dataschemauri').Count -gt 0) { [string]$message.dataschemauri } else { '' }
         if ([string]::IsNullOrWhiteSpace($schemaUri)) {
             throw "Message '$($messageProperty.Name)' does not declare a dataschemauri."
         }
