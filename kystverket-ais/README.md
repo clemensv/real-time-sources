@@ -144,3 +144,24 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / UNS feeder
+
+In addition to the Kafka producer, a non-retained MQTT 5.0 feeder
+publishes the Kystverket AIS firehose into a Unified-Namespace topic
+tree:
+
+```
+maritime/intl/kystverket/ais/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
+```
+
+The MQTT contract uses a separate schemagroup
+(`NO.Kystverket.AIS.mqtt.jstruct`) with three families —
+`PositionReport`, `ShipStatic`, `AidToNavigation` — each carrying the
+five routing axes as required fields. The existing Kafka contract is
+untouched. QoS 0, `retain=false`. CloudEvents binary mode; CE attributes
+ride as MQTT 5 user properties; `subject` equals the MMSI.
+
+See `CONTAINER.md` for the container image, environment variables, and
+wildcard subscription patterns.

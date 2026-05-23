@@ -20,6 +20,22 @@
       "messagegroups": [
         "#/messagegroups/Blitzortung.Lightning"
       ]
+    },
+    "Blitzortung.Lightning.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false
+      },
+      "messagegroups": [
+        "#/messagegroups/Blitzortung.Lightning.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -47,6 +63,21 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Blitzortung.Lightning.jstruct/schemas/Blitzortung.Lightning.LightningStroke"
+        }
+      }
+    },
+    "Blitzortung.Lightning.mqtt": {
+      "description": "MQTT/5.0 non-retained UNS variant of the Blitzortung LightningStroke CloudEvent. Topic carries the source-scoped stroke id plus geohash5 (~5 km) and geohash7 (~150 m) cells so subscribers can wildcard by location at two zoom levels. QoS 0, retain=false — no LKV slot for a firehose.",
+      "messages": {
+        "Blitzortung.Lightning.mqtt.LightningStroke": {
+          "name": "LightningStroke",
+          "basemessageurl": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke",
+            "qos": 0,
+            "retain": false
+          }
         }
       }
     }
@@ -180,13 +211,21 @@
                     "type": "array",
                     "description": "Detector participation entries expanded from the upstream sta object when the client asks the public live feed to include station details. An empty array means the upstream batch did not include detector participation details for this stroke.",
                     "items": {
-                      "type": {
-                        "$ref": "#/definitions/DetectorParticipation"
-                      }
+                      "$ref": "#/definitions/DetectorParticipation"
                     },
                     "altnames": {
                       "lightningmaps-live": "sta"
                     }
+                  },
+                  "geohash5": {
+                    "type": "string",
+                    "pattern": "^[0-9b-hjkmnp-z]{5}$",
+                    "description": "5-character geohash of the located stroke (~40 km cell at the equator), derived in the bridge from latitude and longitude. Used as the {geohash5} MQTT topic segment for geographic wildcards."
+                  },
+                  "geohash7": {
+                    "type": "string",
+                    "pattern": "^[0-9b-hjkmnp-z]{7}$",
+                    "description": "7-character geohash of the located stroke (~153 m cell), derived from latitude and longitude. Used as the {geohash7} MQTT topic segment for fine-grained geographic wildcards."
                   }
                 },
                 "required": [
@@ -196,7 +235,9 @@
                   "event_timestamp_ms",
                   "latitude",
                   "longitude",
-                  "detector_participations"
+                  "detector_participations",
+                  "geohash5",
+                  "geohash7"
                 ]
               }
             }
@@ -249,6 +290,16 @@
                     "name": "longitude",
                     "type": "double",
                     "doc": "Longitude of the located lightning stroke in decimal degrees."
+                  },
+                  {
+                    "name": "geohash5",
+                    "type": "string",
+                    "doc": "5-char geohash of the located stroke, derived by the bridge from lat/lon."
+                  },
+                  {
+                    "name": "geohash7",
+                    "type": "string",
+                    "doc": "7-char geohash of the located stroke, derived by the bridge from lat/lon."
                   },
                   {
                     "name": "server_id",

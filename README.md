@@ -20,6 +20,11 @@ required connection information.
 
 ## Deployment models
 
+> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Four sources —
+> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
+> **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
+> **[Kystverket AIS](kystverket-ais/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
+> and **[Blitzortung](blitzortung/CONTAINER.md#mqtt-50--unified-namespace-feeder)**
 > ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Three sources —
 > **[Autobahn](autobahn/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
 > **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "kystverket-ais-mqtt"
+version = "0.1.0"
+description = "Kystverket AIS firehose -> MQTT/UNS non-retained bridge"
+authors = ["clemensv"]
+packages = [{include = "kystverket_ais_mqtt"}]
+include = [{ path = "kystverket_ais_mqtt/mid_iso.csv", format = ["sdist", "wheel"] }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pyais = ">=2.7.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+kystverket_ais_mqtt_producer_data = {path = "../kystverket_ais_mqtt_producer/kystverket_ais_mqtt_producer_data"}
+kystverket_ais_mqtt_producer_mqtt_client = {path = "../kystverket_ais_mqtt_producer/kystverket_ais_mqtt_producer_mqtt_client"}

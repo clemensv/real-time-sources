@@ -28,23 +28,23 @@ class Test_StaticVoyageData(unittest.TestCase):
         Create instance of StaticVoyageData for testing
         """
         instance = StaticVoyageData(
-            mmsi=int(29),
-            imo_number=int(87),
-            callsign='mhwhukdjzmpssmavptuo',
-            ship_name='pvfojemewwmymbkhgvbp',
-            ship_type=int(92),
-            dimension_to_bow=int(100),
-            dimension_to_stern=int(1),
-            dimension_to_port=int(36),
-            dimension_to_starboard=int(92),
-            draught=float(18.983977035719303),
-            destination='htzmuemrrtysqbdqqzxs',
-            eta_month=int(77),
-            eta_day=int(47),
-            eta_hour=int(71),
-            eta_minute=int(97),
-            timestamp='rohsxlbvfrnutyzhwarb',
-            station_id='odeeaghohrulnxxzgmga'
+            mmsi=int(97),
+            imo_number=int(44),
+            callsign='ehkoqprkhznuanhsofxy',
+            ship_name='fgptslisbkxofissaljd',
+            ship_type=int(13),
+            dimension_to_bow=int(38),
+            dimension_to_stern=int(43),
+            dimension_to_port=int(13),
+            dimension_to_starboard=int(62),
+            draught=float(39.516944831297074),
+            destination='nhloeungkczxefjmiwnn',
+            eta_month=int(78),
+            eta_day=int(67),
+            eta_hour=int(90),
+            eta_minute=int(20),
+            timestamp='etbpfijbcxvctxsudlav',
+            station_id='clepgfffghaugdibznon'
         )
         return instance
 
@@ -53,7 +53,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(29)
+        test_value = int(97)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -61,7 +61,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test imo_number property
         """
-        test_value = int(87)
+        test_value = int(44)
         self.instance.imo_number = test_value
         self.assertEqual(self.instance.imo_number, test_value)
     
@@ -69,7 +69,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'mhwhukdjzmpssmavptuo'
+        test_value = 'ehkoqprkhznuanhsofxy'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -77,7 +77,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test ship_name property
         """
-        test_value = 'pvfojemewwmymbkhgvbp'
+        test_value = 'fgptslisbkxofissaljd'
         self.instance.ship_name = test_value
         self.assertEqual(self.instance.ship_name, test_value)
     
@@ -85,7 +85,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test ship_type property
         """
-        test_value = int(92)
+        test_value = int(13)
         self.instance.ship_type = test_value
         self.assertEqual(self.instance.ship_type, test_value)
     
@@ -93,7 +93,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test dimension_to_bow property
         """
-        test_value = int(100)
+        test_value = int(38)
         self.instance.dimension_to_bow = test_value
         self.assertEqual(self.instance.dimension_to_bow, test_value)
     
@@ -101,7 +101,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test dimension_to_stern property
         """
-        test_value = int(1)
+        test_value = int(43)
         self.instance.dimension_to_stern = test_value
         self.assertEqual(self.instance.dimension_to_stern, test_value)
     
@@ -109,7 +109,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test dimension_to_port property
         """
-        test_value = int(36)
+        test_value = int(13)
         self.instance.dimension_to_port = test_value
         self.assertEqual(self.instance.dimension_to_port, test_value)
     
@@ -117,7 +117,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test dimension_to_starboard property
         """
-        test_value = int(92)
+        test_value = int(62)
         self.instance.dimension_to_starboard = test_value
         self.assertEqual(self.instance.dimension_to_starboard, test_value)
     
@@ -125,7 +125,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test draught property
         """
-        test_value = float(18.983977035719303)
+        test_value = float(39.516944831297074)
         self.instance.draught = test_value
         self.assertEqual(self.instance.draught, test_value)
     
@@ -133,7 +133,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test destination property
         """
-        test_value = 'htzmuemrrtysqbdqqzxs'
+        test_value = 'nhloeungkczxefjmiwnn'
         self.instance.destination = test_value
         self.assertEqual(self.instance.destination, test_value)
     
@@ -141,7 +141,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test eta_month property
         """
-        test_value = int(77)
+        test_value = int(78)
         self.instance.eta_month = test_value
         self.assertEqual(self.instance.eta_month, test_value)
     
@@ -149,7 +149,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test eta_day property
         """
-        test_value = int(47)
+        test_value = int(67)
         self.instance.eta_day = test_value
         self.assertEqual(self.instance.eta_day, test_value)
     
@@ -157,7 +157,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test eta_hour property
         """
-        test_value = int(71)
+        test_value = int(90)
         self.instance.eta_hour = test_value
         self.assertEqual(self.instance.eta_hour, test_value)
     
@@ -165,7 +165,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test eta_minute property
         """
-        test_value = int(97)
+        test_value = int(20)
         self.instance.eta_minute = test_value
         self.assertEqual(self.instance.eta_minute, test_value)
     
@@ -173,7 +173,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'rohsxlbvfrnutyzhwarb'
+        test_value = 'etbpfijbcxvctxsudlav'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -181,7 +181,7 @@ class Test_StaticVoyageData(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'odeeaghohrulnxxzgmga'
+        test_value = 'clepgfffghaugdibznon'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     

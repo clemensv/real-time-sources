@@ -15,7 +15,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - BlitzortungLightningEventDispatcher
+3. [Quick Start](#quick-start)    - BlitzortungLightningEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BlitzortungLightningMqttEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +41,10 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - BlitzortungLightningProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BlitzortungLightningMqttProducersolution for event-driven applications.
 
 
 
@@ -195,6 +201,45 @@ blitzortung_lightning_lightning_stroke_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlitzortungLightningMqttProducer- `data`: The event data of type `blitzortung_producer_data.LightningStroke`.
+
+
+
+Producer for `Blitzortung.Lightning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def blitzortung_lightning_lightning_stroke_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LightningStroke) -> None:
+
+```python    # Process the event data
+
+BlitzortungLightningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+blitzortung_lightning_mqtt_dispatcher.blitzortung_lightning_lightning_stroke_async =
+blitzortung_lightning_lightning_stroke_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -292,6 +337,312 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_blitzortung_lightning_lightning_stroke_batch(```
+
+    messages=[
+
+        LightningStroke(...),Initializes the runner with a Kafka consumer.
+
+        LightningStroke(...),
+
+        LightningStroke(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BlitzortungLightningMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BlitzortungLightningMqttEventDispatcher` handles events for the Blitzortung.Lightning.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from blitzortung-producer import BlitzortungLightningProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BlitzortungLightningProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_blitzortung_lightning_lightning_stroke(```python
+
+    data=LightningStroke(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BlitzortungLightningMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BlitzortungLightningProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `blitzortung_lightning_mqtt_lightning_stroke_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'blitzortung_lightning_mqtt_lightning_stroke_async:  Callable[[ConsumerRecord,
+CloudEvent, LightningStroke], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Blitzortung.Lightning.mqtt.LightningStroke`: Live lightning-stroke event from the public
+LightningMaps / Blitzortung websocket feed. Each event represents one source-scoped stroke identifier with its
+observation time, coordinates, upstream delay and accuracy values, and optionally the detector participation flags
+carried in the public sta object.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlitzortungLightningProducer- `data`: The event data of type `blitzortung_producer_data.LightningStroke`.
+
+
+
+Producer for `Blitzortung.Lightning` message group.Example:
+
+
+
+#### Constructor```python
+
+async def blitzortung_lightning_mqtt_lightning_stroke_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LightningStroke) -> None:
+
+```python    # Process the event data
+
+BlitzortungLightningProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+blitzortung_lightning_dispatcher.blitzortung_lightning_mqtt_lightning_stroke_async =
+blitzortung_lightning_mqtt_lightning_stroke_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlitzortungLightningMqttProducer- `data`: The event data of type `blitzortung_producer_data.LightningStroke`.
+
+
+
+Producer for `Blitzortung.Lightning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def blitzortung_lightning_mqtt_lightning_stroke_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LightningStroke) -> None:
+
+```python    # Process the event data
+
+BlitzortungLightningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+blitzortung_lightning_mqtt_dispatcher.blitzortung_lightning_mqtt_lightning_stroke_async =
+blitzortung_lightning_mqtt_lightning_stroke_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_blitzortung_lightning_mqtt_lightning_stroke`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_blitzortung_lightning_mqtt_lightning_stroke(
+
+    self,##### `_process_event`
+
+    data: LightningStroke,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Blitzortung.Lightning.mqtt.LightningStroke` message. Live lightning-stroke event from the public
+LightningMaps / Blitzortung websocket feed. Each event represents one source-scoped stroke identifier with its
+observation time, coordinates, upstream delay and accuracy values, and optionally the detector participation flags
+carried in the public sta object.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LightningStroke`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_blitzortung_lightning_mqtt_lightning_stroke(
+
+    data=LightningStroke(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Blitzortung.Lightning.mqtt.LightningStroke` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_blitzortung_lightning_mqtt_lightning_stroke_batch(```
 
     messages=[
 

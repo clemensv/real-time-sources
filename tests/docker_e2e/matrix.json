@@ -6,6 +6,22 @@
       "module": "blitzortung"
     },
     {
+      "dir": "blitzortung",
+      "image": "blitzortung-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "blitzortung_mqtt"
+    },
+    {
+      "dir": "kystverket-ais",
+      "module": "kystverket_ais"
+    },
+    {
+      "dir": "kystverket-ais",
+      "image": "kystverket-ais-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "kystverket_ais_mqtt"
+    },
+    {
       "dir": "bluesky",
       "module": "bluesky"
     },
@@ -28,14 +44,14 @@
       "module": "aisstream_mqtt"
     },
     {
-      "dir": "autobahn",
-      "image": "autobahn-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "autobahn_mqtt"
+      "dir": "bfs-odl",
+      "module": "bfs_odl"
     },
     {
       "dir": "bfs-odl",
-      "module": "bfs_odl"
+      "image": "bfs-odl-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "bfs_odl_mqtt"
     },
     {
       "dir": "canada-aqhi",
@@ -64,6 +80,18 @@
       "module": "nve_hydro_mqtt"
     },
     {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "wallonia_issep_mqtt"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "german_waters_mqtt"
+    },
+    {
       "dir": "defra-aurn",
       "module": "defra_aurn"
     },
@@ -82,6 +110,12 @@
     {
       "dir": "hongkong-epd",
       "module": "hongkong_epd"
+    },
+    {
+      "dir": "hongkong-epd",
+      "image": "hongkong-epd-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "hongkong_epd_mqtt"
     },
     {
       "dir": "irail",
@@ -178,6 +212,12 @@
       "module": "smhi_hydro"
     },
     {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "smhi_hydro_mqtt"
+    },
+    {
       "dir": "uk-ea-flood-monitoring",
       "module": "uk_ea_flood_monitoring"
     },
@@ -202,8 +242,20 @@
       "module": "wsdot"
     },
     {
+      "dir": "wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "wikimedia_osm_diffs_mqtt"
+    },
+    {
       "dir": "xceed",
       "module": "xceed"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "autobahn_mqtt"
     },
     {
       "dir": "mode-s",
@@ -216,48 +268,26 @@
       "image": "wikimedia-eventstreams-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wikimedia_eventstreams_mqtt"
-    },
-    {
-      "dir": "bfs-odl",
-      "image": "bfs-odl-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "bfs_odl_mqtt"
-    },
-    {
-      "dir": "wallonia-issep",
-      "image": "wallonia-issep-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "wallonia_issep_mqtt"
-    },
-    {
-      "dir": "german-waters",
-      "image": "german-waters-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "german_waters_mqtt"
-    },
-    {
-      "dir": "hongkong-epd",
-      "image": "hongkong-epd-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "hongkong_epd_mqtt"
-    },
-    {
-      "dir": "smhi-hydro",
-      "image": "smhi-hydro-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "smhi_hydro_mqtt"
-    },
-    {
-      "dir": "wikimedia-osm-diffs",
-      "image": "wikimedia-osm-diffs-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "wikimedia_osm_diffs_mqtt"
     }
   ],
   "flow": [
     {
       "dir": "blitzortung",
       "test_class": "TestBlitzortungDockerFlow"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBlitzortungMqttDockerFlow"
+    },
+    {
+      "dir": "kystverket-ais",
+      "image": "kystverket-ais-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestKystverketAisMqttDockerFlow"
     },
     {
       "dir": "canada-aqhi",
@@ -275,11 +305,11 @@
       "test_class": "TestCHMIHydroMqttDockerFlow"
     },
     {
-      "dir": "autobahn",
-      "image": "autobahn-mqtt",
+      "dir": "bfs-odl",
+      "image": "bfs-odl-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestAutobahnMqttDockerFlow"
+      "test_class": "TestBfsOdlMqttDockerFlow"
     },
     {
       "dir": "bafu-hydro",
@@ -294,6 +324,20 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNVEHydroMqttDockerFlow"
+    },
+    {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWalloniaIssepMqttDockerFlow"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGermanWatersMqttDockerFlow"
     },
     {
       "dir": "defra-aurn",
@@ -314,6 +358,13 @@
     {
       "dir": "hongkong-epd",
       "test_class": "TestHongKongEPDDockerFlow"
+    },
+    {
+      "dir": "hongkong-epd",
+      "image": "hongkong-epd-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestHongkongEpdMqttDockerFlow"
     },
     {
       "dir": "hubeau-hydrometrie",
@@ -382,6 +433,13 @@
       "test_class": "TestSMHIHydroDockerFlow"
     },
     {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSmhiHydroMqttDockerFlow"
+    },
+    {
       "dir": "singapore-nea",
       "test_class": "TestSingaporeNEAAirQualityDockerFlow"
     },
@@ -410,8 +468,22 @@
       "test_class": "TestWSDOTDockerFlow"
     },
     {
+      "dir": "wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWikimediaOsmDiffsMqttDockerFlow"
+    },
+    {
       "dir": "xceed",
       "test_class": "TestXceedDockerFlow"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestAutobahnMqttDockerFlow"
     },
     {
       "dir": "mode-s",
@@ -426,48 +498,6 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWikimediaEventstreamsMqttDockerFlow"
-    },
-    {
-      "dir": "bfs-odl",
-      "image": "bfs-odl-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestBfsOdlMqttDockerFlow"
-    },
-    {
-      "dir": "wallonia-issep",
-      "image": "wallonia-issep-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestWalloniaIssepMqttDockerFlow"
-    },
-    {
-      "dir": "german-waters",
-      "image": "german-waters-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestGermanWatersMqttDockerFlow"
-    },
-    {
-      "dir": "hongkong-epd",
-      "image": "hongkong-epd-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestHongkongEpdMqttDockerFlow"
-    },
-    {
-      "dir": "smhi-hydro",
-      "image": "smhi-hydro-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestSmhiHydroMqttDockerFlow"
-    },
-    {
-      "dir": "wikimedia-osm-diffs",
-      "image": "wikimedia-osm-diffs-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestWikimediaOsmDiffsMqttDockerFlow"
     }
   ]
 }

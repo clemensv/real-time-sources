@@ -1,6 +1,6 @@
 
 
-# Kystverket_ais_producer Kafka Producer# Kystverket_ais_producer Event Dispatcher for Apache Kafka
+# Kystverket_ais-producer Kafka Producer# Kystverket_ais-producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,7 +15,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - NOKystverketAISEventDispatcher
+3. [Quick Start](#quick-start)    - NOKystverketAISEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NOKystverketAISMqttEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +41,10 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NOKystverketAISProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NOKystverketAISMqttProducersolution for event-driven applications.
 
 
 
@@ -86,7 +92,7 @@ Initializes the dispatcher.
 
 ```python
 
-from kystverket_ais_producer import NOKystverketAISProducer```python
+from kystverket_ais-producer import NOKystverketAISProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -192,6 +198,45 @@ no_kystverket_ais_position_report_class_a_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReportClassA`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_position_report_class_a_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PositionReportClassA) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_position_report_class_a_async =
+no_kystverket_ais_position_report_class_a_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -250,6 +295,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 no_kystverket_ais_dispatcher.no_kystverket_ais_static_voyage_data_async = no_kystverket_ais_static_voyage_data_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.StaticVoyageData`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_static_voyage_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticVoyageData) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_static_voyage_data_async =
+no_kystverket_ais_static_voyage_data_event
 
 **Parameters:**```
 
@@ -319,6 +403,45 @@ no_kystverket_ais_position_report_class_b_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReportClassB`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_position_report_class_b_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PositionReportClassB) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_position_report_class_b_async =
+no_kystverket_ais_position_report_class_b_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -382,6 +505,45 @@ no_kystverket_ais_dispatcher.no_kystverket_ais_static_data_class_b_async = no_ky
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.StaticDataClassB`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_static_data_class_b_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+StaticDataClassB) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_static_data_class_b_async =
+no_kystverket_ais_static_data_class_b_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -440,6 +602,246 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 no_kystverket_ais_dispatcher.no_kystverket_ais_aid_to_navigation_async = no_kystverket_ais_aid_to_navigation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.AidToNavigation`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidToNavigation) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_aid_to_navigation_async = no_kystverket_ais_aid_to_navigation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_kystverket_ais_position_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_kystverket_ais_position_report_async:  Callable[[ConsumerRecord, CloudEvent,
+PositionReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NO.Kystverket.AIS.PositionReport`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReport`.
+
+
+
+Producer for `NO.Kystverket.AIS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_position_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PositionReport)
+-> None:
+
+```python    # Process the event data
+
+NOKystverketAISProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_dispatcher.no_kystverket_ais_position_report_async = no_kystverket_ais_position_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReport`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_position_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PositionReport)
+-> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_position_report_async = no_kystverket_ais_position_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_kystverket_ais_ship_static_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_kystverket_ais_ship_static_async:  Callable[[ConsumerRecord, CloudEvent,
+ShipStatic], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NO.Kystverket.AIS.ShipStatic`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.ShipStatic`.
+
+
+
+Producer for `NO.Kystverket.AIS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
+None:
+
+```python    # Process the event data
+
+NOKystverketAISProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_dispatcher.no_kystverket_ais_ship_static_async = no_kystverket_ais_ship_static_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.ShipStatic`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
+None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_ship_static_async = no_kystverket_ais_ship_static_event
 
 **Parameters:**```
 
@@ -951,6 +1353,921 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_no_kystverket_ais_aid_to_navigation_batch(```
+
+    messages=[
+
+        AidToNavigation(...),Initializes the runner with a Kafka consumer.
+
+        AidToNavigation(...),
+
+        AidToNavigation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_no_kystverket_ais_position_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_kystverket_ais_position_report(
+
+    self,##### `_process_event`
+
+    data: PositionReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NO.Kystverket.AIS.PositionReport` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PositionReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_kystverket_ais_position_report(
+
+    data=PositionReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NO.Kystverket.AIS.PositionReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_kystverket_ais_position_report_batch(```
+
+    messages=[
+
+        PositionReport(...),Initializes the runner with a Kafka consumer.
+
+        PositionReport(...),
+
+        PositionReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_no_kystverket_ais_ship_static`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_kystverket_ais_ship_static(
+
+    self,##### `_process_event`
+
+    data: ShipStatic,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NO.Kystverket.AIS.ShipStatic` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ShipStatic`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_kystverket_ais_ship_static(
+
+    data=ShipStatic(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NO.Kystverket.AIS.ShipStatic` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_kystverket_ais_ship_static_batch(```
+
+    messages=[
+
+        ShipStatic(...),Initializes the runner with a Kafka consumer.
+
+        ShipStatic(...),
+
+        ShipStatic(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NOKystverketAISMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NOKystverketAISMqttEventDispatcher` handles events for the NO.Kystverket.AIS.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from kystverket_ais-producer import NOKystverketAISProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NOKystverketAISProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_no_kystverket_ais_position_report_class_a(```python
+
+    data=PositionReportClassA(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NOKystverketAISMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NOKystverketAISProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_kystverket_ais_mqtt_position_report_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_kystverket_ais_mqtt_position_report_async:  Callable[[ConsumerRecord, CloudEvent,
+PositionReport], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NO.Kystverket.AIS.mqtt.PositionReport`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReport`.
+
+
+
+Producer for `NO.Kystverket.AIS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_mqtt_position_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PositionReport) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_dispatcher.no_kystverket_ais_mqtt_position_report_async = no_kystverket_ais_mqtt_position_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReport`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_mqtt_position_report_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PositionReport) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_mqtt_position_report_async =
+no_kystverket_ais_mqtt_position_report_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_kystverket_ais_mqtt_ship_static_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_kystverket_ais_mqtt_ship_static_async:  Callable[[ConsumerRecord, CloudEvent,
+ShipStatic], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NO.Kystverket.AIS.mqtt.ShipStatic`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.ShipStatic`.
+
+
+
+Producer for `NO.Kystverket.AIS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_mqtt_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
+None:
+
+```python    # Process the event data
+
+NOKystverketAISProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_dispatcher.no_kystverket_ais_mqtt_ship_static_async = no_kystverket_ais_mqtt_ship_static_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.ShipStatic`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_mqtt_ship_static_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ShipStatic) ->
+None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_mqtt_ship_static_async = no_kystverket_ais_mqtt_ship_static_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_kystverket_ais_mqtt_aid_to_navigation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_kystverket_ais_mqtt_aid_to_navigation_async:  Callable[[ConsumerRecord, CloudEvent,
+AidToNavigation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NO.Kystverket.AIS.mqtt.AidToNavigation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.AidToNavigation`.
+
+
+
+Producer for `NO.Kystverket.AIS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_mqtt_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidToNavigation) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_dispatcher.no_kystverket_ais_mqtt_aid_to_navigation_async =
+no_kystverket_ais_mqtt_aid_to_navigation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NOKystverketAISMqttProducer- `data`: The event data of type `kystverket_ais_producer_data.AidToNavigation`.
+
+
+
+Producer for `NO.Kystverket.AIS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_kystverket_ais_mqtt_aid_to_navigation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AidToNavigation) -> None:
+
+```python    # Process the event data
+
+NOKystverketAISMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_kystverket_ais_mqtt_dispatcher.no_kystverket_ais_mqtt_aid_to_navigation_async =
+no_kystverket_ais_mqtt_aid_to_navigation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_no_kystverket_ais_mqtt_position_report`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_kystverket_ais_mqtt_position_report(
+
+    self,##### `_process_event`
+
+    data: PositionReport,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NO.Kystverket.AIS.mqtt.PositionReport` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PositionReport`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_kystverket_ais_mqtt_position_report(
+
+    data=PositionReport(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NO.Kystverket.AIS.mqtt.PositionReport` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_kystverket_ais_mqtt_position_report_batch(```
+
+    messages=[
+
+        PositionReport(...),Initializes the runner with a Kafka consumer.
+
+        PositionReport(...),
+
+        PositionReport(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_no_kystverket_ais_mqtt_ship_static`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_kystverket_ais_mqtt_ship_static(
+
+    self,##### `_process_event`
+
+    data: ShipStatic,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NO.Kystverket.AIS.mqtt.ShipStatic` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ShipStatic`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_kystverket_ais_mqtt_ship_static(
+
+    data=ShipStatic(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NO.Kystverket.AIS.mqtt.ShipStatic` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_kystverket_ais_mqtt_ship_static_batch(```
+
+    messages=[
+
+        ShipStatic(...),Initializes the runner with a Kafka consumer.
+
+        ShipStatic(...),
+
+        ShipStatic(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_no_kystverket_ais_mqtt_aid_to_navigation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_kystverket_ais_mqtt_aid_to_navigation(
+
+    self,##### `_process_event`
+
+    data: AidToNavigation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NO.Kystverket.AIS.mqtt.AidToNavigation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AidToNavigation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_kystverket_ais_mqtt_aid_to_navigation(
+
+    data=AidToNavigation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NO.Kystverket.AIS.mqtt.AidToNavigation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_kystverket_ais_mqtt_aid_to_navigation_batch(```
 
     messages=[
 

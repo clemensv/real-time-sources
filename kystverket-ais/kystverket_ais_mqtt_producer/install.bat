@@ -1,0 +1,2 @@
+pip install .\kystverket_ais_mqtt_producer_data
+pip install .\kystverket_ais_mqtt_producer_mqtt_client
