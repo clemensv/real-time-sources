@@ -85,20 +85,20 @@ jobs:
           id="${{ steps.pkg.outputs.id }}"
           if [ -f "$src/${id}_kafka/pyproject.toml" ]; then
             echo "split=true" >> "$GITHUB_OUTPUT"
-            echo "pkg_root=$src/${id}_kafka" >> "$GITHUB_OUTPUT"
+            echo "pkg_root=./$src/${id}_kafka" >> "$GITHUB_OUTPUT"
           else
             echo "split=false" >> "$GITHUB_OUTPUT"
-            echo "pkg_root=$src" >> "$GITHUB_OUTPUT"
+            echo "pkg_root=./$src" >> "$GITHUB_OUTPUT"
           fi
           if [ -d "$src/${id}_core" ] && [ -f "$src/${id}_core/pyproject.toml" ]; then
-            echo "core_dir=$src/${id}_core" >> "$GITHUB_OUTPUT"
+            echo "core_dir=./$src/${id}_core" >> "$GITHUB_OUTPUT"
           else
             echo "core_dir=" >> "$GITHUB_OUTPUT"
           fi
           if [ -d "$src/${id}_kafka_producer" ]; then
-            echo "producer_dir=$src/${id}_kafka_producer" >> "$GITHUB_OUTPUT"
+            echo "producer_dir=./$src/${id}_kafka_producer" >> "$GITHUB_OUTPUT"
           elif [ -d "$src/${id}_producer" ]; then
-            echo "producer_dir=$src/${id}_producer" >> "$GITHUB_OUTPUT"
+            echo "producer_dir=./$src/${id}_producer" >> "$GITHUB_OUTPUT"
           else
             echo "producer_dir=" >> "$GITHUB_OUTPUT"
           fi
