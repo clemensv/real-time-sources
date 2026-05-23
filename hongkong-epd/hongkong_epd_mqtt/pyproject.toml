@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "hongkong_epd_mqtt"
+version = "0.1.0"
+description = "MQTT/UNS feeder for the Hong Kong EPD AQHI data."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "hongkong_epd_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+requests = ">=2.32.3"
+hongkong-epd = { path = ".." }
+hongkong_epd_mqtt_producer_data = { path = "../hongkong_epd_mqtt_producer/hongkong_epd_mqtt_producer_data" }
+hongkong_epd_mqtt_producer_mqtt_client = { path = "../hongkong_epd_mqtt_producer/hongkong_epd_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+hongkong-epd-mqtt = "hongkong_epd_mqtt.app:main"

@@ -34,6 +34,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 from wikimedia_osm_diffs_producer_kafka_producer.producer import OrgOpenStreetMapDiffsEventProducer
 from wikimedia_osm_diffs_producer_kafka_producer.producer import OrgOpenStreetMapDiffsStateEventProducer
+from wikimedia_osm_diffs_producer_kafka_producer.producer import OrgOpenStreetMapDiffsMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -81,6 +82,46 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Org.OpenStreetMap.Diffs.ReplicationState' event to Kafka topic.
     await org_open_street_map_diffs_state_event_producer.send_org_open_street_map_diffs_replication_state(data = _replication_state)
     print(f"Sent 'Org.OpenStreetMap.Diffs.ReplicationState' event: {_replication_state.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        org_open_street_map_diffs_mqtt_event_producer = OrgOpenStreetMapDiffsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        org_open_street_map_diffs_mqtt_event_producer = OrgOpenStreetMapDiffsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Org.OpenStreetMap.Diffs.mqtt.Node ----
+    # TODO: Supply event data for the Org.OpenStreetMap.Diffs.mqtt.Node event
+    _map_change = MapChange()
+
+    # sends the 'Org.OpenStreetMap.Diffs.mqtt.Node' event to Kafka topic.
+    await org_open_street_map_diffs_mqtt_event_producer.send_org_open_street_map_diffs_mqtt_node(_geohash5 = 'TODO: replace me', _element_id = 'TODO: replace me', data = _map_change)
+    print(f"Sent 'Org.OpenStreetMap.Diffs.mqtt.Node' event: {_map_change.to_json()}")
+
+    # ---- Org.OpenStreetMap.Diffs.mqtt.Way ----
+    # TODO: Supply event data for the Org.OpenStreetMap.Diffs.mqtt.Way event
+    _map_change = MapChange()
+
+    # sends the 'Org.OpenStreetMap.Diffs.mqtt.Way' event to Kafka topic.
+    await org_open_street_map_diffs_mqtt_event_producer.send_org_open_street_map_diffs_mqtt_way(_geohash5 = 'TODO: replace me', _element_id = 'TODO: replace me', data = _map_change)
+    print(f"Sent 'Org.OpenStreetMap.Diffs.mqtt.Way' event: {_map_change.to_json()}")
+
+    # ---- Org.OpenStreetMap.Diffs.mqtt.Relation ----
+    # TODO: Supply event data for the Org.OpenStreetMap.Diffs.mqtt.Relation event
+    _map_change = MapChange()
+
+    # sends the 'Org.OpenStreetMap.Diffs.mqtt.Relation' event to Kafka topic.
+    await org_open_street_map_diffs_mqtt_event_producer.send_org_open_street_map_diffs_mqtt_relation(_geohash5 = 'TODO: replace me', _element_id = 'TODO: replace me', data = _map_change)
+    print(f"Sent 'Org.OpenStreetMap.Diffs.mqtt.Relation' event: {_map_change.to_json()}")
+
+    # ---- Org.OpenStreetMap.Diffs.mqtt.ReplicationState ----
+    # TODO: Supply event data for the Org.OpenStreetMap.Diffs.mqtt.ReplicationState event
+    _replication_state = ReplicationState()
+
+    # sends the 'Org.OpenStreetMap.Diffs.mqtt.ReplicationState' event to Kafka topic.
+    await org_open_street_map_diffs_mqtt_event_producer.send_org_open_street_map_diffs_mqtt_replication_state(data = _replication_state)
+    print(f"Sent 'Org.OpenStreetMap.Diffs.mqtt.ReplicationState' event: {_replication_state.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
