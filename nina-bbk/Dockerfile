@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir \
     nina_bbk_producer/nina_bbk_producer_kafka_producer \
     .
 
-ENTRYPOINT ["python", "-m", "nina_bbk"]
+CMD ["python", "-m", "nina_bbk"]

@@ -340,6 +340,134 @@
       "image": "king-county-marine-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "king_county_marine_mqtt"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "module": "inpe_deter_brazil"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "image": "inpe-deter-brazil-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "inpe_deter_brazil_mqtt"
+    },
+    {
+      "dir": "usgs-iv",
+      "image": "usgs-iv-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "usgs_iv_mqtt"
+    },
+    {
+      "dir": "rss",
+      "image": "rss-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "rssbridge_mqtt"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "image": "usgs-earthquakes-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "usgs_earthquakes_mqtt"
+    },
+    {
+      "dir": "eaws-albina",
+      "module": "eaws_albina"
+    },
+    {
+      "dir": "eaws-albina",
+      "image": "eaws-albina-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "eaws_albina_mqtt"
+    },
+    {
+      "dir": "gdacs",
+      "module": "gdacs"
+    },
+    {
+      "dir": "gdacs",
+      "image": "gdacs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "gdacs_mqtt"
+    },
+    {
+      "dir": "meteoalarm",
+      "module": "meteoalarm"
+    },
+    {
+      "dir": "meteoalarm",
+      "image": "meteoalarm-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "meteoalarm_mqtt"
+    },
+    {
+      "dir": "ptwc-tsunami",
+      "module": "ptwc_tsunami"
+    },
+    {
+      "dir": "ptwc-tsunami",
+      "image": "ptwc-tsunami-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "ptwc_tsunami_mqtt"
+    },
+    {
+      "dir": "nina-bbk",
+      "module": "nina_bbk"
+    },
+    {
+      "dir": "nina-bbk",
+      "image": "nina-bbk-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nina_bbk_mqtt"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "module": "jma_bosai_warning"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "jma_bosai_warning_mqtt"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "module": "jma_bosai_quake"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "jma_bosai_quake_mqtt"
+    },
+    {
+      "dir": "gracedb",
+      "module": "gracedb"
+    },
+    {
+      "dir": "gracedb",
+      "image": "gracedb-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "gracedb_mqtt"
+    },
+    {
+      "dir": "vatsim",
+      "module": "vatsim"
+    },
+    {
+      "dir": "vatsim",
+      "image": "vatsim-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "vatsim_mqtt"
+    },
+    {
+      "dir": "entur-norway",
+      "module": "entur_norway"
+    },
+    {
+      "dir": "entur-norway",
+      "image": "entur-norway-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "entur_norway_mqtt"
     }
   ],
   "flow": [
@@ -654,6 +782,104 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestKingCountyMarineMqttDockerFlow"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "image": "inpe-deter-brazil-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestInpeDeterBrazilMqttDockerFlow"
+    },
+    {
+      "dir": "usgs-iv",
+      "image": "usgs-iv-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUSGSIVMqttDockerFlow"
+    },
+    {
+      "dir": "rss",
+      "image": "rss-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestRssMqttDockerFlow"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "image": "usgs-earthquakes-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUSGSEarthquakesMqttDockerFlow"
+    },
+    {
+      "dir": "eaws-albina",
+      "image": "eaws-albina-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEawsAlbinaMqttDockerFlow"
+    },
+    {
+      "dir": "gdacs",
+      "image": "gdacs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGdacsMqttDockerFlow"
+    },
+    {
+      "dir": "meteoalarm",
+      "image": "meteoalarm-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestMeteoalarmMqttDockerFlow"
+    },
+    {
+      "dir": "ptwc-tsunami",
+      "image": "ptwc-tsunami-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestPtwcTsunamiMqttDockerFlow"
+    },
+    {
+      "dir": "nina-bbk",
+      "image": "nina-bbk-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNinaBbkMqttDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestJmaBosaiWarningMqttDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestJmaBosaiQuakeMqttDockerFlow"
+    },
+    {
+      "dir": "gracedb",
+      "image": "gracedb-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGraceDbMqttDockerFlow"
+    },
+    {
+      "dir": "vatsim",
+      "image": "vatsim-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestVatsimMqttDockerFlow"
+    },
+    {
+      "dir": "entur-norway",
+      "image": "entur-norway-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEnturNorwayMqttDockerFlow"
     }
   ]
 }

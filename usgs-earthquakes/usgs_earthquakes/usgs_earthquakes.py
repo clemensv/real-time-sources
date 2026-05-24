@@ -107,10 +107,9 @@ class USGSEarthquakePoller:
 
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
             try:
-                async with asyncio.timeout(30):
-                    async with session.get(url) as response:
-                        response.raise_for_status()
-                        data = await response.json()
+                async with session.get(url) as response:
+                    response.raise_for_status()
+                    data = await response.json()
             except asyncio.TimeoutError:
                 logger.error("Request timed out for feed %s", self.feed)
                 return []

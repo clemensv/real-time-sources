@@ -7,6 +7,7 @@ import asyncio
 import logging
 import os
 import typing
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import paho.mqtt.client as mqtt
@@ -20,7 +21,8 @@ except Exception:  # pragma: no cover
 from cloudevents.conversion import to_binary, to_structured
 from cloudevents.http import CloudEvent
 
-from rssbridge.rssbridge import load_feedstore, load_state, poll_feeds, save_feedstore
+from rssbridge.rssbridge import load_feedstore, load_state, poll_feeds, save_feedstore, save_state
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +37,14 @@ def _apply_topic_template(template: str, values: dict[str, str]) -> str:
 class _NoopProducer:
     def flush(self) -> None:
         return None
+
+
+def _drop_none(value):
+    if isinstance(value, dict):
+        return {k: _drop_none(v) for k, v in value.items() if v is not None}
+    if isinstance(value, list):
+        return [_drop_none(v) for v in value if v is not None]
+    return value
 
 
 class RssMqttProducer:
@@ -55,11 +65,12 @@ class RssMqttProducer:
             "type": "Microsoft.OpenData.RssFeeds.FeedItem",
             "source": _sourceurl,
             "subject": _item_id or data.item,
+            "time": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "datacontenttype": "application/json",
         }
-        payload = data.to_byte_array("application/json")
-        if isinstance(payload, str):
-            payload = payload.encode("utf-8")
+        payload_obj = _drop_none(data.to_serializer_dict())
+        import json
+        payload = json.dumps(payload_obj, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         event = CloudEvent(attributes, payload)
         publish_kwargs: dict[str, typing.Any] = {"qos": 1, "retain": False}
         if self.content_mode == "structured":
@@ -114,6 +125,7 @@ async def run() -> None:
     parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD", ""))
     parser.add_argument("--client-id", default=os.getenv("MQTT_CLIENT_ID", "rssbridge-mqtt"))
     parser.add_argument("--content-mode", choices=("binary", "structured"), default=os.getenv("MQTT_CONTENT_MODE", "binary"))
+    parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
     args = parser.parse_args()
     if args.process != "process":
         parser.error("only the 'process' command is supported")
@@ -138,7 +150,26 @@ async def run() -> None:
         if args.urls:
             save_feedstore(list(dict.fromkeys(feed_urls)))
         producer = RssMqttProducer(paho_client, content_mode=args.content_mode)
-        await poll_feeds(list(dict.fromkeys(feed_urls)), load_state(), producer)
+        if os.getenv("RSS_SAMPLE_MODE", "").lower() in ("1", "true", "yes"):
+            producer.send_microsoft_open_data_rss_feeds_feed_item(
+                _sourceurl="https://example.invalid/rss.xml",
+                _item_id="sample-item",
+                data=FeedItem(
+                    feed_slug="sample-feed", item="sample-item", id="sample-item",
+                    author=None, publisher=None, summary=None, title=None, source=None,
+                    content=None, enclosures=None, published=None, updated=None, created=None,
+                    expired=None, license=None, comments=None, contributors=None, links=None,
+                ),
+            )
+            return
+        state = load_state()
+        unique_feed_urls = list(dict.fromkeys(feed_urls))
+        if args.once:
+            for feed_url in unique_feed_urls:
+                bridge.process_feed(feed_url, state, producer)
+            save_state(state)
+        else:
+            await poll_feeds(unique_feed_urls, state, producer)
     finally:
         paho_client.loop_stop()
         paho_client.disconnect()
