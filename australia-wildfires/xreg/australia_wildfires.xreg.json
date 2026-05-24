@@ -20,6 +20,28 @@
       "messagegroups": [
         "#/messagegroups/AU.Gov.Emergency.Wildfires"
       ]
+    },
+    "AU.Gov.Emergency.Wildfires.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/AU.Gov.Emergency.Wildfires.mqtt"
+      ],
+      "description": "MQTT/5.0 binary-mode CloudEvents producer for the Australian wildfires UNS topic tree."
     }
   },
   "messagegroups": {
@@ -42,6 +64,22 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.jstruct/schemas/AU.Gov.Emergency.Wildfires.FireIncident"
+        }
+      }
+    },
+    "AU.Gov.Emergency.Wildfires.mqtt": {
+      "description": "MQTT/5.0 transport variant for Australian bushfire incidents. The UNS topic tree is wildfire/au/{state}/{status}/{incident_id}/incident. QoS 1 and retain=false are used because incident updates are time-varying event updates rather than static reference data; consumers deduplicate by {state}/{incident_id} and CloudEvents id.",
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.mqtt.FireIncident": {
+          "name": "FireIncident",
+          "basemessageurl": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "wildfire/au/{state}/{status}/{incident_id}/incident",
+            "qos": 1,
+            "retain": false,
+            "message_expiry_interval": 604800
+          }
         }
       }
     }
@@ -68,7 +106,8 @@
                   "title",
                   "alert_level",
                   "updated",
-                  "source_url"
+                  "source_url",
+                  "status"
                 ],
                 "properties": {
                   "incident_id": {
@@ -88,11 +127,9 @@
                     "description": "Fire danger alert level as classified by the issuing agency. Common values across states: 'Advice' (fire is under control or low threat), 'Watch and Act' (conditions are changing, prepare to leave), 'Emergency Warning' (immediate danger, take action now). NSW uses 'category' field, VIC uses 'action' or category1, QLD uses 'WarningLevel'."
                   },
                   "status": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Current operational status of the incident as reported by the source agency. NSW: extracted from the HTML description field (e.g. 'Under control', 'Being controlled', 'Out of control'). VIC: status field from VicEmergency (e.g. 'Unknown', 'Safe'). QLD: not typically provided, may be null."
+                    "type": "string",
+                    "description": "Topic-safe lowercase-kebab operational status for the incident (e.g. under-control, being-controlled, out-of-control, unknown). The MQTT feeder maps missing upstream status values to unknown so the {status} topic segment is never null or empty.",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
                   },
                   "location": {
                     "type": [
@@ -108,7 +145,7 @@
                     ],
                     "description": "Latitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry. Negative values indicate Southern Hemisphere.",
                     "unit": "degree",
-                    "symbol": "°"
+                    "symbol": "\\u00b0"
                   },
                   "longitude": {
                     "type": [
@@ -117,7 +154,7 @@
                     ],
                     "description": "Longitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry.",
                     "unit": "degree",
-                    "symbol": "°"
+                    "symbol": "\\u00b0"
                   },
                   "size_hectares": {
                     "type": [
@@ -159,3 +196,4 @@
     }
   }
 }
+

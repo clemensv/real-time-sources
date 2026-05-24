@@ -44,6 +44,9 @@ python -m australia_wildfires list
 
 # Feed to Kafka
 python -m australia_wildfires --connection-string "BootstrapServer=localhost:9092;EntityPath=australia-wildfires" feed
+
+# Feed to MQTT/UNS
+MQTT_BROKER_URL=mqtt://localhost:1883 python -m australia_wildfires_mqtt feed
 ```
 
 ## Container

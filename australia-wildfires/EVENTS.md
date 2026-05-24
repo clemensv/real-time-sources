@@ -13,6 +13,17 @@ Wildfires bridge, derived from the xreg manifest at
 | Envelope | CloudEvents/1.0 structured JSON |
 | Key | `{state}/{incident_id}` |
 
+## MQTT Endpoint
+
+| Property | Value |
+|----------|-------|
+| Protocol | MQTT/5.0 |
+| Topic | `wildfire/au/{state}/{status}/{incident_id}/incident` |
+| Envelope | CloudEvents/1.0 binary mode |
+| QoS / retain | QoS 1, non-retained |
+| Message expiry | 7 days (`604800` seconds) |
+| Retention rationale | Incident updates are time-varying events; only true reference data is retained. |
+
 ## Message Group: `AU.Gov.Emergency.Wildfires`
 
 ### `AU.Gov.Emergency.Wildfires.FireIncident`
@@ -26,6 +37,15 @@ Australian state emergency services.
 | `source` | `https://github.com/clemensv/real-time-sources/tree/main/australia-wildfires` |
 | `subject` | `{state}/{incident_id}` |
 
+### MQTT subscription patterns
+
+- All current wildfire incident updates: `wildfire/au/+/+/+/incident`
+- All NSW incident updates: `wildfire/au/nsw/+/+/incident`
+- All incidents with an under-control status: `wildfire/au/+/under-control/+/incident`
+- One incident across status changes: `wildfire/au/+/+/sample-incident-001/incident`
+
+`{state}` and `{status}` are normalized to lowercase kebab-case for MQTT. Missing upstream status values publish as `unknown`.
+
 #### Schema: `FireIncident`
 
 | Field | Type | Required | Description |
@@ -34,7 +54,7 @@ Australian state emergency services.
 | `state` | string | ✅ | Australian state abbreviation (NSW, VIC, QLD) |
 | `title` | string | ✅ | Human-readable title or headline |
 | `alert_level` | string | ✅ | Alert level (Advice, Watch and Act, Emergency Warning) |
-| `status` | string \| null | | Operational status of the incident |
+| `status` | string | ✅ | Topic-safe operational status; missing upstream values are normalized to `unknown` before MQTT publish, never null or empty |
 | `location` | string \| null | | Human-readable location description |
 | `latitude` | double \| null | | Latitude of incident centroid (WGS84, °) |
 | `longitude` | double \| null | | Longitude of incident centroid (WGS84, °) |

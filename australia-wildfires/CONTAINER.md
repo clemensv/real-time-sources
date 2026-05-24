@@ -16,6 +16,10 @@ JSON content mode. See [EVENTS.md](EVENTS.md) for the full event catalog.
 | `POLLING_INTERVAL` | No | Polling interval in seconds (default: `300`) |
 | `STATE_FILE` | No | Path for dedup state persistence (default: `~/.australia_wildfires_state.json`) |
 | `KAFKA_ENABLE_TLS` | No | Enable TLS for Kafka connections (default: `true`) |
+| `MQTT_BROKER_URL` | MQTT only | MQTT broker URL such as `mqtt://broker:1883` or `mqtts://broker:8883` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT only | Optional MQTT credentials |
+| `MQTT_CONTENT_MODE` | MQTT only | CloudEvents MQTT content mode (`binary`, default, or `structured`) |
+| `AUSTRALIA_WILDFIRES_SAMPLE_MODE` | MQTT test only | Publish one deterministic sample incident instead of polling live feeds |
 
 ## Connection Strings
 
@@ -50,6 +54,18 @@ docker run --rm \
   -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=australia-wildfires" \
   ghcr.io/clemensv/real-time-sources/australia-wildfires:latest
 ```
+
+### MQTT/UNS image
+
+```bash
+docker build -f Dockerfile.mqtt -t australia-wildfires-mqtt .
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtt://host.docker.internal:1883" \
+  ghcr.io/clemensv/real-time-sources/australia-wildfires-mqtt:latest
+```
+
+The MQTT image publishes QoS 1, non-retained binary CloudEvents under
+`wildfire/au/{state}/{status}/{incident_id}/incident`.
 
 ## Azure Container Instance
 

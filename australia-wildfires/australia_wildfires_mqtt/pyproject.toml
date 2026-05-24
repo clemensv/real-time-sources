@@ -1,0 +1,23 @@
+[project]
+name = "australia-wildfires-mqtt"
+version = "0.1.0"
+description = "Australian wildfires MQTT/UNS feeder"
+requires-python = ">=3.10"
+dependencies = [
+    "paho-mqtt",
+    "dataclasses_json",
+    "cloudevents",
+    "australia-wildfires",
+    "australia_wildfires_mqtt_producer_data",
+    "australia_wildfires_mqtt_producer_mqtt_client",
+]
+
+[project.scripts]
+australia-wildfires-mqtt = "australia_wildfires_mqtt.app:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["australia_wildfires_mqtt*"]
