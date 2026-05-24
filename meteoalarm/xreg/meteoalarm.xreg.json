@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/Meteoalarm.Warnings"
       ]
+    },
+    "Meteoalarm.Warnings.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "messagegroups": [
+        "#/messagegroups/Meteoalarm.Warnings.mqtt"
+      ],
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ]
     }
   },
   "messagegroups": {
@@ -43,6 +62,21 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning"
+        }
+      }
+    },
+    "Meteoalarm.Warnings.mqtt": {
+      "description": "MQTT/5.0 transport variant for Meteoalarm CAP weather warnings. Non-retained QoS-1 warning events route by country feed slug, native CAP severity, normalized Meteoalarm awareness type, and CAP identifier under alerts/intl/meteoalarm/meteoalarm/... The awareness_type axis is derived from the Meteoalarm awareness_type parameter label and normalized for MQTT topic safety.",
+      "messages": {
+        "Meteoalarm.Warnings.mqtt.WeatherWarning": {
+          "name": "WeatherWarning",
+          "basemessageurl": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -75,7 +109,9 @@
                   "severity",
                   "urgency",
                   "certainty",
-                  "area_desc"
+                  "area_desc",
+                  "country",
+                  "awareness_type"
                 ],
                 "properties": {
                   "identifier": {
@@ -126,7 +162,7 @@
                   },
                   "country": {
                     "type": "string",
-                    "description": "The country where the warning applies, derived from the feed name (e.g., 'germany', 'france')."
+                    "description": "Country feed slug where the warning applies (for example germany or france). Matches the {country} MQTT topic axis."
                   },
                   "event": {
                     "type": "string",
@@ -152,7 +188,7 @@
                   },
                   "severity": {
                     "type": "string",
-                    "description": "The CAP severity level indicating the intensity of the weather event.",
+                    "description": "Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.",
                     "enum": [
                       "Extreme",
                       "Severe",
@@ -221,7 +257,7 @@
                   },
                   "awareness_type": {
                     "type": "string",
-                    "description": "The Meteoalarm awareness type code identifying the hazard, e.g., '1; Wind', '2; Snow/Ice', '3; Thunderstorm', '4; Fog', '5; Extreme high temperature', '6; Extreme low temperature', '7; Coastal Event', '8; Forestfire', '9; Avalanches', '10; Rain', '11; Flooding', '12; Rain-Flood', '13; Coastalevent'."
+                    "description": "Meteoalarm awareness type label normalized to lowercase kebab-case for MQTT topic routing (for example wind, snow-ice, thunderstorm, flooding). Matches the {awareness_type} MQTT topic axis."
                   },
                   "area_desc": {
                     "type": "string",
@@ -234,6 +270,10 @@
                   "language": {
                     "type": "string",
                     "description": "The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB')."
+                  },
+                  "awareness_type_raw": {
+                    "type": "string",
+                    "description": "Raw Meteoalarm awareness_type parameter value as provided by CAP, for example \"2; Snow/Ice\"."
                   }
                 }
               }

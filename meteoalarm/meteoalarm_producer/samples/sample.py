@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsEventProducer
+from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Meteoalarm.WeatherWarning' event to Kafka topic.
     await meteoalarm_warnings_event_producer.send_meteoalarm_weather_warning(_identifier = 'TODO: replace me', data = _weather_warning)
     print(f"Sent 'Meteoalarm.WeatherWarning' event: {_weather_warning.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        meteoalarm_warnings_mqtt_event_producer = MeteoalarmWarningsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        meteoalarm_warnings_mqtt_event_producer = MeteoalarmWarningsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Meteoalarm.Warnings.mqtt.WeatherWarning ----
+    # TODO: Supply event data for the Meteoalarm.Warnings.mqtt.WeatherWarning event
+    _weather_warning = WeatherWarning()
+
+    # sends the 'Meteoalarm.Warnings.mqtt.WeatherWarning' event to Kafka topic.
+    await meteoalarm_warnings_mqtt_event_producer.send_meteoalarm_warnings_mqtt_weather_warning(_identifier = 'TODO: replace me', data = _weather_warning)
+    print(f"Sent 'Meteoalarm.Warnings.mqtt.WeatherWarning' event: {_weather_warning.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

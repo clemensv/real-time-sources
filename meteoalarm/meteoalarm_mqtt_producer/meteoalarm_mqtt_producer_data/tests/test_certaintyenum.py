@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from meteoalarm_producer_data.certaintyenum import CertaintyEnum
+from meteoalarm_mqtt_producer_data.certaintyenum import CertaintyEnum
 
 
 class Test_CertaintyEnum(unittest.TestCase):
