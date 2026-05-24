@@ -34,6 +34,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 from entur_norway_producer_kafka_producer.producer import NoEnturJourneysEventProducer
 from entur_norway_producer_kafka_producer.producer import NoEnturSituationsEventProducer
+from entur_norway_producer_kafka_producer.producer import NoEnturMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -99,6 +100,38 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'no.entur.PtSituationElement' event to Kafka topic.
     await no_entur_situations_event_producer.send_no_entur_pt_situation_element(_situation_number = 'TODO: replace me', data = _pt_situation_element)
     print(f"Sent 'no.entur.PtSituationElement' event: {_pt_situation_element.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        no_entur_mqtt_event_producer = NoEnturMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        no_entur_mqtt_event_producer = NoEnturMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- no.entur.mqtt.EstimatedVehicleJourney ----
+    # TODO: Supply event data for the no.entur.mqtt.EstimatedVehicleJourney event
+    _estimated_vehicle_journey = EstimatedVehicleJourney()
+
+    # sends the 'no.entur.mqtt.EstimatedVehicleJourney' event to Kafka topic.
+    await no_entur_mqtt_event_producer.send_no_entur_mqtt_estimated_vehicle_journey(_operating_day = 'TODO: replace me', _service_journey_id = 'TODO: replace me', data = _estimated_vehicle_journey)
+    print(f"Sent 'no.entur.mqtt.EstimatedVehicleJourney' event: {_estimated_vehicle_journey.to_json()}")
+
+    # ---- no.entur.mqtt.MonitoredVehicleJourney ----
+    # TODO: Supply event data for the no.entur.mqtt.MonitoredVehicleJourney event
+    _monitored_vehicle_journey = MonitoredVehicleJourney()
+
+    # sends the 'no.entur.mqtt.MonitoredVehicleJourney' event to Kafka topic.
+    await no_entur_mqtt_event_producer.send_no_entur_mqtt_monitored_vehicle_journey(_operating_day = 'TODO: replace me', _service_journey_id = 'TODO: replace me', data = _monitored_vehicle_journey)
+    print(f"Sent 'no.entur.mqtt.MonitoredVehicleJourney' event: {_monitored_vehicle_journey.to_json()}")
+
+    # ---- no.entur.mqtt.PtSituationElement ----
+    # TODO: Supply event data for the no.entur.mqtt.PtSituationElement event
+    _pt_situation_element = PtSituationElement()
+
+    # sends the 'no.entur.mqtt.PtSituationElement' event to Kafka topic.
+    await no_entur_mqtt_event_producer.send_no_entur_mqtt_pt_situation_element(_situation_number = 'TODO: replace me', data = _pt_situation_element)
+    print(f"Sent 'no.entur.mqtt.PtSituationElement' event: {_pt_situation_element.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

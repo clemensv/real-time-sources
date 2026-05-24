@@ -68,6 +68,13 @@ def _bool_text(text: Optional[str]) -> Optional[bool]:
     return text.strip().lower() in ('true', '1')
 
 
+def _topic_value(value: Optional[str]) -> str:
+    value = (value or '').strip()
+    if not value or any(char in value for char in ('/', '+', '#', '\x00')):
+        return 'unknown'
+    return value
+
+
 def parse_duration_to_seconds(duration: Optional[str]) -> Optional[int]:
     """Parse an ISO 8601 duration string like PT2M30S or -PT2M into total seconds."""
     if not duration:
@@ -222,17 +229,13 @@ class EnturNorwayBridge:
                 for jel in frame.findall('s:EstimatedVehicleJourney', NS):
                     try:
                         framed_ref = jel.find('s:FramedVehicleJourneyRef', NS)
-                        if framed_ref is None:
-                            continue
-                        operating_day = (framed_ref.findtext(_siri('DataFrameRef')) or '').strip()
-                        service_journey_id = (framed_ref.findtext(_siri('DatedVehicleJourneyRef')) or '').strip()
-                        if not service_journey_id or not operating_day:
-                            continue
+                        operating_day = _topic_value(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
+                        service_journey_id = _topic_value(framed_ref.findtext(_siri('DatedVehicleJourneyRef')) if framed_ref is not None else None)
 
-                        line_ref = (jel.findtext(_siri('LineRef')) or '').strip()
-                        operator_ref = (jel.findtext(_siri('OperatorRef')) or '').strip()
-                        if not operator_ref and service_journey_id and ':' in service_journey_id:
-                            operator_ref = service_journey_id.split(':')[0]
+                        line_ref = _topic_value(jel.findtext(_siri('LineRef')))
+                        operator_ref = _topic_value(jel.findtext(_siri('OperatorRef')))
+                        if operator_ref == 'unknown' and service_journey_id != 'unknown' and ':' in service_journey_id:
+                            operator_ref = _topic_value(service_journey_id.split(':')[0])
 
                         cancel_text = (jel.findtext(_siri('Cancellation')) or 'false').strip().lower()
                         is_cancellation = cancel_text in ('true', '1')
@@ -284,17 +287,13 @@ class EnturNorwayBridge:
                         continue
 
                     framed_ref = mvj_el.find('s:FramedVehicleJourneyRef', NS)
-                    if framed_ref is None:
-                        continue
-                    operating_day = (framed_ref.findtext(_siri('DataFrameRef')) or '').strip()
-                    service_journey_id = (framed_ref.findtext(_siri('DatedVehicleJourneyRef')) or '').strip()
-                    if not service_journey_id or not operating_day:
-                        continue
+                    operating_day = _topic_value(framed_ref.findtext(_siri('DataFrameRef')) if framed_ref is not None else None)
+                    service_journey_id = _topic_value(framed_ref.findtext(_siri('DatedVehicleJourneyRef')) if framed_ref is not None else None)
 
-                    line_ref = (mvj_el.findtext(_siri('LineRef')) or '').strip()
-                    operator_ref = (mvj_el.findtext(_siri('OperatorRef')) or '').strip()
-                    if not line_ref:
-                        continue
+                    line_ref = _topic_value(mvj_el.findtext(_siri('LineRef')))
+                    operator_ref = _topic_value(mvj_el.findtext(_siri('OperatorRef')))
+                    if operator_ref == 'unknown' and service_journey_id != 'unknown' and ':' in service_journey_id:
+                        operator_ref = _topic_value(service_journey_id.split(':')[0])
 
                     lat: Optional[float] = None
                     lon: Optional[float] = None
@@ -368,9 +367,7 @@ class EnturNorwayBridge:
                 continue
             for sit_el in situations_el.findall('s:PtSituationElement', NS):
                 try:
-                    situation_number = (sit_el.findtext(_siri('SituationNumber')) or '').strip()
-                    if not situation_number:
-                        continue
+                    situation_number = _topic_value(sit_el.findtext(_siri('SituationNumber')))
 
                     creation_time_raw = sit_el.findtext(_siri('CreationTime'))
                     if not creation_time_raw:
@@ -416,7 +413,7 @@ class EnturNorwayBridge:
                         source_type=source_type,
                         source_name=source_name,
                         progress=(sit_el.findtext(_siri('Progress')) or None),
-                        severity=(sit_el.findtext(_siri('Severity')) or None),
+                        severity=_topic_value(sit_el.findtext(_siri('Severity'))),
                         keywords=(sit_el.findtext(_siri('Keywords')) or None),
                         summary=_find_multilingual_text(sit_el, 'Summary'),
                         description=_find_multilingual_text(sit_el, 'Description'),
