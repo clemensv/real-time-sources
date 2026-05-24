@@ -77,3 +77,18 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 | `value` | *double* | Current measured value as a decimal number in the unit defined by the station's timeseries. |
 | `stateMnwMhw` | *string* |  |
 | `stateNswHsw` | *string* |  |
+
+---
+
+## Message Group: de.wsv.pegelonline.mqtt
+
+MQTT/5.0 transport variants of the PegelOnline CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/pegelonline/...
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info` | `de.wsv.pegelonline.Station` | `true` | `1` | `` |
+| `hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level` | `de.wsv.pegelonline.CurrentMeasurement` | `true` | `1` | `` |

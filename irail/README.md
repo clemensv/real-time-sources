@@ -76,3 +76,28 @@ configured.
 ## Fabric notebook hosting
 
 This source can also be hosted as a scheduled Microsoft Fabric notebook (see `irail/notebook/irail-feed.ipynb`) deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
+## Transports
+
+This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-irail-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+
+The MQTT contract is source-specific: MQTT/5.0 transport variants for iRail Belgian railway station metadata and live board snapshots. Topics are retained QoS-1 state leaves under transit/be/irail/irail/{station_id}/{event}. The station_id topic axis preserves the existing Kafka/CloudEvents subject. Use transit/be/irail/irail/{station_id}/# for one station, transit/be/irail/irail/+/station-board for all departure boards, and transit/be/irail/irail/+/arrival-board for all arrival boards. Board snapshots use message expiry so stale liveboards age out if polling stops.
+
+MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/irail.xreg.json`:
+
+| Topic pattern | Message type | Delivery |
+|---|---|---|
+| `transit/be/irail/irail/{station_id}/info` | `be.irail.Station` | QoS 1, retain=true |
+| `transit/be/irail/irail/{station_id}/station-board` | `be.irail.StationBoard` | QoS 1, retain=true, expiry=900s |
+| `transit/be/irail/irail/{station_id}/arrival-board` | `be.irail.ArrivalBoard` | QoS 1, retain=true, expiry=900s |
+
+Four Azure Container Instance deployment shapes are documented for this source:
+
+| Transport | Template |
+|---|---|
+| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
+| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
+| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
+| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+
+See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
