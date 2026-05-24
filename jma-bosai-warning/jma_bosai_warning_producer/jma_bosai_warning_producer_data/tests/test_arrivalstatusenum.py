@@ -29,6 +29,6 @@ class Test_ArrivalStatusenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(ArrivalStatusenum.ESTIMATED.value, "ESTIMATED")
-        self.assertEqual(ArrivalStatusenum.FIRST_WAVE_OBSERVED.value, "FIRST_WAVE_OBSERVED")
-        self.assertEqual(ArrivalStatusenum.MAX_WAVE_OBSERVED.value, "MAX_WAVE_OBSERVED")
+        self.assertEqual(ArrivalStatusenum.ESTIMATED.value, 'ESTIMATED')
+        self.assertEqual(ArrivalStatusenum.FIRST_WAVE_OBSERVED.value, 'FIRST_WAVE_OBSERVED')
+        self.assertEqual(ArrivalStatusenum.MAX_WAVE_OBSERVED.value, 'MAX_WAVE_OBSERVED')

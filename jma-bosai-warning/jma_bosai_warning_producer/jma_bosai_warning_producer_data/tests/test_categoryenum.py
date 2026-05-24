@@ -29,7 +29,7 @@ class Test_CategoryEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(CategoryEnum.MAJOR_WARNING.value, "MAJOR_WARNING")
-        self.assertEqual(CategoryEnum.WARNING.value, "WARNING")
-        self.assertEqual(CategoryEnum.ADVISORY.value, "ADVISORY")
-        self.assertEqual(CategoryEnum.FORECAST.value, "FORECAST")
+        self.assertEqual(CategoryEnum.MAJOR_WARNING.value, 'MAJOR_WARNING')
+        self.assertEqual(CategoryEnum.WARNING.value, 'WARNING')
+        self.assertEqual(CategoryEnum.ADVISORY.value, 'ADVISORY')
+        self.assertEqual(CategoryEnum.FORECAST.value, 'FORECAST')

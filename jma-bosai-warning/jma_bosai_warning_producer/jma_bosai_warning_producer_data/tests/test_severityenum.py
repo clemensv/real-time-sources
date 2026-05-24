@@ -16,20 +16,21 @@ class Test_SeverityEnum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = SeverityEnum.NONE
+        self.instance = SeverityEnum.REFERENCE
 
     @staticmethod
     def create_instance():
         """
         Create instance of SeverityEnum
         """
-        return SeverityEnum.NONE
+        return SeverityEnum.REFERENCE
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(SeverityEnum.NONE.value, "NONE")
-        self.assertEqual(SeverityEnum.ADVISORY.value, "ADVISORY")
-        self.assertEqual(SeverityEnum.WARNING.value, "WARNING")
-        self.assertEqual(SeverityEnum.EMERGENCY_WARNING.value, "EMERGENCY_WARNING")
+        self.assertEqual(SeverityEnum.REFERENCE.value, 'REFERENCE')
+        self.assertEqual(SeverityEnum.NONE.value, 'NONE')
+        self.assertEqual(SeverityEnum.ADVISORY.value, 'ADVISORY')
+        self.assertEqual(SeverityEnum.WARNING.value, 'WARNING')
+        self.assertEqual(SeverityEnum.EMERGENCY_WARNING.value, 'EMERGENCY_WARNING')

@@ -29,6 +29,6 @@ class Test_OfficeTypeenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(OfficeTypeenum.PREFECTURE.value, "PREFECTURE")
-        self.assertEqual(OfficeTypeenum.SUBREGION.value, "SUBREGION")
-        self.assertEqual(OfficeTypeenum.OFFICE.value, "OFFICE")
+        self.assertEqual(OfficeTypeenum.PREFECTURE.value, 'PREFECTURE')
+        self.assertEqual(OfficeTypeenum.SUBREGION.value, 'SUBREGION')
+        self.assertEqual(OfficeTypeenum.OFFICE.value, 'OFFICE')

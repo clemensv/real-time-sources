@@ -29,6 +29,6 @@ class Test_InfoTypeenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(InfoTypeenum.ISSUED.value, "ISSUED")
-        self.assertEqual(InfoTypeenum.CORRECTED.value, "CORRECTED")
-        self.assertEqual(InfoTypeenum.CANCELLED.value, "CANCELLED")
+        self.assertEqual(InfoTypeenum.ISSUED.value, 'ISSUED')
+        self.assertEqual(InfoTypeenum.CORRECTED.value, 'CORRECTED')
+        self.assertEqual(InfoTypeenum.CANCELLED.value, 'CANCELLED')

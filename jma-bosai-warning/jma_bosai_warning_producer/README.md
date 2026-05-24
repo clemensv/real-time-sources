@@ -17,7 +17,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - JPJMAWarningEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    JPJMATsunamiEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    JPJMATsunamiEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPJMAWarningMqttEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +47,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - JPJMATsunamiProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPJMAWarningMqttProducersolution for event-driven applications.
 
 
 
@@ -233,6 +239,43 @@ jp_jma_tsunami_dispatcher.jp_jma_warning_office_async = jp_jma_warning_office_ev
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningMqttProducer- `data`: The event data of type `jma_bosai_warning_producer_data.Office`.
+
+
+
+Producer for `JP.JMA.Warning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_office_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Office) -> None:
+
+```python    # Process the event data
+
+JPJMAWarningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_mqtt_dispatcher.jp_jma_warning_office_async = jp_jma_warning_office_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -330,6 +373,44 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 jp_jma_tsunami_dispatcher.jp_jma_warning_weather_warning_async = jp_jma_warning_weather_warning_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningMqttProducer- `data`: The event data of type `jma_bosai_warning_producer_data.WeatherWarning`.
+
+
+
+Producer for `JP.JMA.Warning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_weather_warning_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WeatherWarning) ->
+None:
+
+```python    # Process the event data
+
+JPJMAWarningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_mqtt_dispatcher.jp_jma_warning_weather_warning_async = jp_jma_warning_weather_warning_event
 
 **Parameters:**```
 
@@ -738,6 +819,44 @@ jp_jma_tsunami_dispatcher.jp_jma_tsunami_tsunami_alert_async = jp_jma_tsunami_ts
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningMqttProducer- `data`: The event data of type `jma_bosai_warning_producer_data.TsunamiAlert`.
+
+
+
+Producer for `JP.JMA.Warning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_tsunami_tsunami_alert_event(record: ConsumerRecord, cloud_event: CloudEvent, data: TsunamiAlert) ->
+None:
+
+```python    # Process the event data
+
+JPJMAWarningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_mqtt_dispatcher.jp_jma_tsunami_tsunami_alert_async = jp_jma_tsunami_tsunami_alert_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -841,6 +960,584 @@ await producer.send_jp_jma_tsunami_tsunami_alert_batch(```
         TsunamiAlert(...),
 
         TsunamiAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPJMAWarningMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPJMAWarningMqttEventDispatcher` handles events for the JP.JMA.Warning.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from jma_bosai_warning_producer import JPJMAWarningProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPJMAWarningProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_jma_warning_office(```python
+
+    data=Office(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPJMAWarningMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPJMAWarningProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_jma_warning_mqtt_office_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_jma_warning_mqtt_office_async:  Callable[[ConsumerRecord, CloudEvent, Office],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.JMA.Warning.mqtt.Office`: JMA Bosai warning office reference data from area.json
+offices.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningProducer- `data`: The event data of type `jma_bosai_warning_producer_data.Office`.
+
+
+
+Producer for `JP.JMA.Warning` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_mqtt_office_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Office) -> None:
+
+```python    # Process the event data
+
+JPJMAWarningProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_dispatcher.jp_jma_warning_mqtt_office_async = jp_jma_warning_mqtt_office_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMATsunamiProducer- `data`: The event data of type `jma_bosai_warning_producer_data.Office`.
+
+
+
+Producer for `JP.JMA.Tsunami` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_mqtt_office_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Office) -> None:
+
+```python    # Process the event data
+
+JPJMATsunamiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_tsunami_dispatcher.jp_jma_warning_mqtt_office_async = jp_jma_warning_mqtt_office_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningMqttProducer- `data`: The event data of type `jma_bosai_warning_producer_data.Office`.
+
+
+
+Producer for `JP.JMA.Warning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_mqtt_office_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Office) -> None:
+
+```python    # Process the event data
+
+JPJMAWarningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_mqtt_dispatcher.jp_jma_warning_mqtt_office_async = jp_jma_warning_mqtt_office_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_jma_warning_mqtt_weather_warning_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_jma_warning_mqtt_weather_warning_async:  Callable[[ConsumerRecord, CloudEvent,
+WeatherWarning], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.JMA.Warning.mqtt.WeatherWarning`: JMA Bosai weather warning/advisory telemetry for one
+forecast area within an office bulletin.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningProducer- `data`: The event data of type `jma_bosai_warning_producer_data.WeatherWarning`.
+
+
+
+Producer for `JP.JMA.Warning` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_mqtt_weather_warning_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherWarning) -> None:
+
+```python    # Process the event data
+
+JPJMAWarningProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_dispatcher.jp_jma_warning_mqtt_weather_warning_async = jp_jma_warning_mqtt_weather_warning_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMATsunamiProducer- `data`: The event data of type `jma_bosai_warning_producer_data.WeatherWarning`.
+
+
+
+Producer for `JP.JMA.Tsunami` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_mqtt_weather_warning_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherWarning) -> None:
+
+```python    # Process the event data
+
+JPJMATsunamiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_tsunami_dispatcher.jp_jma_warning_mqtt_weather_warning_async = jp_jma_warning_mqtt_weather_warning_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPJMAWarningMqttProducer- `data`: The event data of type `jma_bosai_warning_producer_data.WeatherWarning`.
+
+
+
+Producer for `JP.JMA.Warning.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_jma_warning_mqtt_weather_warning_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherWarning) -> None:
+
+```python    # Process the event data
+
+JPJMAWarningMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_jma_warning_mqtt_dispatcher.jp_jma_warning_mqtt_weather_warning_async = jp_jma_warning_mqtt_weather_warning_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_jma_warning_mqtt_office`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_jma_warning_mqtt_office(
+
+    self,##### `_process_event`
+
+    data: Office,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.JMA.Warning.mqtt.Office` message. JMA Bosai warning office reference data from area.json offices.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Office`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_jma_warning_mqtt_office(
+
+    data=Office(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.JMA.Warning.mqtt.Office` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_jma_warning_mqtt_office_batch(```
+
+    messages=[
+
+        Office(...),Initializes the runner with a Kafka consumer.
+
+        Office(...),
+
+        Office(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_jma_warning_mqtt_weather_warning`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_jma_warning_mqtt_weather_warning(
+
+    self,##### `_process_event`
+
+    data: WeatherWarning,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.JMA.Warning.mqtt.WeatherWarning` message. JMA Bosai weather warning/advisory telemetry for one
+forecast area within an office bulletin.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherWarning`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_jma_warning_mqtt_weather_warning(
+
+    data=WeatherWarning(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.JMA.Warning.mqtt.WeatherWarning` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_jma_warning_mqtt_weather_warning_batch(```
+
+    messages=[
+
+        WeatherWarning(...),Initializes the runner with a Kafka consumer.
+
+        WeatherWarning(...),
+
+        WeatherWarning(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

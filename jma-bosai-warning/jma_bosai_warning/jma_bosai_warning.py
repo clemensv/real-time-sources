@@ -46,6 +46,16 @@ SPECIAL_WARNING_CODES = {"32", "33", "35", "36", "37", "38"}
 INFO_TYPE_MAP = {"発表": "ISSUED", "訂正": "CORRECTED", "取消": "CANCELLED", "キャンセル": "CANCELLED"}
 WARNING_STATUS_MAP = {"発表": "ISSUED", "継続": "CONTINUED", "解除": "CANCELLED", "発表警報・注意報はなし": "NO_WARNINGS_OR_ADVISORIES", "警報": "WARNING", "注意報": "ADVISORY", "特別警報": "EMERGENCY_WARNING"}
 TITLE_EN_MAP = {"津波警報・注意報・予報": "Tsunami warnings, advisories and forecasts", "津波情報": "Tsunami information"}
+PREFECTURE_BY_PREFIX = {
+    "01": "hokkaido", "02": "aomori", "03": "iwate", "04": "miyagi", "05": "akita", "06": "yamagata", "07": "fukushima",
+    "08": "ibaraki", "09": "tochigi", "10": "gunma", "11": "saitama", "12": "chiba", "13": "tokyo", "14": "kanagawa",
+    "15": "niigata", "16": "toyama", "17": "ishikawa", "18": "fukui", "19": "yamanashi", "20": "nagano", "21": "gifu",
+    "22": "shizuoka", "23": "aichi", "24": "mie", "25": "shiga", "26": "kyoto", "27": "osaka", "28": "hyogo",
+    "29": "nara", "30": "wakayama", "31": "tottori", "32": "shimane", "33": "okayama", "34": "hiroshima", "35": "yamaguchi",
+    "36": "tokushima", "37": "kagawa", "38": "ehime", "39": "kochi", "40": "fukuoka", "41": "saga", "42": "nagasaki",
+    "43": "kumamoto", "44": "oita", "45": "miyazaki", "46": "kagoshima", "47": "okinawa",
+}
+SEVERITY_RANK = {"NONE": 0, "ADVISORY": 1, "WARNING": 2, "EMERGENCY_WARNING": 3}
 
 
 def make_retrying_session() -> requests.Session:
@@ -98,6 +108,22 @@ def status_to_severity(status: str | None, code: str | None = None) -> str:
     if "注意報" in status:
         return "ADVISORY"
     return "WARNING"
+
+
+def _topic_segment(value: str | None) -> str:
+    text = (value or "unknown").strip().lower() or "unknown"
+    text = re.sub(r"[^a-z0-9-]+", "-", text)
+    return text.strip("-") or "unknown"
+
+
+def prefecture_for_office(office_code: str, name_en: str | None = None) -> str:
+    return PREFECTURE_BY_PREFIX.get(str(office_code)[:2]) or _topic_segment(name_en)
+
+
+def warning_record_severity(warnings: list[dict[str, Any]]) -> str:
+    if not warnings:
+        return "NONE"
+    return max((str(item.get("severity") or "NONE") for item in warnings), key=lambda value: SEVERITY_RANK.get(value, 0))
 
 
 def _load_state(path: str) -> dict[str, Any]:
@@ -177,6 +203,7 @@ def parse_weather_warning_payload(office_code: str, payload: dict[str, Any], are
                     jp, en = WARNING_CODE_DESCRIPTIONS.get(code or "", (code or "", code or ""))
                 warnings.append({"code": code, "code_description_jp": jp, "code_description_en": en, "status": WARNING_STATUS_MAP.get(status_text, "CONTINUED"), "severity": status_to_severity(status_text, code)})
             records.append({
+                "prefecture": prefecture_for_office(office_code), "severity": warning_record_severity(warnings), "event": "warning",
                 "office_code": office_code, "area_code": area_code, "area_name": area.get("name") or area_names.get(area_code, area_code),
                 "report_datetime": jst_to_utc(local_report) or "1970-01-01T00:00:00Z", "report_datetime_local": local_report or "1970-01-01T00:00:00+09:00",
                 "headline_text": payload.get("headlineText"), "warnings": warnings, "time_defines": time_defines,
@@ -345,8 +372,8 @@ class JmaBosaiWarningAPI:
     def office_records(self) -> list[dict[str, Any]]:
         offices = self.area_catalog.get("offices") if self.area_catalog else None
         if offices:
-            return [{"office_code": code, "area_code": code, "name_jp": item.get("name", code), "name_en": item.get("enName", code), "parent_office_code": item.get("parent"), "office_type": "PREFECTURE" if code.endswith("0000") and not code.startswith("01") else "SUBREGION"} for code, item in offices.items()]
-        return [{**o, "area_code": o["code"]} for o in WARNING_OFFICES]
+            return [{"prefecture": prefecture_for_office(code, item.get("enName")), "severity": "REFERENCE", "event": "office", "office_code": code, "area_code": code, "name_jp": item.get("name", code), "name_en": item.get("enName", code), "parent_office_code": item.get("parent"), "office_type": "PREFECTURE" if code.endswith("0000") and not code.startswith("01") else "SUBREGION"} for code, item in offices.items()]
+        return [{**o, "prefecture": prefecture_for_office(o["code"], o.get("name_en")), "severity": "REFERENCE", "event": "office", "area_code": o["code"]} for o in WARNING_OFFICES]
 
     def fetch_warning_payload(self, office_code: str) -> dict[str, Any]:
         response = self.session.get(WARNING_URL_TEMPLATE.format(office_code=office_code), timeout=20)

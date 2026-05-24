@@ -41,6 +41,25 @@
       "messagegroups": [
         "#/messagegroups/JP.JMA.Tsunami"
       ]
+    },
+    "JP.JMA.Warning.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Warning.mqtt"
+      ],
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ]
     }
   },
   "messagegroups": {
@@ -111,6 +130,31 @@
           "dataschemauri": "#/schemagroups/JP.JMA.Tsunami.jstruct/schemas/JP.JMA.Tsunami.TsunamiAlert"
         }
       }
+    },
+    "JP.JMA.Warning.mqtt": {
+      "description": "MQTT/5.0 transport variant for JMA Bosai weather warnings. Retained QoS-1 office reference records and non-retained QoS-1 warning events route by Romanized prefecture, severity, issuing office code, forecast area code, and fixed event name under alerts/jp/jma/jma-bosai-warning/... so wildcard subscribers can follow one prefecture, severity, office, or area without parsing Japanese administrative names.",
+      "messages": {
+        "JP.JMA.Warning.mqtt.Office": {
+          "name": "Office",
+          "basemessageurl": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "JP.JMA.Warning.mqtt.WeatherWarning": {
+          "name": "WeatherWarning",
+          "basemessageurl": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -167,6 +211,29 @@
                       "SUBREGION",
                       "OFFICE"
                     ]
+                  },
+                  "prefecture": {
+                    "type": "string",
+                    "description": "ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name.",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  },
+                  "severity": {
+                    "type": "string",
+                    "description": "MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity.",
+                    "enum": [
+                      "REFERENCE",
+                      "NONE",
+                      "ADVISORY",
+                      "WARNING",
+                      "EMERGENCY_WARNING"
+                    ]
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "Fixed MQTT topic event segment for retained office reference records.",
+                    "enum": [
+                      "office"
+                    ]
                   }
                 },
                 "required": [
@@ -175,7 +242,10 @@
                   "name_jp",
                   "name_en",
                   "parent_office_code",
-                  "office_type"
+                  "office_type",
+                  "prefecture",
+                  "severity",
+                  "event"
                 ]
               }
             }
@@ -195,6 +265,22 @@
                 "type": "object",
                 "description": "JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.",
                 "properties": {
+                  "prefecture": {
+                    "type": "string",
+                    "description": "ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name.",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  },
+                  "severity": {
+                    "type": "string",
+                    "description": "MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis.",
+                    "enum": [
+                      "REFERENCE",
+                      "NONE",
+                      "ADVISORY",
+                      "WARNING",
+                      "EMERGENCY_WARNING"
+                    ]
+                  },
                   "office_code": {
                     "type": "string",
                     "description": "Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component.",
@@ -210,6 +296,13 @@
                     "altnames": {
                       "jma-bosai": "timeSeries[].areas[].code"
                     }
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "Fixed MQTT topic event segment for JMA Bosai weather warning state records.",
+                    "enum": [
+                      "warning"
+                    ]
                   },
                   "area_name": {
                     "type": "string",
@@ -395,6 +488,7 @@
                   }
                 },
                 "required": [
+                  "prefecture",
                   "office_code",
                   "area_code",
                   "area_name",
@@ -402,7 +496,9 @@
                   "report_datetime_local",
                   "headline_text",
                   "warnings",
-                  "time_defines"
+                  "time_defines",
+                  "severity",
+                  "event"
                 ]
               }
             }

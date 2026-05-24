@@ -13,6 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
 from jma_bosai_warning_producer_data.warningitem import WarningItem
+from jma_bosai_warning_producer_data.severityenum import SeverityEnum
+from jma_bosai_warning_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -23,8 +25,11 @@ class WeatherWarning:
     JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.
     
     Attributes:
+        prefecture (str)
+        severity (SeverityEnum)
         office_code (str)
         area_code (str)
+        event (EventEnum)
         area_name (str)
         report_datetime (datetime.datetime)
         report_datetime_local (datetime.datetime)
@@ -34,8 +39,11 @@ class WeatherWarning:
     """
     
     
+    prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
+    severity: SeverityEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
     office_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="office_code"))
     area_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
+    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
     area_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name"))
     report_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     report_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
@@ -168,12 +176,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            office_code='mpqgrgufzcgweojbiwve',
-            area_code='fvyxbdkbqgxuoapyrqsu',
-            area_name='ayikcndysykmiwkfmwta',
+            prefecture='upcjoayxipqfvkuhbakt',
+            severity=SeverityEnum.REFERENCE,
+            office_code='nchjuxrjaywlkozcjabl',
+            area_code='atrbqtrtlmonivzyylup',
+            event=EventEnum.warning,
+            area_name='eydorkmolqbxhhujjqxh',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='kzdxnjwrnnfacuzbxvvn',
-            warnings=[None, None],
+            headline_text='tjcdtwhtabzasjzhqlbh',
+            warnings=[None],
             time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )
