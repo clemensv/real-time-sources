@@ -1,4 +1,4 @@
-""" AffectedPrefecture dataclass. """
+""" AffectedCity dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,26 +11,28 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
+from jma_bosai_quake_mqtt_producer_data.maxintensityenum import MaxIntensityenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class AffectedPrefecture:
+class AffectedCity:
     """
-    Prefecture-level maximum seismic intensity summary from each object in the JMA Bosai list.json int array. JMA publishes this compact list with prefecture code and the maximum observed JMA seismic intensity in that prefecture for the report.
+    City-level maximum seismic intensity summary derived from each city item nested under JMA Bosai list.json int[] prefecture entries.
     
     Attributes:
-        code (str)
+        prefecture_code (str)
+        city_code (str)
         max_intensity (MaxIntensityenum)
     """
     
     
-    code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code"))
+    prefecture_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture_code"))
+    city_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="city_code"))
     max_intensity: MaxIntensityenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_intensity"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'AffectedPrefecture':
+    def from_serializer_dict(cls, data: dict) -> 'AffectedCity':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -103,7 +105,7 @@ class AffectedPrefecture:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['AffectedPrefecture']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['AffectedCity']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -140,13 +142,13 @@ class AffectedPrefecture:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return AffectedPrefecture.from_serializer_dict(_record)
+                return AffectedCity.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'AffectedPrefecture':
+    def create_instance(cls) -> 'AffectedCity':
         """
         Creates an instance of the dataclass with test values.
         
@@ -154,6 +156,7 @@ class AffectedPrefecture:
             An instance of the dataclass.
         """
         return cls(
-            code='pbyvwahzzzrzrvkplzlh',
+            prefecture_code='tecurlobzkdvisjpxsok',
+            city_code='jalgexsrzjqzxobunezf',
             max_intensity=MaxIntensityenum.INTENSITY_1
         )

@@ -60,6 +60,16 @@ _MAX_INTENSITY_MAP = {
     "6+": MaxIntensityenum.INTENSITY_6_PLUS,
     "7": MaxIntensityenum.INTENSITY_7,
 }
+_PREFECTURE_BY_CODE = {
+    "01": "hokkaido", "02": "aomori", "03": "iwate", "04": "miyagi", "05": "akita", "06": "yamagata", "07": "fukushima",
+    "08": "ibaraki", "09": "tochigi", "10": "gunma", "11": "saitama", "12": "chiba", "13": "tokyo", "14": "kanagawa",
+    "15": "niigata", "16": "toyama", "17": "ishikawa", "18": "fukui", "19": "yamanashi", "20": "nagano", "21": "gifu",
+    "22": "shizuoka", "23": "aichi", "24": "mie", "25": "shiga", "26": "kyoto", "27": "osaka", "28": "hyogo",
+    "29": "nara", "30": "wakayama", "31": "tottori", "32": "shimane", "33": "okayama", "34": "hiroshima", "35": "yamaguchi",
+    "36": "tokushima", "37": "kagawa", "38": "ehime", "39": "kochi", "40": "fukuoka", "41": "saga", "42": "nagasaki",
+    "43": "kumamoto", "44": "oita", "45": "miyazaki", "46": "kagoshima", "47": "okinawa",
+}
+_PREFECTURE_NAMES = set(_PREFECTURE_BY_CODE.values())
 
 
 def create_retry_session() -> requests.Session:
@@ -144,6 +154,34 @@ def parse_optional_string(value: Any) -> Optional[str]:
     if value in (None, ""):
         return None
     return str(value)
+
+
+def _topic_segment(value: str | None) -> str:
+    text = (value or "unknown").strip().lower() or "unknown"
+    text = re.sub(r"[^a-z0-9-]+", "-", text)
+    return text.strip("-") or "unknown"
+
+
+def prefecture_slug(epicenter_area_en: str | None, affected_prefectures: List[AffectedPrefecture]) -> str:
+    words = re.findall(r"[A-Za-z]+", epicenter_area_en or "")
+    lowered = [word.lower() for word in words]
+    for name in _PREFECTURE_NAMES:
+        if name in lowered:
+            return name
+    if affected_prefectures:
+        return _PREFECTURE_BY_CODE.get(affected_prefectures[0].code[:2], "unknown")
+    return "unknown"
+
+
+def magnitude_bucket(magnitude: Optional[float]) -> str:
+    if magnitude is None:
+        return "magnitude-unknown"
+    if magnitude < 1:
+        return "magnitude-lt1"
+    bucket = int(magnitude)
+    if bucket >= 9:
+        return "magnitude-9plus"
+    return f"magnitude-{bucket}"
 
 
 def extract_tsunami_possible(detail: Optional[Dict[str, Any]]) -> Optional[bool]:
@@ -268,7 +306,11 @@ class JmaBosaiQuakeAPI:
                         )
                     )
 
+        magnitude = parse_optional_float(entry.get("mag"))
+        epicenter_area_en = parse_optional_string(entry.get("en_anm"))
         return EarthquakeReport(
+            prefecture=prefecture_slug(epicenter_area_en, affected_prefectures),
+            magnitude_bucket=magnitude_bucket(magnitude),
             event_id=event_id,
             report_id=f"{event_id}_{serial}",
             serial=serial,
@@ -283,11 +325,11 @@ class JmaBosaiQuakeAPI:
             title_en=parse_optional_string(entry.get("en_ttl")),
             epicenter_area_code=parse_optional_string(entry.get("acd")),
             epicenter_area_jp=parse_optional_string(entry.get("anm")),
-            epicenter_area_en=parse_optional_string(entry.get("en_anm")),
+            epicenter_area_en=epicenter_area_en,
             latitude=latitude,
             longitude=longitude,
             depth_km=depth_km,
-            magnitude=parse_optional_float(entry.get("mag")),
+            magnitude=magnitude,
             max_intensity=map_max_intensity(entry.get("maxi")),
             bulletin_type=BulletinTypeenum(bulletin_type_from_filename(detail_filename)),
             detail_url=DETAIL_BASE_URL + detail_filename,

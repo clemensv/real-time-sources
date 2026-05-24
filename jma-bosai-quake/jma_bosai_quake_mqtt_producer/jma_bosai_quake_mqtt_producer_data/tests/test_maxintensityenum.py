@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
+from jma_bosai_quake_mqtt_producer_data.maxintensityenum import MaxIntensityenum
 
 
 class Test_MaxIntensityenum(unittest.TestCase):

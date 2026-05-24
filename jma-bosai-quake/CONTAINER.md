@@ -1,6 +1,6 @@
 # JMA Bosai Earthquake Bridge Container
 
-This container polls the JMA Bosai earthquake list and detail JSON endpoints and writes new earthquake reports to Kafka-compatible endpoints as structured JSON CloudEvents. Event types and schemas are documented in [EVENTS.md](EVENTS.md).
+The Kafka container polls the JMA Bosai earthquake list and detail JSON endpoints and writes new earthquake reports to Kafka-compatible endpoints as structured JSON CloudEvents. `Dockerfile.mqtt` builds the MQTT/UNS feeder for the same earthquake report stream. Event types and schemas are documented in [EVENTS.md](EVENTS.md).
 
 ## Image
 
@@ -29,6 +29,15 @@ docker run --rm \
   -e CONNECTION_STRING='<connection-string>' \
   ghcr.io/clemensv/real-time-sources-jma-bosai-quake:latest
 ```
+
+## MQTT/UNS
+
+```shell
+docker build -f ./jma-bosai-quake/Dockerfile.mqtt -t jma-bosai-quake-mqtt ./jma-bosai-quake
+docker run --rm -e MQTT_BROKER_URL='mqtt://host.docker.internal:1883' jma-bosai-quake-mqtt
+```
+
+The MQTT feeder publishes non-retained QoS 1 CloudEvents to `seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report`, keeping the JMA serial in the topic so revisions are visible to subscribers.
 
 ## Environment variables
 

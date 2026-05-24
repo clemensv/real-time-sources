@@ -8,8 +8,8 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from jma_bosai_quake_producer_data.affectedcity import AffectedCity
-from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
+from jma_bosai_quake_mqtt_producer_data.affectedcity import AffectedCity
+from jma_bosai_quake_mqtt_producer_data.maxintensityenum import MaxIntensityenum
 
 
 class Test_AffectedCity(unittest.TestCase):
@@ -29,8 +29,8 @@ class Test_AffectedCity(unittest.TestCase):
         Create instance of AffectedCity for testing
         """
         instance = AffectedCity(
-            prefecture_code='euykjrmbgsgxlchqamhv',
-            city_code='komhioekaszrfvfcbnpt',
+            prefecture_code='tecurlobzkdvisjpxsok',
+            city_code='jalgexsrzjqzxobunezf',
             max_intensity=MaxIntensityenum.INTENSITY_1
         )
         return instance
@@ -40,7 +40,7 @@ class Test_AffectedCity(unittest.TestCase):
         """
         Test prefecture_code property
         """
-        test_value = 'euykjrmbgsgxlchqamhv'
+        test_value = 'tecurlobzkdvisjpxsok'
         self.instance.prefecture_code = test_value
         self.assertEqual(self.instance.prefecture_code, test_value)
     
@@ -48,7 +48,7 @@ class Test_AffectedCity(unittest.TestCase):
         """
         Test city_code property
         """
-        test_value = 'komhioekaszrfvfcbnpt'
+        test_value = 'jalgexsrzjqzxobunezf'
         self.instance.city_code = test_value
         self.assertEqual(self.instance.city_code, test_value)
     

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
+from jma_bosai_quake_mqtt_producer_data.maxintensityenum import MaxIntensityenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -154,6 +154,6 @@ class AffectedPrefecture:
             An instance of the dataclass.
         """
         return cls(
-            code='pbyvwahzzzrzrvkplzlh',
+            code='elmagmvhtwizawionnfk',
             max_intensity=MaxIntensityenum.INTENSITY_1
         )
