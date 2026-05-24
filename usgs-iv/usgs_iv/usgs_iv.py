@@ -45,6 +45,7 @@ from usgs_iv_producer_data.usgs.instantaneousvalues.fdom import FDOM
 from usgs_iv_producer_data.usgs.instantaneousvalues.gateopening import GateOpening
 from usgs_iv_producer_data.usgs.instantaneousvalues.otherparameter import OtherParameter
 from usgs_iv_producer_data.usgs.sites.site import Site
+from usgs_iv_producer_data.usgs.sites.sitetimeseries import SiteTimeseries
 from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer, USGSInstantaneousValuesEventProducer
 # pylint: enable=import-error, line-too-long
 
@@ -161,10 +162,9 @@ class USGSDataPoller:
 
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
             try:
-                async with asyncio.timeout(30):  # Set timeout to 30 seconds
-                    async with session.get(url) as response:
-                        response.raise_for_status()
-                        data = await response.text()
+                async with session.get(url) as response:
+                    response.raise_for_status()
+                    data = await response.text()
             except asyncio.TimeoutError:
                 print(f"Request timed out for state {state_code}")
                 return
@@ -337,6 +337,7 @@ class USGSDataPoller:
              last_polled_times['stations'] = {}
         poll_interval = timedelta(minutes=5)
         start_poll_time = datetime.now(timezone.utc)
+        emitted_timeseries = set()
         while True:
             eligible_states = state_codes
             if self.state:
@@ -393,6 +394,25 @@ class USGSDataPoller:
                                 if parameter_name not in counts:
                                     counts[parameter_name] = 0
                                 counts[parameter_name] += 1
+
+                                timeseries_key = (agency_cd, site_no, parameter_cd, timeseries_cd)
+                                if timeseries_key not in emitted_timeseries and hasattr(self.site_producer, 'send_usgs_sites_site_timeseries'):
+                                    self.site_producer.send_usgs_sites_site_timeseries(
+                                        _source_uri=self.BASE_URL,
+                                        _agency_cd=agency_cd,
+                                        _site_no=site_no,
+                                        _parameter_cd=parameter_cd,
+                                        _timeseries_cd=timeseries_cd,
+                                        data=SiteTimeseries(
+                                            agency_cd=agency_cd,
+                                            site_no=site_no,
+                                            parameter_cd=parameter_cd,
+                                            timeseries_cd=timeseries_cd,
+                                            description=parameter_name,
+                                        ),
+                                        flush_producer=False,
+                                    )
+                                    emitted_timeseries.add(timeseries_key)
 
                                 last_polled_time = last_polled_times.get(parameter_name, {}).get(
                                     site_no, datetime.now(timezone.utc) - timedelta(hours=2)
@@ -512,8 +532,13 @@ class USGSDataPoller:
 
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
             url = f'https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd={state_code}&siteOutput=expanded'
-            async with session.get(url) as response:
-                data = await response.text()
+            try:
+                async with session.get(url) as response:
+                    response.raise_for_status()
+                    data = await response.text()
+            except (asyncio.TimeoutError, aiohttp.ClientError) as exc:
+                logger.warning("Failed to fetch USGS sites for state %s: %s", state_code, exc)
+                return
 
             lines = data.splitlines()
             data_lines = [line for line in lines if not line.startswith('#') and line.strip() != '']

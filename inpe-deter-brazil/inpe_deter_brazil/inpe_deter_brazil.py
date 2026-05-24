@@ -178,10 +178,9 @@ class INPEDeterPoller:
                 url = build_wfs_url(biome, cql_filter=cql_filter,
                                     count=self.page_size, start_index=start_index)
                 try:
-                    async with asyncio.timeout(60):
-                        async with session.get(url) as response:
-                            response.raise_for_status()
-                            data = await response.json(content_type=None)
+                    async with session.get(url) as response:
+                        response.raise_for_status()
+                        data = await response.json(content_type=None)
                 except asyncio.TimeoutError:
                     logger.error("Request timed out for biome %s at startIndex %d", biome, start_index)
                     break

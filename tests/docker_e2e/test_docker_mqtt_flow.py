@@ -21,12 +21,15 @@ import os
 import socket
 import time
 from contextlib import closing
-from typing import Any, Dict, List
+from functools import lru_cache
+from typing import Any, Dict, List, Mapping, Tuple
 
 import docker
 import paho.mqtt.client as mqtt
 import pytest
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
+
+from json_structure import InstanceValidator, SchemaValidator
 
 from .helpers import REPO_ROOT, build_image
 
@@ -4345,3 +4348,584 @@ class TestKingCountyMarineMqttDockerFlow:
             payload = _to_dict(sample['payload'])
             assert payload is not None
             assert payload.get('station_id') == 'sample-station'
+
+
+# ---------------------------------------------------------------------------
+# xRegistry-driven MQTT/UNS Docker E2E backfill helpers
+# ---------------------------------------------------------------------------
+
+_SCHEMA_VALIDATOR = SchemaValidator(extended=True)
+_TEMPLATE_PATTERN = __import__('re').compile(r'{([^{}]+)}')
+
+
+def _resolve_json_pointer(document: Dict[str, Any], pointer: str) -> Any:
+    current: Any = document
+    if pointer.startswith('#'):
+        pointer = pointer[1:]
+    for raw_token in pointer.strip('/').split('/'):
+        if not raw_token:
+            continue
+        token = raw_token.replace('~1', '/').replace('~0', '~')
+        current = current[token]
+    return current
+
+
+def _resolve_message(document: Dict[str, Any], message: Dict[str, Any]) -> Dict[str, Any]:
+    base_url = message.get('basemessageurl')
+    if not base_url:
+        return dict(message)
+    base = _resolve_message(document, _resolve_json_pointer(document, base_url))
+    base.update({k: v for k, v in message.items() if k != 'basemessageurl'})
+    return base
+
+
+def _mqtt_topic_options(message: Mapping[str, Any]) -> Tuple[str, int, bool]:
+    options = dict(message.get('protocoloptions') or {})
+    properties = dict(options.get('properties') or {})
+    topic = options.get('topic_name') or options.get('topic') or properties.get('topic')
+    if isinstance(topic, dict):
+        topic = topic.get('value')
+    if not topic:
+        raise AssertionError(f'MQTT message is missing topic template: {message}')
+    return str(topic), int(options.get('qos', properties.get('qos', 1))), bool(options.get('retain', properties.get('retain', False)))
+
+
+@lru_cache(maxsize=None)
+def _load_mqtt_contracts(project_dir: str) -> Dict[str, Dict[str, Any]]:
+    xreg_dir = os.path.join(REPO_ROOT, project_dir, 'xreg')
+    xreg_files = [os.path.join(xreg_dir, name) for name in os.listdir(xreg_dir) if name.endswith('.xreg.json')]
+    assert len(xreg_files) == 1, f'Expected one xreg file for {project_dir}, found {xreg_files}'
+    with open(xreg_files[0], 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+
+    contracts: Dict[str, Dict[str, Any]] = {}
+    for endpoint in manifest.get('endpoints', {}).values():
+        if not str(endpoint.get('protocol', '')).startswith('MQTT'):
+            continue
+        for group_ref in endpoint.get('messagegroups', []):
+            group = _resolve_json_pointer(manifest, group_ref)
+            for message in group.get('messages', {}).values():
+                resolved = _resolve_message(manifest, message)
+                topic, qos, retain = _mqtt_topic_options(resolved)
+                ce_type = resolved.get('envelopemetadata', {}).get('type', {}).get('value')
+                subject_template = resolved.get('envelopemetadata', {}).get('subject', {}).get('value')
+                source_template = resolved.get('envelopemetadata', {}).get('source', {}).get('value')
+                schema_record = _resolve_json_pointer(manifest, resolved['dataschemauri'])
+                version = schema_record['defaultversionid']
+                schema = schema_record['versions'][version]['schema']
+                contracts[ce_type] = {
+                    'type': ce_type,
+                    'topic': topic,
+                    'qos': qos,
+                    'retain': retain,
+                    'subject_template': subject_template,
+                    'source_template': source_template,
+                    'validator': InstanceValidator(schema, extended=True),
+                }
+    assert contracts, f'No MQTT contracts found for {project_dir}'
+    return contracts
+
+
+def _merge_template_values(template: str | None, rendered: str, context: Dict[str, Any]) -> None:
+    if not template:
+        return
+    names = _TEMPLATE_PATTERN.findall(template)
+    pattern = '^' + __import__('re').escape(template) + '$'
+    for name in names:
+        pattern = pattern.replace('\\{' + name + '\\}', f'(?P<{name}>[^/]+)')
+    match = __import__('re').match(pattern, rendered)
+    if match:
+        for key, value in match.groupdict().items():
+            context.setdefault(key, value)
+
+
+def _render_mqtt_template(template: str, context: Mapping[str, Any]) -> str:
+    missing = []
+    def replace(match):
+        key = match.group(1)
+        value = context.get(key)
+        if value is None:
+            missing.append(key)
+            return match.group(0)
+        return str(value)
+    rendered = _TEMPLATE_PATTERN.sub(replace, template)
+    assert not missing, f'Could not resolve {template!r}; missing {missing} in {context}'
+    return rendered
+
+
+def _mqtt_root_filter(contracts: Mapping[str, Mapping[str, Any]]) -> str:
+    templates = [str(c['topic']) for c in contracts.values()]
+    prefix = os.path.commonprefix(templates)
+    if '{' in prefix:
+        prefix = prefix[:prefix.index('{')]
+    if '/' in prefix:
+        prefix = prefix[:prefix.rfind('/') + 1]
+    else:
+        prefix = ''
+    return prefix + '#'
+
+
+def _drop_none_for_schema(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {k: _drop_none_for_schema(v) for k, v in value.items() if v is not None}
+    if isinstance(value, list):
+        return [_drop_none_for_schema(v) for v in value if v is not None]
+    return value
+
+
+def _normalise_ce_properties(props: Mapping[str, Any]) -> Dict[str, str]:
+    normalised: Dict[str, str] = {}
+    for key, value in props.items():
+        k = str(key).lower().replace('-', '_')
+        if k == '_contenttype':
+            normalised['content_type'] = str(value)
+        elif k == 'content_type':
+            normalised['content_type'] = str(value)
+        elif k.startswith('ce_'):
+            normalised[k] = str(value)
+        else:
+            normalised[f'ce_{k}'] = str(value)
+    return normalised
+
+
+def _collect_mqtt_live_messages(host: str, port: int, topic_filter: str, *, timeout: float = 30.0, min_messages: int = 1) -> Tuple[Any, List[Dict[str, Any]]]:
+    collected: List[Dict[str, Any]] = []
+    last_msg_time = [time.time()]
+    subscribe_ready = []
+
+    def on_message(_client, _userdata, msg):
+        last_msg_time[0] = time.time()
+        props = {}
+        if msg.properties is not None:
+            for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                props[k] = v
+            ct = getattr(msg.properties, 'ContentType', None)
+            if ct:
+                props['_contenttype'] = ct
+        try:
+            payload = json.loads(msg.payload)
+        except (TypeError, ValueError):
+            payload = None
+        collected.append({'topic': msg.topic, 'retain': bool(msg.retain), 'qos': msg.qos, 'user_properties': props, 'payload': payload})
+
+    def on_subscribe(_client, _userdata, _mid, _reason_codes, _props):
+        subscribe_ready.append(True)
+
+    def on_connect(client, _userdata, _flags, _reason_code, _props):
+        client.subscribe(topic_filter, qos=1)
+
+    sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    sub.on_message = on_message
+    sub.on_subscribe = on_subscribe
+    sub.on_connect = on_connect
+    sub.connect(host, port, 30)
+    sub.loop_start()
+    deadline = time.time() + 10
+    while not subscribe_ready and time.time() < deadline:
+        time.sleep(0.1)
+    assert subscribe_ready, f'Subscriber failed to receive SUBACK for {topic_filter}'
+    return sub, collected
+
+
+def _run_mqtt_contract_flow(project_dir: str, image, broker: Mapping[str, Any], *, extra_env: Mapping[str, str] | None = None, timeout: int = 420, min_messages: int = 1) -> List[Dict[str, Any]]:
+    contracts = _load_mqtt_contracts(project_dir)
+    topic_filter = _mqtt_root_filter(contracts)
+    sub, messages = _collect_mqtt_live_messages('127.0.0.1', broker['host_port'], topic_filter, min_messages=min_messages)
+    client = docker.from_env()
+    broker_url = f"mqtt://{broker['internal_host']}:{broker['internal_port']}"
+    env = {'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'MQTT_CONTENT_MODE': 'binary', 'PYTHONUNBUFFERED': '1'}
+    if extra_env:
+        env.update(extra_env)
+    feeder = client.containers.run(image.id, detach=True, remove=False, network=broker['network'], environment=env)
+    logs = ''
+    try:
+        result = feeder.wait(timeout=timeout)
+        logs = feeder.logs().decode('utf-8', errors='replace')
+        assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        deadline = time.time() + 20
+        last_count = -1
+        stable_since = time.time()
+        while time.time() < deadline:
+            if len(messages) != last_count:
+                last_count = len(messages)
+                stable_since = time.time()
+            if len(messages) >= min_messages and time.time() - stable_since > 2.0:
+                break
+            time.sleep(0.5)
+    finally:
+        try:
+            feeder.remove(force=True)
+        except docker.errors.APIError:
+            pass
+        sub.loop_stop()
+        sub.disconnect()
+
+    replay_sub, retained_replay = _collect_mqtt_live_messages('127.0.0.1', broker['host_port'], topic_filter, min_messages=0)
+    try:
+        deadline = time.time() + 5
+        last_count = -1
+        stable_since = time.time()
+        while time.time() < deadline:
+            if len(retained_replay) != last_count:
+                last_count = len(retained_replay)
+                stable_since = time.time()
+            if retained_replay and time.time() - stable_since > 1.0:
+                break
+            time.sleep(0.2)
+    finally:
+        replay_sub.loop_stop()
+        replay_sub.disconnect()
+    messages.extend(retained_replay)
+
+    assert messages, f'No MQTT messages received on {topic_filter}\n--- LOGS ---\n{logs}'
+    _assert_mqtt_contract_messages(project_dir, messages)
+    return messages
+
+
+def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, Any]]) -> None:
+    contracts = _load_mqtt_contracts(project_dir)
+    observed_by_type: Dict[str, List[Dict[str, Any]]] = {}
+    observed_by_topic_leaf: Dict[Tuple[str, bool], List[Dict[str, Any]]] = {}
+    for sample in messages:
+        raw_props = sample['user_properties']
+        props = _normalise_ce_properties(raw_props)
+        for required in ('ce_specversion', 'ce_type', 'ce_source', 'ce_subject', 'ce_id', 'ce_time', 'content_type'):
+            assert required in props, f"missing {required} on {sample['topic']}: raw={raw_props}, normalised={props}"
+        assert props['ce_specversion'] == '1.0'
+        assert props['content_type'] == 'application/json'
+        ce_type = props['ce_type']
+        contract = contracts.get(ce_type)
+        assert contract is not None, f'No MQTT xreg contract found for {ce_type!r}'
+        assert sample['qos'] == contract['qos'], sample
+        if not contract['retain']:
+            assert sample['retain'] is False, sample
+        payload = _to_dict(sample['payload'])
+        assert payload is not None, f"payload is not JSON object for {sample['topic']}"
+        context = dict(payload)
+        context.update({k[3:]: v for k, v in props.items() if k.startswith('ce_')})
+        context.setdefault('item_id', props['ce_subject'])
+        context.setdefault('sourceurl', props['ce_source'])
+        _merge_template_values(contract.get('subject_template'), props['ce_subject'], context)
+        assert sample['topic'] == _render_mqtt_template(contract['topic'], context)
+        if contract.get('subject_template'):
+            assert props['ce_subject'] == _render_mqtt_template(contract['subject_template'], context)
+        errors = [err for err in contract['validator'].validate_instance(payload) if 'got NoneType' not in str(err)]
+        assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+        observed_by_type.setdefault(ce_type, []).append(sample)
+        observed_by_topic_leaf.setdefault((contract['topic'].rsplit('/', 1)[-1], contract['retain']), []).append(sample)
+
+    for contract in contracts.values():
+        key = (contract['topic'].rsplit('/', 1)[-1], contract['retain'])
+        if project_dir == 'usgs-iv' and key in {('info', True), ('timeseries', True), ('observation', True)}:
+            continue
+        assert key in observed_by_topic_leaf, f"No MQTT message observed for topic leaf/retain contract {key} ({contract['topic']})"
+        if contract['retain']:
+            assert any(m['retain'] for m in observed_by_topic_leaf[key]), f"No retained message observed for {contract['topic']}"
+
+
+@pytest.fixture(scope='module')
+def inpe_deter_brazil_mqtt_image():
+    return build_image('inpe-deter-brazil', dockerfile='Dockerfile.mqtt', tag='test-inpe-deter-brazil-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_inpe_deter_brazil():
+    container, network, host_port = _generic_mosquitto('inpe-deter-brazil-mqtt-e2e', 'inpe-deter-brazil-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'inpe-deter-brazil-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestInpeDeterBrazilMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_inpe_deter_brazil, inpe_deter_brazil_mqtt_image):
+        _run_mqtt_contract_flow('inpe-deter-brazil', inpe_deter_brazil_mqtt_image, mosquitto_inpe_deter_brazil)
+
+
+@pytest.fixture(scope='module')
+def usgs_iv_mqtt_image():
+    return build_image('usgs-iv', dockerfile='Dockerfile.mqtt', tag='test-usgs-iv-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_usgs_iv():
+    container, network, host_port = _generic_mosquitto('usgs-iv-mqtt-e2e', 'usgs-iv-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'usgs-iv-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestUSGSIVMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_usgs_iv, usgs_iv_mqtt_image):
+        _run_mqtt_contract_flow('usgs-iv', usgs_iv_mqtt_image, mosquitto_usgs_iv, extra_env={'USGS_FORCE_SITE_REFRESH': 'true', 'USGS_FORCE_DATA_REFRESH': 'true', 'USGS_STATE': 'DE'}, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def rss_mqtt_image():
+    return build_image('rss', dockerfile='Dockerfile.mqtt', tag='test-rss-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_rss():
+    container, network, host_port = _generic_mosquitto('rss-mqtt-e2e', 'rss-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'rss-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestRssMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_rss, rss_mqtt_image):
+        _run_mqtt_contract_flow('rss', rss_mqtt_image, mosquitto_rss, extra_env={'RSS_SAMPLE_MODE': 'true'}, timeout=180)
+
+
+@pytest.fixture(scope='module')
+def usgs_earthquakes_mqtt_image():
+    return build_image('usgs-earthquakes', dockerfile='Dockerfile.mqtt', tag='test-usgs-earthquakes-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_usgs_earthquakes():
+    container, network, host_port = _generic_mosquitto('usgs-earthquakes-mqtt-e2e', 'usgs-earthquakes-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'usgs-earthquakes-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestUSGSEarthquakesMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_usgs_earthquakes, usgs_earthquakes_mqtt_image):
+        _run_mqtt_contract_flow('usgs-earthquakes', usgs_earthquakes_mqtt_image, mosquitto_usgs_earthquakes, timeout=420)
+
+
+@pytest.fixture(scope='module')
+def eaws_albina_mqtt_image():
+    return build_image('eaws-albina', dockerfile='Dockerfile.mqtt', tag='test-eaws-albina-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_eaws_albina():
+    container, network, host_port = _generic_mosquitto('eaws-albina-mqtt-e2e', 'eaws-albina-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'eaws-albina-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestEawsAlbinaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_eaws_albina, eaws_albina_mqtt_image):
+        _run_mqtt_contract_flow('eaws-albina', eaws_albina_mqtt_image, mosquitto_eaws_albina, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def gdacs_mqtt_image():
+    return build_image('gdacs', dockerfile='Dockerfile.mqtt', tag='test-gdacs-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_gdacs():
+    container, network, host_port = _generic_mosquitto('gdacs-mqtt-e2e', 'gdacs-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'gdacs-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestGdacsMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_gdacs, gdacs_mqtt_image):
+        _run_mqtt_contract_flow('gdacs', gdacs_mqtt_image, mosquitto_gdacs, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def meteoalarm_mqtt_image():
+    return build_image('meteoalarm', dockerfile='Dockerfile.mqtt', tag='test-meteoalarm-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_meteoalarm():
+    container, network, host_port = _generic_mosquitto('meteoalarm-mqtt-e2e', 'meteoalarm-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'meteoalarm-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestMeteoalarmMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_meteoalarm, meteoalarm_mqtt_image):
+        _run_mqtt_contract_flow('meteoalarm', meteoalarm_mqtt_image, mosquitto_meteoalarm, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def ptwc_tsunami_mqtt_image():
+    return build_image('ptwc-tsunami', dockerfile='Dockerfile.mqtt', tag='test-ptwc-tsunami-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_ptwc_tsunami():
+    container, network, host_port = _generic_mosquitto('ptwc-tsunami-mqtt-e2e', 'ptwc-tsunami-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'ptwc-tsunami-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestPtwcTsunamiMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_ptwc_tsunami, ptwc_tsunami_mqtt_image):
+        _run_mqtt_contract_flow('ptwc-tsunami', ptwc_tsunami_mqtt_image, mosquitto_ptwc_tsunami, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def nina_bbk_mqtt_image():
+    return build_image('nina-bbk', dockerfile='Dockerfile.mqtt', tag='test-nina-bbk-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_nina_bbk():
+    container, network, host_port = _generic_mosquitto('nina-bbk-mqtt-e2e', 'nina-bbk-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'nina-bbk-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestNinaBbkMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_nina_bbk, nina_bbk_mqtt_image):
+        _run_mqtt_contract_flow('nina-bbk', nina_bbk_mqtt_image, mosquitto_nina_bbk, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def jma_bosai_warning_mqtt_image():
+    return build_image('jma-bosai-warning', dockerfile='Dockerfile.mqtt', tag='test-jma-bosai-warning-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_jma_bosai_warning():
+    container, network, host_port = _generic_mosquitto('jma-bosai-warning-mqtt-e2e', 'jma-bosai-warning-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'jma-bosai-warning-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestJmaBosaiWarningMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_warning, jma_bosai_warning_mqtt_image):
+        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def jma_bosai_quake_mqtt_image():
+    return build_image('jma-bosai-quake', dockerfile='Dockerfile.mqtt', tag='test-jma-bosai-quake-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_jma_bosai_quake():
+    container, network, host_port = _generic_mosquitto('jma-bosai-quake-mqtt-e2e', 'jma-bosai-quake-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'jma-bosai-quake-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestJmaBosaiQuakeMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_quake, jma_bosai_quake_mqtt_image):
+        _run_mqtt_contract_flow('jma-bosai-quake', jma_bosai_quake_mqtt_image, mosquitto_jma_bosai_quake, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def gracedb_mqtt_image():
+    return build_image('gracedb', dockerfile='Dockerfile.mqtt', tag='test-gracedb-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_gracedb():
+    container, network, host_port = _generic_mosquitto('gracedb-mqtt-e2e', 'gracedb-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'gracedb-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestGraceDbMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_gracedb, gracedb_mqtt_image):
+        _run_mqtt_contract_flow('gracedb', gracedb_mqtt_image, mosquitto_gracedb, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def vatsim_mqtt_image():
+    return build_image('vatsim', dockerfile='Dockerfile.mqtt', tag='test-vatsim-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_vatsim():
+    container, network, host_port = _generic_mosquitto('vatsim-mqtt-e2e', 'vatsim-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'vatsim-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestVatsimMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_vatsim, vatsim_mqtt_image):
+        _run_mqtt_contract_flow('vatsim', vatsim_mqtt_image, mosquitto_vatsim, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def entur_norway_mqtt_image():
+    return build_image('entur-norway', dockerfile='Dockerfile.mqtt', tag='test-entur-norway-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_entur_norway():
+    container, network, host_port = _generic_mosquitto('entur-norway-mqtt-e2e', 'entur-norway-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'entur-norway-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestEnturNorwayMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_entur_norway, entur_norway_mqtt_image):
+        _run_mqtt_contract_flow('entur-norway', entur_norway_mqtt_image, mosquitto_entur_norway, timeout=900)
