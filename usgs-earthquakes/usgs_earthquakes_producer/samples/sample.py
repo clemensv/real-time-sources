@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesEventProducer
+from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'USGS.Earthquakes.Event' event to Kafka topic.
     await usgsearthquakes_event_producer.send_usgs_earthquakes_event(_source_uri = 'TODO: replace me', _net = 'TODO: replace me', _code = 'TODO: replace me', _event_time = 'TODO: replace me', data = _event)
     print(f"Sent 'USGS.Earthquakes.Event' event: {_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgsearthquakes_mqtt_event_producer = USGSEarthquakesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgsearthquakes_mqtt_event_producer = USGSEarthquakesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.Earthquakes.mqtt.Event ----
+    # TODO: Supply event data for the USGS.Earthquakes.mqtt.Event event
+    _event = Event()
+
+    # sends the 'USGS.Earthquakes.mqtt.Event' event to Kafka topic.
+    await usgsearthquakes_mqtt_event_producer.send_usgs_earthquakes_mqtt_event(_source_uri = 'TODO: replace me', _net = 'TODO: replace me', _code = 'TODO: replace me', _event_time = 'TODO: replace me', data = _event)
+    print(f"Sent 'USGS.Earthquakes.mqtt.Event' event: {_event.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

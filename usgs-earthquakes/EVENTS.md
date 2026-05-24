@@ -2,6 +2,12 @@
 
 This document describes the events emitted by the USGS Earthquake Hazards Program bridge.
 
+## MQTT/UNS topics
+
+The MQTT feeder publishes earthquake events as non-retained QoS 1 binary CloudEvents at `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake`. Magnitude buckets are topic-safe: `m0` for magnitude <1 or unknown, `m1` through `m6` for integer magnitude bands [1,7), and `m7plus` for magnitude >=7.
+
+Example subscriptions: all magnitude 5.x earthquakes: `seismic/intl/usgs/usgs-earthquakes/+/m5/+/quake`; one network: `seismic/intl/usgs/usgs-earthquakes/us/+/+/quake`.
+
 - [USGS.Earthquakes](#message-group-usgsearthquakes)
   - [USGS.Earthquakes.Event](#message-usgsearthquakesevent)
 

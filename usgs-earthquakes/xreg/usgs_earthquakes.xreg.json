@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/USGS.Earthquakes"
       ]
+    },
+    "USGS.Earthquakes.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/USGS.Earthquakes.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -48,6 +67,21 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.Earthquakes.jstruct/schemas/USGS.Earthquakes.Event"
+        }
+      }
+    },
+    "USGS.Earthquakes.mqtt": {
+      "description": "MQTT/5.0 transport variant for USGS earthquake events. Non-retained QoS-1 event stream routed by contributor network, magnitude bucket, and event code under seismic/intl/usgs/usgs-earthquakes/... Buckets are m0 for <1 or unknown, m1..m6 for [1,7), and m7plus for >=7.",
+      "messages": {
+        "USGS.Earthquakes.mqtt.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -107,19 +141,31 @@
                             "description": "Link to GeoJSON detail feed for this event."
                           },
                           "felt": {
-                            "type": ["int32", "null"],
+                            "type": [
+                              "int32",
+                              "null"
+                            ],
                             "description": "Number of felt reports submitted to the DYFI system."
                           },
                           "cdi": {
-                            "type": ["double", "null"],
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Maximum reported community determined intensity (DYFI)."
                           },
                           "mmi": {
-                            "type": ["double", "null"],
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Maximum estimated instrumental intensity (ShakeMap)."
                           },
                           "alert": {
-                            "type": ["string", "null"],
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "PAGER alert level (green, yellow, orange, red)."
                           },
                           "status": {
@@ -177,6 +223,10 @@
                           "depth": {
                             "type": "double",
                             "description": "Depth of the earthquake in kilometers."
+                          },
+                          "magnitude_bucket": {
+                            "type": "string",
+                            "description": "Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7."
                           }
                         },
                         "required": [
@@ -188,7 +238,8 @@
                           "net",
                           "code",
                           "latitude",
-                          "longitude"
+                          "longitude",
+                          "magnitude_bucket"
                         ],
                         "description": "USGS earthquake event data from the Earthquake Hazards Program."
                       }
@@ -229,6 +280,12 @@
                       "null"
                     ],
                     "doc": "Magnitude of the earthquake."
+                  },
+                  {
+                    "name": "magnitude_bucket",
+                    "type": "string",
+                    "default": "m0",
+                    "doc": "Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7."
                   },
                   {
                     "name": "mag_type",
