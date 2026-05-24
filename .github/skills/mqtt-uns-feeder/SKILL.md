@@ -86,6 +86,33 @@ repeatedly — do not allow it.
 If any box is unchecked, the PR is incomplete — either fix in branch
 or re-open as a "doc backfill" PR before declaring the feeder done.
 
+## Mandatory Pre-merge Test Gate
+
+A feeder PR is **NOT mergeable** until both of the following exist
+in the same PR as the feeder code. This has been violated repeatedly;
+do not allow it.
+
+| Required | Where |
+|----------|-------|
+| `Test<Source>MqttDockerFlow` class | `tests/docker_e2e/test_docker_mqtt_flow.py` |
+| Matrix `build` entries (one per image: `<source>` Kafka and `<source>-mqtt`) | `tests/docker_e2e/matrix.json` `build` array |
+| Matrix `flow` entry with `"test_file": "test_docker_mqtt_flow.py"` | `tests/docker_e2e/matrix.json` `flow` array |
+
+The Docker E2E test must boot `eclipse-mosquitto:2` alongside the
+`<source>_mqtt` image and assert everything described in the **Docker
+E2E** section below (retained refs, telemetry, topic match, binary-mode
+CE properties, schema validation).
+
+**Reviewer checklist (paste into PR description or review comment):**
+
+- [ ] `Test<Source>MqttDockerFlow` class exists in `test_docker_mqtt_flow.py`
+- [ ] `matrix.json` `build` has the `<source>-mqtt` image entry
+- [ ] `matrix.json` `flow` has a row with `"test_file": "test_docker_mqtt_flow.py"` pointing at the new class
+- [ ] CI run on the PR shows the new MQTT flow job actually executing and passing (not skipped by path filter)
+
+A "fast-shipping" feeder PR that omits the test is a regression, not a
+feature. Reject it.
+
 ## Inputs
 
 - source id (e.g. `pegelonline`)
