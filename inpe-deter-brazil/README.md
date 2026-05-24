@@ -108,3 +108,26 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Finpe-deter-brazil%2Fazure-template-with-eventhub.json)
+
+## Transports
+
+This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-inpe-deter-brazil-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+
+The MQTT contract is source-specific: MQTT/5.0 transport variants for INPE DETER Brazil deforestation and related land-disturbance alerts. The UNS topic tree is deforestation/br/inpe/inpe-deter-brazil/{biome}/{state_slug}/{class_slug}/{alert_id}/alert. Payloads are JSON binary-mode CloudEvents. QoS 1 is used for at-least-once alert delivery; consumers MUST deduplicate by alert_id. retain=false is used because DETER alerts are immutable historical events and retaining each alert_id topic would create an unbounded retained-message graveyard. A Message Expiry Interval of 604800 seconds bounds queued delivery for offline durable subscribers. The state_slug axis is a lowercased Brazilian UF code or unknown when INPE omits or publishes an unsupported UF; class_slug is a supported topic-safe lowercase-kebab DETER class or unknown.
+
+MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/inpe_deter_brazil.xreg.json`:
+
+| Topic pattern | Message type | Delivery |
+|---|---|---|
+| `deforestation/br/inpe/inpe-deter-brazil/{biome}/{state_slug}/{class_slug}/{alert_id}/alert` | `BR.INPE.DETER.DeforestationAlert` | QoS 1, retain=false, expiry=604800s |
+
+Four Azure Container Instance deployment shapes are documented for this source:
+
+| Transport | Template |
+|---|---|
+| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
+| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
+| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
+| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+
+See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.

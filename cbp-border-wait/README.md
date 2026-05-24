@@ -84,3 +84,27 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template-with-eventhub.json)
+
+## Transports
+
+This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+
+The MQTT contract is source-specific: MQTT/5.0 transport variants for US CBP border wait-time state. Topics are retained QoS-1 leaves under traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/{event}. The border_slug axis is lowercase kebab-case from the CBP border field (canadian-border or mexican-border); port_number preserves the Kafka key and CloudEvents subject. Wait-time snapshots use message expiry so stale retained state ages out if polling stops.
+
+MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/cbp_border_wait.xreg.json`:
+
+| Topic pattern | Message type | Delivery |
+|---|---|---|
+| `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info` | `gov.cbp.borderwait.Port` | QoS 1, retain=true |
+| `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time` | `gov.cbp.borderwait.WaitTime` | QoS 1, retain=true, expiry=7200s |
+
+Four Azure Container Instance deployment shapes are documented for this source:
+
+| Transport | Template |
+|---|---|
+| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
+| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
+| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
+| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+
+See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.

@@ -69,7 +69,7 @@ const SOURCES = [
   { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", notebook: true },
   { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true },
   { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts" },
-  { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts" },
+  { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", mqtt: true },
   { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC" },
   { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police" },
   { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins" },
@@ -103,12 +103,12 @@ const SOURCES = [
   { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", notebook: true },
   { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions" },
   { id: "tokyo-docomo-bikeshare", name: "Tokyo Docomo Bikeshare", cat: "Transport", key: false, desc: "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT" },
-  { id: "cbp-border-wait", name: "US CBP Border Wait", cat: "Transport", key: false, desc: "US borders — ~81 ports of entry", notebook: true },
+  { id: "cbp-border-wait", name: "US CBP Border Wait", cat: "Transport", key: false, desc: "US borders — ~81 ports of entry", notebook: true, mqtt: true },
   { id: "wsdot", name: "WSDOT", cat: "Transport", key: true, desc: "Washington State — ~1,000 traffic flow sensors (requires free key)", notebook: true },
 
   // ── Railway ──
   { id: "entur-norway", name: "Entur Norway", cat: "Railway", key: false, desc: "Norway — national real-time transit, SIRI ET/VM/SX" },
-  { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true },
+  { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true, mqtt: true },
 
   // ── Nightlife and Live Entertainment ──
   { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules" },
@@ -123,7 +123,7 @@ const SOURCES = [
   // ── Social Media and News ──
   { id: "bluesky", name: "Bluesky Firehose", cat: "Social", key: false, desc: "Global — posts, likes, reposts, follows" },
   { id: "wikimedia-osm-diffs", name: "OpenStreetMap Diffs", cat: "Social", key: false, desc: "Global — OSM minutely replication diffs", notebook: true },
-  { id: "rss", name: "RSS Feeds", cat: "Social", key: false, desc: "Any — configurable RSS/Atom feed URLs or OPML files" },
+  { id: "rss", name: "RSS Feeds", cat: "Social", key: false, desc: "Any — configurable RSS/Atom feed URLs or OPML files", mqtt: true },
   { id: "wikimedia-eventstreams", name: "Wikimedia EventStreams", cat: "Social", key: false, desc: "Global — Wikipedia, Wikidata, Commons recent changes" },
 
   // ── Public Events ──
