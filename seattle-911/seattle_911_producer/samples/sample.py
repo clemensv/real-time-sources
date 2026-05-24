@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from seattle_911_producer_kafka_producer.producer import USWASeattleFire911EventProducer
+from seattle_911_producer_kafka_producer.producer import USWASeattleFire911MqttEventProducer
 
 # imports for the data classes for each event
 
@@ -61,8 +62,24 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _incident = Incident()
 
     # sends the 'US.WA.Seattle.Fire911.Incident' event to Kafka topic.
-    await uswaseattle_fire911_event_producer.send_us_wa_seattle_fire911_incident(_incident_number = 'TODO: replace me', data = _incident)
+    await uswaseattle_fire911_event_producer.send_us_wa_seattle_fire911_incident(_incident_number = 'TODO: replace me', _incident_datetime_utc = 'TODO: replace me', data = _incident)
     print(f"Sent 'US.WA.Seattle.Fire911.Incident' event: {_incident.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uswaseattle_fire911_mqtt_event_producer = USWASeattleFire911MqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uswaseattle_fire911_mqtt_event_producer = USWASeattleFire911MqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- US.WA.Seattle.Fire911.mqtt.Incident ----
+    # TODO: Supply event data for the US.WA.Seattle.Fire911.mqtt.Incident event
+    _incident = Incident()
+
+    # sends the 'US.WA.Seattle.Fire911.mqtt.Incident' event to Kafka topic.
+    await uswaseattle_fire911_mqtt_event_producer.send_us_wa_seattle_fire911_mqtt_incident(_incident_number = 'TODO: replace me', _incident_datetime_utc = 'TODO: replace me', data = _incident)
+    print(f"Sent 'US.WA.Seattle.Fire911.mqtt.Incident' event: {_incident.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

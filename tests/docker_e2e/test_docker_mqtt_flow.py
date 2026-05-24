@@ -3597,3 +3597,114 @@ class TestUSGSGeomagMqttDockerFlow:
         reading_payload = _to_dict(reading_msgs[0]['payload'])
         assert info_payload is not None and info_payload.get('iaga_code')
         assert reading_payload is not None and reading_payload.get('iaga_code')
+
+# ---- seattle-911 --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def seattle_911_mqtt_image():
+    return build_image('seattle-911', dockerfile='Dockerfile.mqtt', tag='test-seattle-911-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_seattle_911():
+    container, network, host_port = _generic_mosquitto(
+        'seattle-911-mqtt-e2e', 'seattle-911-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'seattle-911-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestSeattle911MqttDockerFlow:
+    """Verify the seattle-911-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_uns_event_topics(self, mosquitto_seattle_911, seattle_911_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_seattle_911['internal_host']}:{mosquitto_seattle_911['internal_port']}"
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.connect('127.0.0.1', mosquitto_seattle_911['host_port'], 30)
+        sub.subscribe('civic-events/us/wa/seattle/public-safety/fire-dispatch/#', qos=1)
+        sub.loop_start()
+        try:
+            feeder = client.containers.run(
+                seattle_911_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=mosquitto_seattle_911['network'],
+                environment={
+                    'MQTT_BROKER_URL': broker_url,
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            try:
+                result = feeder.wait(timeout=360)
+                logs = feeder.logs().decode('utf-8', errors='replace')
+                assert result.get('StatusCode') == 0, (
+                    f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+                )
+            finally:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            deadline = time.time() + 10
+            while not messages and time.time() < deadline:
+                time.sleep(0.5)
+        finally:
+            sub.loop_stop()
+            sub.disconnect()
+
+        assert messages, 'No live messages received from broker'
+        sample = messages[0]
+        up = sample['user_properties']
+        for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+            assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+        assert sample['user_properties'].get('_contenttype') == 'application/json'
+        assert sample['retain'] is False
+        assert sample['qos'] == 1
+        assert up.get('type') == 'US.WA.Seattle.Fire911.Incident'
+        parts = sample['topic'].split('/')
+        assert parts[:6] == ['civic-events', 'us', 'wa', 'seattle', 'public-safety', 'fire-dispatch']
+        assert parts[7] == up['subject']
+        payload = _to_dict(sample['payload'])
+        assert payload is not None and payload.get('incident_number') == up['subject']
+        assert payload.get('incident_type_slug') == parts[6]
+        assert payload.get('incident_datetime_utc')

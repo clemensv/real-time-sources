@@ -7,8 +7,9 @@ import json
 import logging
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
+from zoneinfo import ZoneInfo
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -111,12 +112,39 @@ def _save_state(state_file: str, data: dict) -> None:
         json.dump(data, handle, ensure_ascii=False, indent=2)
 
 
+def _incident_type_slug(value: str) -> str:
+    """Normalize an incident type into a deterministic MQTT topic segment."""
+    raw = (value or "unknown").lower().strip()
+    out: List[str] = []
+    previous_dash = False
+    for ch in raw:
+        if ch.isalnum():
+            out.append(ch)
+            previous_dash = False
+        elif not previous_dash:
+            out.append("-")
+            previous_dash = True
+    return "".join(out).strip("-") or "unknown"
+
+
+def _incident_datetime_utc(value: str) -> datetime:
+    """Convert the upstream Seattle local timestamp into UTC."""
+    parsed = datetime.fromisoformat(value)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+    return parsed.astimezone(timezone.utc)
+
+
 def parse_incident(record: dict) -> Incident:
     """Map a Socrata row into the generated Incident data class."""
+    incident_type = record.get("type", "")
+    incident_datetime = record.get("datetime", "")
     return Incident(
         incident_number=str(record.get("incident_number", "")),
-        incident_type=record.get("type", ""),
-        incident_datetime=record.get("datetime", ""),
+        incident_type=incident_type,
+        incident_type_slug=_incident_type_slug(incident_type),
+        incident_datetime=incident_datetime,
+        incident_datetime_utc=_incident_datetime_utc(incident_datetime),
         address=record.get("address"),
         latitude=float(record["latitude"]) if record.get("latitude") not in (None, "") else None,
         longitude=float(record["longitude"]) if record.get("longitude") not in (None, "") else None,
@@ -207,6 +235,7 @@ class SeattleFire911Bridge:
                         continue
                     producer.send_us_wa_seattle_fire911_incident(
                         incident.incident_number,
+                        incident.incident_datetime_utc.isoformat(),
                         incident,
                         flush_producer=False,
                     )

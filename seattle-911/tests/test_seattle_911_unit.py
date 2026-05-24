@@ -60,6 +60,8 @@ class TestIncidentParsing:
         incident = parse_incident(SAMPLE_ROWS[0])
         assert incident.incident_number == "F260046986"
         assert incident.incident_type == "Aid Response"
+        assert incident.incident_type_slug == "aid-response"
+        assert incident.incident_datetime_utc.isoformat() == "2026-04-09T10:52:00+00:00"
         assert incident.latitude == pytest.approx(47.666481)
         assert incident.longitude == pytest.approx(-122.284803)
 
@@ -100,9 +102,11 @@ class TestPolling:
         bridge.poll_and_send(producer, once=True)
 
         assert producer.send_us_wa_seattle_fire911_incident.call_count == 2
+        first_incident = parse_incident(SAMPLE_ROWS[0])
         producer.send_us_wa_seattle_fire911_incident.assert_any_call(
             "F260046986",
-            parse_incident(SAMPLE_ROWS[0]),
+            first_incident.incident_datetime_utc.isoformat(),
+            first_incident,
             flush_producer=False,
         )
 
