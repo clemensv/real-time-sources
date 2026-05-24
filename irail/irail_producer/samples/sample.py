@@ -63,7 +63,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'be.irail.Station' event to Kafka topic.
-    await be_irail_event_producer.send_be_irail_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
+    await be_irail_event_producer.send_be_irail_station(_station_id = 'TODO: replace me', data = _station)
     print(f"Sent 'be.irail.Station' event: {_station.to_json()}")
 
     # ---- be.irail.StationBoard ----
@@ -71,7 +71,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station_board = StationBoard()
 
     # sends the 'be.irail.StationBoard' event to Kafka topic.
-    await be_irail_event_producer.send_be_irail_station_board(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station_board)
+    await be_irail_event_producer.send_be_irail_station_board(_station_id = 'TODO: replace me', data = _station_board)
     print(f"Sent 'be.irail.StationBoard' event: {_station_board.to_json()}")
 
     # ---- be.irail.ArrivalBoard ----
@@ -79,7 +79,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _arrival_board = ArrivalBoard()
 
     # sends the 'be.irail.ArrivalBoard' event to Kafka topic.
-    await be_irail_event_producer.send_be_irail_arrival_board(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _arrival_board)
+    await be_irail_event_producer.send_be_irail_arrival_board(_station_id = 'TODO: replace me', data = _arrival_board)
     print(f"Sent 'be.irail.ArrivalBoard' event: {_arrival_board.to_json()}")
 
 if __name__ == "__main__":

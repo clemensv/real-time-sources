@@ -123,6 +123,9 @@ def _collect_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[
             ct = getattr(msg.properties, 'ContentType', None)
             if ct:
                 props['_contenttype'] = ct
+            expiry = getattr(msg.properties, 'MessageExpiryInterval', None)
+            if expiry is not None:
+                props['_message_expiry_interval'] = expiry
         try:
             payload = json.loads(msg.payload)
         except (TypeError, ValueError):
@@ -291,6 +294,9 @@ def _collect_messages_topic(host: str, port: int, topic_filter: str, timeout: fl
             ct = getattr(msg.properties, 'ContentType', None)
             if ct:
                 props['_contenttype'] = ct
+            expiry = getattr(msg.properties, 'MessageExpiryInterval', None)
+            if expiry is not None:
+                props['_message_expiry_interval'] = expiry
         try:
             payload = json.loads(msg.payload)
         except (TypeError, ValueError):
@@ -1174,6 +1180,9 @@ def _collect_bluesky_messages(host: str, port: int, timeout: float = 25.0) -> Li
             ct = getattr(msg.properties, 'ContentType', None)
             if ct:
                 props['_contenttype'] = ct
+            expiry = getattr(msg.properties, 'MessageExpiryInterval', None)
+            if expiry is not None:
+                props['_message_expiry_interval'] = expiry
         try:
             payload = json.loads(msg.payload)
         except (TypeError, ValueError):
@@ -3708,3 +3717,111 @@ class TestSeattle911MqttDockerFlow:
         assert payload is not None and payload.get('incident_number') == up['subject']
         assert payload.get('incident_type_slug') == parts[6]
         assert payload.get('incident_datetime_utc')
+
+# ---------------------------------------------------------------------------
+# iRail Belgian railway -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def irail_mqtt_image():
+    return build_image('irail', dockerfile='Dockerfile.mqtt', tag='test-irail-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_irail():
+    container, network, host_port = _generic_mosquitto(
+        'irail-mqtt-e2e', 'irail-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'irail-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestIRailMqttDockerFlow:
+    """Verify the irail-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_irail, irail_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_irail['internal_host']}:{mosquitto_irail['internal_port']}"
+        feeder = client.containers.run(
+            irail_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_irail['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'STATION_FILTER': '008814001,008821006',
+                'POLLING_INTERVAL': '300',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_irail['host_port'], 'transit/be/irail/irail/#', timeout=40.0
+        )
+        assert messages, 'No retained messages received from broker'
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        departure_msgs = [m for m in messages if m['topic'].endswith('/station-board')]
+        arrival_msgs = [m for m in messages if m['topic'].endswith('/arrival-board')]
+        assert info_msgs, 'No /info station reference events published'
+        assert departure_msgs, 'No /station-board departure board events published'
+        assert arrival_msgs, 'No /arrival-board arrival board events published'
+
+        for sample in (info_msgs[0], departure_msgs[0], arrival_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        assert '_message_expiry_interval' not in info_msgs[0]['user_properties']
+        departure_expiry = departure_msgs[0]['user_properties'].get('_message_expiry_interval')
+        arrival_expiry = arrival_msgs[0]['user_properties'].get('_message_expiry_interval')
+        assert 840 <= departure_expiry <= 900
+        assert 840 <= arrival_expiry <= 900
+
+        assert {m['user_properties'].get('type') for m in info_msgs} == {'be.irail.Station'}
+        assert {m['user_properties'].get('type') for m in departure_msgs} == {'be.irail.StationBoard'}
+        assert {m['user_properties'].get('type') for m in arrival_msgs} == {'be.irail.ArrivalBoard'}
+
+        info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+        departure_stations = {m['topic'].split('/')[-2] for m in departure_msgs}
+        arrival_stations = {m['topic'].split('/')[-2] for m in arrival_msgs}
+        common_stations = info_stations & departure_stations & arrival_stations
+        assert common_stations
+        station_messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_irail['host_port'], 'transit/be/irail/irail/008814001/#', timeout=10.0
+        )
+        assert {m['topic'].split('/')[-1] for m in station_messages} == {'info', 'station-board', 'arrival-board'}
+
+        for sample in (info_msgs[0], departure_msgs[0], arrival_msgs[0]):
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable: {sample['payload']!r}"
+            assert 'station_id' in payload

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "irail-mqtt"
+version = "0.1.0"
+description = "iRail Belgian railway MQTT/UNS bridge"
+authors = []
+packages = [{ include = "irail_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+irail = {path = ".."}
+irail_mqtt_producer_data = {path = "../irail_mqtt_producer/irail_mqtt_producer_data"}
+irail_mqtt_producer_mqtt_client = {path = "../irail_mqtt_producer/irail_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+irail-mqtt = "irail_mqtt:main"

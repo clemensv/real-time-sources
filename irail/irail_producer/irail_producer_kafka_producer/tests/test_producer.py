@@ -107,7 +107,7 @@ def test_be_irail_beirailstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irail_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irail_station(_station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +170,7 @@ def test_be_irail_beirailstationboard(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irail_station_board(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irail_station_board(_station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +233,7 @@ def test_be_irail_beirailarrivalboard(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irail_arrival_board(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irail_arrival_board(_station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -279,8 +279,8 @@ def test_be_irail_cross_event_type_kafka_key(kafka_emulator):
     data1 = Test_Station.create_instance()
     data2 = Test_StationBoard.create_instance()
 
-    producer_instance.send_be_irail_station(_feedurl = shared_key_value, _station_id = shared_key_value, data = data1)
-    producer_instance.send_be_irail_station_board(_feedurl = shared_key_value, _station_id = shared_key_value, data = data2)
+    producer_instance.send_be_irail_station(_station_id = shared_key_value, data = data1)
+    producer_instance.send_be_irail_station_board(_station_id = shared_key_value, data = data2)
     kafka_producer.flush(timeout=5.0)
 
     # Collect keys from both messages
