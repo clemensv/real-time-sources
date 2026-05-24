@@ -1,6 +1,6 @@
-# RWS Waterwebservices Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# RWS Waterwebservices Bridge to Apache Kafka, Azure Event Hubs, Fabric Event Streams, and MQTT
 
-This container image provides a bridge between the Rijkswaterstaat (RWS) Waterwebservices API and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge polls real-time water level observations from approximately 785 monitoring stations across the Netherlands and forwards them to the configured Kafka endpoint.
+This container image provides a bridge between the Rijkswaterstaat (RWS) Waterwebservices API and Apache Kafka, Azure Event Hubs, Fabric Event Streams, and MQTT. The bridge polls real-time water level observations from approximately 785 monitoring stations across the Netherlands and forwards them to the configured endpoint.
 
 ## RWS Waterwebservices API
 
@@ -116,3 +116,94 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template-with-eventhub.json)
+
+## MQTT/UNS Container Image
+
+A separate container image publishes the same data as MQTT 5.0 binary-mode
+CloudEvents into a Unified Namespace topic tree:
+
+```
+hydro/nl/rws/rws-waterwebservices/{station_code}/info
+hydro/nl/rws/rws-waterwebservices/{station_code}/water-level
+```
+
+### Installing
+
+```shell
+$ docker pull ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
+```
+
+### Running
+
+```shell
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtt://your-broker:1883' \
+    ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
+```
+
+### MQTT Wildcard Examples
+
+Subscribe to all events from all stations:
+
+```
+hydro/nl/rws/rws-waterwebservices/#
+```
+
+Subscribe to all water-level observations:
+
+```
+hydro/nl/rws/rws-waterwebservices/+/+/water-level
+```
+
+Subscribe to all events from a specific water body (e.g. Hoek van Holland):
+
+```
+hydro/nl/rws/rws-waterwebservices/{station_code}/#
+```
+
+### MQTT Environment Variables
+
+#### `MQTT_BROKER_URL`
+
+Full MQTT broker URL (e.g. `mqtt://host:1883` or `mqtts://host:8883`).
+
+#### `MQTT_HOST`
+
+MQTT broker hostname (alternative to `MQTT_BROKER_URL`).
+
+#### `MQTT_PORT`
+
+MQTT broker port. Default: `1883` (or `8883` if TLS).
+
+#### `MQTT_USERNAME`
+
+Username for MQTT broker authentication.
+
+#### `MQTT_PASSWORD`
+
+Password for MQTT broker authentication.
+
+#### `MQTT_TLS`
+
+Enable TLS. Set to `1`, `true`, or `yes`.
+
+#### `MQTT_CLIENT_ID`
+
+MQTT client ID. Default: auto-generated.
+
+#### `MQTT_CONTENT_MODE`
+
+CloudEvents content mode: `binary` (default) or `structured`.
+
+#### `POLLING_INTERVAL`
+
+Polling interval in seconds. Default: `600` (10 minutes).
+
+#### `ONCE_MODE`
+
+Exit after one polling cycle. Set to `1`, `true`, or `yes`.
+
+#### `STATE_FILE`
+
+Path to the deduplication state file. Default: `~/.rws_waterwebservices_mqtt_state.json`.
+

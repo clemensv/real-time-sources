@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/NL.RWS.Waterwebservices"
       ]
+    },
+    "NL.RWS.Waterwebservices.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.RWS.Waterwebservices.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -60,6 +81,32 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.mqtt": {
+      "description": "MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to retained, QoS-1 Unified Namespace topics under hydro/nl/rws/rws-waterwebservices/{station_code}/... RWS Waterwebservices does not expose a stable shared water-body axis in the station catalog, so the MQTT tree intentionally uses the station code as the stable subscriber axis.",
+      "messages": {
+        "NL.RWS.Waterwebservices.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/nl/rws/rws-waterwebservices/{station_code}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/nl/rws/rws-waterwebservices/{station_code}/water-level",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 3600
+          }
         }
       }
     }
@@ -251,10 +298,7 @@
                   },
                   {
                     "name": "timestamp",
-                    "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
-                    }
+                    "type": "string"
                   },
                   {
                     "name": "value",

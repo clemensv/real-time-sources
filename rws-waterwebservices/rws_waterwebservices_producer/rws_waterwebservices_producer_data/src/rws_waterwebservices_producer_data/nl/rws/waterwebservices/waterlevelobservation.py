@@ -13,7 +13,6 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -24,7 +23,7 @@ class WaterLevelObservation:
     Attributes:
         station_code (str): 
         location_name (typing.Optional[str]): 
-        timestamp (datetime.datetime): 
+        timestamp (str): 
         value (float): 
         unit (typing.Optional[str]): 
         quality_code (typing.Optional[str]): 
@@ -34,7 +33,7 @@ class WaterLevelObservation:
     
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     location_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location_name"))
-    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit"))
     quality_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_code"))
@@ -43,15 +42,14 @@ class WaterLevelObservation:
     parameter: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"location_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"value\", \"type\": \"double\"}, {\"name\": \"unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"quality_code\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"compartment\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"parameter\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"NL.RWS.Waterwebservices\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_code\", \"type\": \"string\"}, {\"name\": \"location_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"value\", \"type\": \"double\"}, {\"name\": \"unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"quality_code\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"compartment\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"parameter\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"NL.RWS.Waterwebservices\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_code=str(self.station_code)
         self.location_name=str(self.location_name) if self.location_name else None
-        value_timestamp = self.timestamp
-        self.timestamp = value_timestamp
+        self.timestamp=str(self.timestamp)
         self.value=float(self.value)
         self.unit=str(self.unit) if self.unit else None
         self.quality_code=str(self.quality_code) if self.quality_code else None

@@ -152,11 +152,11 @@ class TestRWSRealEndpoints:
         loc = stations[0]
         from rws_waterwebservices_producer_data import Station
         station = Station(
-            code=loc.get("Code", ""),
+            station_code=loc.get("Code", ""),
             name=loc.get("Naam", ""),
             latitude=float(loc.get("Lat", 0) or 0),
             longitude=float(loc.get("Lon", 0) or 0),
             coordinate_system=loc.get("Coordinatenstelsel", ""),
         )
-        assert station.code != ""
+        assert station.station_code != ""
         assert station.name != ""

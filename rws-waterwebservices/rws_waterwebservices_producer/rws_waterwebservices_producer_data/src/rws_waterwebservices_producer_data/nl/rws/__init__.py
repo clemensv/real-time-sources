@@ -1,3 +1,3 @@
-from .waterwebservices import Station, WaterLevelObservation
+from .waterwebservices import WaterLevelObservation, Station
 
-__all__ = ["Station", "WaterLevelObservation"]
+__all__ = ["WaterLevelObservation", "Station"]

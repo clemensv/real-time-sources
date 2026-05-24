@@ -280,6 +280,12 @@
       "image": "tfl-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "tfl_road_traffic_mqtt"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "image": "rws-waterwebservices-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "rws_waterwebservices_mqtt"
     }
   ],
   "flow": [
@@ -524,6 +530,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestTflRoadTrafficMqttDockerFlow"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "image": "rws-waterwebservices-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestRWSWaterwebservicesMqttDockerFlow"
     }
   ]
 }

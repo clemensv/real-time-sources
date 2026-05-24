@@ -1929,6 +1929,181 @@ class TestTflRoadTrafficMqttDockerFlow:
         disruption_subject = manifest['messagegroups']['uk.gov.tfl.road.disruptions']['messages']['uk.gov.tfl.road.RoadDisruption']['envelopemetadata']['subject']['value']
         assert disruption_key == disruption_subject == 'disruptions/{road_id}/{severity}/{disruption_id}'
 
+# ---- chmi-hydro --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def chmi_hydro_mqtt_image():
+    return build_image('chmi-hydro', dockerfile='Dockerfile.mqtt', tag='test-chmi-hydro-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_chmi():
+    container, network, host_port = _generic_mosquitto(
+        'chmi-hydro-mqtt-e2e', 'chmi-hydro-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'chmi-hydro-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestCHMIHydroMqttDockerFlow:
+    """Verify the chmi-hydro-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_chmi, chmi_hydro_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_chmi['internal_host']}:{mosquitto_chmi['internal_port']}"
+        feeder = client.containers.run(
+            chmi_hydro_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_chmi['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '120',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_chmi['host_port'], 'hydro/cz/chmi/chmi-hydro/#',
+            timeout=40.0,
+        )
+        _assert_hydro_pilot_flow(
+            messages,
+            station_type='CZ.Gov.CHMI.Hydro.Station',
+            telemetry_type='CZ.Gov.CHMI.Hydro.WaterLevelObservation',
+            level_field='water_level',
+        )
+
+
+# ---- rws-waterwebservices ------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def rws_waterwebservices_mqtt_image():
+    return build_image('rws-waterwebservices', dockerfile='Dockerfile.mqtt', tag='test-rws-waterwebservices-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_rws():
+    container, network, host_port = _generic_mosquitto(
+        'rws-waterwebservices-mqtt-e2e', 'rws-waterwebservices-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'rws-waterwebservices-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestRWSWaterwebservicesMqttDockerFlow:
+    """Verify the rws-waterwebservices-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_rws, rws_waterwebservices_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_rws['internal_host']}:{mosquitto_rws['internal_port']}"
+        feeder = client.containers.run(
+            rws_waterwebservices_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_rws['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=900)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_rws['host_port'], 'hydro/nl/rws/rws-waterwebservices/#',
+            timeout=40.0,
+        )
+        # Custom assertions (RWS uses station_code not station_id)
+        assert messages, 'No retained messages received from broker'
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        level_msgs = [m for m in messages if m['topic'].endswith('/water-level')]
+        assert info_msgs, 'No /info reference events published'
+        assert level_msgs, 'No /water-level telemetry events published'
+
+        for sample in (info_msgs[0], level_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        info_types = {m['user_properties'].get('type') for m in info_msgs}
+        level_types = {m['user_properties'].get('type') for m in level_msgs}
+        assert info_types == {'NL.RWS.Waterwebservices.Station'}, info_types
+        assert level_types == {'NL.RWS.Waterwebservices.WaterLevelObservation'}, level_types
+
+        info_stations = {m['topic'].split('/')[-2] for m in info_msgs}
+        level_stations = {m['topic'].split('/')[-2] for m in level_msgs}
+        common = info_stations & level_stations
+        assert common, 'No station has both info and water-level retained leaves'
+
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        level_payload = _to_dict(level_msgs[0]['payload'])
+        assert info_payload is not None
+        assert level_payload is not None
+        assert 'station_code' in info_payload, info_payload
+        assert 'station_code' in level_payload, level_payload
+        assert 'value' in level_payload, level_payload
+
+
+# ---------------------------------------------------------------------------
+# Bluesky firehose -> MQTT/UNS (pilot)
+
 # ---------------------------------------------------------------------------
 # AISstream.io -> MQTT/UNS (pilot)
 # ---------------------------------------------------------------------------
