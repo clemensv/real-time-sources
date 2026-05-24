@@ -121,6 +121,18 @@ def _parse_bbox(value: Optional[str]):
     return None, None, None, None
 
 
+def _alert_color(alert_level: str) -> str:
+    return alert_level.strip().lower()
+
+
+def _is_known_alert_level(alert_level: str) -> bool:
+    return _alert_color(alert_level) in {'green', 'orange', 'red'}
+
+
+def _is_known_event_type(event_type: str) -> bool:
+    return event_type in {'EQ', 'TC', 'FL', 'VO', 'FF', 'DR'}
+
+
 def parse_rss_item(item: ET.Element) -> Optional[DisasterAlert]:
     """Parse a single RSS item element into a DisasterAlert data class."""
     event_type = _text(item, 'eventtype', 'gdacs')
@@ -138,6 +150,10 @@ def parse_rss_item(item: ET.Element) -> Optional[DisasterAlert]:
 
     if not event_type or not event_id or not alert_level:
         return None
+    if not _is_known_event_type(event_type):
+        return None
+    if not _is_known_alert_level(alert_level):
+        return None
     if latitude is None or longitude is None:
         return None
     if severity_value is None or severity_unit is None:
@@ -152,7 +168,7 @@ def parse_rss_item(item: ET.Element) -> Optional[DisasterAlert]:
     episode_alert_level = _text(item, 'episodealertlevel', 'gdacs')
     episode_alert_score = _parse_float(_text(item, 'episodealertscore', 'gdacs'))
     event_name = _text(item, 'eventname', 'gdacs')
-    country = _text(item, 'country', 'gdacs')
+    country = _text(item, 'country', 'gdacs') or 'unknown'
     iso3 = _text(item, 'iso3', 'gdacs')
     to_date = _parse_datetime(_text(item, 'todate', 'gdacs'))
     vulnerability = _parse_float(_text(item, 'vulnerability', 'gdacs'))
@@ -178,6 +194,7 @@ def parse_rss_item(item: ET.Element) -> Optional[DisasterAlert]:
         event_type=event_type,
         event_id=event_id,
         alert_level=alert_level,
+        alert_color=_alert_color(alert_level),
         latitude=latitude,
         longitude=longitude,
         from_date=from_date,
