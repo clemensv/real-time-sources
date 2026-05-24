@@ -49,3 +49,17 @@ This document describes the events emitted by the GraceDB bridge.
 | `far_is_upper_limit` | `boolean?` | Whether FAR is an upper limit. |
 | `nevents` | `int?` | Number of pipeline events aggregated. |
 | `self_uri` | `string` | HATEOAS self link for the superevent in the GraceDB API. |
+
+---
+
+## Message Group: org.ligo.gracedb.mqtt
+
+MQTT/5.0 transport variant for GraceDB superevents. Non-retained QoS-1 event stream routed by category, physics group, and superevent id under seismic/intl/ligo/gracedb/...
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent` | `org.ligo.gracedb.Superevent` | `false` | `1` | `` |

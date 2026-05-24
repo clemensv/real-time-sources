@@ -87,3 +87,19 @@
 | `unique_users` | *int32* | - | `True` | Number of unique VATSIM user IDs currently connected. |
 | `pilot_count` | *int32* | - | `True` | Number of pilots currently connected and flying. |
 | `controller_count` | *int32* | - | `True` | Number of controllers (including observers) currently connected and providing ATC services. |
+
+---
+
+## Message Group: net.vatsim.mqtt
+
+MQTT/5.0 transport variant for VATSIM live network data. Non-retained QoS-1 streams split pilots, controllers, and network facility status into distinct UNS topic branches under aviation-network/intl/vatsim/vatsim/...
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `aviation-network/intl/vatsim/vatsim/pilots/{callsign}/pilot-position` | `net.vatsim.PilotPosition` | `false` | `1` | `` |
+| `aviation-network/intl/vatsim/vatsim/controllers/{callsign}/controller-position` | `net.vatsim.ControllerPosition` | `false` | `1` | `` |
+| `aviation-network/intl/vatsim/vatsim/facilities/{facility}/facility-status` | `net.vatsim.NetworkStatus` | `false` | `1` | `` |

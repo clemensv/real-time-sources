@@ -301,7 +301,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Europe — 37 countries, severe weather warnings",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "noaa-goes",
@@ -480,7 +481,8 @@
     "key": false,
     "desc": "European Alps — daily avalanche bulletins, CAAMLv6",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true
   },
   {
     "id": "gdacs",
@@ -488,7 +490,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Global — earthquakes, floods, cyclones, volcanoes, droughts",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "inpe-deter-brazil",
@@ -513,7 +516,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "ptwc-tsunami",
@@ -521,7 +525,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Pacific and Atlantic — NOAA tsunami bulletins",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "seattle-911",
@@ -610,7 +615,8 @@
     "key": false,
     "desc": "Global — virtual aviation network, pilots & controllers",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true
   },
   {
     "id": "autobahn",
@@ -736,7 +742,8 @@
     "cat": "Railway",
     "key": false,
     "desc": "Norway — national real-time transit, SIRI ET/VM/SX",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "irail",
@@ -863,7 +870,8 @@
     "key": false,
     "desc": "Global — LIGO/Virgo/KAGRA gravitational wave candidates",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true
   },
   {
     "id": "jma-bosai-amedas",

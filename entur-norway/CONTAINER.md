@@ -81,3 +81,56 @@ All events are produced to a single Kafka topic (default: `entur-norway`).
 - Documentation: <https://developer.entur.org/pages-real-time-intro>
 - License: [NLOD (Norwegian Licence for Open Government Data)](https://data.norge.no/nlod/en/2.0)
 - Coverage: All Norwegian public transport operators and modes
+
+## MQTT/Unified Namespace image
+
+A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `no.entur.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
+
+### Run against a generic MQTT 5 broker
+
+```shell
+docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
+    -e MQTT_USERNAME='<username>' \
+    -e MQTT_PASSWORD='<password>' \
+    ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest
+```
+
+### MQTT environment variables
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
+| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
+| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
+| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
+| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
+| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `transit/no/entur/entur-norway/et`. |
+| retain default | Per message in xRegistry; see the topic table below. |
+| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+
+### MQTT topic patterns
+
+| Topic pattern | Message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey` | `no.entur.EstimatedVehicleJourney` | `false` | `1` | `` |
+| `transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey` | `no.entur.MonitoredVehicleJourney` | `false` | `1` | `` |
+| `transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation` | `no.entur.PtSituationElement` | `false` | `1` | `` |
+
+### Subscription patterns
+
+```text
+# Everything from this source
+transit/no/entur/entur-norway/et/#
+```
+
+### MQTT Azure deployment
+
+Deploy the MQTT container against an existing MQTT 5 broker:
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-mqtt.json)
+
+Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-with-eventgrid-mqtt.json)

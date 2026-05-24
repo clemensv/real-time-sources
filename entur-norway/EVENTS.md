@@ -166,3 +166,19 @@ Real-time transit disruption or service alert from the Entur SIRI-SX feed.
 |---|---|---|
 | `start_time` | string | ISO 8601 UTC start time |
 | `end_time` | string? | ISO 8601 UTC end time, null if open-ended |
+
+---
+
+## Message Group: no.entur.mqtt
+
+MQTT/5.0 transport variant for Entur Norway SIRI real-time feeds. Non-retained QoS-1 streams route Estimated Timetable, Vehicle Monitoring, and Situation Exchange payloads by raw SIRI identifiers under transit/no/entur/entur-norway/... Missing routing fields are emitted as the literal unknown by the bridge.
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey` | `no.entur.EstimatedVehicleJourney` | `false` | `1` | `` |
+| `transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey` | `no.entur.MonitoredVehicleJourney` | `false` | `1` | `` |
+| `transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation` | `no.entur.PtSituationElement` | `false` | `1` | `` |

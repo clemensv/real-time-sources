@@ -42,3 +42,17 @@ Daily avalanche danger bulletin for a specific micro-region in the European Alps
 | `danger_patterns_json` | *string (nullable)* | JSON array of LWD Tyrol danger pattern codes (e.g. DP10, DP4) |
 | `avalanche_activity_highlights` | *string (nullable)* | Summary of avalanche activity conditions |
 | `snowpack_structure_comment` | *string (nullable)* | Description of snowpack structure and layering |
+
+---
+
+## Message Group: org.EAWS.ALBINA.mqtt
+
+MQTT/5.0 transport variant for EAWS ALBINA avalanche bulletins. Non-retained QoS-1 bulletin events route by country, region, and danger level under alerts/at/eaws/eaws-albina/...
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `alerts/at/eaws/eaws-albina/{country}/{region_id}/{danger_level}/bulletin` | `org.EAWS.ALBINA.AvalancheBulletin` | `false` | `1` | `` |

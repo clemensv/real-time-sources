@@ -62,3 +62,54 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnina-bbk%2Fazure-template-with-eventhub.json)
+
+## MQTT/Unified Namespace image
+
+A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-nina-bbk-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `NINA.Warnings.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
+
+### Run against a generic MQTT 5 broker
+
+```shell
+docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
+    -e MQTT_USERNAME='<username>' \
+    -e MQTT_PASSWORD='<password>' \
+    ghcr.io/clemensv/real-time-sources-nina-bbk-mqtt:latest
+```
+
+### MQTT environment variables
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
+| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
+| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
+| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
+| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
+| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `alerts/de/nina/nina-bbk`. |
+| retain default | Per message in xRegistry; see the topic table below. |
+| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+
+### MQTT topic patterns
+
+| Topic pattern | Message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning` | `NINA.CivilWarning` | `false` | `1` | `` |
+
+### Subscription patterns
+
+```text
+# Everything from this source
+alerts/de/nina/nina-bbk/#
+```
+
+### MQTT Azure deployment
+
+Deploy the MQTT container against an existing MQTT 5 broker:
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnina-bbk%2Fazure-template-mqtt.json)
+
+Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnina-bbk%2Fazure-template-with-eventgrid-mqtt.json)
