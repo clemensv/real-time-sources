@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/gov.cbp.borderwait"
       ]
+    },
+    "gov.cbp.borderwait.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.cbp.borderwait.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -64,6 +85,32 @@
           "dataschemauri": "#/schemagroups/gov.cbp.borderwait.jstruct/schemas/gov.cbp.borderwait.WaitTime"
         }
       }
+    },
+    "gov.cbp.borderwait.mqtt": {
+      "description": "MQTT/5.0 transport variants for US CBP border wait-time state. Topics are retained QoS-1 leaves under traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/{event}. The border_slug axis is lowercase kebab-case from the CBP border field (canadian-border or mexican-border); port_number preserves the Kafka key and CloudEvents subject. Wait-time snapshots use message expiry so stale retained state ages out if polling stops.",
+      "messages": {
+        "gov.cbp.borderwait.mqtt.Port": {
+          "name": "Port",
+          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "gov.cbp.borderwait.mqtt.WaitTime": {
+          "name": "WaitTime",
+          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 7200
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -77,7 +124,7 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://real-time-sources.2030.io/schemas/gov/cbp/borderwait/Port",
                 "name": "Port",
                 "$root": "#/definitions/gov/cbp/borderwait/Port",
@@ -92,7 +139,8 @@
                           "properties": {
                             "port_number": {
                               "type": "string",
-                              "description": "Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups."
+                              "description": "Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups.",
+                              "pattern": "^[0-9]{6}$"
                             },
                             "port_name": {
                               "type": "string",
@@ -111,20 +159,39 @@
                               "description": "Operating hours of the port as a human-readable string. Examples: '24 hrs/day', '6:00 am - 10:00 pm'. Empty string if not reported."
                             },
                             "passenger_vehicle_max_lanes": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Maximum number of passenger vehicle inspection lanes available at this crossing. Null if passenger vehicle processing is not available at this port."
                             },
                             "commercial_vehicle_max_lanes": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Maximum number of commercial vehicle inspection lanes available at this crossing. Null if commercial vehicle processing is not available at this port."
                             },
                             "pedestrian_max_lanes": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Maximum number of pedestrian inspection lanes available at this crossing. Null if pedestrian processing is not available at this port."
+                            },
+                            "border_slug": {
+                              "type": "string",
+                              "description": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values are canadian-border or mexican-border.",
+                              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+                              "enum": [
+                                "canadian-border",
+                                "mexican-border"
+                              ]
                             }
                           },
                           "required": [
                             "port_number",
+                            "border_slug",
                             "port_name",
                             "border",
                             "crossing_name",
@@ -150,7 +217,7 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://real-time-sources.2030.io/schemas/gov/cbp/borderwait/WaitTime",
                 "name": "WaitTime",
                 "$root": "#/definitions/gov/cbp/borderwait/WaitTime",
@@ -165,7 +232,8 @@
                           "properties": {
                             "port_number": {
                               "type": "string",
-                              "description": "Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema."
+                              "description": "Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema.",
+                              "pattern": "^[0-9]{6}$"
                             },
                             "port_name": {
                               "type": "string",
@@ -192,110 +260,186 @@
                               "description": "Time of the wait time report in HH:MM:SS format as provided by CBP, in the port's local time zone. Example: '16:16:47'."
                             },
                             "passenger_vehicle_standard_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for standard (non-trusted-traveler) passenger vehicle lanes. Null when the lane type is not available at this port (operational_status 'N/A').",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "passenger_vehicle_standard_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of standard passenger vehicle lanes currently open. Null when not available."
                             },
                             "passenger_vehicle_standard_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of standard passenger vehicle lanes. Values: 'no delay', 'delay', 'N/A', 'Lanes Closed', 'Update Pending'. Null when not reported."
                             },
                             "passenger_vehicle_nexus_sentri_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for NEXUS (Canadian border) or SENTRI (Mexican border) trusted-traveler passenger vehicle lanes. Null when not available.",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "passenger_vehicle_nexus_sentri_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of NEXUS/SENTRI trusted-traveler passenger vehicle lanes currently open. Null when not available."
                             },
                             "passenger_vehicle_nexus_sentri_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of NEXUS/SENTRI passenger vehicle lanes. Null when not reported."
                             },
                             "passenger_vehicle_ready_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for Ready Lane passenger vehicle lanes. Ready Lanes accept RFID-enabled documents for expedited processing. Null when not available.",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "passenger_vehicle_ready_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of Ready Lane passenger vehicle lanes currently open. Null when not available."
                             },
                             "passenger_vehicle_ready_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of Ready Lane passenger vehicle lanes. Null when not reported."
                             },
                             "pedestrian_standard_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for standard pedestrian lanes. Null when pedestrian processing is not available at this port.",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "pedestrian_standard_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of standard pedestrian lanes currently open. Null when not available."
                             },
                             "pedestrian_standard_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of standard pedestrian lanes. Null when not reported."
                             },
                             "pedestrian_ready_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for Ready Lane pedestrian lanes. Null when not available.",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "pedestrian_ready_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of Ready Lane pedestrian lanes currently open. Null when not available."
                             },
                             "pedestrian_ready_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of Ready Lane pedestrian lanes. Null when not reported."
                             },
                             "commercial_vehicle_standard_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for standard commercial vehicle lanes. Null when commercial processing is not available at this port.",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "commercial_vehicle_standard_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of standard commercial vehicle lanes currently open. Null when not available."
                             },
                             "commercial_vehicle_standard_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of standard commercial vehicle lanes. Null when not reported."
                             },
                             "commercial_vehicle_fast_delay": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Delay in minutes for FAST (Free and Secure Trade) trusted-traveler commercial vehicle lanes. Null when not available.",
                               "unit": "min",
                               "symbol": "min"
                             },
                             "commercial_vehicle_fast_lanes_open": {
-                              "type": ["integer", "null"],
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
                               "description": "Number of FAST commercial vehicle lanes currently open. Null when not available."
                             },
                             "commercial_vehicle_fast_operational_status": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Operational status of FAST commercial vehicle lanes. Null when not reported."
                             },
                             "construction_notice": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Free-text construction or closure notice for the port. Empty string or null when no notice is active."
+                            },
+                            "border_slug": {
+                              "type": "string",
+                              "description": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values are canadian-border or mexican-border.",
+                              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+                              "enum": [
+                                "canadian-border",
+                                "mexican-border"
+                              ]
                             }
                           },
                           "required": [
                             "port_number",
+                            "border_slug",
                             "port_name",
                             "border",
                             "crossing_name",
@@ -348,14 +492,63 @@
                 "namespace": "gov.cbp.borderwait",
                 "doc": "Reference data for a US CBP land border port of entry.",
                 "fields": [
-                  {"name": "port_number", "type": "string", "doc": "Six-digit CBP port number."},
-                  {"name": "port_name", "type": "string", "doc": "City or locality name."},
-                  {"name": "border", "type": "string", "doc": "International border: Canadian Border or Mexican Border."},
-                  {"name": "crossing_name", "type": "string", "doc": "Name of the crossing facility."},
-                  {"name": "hours", "type": "string", "doc": "Operating hours as a human-readable string."},
-                  {"name": "passenger_vehicle_max_lanes", "type": ["null", "int"], "doc": "Max passenger vehicle lanes. Null if not available.", "default": null},
-                  {"name": "commercial_vehicle_max_lanes", "type": ["null", "int"], "doc": "Max commercial vehicle lanes. Null if not available.", "default": null},
-                  {"name": "pedestrian_max_lanes", "type": ["null", "int"], "doc": "Max pedestrian lanes. Null if not available.", "default": null}
+                  {
+                    "name": "port_number",
+                    "type": "string",
+                    "doc": "Six-digit CBP port number."
+                  },
+                  {
+                    "name": "border_slug",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values: canadian-border, mexican-border."
+                  },
+                  {
+                    "name": "port_name",
+                    "type": "string",
+                    "doc": "City or locality name."
+                  },
+                  {
+                    "name": "border",
+                    "type": "string",
+                    "doc": "International border: Canadian Border or Mexican Border."
+                  },
+                  {
+                    "name": "crossing_name",
+                    "type": "string",
+                    "doc": "Name of the crossing facility."
+                  },
+                  {
+                    "name": "hours",
+                    "type": "string",
+                    "doc": "Operating hours as a human-readable string."
+                  },
+                  {
+                    "name": "passenger_vehicle_max_lanes",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Max passenger vehicle lanes. Null if not available.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_max_lanes",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Max commercial vehicle lanes. Null if not available.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_max_lanes",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Max pedestrian lanes. Null if not available.",
+                    "default": null
+                  }
                 ]
               }
             }
@@ -372,35 +565,244 @@
                 "namespace": "gov.cbp.borderwait",
                 "doc": "Flattened wait time snapshot for a US land border port of entry.",
                 "fields": [
-                  {"name": "port_number", "type": "string", "doc": "Six-digit CBP port number."},
-                  {"name": "port_name", "type": "string", "doc": "City or locality name."},
-                  {"name": "border", "type": "string", "doc": "International border."},
-                  {"name": "crossing_name", "type": "string", "doc": "Crossing facility name."},
-                  {"name": "port_status", "type": "string", "doc": "Overall port operational status."},
-                  {"name": "date", "type": "string", "doc": "Report date in US format (M/D/YYYY)."},
-                  {"name": "time", "type": "string", "doc": "Report time in HH:MM:SS local time."},
-                  {"name": "passenger_vehicle_standard_delay", "type": ["null", "int"], "doc": "Standard passenger vehicle delay in minutes.", "default": null},
-                  {"name": "passenger_vehicle_standard_lanes_open", "type": ["null", "int"], "doc": "Standard passenger vehicle lanes open.", "default": null},
-                  {"name": "passenger_vehicle_standard_operational_status", "type": ["null", "string"], "doc": "Standard passenger vehicle operational status.", "default": null},
-                  {"name": "passenger_vehicle_nexus_sentri_delay", "type": ["null", "int"], "doc": "NEXUS/SENTRI passenger vehicle delay in minutes.", "default": null},
-                  {"name": "passenger_vehicle_nexus_sentri_lanes_open", "type": ["null", "int"], "doc": "NEXUS/SENTRI passenger vehicle lanes open.", "default": null},
-                  {"name": "passenger_vehicle_nexus_sentri_operational_status", "type": ["null", "string"], "doc": "NEXUS/SENTRI passenger vehicle operational status.", "default": null},
-                  {"name": "passenger_vehicle_ready_delay", "type": ["null", "int"], "doc": "Ready Lane passenger vehicle delay in minutes.", "default": null},
-                  {"name": "passenger_vehicle_ready_lanes_open", "type": ["null", "int"], "doc": "Ready Lane passenger vehicle lanes open.", "default": null},
-                  {"name": "passenger_vehicle_ready_operational_status", "type": ["null", "string"], "doc": "Ready Lane passenger vehicle operational status.", "default": null},
-                  {"name": "pedestrian_standard_delay", "type": ["null", "int"], "doc": "Standard pedestrian delay in minutes.", "default": null},
-                  {"name": "pedestrian_standard_lanes_open", "type": ["null", "int"], "doc": "Standard pedestrian lanes open.", "default": null},
-                  {"name": "pedestrian_standard_operational_status", "type": ["null", "string"], "doc": "Standard pedestrian operational status.", "default": null},
-                  {"name": "pedestrian_ready_delay", "type": ["null", "int"], "doc": "Ready Lane pedestrian delay in minutes.", "default": null},
-                  {"name": "pedestrian_ready_lanes_open", "type": ["null", "int"], "doc": "Ready Lane pedestrian lanes open.", "default": null},
-                  {"name": "pedestrian_ready_operational_status", "type": ["null", "string"], "doc": "Ready Lane pedestrian operational status.", "default": null},
-                  {"name": "commercial_vehicle_standard_delay", "type": ["null", "int"], "doc": "Standard commercial vehicle delay in minutes.", "default": null},
-                  {"name": "commercial_vehicle_standard_lanes_open", "type": ["null", "int"], "doc": "Standard commercial vehicle lanes open.", "default": null},
-                  {"name": "commercial_vehicle_standard_operational_status", "type": ["null", "string"], "doc": "Standard commercial vehicle operational status.", "default": null},
-                  {"name": "commercial_vehicle_fast_delay", "type": ["null", "int"], "doc": "FAST commercial vehicle delay in minutes.", "default": null},
-                  {"name": "commercial_vehicle_fast_lanes_open", "type": ["null", "int"], "doc": "FAST commercial vehicle lanes open.", "default": null},
-                  {"name": "commercial_vehicle_fast_operational_status", "type": ["null", "string"], "doc": "FAST commercial vehicle operational status.", "default": null},
-                  {"name": "construction_notice", "type": ["null", "string"], "doc": "Construction or closure notice text.", "default": null}
+                  {
+                    "name": "port_number",
+                    "type": "string",
+                    "doc": "Six-digit CBP port number."
+                  },
+                  {
+                    "name": "border_slug",
+                    "type": "string",
+                    "doc": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values: canadian-border, mexican-border."
+                  },
+                  {
+                    "name": "port_name",
+                    "type": "string",
+                    "doc": "City or locality name."
+                  },
+                  {
+                    "name": "border",
+                    "type": "string",
+                    "doc": "International border."
+                  },
+                  {
+                    "name": "crossing_name",
+                    "type": "string",
+                    "doc": "Crossing facility name."
+                  },
+                  {
+                    "name": "port_status",
+                    "type": "string",
+                    "doc": "Overall port operational status."
+                  },
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Report date in US format (M/D/YYYY)."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Report time in HH:MM:SS local time."
+                  },
+                  {
+                    "name": "passenger_vehicle_standard_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Standard passenger vehicle delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_standard_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Standard passenger vehicle lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_standard_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Standard passenger vehicle operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_nexus_sentri_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NEXUS/SENTRI passenger vehicle delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_nexus_sentri_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "NEXUS/SENTRI passenger vehicle lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_nexus_sentri_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "NEXUS/SENTRI passenger vehicle operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_ready_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ready Lane passenger vehicle delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_ready_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ready Lane passenger vehicle lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "passenger_vehicle_ready_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ready Lane passenger vehicle operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_standard_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Standard pedestrian delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_standard_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Standard pedestrian lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_standard_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Standard pedestrian operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_ready_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ready Lane pedestrian delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_ready_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Ready Lane pedestrian lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "pedestrian_ready_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Ready Lane pedestrian operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_standard_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Standard commercial vehicle delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_standard_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Standard commercial vehicle lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_standard_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Standard commercial vehicle operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_fast_delay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "FAST commercial vehicle delay in minutes.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_fast_lanes_open",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "FAST commercial vehicle lanes open.",
+                    "default": null
+                  },
+                  {
+                    "name": "commercial_vehicle_fast_operational_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "FAST commercial vehicle operational status.",
+                    "default": null
+                  },
+                  {
+                    "name": "construction_notice",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Construction or closure notice text.",
+                    "default": null
+                  }
                 ]
               }
             }

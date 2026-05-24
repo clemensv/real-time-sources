@@ -3825,3 +3825,104 @@ class TestIRailMqttDockerFlow:
             payload = _to_dict(sample['payload'])
             assert payload is not None, f"payload not parseable: {sample['payload']!r}"
             assert 'station_id' in payload
+
+# ---------------------------------------------------------------------------
+# US CBP Border Wait Times -> MQTT/UNS
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def cbp_border_wait_mqtt_image():
+    return build_image('cbp-border-wait', dockerfile='Dockerfile.mqtt', tag='test-cbp-border-wait-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_cbp_border_wait():
+    container, network, host_port = _generic_mosquitto(
+        'cbp-border-wait-mqtt-e2e', 'cbp-border-wait-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'cbp-border-wait-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestCbpBorderWaitMqttDockerFlow:
+    """Verify the cbp-border-wait-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_cbp_border_wait, cbp_border_wait_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_cbp_border_wait['internal_host']}:{mosquitto_cbp_border_wait['internal_port']}"
+        feeder = client.containers.run(
+            cbp_border_wait_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_cbp_border_wait['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_cbp_border_wait['host_port'], 'traffic/us/cbp/cbp-border-wait/#', timeout=40.0
+        )
+        assert messages, 'No retained messages received from broker'
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        wait_msgs = [m for m in messages if m['topic'].endswith('/wait-time')]
+        assert info_msgs, 'No /info port reference events published'
+        assert wait_msgs, 'No /wait-time state events published'
+
+        for sample in (info_msgs[0], wait_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        assert '_message_expiry_interval' not in info_msgs[0]['user_properties']
+        wait_expiry = wait_msgs[0]['user_properties'].get('_message_expiry_interval')
+        assert 7000 <= wait_expiry <= 7200
+        assert {m['user_properties'].get('type') for m in info_msgs} == {'gov.cbp.borderwait.Port'}
+        assert {m['user_properties'].get('type') for m in wait_msgs} == {'gov.cbp.borderwait.WaitTime'}
+
+        info_ports = {m['topic'].split('/')[-2] for m in info_msgs}
+        wait_ports = {m['topic'].split('/')[-2] for m in wait_msgs}
+        common_ports = info_ports & wait_ports
+        assert common_ports
+        sample_port = next(iter(common_ports))
+        port_messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_cbp_border_wait['host_port'], f'traffic/us/cbp/cbp-border-wait/+/{sample_port}/#', timeout=10.0
+        )
+        assert {m['topic'].split('/')[-1] for m in port_messages} == {'info', 'wait-time'}
+
+        for sample in (info_msgs[0], wait_msgs[0]):
+            payload = _to_dict(sample['payload'])
+            assert payload is not None, f"payload not parseable: {sample['payload']!r}"
+            assert 'port_number' in payload
+            assert payload.get('border_slug') in ('canadian-border', 'mexican-border')

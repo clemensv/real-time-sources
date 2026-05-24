@@ -22,6 +22,7 @@ class WaitTime:
     Flattened wait time snapshot for a US land border port of entry.
     Attributes:
         port_number (str): Six-digit CBP port number.
+        border_slug (str): Lowercase kebab-case MQTT/UNS border routing segment.
         port_name (str): City or locality name.
         border (str): International border.
         crossing_name (str): Crossing facility name.
@@ -52,6 +53,7 @@ class WaitTime:
         construction_notice (typing.Optional[str]): Construction or closure notice text."""
     
     port_number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="port_number"))
+    border_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="border_slug"))
     port_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="port_name"))
     border: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="border"))
     crossing_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="crossing_name"))
@@ -88,6 +90,7 @@ class WaitTime:
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.port_number=str(self.port_number)
+        self.border_slug=str(self.border_slug)
         self.port_name=str(self.port_name)
         self.border=str(self.border)
         self.crossing_name=str(self.crossing_name)

@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitEventProducer
+from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +73,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'gov.cbp.borderwait.WaitTime' event to Kafka topic.
     await gov_cbp_borderwait_event_producer.send_gov_cbp_borderwait_wait_time(_port_number = 'TODO: replace me', data = _wait_time)
     print(f"Sent 'gov.cbp.borderwait.WaitTime' event: {_wait_time.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        gov_cbp_borderwait_mqtt_event_producer = GovCbpBorderwaitMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        gov_cbp_borderwait_mqtt_event_producer = GovCbpBorderwaitMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- gov.cbp.borderwait.mqtt.Port ----
+    # TODO: Supply event data for the gov.cbp.borderwait.mqtt.Port event
+    _port = Port()
+
+    # sends the 'gov.cbp.borderwait.mqtt.Port' event to Kafka topic.
+    await gov_cbp_borderwait_mqtt_event_producer.send_gov_cbp_borderwait_mqtt_port(_port_number = 'TODO: replace me', data = _port)
+    print(f"Sent 'gov.cbp.borderwait.mqtt.Port' event: {_port.to_json()}")
+
+    # ---- gov.cbp.borderwait.mqtt.WaitTime ----
+    # TODO: Supply event data for the gov.cbp.borderwait.mqtt.WaitTime event
+    _wait_time = WaitTime()
+
+    # sends the 'gov.cbp.borderwait.mqtt.WaitTime' event to Kafka topic.
+    await gov_cbp_borderwait_mqtt_event_producer.send_gov_cbp_borderwait_mqtt_wait_time(_port_number = 'TODO: replace me', data = _wait_time)
+    print(f"Sent 'gov.cbp.borderwait.mqtt.WaitTime' event: {_wait_time.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

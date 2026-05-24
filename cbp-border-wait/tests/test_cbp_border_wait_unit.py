@@ -441,6 +441,7 @@ class TestParsePort:
         assert port.port_number == "250401"
         assert port.port_name == "San Ysidro"
         assert port.border == "Mexican Border"
+        assert port.border_slug == "mexican-border"
         assert port.crossing_name == "San Ysidro"
         assert port.hours == "24 hrs/day"
 
@@ -453,6 +454,7 @@ class TestParsePort:
     def test_canadian_border(self):
         port = CbpBorderWaitAPI.parse_port(SAMPLE_PORT_CANADIAN)
         assert port.border == "Canadian Border"
+        assert port.border_slug == "canadian-border"
         assert port.crossing_name == "Thousand Islands Bridge"
 
     def test_na_pedestrian_lanes(self):
@@ -486,6 +488,7 @@ class TestParseWaitTime:
         assert wt.port_number == "250401"
         assert wt.port_name == "San Ysidro"
         assert wt.border == "Mexican Border"
+        assert wt.border_slug == "mexican-border"
         assert wt.port_status == "Open"
         assert wt.date == "4/8/2026"
         assert wt.time == "14:00:00"
@@ -674,6 +677,7 @@ class TestDataClassSerialization:
         json_str = port.to_json()
         parsed = json.loads(json_str)
         assert parsed["port_number"] == "250401"
+        assert parsed["border_slug"] == "mexican-border"
         assert parsed["passenger_vehicle_max_lanes"] == 25
 
     def test_wait_time_to_json(self):
@@ -681,6 +685,7 @@ class TestDataClassSerialization:
         json_str = wt.to_json()
         parsed = json.loads(json_str)
         assert parsed["port_number"] == "250401"
+        assert parsed["border_slug"] == "mexican-border"
         assert parsed["passenger_vehicle_standard_delay"] == 45
 
     def test_port_null_max_lanes_in_json(self):
@@ -699,6 +704,7 @@ class TestDataClassSerialization:
     def test_port_from_dict(self):
         d = {
             "port_number": "111111",
+            "border_slug": "canadian-border",
             "port_name": "Test",
             "border": "Canadian Border",
             "crossing_name": "TC",
