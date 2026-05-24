@@ -54,6 +54,18 @@ FEED_URLS = {
 DEFAULT_FEED = "all_hour"
 
 
+def magnitude_bucket(magnitude: Optional[float]) -> str:
+    if magnitude is None or magnitude < 1:
+        return "m0"
+    if magnitude >= 7:
+        return "m7plus"
+    return f"m{int(magnitude)}"
+
+
+def is_topic_segment(value: str) -> bool:
+    return bool(value) and all(char not in value for char in ("/", "+", "#", "\x00"))
+
+
 class USGSEarthquakePoller:
     """
     Class to poll USGS Earthquake GeoJSON feeds and send events to a Kafka topic.
@@ -126,6 +138,10 @@ class USGSEarthquakePoller:
         event_id = feature.get("id", "")
         if not event_id:
             return None
+        net = str(props.get("net") or "")
+        code = str(props.get("code") or "")
+        if not is_topic_segment(net) or not is_topic_segment(code):
+            return None
 
         magnitude = props.get("mag")
         if self.min_magnitude is not None and magnitude is not None:
@@ -152,6 +168,7 @@ class USGSEarthquakePoller:
         return Event(
             id=event_id,
             magnitude=magnitude,
+            magnitude_bucket=magnitude_bucket(magnitude),
             mag_type=props.get("magType"),
             place=props.get("place"),
             event_time=event_time,
@@ -165,8 +182,8 @@ class USGSEarthquakePoller:
             status=props.get("status", "automatic"),
             tsunami=props.get("tsunami", 0),
             sig=props.get("sig"),
-            net=props.get("net", ""),
-            code=props.get("code", ""),
+            net=net,
+            code=code,
             sources=props.get("sources"),
             nst=props.get("nst"),
             dmin=props.get("dmin"),
@@ -213,6 +230,11 @@ class USGSEarthquakePoller:
             once: If True, exit after one polling cycle. Useful for scheduled
                 execution (e.g. Fabric notebooks).
         """
+        async def flush_transport(producer):
+            result = producer.producer.flush()
+            if hasattr(result, "__await__"):
+                await result
+
         seen_ids = self.load_seen_event_ids()
         poll_interval = timedelta(minutes=1)
 
@@ -248,7 +270,7 @@ class USGSEarthquakePoller:
 
                 seen_ids[event.id] = event.updated
 
-            self.event_producer.producer.flush()
+            await flush_transport(self.event_producer)
             self.save_seen_event_ids(seen_ids)
 
             if count_new > 0 or count_updated > 0:
