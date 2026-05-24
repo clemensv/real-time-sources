@@ -1,5 +1,5 @@
 """
-Test case for RegionalIntensity
+Test case for GenerationMix
 """
 
 import os
@@ -8,73 +8,44 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from carbon_intensity_producer_data.regionalintensity import RegionalIntensity
+from carbon_intensity_mqtt_producer_data.generationmix import GenerationMix
 import datetime
 
 
-class Test_RegionalIntensity(unittest.TestCase):
+class Test_GenerationMix(unittest.TestCase):
     """
-    Test case for RegionalIntensity
+    Test case for GenerationMix
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_RegionalIntensity.create_instance()
+        self.instance = Test_GenerationMix.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of RegionalIntensity for testing
+        Create instance of GenerationMix for testing
         """
-        instance = RegionalIntensity(
-            region_id=int(24),
-            dnoregion='ueakvllykyuytkencjsg',
-            shortname='lfvfetvmmazwjnperbxm',
+        instance = GenerationMix(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(38),
-            index='dawjviarcfgbstrzfhao',
-            biomass_pct=float(72.34767670393511),
-            coal_pct=float(79.30216042512717),
-            gas_pct=float(27.720818213629805),
-            hydro_pct=float(50.45856615049955),
-            imports_pct=float(48.74829828099742),
-            nuclear_pct=float(78.86878036560464),
-            oil_pct=float(20.241077440128752),
-            other_pct=float(20.60780912514667),
-            solar_pct=float(54.58624495561003),
-            wind_pct=float(11.51388453426334),
-            region='xiypxeyelmvmgibxlbyo',
-            ce_id='ntzhrzvskrqirsztxcns'
+            biomass_pct=float(79.19194165451353),
+            coal_pct=float(21.592365003202808),
+            gas_pct=float(72.62560287804676),
+            hydro_pct=float(39.14206907966502),
+            imports_pct=float(64.88239184483015),
+            nuclear_pct=float(7.24680941269974),
+            oil_pct=float(27.382518538238088),
+            other_pct=float(80.59939979593393),
+            solar_pct=float(62.165979960801046),
+            wind_pct=float(23.50613278736583),
+            region='iomshxalvkkntqufbeot',
+            ce_id='skzemmzrnzdczwhllzor'
         )
         return instance
 
-    
-    def test_region_id_property(self):
-        """
-        Test region_id property
-        """
-        test_value = int(24)
-        self.instance.region_id = test_value
-        self.assertEqual(self.instance.region_id, test_value)
-    
-    def test_dnoregion_property(self):
-        """
-        Test dnoregion property
-        """
-        test_value = 'ueakvllykyuytkencjsg'
-        self.instance.dnoregion = test_value
-        self.assertEqual(self.instance.dnoregion, test_value)
-    
-    def test_shortname_property(self):
-        """
-        Test shortname property
-        """
-        test_value = 'lfvfetvmmazwjnperbxm'
-        self.instance.shortname = test_value
-        self.assertEqual(self.instance.shortname, test_value)
     
     def test_period_from_property(self):
         """
@@ -92,27 +63,11 @@ class Test_RegionalIntensity(unittest.TestCase):
         self.instance.period_to = test_value
         self.assertEqual(self.instance.period_to, test_value)
     
-    def test_forecast_property(self):
-        """
-        Test forecast property
-        """
-        test_value = int(38)
-        self.instance.forecast = test_value
-        self.assertEqual(self.instance.forecast, test_value)
-    
-    def test_index_property(self):
-        """
-        Test index property
-        """
-        test_value = 'dawjviarcfgbstrzfhao'
-        self.instance.index = test_value
-        self.assertEqual(self.instance.index, test_value)
-    
     def test_biomass_pct_property(self):
         """
         Test biomass_pct property
         """
-        test_value = float(72.34767670393511)
+        test_value = float(79.19194165451353)
         self.instance.biomass_pct = test_value
         self.assertEqual(self.instance.biomass_pct, test_value)
     
@@ -120,7 +75,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test coal_pct property
         """
-        test_value = float(79.30216042512717)
+        test_value = float(21.592365003202808)
         self.instance.coal_pct = test_value
         self.assertEqual(self.instance.coal_pct, test_value)
     
@@ -128,7 +83,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test gas_pct property
         """
-        test_value = float(27.720818213629805)
+        test_value = float(72.62560287804676)
         self.instance.gas_pct = test_value
         self.assertEqual(self.instance.gas_pct, test_value)
     
@@ -136,7 +91,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test hydro_pct property
         """
-        test_value = float(50.45856615049955)
+        test_value = float(39.14206907966502)
         self.instance.hydro_pct = test_value
         self.assertEqual(self.instance.hydro_pct, test_value)
     
@@ -144,7 +99,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test imports_pct property
         """
-        test_value = float(48.74829828099742)
+        test_value = float(64.88239184483015)
         self.instance.imports_pct = test_value
         self.assertEqual(self.instance.imports_pct, test_value)
     
@@ -152,7 +107,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test nuclear_pct property
         """
-        test_value = float(78.86878036560464)
+        test_value = float(7.24680941269974)
         self.instance.nuclear_pct = test_value
         self.assertEqual(self.instance.nuclear_pct, test_value)
     
@@ -160,7 +115,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test oil_pct property
         """
-        test_value = float(20.241077440128752)
+        test_value = float(27.382518538238088)
         self.instance.oil_pct = test_value
         self.assertEqual(self.instance.oil_pct, test_value)
     
@@ -168,7 +123,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test other_pct property
         """
-        test_value = float(20.60780912514667)
+        test_value = float(80.59939979593393)
         self.instance.other_pct = test_value
         self.assertEqual(self.instance.other_pct, test_value)
     
@@ -176,7 +131,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test solar_pct property
         """
-        test_value = float(54.58624495561003)
+        test_value = float(62.165979960801046)
         self.instance.solar_pct = test_value
         self.assertEqual(self.instance.solar_pct, test_value)
     
@@ -184,7 +139,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test wind_pct property
         """
-        test_value = float(11.51388453426334)
+        test_value = float(23.50613278736583)
         self.instance.wind_pct = test_value
         self.assertEqual(self.instance.wind_pct, test_value)
     
@@ -192,7 +147,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'xiypxeyelmvmgibxlbyo'
+        test_value = 'iomshxalvkkntqufbeot'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -200,7 +155,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'ntzhrzvskrqirsztxcns'
+        test_value = 'skzemmzrnzdczwhllzor'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     
@@ -210,7 +165,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = RegionalIntensity.from_data(bytes_data, media_type)
+        new_instance = GenerationMix.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -219,7 +174,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = RegionalIntensity.from_json(json_data)
+        new_instance = GenerationMix.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 

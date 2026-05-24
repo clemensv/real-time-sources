@@ -316,6 +316,12 @@
       "image": "cbp-border-wait-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "cbp_border_wait_mqtt"
+    },
+    {
+      "dir": "carbon-intensity",
+      "image": "carbon-intensity-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "carbon_intensity_mqtt"
     }
   ],
   "flow": [
@@ -602,6 +608,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCbpBorderWaitMqttDockerFlow"
+    },
+    {
+      "dir": "carbon-intensity",
+      "image": "carbon-intensity-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCarbonIntensityMqttDockerFlow"
     }
   ]
 }

@@ -16,6 +16,8 @@ Data is published under a CC-BY 4.0 licence and requires no authentication.
 
 The bridge polls the Carbon Intensity API every 30 minutes and writes new data to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). The bridge tracks the last polled settlement period in a state file to avoid sending duplicates.
 
+An MQTT/UNS variant is also available via `Dockerfile.mqtt`. It publishes MQTT 5.0 binary-mode CloudEvents with QoS 1 and `retain=false` under `energy/gb/national-grid/carbon-intensity/{region}/{event}` topics. National records use `{region}` = `national`; regional records use DNO short-name slugs such as `north-scotland`.
+
 ## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
@@ -60,6 +62,20 @@ $ docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
     ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
 ```
+
+### With an MQTT Broker
+
+Build or pull the MQTT image and provide an MQTT broker URL:
+
+```shell
+$ docker build -f Dockerfile.mqtt -t carbon-intensity-mqtt .
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtt://broker:1883' \
+    -e ONCE_MODE='true' \
+    carbon-intensity-mqtt
+```
+
+Optional MQTT environment variables are `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `MQTT_CONTENT_MODE` (`binary` or `structured`), and `CARBON_INTENSITY_MQTT_STATE_FILE`.
 
 ### Preserving State Between Restarts
 

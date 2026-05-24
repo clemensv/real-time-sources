@@ -39,6 +39,8 @@ class RegionalIntensity:
         other_pct (typing.Optional[float])
         solar_pct (typing.Optional[float])
         wind_pct (typing.Optional[float])
+        region (str)
+        ce_id (str)
     """
     
     
@@ -59,6 +61,8 @@ class RegionalIntensity:
     other_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="other_pct"))
     solar_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="solar_pct"))
     wind_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_pct"))
+    region: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    ce_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ce_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RegionalIntensity':
@@ -185,21 +189,23 @@ class RegionalIntensity:
             An instance of the dataclass.
         """
         return cls(
-            region_id=int(59),
-            dnoregion='jvjketbtxznkqmtsoiwz',
-            shortname='oomtsrqfhzvoqpynixay',
+            region_id=int(24),
+            dnoregion='ueakvllykyuytkencjsg',
+            shortname='lfvfetvmmazwjnperbxm',
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(80),
-            index='cjoinlsljldkwpctxtzd',
-            biomass_pct=float(95.1495646246595),
-            coal_pct=float(50.77925060176531),
-            gas_pct=float(38.56349366426958),
-            hydro_pct=float(7.715821078802554),
-            imports_pct=float(66.0122212131472),
-            nuclear_pct=float(60.09744330272721),
-            oil_pct=float(41.72562816779719),
-            other_pct=float(36.74825277458452),
-            solar_pct=float(75.21148320644313),
-            wind_pct=float(21.391270979586764)
+            forecast=int(38),
+            index='dawjviarcfgbstrzfhao',
+            biomass_pct=float(72.34767670393511),
+            coal_pct=float(79.30216042512717),
+            gas_pct=float(27.720818213629805),
+            hydro_pct=float(50.45856615049955),
+            imports_pct=float(48.74829828099742),
+            nuclear_pct=float(78.86878036560464),
+            oil_pct=float(20.241077440128752),
+            other_pct=float(20.60780912514667),
+            solar_pct=float(54.58624495561003),
+            wind_pct=float(11.51388453426334),
+            region='xiypxeyelmvmgibxlbyo',
+            ce_id='ntzhrzvskrqirsztxcns'
         )

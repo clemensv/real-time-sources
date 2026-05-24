@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from carbon_intensity_producer_data.intensity import Intensity
+from carbon_intensity_mqtt_producer_data.intensity import Intensity
 import datetime
 
 
@@ -31,11 +31,11 @@ class Test_Intensity(unittest.TestCase):
         instance = Intensity(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(1),
-            actual=int(21),
-            index='gckxeunuoyupoyfnocom',
-            region='icrzlojuituyupxmytun',
-            ce_id='xgzxoekrhgujwdwsaagb'
+            forecast=int(13),
+            actual=int(9),
+            index='yfqejbbgmrehofntrqfv',
+            region='rpqeyqfrmjznnrqntyxm',
+            ce_id='fsfihkjxmakvgxwsbvli'
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test forecast property
         """
-        test_value = int(1)
+        test_value = int(13)
         self.instance.forecast = test_value
         self.assertEqual(self.instance.forecast, test_value)
     
@@ -68,7 +68,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test actual property
         """
-        test_value = int(21)
+        test_value = int(9)
         self.instance.actual = test_value
         self.assertEqual(self.instance.actual, test_value)
     
@@ -76,7 +76,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test index property
         """
-        test_value = 'gckxeunuoyupoyfnocom'
+        test_value = 'yfqejbbgmrehofntrqfv'
         self.instance.index = test_value
         self.assertEqual(self.instance.index, test_value)
     
@@ -84,7 +84,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'icrzlojuituyupxmytun'
+        test_value = 'rpqeyqfrmjznnrqntyxm'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -92,7 +92,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'xgzxoekrhgujwdwsaagb'
+        test_value = 'fsfihkjxmakvgxwsbvli'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     

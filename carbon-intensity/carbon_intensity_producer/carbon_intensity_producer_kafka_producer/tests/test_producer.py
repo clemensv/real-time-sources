@@ -26,6 +26,7 @@ from test_carbon_intensity_producer_data_generationmix import Test_GenerationMix
 from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityRegionalEventProducer
 from carbon_intensity_producer_data import RegionalIntensity
 from test_carbon_intensity_producer_data_regionalintensity import Test_RegionalIntensity
+from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityMqttEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -108,7 +109,7 @@ def test_uk_org_carbonintensity_ukorgcarbonintensityintensity(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_org_carbonintensity_intensity(_period_from = f'test_{i}', data = event_data)
+        producer_instance.send_uk_org_carbonintensity_intensity(_period_from = f'test_{i}', _ce_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -171,7 +172,7 @@ def test_uk_org_carbonintensity_ukorgcarbonintensitygenerationmix(kafka_emulator
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_org_carbonintensity_generation_mix(_period_from = f'test_{i}', data = event_data)
+        producer_instance.send_uk_org_carbonintensity_generation_mix(_period_from = f'test_{i}', _ce_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -234,7 +235,7 @@ def test_uk_org_carbonintensity_regional_ukorgcarbonintensityregionalintensity(k
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_org_carbonintensity_regional_intensity(_region_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_org_carbonintensity_regional_intensity(_region_id = f'test_{i}', _ce_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -245,6 +246,189 @@ def test_uk_org_carbonintensity_regional_ukorgcarbonintensityregionalintensity(k
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{region_id}".format(region_id=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttintensity(kafka_emulator):
+    """Test the UkOrgCarbonintensityMqttIntensity event from the Uk.Org.Carbonintensity.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttintensity',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "uk.org.carbonintensity.mqtt.Intensity":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = UkOrgCarbonintensityMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Intensity.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_uk_org_carbonintensity_mqtt_intensity(_period_from = f'test_{i}', _ce_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttgenerationmix(kafka_emulator):
+    """Test the UkOrgCarbonintensityMqttGenerationMix event from the Uk.Org.Carbonintensity.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttgenerationmix',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "uk.org.carbonintensity.mqtt.GenerationMix":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = UkOrgCarbonintensityMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_GenerationMix.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_uk_org_carbonintensity_mqtt_generation_mix(_period_from = f'test_{i}', _ce_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttregionalintensity(kafka_emulator):
+    """Test the UkOrgCarbonintensityMqttRegionalIntensity event from the Uk.Org.Carbonintensity.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttregionalintensity',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "uk.org.carbonintensity.mqtt.RegionalIntensity":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = UkOrgCarbonintensityMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_RegionalIntensity.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_uk_org_carbonintensity_mqtt_regional_intensity(_region_id = f'test_{i}', _ce_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 
@@ -280,8 +464,8 @@ def test_uk_org_carbonintensity_cross_event_type_kafka_key(kafka_emulator):
     data1 = Test_Intensity.create_instance()
     data2 = Test_GenerationMix.create_instance()
 
-    producer_instance.send_uk_org_carbonintensity_intensity(_period_from = shared_key_value, data = data1)
-    producer_instance.send_uk_org_carbonintensity_generation_mix(_period_from = shared_key_value, data = data2)
+    producer_instance.send_uk_org_carbonintensity_intensity(_period_from = shared_key_value, _ce_id = shared_key_value, data = data1)
+    producer_instance.send_uk_org_carbonintensity_generation_mix(_period_from = shared_key_value, _ce_id = shared_key_value, data = data2)
     kafka_producer.flush(timeout=5.0)
 
     # Collect keys from both messages

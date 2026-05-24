@@ -1,4 +1,4 @@
-""" Intensity dataclass. """
+""" GenerationMix dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -17,16 +17,23 @@ import datetime
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Intensity:
+class GenerationMix:
     """
-    National half-hourly carbon intensity for the Great Britain electricity grid, published by National Grid ESO. Contains the forecast and actual carbon dioxide emission intensity in grams of CO2 per kilowatt-hour, along with a qualitative index band.
+    National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period.
     
     Attributes:
         period_from (datetime.datetime)
         period_to (datetime.datetime)
-        forecast (typing.Optional[int])
-        actual (typing.Optional[int])
-        index (typing.Optional[str])
+        biomass_pct (typing.Optional[float])
+        coal_pct (typing.Optional[float])
+        gas_pct (typing.Optional[float])
+        hydro_pct (typing.Optional[float])
+        imports_pct (typing.Optional[float])
+        nuclear_pct (typing.Optional[float])
+        oil_pct (typing.Optional[float])
+        other_pct (typing.Optional[float])
+        solar_pct (typing.Optional[float])
+        wind_pct (typing.Optional[float])
         region (str)
         ce_id (str)
     """
@@ -34,14 +41,21 @@ class Intensity:
     
     period_from: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="period_from", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     period_to: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="period_to", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    forecast: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast"))
-    actual: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="actual"))
-    index: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="index"))
+    biomass_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="biomass_pct"))
+    coal_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="coal_pct"))
+    gas_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="gas_pct"))
+    hydro_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hydro_pct"))
+    imports_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imports_pct"))
+    nuclear_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="nuclear_pct"))
+    oil_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="oil_pct"))
+    other_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="other_pct"))
+    solar_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="solar_pct"))
+    wind_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_pct"))
     region: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
     ce_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ce_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Intensity':
+    def from_serializer_dict(cls, data: dict) -> 'GenerationMix':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +128,7 @@ class Intensity:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Intensity']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['GenerationMix']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -151,13 +165,13 @@ class Intensity:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Intensity.from_serializer_dict(_record)
+                return GenerationMix.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Intensity':
+    def create_instance(cls) -> 'GenerationMix':
         """
         Creates an instance of the dataclass with test values.
         
@@ -167,9 +181,16 @@ class Intensity:
         return cls(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(1),
-            actual=int(21),
-            index='gckxeunuoyupoyfnocom',
-            region='icrzlojuituyupxmytun',
-            ce_id='xgzxoekrhgujwdwsaagb'
+            biomass_pct=float(79.19194165451353),
+            coal_pct=float(21.592365003202808),
+            gas_pct=float(72.62560287804676),
+            hydro_pct=float(39.14206907966502),
+            imports_pct=float(64.88239184483015),
+            nuclear_pct=float(7.24680941269974),
+            oil_pct=float(27.382518538238088),
+            other_pct=float(80.59939979593393),
+            solar_pct=float(62.165979960801046),
+            wind_pct=float(23.50613278736583),
+            region='iomshxalvkkntqufbeot',
+            ce_id='skzemmzrnzdczwhllzor'
         )

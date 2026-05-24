@@ -3926,3 +3926,123 @@ class TestCbpBorderWaitMqttDockerFlow:
             assert payload is not None, f"payload not parseable: {sample['payload']!r}"
             assert 'port_number' in payload
             assert payload.get('border_slug') in ('canadian-border', 'mexican-border')
+
+# ---- carbon-intensity ----------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def carbon_intensity_mqtt_image():
+    return build_image('carbon-intensity', dockerfile='Dockerfile.mqtt', tag='test-carbon-intensity-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_carbon_intensity():
+    container, network, host_port = _generic_mosquitto(
+        'carbon-intensity-mqtt-e2e', 'carbon-intensity-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'carbon-intensity-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestCarbonIntensityMqttDockerFlow:
+    """Verify the carbon-intensity-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_non_retained_uns_event_topics(self, mosquitto_carbon_intensity, carbon_intensity_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_carbon_intensity['internal_host']}:{mosquitto_carbon_intensity['internal_port']}"
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({
+                'topic': msg.topic,
+                'retain': bool(msg.retain),
+                'qos': msg.qos,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.connect('127.0.0.1', mosquitto_carbon_intensity['host_port'], 30)
+        sub.subscribe('energy/gb/national-grid/carbon-intensity/#', qos=1)
+        sub.loop_start()
+        try:
+            feeder = client.containers.run(
+                carbon_intensity_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=mosquitto_carbon_intensity['network'],
+                environment={
+                    'MQTT_BROKER_URL': broker_url,
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            try:
+                result = feeder.wait(timeout=360)
+                logs = feeder.logs().decode('utf-8', errors='replace')
+                assert result.get('StatusCode') == 0, (
+                    f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+                )
+            finally:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            deadline = time.time() + 15
+            while len(messages) < 3 and time.time() < deadline:
+                time.sleep(0.5)
+        finally:
+            sub.loop_stop()
+            sub.disconnect()
+
+        assert messages, 'No live messages received from broker'
+        observed_types = {m['user_properties'].get('type') for m in messages}
+        assert 'uk.org.carbonintensity.Intensity' in observed_types
+        assert 'uk.org.carbonintensity.GenerationMix' in observed_types
+        assert 'uk.org.carbonintensity.RegionalIntensity' in observed_types
+
+        for sample in messages:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json'
+            assert sample['retain'] is False
+            assert sample['qos'] == 1
+            parts = sample['topic'].split('/')
+            assert parts[:4] == ['energy', 'gb', 'national-grid', 'carbon-intensity']
+            assert len(parts) == 6
+            assert parts[5] in {'intensity', 'generation-mix', 'regional-intensity'}
+            payload = _to_dict(sample['payload'])
+            assert payload is not None
+            assert payload.get('region') == parts[4]
+            if up.get('type') == 'uk.org.carbonintensity.RegionalIntensity':
+                assert parts[4] != 'gb'
+                assert payload.get('region_id') is not None
+            else:
+                assert parts[4] == 'national'

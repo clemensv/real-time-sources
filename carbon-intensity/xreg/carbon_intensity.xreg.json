@@ -41,6 +41,27 @@
       "messagegroups": [
         "#/messagegroups/uk.org.carbonintensity.Regional"
       ]
+    },
+    "uk.org.carbonintensity.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.org.carbonintensity.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -59,6 +80,10 @@
             "subject": {
               "value": "{period_from}",
               "type": "uritemplate"
+            },
+            "id": {
+              "value": "{ce_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -76,6 +101,10 @@
             },
             "subject": {
               "value": "{period_from}",
+              "type": "uritemplate"
+            },
+            "id": {
+              "value": "{ce_id}",
               "type": "uritemplate"
             }
           },
@@ -99,10 +128,49 @@
             "subject": {
               "value": "{region_id}",
               "type": "uritemplate"
+            },
+            "id": {
+              "value": "{ce_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.RegionalIntensity"
+        }
+      }
+    },
+    "uk.org.carbonintensity.mqtt": {
+      "description": "MQTT/5.0 transport variants for National Grid Carbon Intensity events. Non-retained QoS-1 event topics route by GB national/regional area under energy/gb/national-grid/carbon-intensity/{region}/..., where national records use region=national and DNO region records use stable, version-pinned region slugs keyed by region_id such as north-scotland.",
+      "messages": {
+        "uk.org.carbonintensity.mqtt.Intensity": {
+          "name": "Intensity",
+          "basemessageurl": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/gb/national-grid/carbon-intensity/{region}/intensity",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "uk.org.carbonintensity.mqtt.GenerationMix": {
+          "name": "GenerationMix",
+          "basemessageurl": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/gb/national-grid/carbon-intensity/{region}/generation-mix",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "uk.org.carbonintensity.mqtt.RegionalIntensity": {
+          "name": "RegionalIntensity",
+          "basemessageurl": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/gb/national-grid/carbon-intensity/{region}/regional-intensity",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -150,13 +218,23 @@
                       "null"
                     ],
                     "description": "Qualitative index band for the carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'."
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national."
+                  },
+                  "ce_id": {
+                    "type": "string",
+                    "description": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf."
                   }
                 },
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "name": "Intensity",
                 "required": [
+                  "ce_id",
                   "period_from",
-                  "period_to"
+                  "period_to",
+                  "region"
                 ]
               }
             }
@@ -261,13 +339,23 @@
                     ],
                     "description": "Percentage of electricity generated from onshore and offshore wind turbines during this settlement period.",
                     "unit": "%"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national."
+                  },
+                  "ce_id": {
+                    "type": "string",
+                    "description": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf."
                   }
                 },
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "name": "GenerationMix",
                 "required": [
+                  "ce_id",
                   "period_from",
-                  "period_to"
+                  "period_to",
+                  "region"
                 ]
               }
             }
@@ -287,7 +375,7 @@
                 "properties": {
                   "region_id": {
                     "type": "int32",
-                    "description": "Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1\u00e2\u20ac\u201c17)."
+                    "description": "Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1-17)."
                   },
                   "dnoregion": {
                     "type": "string",
@@ -399,14 +487,24 @@
                     ],
                     "description": "Percentage of electricity generated from wind turbines in this region during this settlement period.",
                     "unit": "%"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable topic-safe MQTT/UNS region segment from the version-pinned DNO region_id lookup table, for example north-scotland for region_id 1. Falls back to region-{region_id} if an unknown future id appears."
+                  },
+                  "ce_id": {
+                    "type": "string",
+                    "description": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, DNO region_id, and regional-intensity leaf."
                   }
                 },
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "name": "RegionalIntensity",
                 "required": [
+                  "ce_id",
                   "region_id",
                   "dnoregion",
                   "shortname",
+                  "region",
                   "period_from",
                   "period_to"
                 ]
