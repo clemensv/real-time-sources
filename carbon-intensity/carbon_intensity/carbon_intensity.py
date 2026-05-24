@@ -32,6 +32,40 @@ FUEL_TYPES = [
     "other", "hydro", "solar", "wind", "oil",
 ]
 
+DNO_REGION_SLUGS = {
+    1: "north-scotland",
+    2: "south-scotland",
+    3: "north-west-england",
+    4: "north-east-england",
+    5: "yorkshire",
+    6: "north-wales-merseyside-and-cheshire",
+    7: "south-wales",
+    8: "west-midlands",
+    9: "east-midlands",
+    10: "east-england",
+    11: "south-west-england",
+    12: "south-england",
+    13: "london",
+    14: "south-east-england",
+    15: "england",
+    16: "scotland",
+    17: "wales",
+}
+
+
+def dno_region_slug(region_id: object) -> str:
+    """Return the stable MQTT region slug for a Carbon Intensity DNO region id."""
+    try:
+        numeric_id = int(region_id)
+    except (TypeError, ValueError):
+        return "region-unknown"
+    return DNO_REGION_SLUGS.get(numeric_id, f"region-{numeric_id}")
+
+
+def ce_period(value: datetime) -> str:
+    """Return a compact UTC timestamp for CloudEvents id components."""
+    return value.isoformat().replace("+00:00", "Z")
+
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
     """Parse an Azure Event Hubs-style or plain Kafka connection string.
@@ -187,8 +221,10 @@ class CarbonIntensityPoller:
         period_to = parse_api_datetime(item["to"])
         ival = item.get("intensity", {})
         return Intensity(
+            ce_id=f"{ce_period(period_from)}/national/intensity",
             period_from=period_from,
             period_to=period_to,
+            region="national",
             forecast=ival.get("forecast"),
             actual=ival.get("actual"),
             index=ival.get("index"),
@@ -204,8 +240,10 @@ class CarbonIntensityPoller:
         period_to = parse_api_datetime(inner["to"])
         mix = flatten_generation_mix(inner.get("generationmix", []))
         return GenerationMix(
+            ce_id=f"{ce_period(period_from)}/national/generation-mix",
             period_from=period_from,
             period_to=period_to,
+            region="national",
             **mix,
         )
 
@@ -222,10 +260,14 @@ class CarbonIntensityPoller:
         for region in entry.get("regions", []):
             ival = region.get("intensity", {})
             mix = flatten_generation_mix(region.get("generationmix", []))
+            region_id = region["regionid"]
+            shortname = region.get("shortname", "")
             results.append(RegionalIntensity(
-                region_id=region["regionid"],
+                ce_id=f"{ce_period(period_from)}/{region_id}/regional-intensity",
+                region_id=region_id,
                 dnoregion=region.get("dnoregion", ""),
-                shortname=region.get("shortname", ""),
+                shortname=shortname,
+                region=dno_region_slug(region_id),
                 period_from=period_from,
                 period_to=period_to,
                 forecast=ival.get("forecast"),
@@ -242,6 +284,7 @@ class CarbonIntensityPoller:
         """Send an Intensity event."""
         self.producer.send_uk_org_carbonintensity_intensity(
             _period_from=intensity.period_from.isoformat(),
+            _ce_id=intensity.ce_id,
             data=intensity,
             flush_producer=False,
         )
@@ -250,6 +293,7 @@ class CarbonIntensityPoller:
         """Send a GenerationMix event."""
         self.producer.send_uk_org_carbonintensity_generation_mix(
             _period_from=gen_mix.period_from.isoformat(),
+            _ce_id=gen_mix.ce_id,
             data=gen_mix,
             flush_producer=False,
         )
@@ -258,6 +302,8 @@ class CarbonIntensityPoller:
         """Send a RegionalIntensity event."""
         self.regional_producer.send_uk_org_carbonintensity_regional_intensity(
             _region_id=str(regional.region_id),
+            _period_from=regional.period_from.isoformat(),
+            _ce_id=regional.ce_id,
             data=regional,
             flush_producer=False,
         )

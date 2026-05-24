@@ -34,6 +34,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityEventProducer
 from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityRegionalEventProducer
+from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -64,7 +65,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _intensity = Intensity()
 
     # sends the 'uk.org.carbonintensity.Intensity' event to Kafka topic.
-    await uk_org_carbonintensity_event_producer.send_uk_org_carbonintensity_intensity(_period_from = 'TODO: replace me', data = _intensity)
+    await uk_org_carbonintensity_event_producer.send_uk_org_carbonintensity_intensity(_period_from = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _intensity)
     print(f"Sent 'uk.org.carbonintensity.Intensity' event: {_intensity.to_json()}")
 
     # ---- uk.org.carbonintensity.GenerationMix ----
@@ -72,7 +73,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _generation_mix = GenerationMix()
 
     # sends the 'uk.org.carbonintensity.GenerationMix' event to Kafka topic.
-    await uk_org_carbonintensity_event_producer.send_uk_org_carbonintensity_generation_mix(_period_from = 'TODO: replace me', data = _generation_mix)
+    await uk_org_carbonintensity_event_producer.send_uk_org_carbonintensity_generation_mix(_period_from = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _generation_mix)
     print(f"Sent 'uk.org.carbonintensity.GenerationMix' event: {_generation_mix.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -88,8 +89,40 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _regional_intensity = RegionalIntensity()
 
     # sends the 'uk.org.carbonintensity.RegionalIntensity' event to Kafka topic.
-    await uk_org_carbonintensity_regional_event_producer.send_uk_org_carbonintensity_regional_intensity(_region_id = 'TODO: replace me', data = _regional_intensity)
+    await uk_org_carbonintensity_regional_event_producer.send_uk_org_carbonintensity_regional_intensity(_region_id = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _regional_intensity)
     print(f"Sent 'uk.org.carbonintensity.RegionalIntensity' event: {_regional_intensity.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_org_carbonintensity_mqtt_event_producer = UkOrgCarbonintensityMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_org_carbonintensity_mqtt_event_producer = UkOrgCarbonintensityMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.org.carbonintensity.mqtt.Intensity ----
+    # TODO: Supply event data for the uk.org.carbonintensity.mqtt.Intensity event
+    _intensity = Intensity()
+
+    # sends the 'uk.org.carbonintensity.mqtt.Intensity' event to Kafka topic.
+    await uk_org_carbonintensity_mqtt_event_producer.send_uk_org_carbonintensity_mqtt_intensity(_period_from = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _intensity)
+    print(f"Sent 'uk.org.carbonintensity.mqtt.Intensity' event: {_intensity.to_json()}")
+
+    # ---- uk.org.carbonintensity.mqtt.GenerationMix ----
+    # TODO: Supply event data for the uk.org.carbonintensity.mqtt.GenerationMix event
+    _generation_mix = GenerationMix()
+
+    # sends the 'uk.org.carbonintensity.mqtt.GenerationMix' event to Kafka topic.
+    await uk_org_carbonintensity_mqtt_event_producer.send_uk_org_carbonintensity_mqtt_generation_mix(_period_from = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _generation_mix)
+    print(f"Sent 'uk.org.carbonintensity.mqtt.GenerationMix' event: {_generation_mix.to_json()}")
+
+    # ---- uk.org.carbonintensity.mqtt.RegionalIntensity ----
+    # TODO: Supply event data for the uk.org.carbonintensity.mqtt.RegionalIntensity event
+    _regional_intensity = RegionalIntensity()
+
+    # sends the 'uk.org.carbonintensity.mqtt.RegionalIntensity' event to Kafka topic.
+    await uk_org_carbonintensity_mqtt_event_producer.send_uk_org_carbonintensity_mqtt_regional_intensity(_region_id = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _regional_intensity)
+    print(f"Sent 'uk.org.carbonintensity.mqtt.RegionalIntensity' event: {_regional_intensity.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

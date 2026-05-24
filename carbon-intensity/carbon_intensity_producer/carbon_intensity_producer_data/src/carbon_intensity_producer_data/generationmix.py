@@ -34,6 +34,8 @@ class GenerationMix:
         other_pct (typing.Optional[float])
         solar_pct (typing.Optional[float])
         wind_pct (typing.Optional[float])
+        region (str)
+        ce_id (str)
     """
     
     
@@ -49,6 +51,8 @@ class GenerationMix:
     other_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="other_pct"))
     solar_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="solar_pct"))
     wind_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_pct"))
+    region: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    ce_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ce_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'GenerationMix':
@@ -177,14 +181,16 @@ class GenerationMix:
         return cls(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            biomass_pct=float(63.54101432955923),
-            coal_pct=float(48.34365308775696),
-            gas_pct=float(9.08574972794468),
-            hydro_pct=float(82.43132636912621),
-            imports_pct=float(48.85987373566919),
-            nuclear_pct=float(62.53133839161508),
-            oil_pct=float(35.94876337460351),
-            other_pct=float(16.99868224675004),
-            solar_pct=float(59.66694109066803),
-            wind_pct=float(90.45561371422848)
+            biomass_pct=float(53.27921957075665),
+            coal_pct=float(91.17646445687274),
+            gas_pct=float(17.782359973529115),
+            hydro_pct=float(97.9633387546917),
+            imports_pct=float(39.48848974791995),
+            nuclear_pct=float(17.14762789059031),
+            oil_pct=float(87.47183302941714),
+            other_pct=float(98.91094833314264),
+            solar_pct=float(57.05245486297672),
+            wind_pct=float(44.574062634671975),
+            region='slkzxbhbilmrqnzeproz',
+            ce_id='kszqfwblumaqxttxnwwv'
         )

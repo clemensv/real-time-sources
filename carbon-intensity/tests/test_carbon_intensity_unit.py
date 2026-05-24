@@ -219,6 +219,7 @@ class TestParseIntensity:
         assert intensity.forecast == 66
         assert intensity.actual == 68
         assert intensity.index == "low"
+        assert intensity.region == "national"
         assert intensity.period_from == datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc)
         assert intensity.period_to == datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc)
 
@@ -244,6 +245,7 @@ class TestParseGeneration:
         assert gen.biomass_pct == 7.1
         assert gen.gas_pct == 40.0
         assert gen.wind_pct == 24.5
+        assert gen.region == "national"
         assert gen.period_from == datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc)
 
     def test_parse_empty_data(self):
@@ -270,6 +272,7 @@ class TestParseRegional:
         r1 = regionals[0]
         assert r1.region_id == 1
         assert r1.shortname == "North Scotland"
+        assert r1.region == "north-scotland"
         assert r1.dnoregion == "Scottish Hydro Electric Power Distribution"
         assert r1.forecast == 0
         assert r1.index == "very low"
@@ -281,6 +284,7 @@ class TestParseRegional:
         r2 = regionals[1]
         assert r2.region_id == 2
         assert r2.shortname == "South Scotland"
+        assert r2.region == "south-scotland"
         assert r2.nuclear_pct == 35.4
         assert r2.hydro_pct == 2.5
 
@@ -349,8 +353,10 @@ class TestEmitHelpers:
 
     def test_emit_intensity(self, poller):
         intensity = Intensity(
+            ce_id="2026-04-06T09:30Z/national/intensity",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
+            region="national",
             forecast=66, actual=68, index="low",
         )
         poller.emit_intensity(intensity)
@@ -360,8 +366,10 @@ class TestEmitHelpers:
 
     def test_emit_generation_mix(self, poller):
         gen = GenerationMix(
+            ce_id="2026-04-06T09:30Z/national/generation-mix",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
+            region="national",
             biomass_pct=7.1, coal_pct=0, gas_pct=40.0, hydro_pct=0,
             imports_pct=10.6, nuclear_pct=17.7, oil_pct=0, other_pct=0,
             solar_pct=0, wind_pct=24.5,
@@ -371,7 +379,8 @@ class TestEmitHelpers:
 
     def test_emit_regional(self, poller):
         regional = RegionalIntensity(
-            region_id=1, dnoregion="TestDNO", shortname="Test",
+            ce_id="2026-04-06T09:30Z/1/regional-intensity",
+            region_id=1, dnoregion="TestDNO", shortname="Test", region="test",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
             forecast=0, index="very low",
@@ -479,8 +488,10 @@ class TestDataClassSerialization:
 
     def test_intensity_to_json(self):
         intensity = Intensity(
+            ce_id="2026-04-06T09:30Z/national/intensity",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
+            region="national",
             forecast=66, actual=68, index="low",
         )
         json_str = intensity.to_json()
@@ -491,8 +502,10 @@ class TestDataClassSerialization:
 
     def test_intensity_nullable_actual(self):
         intensity = Intensity(
+            ce_id="2026-04-06T10:00Z/national/intensity",
             period_from=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 30, tzinfo=timezone.utc),
+            region="national",
             forecast=72, actual=None, index="low",
         )
         json_str = intensity.to_json()
@@ -501,8 +514,10 @@ class TestDataClassSerialization:
 
     def test_generation_mix_to_json(self):
         gen = GenerationMix(
+            ce_id="2026-04-06T09:30Z/national/generation-mix",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
+            region="national",
             biomass_pct=7.1, coal_pct=0, gas_pct=40.0, hydro_pct=0,
             imports_pct=10.6, nuclear_pct=17.7, oil_pct=0, other_pct=0,
             solar_pct=0, wind_pct=24.5,
@@ -514,7 +529,8 @@ class TestDataClassSerialization:
 
     def test_regional_intensity_to_json(self):
         reg = RegionalIntensity(
-            region_id=1, dnoregion="TestDNO", shortname="Test",
+            ce_id="2026-04-06T09:30Z/1/regional-intensity",
+            region_id=1, dnoregion="TestDNO", shortname="Test", region="test",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
             forecast=0, index="very low",
@@ -529,8 +545,10 @@ class TestDataClassSerialization:
 
     def test_intensity_from_data(self):
         data = {
+            "ce_id": "2026-04-06T09:30Z/national/intensity",
             "period_from": "2026-04-06T09:30:00+00:00",
             "period_to": "2026-04-06T10:00:00+00:00",
+            "region": "national",
             "forecast": 66, "actual": 68, "index": "low",
         }
         intensity = Intensity.from_data(data)
@@ -538,8 +556,10 @@ class TestDataClassSerialization:
 
     def test_generation_mix_nullable_field(self):
         gen = GenerationMix(
+            ce_id="2026-04-06T09:30Z/national/generation-mix",
             period_from=datetime(2026, 4, 6, 9, 30, tzinfo=timezone.utc),
             period_to=datetime(2026, 4, 6, 10, 0, tzinfo=timezone.utc),
+            region="national",
             biomass_pct=None, coal_pct=None, gas_pct=None, hydro_pct=None,
             imports_pct=None, nuclear_pct=None, oil_pct=None, other_pct=None,
             solar_pct=None, wind_pct=None,

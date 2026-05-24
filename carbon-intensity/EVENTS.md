@@ -2,6 +2,37 @@
 
 This document describes the events emitted by the Carbon Intensity UK Bridge.
 
+## MQTT/UNS topics
+
+The MQTT feeder publishes non-retained QoS 1 binary-mode CloudEvents under:
+
+- `energy/gb/national-grid/carbon-intensity/{region}/intensity`
+- `energy/gb/national-grid/carbon-intensity/{region}/generation-mix`
+- `energy/gb/national-grid/carbon-intensity/{region}/regional-intensity`
+
+National GB-wide records use `{region}` = `national`. Regional records use stable, version-pinned DNO slugs keyed by the API `region_id`; unknown future ids fall back to `region-{region_id}`. The `RegionalIntensity` CloudEvents `subject` remains the numeric `{region_id}` while the MQTT topic uses the slug for wildcard readability. These half-hourly events are intentionally non-retained; late subscribers should read the next settlement-period update or consume a historical store. Example subscriptions: all Carbon Intensity events: `energy/gb/national-grid/carbon-intensity/#`; one region: `energy/gb/national-grid/carbon-intensity/north-scotland/#`; national records only: `energy/gb/national-grid/carbon-intensity/national/+`; all regional intensity events: `energy/gb/national-grid/carbon-intensity/+/regional-intensity`.
+
+| `region_id` | MQTT `{region}` slug |
+|---:|---|
+| 1 | `north-scotland` |
+| 2 | `south-scotland` |
+| 3 | `north-west-england` |
+| 4 | `north-east-england` |
+| 5 | `yorkshire` |
+| 6 | `north-wales-merseyside-and-cheshire` |
+| 7 | `south-wales` |
+| 8 | `west-midlands` |
+| 9 | `east-midlands` |
+| 10 | `east-england` |
+| 11 | `south-west-england` |
+| 12 | `south-england` |
+| 13 | `london` |
+| 14 | `south-east-england` |
+| 15 | `england` |
+| 16 | `scotland` |
+| 17 | `wales` |
+
+
 - [uk.org.carbonintensity](#message-group-ukorgcarbonintensity)
   - [uk.org.carbonintensity.Intensity](#message-ukorgcarbonintensityintensity)
   - [uk.org.carbonintensity.GenerationMix](#message-ukorgcarbonintensitygenerationmix)
@@ -30,6 +61,7 @@ This document describes the events emitted by the Carbon Intensity UK Bridge.
 |----------------|----------|----------|-----------------|
 | `period_from` | *datetime* | — | ISO 8601 UTC timestamp marking the start of the half-hour settlement period |
 | `period_to` | *datetime* | — | ISO 8601 UTC timestamp marking the end of the half-hour settlement period |
+| `region` | *string* | — | Topic-safe MQTT/UNS region segment; national records use the closed literal `national` |
 | `forecast` | *int32 (nullable)* | gCO2/kWh | Forecast carbon intensity for this settlement period |
 | `actual` | *int32 (nullable)* | gCO2/kWh | Actual (metered) carbon intensity. Null when the period has not yet completed |
 | `index` | *string (nullable)* | — | Qualitative index band: very low, low, moderate, high, or very high |
@@ -52,6 +84,7 @@ This document describes the events emitted by the Carbon Intensity UK Bridge.
 |----------------|----------|----------|-----------------|
 | `period_from` | *datetime* | — | ISO 8601 UTC timestamp marking the start of the half-hour settlement period |
 | `period_to` | *datetime* | — | ISO 8601 UTC timestamp marking the end of the half-hour settlement period |
+| `region` | *string* | — | Topic-safe MQTT/UNS region segment; national records use the closed literal `national` |
 | `biomass_pct` | *double (nullable)* | % | Percentage from biomass |
 | `coal_pct` | *double (nullable)* | % | Percentage from coal |
 | `gas_pct` | *double (nullable)* | % | Percentage from natural gas |
@@ -86,6 +119,7 @@ This document describes the events emitted by the Carbon Intensity UK Bridge.
 | `region_id` | *int32* | — | Numeric DNO region identifier (1–17) |
 | `dnoregion` | *string* | — | Full DNO region name |
 | `shortname` | *string* | — | Short display name for the region |
+| `region` | *string* | — | Stable topic-safe MQTT/UNS region slug from the version-pinned `region_id` lookup table; unknown future ids use `region-{region_id}` |
 | `period_from` | *datetime* | — | ISO 8601 UTC timestamp of the settlement period start |
 | `period_to` | *datetime* | — | ISO 8601 UTC timestamp of the settlement period end |
 | `forecast` | *int32 (nullable)* | gCO2/kWh | Forecast carbon intensity for this region |
