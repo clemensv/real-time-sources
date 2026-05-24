@@ -1,0 +1,2 @@
+pip install .\usgs_geomag_mqtt_producer_data
+pip install .\usgs_geomag_mqtt_producer_mqtt_client

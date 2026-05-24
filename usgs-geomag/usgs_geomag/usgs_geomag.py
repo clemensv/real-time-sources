@@ -87,7 +87,8 @@ class USGSGeomagPoller:
     def parse_observatory(feature: Dict) -> Observatory:
         """Convert a GeoJSON feature to an Observatory data class."""
         props = feature.get("properties", {})
-        coords = feature.get("geometry", {}).get("coordinates", [None, None, None])
+        geometry = feature.get("geometry") or {}
+        coords = geometry.get("coordinates", [None, None, None])
         longitude = coords[0] if len(coords) > 0 else None
         latitude = coords[1] if len(coords) > 1 else None
         elevation = coords[2] if len(coords) > 2 else None

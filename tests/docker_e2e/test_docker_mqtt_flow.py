@@ -3508,3 +3508,92 @@ class TestEPAUVMqttDockerFlow:
         assert hourly_payload.get('city_slug') == 'seattle'
         assert daily_payload is not None and daily_payload.get('state') == 'wa'
         assert daily_payload.get('city_slug') == 'seattle'
+
+# ---- usgs-geomag --------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def usgs_geomag_mqtt_image():
+    return build_image('usgs-geomag', dockerfile='Dockerfile.mqtt', tag='test-usgs-geomag-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_usgs_geomag():
+    container, network, host_port = _generic_mosquitto(
+        'usgs-geomag-mqtt-e2e', 'usgs-geomag-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'usgs-geomag-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestUSGSGeomagMqttDockerFlow:
+    """Verify the usgs-geomag-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_usgs_geomag, usgs_geomag_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_usgs_geomag['internal_host']}:{mosquitto_usgs_geomag['internal_port']}"
+        feeder = client.containers.run(
+            usgs_geomag_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_usgs_geomag['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'ONCE_MODE': 'true',
+                'GEOMAG_OBSERVATORIES': 'BOU',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=360)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_usgs_geomag['host_port'], 'space-weather/us/usgs/usgs-geomag/#',
+            timeout=30.0,
+        )
+        assert messages, 'No retained messages received from broker'
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        reading_msgs = [m for m in messages if m['topic'].endswith('/reading')]
+        assert info_msgs, 'No /info observatory events published'
+        assert reading_msgs, 'No /reading telemetry events published'
+
+        for sample in (info_msgs[0], reading_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+            parts = sample['topic'].split('/')
+            assert parts[:4] == ['space-weather', 'us', 'usgs', 'usgs-geomag']
+            assert parts[4] == sample['user_properties']['subject'].lower()
+
+        assert {m['user_properties'].get('type') for m in info_msgs} == {'gov.usgs.geomag.Observatory'}
+        assert {m['user_properties'].get('type') for m in reading_msgs} == {'gov.usgs.geomag.MagneticFieldReading'}
+        info_payload = _to_dict(info_msgs[0]['payload'])
+        reading_payload = _to_dict(reading_msgs[0]['payload'])
+        assert info_payload is not None and info_payload.get('iaga_code')
+        assert reading_payload is not None and reading_payload.get('iaga_code')
