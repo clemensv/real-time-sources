@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "rssbridge-mqtt"
+version = "0.1.0"
+description = "RSS/Atom feed bridge to MQTT/UNS"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+feedparser = ">=6.0.11"
+beautifulsoup4 = ">=4.12.3"
+listparser = ">=0.20"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = "^1.12.1"
+paho-mqtt = ">=2.1.0"
+rssbridge_producer_data = {path = "../rssbridge_producer/rssbridge_producer_data"}
+
+[tool.poetry.scripts]
+rssbridge-mqtt = "rssbridge_mqtt:main"
