@@ -1,17 +1,16 @@
 from enum import Enum
 
 
-class CategoryEnum(Enum):
+class BasinEnum(Enum):
     """
-    Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form.
+    Basin or warning-area slug derived from the NOAA tsunami.gov feed (pacific for PHEB, alaska for PAAQ, or unknown). Matches the {basin} MQTT topic axis.
     """
-    Warning = 'Warning'
-    Advisory = 'Advisory'
-    Watch = 'Watch'
-    Information = 'Information'
+    pacific = 'pacific'
+    alaska = 'alaska'
+    unknown = 'unknown'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int | str) -> 'CategoryEnum':
+    def from_ordinal(cls, ordinal: int | str) -> 'BasinEnum':
         """
         Get enum member by ordinal
 
@@ -32,12 +31,12 @@ class CategoryEnum(Enum):
             raise IndexError("Ordinal out of range for enum")
 
     @classmethod
-    def to_ordinal(cls, member: 'CategoryEnum') -> int:
+    def to_ordinal(cls, member: 'BasinEnum') -> int:
         """
         Get enum ordinal
 
         Args:
-            member (CategoryEnum): The enum member to get the ordinal of.
+            member (BasinEnum): The enum member to get the ordinal of.
 
         Returns:
             The ordinal of the enum member.

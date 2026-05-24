@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from ptwc_tsunami_producer_kafka_producer.producer import PTWCBulletinsEventProducer
+from ptwc_tsunami_producer_kafka_producer.producer import PTWCBulletinsMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'PTWC.TsunamiBulletin' event to Kafka topic.
     await ptwcbulletins_event_producer.send_ptwc_tsunami_bulletin(_bulletin_id = 'TODO: replace me', data = _tsunami_bulletin)
     print(f"Sent 'PTWC.TsunamiBulletin' event: {_tsunami_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ptwcbulletins_mqtt_event_producer = PTWCBulletinsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ptwcbulletins_mqtt_event_producer = PTWCBulletinsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- PTWC.Bulletins.mqtt.TsunamiBulletin ----
+    # TODO: Supply event data for the PTWC.Bulletins.mqtt.TsunamiBulletin event
+    _tsunami_bulletin = TsunamiBulletin()
+
+    # sends the 'PTWC.Bulletins.mqtt.TsunamiBulletin' event to Kafka topic.
+    await ptwcbulletins_mqtt_event_producer.send_ptwc_bulletins_mqtt_tsunami_bulletin(_bulletin_id = 'TODO: replace me', data = _tsunami_bulletin)
+    print(f"Sent 'PTWC.Bulletins.mqtt.TsunamiBulletin' event: {_tsunami_bulletin.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

@@ -11,14 +11,17 @@ import pytest
 
 from ptwc_tsunami.ptwc_tsunami import (
     PTWCTsunamiPoller,
+    _basin_for_feed,
     _get_summary_html,
     _parse_note,
     _parse_summary_field,
+    _ptwc_level,
     _safe_str,
     _text,
     parse_connection_string,
     parse_entry,
 )
+from ptwc_tsunami_mqtt.app import _topic_segment
 
 
 # --- sample atom XML ---
@@ -102,6 +105,26 @@ class TestSafeStr:
         assert _safe_str("  hello  ") == "hello"
 
 
+# --- MQTT routing helpers ---
+
+class TestMqttRoutingHelpers:
+    def test_feed_basin_mapping(self):
+        assert _basin_for_feed("PAAQ") == "alaska"
+        assert _basin_for_feed("PHEB") == "pacific"
+        assert _basin_for_feed("OTHER") == "unknown"
+
+    def test_ptwc_level_normalization(self):
+        assert _ptwc_level("Warning") == "warning"
+        assert _ptwc_level("Information") == "information"
+        assert _ptwc_level("Other") == "unknown"
+        assert _ptwc_level(None) == "unknown"
+
+    def test_topic_segment_sanitizer(self):
+        assert _topic_segment(" urn:uuid:a/b + #\tC\nD\x00 ") == "urn:uuid:a-b-----C-D-"
+        assert _topic_segment("") == "unknown"
+        assert _topic_segment(None) == "unknown"
+
+
 # --- _text ---
 
 class TestText:
@@ -168,6 +191,8 @@ class TestParseEntry:
         assert b is not None
         assert b.bulletin_id == "urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9"
         assert b.feed == "PAAQ"
+        assert b.basin == "alaska"
+        assert b.ptwc_level == "information"
         assert b.center == "NWS National Tsunami Warning Center Palmer AK"
         assert b.title == "60 miles SW of Buldir I., Alaska"
         assert b.updated == "2026-04-03T08:28:39Z"

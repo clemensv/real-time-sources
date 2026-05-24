@@ -38,6 +38,11 @@ DEFAULT_POLL_INTERVAL = 300
 DEFAULT_STATE_FILE = os.path.expanduser("~/.ptwc_tsunami_state.json")
 DEFAULT_TOPIC = "ptwc-tsunami"
 
+FEED_BASINS = {
+    "PAAQ": "alaska",
+    "PHEB": "pacific",
+}
+
 
 def _safe_str(value: Any) -> Optional[str]:
     """Convert a value to string if not None."""
@@ -81,6 +86,15 @@ def _parse_note(summary_html: str) -> Optional[str]:
         value = value.rstrip("*").strip()
         return value if value else None
     return None
+
+
+def _basin_for_feed(feed_name: str) -> str:
+    return FEED_BASINS.get(feed_name, "unknown")
+
+
+def _ptwc_level(category: Optional[str]) -> str:
+    text = (category or "unknown").strip().lower()
+    return text if text in {"warning", "advisory", "watch", "information"} else "unknown"
 
 
 def _get_summary_html(entry: ET.Element) -> str:
@@ -139,6 +153,8 @@ def parse_entry(entry: ET.Element, feed_name: str, center: Optional[str] = None)
     return TsunamiBulletin(
         bulletin_id=bulletin_id,
         feed=feed_name,
+        basin=_basin_for_feed(feed_name),
+        ptwc_level=_ptwc_level(category),
         center=center,
         title=title,
         updated=updated,

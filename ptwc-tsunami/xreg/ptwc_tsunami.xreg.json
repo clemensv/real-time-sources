@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/PTWC.Bulletins"
       ]
+    },
+    "PTWC.Bulletins.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "messagegroups": [
+        "#/messagegroups/PTWC.Bulletins.mqtt"
+      ],
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ]
     }
   },
   "messagegroups": {
@@ -45,6 +64,21 @@
           "dataschemauri": "#/schemagroups/PTWC.jstruct/schemas/PTWC.TsunamiBulletin"
         }
       }
+    },
+    "PTWC.Bulletins.mqtt": {
+      "description": "MQTT/5.0 transport variant for tsunami.gov PTWC/NTWC tsunami bulletins. Non-retained QoS-1 bulletin events route by basin, tsunami bulletin level, and bulletin id under alerts/intl/ptwc/ptwc-tsunami/... Basin is derived from the NOAA feed (PHEB=pacific, PAAQ=alaska); ptwc_level is the native bulletin category normalized to lowercase.",
+      "messages": {
+        "PTWC.Bulletins.mqtt.TsunamiBulletin": {
+          "name": "TsunamiBulletin",
+          "basemessageurl": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -68,7 +102,9 @@
                   "bulletin_id",
                   "title",
                   "updated",
-                  "feed"
+                  "feed",
+                  "basin",
+                  "ptwc_level"
                 ],
                 "properties": {
                   "bulletin_id": {
@@ -105,7 +141,7 @@
                   },
                   "category": {
                     "type": "string",
-                    "description": "The tsunami bulletin category indicating the level of threat.",
+                    "description": "Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form.",
                     "enum": [
                       "Warning",
                       "Advisory",
@@ -132,6 +168,26 @@
                   "cap_url": {
                     "type": "string",
                     "description": "URL to the CAP XML document for this bulletin."
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Basin or warning-area slug derived from the NOAA tsunami.gov feed (pacific for PHEB, alaska for PAAQ, or unknown). Matches the {basin} MQTT topic axis.",
+                    "enum": [
+                      "pacific",
+                      "alaska",
+                      "unknown"
+                    ]
+                  },
+                  "ptwc_level": {
+                    "type": "string",
+                    "description": "Native tsunami bulletin category normalized to lowercase for MQTT routing. Matches the {ptwc_level} MQTT topic axis.",
+                    "enum": [
+                      "warning",
+                      "advisory",
+                      "watch",
+                      "information",
+                      "unknown"
+                    ]
                   }
                 }
               }

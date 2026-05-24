@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from ptwc_tsunami_producer_data.categoryenum import CategoryEnum
+from ptwc_tsunami_mqtt_producer_data.categoryenum import CategoryEnum
 
 
 class Test_CategoryEnum(unittest.TestCase):
