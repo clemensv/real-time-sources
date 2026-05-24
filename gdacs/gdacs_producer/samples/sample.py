@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from gdacs_producer_kafka_producer.producer import GDACSAlertsEventProducer
+from gdacs_producer_kafka_producer.producer import GDACSAlertsMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'GDACS.DisasterAlert' event to Kafka topic.
     await gdacsalerts_event_producer.send_gdacs_disaster_alert(_event_type = 'TODO: replace me', _event_id = 'TODO: replace me', data = _disaster_alert)
     print(f"Sent 'GDACS.DisasterAlert' event: {_disaster_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        gdacsalerts_mqtt_event_producer = GDACSAlertsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        gdacsalerts_mqtt_event_producer = GDACSAlertsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- GDACS.Alerts.mqtt.DisasterAlert ----
+    # TODO: Supply event data for the GDACS.Alerts.mqtt.DisasterAlert event
+    _disaster_alert = DisasterAlert()
+
+    # sends the 'GDACS.Alerts.mqtt.DisasterAlert' event to Kafka topic.
+    await gdacsalerts_mqtt_event_producer.send_gdacs_alerts_mqtt_disaster_alert(_event_type = 'TODO: replace me', _event_id = 'TODO: replace me', data = _disaster_alert)
+    print(f"Sent 'GDACS.Alerts.mqtt.DisasterAlert' event: {_disaster_alert.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

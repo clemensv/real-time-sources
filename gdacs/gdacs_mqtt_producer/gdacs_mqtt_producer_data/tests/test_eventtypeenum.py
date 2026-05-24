@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from gdacs_producer_data.eventtypeenum import EventTypeenum
+from gdacs_mqtt_producer_data.eventtypeenum import EventTypeenum
 
 
 class Test_EventTypeenum(unittest.TestCase):

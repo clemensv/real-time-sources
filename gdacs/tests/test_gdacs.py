@@ -20,6 +20,7 @@ from gdacs.gdacs import (
     NAMESPACES,
     GDACS_RSS_URL,
 )
+from gdacs_mqtt.app import _topic_segment
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -105,6 +106,15 @@ def _make_rss_feed(*items: ET.Element) -> str:
 
 
 # ── Low-level helpers ────────────────────────────────────────────────────────
+
+class TestMqttTopicSegment:
+    def test_forbidden_and_whitespace_characters_are_normalized(self):
+        assert _topic_segment(' A/B + #\tC\nD\x00 ') == 'A-B-----C-D-'
+
+    def test_empty_values_use_unknown(self):
+        assert _topic_segment('') == 'unknown'
+        assert _topic_segment(None) == 'unknown'
+
 
 class TestParseFloat:
     def test_valid(self):
@@ -228,6 +238,7 @@ class TestParseRssItem:
         assert alert.episode_alert_score == pytest.approx(0.4)
         assert alert.event_name == 'Test Quake'
         assert alert.country == 'Chile'
+        assert alert.alert_color == 'green'
         assert alert.iso3 == 'CHL'
         assert alert.latitude == pytest.approx(-34.5)
         assert alert.longitude == pytest.approx(-71.2)
@@ -257,6 +268,25 @@ class TestParseRssItem:
         gdacs_ns = NAMESPACES['gdacs']
         el = item.find(f'{{{gdacs_ns}}}eventid')
         item.remove(el)
+        assert parse_rss_item(item) is None
+
+    def test_missing_country_uses_unknown_topic_axis(self):
+        item = _make_rss_item(**{'gdacs:country': None})
+        gdacs_ns = NAMESPACES['gdacs']
+        el = item.find(f'{{{gdacs_ns}}}country')
+        if el is not None:
+            item.remove(el)
+        alert = parse_rss_item(item)
+        assert alert is not None
+        assert alert.country == 'unknown'
+        assert alert.alert_color == 'green'
+
+    def test_unknown_alert_level_is_rejected(self):
+        item = _make_rss_item(**{'gdacs:alertlevel': 'Grey'})
+        assert parse_rss_item(item) is None
+
+    def test_unknown_event_type_is_rejected(self):
+        item = _make_rss_item(**{'gdacs:eventtype': 'WF'})
         assert parse_rss_item(item) is None
 
     def test_missing_alert_level(self):
@@ -348,7 +378,8 @@ class TestParseRssItem:
         assert alert is not None
         assert alert.episode_id is None
         assert alert.alert_score is None
-        assert alert.country is None
+        assert alert.country == 'unknown'
+        assert alert.alert_color == 'green'
         assert alert.bbox_min_lon is None
         assert alert.vulnerability is None
         assert alert.population_value is None
