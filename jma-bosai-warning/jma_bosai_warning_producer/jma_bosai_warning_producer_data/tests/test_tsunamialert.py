@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_producer_data.tsunamialert import TsunamiAlert
-from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
 from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
+from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
 from jma_bosai_warning_producer_data.affectedcoastalregion import AffectedCoastalRegion
 import datetime
 
@@ -32,17 +32,17 @@ class Test_TsunamiAlert(unittest.TestCase):
         Create instance of TsunamiAlert for testing
         """
         instance = TsunamiAlert(
-            event_id='vmcyjuctlfreufczkifb',
-            serial=int(92),
+            event_id='wpnkhztnzcgqzcrjtyfu',
+            serial=int(67),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='vpnqenreccvlbyicxjzw',
-            title_en='qdtswpawebsymdegyzsl',
-            bulletin_type='ppponecruompycssloht',
-            detail_url='axirwdcpoqfgitvhkzen',
-            affected_coastal_regions=[None, None, None, None],
-            observations=[None, None]
+            title_jp='xtmqoilnovayyixespny',
+            title_en='mdiinkusgmedjdegfifu',
+            bulletin_type='jkrpqayphakjqqkmivcy',
+            detail_url='vvzpmsukbwxhitzmlslf',
+            affected_coastal_regions=[None, None, None],
+            observations=[None, None, None, None, None]
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'vmcyjuctlfreufczkifb'
+        test_value = 'wpnkhztnzcgqzcrjtyfu'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test serial property
         """
-        test_value = int(92)
+        test_value = int(67)
         self.instance.serial = test_value
         self.assertEqual(self.instance.serial, test_value)
     
@@ -91,7 +91,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_jp property
         """
-        test_value = 'vpnqenreccvlbyicxjzw'
+        test_value = 'xtmqoilnovayyixespny'
         self.instance.title_jp = test_value
         self.assertEqual(self.instance.title_jp, test_value)
     
@@ -99,7 +99,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_en property
         """
-        test_value = 'qdtswpawebsymdegyzsl'
+        test_value = 'mdiinkusgmedjdegfifu'
         self.instance.title_en = test_value
         self.assertEqual(self.instance.title_en, test_value)
     
@@ -107,7 +107,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test bulletin_type property
         """
-        test_value = 'ppponecruompycssloht'
+        test_value = 'jkrpqayphakjqqkmivcy'
         self.instance.bulletin_type = test_value
         self.assertEqual(self.instance.bulletin_type, test_value)
     
@@ -115,7 +115,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test detail_url property
         """
-        test_value = 'axirwdcpoqfgitvhkzen'
+        test_value = 'vvzpmsukbwxhitzmlslf'
         self.instance.detail_url = test_value
         self.assertEqual(self.instance.detail_url, test_value)
     
@@ -123,7 +123,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test affected_coastal_regions property
         """
-        test_value = [None, None, None, None]
+        test_value = [None, None, None]
         self.instance.affected_coastal_regions = test_value
         self.assertEqual(self.instance.affected_coastal_regions, test_value)
     
@@ -131,7 +131,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test observations property
         """
-        test_value = [None, None]
+        test_value = [None, None, None, None, None]
         self.instance.observations = test_value
         self.assertEqual(self.instance.observations, test_value)
     

@@ -166,10 +166,10 @@ class TsunamiObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='mhzlwcazoqtxvltvystd',
-            station_name_jp='vnntvraxhynmhlbzdpwc',
-            station_name_en='bsnospvdtoqnnlxzupvy',
-            observed_max_wave_height_m=float(91.64369297776543),
+            station_code='otqoekwpcvmqnzoywula',
+            station_name_jp='jaznlkbgizntjexlnetj',
+            station_name_en='vnizelzkdayvltqsrque',
+            observed_max_wave_height_m=float(6.5583118816877395),
             observed_at=datetime.datetime.now(datetime.timezone.utc),
             observed_at_local=datetime.datetime.now(datetime.timezone.utc),
             arrival_status=ArrivalStatusenum.ESTIMATED

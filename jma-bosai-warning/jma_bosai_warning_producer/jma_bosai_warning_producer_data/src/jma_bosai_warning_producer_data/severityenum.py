@@ -3,8 +3,9 @@ from enum import Enum
 
 class SeverityEnum(Enum):
     """
-    Normalized severity derived from the JMA status text and special-warning codes. NONE represents 発表警報・注意報はなし, ADVISORY represents 注意報-level notices, WARNING represents 警報/発表/継続 items, and EMERGENCY_WARNING represents 特別警報 or special-warning category codes 32-38.
+    MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis.
     """
+    REFERENCE = 'REFERENCE'
     NONE = 'NONE'
     ADVISORY = 'ADVISORY'
     WARNING = 'WARNING'

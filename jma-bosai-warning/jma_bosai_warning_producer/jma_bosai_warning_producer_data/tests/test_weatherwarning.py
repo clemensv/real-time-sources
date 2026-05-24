@@ -10,6 +10,8 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from jma_bosai_warning_producer_data.weatherwarning import WeatherWarning
 from jma_bosai_warning_producer_data.warningitem import WarningItem
+from jma_bosai_warning_producer_data.severityenum import SeverityEnum
+from jma_bosai_warning_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -30,23 +32,42 @@ class Test_WeatherWarning(unittest.TestCase):
         Create instance of WeatherWarning for testing
         """
         instance = WeatherWarning(
-            office_code='mpqgrgufzcgweojbiwve',
-            area_code='fvyxbdkbqgxuoapyrqsu',
-            area_name='ayikcndysykmiwkfmwta',
+            prefecture='upcjoayxipqfvkuhbakt',
+            severity=SeverityEnum.REFERENCE,
+            office_code='nchjuxrjaywlkozcjabl',
+            area_code='atrbqtrtlmonivzyylup',
+            event=EventEnum.warning,
+            area_name='eydorkmolqbxhhujjqxh',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='kzdxnjwrnnfacuzbxvvn',
-            warnings=[None, None],
+            headline_text='tjcdtwhtabzasjzhqlbh',
+            warnings=[None],
             time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )
         return instance
 
     
+    def test_prefecture_property(self):
+        """
+        Test prefecture property
+        """
+        test_value = 'upcjoayxipqfvkuhbakt'
+        self.instance.prefecture = test_value
+        self.assertEqual(self.instance.prefecture, test_value)
+    
+    def test_severity_property(self):
+        """
+        Test severity property
+        """
+        test_value = SeverityEnum.REFERENCE
+        self.instance.severity = test_value
+        self.assertEqual(self.instance.severity, test_value)
+    
     def test_office_code_property(self):
         """
         Test office_code property
         """
-        test_value = 'mpqgrgufzcgweojbiwve'
+        test_value = 'nchjuxrjaywlkozcjabl'
         self.instance.office_code = test_value
         self.assertEqual(self.instance.office_code, test_value)
     
@@ -54,15 +75,23 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'fvyxbdkbqgxuoapyrqsu'
+        test_value = 'atrbqtrtlmonivzyylup'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
+    
+    def test_event_property(self):
+        """
+        Test event property
+        """
+        test_value = EventEnum.warning
+        self.instance.event = test_value
+        self.assertEqual(self.instance.event, test_value)
     
     def test_area_name_property(self):
         """
         Test area_name property
         """
-        test_value = 'ayikcndysykmiwkfmwta'
+        test_value = 'eydorkmolqbxhhujjqxh'
         self.instance.area_name = test_value
         self.assertEqual(self.instance.area_name, test_value)
     
@@ -86,7 +115,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test headline_text property
         """
-        test_value = 'kzdxnjwrnnfacuzbxvvn'
+        test_value = 'tjcdtwhtabzasjzhqlbh'
         self.instance.headline_text = test_value
         self.assertEqual(self.instance.headline_text, test_value)
     
@@ -94,7 +123,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test warnings property
         """
-        test_value = [None, None]
+        test_value = [None]
         self.instance.warnings = test_value
         self.assertEqual(self.instance.warnings, test_value)
     

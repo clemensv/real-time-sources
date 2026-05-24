@@ -7,6 +7,7 @@ from jma_bosai_warning.jma_bosai_warning import (
     jst_to_utc,
     parse_tsunami_alert,
     parse_weather_warning_payload,
+    prefecture_for_office,
     status_to_severity,
 )
 
@@ -75,6 +76,12 @@ def test_jst_to_utc_conversion():
     assert jst_to_utc("2026-05-21T04:02:00+09:00") == "2026-05-20T19:02:00Z"
 
 
+def test_prefecture_for_office_uses_ascii_romanized_axis():
+    assert prefecture_for_office("130000", "東京都") == "tokyo"
+    assert prefecture_for_office("270000", "大阪府") == "osaka"
+    assert prefecture_for_office("471000", "沖縄本島地方") == "okinawa"
+
+
 @pytest.mark.parametrize(
     ("status", "code", "severity"),
     [("注意報", "10", "ADVISORY"), ("警報", "03", "WARNING"), ("特別警報", "32", "EMERGENCY_WARNING"), ("継続", "38", "EMERGENCY_WARNING"), ("発表警報・注意報はなし", None, "NONE")],
@@ -103,6 +110,9 @@ def test_warning_fixture_parsing():
     records = parse_weather_warning_payload("130000", warning_fixture())
     assert len(records) == 1
     record = records[0]
+    assert record["prefecture"] == "tokyo"
+    assert record["severity"] == "EMERGENCY_WARNING"
+    assert record["event"] == "warning"
     assert record["office_code"] == "130000"
     assert record["area_code"] == "1310100"
     assert record["report_datetime"] == "2026-05-20T19:02:00Z"
@@ -191,7 +201,11 @@ def test_reference_refresh_failure_keeps_cached_catalog():
     api.area_catalog = {"offices": {"130000": {"name": "東京都", "enName": "Tokyo", "parent": "010300"}}}
     api.fetch_area_catalog = lambda: (_ for _ in ()).throw(RuntimeError("timeout"))
     assert api.refresh_area_catalog() is False
-    assert api.office_records()[0]["office_code"] == "130000"
+    office = api.office_records()[0]
+    assert office["office_code"] == "130000"
+    assert office["prefecture"] == "tokyo"
+    assert office["severity"] == "REFERENCE"
+    assert office["event"] == "office"
 
 
 def test_one_failed_office_does_not_abort_cycle():
