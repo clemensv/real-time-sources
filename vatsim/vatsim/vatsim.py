@@ -153,6 +153,7 @@ class VatsimBridge:
         """Build a NetworkStatus from the general section."""
         return NetworkStatus(
             callsign="status",
+            facility="network",
             update_timestamp=_normalize_rfc3339(general["update_timestamp"]),
             connected_clients=general.get("connected_clients", 0),
             unique_users=general.get("unique_users", 0),

@@ -1,3 +1,3 @@
-from .vatsim import NetworkStatus, PilotPosition, ControllerPosition
+from .vatsim import ControllerPosition, NetworkStatus, PilotPosition
 
-__all__ = ["NetworkStatus", "PilotPosition", "ControllerPosition"]
+__all__ = ["ControllerPosition", "NetworkStatus", "PilotPosition"]

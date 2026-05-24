@@ -201,16 +201,19 @@ class TestBuildNetworkStatus:
     def test_build_network_status(self):
         status = VatsimBridge.build_network_status(SAMPLE_GENERAL, 720, 73)
         assert status.callsign == "status"
+        assert status.facility == "network"
         assert status.connected_clients == 853
         assert status.unique_users == 795
         assert status.pilot_count == 720
         assert status.controller_count == 73
-        assert isinstance(status.update_timestamp, datetime.datetime)
+        assert isinstance(status.update_timestamp, str)
+        assert status.update_timestamp.startswith("2026-")
 
     def test_build_network_status_type(self):
         from vatsim_producer_data.net.vatsim.networkstatus import NetworkStatus
         status = VatsimBridge.build_network_status(SAMPLE_GENERAL, 100, 10)
         assert isinstance(status, NetworkStatus)
+        assert status.facility == "network"
 
 
 @pytest.mark.unit
