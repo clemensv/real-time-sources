@@ -342,7 +342,6 @@ def feed(args):
             station = api.parse_station(raw)
             station_ids.append(station.station_id)
             event_producer.send_be_irail_station(
-                _feedurl=FEED_URL,
                 _station_id=station.station_id,
                 data=station,
                 flush_producer=False,
@@ -379,7 +378,6 @@ def feed(args):
 
                         board = parser(liveboard_raw, station_id)
                         sender(
-                            _feedurl=FEED_URL,
                             _station_id=station_id,
                             data=board,
                             flush_producer=False,

@@ -304,6 +304,12 @@
       "image": "seattle-911-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "seattle_911_mqtt"
+    },
+    {
+      "dir": "irail",
+      "image": "irail-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "irail_mqtt"
     }
   ],
   "flow": [
@@ -576,6 +582,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSeattle911MqttDockerFlow"
+    },
+    {
+      "dir": "irail",
+      "image": "irail-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestIRailMqttDockerFlow"
     }
   ]
 }

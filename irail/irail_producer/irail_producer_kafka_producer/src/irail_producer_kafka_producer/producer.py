@@ -42,12 +42,11 @@ class BeIrailEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_be_irail_station(self,_feedurl : str, _station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_be_irail_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'be.irail.Station' event to the Kafka topic
 
         Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
@@ -58,7 +57,7 @@ class BeIrailEventProducer:
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
              "type":"be.irail.Station",
-             "source":"{feedurl}".format(feedurl = _feedurl),
+             "source":"https://api.irail.be/",
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
@@ -75,12 +74,11 @@ class BeIrailEventProducer:
             self.producer.flush()
 
 
-    def send_be_irail_station_board(self,_feedurl : str, _station_id : str, data: StationBoard, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StationBoard], str]=None) -> None:
+    def send_be_irail_station_board(self,_station_id : str, data: StationBoard, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StationBoard], str]=None) -> None:
         """
         Sends the 'be.irail.StationBoard' event to the Kafka topic
 
         Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (StationBoard): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
@@ -91,7 +89,7 @@ class BeIrailEventProducer:
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
              "type":"be.irail.StationBoard",
-             "source":"{feedurl}".format(feedurl = _feedurl),
+             "source":"https://api.irail.be/",
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
@@ -108,12 +106,11 @@ class BeIrailEventProducer:
             self.producer.flush()
 
 
-    def send_be_irail_arrival_board(self,_feedurl : str, _station_id : str, data: ArrivalBoard, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ArrivalBoard], str]=None) -> None:
+    def send_be_irail_arrival_board(self,_station_id : str, data: ArrivalBoard, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ArrivalBoard], str]=None) -> None:
         """
         Sends the 'be.irail.ArrivalBoard' event to the Kafka topic
 
         Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (ArrivalBoard): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
@@ -124,7 +121,7 @@ class BeIrailEventProducer:
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
              "type":"be.irail.ArrivalBoard",
-             "source":"{feedurl}".format(feedurl = _feedurl),
+             "source":"https://api.irail.be/",
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type

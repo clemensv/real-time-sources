@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/be.irail"
       ]
+    },
+    "be.irail.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irail.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -34,8 +55,7 @@
               "value": "be.irail.Station"
             },
             "source": {
-              "value": "{feedurl}",
-              "type": "uritemplate"
+              "value": "https://api.irail.be/"
             },
             "subject": {
               "value": "{station_id}",
@@ -54,8 +74,7 @@
               "value": "be.irail.StationBoard"
             },
             "source": {
-              "value": "{feedurl}",
-              "type": "uritemplate"
+              "value": "https://api.irail.be/"
             },
             "subject": {
               "value": "{station_id}",
@@ -74,8 +93,7 @@
               "value": "be.irail.ArrivalBoard"
             },
             "source": {
-              "value": "{feedurl}",
-              "type": "uritemplate"
+              "value": "https://api.irail.be/"
             },
             "subject": {
               "value": "{station_id}",
@@ -84,6 +102,43 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/be.irail.jstruct/schemas/be.irail.ArrivalBoard"
+        }
+      }
+    },
+    "be.irail.mqtt": {
+      "description": "MQTT/5.0 transport variants for iRail Belgian railway station metadata and live board snapshots. Topics are retained QoS-1 state leaves under transit/be/irail/irail/{station_id}/{event}. The station_id topic axis preserves the existing Kafka/CloudEvents subject. Use transit/be/irail/irail/{station_id}/# for one station, transit/be/irail/irail/+/station-board for all departure boards, and transit/be/irail/irail/+/arrival-board for all arrival boards. Board snapshots use message expiry so stale liveboards age out if polling stops.",
+      "messages": {
+        "be.irail.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/be/irail/irail/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "be.irail.mqtt.StationBoard": {
+          "name": "StationBoard",
+          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.StationBoard",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/be/irail/irail/{station_id}/station-board",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 900
+          }
+        },
+        "be.irail.mqtt.ArrivalBoard": {
+          "name": "ArrivalBoard",
+          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/be/irail/irail/{station_id}/arrival-board",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 900
+          }
         }
       }
     }
@@ -109,7 +164,7 @@
                       "Station": {
                         "name": "Station",
                         "type": "object",
-                        "description": "Metadata for a Belgian railway station in the NMBS/SNCB (Nationale Maatschappij der Belgische Spoorwegen / Société Nationale des Chemins de fer Belges) network. Station identifiers follow the UIC (Union Internationale des Chemins de fer) numbering scheme with a Belgian country prefix of 0088. The iRail API provides these as nine-digit codes prefixed with 'BE.NMBS.'.",
+                        "description": "Metadata for a Belgian railway station in the NMBS/SNCB (Nationale Maatschappij der Belgische Spoorwegen / Soci\u00e9t\u00e9 Nationale des Chemins de fer Belges) network. Station identifiers follow the UIC (Union Internationale des Chemins de fer) numbering scheme with a Belgian country prefix of 0088. The iRail API provides these as nine-digit codes prefixed with 'BE.NMBS.'.",
                         "properties": {
                           "station_id": {
                             "type": "string",
@@ -133,7 +188,7 @@
                             "type": "double",
                             "description": "Longitude of the station in WGS84 decimal degrees. Sourced from the iRail locationX field.",
                             "unit": "deg",
-                            "symbol": "°",
+                            "symbol": "\u00b0",
                             "altnames": {
                               "json": "locationX"
                             }
@@ -142,7 +197,7 @@
                             "type": "double",
                             "description": "Latitude of the station in WGS84 decimal degrees. Sourced from the iRail locationY field.",
                             "unit": "deg",
-                            "symbol": "°",
+                            "symbol": "\u00b0",
                             "altnames": {
                               "json": "locationY"
                             }
@@ -236,7 +291,10 @@
                             "description": "Numeric part of the vehicle identifier. Example: '2117' for IC 2117."
                           },
                           "platform": {
-                            "type": ["string", "null"],
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Platform number or name from which the train departs. Null if platform has not been assigned yet."
                           },
                           "is_normal_platform": {
@@ -246,7 +304,12 @@
                           "occupancy": {
                             "type": "string",
                             "description": "Crowd-sourced occupancy estimate for this train. Based on aggregated user feedback submitted through the iRail occupancy API.",
-                            "enum": ["low", "medium", "high", "unknown"]
+                            "enum": [
+                              "low",
+                              "medium",
+                              "high",
+                              "unknown"
+                            ]
                           },
                           "departure_connection_uri": {
                             "type": "string",
@@ -382,7 +445,10 @@
                             "description": "Numeric part of the vehicle identifier. Example: '2117' for IC 2117."
                           },
                           "platform": {
-                            "type": ["string", "null"],
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Platform number or name at which the train arrives. Null if platform has not been assigned yet."
                           },
                           "is_normal_platform": {
@@ -392,7 +458,12 @@
                           "occupancy": {
                             "type": "string",
                             "description": "Crowd-sourced occupancy estimate for this train. Based on aggregated user feedback submitted through the iRail occupancy API.",
-                            "enum": ["low", "medium", "high", "unknown"]
+                            "enum": [
+                              "low",
+                              "medium",
+                              "high",
+                              "unknown"
+                            ]
                           },
                           "connection_uri": {
                             "type": "string",
@@ -609,7 +680,10 @@
                           },
                           {
                             "name": "platform",
-                            "type": ["null", "string"],
+                            "type": [
+                              "null",
+                              "string"
+                            ],
                             "doc": "Platform number. Null if not assigned.",
                             "default": null
                           },
@@ -735,7 +809,10 @@
                           },
                           {
                             "name": "platform",
-                            "type": ["null", "string"],
+                            "type": [
+                              "null",
+                              "string"
+                            ],
                             "doc": "Platform number. Null if not assigned.",
                             "default": null
                           },
