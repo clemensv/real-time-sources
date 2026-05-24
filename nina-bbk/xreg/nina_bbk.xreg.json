@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/NINA.Warnings"
       ]
+    },
+    "NINA.Warnings.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "messagegroups": [
+        "#/messagegroups/NINA.Warnings.mqtt"
+      ],
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ]
     }
   },
   "messagegroups": {
@@ -43,6 +62,21 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NINA.jstruct/schemas/NINA.CivilWarning"
+        }
+      }
+    },
+    "NINA.Warnings.mqtt": {
+      "description": "MQTT/5.0 transport variant for Germany NINA/BBK CAP warnings. Non-retained QoS-1 warning events route by German federal state, native CAP severity, and warning id under alerts/de/nina/nina-bbk/... The state axis is derived from CAP area administrative codes (warnVerwaltungsbereiche) with sender-code fallback.",
+      "messages": {
+        "NINA.Warnings.mqtt.CivilWarning": {
+          "name": "CivilWarning",
+          "basemessageurl": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -75,7 +109,8 @@
                   "event",
                   "severity",
                   "urgency",
-                  "certainty"
+                  "certainty",
+                  "state"
                 ],
                 "properties": {
                   "warning_id": {
@@ -176,7 +211,7 @@
                   },
                   "severity": {
                     "type": "string",
-                    "description": "The CAP severity level.",
+                    "description": "Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.",
                     "enum": [
                       "Extreme",
                       "Severe",
@@ -238,6 +273,10 @@
                   "language": {
                     "type": "string",
                     "description": "The language of the info block used to populate this event (e.g., 'de', 'EN')."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "German federal-state slug derived from CAP area administrative codes (warnVerwaltungsbereiche), with sender-code fallback. Matches the {state} MQTT topic axis."
                   }
                 }
               }

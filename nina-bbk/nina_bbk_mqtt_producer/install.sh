@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./nina_bbk_mqtt_producer_data
+pip install ./nina_bbk_mqtt_producer_mqtt_client

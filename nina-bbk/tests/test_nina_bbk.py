@@ -15,9 +15,11 @@ from nina_bbk.nina_bbk import (
     _find_param,
     _first_info,
     _safe_str,
+    _state_from_areas,
     normalize_warning,
     parse_connection_string,
 )
+from nina_bbk_mqtt.app import _topic_segment
 
 
 # --- helpers ---
@@ -177,6 +179,23 @@ class TestFirstInfo:
         assert _first_info(detail)["event"] == "French"
 
 
+# --- routing helpers ---
+
+class TestRoutingHelpers:
+    def test_state_from_area_administrative_code(self):
+        info = {"parameter": [{"valueName": "warnVerwaltungsbereiche", "value": "064110000000"}]}
+        assert _state_from_areas(info, "DE-BY-TEST") == "hessen"
+
+    def test_state_from_sender_fallback(self):
+        assert _state_from_areas({}, "DE-BY-TEST") == "bayern"
+        assert _state_from_areas({}, None) == "unknown"
+
+    def test_topic_segment_sanitizer(self):
+        assert _topic_segment(" A/B + #\tC\nD\x00 ") == "A-B-----C-D-"
+        assert _topic_segment("") == "unknown"
+        assert _topic_segment(None) == "unknown"
+
+
 # --- _find_param ---
 
 class TestFindParam:
@@ -238,6 +257,7 @@ class TestNormalizeWarning:
         assert w is not None
         assert w.warning_id == "mow.DE-HE-DA-W184-20240723-000"
         assert w.provider == "mowas"
+        assert w.state == "hessen"
         assert w.version == 5
         assert w.sender == "DE-HE-DA-W184"
         assert w.status == "Actual"

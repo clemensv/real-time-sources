@@ -1,18 +1,18 @@
 from enum import Enum
 
 
-class SeverityEnum(Enum):
+class UrgencyEnum(Enum):
     """
-    Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.
+    The CAP urgency level.
     """
-    Extreme = 'Extreme'
-    Severe = 'Severe'
-    Moderate = 'Moderate'
-    Minor = 'Minor'
+    Immediate = 'Immediate'
+    Expected = 'Expected'
+    Future = 'Future'
+    Past = 'Past'
     Unknown = 'Unknown'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int | str) -> 'SeverityEnum':
+    def from_ordinal(cls, ordinal: int | str) -> 'UrgencyEnum':
         """
         Get enum member by ordinal
 
@@ -33,12 +33,12 @@ class SeverityEnum(Enum):
             raise IndexError("Ordinal out of range for enum")
 
     @classmethod
-    def to_ordinal(cls, member: 'SeverityEnum') -> int:
+    def to_ordinal(cls, member: 'UrgencyEnum') -> int:
         """
         Get enum ordinal
 
         Args:
-            member (SeverityEnum): The enum member to get the ordinal of.
+            member (UrgencyEnum): The enum member to get the ordinal of.
 
         Returns:
             The ordinal of the enum member.
