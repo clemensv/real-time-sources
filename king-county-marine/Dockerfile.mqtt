@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/king-county-marine"
+LABEL org.opencontainers.image.title="King County Marine → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Publishes MQTT 5.0 binary-mode CloudEvents into maritime/us/wa/king-county/king-county-marine/{station_id}/{event} topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/king-county-marine/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./king_county_marine_mqtt_producer/king_county_marine_mqtt_producer_data \
+ && pip install --no-cache-dir ./king_county_marine_mqtt_producer/king_county_marine_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./king_county_marine_producer/king_county_marine_producer_data \
+ && pip install --no-cache-dir ./king_county_marine_producer/king_county_marine_producer_kafka_producer \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./king_county_marine_mqtt
+
+ENV MQTT_BROKER_URL=""
+VOLUME ["/var/lib/king-county-marine"]
+
+CMD ["python", "-m", "king_county_marine_mqtt", "feed"]

@@ -231,8 +231,8 @@ class KingCountyMarineBridge:
         """Build station reference metadata from a Socrata view."""
         latitude, longitude = parse_station_location(view.get("description", ""))
         station_name = view.get("name", "")
-        station_id = infer_station_id(station_name)
         dataset_id = view["id"]
+        station_id = infer_station_id(station_name) or slugify(dataset_id)
         dataset_url = f"https://data.kingcounty.gov/d/{dataset_id}"
         sensor_level = infer_sensor_level(station_name)
         return Station(

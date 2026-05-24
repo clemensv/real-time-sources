@@ -4266,3 +4266,82 @@ class TestAustraliaWildfiresMqttDockerFlow:
         assert payload.get('state') == 'nsw'
         assert payload.get('status') == 'under-control'
         assert payload.get('incident_id') == 'sample-incident-001'
+
+# ---- king-county-marine ---------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def king_county_marine_mqtt_image():
+    return build_image('king-county-marine', dockerfile='Dockerfile.mqtt', tag='test-king-county-marine-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_king_county_marine():
+    container, network, host_port = _generic_mosquitto(
+        'king-county-marine-mqtt-e2e', 'king-county-marine-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'king-county-marine-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestKingCountyMarineMqttDockerFlow:
+    """Verify the king-county-marine-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_king_county_marine, king_county_marine_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_king_county_marine['internal_host']}:{mosquitto_king_county_marine['internal_port']}"
+        feeder = client.containers.run(
+            king_county_marine_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_king_county_marine['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'ONCE_MODE': 'true',
+                'KING_COUNTY_MARINE_SAMPLE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=180)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_king_county_marine['host_port'],
+            'maritime/us/wa/king-county/king-county-marine/#', timeout=20.0,
+        )
+        assert messages, 'No retained MQTT messages received from broker'
+        topics = {m['topic'] for m in messages}
+        assert 'maritime/us/wa/king-county/king-county-marine/sample-station/info' in topics
+        assert 'maritime/us/wa/king-county/king-county-marine/sample-station/water-quality' in topics
+        for sample in messages:
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json'
+            assert up.get('subject') == 'sample-station'
+            payload = _to_dict(sample['payload'])
+            assert payload is not None
+            assert payload.get('station_id') == 'sample-station'

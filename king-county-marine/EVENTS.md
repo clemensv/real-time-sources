@@ -2,6 +2,24 @@
 
 This document describes the events emitted by the King County Marine bridge.
 
+## MQTT Endpoint
+
+| Property | Value |
+|----------|-------|
+| Protocol | MQTT/5.0 |
+| Topic | `maritime/us/wa/king-county/king-county-marine/{station_id}/{event}` |
+| Events | `info`, `water-quality` |
+| QoS / retain | QoS 1, retained |
+| Retention rationale | Station metadata and latest station readings are useful last-known-value state for late subscribers. |
+| Message expiry | `water-quality` retained readings expire after 1 hour; `info` station metadata does not expire. |
+
+### MQTT subscription patterns
+
+- All King County marine events: `maritime/us/wa/king-county/king-county-marine/#`
+- All station metadata: `maritime/us/wa/king-county/king-county-marine/+/info`
+- All latest water-quality readings: `maritime/us/wa/king-county/king-county-marine/+/water-quality`
+- One station: `maritime/us/wa/king-county/king-county-marine/{station_id}/#`
+
 - [US.WA.KingCounty.Marine](#message-group-uswakingcountymarine)
   - [US.WA.KingCounty.Marine.Station](#message-uswakingcountymarinestation)
   - [US.WA.KingCounty.Marine.WaterQualityReading](#message-uswakingcountymarinewaterqualityreading)

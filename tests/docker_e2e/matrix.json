@@ -334,6 +334,12 @@
       "image": "australia-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "australia_wildfires_mqtt"
+    },
+    {
+      "dir": "king-county-marine",
+      "image": "king-county-marine-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "king_county_marine_mqtt"
     }
   ],
   "flow": [
@@ -641,6 +647,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestAustraliaWildfiresMqttDockerFlow"
+    },
+    {
+      "dir": "king-county-marine",
+      "image": "king-county-marine-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestKingCountyMarineMqttDockerFlow"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**King County Marine Bridge** polls the current King County marine buoy and mooring raw-data datasets and emits station reference events plus normalized water-quality readings to Kafka as CloudEvents.
+**King County Marine Bridge** polls the current King County marine buoy and mooring raw-data datasets and emits station reference events plus normalized water-quality readings to Kafka as CloudEvents. The MQTT/UNS variant publishes retained QoS 1 binary CloudEvents under `maritime/us/wa/king-county/king-county-marine/{station_id}/{event}`.
 
 The source focuses on near-real-time raw buoy and mooring telemetry published on `data.kingcounty.gov`. It excludes periodic laboratory programs and historical backfill datasets that are not part of the current operational feed.
 
