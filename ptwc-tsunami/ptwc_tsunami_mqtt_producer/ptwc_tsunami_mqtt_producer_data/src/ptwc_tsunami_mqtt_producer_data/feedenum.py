@@ -1,17 +1,15 @@
 from enum import Enum
 
 
-class CategoryEnum(Enum):
+class FeedEnum(Enum):
     """
-    Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form.
+    The feed this bulletin was obtained from.
     """
-    Warning = 'Warning'
-    Advisory = 'Advisory'
-    Watch = 'Watch'
-    Information = 'Information'
+    PAAQ = 'PAAQ'
+    PHEB = 'PHEB'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int | str) -> 'CategoryEnum':
+    def from_ordinal(cls, ordinal: int | str) -> 'FeedEnum':
         """
         Get enum member by ordinal
 
@@ -32,12 +30,12 @@ class CategoryEnum(Enum):
             raise IndexError("Ordinal out of range for enum")
 
     @classmethod
-    def to_ordinal(cls, member: 'CategoryEnum') -> int:
+    def to_ordinal(cls, member: 'FeedEnum') -> int:
         """
         Get enum ordinal
 
         Args:
-            member (CategoryEnum): The enum member to get the ordinal of.
+            member (FeedEnum): The enum member to get the ordinal of.
 
         Returns:
             The ordinal of the enum member.
