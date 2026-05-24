@@ -33,6 +33,14 @@ DANGER_RATING_ENUM_MAP = {
     "very_high": MaxDangerRatingenum.very_high,
 }
 
+
+def topic_segment(value: Optional[str]) -> str:
+    value = (value or "").strip().lower()
+    if not value or any(char in value for char in ("/", "+", "#", "\x00")):
+        return "unknown"
+    return value
+
+
 DEFAULT_REGIONS = ["AT-07", "IT-32-BZ", "IT-32-TN", "AT-02"]
 DEFAULT_LANG = "en"
 BASE_URL = "https://avalanche.report/albina_files"
@@ -46,9 +54,9 @@ class AlbinaPoller:
 
     def __init__(
         self,
-        kafka_config: Dict[str, str],
-        kafka_topic: str,
-        last_polled_file: str,
+        kafka_config: Optional[Dict[str, str]] = None,
+        kafka_topic: str = "",
+        last_polled_file: str = "",
         regions: Optional[List[str]] = None,
         lang: str = DEFAULT_LANG,
     ):
@@ -56,10 +64,13 @@ class AlbinaPoller:
         self.last_polled_file = last_polled_file
         self.regions = regions or DEFAULT_REGIONS
         self.lang = lang
-        from confluent_kafka import Producer as KafkaProducer
-        kafka_producer = KafkaProducer(kafka_config)
-        self.producer = OrgEAWSALBINABulletinsEventProducer(kafka_producer, kafka_topic)
-        self.kafka_producer = kafka_producer
+        self.producer = None
+        self.kafka_producer = None
+        if kafka_config is not None:
+            from confluent_kafka import Producer as KafkaProducer
+            kafka_producer = KafkaProducer(kafka_config)
+            self.producer = OrgEAWSALBINABulletinsEventProducer(kafka_producer, kafka_topic)
+            self.kafka_producer = kafka_producer
 
     def load_state(self) -> Dict:
         """Load the dedup state from disk."""
@@ -164,6 +175,7 @@ class AlbinaPoller:
 
                 event = AvalancheBulletin(
                     region_id=region_id,
+                    country=topic_segment(region_id.split("-", 1)[0] if region_id else None),
                     region_name=region_name,
                     bulletin_id=bulletin_id,
                     publication_time=pub_time,
@@ -171,6 +183,7 @@ class AlbinaPoller:
                     valid_time_end=vt_end,
                     lang=lang,
                     max_danger_rating=max_enum,
+                    danger_level=topic_segment(max_name),
                     max_danger_rating_value=max_val,
                     danger_ratings_json=json.dumps(danger_ratings),
                     avalanche_problems_json=json.dumps(avalanche_problems),

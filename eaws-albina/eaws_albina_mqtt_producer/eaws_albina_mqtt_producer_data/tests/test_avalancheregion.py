@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from eaws_albina_producer_data.avalancheregion import AvalancheRegion
+from eaws_albina_mqtt_producer_data.avalancheregion import AvalancheRegion
 import datetime
 
 
@@ -29,10 +29,10 @@ class Test_AvalancheRegion(unittest.TestCase):
         Create instance of AvalancheRegion for testing
         """
         instance = AvalancheRegion(
-            region_id='mjdccevuetqkeuwakhjg',
-            lang='icnxardjklmjbgnqakui',
+            region_id='krylrkedmkehdaifsmro',
+            lang='ykkwvzkmzhyrnkrycuiw',
             configured_at=datetime.datetime.now(datetime.timezone.utc),
-            bulletin_base_url='ftgxgsoywubkrzqjmemi'
+            bulletin_base_url='vgkvukxpangbwcgylswd'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_AvalancheRegion(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'mjdccevuetqkeuwakhjg'
+        test_value = 'krylrkedmkehdaifsmro'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_AvalancheRegion(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'icnxardjklmjbgnqakui'
+        test_value = 'ykkwvzkmzhyrnkrycuiw'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     
@@ -65,7 +65,7 @@ class Test_AvalancheRegion(unittest.TestCase):
         """
         Test bulletin_base_url property
         """
-        test_value = 'ftgxgsoywubkrzqjmemi'
+        test_value = 'vgkvukxpangbwcgylswd'
         self.instance.bulletin_base_url = test_value
         self.assertEqual(self.instance.bulletin_base_url, test_value)
     
