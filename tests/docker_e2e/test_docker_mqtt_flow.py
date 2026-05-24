@@ -3415,3 +3415,96 @@ class TestWikimediaOsmDiffsMqttDockerFlow:
         assert not retained_firehose, (
             f"firehose messages must not be retained, but broker replayed: {[m['topic'] for m in retained_firehose]}"
         )
+
+# ---- epa-uv -------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def epa_uv_mqtt_image():
+    return build_image('epa-uv', dockerfile='Dockerfile.mqtt', tag='test-epa-uv-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_epa_uv():
+    container, network, host_port = _generic_mosquitto(
+        'epa-uv-mqtt-e2e', 'epa-uv-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'epa-uv-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestEPAUVMqttDockerFlow:
+    """Verify the epa-uv-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_retained_uns_topics(self, mosquitto_epa_uv, epa_uv_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_epa_uv['internal_host']}:{mosquitto_epa_uv['internal_port']}"
+        feeder = client.containers.run(
+            epa_uv_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=mosquitto_epa_uv['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'ONCE_MODE': 'true',
+                'EPA_UV_LOCATIONS': 'Seattle,WA',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_messages_topic(
+            '127.0.0.1', mosquitto_epa_uv['host_port'], 'uv/us/epa/epa-uv/#',
+            timeout=30.0,
+        )
+        assert messages, 'No retained messages received from broker'
+        hourly_msgs = [m for m in messages if '/hourly/' in m['topic']]
+        daily_msgs = [m for m in messages if '/daily/' in m['topic']]
+        assert hourly_msgs, 'No /hourly forecast events published'
+        assert daily_msgs, 'No /daily forecast events published'
+
+        for sample in (hourly_msgs[0], daily_msgs[0]):
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+            parts = sample['topic'].split('/')
+            assert parts[:4] == ['uv', 'us', 'epa', 'epa-uv']
+            assert parts[4] == 'wa'
+            assert parts[5] == 'seattle'
+            assert parts[6] == sample['user_properties']['subject']
+
+        assert {m['user_properties'].get('type') for m in hourly_msgs} == {'US.EPA.UVIndex.HourlyForecast'}
+        assert {m['user_properties'].get('type') for m in daily_msgs} == {'US.EPA.UVIndex.DailyForecast'}
+        hourly_payload = _to_dict(hourly_msgs[0]['payload'])
+        daily_payload = _to_dict(daily_msgs[0]['payload'])
+        assert hourly_payload is not None and hourly_payload.get('state') == 'wa'
+        assert hourly_payload.get('city_slug') == 'seattle'
+        assert daily_payload is not None and daily_payload.get('state') == 'wa'
+        assert daily_payload.get('city_slug') == 'seattle'

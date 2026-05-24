@@ -26,6 +26,7 @@ class DailyForecast:
         forecast_date (str)
         uv_index (int)
         uv_alert (str)
+        city_slug (str)
     """
     
     
@@ -35,6 +36,7 @@ class DailyForecast:
     forecast_date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_date"))
     uv_index: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uv_index"))
     uv_alert: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uv_alert"))
+    city_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="city_slug"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DailyForecast':
@@ -161,10 +163,11 @@ class DailyForecast:
             An instance of the dataclass.
         """
         return cls(
-            location_id='tuimcyrnovsnxrxwmxsy',
-            city='sittjdlzwzcmusfybqfr',
-            state='aewrpavnyfxeftesfiib',
-            forecast_date='jfqtumcigicnamdznaci',
-            uv_index=int(71),
-            uv_alert='mldahjadlrxxgkdvbvna'
+            location_id='hrvicdklrugmbifvbpbp',
+            city='ksmyklxbeuvuzwinlujm',
+            state='xdexooviczhzklpwmmos',
+            forecast_date='fiznilmuurpztzgrusok',
+            uv_index=int(65),
+            uv_alert='ugjnxqcisgalgasxhvrt',
+            city_slug='mdmgrrnzuobzwxizadaj'
         )

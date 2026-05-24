@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from epa_uv_producer_kafka_producer.producer import USEPAUVIndexEventProducer
+from epa_uv_producer_kafka_producer.producer import USEPAUVIndexMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +73,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'US.EPA.UVIndex.DailyForecast' event to Kafka topic.
     await usepauvindex_event_producer.send_us_epa_uvindex_daily_forecast(_location_id = 'TODO: replace me', data = _daily_forecast)
     print(f"Sent 'US.EPA.UVIndex.DailyForecast' event: {_daily_forecast.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usepauvindex_mqtt_event_producer = USEPAUVIndexMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usepauvindex_mqtt_event_producer = USEPAUVIndexMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- US.EPA.UVIndex.mqtt.HourlyForecast ----
+    # TODO: Supply event data for the US.EPA.UVIndex.mqtt.HourlyForecast event
+    _hourly_forecast = HourlyForecast()
+
+    # sends the 'US.EPA.UVIndex.mqtt.HourlyForecast' event to Kafka topic.
+    await usepauvindex_mqtt_event_producer.send_us_epa_uvindex_mqtt_hourly_forecast(_location_id = 'TODO: replace me', data = _hourly_forecast)
+    print(f"Sent 'US.EPA.UVIndex.mqtt.HourlyForecast' event: {_hourly_forecast.to_json()}")
+
+    # ---- US.EPA.UVIndex.mqtt.DailyForecast ----
+    # TODO: Supply event data for the US.EPA.UVIndex.mqtt.DailyForecast event
+    _daily_forecast = DailyForecast()
+
+    # sends the 'US.EPA.UVIndex.mqtt.DailyForecast' event to Kafka topic.
+    await usepauvindex_mqtt_event_producer.send_us_epa_uvindex_mqtt_daily_forecast(_location_id = 'TODO: replace me', data = _daily_forecast)
+    print(f"Sent 'US.EPA.UVIndex.mqtt.DailyForecast' event: {_daily_forecast.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
