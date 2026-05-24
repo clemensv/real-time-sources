@@ -16,11 +16,17 @@
 - `meteoalarm` — PR #391, merge `c4ed253d6f825a2a2388540c7ffa95fb5e837143`; topic `alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning`.
 - `ptwc-tsunami` — PR #392, merge `a15181491e9f913d8ad46ff373623feedb3c1e1c`; topic `alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin`.
 - `nina-bbk` — PR #393, merge `2db32ac5003182ce4f739aa7cd7a381d78ec57e5`; topic `alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning`.
+- `jma-bosai-warning` — PR #395, merge `097c67d06b8fc9cdfac7c6fb25f3a62ebe7fc87f`; topics:
+  - `alerts/jp/jma/jma-bosai-warning/{prefecture}/REFERENCE/{office_code}/{area_code}/office` (retained QoS 1 office reference records)
+  - `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/warning` (non-retained QoS 1 weather warning records)
+- `jma-bosai-quake` — PR #396, merge `e997cd3df711b4546e7948e309d0b83b59039b7c`; topic `seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report`.
 
 ## Ready-to-ship remaining
 
-- `jma-bosai-warning` — ready candidate; target `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}`. Deferred in batch 9 to preserve quality after four source PRs and repeated full main CI waits.
-- `jma-bosai-quake` — ready candidate; target `seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report`. Deferred in batch 9 to preserve quality after four source PRs and repeated full main CI waits.
+- `jma-bosai-volcano` — ready candidate; target `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`. Deferred in batch 10 after two JMA source PRs and repeated full main CI waits.
+- `jma-bosai-amedas` — ready candidate; target `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}`. Deferred in batch 10 after two JMA source PRs and repeated full main CI waits.
+- `jma-japan` — ready candidate; target `weather/jp/jma/jma-japan/{office}/{bulletin_id}/bulletin`. Deferred in batch 10 after two JMA source PRs and repeated full main CI waits.
+- `environment-canada` — ready candidate; target `weather/ca/eccc/environment-canada/{province}/{msc_id}/{event}`. Deferred in batch 10 after two JMA source PRs and repeated full main CI waits.
 
 ## Notes
 
