@@ -1,4 +1,4 @@
-""" Counter dataclass. """
+""" BicycleCount dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,20 +10,22 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Counter:
+class BicycleCount:
     """
-    Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.
+    Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.
     
     Attributes:
         counter_id (str)
         counter_name (str)
-        channel_name (typing.Optional[str])
-        installation_date (typing.Optional[str])
+        count (typing.Optional[int])
+        date (datetime.datetime)
         longitude (typing.Optional[float])
         latitude (typing.Optional[float])
         ce_id (str)
@@ -32,14 +34,14 @@ class Counter:
     
     counter_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="counter_id"))
     counter_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="counter_name"))
-    channel_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="channel_name"))
-    installation_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="installation_date"))
+    count: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="count"))
+    date: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     ce_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ce_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Counter':
+    def from_serializer_dict(cls, data: dict) -> 'BicycleCount':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -112,7 +114,7 @@ class Counter:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Counter']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['BicycleCount']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -149,13 +151,13 @@ class Counter:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Counter.from_serializer_dict(_record)
+                return BicycleCount.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Counter':
+    def create_instance(cls) -> 'BicycleCount':
         """
         Creates an instance of the dataclass with test values.
         
@@ -163,11 +165,11 @@ class Counter:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='calenwkulyhdiqztweae',
-            counter_name='sndpxhkutaruqtilujxi',
-            channel_name='yvrfxujkcujxbapaaxka',
-            installation_date='qtypxthvuhgoisznxotg',
-            longitude=float(71.2167451470225),
-            latitude=float(13.712512642205986),
-            ce_id='eflsyyzzhstvorwptpfx'
+            counter_id='clmiyfivbfqopvtrwtxs',
+            counter_name='qrzqmsqqhpawxlqpyozw',
+            count=int(13),
+            date=datetime.datetime.now(datetime.timezone.utc),
+            longitude=float(95.62318596124648),
+            latitude=float(41.19340357462205),
+            ce_id='nrteytgvuaydqfiqmxup'
         )

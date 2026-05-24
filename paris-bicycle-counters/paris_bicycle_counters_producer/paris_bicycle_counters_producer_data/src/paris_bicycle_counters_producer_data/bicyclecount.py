@@ -28,6 +28,7 @@ class BicycleCount:
         date (datetime.datetime)
         longitude (typing.Optional[float])
         latitude (typing.Optional[float])
+        ce_id (str)
     """
     
     
@@ -37,6 +38,7 @@ class BicycleCount:
     date: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    ce_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ce_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'BicycleCount':
@@ -163,10 +165,11 @@ class BicycleCount:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='hkivgivgzzedokfofbaj',
-            counter_name='hgllbjnpjxbhswbuikxt',
-            count=int(56),
+            counter_id='vfprdhkmwkfbftldiacq',
+            counter_name='mtpuvweukyvqxviasuko',
+            count=int(40),
             date=datetime.datetime.now(datetime.timezone.utc),
-            longitude=float(69.61782005974942),
-            latitude=float(16.70452305549611)
+            longitude=float(96.83450034853813),
+            latitude=float(9.275390082703494),
+            ce_id='edoeqyyhdrfsyhidftvs'
         )

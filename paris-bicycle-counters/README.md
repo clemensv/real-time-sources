@@ -10,6 +10,7 @@
 - **Counter Reference Data**: Fetch counter location metadata from `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-compteurs/records`.
 - **Deduplication**: Tracks seen counter_id + date pairs in a state file to avoid reprocessing.
 - **Kafka Integration**: Send bicycle counts to a Kafka topic using SASL PLAIN authentication.
+- **MQTT/UNS Integration**: The MQTT variant publishes to `traffic/fr/paris/paris-bicycle-counters/{counter_id}/{info|count}` with retained counter info and non-retained count events.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
 - **Fabric notebook hosting**: deploy as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) using [`notebook/paris-bicycle-counters-feed.ipynb`](notebook/paris-bicycle-counters-feed.ipynb).
 

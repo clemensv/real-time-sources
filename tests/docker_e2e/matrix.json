@@ -322,6 +322,12 @@
       "image": "carbon-intensity-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "carbon_intensity_mqtt"
+    },
+    {
+      "dir": "paris-bicycle-counters",
+      "image": "paris-bicycle-counters-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "paris_bicycle_counters_mqtt"
     }
   ],
   "flow": [
@@ -615,6 +621,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCarbonIntensityMqttDockerFlow"
+    },
+    {
+      "dir": "paris-bicycle-counters",
+      "image": "paris-bicycle-counters-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestParisBicycleCountersMqttDockerFlow"
     }
   ]
 }

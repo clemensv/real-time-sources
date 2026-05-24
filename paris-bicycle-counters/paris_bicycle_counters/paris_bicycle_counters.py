@@ -10,6 +10,7 @@ import os
 import json
 import sys
 import time
+import hashlib
 from typing import Dict, List, Optional, Set, Tuple
 from datetime import datetime, timezone, timedelta
 import argparse
@@ -21,6 +22,21 @@ from paris_bicycle_counters_producer_kafka_producer.producer import FRParisOpenD
 
 COUNTER_DATA_URL = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-donnees-compteurs/records"
 COUNTER_LOCATIONS_URL = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-compteurs/records"
+
+
+def ce_datetime(value: datetime) -> str:
+    """Return a stable UTC-ish timestamp string for CloudEvents ids."""
+    return value.isoformat().replace("+00:00", "Z")
+
+
+def is_topic_safe_segment(value: str) -> bool:
+    return bool(value) and not any(ch in value for ch in ('/', '+', '#', '\x00'))
+
+
+def counter_info_ce_id(counter_id: str, fields: Dict[str, object]) -> str:
+    encoded = json.dumps(fields, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    digest = hashlib.sha256(encoded.encode("utf-8")).hexdigest()[:12]
+    return f"{counter_id}/info/{digest}"
 
 
 class ParisBicycleCounterPoller:
@@ -92,13 +108,21 @@ class ParisBicycleCounterPoller:
                 break
             for record in results:
                 coords = record.get("coordinates") or {}
+                counter_id = record.get("id_compteur", "")
+                if not is_topic_safe_segment(counter_id):
+                    print(f"Skipping counter with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
+                    continue
+                fields = {
+                    "counter_name": record.get("nom_compteur", ""),
+                    "channel_name": record.get("channel_name"),
+                    "installation_date": record.get("installation_date"),
+                    "longitude": coords.get("lon"),
+                    "latitude": coords.get("lat"),
+                }
                 counter = Counter(
-                    counter_id=record.get("id_compteur", ""),
-                    counter_name=record.get("nom_compteur", ""),
-                    channel_name=record.get("channel_name"),
-                    installation_date=record.get("installation_date"),
-                    longitude=coords.get("lon"),
-                    latitude=coords.get("lat"),
+                    ce_id=counter_info_ce_id(counter_id, fields),
+                    counter_id=counter_id,
+                    **fields,
                 )
                 counters.append(counter)
             if len(results) < limit:
@@ -149,8 +173,13 @@ class ParisBicycleCounterPoller:
                     date_val = datetime.fromisoformat(date_str)
                 except (ValueError, TypeError):
                     continue
+                counter_id = record.get("id_compteur", "")
+                if not is_topic_safe_segment(counter_id):
+                    print(f"Skipping count with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
+                    continue
                 bc = BicycleCount(
-                    counter_id=record.get("id_compteur", ""),
+                    ce_id=f"{counter_id}/{ce_datetime(date_val)}/count",
+                    counter_id=counter_id,
                     counter_name=record.get("nom_compteur", ""),
                     count=record.get("sum_counts"),
                     date=date_val,
@@ -205,7 +234,7 @@ class ParisBicycleCounterPoller:
         counters = self.fetch_counter_locations()
         for counter in counters:
             self.producer.send_fr_paris_open_data_velo_counter(
-                counter.counter_id, counter, flush_producer=False)
+                counter.counter_id, counter.ce_id, counter, flush_producer=False)
         self.producer.producer.flush()
         print(f"Sent {len(counters)} counter locations as reference data")
 
@@ -223,7 +252,7 @@ class ParisBicycleCounterPoller:
 
                 for bc in new_counts:
                     self.producer.send_fr_paris_open_data_velo_bicycle_count(
-                        bc.counter_id, bc, flush_producer=False)
+                        bc.counter_id, bc.ce_id, ce_datetime(bc.date), bc, flush_producer=False)
                 self.producer.producer.flush()
 
                 # Trim seen_keys to last 48h worth of keys to avoid unbounded growth
