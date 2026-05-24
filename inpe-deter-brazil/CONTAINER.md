@@ -54,6 +54,18 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-inpe-deter-brazil:latest
 ```
 
+### With an MQTT 5.0 broker
+
+Use the MQTT image variant to publish binary-mode CloudEvents into the UNS topic tree `deforestation/br/inpe/inpe-deter-brazil/{biome}/{state_slug}/{class_slug}/{alert_id}/alert`:
+
+```shell
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtt://broker:1883' \
+    ghcr.io/clemensv/real-time-sources-inpe-deter-brazil-mqtt:latest
+```
+
+QoS is 1, retained messages are disabled, and queued PUBLISH packets expire after 7 days. Consumers should deduplicate by `alert_id`.
+
 ## Environment Variables
 
 ### `CONNECTION_STRING`
@@ -79,6 +91,18 @@ Password for SASL PLAIN authentication.
 ### `LOG_LEVEL`
 
 The logging level. Default: `INFO`.
+
+### `MQTT_BROKER_URL`
+
+MQTT broker URL for the MQTT image variant. Supports `mqtt://` and `mqtts://`.
+
+### `MQTT_USERNAME` / `MQTT_PASSWORD` / `MQTT_CLIENT_ID`
+
+Optional MQTT authentication and client identity settings for the MQTT image variant.
+
+### `INPE_BIOMES`
+
+Optional comma-separated biome filter for the MQTT image variant. Defaults to `amazon,cerrado`.
 
 ### `INPE_DETER_LAST_POLLED_FILE`
 

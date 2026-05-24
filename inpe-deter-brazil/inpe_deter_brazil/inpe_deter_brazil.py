@@ -14,6 +14,8 @@ import logging
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Any, Optional
 import argparse
+import re
+import unicodedata
 from urllib.parse import urlencode
 from confluent_kafka import Producer
 
@@ -44,6 +46,23 @@ WFS_ENDPOINTS = {
 DEFAULT_POLL_INTERVAL_MINUTES = 10
 DEFAULT_PAGE_SIZE = 1000
 SOURCE_URI = "http://terrabrasilis.dpi.inpe.br"
+VALID_STATE_SLUGS = {
+    "ac", "al", "ap", "am", "ba", "ce", "df", "es", "go", "ma", "mt", "ms", "mg",
+    "pa", "pb", "pr", "pe", "pi", "rj", "rn", "rs", "ro", "rr", "sc", "sp", "se", "to",
+}
+VALID_CLASS_SLUGS = {
+    "desmatamento-cr", "desmatamento-veg", "degradacao", "mineracao", "cs-desordenado",
+    "cs-geometrico", "cicatriz-de-queimada", "corte-seletivo",
+}
+
+
+def topic_slug(value: Any, default: str = "unknown") -> str:
+    text = str(value or "").strip()
+    if not text:
+        return default
+    normalized = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", normalized).strip("-").lower()
+    return slug or default
 
 
 def compute_centroid(geometry: Dict[str, Any]) -> tuple:
@@ -227,6 +246,8 @@ class INPEDeterPoller:
             area_km2=float(area_km2) if area_km2 is not None else 0.0,
             municipality=municipality,
             state_code=state_code,
+            state_slug=(topic_slug(state_code) if topic_slug(state_code) in VALID_STATE_SLUGS else "unknown"),
+            class_slug=(topic_slug(classname) if topic_slug(classname) in VALID_CLASS_SLUGS else "unknown"),
             path_row=path_row,
             publish_month=publish_month,
             centroid_latitude=centroid_lat,

@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/inpe-deter-brazil"
+LABEL org.opencontainers.image.title="INPE DETER Brazil → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls INPE TerraBrasilis DETER deforestation alerts and publishes MQTT 5.0 binary-mode CloudEvents into deforestation/br/inpe/inpe-deter-brazil/{biome}/{state_slug}/{class_slug}/{alert_id}/alert topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/inpe-deter-brazil/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./inpe_deter_brazil_mqtt_producer/inpe_deter_brazil_mqtt_producer_data \
+ && pip install --no-cache-dir ./inpe_deter_brazil_mqtt_producer/inpe_deter_brazil_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./inpe_deter_brazil_producer/inpe_deter_brazil_producer_data \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./inpe_deter_brazil_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "inpe_deter_brazil_mqtt", "feed"]

@@ -29,7 +29,9 @@ class DeforestationAlert:
         sensor (str): Sensor name (AWFI, WFI, MSI).
         area_km2 (float): Area of the deforestation polygon in square kilometers.
         municipality (typing.Optional[str]): Municipality name.
-        state_code (typing.Optional[str]): Brazilian state code (UF), e.g. PA, MT.
+        state_code (typing.Optional[str]): Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing.
+        state_slug (str): Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits or publishes an unsupported UF.
+        class_slug (str): Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis; unknown when the class is omitted or outside the supported DETER vocabulary.
         path_row (typing.Optional[str]): Satellite path/row identifier.
         publish_month (typing.Optional[str]): Publication month in YYYY-MM-DD format.
         centroid_latitude (float): Latitude of the polygon centroid in decimal degrees.
@@ -44,13 +46,15 @@ class DeforestationAlert:
     area_km2: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_km2"))
     municipality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="municipality"))
     state_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state_code"))
+    state_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state_slug"))
+    class_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="class_slug"))
     path_row: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="path_row"))
     publish_month: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="publish_month"))
     centroid_latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="centroid_latitude"))
     centroid_longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="centroid_longitude"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DeforestationAlert\", \"namespace\": \"BR.INPE.DETER\", \"doc\": \"INPE DETER deforestation alert for Amazon and Cerrado biomes.\", \"fields\": [{\"name\": \"alert_id\", \"type\": \"string\", \"doc\": \"Stable reference ID from INPE (gid).\"}, {\"name\": \"biome\", \"type\": \"string\", \"doc\": \"Biome of the alert: amazon or cerrado.\"}, {\"name\": \"classname\", \"type\": \"string\", \"doc\": \"Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc.\"}, {\"name\": \"view_date\", \"type\": \"string\", \"doc\": \"Observation date in YYYY-MM-DD format.\"}, {\"name\": \"satellite\", \"type\": \"string\", \"doc\": \"Satellite name (CBERS-4, Amazonia-1, etc.).\"}, {\"name\": \"sensor\", \"type\": \"string\", \"doc\": \"Sensor name (AWFI, WFI, MSI).\"}, {\"name\": \"area_km2\", \"type\": \"double\", \"doc\": \"Area of the deforestation polygon in square kilometers.\"}, {\"name\": \"municipality\", \"type\": [\"string\", \"null\"], \"doc\": \"Municipality name.\"}, {\"name\": \"state_code\", \"type\": [\"string\", \"null\"], \"doc\": \"Brazilian state code (UF), e.g. PA, MT.\"}, {\"name\": \"path_row\", \"type\": [\"string\", \"null\"], \"doc\": \"Satellite path/row identifier.\"}, {\"name\": \"publish_month\", \"type\": [\"string\", \"null\"], \"doc\": \"Publication month in YYYY-MM-DD format.\"}, {\"name\": \"centroid_latitude\", \"type\": \"double\", \"doc\": \"Latitude of the polygon centroid in decimal degrees.\"}, {\"name\": \"centroid_longitude\", \"type\": \"double\", \"doc\": \"Longitude of the polygon centroid in decimal degrees.\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"DeforestationAlert\", \"namespace\": \"BR.INPE.DETER\", \"doc\": \"INPE DETER deforestation alert for Amazon and Cerrado biomes.\", \"fields\": [{\"name\": \"alert_id\", \"type\": \"string\", \"doc\": \"Stable reference ID from INPE (gid).\"}, {\"name\": \"biome\", \"type\": \"string\", \"doc\": \"Biome of the alert: amazon or cerrado.\"}, {\"name\": \"classname\", \"type\": \"string\", \"doc\": \"Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc.\"}, {\"name\": \"view_date\", \"type\": \"string\", \"doc\": \"Observation date in YYYY-MM-DD format.\"}, {\"name\": \"satellite\", \"type\": \"string\", \"doc\": \"Satellite name (CBERS-4, Amazonia-1, etc.).\"}, {\"name\": \"sensor\", \"type\": \"string\", \"doc\": \"Sensor name (AWFI, WFI, MSI).\"}, {\"name\": \"area_km2\", \"type\": \"double\", \"doc\": \"Area of the deforestation polygon in square kilometers.\"}, {\"name\": \"municipality\", \"type\": [\"string\", \"null\"], \"doc\": \"Municipality name.\"}, {\"name\": \"state_code\", \"type\": [\"string\", \"null\"], \"doc\": \"Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing.\"}, {\"name\": \"state_slug\", \"type\": \"string\", \"doc\": \"Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits or publishes an unsupported UF.\", \"default\": \"unknown\"}, {\"name\": \"class_slug\", \"type\": \"string\", \"doc\": \"Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis; unknown when the class is omitted or outside the supported DETER vocabulary.\", \"default\": \"unknown\"}, {\"name\": \"path_row\", \"type\": [\"string\", \"null\"], \"doc\": \"Satellite path/row identifier.\"}, {\"name\": \"publish_month\", \"type\": [\"string\", \"null\"], \"doc\": \"Publication month in YYYY-MM-DD format.\"}, {\"name\": \"centroid_latitude\", \"type\": \"double\", \"doc\": \"Latitude of the polygon centroid in decimal degrees.\"}, {\"name\": \"centroid_longitude\", \"type\": \"double\", \"doc\": \"Longitude of the polygon centroid in decimal degrees.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -64,6 +68,8 @@ class DeforestationAlert:
         self.area_km2=float(self.area_km2)
         self.municipality=str(self.municipality) if self.municipality else None
         self.state_code=str(self.state_code) if self.state_code else None
+        self.state_slug=str(self.state_slug)
+        self.class_slug=str(self.class_slug)
         self.path_row=str(self.path_row) if self.path_row else None
         self.publish_month=str(self.publish_month) if self.publish_month else None
         self.centroid_latitude=float(self.centroid_latitude)
