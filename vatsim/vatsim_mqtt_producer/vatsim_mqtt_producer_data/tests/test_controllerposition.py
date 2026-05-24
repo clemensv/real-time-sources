@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from vatsim_producer_data.net.vatsim.controllerposition import ControllerPosition
+from vatsim_mqtt_producer_data.net.vatsim.controllerposition import ControllerPosition
 
 
 class Test_ControllerPosition(unittest.TestCase):
@@ -28,13 +28,13 @@ class Test_ControllerPosition(unittest.TestCase):
         Create instance of ControllerPosition for testing
         """
         instance = ControllerPosition(
-            cid=int(29),
-            callsign='khedgequmnaqlekcmbhm',
-            frequency='brstdwwzjxswknothwvl',
-            facility=int(98),
-            rating=int(9),
-            text_atis='npxqdmkgfrdbxnxgqnur',
-            last_updated='vymqfrqpyjxpgyhmvotq'
+            cid=int(61),
+            callsign='jrbfuoebktnghewlmldl',
+            frequency='fxgjnafsuwbgkwhnlzxi',
+            facility=int(8),
+            rating=int(81),
+            text_atis='kphdhixpmjunyglludvm',
+            last_updated='zfxcwyhfdhzzimcsyvvk'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = int(29)
+        test_value = int(61)
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -51,7 +51,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'khedgequmnaqlekcmbhm'
+        test_value = 'jrbfuoebktnghewlmldl'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -59,7 +59,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test frequency property
         """
-        test_value = 'brstdwwzjxswknothwvl'
+        test_value = 'fxgjnafsuwbgkwhnlzxi'
         self.instance.frequency = test_value
         self.assertEqual(self.instance.frequency, test_value)
     
@@ -67,7 +67,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test facility property
         """
-        test_value = int(98)
+        test_value = int(8)
         self.instance.facility = test_value
         self.assertEqual(self.instance.facility, test_value)
     
@@ -75,7 +75,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test rating property
         """
-        test_value = int(9)
+        test_value = int(81)
         self.instance.rating = test_value
         self.assertEqual(self.instance.rating, test_value)
     
@@ -83,7 +83,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test text_atis property
         """
-        test_value = 'npxqdmkgfrdbxnxgqnur'
+        test_value = 'kphdhixpmjunyglludvm'
         self.instance.text_atis = test_value
         self.assertEqual(self.instance.text_atis, test_value)
     
@@ -91,16 +91,26 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test last_updated property
         """
-        test_value = 'vymqfrqpyjxpgyhmvotq'
+        test_value = 'zfxcwyhfdhzzimcsyvvk'
         self.instance.last_updated = test_value
         self.assertEqual(self.instance.last_updated, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = ControllerPosition.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = ControllerPosition.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

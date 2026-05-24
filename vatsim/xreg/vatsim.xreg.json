@@ -62,6 +62,25 @@
       "messagegroups": [
         "#/messagegroups/net.vatsim.status"
       ]
+    },
+    "net.vatsim.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/net.vatsim.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -133,6 +152,41 @@
           "dataschemauri": "#/schemagroups/net.vatsim.jstruct/schemas/net.vatsim.NetworkStatus"
         }
       }
+    },
+    "net.vatsim.mqtt": {
+      "description": "MQTT/5.0 transport variant for VATSIM live network data. Non-retained QoS-1 streams split pilots, controllers, and network facility status into distinct UNS topic branches under aviation-network/intl/vatsim/vatsim/...",
+      "messages": {
+        "net.vatsim.mqtt.PilotPosition": {
+          "name": "PilotPosition",
+          "basemessageurl": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "aviation-network/intl/vatsim/vatsim/pilots/{callsign}/pilot-position",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "net.vatsim.mqtt.ControllerPosition": {
+          "name": "ControllerPosition",
+          "basemessageurl": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "aviation-network/intl/vatsim/vatsim/controllers/{callsign}/controller-position",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "net.vatsim.mqtt.FacilityStatus": {
+          "name": "FacilityStatus",
+          "basemessageurl": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "aviation-network/intl/vatsim/vatsim/facilities/{facility}/facility-status",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -160,7 +214,7 @@
                         "properties": {
                           "cid": {
                             "type": "int32",
-                            "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
+                            "description": "VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID."
                           },
                           "callsign": {
                             "type": "string",
@@ -170,13 +224,13 @@
                             "type": "double",
                             "description": "Aircraft latitude in decimal degrees (WGS-84). Positive is north.",
                             "unit": "degree",
-                            "symbol": "°"
+                            "symbol": "\u00b0"
                           },
                           "longitude": {
                             "type": "double",
                             "description": "Aircraft longitude in decimal degrees (WGS-84). Positive is east.",
                             "unit": "degree",
-                            "symbol": "°"
+                            "symbol": "\u00b0"
                           },
                           "altitude": {
                             "type": "int32",
@@ -194,7 +248,7 @@
                             "type": "int32",
                             "description": "Magnetic heading of the aircraft in degrees (0-359).",
                             "unit": "degree",
-                            "symbol": "°"
+                            "symbol": "\u00b0"
                           },
                           "transponder": {
                             "type": "string",
@@ -300,7 +354,7 @@
                         "properties": {
                           "cid": {
                             "type": "int32",
-                            "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
+                            "description": "VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID."
                           },
                           "callsign": {
                             "type": "string",
@@ -389,10 +443,15 @@
                           "controller_count": {
                             "type": "int32",
                             "description": "Number of controllers (including observers) currently connected and providing ATC services."
+                          },
+                          "facility": {
+                            "type": "string",
+                            "description": "UNS facility identifier for this aggregate VATSIM network status snapshot. The bridge emits 'network'."
                           }
                         },
                         "required": [
                           "callsign",
+                          "facility",
                           "update_timestamp",
                           "connected_clients",
                           "unique_users",
@@ -424,7 +483,7 @@
                   {
                     "name": "cid",
                     "type": "int",
-                    "doc": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
+                    "doc": "VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID."
                   },
                   {
                     "name": "callsign",
@@ -605,6 +664,11 @@
                     "name": "callsign",
                     "type": "string",
                     "doc": "Constant key value 'status'."
+                  },
+                  {
+                    "name": "facility",
+                    "type": "string",
+                    "doc": "UNS facility identifier for this aggregate VATSIM network status snapshot. The bridge emits 'network'."
                   },
                   {
                     "name": "update_timestamp",

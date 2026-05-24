@@ -1,55 +1,42 @@
 """ NetworkStatus dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class NetworkStatus:
     """
-    Aggregate VATSIM network status snapshot emitted once per poll cycle.
+    Aggregate VATSIM network status snapshot emitted once per poll cycle, summarising connected client counts.
+    
     Attributes:
-        callsign (str): Constant key value 'status'.
-        facility (str): UNS facility identifier for this aggregate VATSIM network status snapshot. The bridge emits 'network'.
-        update_timestamp (str): UTC timestamp of the VATSIM data snapshot.
-        connected_clients (int): Total connected clients.
-        unique_users (int): Unique connected user IDs.
-        pilot_count (int): Number of pilots currently flying.
-        controller_count (int): Number of controllers connected."""
+        callsign (str)
+        update_timestamp (str)
+        connected_clients (int)
+        unique_users (int)
+        pilot_count (int)
+        controller_count (int)
+        facility (str)
+    """
+    
     
     callsign: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
-    facility: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="facility"))
     update_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_timestamp"))
     connected_clients: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="connected_clients"))
     unique_users: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unique_users"))
     pilot_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pilot_count"))
     controller_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="controller_count"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"NetworkStatus\", \"namespace\": \"net.vatsim\", \"doc\": \"Aggregate VATSIM network status snapshot emitted once per poll cycle.\", \"fields\": [{\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"Constant key value 'status'.\"}, {\"name\": \"facility\", \"type\": \"string\", \"doc\": \"UNS facility identifier for this aggregate VATSIM network status snapshot. The bridge emits 'network'.\"}, {\"name\": \"update_timestamp\", \"type\": \"string\", \"doc\": \"UTC timestamp of the VATSIM data snapshot.\"}, {\"name\": \"connected_clients\", \"type\": \"int\", \"doc\": \"Total connected clients.\"}, {\"name\": \"unique_users\", \"type\": \"int\", \"doc\": \"Unique connected user IDs.\"}, {\"name\": \"pilot_count\", \"type\": \"int\", \"doc\": \"Number of pilots currently flying.\"}, {\"name\": \"controller_count\", \"type\": \"int\", \"doc\": \"Number of controllers connected.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.callsign=str(self.callsign)
-        self.facility=str(self.facility)
-        self.update_timestamp=str(self.update_timestamp)
-        self.connected_clients=int(self.connected_clients)
-        self.unique_users=int(self.unique_users)
-        self.pilot_count=int(self.pilot_count)
-        self.controller_count=int(self.controller_count)
+    facility: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="facility"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'NetworkStatus':
@@ -60,7 +47,7 @@ class NetworkStatus:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -79,7 +66,7 @@ class NetworkStatus:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -93,8 +80,6 @@ class NetworkStatus:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -107,12 +92,6 @@ class NetworkStatus:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -141,10 +120,6 @@ class NetworkStatus:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -170,18 +145,6 @@ class NetworkStatus:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return NetworkStatus.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -189,5 +152,22 @@ class NetworkStatus:
                 return NetworkStatus.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'NetworkStatus':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            callsign='qvyugthcbgrxgzkiwmzd',
+            update_timestamp='idferqijdwsclpfgklon',
+            connected_clients=int(59),
+            unique_users=int(26),
+            pilot_count=int(63),
+            controller_count=int(76),
+            facility='rsgdnlpuofszdyervsfz'
+        )

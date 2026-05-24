@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from vatsim_producer_data.net.vatsim.pilotposition import PilotPosition
+from vatsim_mqtt_producer_data.net.vatsim.pilotposition import PilotPosition
 
 
 class Test_PilotPosition(unittest.TestCase):
@@ -28,23 +28,23 @@ class Test_PilotPosition(unittest.TestCase):
         Create instance of PilotPosition for testing
         """
         instance = PilotPosition(
-            cid=int(33),
-            callsign='bapgpplfthgxaxgyzzwy',
-            latitude=float(13.019229370536767),
-            longitude=float(33.293758419396255),
-            altitude=int(88),
-            groundspeed=int(76),
-            heading=int(0),
-            transponder='tswghhyhsjtficzmserh',
-            qnh_mb=int(79),
-            flight_rules='askfryfwzxxekgwsyvkb',
-            aircraft_short='eoljbfnbpzjpyjcqzzeh',
-            departure='qwjumghrpcmhkmbmedts',
-            arrival='dzeitsgcjvddpxhslgbm',
-            route='ofccxebycyvozxljowzo',
-            cruise_altitude='ztfgnmzxkhqefvcpekyj',
-            pilot_rating=int(10),
-            last_updated='yhdgcvlkjclysqztvlqo'
+            cid=int(98),
+            callsign='jfcmszqymmcblnrvbvkq',
+            latitude=float(25.922311803087194),
+            longitude=float(3.6764867928366862),
+            altitude=int(37),
+            groundspeed=int(14),
+            heading=int(54),
+            transponder='flyizojvnjswxrnvvxhf',
+            qnh_mb=int(24),
+            flight_rules='jocjjgehrixndvnqffzn',
+            aircraft_short='kquggiknmeraszcmnzau',
+            departure='yzfxoekgjqzxiicxfhjh',
+            arrival='sassbsavvauvuyoaahpx',
+            route='eaiugsiisgwkaanojmtd',
+            cruise_altitude='pgyyeqhtqagewyhaswkh',
+            pilot_rating=int(64),
+            last_updated='fzzqltbuofxayhlhzqao'
         )
         return instance
 
@@ -53,7 +53,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = int(33)
+        test_value = int(98)
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -61,7 +61,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'bapgpplfthgxaxgyzzwy'
+        test_value = 'jfcmszqymmcblnrvbvkq'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -69,7 +69,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(13.019229370536767)
+        test_value = float(25.922311803087194)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -77,7 +77,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(33.293758419396255)
+        test_value = float(3.6764867928366862)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -85,7 +85,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = int(88)
+        test_value = int(37)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test groundspeed property
         """
-        test_value = int(76)
+        test_value = int(14)
         self.instance.groundspeed = test_value
         self.assertEqual(self.instance.groundspeed, test_value)
     
@@ -101,7 +101,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test heading property
         """
-        test_value = int(0)
+        test_value = int(54)
         self.instance.heading = test_value
         self.assertEqual(self.instance.heading, test_value)
     
@@ -109,7 +109,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test transponder property
         """
-        test_value = 'tswghhyhsjtficzmserh'
+        test_value = 'flyizojvnjswxrnvvxhf'
         self.instance.transponder = test_value
         self.assertEqual(self.instance.transponder, test_value)
     
@@ -117,7 +117,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test qnh_mb property
         """
-        test_value = int(79)
+        test_value = int(24)
         self.instance.qnh_mb = test_value
         self.assertEqual(self.instance.qnh_mb, test_value)
     
@@ -125,7 +125,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test flight_rules property
         """
-        test_value = 'askfryfwzxxekgwsyvkb'
+        test_value = 'jocjjgehrixndvnqffzn'
         self.instance.flight_rules = test_value
         self.assertEqual(self.instance.flight_rules, test_value)
     
@@ -133,7 +133,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test aircraft_short property
         """
-        test_value = 'eoljbfnbpzjpyjcqzzeh'
+        test_value = 'kquggiknmeraszcmnzau'
         self.instance.aircraft_short = test_value
         self.assertEqual(self.instance.aircraft_short, test_value)
     
@@ -141,7 +141,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test departure property
         """
-        test_value = 'qwjumghrpcmhkmbmedts'
+        test_value = 'yzfxoekgjqzxiicxfhjh'
         self.instance.departure = test_value
         self.assertEqual(self.instance.departure, test_value)
     
@@ -149,7 +149,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test arrival property
         """
-        test_value = 'dzeitsgcjvddpxhslgbm'
+        test_value = 'sassbsavvauvuyoaahpx'
         self.instance.arrival = test_value
         self.assertEqual(self.instance.arrival, test_value)
     
@@ -157,7 +157,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test route property
         """
-        test_value = 'ofccxebycyvozxljowzo'
+        test_value = 'eaiugsiisgwkaanojmtd'
         self.instance.route = test_value
         self.assertEqual(self.instance.route, test_value)
     
@@ -165,7 +165,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test cruise_altitude property
         """
-        test_value = 'ztfgnmzxkhqefvcpekyj'
+        test_value = 'pgyyeqhtqagewyhaswkh'
         self.instance.cruise_altitude = test_value
         self.assertEqual(self.instance.cruise_altitude, test_value)
     
@@ -173,7 +173,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test pilot_rating property
         """
-        test_value = int(10)
+        test_value = int(64)
         self.instance.pilot_rating = test_value
         self.assertEqual(self.instance.pilot_rating, test_value)
     
@@ -181,16 +181,26 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test last_updated property
         """
-        test_value = 'yhdgcvlkjclysqztvlqo'
+        test_value = 'fzzqltbuofxayhlhzqao'
         self.instance.last_updated = test_value
         self.assertEqual(self.instance.last_updated, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = PilotPosition.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = PilotPosition.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+
