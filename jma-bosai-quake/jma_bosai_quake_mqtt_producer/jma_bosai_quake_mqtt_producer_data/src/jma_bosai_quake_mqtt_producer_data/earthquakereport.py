@@ -12,11 +12,11 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_quake_producer_data.maxintensityenum import MaxIntensityenum
-from jma_bosai_quake_producer_data.bulletintypeenum import BulletinTypeenum
-from jma_bosai_quake_producer_data.infotypeenum import InfoTypeenum
-from jma_bosai_quake_producer_data.affectedcity import AffectedCity
-from jma_bosai_quake_producer_data.affectedprefecture import AffectedPrefecture
+from jma_bosai_quake_mqtt_producer_data.affectedprefecture import AffectedPrefecture
+from jma_bosai_quake_mqtt_producer_data.bulletintypeenum import BulletinTypeenum
+from jma_bosai_quake_mqtt_producer_data.maxintensityenum import MaxIntensityenum
+from jma_bosai_quake_mqtt_producer_data.affectedcity import AffectedCity
+from jma_bosai_quake_mqtt_producer_data.infotypeenum import InfoTypeenum
 import datetime
 
 
@@ -210,11 +210,11 @@ class EarthquakeReport:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='sbaihgtgipnunprdxere',
-            magnitude_bucket='mqptvoribbgwyqjvymzk',
-            event_id='ughtolrgpdjkgsxajazx',
-            serial=int(45),
-            report_id='duuaefvhiphwmgveyqtw',
+            prefecture='wsqwnzakwuybbjlqnfnx',
+            magnitude_bucket='hxhzmsegqqpivhukjjaf',
+            event_id='yoeokenuovnekhyungtk',
+            serial=int(47),
+            report_id='uudmfropemubxhzqpqcj',
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
@@ -222,19 +222,19 @@ class EarthquakeReport:
             control_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             origin_datetime=datetime.datetime.now(datetime.timezone.utc),
             origin_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='xzzcdmosowjmgvgehjkc',
-            title_en='ugrnznwqwvbfvbrtwwcc',
-            epicenter_area_code='kodgflybwmfredtfsnwj',
-            epicenter_area_jp='vyjoqraftrujizpcnndg',
-            epicenter_area_en='vlzmxdkyaaxqenzdueds',
-            latitude=float(34.20125906358727),
-            longitude=float(91.17378700759255),
-            depth_km=float(79.23607955012017),
-            magnitude=float(42.61778314767797),
+            title_jp='eqsnewqrbrsclffmbcfy',
+            title_en='gqmldevibwjvevtwxvpm',
+            epicenter_area_code='rtnxfxffalliopzkzwyq',
+            epicenter_area_jp='lfinuslqblvfwrkkirfp',
+            epicenter_area_en='wbdbdislqbiwmvflolkm',
+            latitude=float(10.005353431746233),
+            longitude=float(71.27212926239208),
+            depth_km=float(35.830150350343125),
+            magnitude=float(59.77904041353928),
             max_intensity=MaxIntensityenum.INTENSITY_1,
             bulletin_type=BulletinTypeenum.VXSE51,
-            detail_url='tbynxptznvbqhhubsmad',
-            affected_prefectures=[None],
-            affected_cities=[None, None, None, None, None],
+            detail_url='mxxjjbarmykmisazxycu',
+            affected_prefectures=[None, None, None],
+            affected_cities=[None, None],
             tsunami_possible=False
         )

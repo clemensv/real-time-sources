@@ -1,6 +1,6 @@
 # JMA Bosai Earthquake & Seismic Intensity Information
 
-This source polls the Japan Meteorological Agency (JMA / 気象庁) Bosai earthquake feed and emits new earthquake and seismic intensity reports as CloudEvents to Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+This source polls the Japan Meteorological Agency (JMA / 気象庁) Bosai earthquake feed and emits new earthquake and seismic intensity reports as CloudEvents to Kafka, Azure Event Hubs, Microsoft Fabric Event Streams, or MQTT/UNS.
 
 ## Upstream source
 
@@ -40,7 +40,19 @@ pip install -e .
 jma-bosai-quake feed --kafka-bootstrap-servers "localhost:9092" --kafka-topic "jma-bosai-quake" --once
 ```
 
-Configuration can also be supplied via environment variables: `CONNECTION_STRING`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`, `KAFKA_ENABLE_TLS`, `POLLING_INTERVAL`, `STATE_FILE`, and `ONCE_MODE`.
+MQTT/UNS:
+
+```powershell
+python -m jma_bosai_quake_mqtt feed --broker-url mqtt://localhost:1883 --once
+```
+
+MQTT topic tree:
+
+```text
+seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report
+```
+
+Configuration can also be supplied via environment variables: `CONNECTION_STRING`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`, `KAFKA_ENABLE_TLS`, `POLLING_INTERVAL`, `STATE_FILE`, and `ONCE_MODE`. MQTT additionally uses `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, and `MQTT_CONTENT_MODE`.
 
 ## State
 
