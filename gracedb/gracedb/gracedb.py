@@ -32,6 +32,10 @@ DEFAULT_POLL_COUNT = 25
 DEFAULT_CATEGORIES = "Production,MDC"
 
 
+def is_topic_segment(value: str) -> bool:
+    return bool(value) and all(char not in value for char in ("/", "+", "#", "\x00"))
+
+
 class GraceDBPoller:
     """
     Polls the GraceDB superevent API and sends new events to a Kafka topic.
@@ -74,11 +78,14 @@ class GraceDBPoller:
         if not superevent_id:
             return None
 
-        category = raw.get("category", "")
-        if category not in self.categories:
+        category = str(raw.get("category", ""))
+        if category not in self.categories or not is_topic_segment(category):
             return None
 
         preferred = raw.get("preferred_event_data") or {}
+        group = str(preferred.get("group") or "unknown")
+        if not is_topic_segment(group):
+            group = "unknown"
 
         labels = raw.get("labels", [])
         labels_json = json.dumps(labels) if isinstance(labels, list) else "[]"
@@ -96,7 +103,7 @@ class GraceDBPoller:
             labels_json=labels_json,
             preferred_event_id=preferred.get("graceid"),
             pipeline=preferred.get("pipeline"),
-            group=preferred.get("group"),
+            group=group,
             instruments=preferred.get("instruments"),
             gw_id=raw.get("gw_id"),
             submitter=raw.get("submitter", ""),
