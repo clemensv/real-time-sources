@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from nina_bbk_producer_kafka_producer.producer import NINAWarningsEventProducer
+from nina_bbk_producer_kafka_producer.producer import NINAWarningsMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NINA.CivilWarning' event to Kafka topic.
     await ninawarnings_event_producer.send_nina_civil_warning(_warning_id = 'TODO: replace me', data = _civil_warning)
     print(f"Sent 'NINA.CivilWarning' event: {_civil_warning.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ninawarnings_mqtt_event_producer = NINAWarningsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ninawarnings_mqtt_event_producer = NINAWarningsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- NINA.Warnings.mqtt.CivilWarning ----
+    # TODO: Supply event data for the NINA.Warnings.mqtt.CivilWarning event
+    _civil_warning = CivilWarning()
+
+    # sends the 'NINA.Warnings.mqtt.CivilWarning' event to Kafka topic.
+    await ninawarnings_mqtt_event_producer.send_nina_warnings_mqtt_civil_warning(_warning_id = 'TODO: replace me', data = _civil_warning)
+    print(f"Sent 'NINA.Warnings.mqtt.CivilWarning' event: {_civil_warning.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

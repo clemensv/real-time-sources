@@ -30,6 +30,31 @@ DEFAULT_POLL_INTERVAL = 300
 DEFAULT_STATE_FILE = os.path.expanduser("~/.nina_bbk_state.json")
 DEFAULT_TOPIC = "nina-bbk"
 
+AGS_STATE_CODES = {
+    "01": "schleswig-holstein",
+    "02": "hamburg",
+    "03": "niedersachsen",
+    "04": "bremen",
+    "05": "nordrhein-westfalen",
+    "06": "hessen",
+    "07": "rheinland-pfalz",
+    "08": "baden-wuerttemberg",
+    "09": "bayern",
+    "10": "saarland",
+    "11": "berlin",
+    "12": "brandenburg",
+    "13": "mecklenburg-vorpommern",
+    "14": "sachsen",
+    "15": "sachsen-anhalt",
+    "16": "thueringen",
+}
+SENDER_STATE_CODES = {
+    "SH": "schleswig-holstein", "HH": "hamburg", "NI": "niedersachsen", "HB": "bremen",
+    "NW": "nordrhein-westfalen", "HE": "hessen", "RP": "rheinland-pfalz", "BW": "baden-wuerttemberg",
+    "BY": "bayern", "SL": "saarland", "BE": "berlin", "BB": "brandenburg", "MV": "mecklenburg-vorpommern",
+    "SN": "sachsen", "ST": "sachsen-anhalt", "TH": "thueringen",
+}
+
 
 def _safe_str(value: Any) -> Optional[str]:
     """Convert a value to string if not None."""
@@ -69,6 +94,19 @@ def _find_event_code(info: dict) -> Optional[str]:
         if ec.get("valueName") == "profile:DE-BBK-EVENTCODE":
             return ec.get("value")
     return None
+
+
+def _state_from_areas(info: dict, sender: Optional[str] = None) -> str:
+    codes = _find_param(info, "warnVerwaltungsbereiche") or ""
+    for code in codes.replace(";", ",").split(","):
+        digits = "".join(ch for ch in code.strip() if ch.isdigit())
+        if len(digits) >= 2 and digits[:2] in AGS_STATE_CODES:
+            return AGS_STATE_CODES[digits[:2]]
+    if sender:
+        parts = sender.split("-")
+        if len(parts) > 1:
+            return SENDER_STATE_CODES.get(parts[1].upper(), "unknown")
+    return "unknown"
 
 
 def _collect_areas(info: dict) -> str:
@@ -115,6 +153,7 @@ def normalize_warning(detail: dict, provider: str, map_version: Optional[int] = 
 
     sender_name = _find_param(info, "sender_langname")
     verwaltungsbereiche = _find_param(info, "warnVerwaltungsbereiche")
+    state = _state_from_areas(info, sender)
     area_desc = _collect_areas(info)
 
     if not event or not severity or not urgency or not certainty:
@@ -123,6 +162,7 @@ def normalize_warning(detail: dict, provider: str, map_version: Optional[int] = 
     return CivilWarning(
         warning_id=warning_id,
         provider=provider,
+        state=state,
         version=map_version,
         sender=sender,
         sender_name=sender_name,
