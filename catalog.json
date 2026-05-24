@@ -494,7 +494,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Brazil — Amazon & Cerrado deforestation alerts",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "nifc-usa-wildfires",
@@ -712,7 +713,8 @@
     "key": false,
     "desc": "US borders — ~81 ports of entry",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true
   },
   {
     "id": "wsdot",
@@ -738,7 +740,8 @@
     "key": false,
     "desc": "Belgium — ~600 NMBS/SNCB stations, departures, delays",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true
   },
   {
     "id": "xceed",
@@ -815,7 +818,8 @@
     "cat": "Social",
     "key": false,
     "desc": "Any — configurable RSS/Atom feed URLs or OPML files",
-    "kql": true
+    "kql": true,
+    "mqtt": true
   },
   {
     "id": "wikimedia-eventstreams",
