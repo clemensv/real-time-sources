@@ -1,0 +1,1 @@
+from test_deforestationalert import Test_DeforestationAlert

@@ -1,0 +1,2 @@
+pip install .\inpe_deter_brazil_mqtt_producer_data
+pip install .\inpe_deter_brazil_mqtt_producer_mqtt_client

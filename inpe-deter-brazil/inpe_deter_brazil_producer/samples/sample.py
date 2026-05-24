@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from inpe_deter_brazil_producer_kafka_producer.producer import BRINPEDETEREventProducer
+from inpe_deter_brazil_producer_kafka_producer.producer import BRINPEDETERMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +64,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'BR.INPE.DETER.DeforestationAlert' event to Kafka topic.
     await brinpedeterevent_producer.send_br_inpe_deter_deforestation_alert(_source_uri = 'TODO: replace me', _biome = 'TODO: replace me', _alert_id = 'TODO: replace me', _view_date = 'TODO: replace me', data = _deforestation_alert)
     print(f"Sent 'BR.INPE.DETER.DeforestationAlert' event: {_deforestation_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        brinpedetermqtt_event_producer = BRINPEDETERMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        brinpedetermqtt_event_producer = BRINPEDETERMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- BR.INPE.DETER.mqtt.DeforestationAlert ----
+    # TODO: Supply event data for the BR.INPE.DETER.mqtt.DeforestationAlert event
+    _deforestation_alert = DeforestationAlert()
+
+    # sends the 'BR.INPE.DETER.mqtt.DeforestationAlert' event to Kafka topic.
+    await brinpedetermqtt_event_producer.send_br_inpe_deter_mqtt_deforestation_alert(_source_uri = 'TODO: replace me', _biome = 'TODO: replace me', _alert_id = 'TODO: replace me', _view_date = 'TODO: replace me', data = _deforestation_alert)
+    print(f"Sent 'BR.INPE.DETER.mqtt.DeforestationAlert' event: {_deforestation_alert.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
