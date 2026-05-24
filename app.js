@@ -28,7 +28,7 @@ const SOURCES = [
   { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", notebook: true },
   { id: "syke-hydro", name: "SYKE Hydro", cat: "Hydrology", key: false, desc: "Finland — SYKE", notebook: true },
   { id: "uk-ea-flood-monitoring", name: "UK EA Flood Monitoring", cat: "Hydrology", key: false, desc: "England — ~4,000 stations", notebook: true },
-  { id: "usgs-iv", name: "USGS Instantaneous Values", cat: "Hydrology", key: false, desc: "United States — ~1.5M stations", notebook: true },
+  { id: "usgs-iv", name: "USGS Instantaneous Values", cat: "Hydrology", key: false, desc: "United States — ~1.5M stations", notebook: true, mqtt: true },
   { id: "usgs-nwis-wq", name: "USGS NWIS Water Quality", cat: "Hydrology", key: false, desc: "United States — ~3,000 continuous WQ sites", notebook: true },
   { id: "waterinfo-vmm", name: "Waterinfo VMM", cat: "Hydrology", key: false, desc: "Belgium / Flanders — ~1,785 stations", notebook: true },
 
@@ -54,7 +54,7 @@ const SOURCES = [
   // ── Air Quality and Environmental Health ──
   { id: "canada-aqhi", name: "Canada AQHI", cat: "Air Quality", key: false, desc: "Canada — community AQHI observations and forecasts", notebook: true },
   { id: "defra-aurn", name: "Defra AURN", cat: "Air Quality", key: false, desc: "United Kingdom — 300+ monitoring locations, hourly pollutants", notebook: true },
-  { id: "epa-uv", name: "EPA UV Index", cat: "Air Quality", key: false, desc: "United States — city-scoped hourly and daily UV forecasts", notebook: true },
+  { id: "epa-uv", name: "EPA UV Index", cat: "Air Quality", key: false, desc: "United States — city-scoped hourly and daily UV forecasts", notebook: true, mqtt: true },
   { id: "fmi-finland", name: "FMI Finland", cat: "Air Quality", key: false, desc: "Finland — hourly air quality observations via FMI WFS", notebook: true },
   { id: "gios-poland", name: "GIOŚ Poland", cat: "Air Quality", key: false, desc: "Poland — ~250 stations, hourly pollutants + AQI", notebook: true },
   { id: "hongkong-epd", name: "Hong Kong EPD AQHI", cat: "Air Quality", key: false, desc: "Hong Kong — 18 AQHI stations, hourly health index", notebook: true },
@@ -73,13 +73,13 @@ const SOURCES = [
   { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC" },
   { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police" },
   { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins" },
-  { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", notebook: true },
-  { id: "usgs-earthquakes", name: "USGS Earthquakes", cat: "Disasters", key: false, desc: "Global — seismic events", notebook: true },
+  { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", notebook: true, mqtt: true },
+  { id: "usgs-earthquakes", name: "USGS Earthquakes", cat: "Disasters", key: false, desc: "Global — seismic events", notebook: true, mqtt: true },
 
   // ── Radiation Monitoring ──
   { id: "bfs-odl", name: "BfS ODL", cat: "Radiation", key: false, desc: "Germany — ~1,700 stations, hourly gamma dose rate", notebook: true },
   { id: "eurdep-radiation", name: "EURDEP Radiation", cat: "Radiation", key: false, desc: "Europe — ~5,500 stations, 39 countries, gamma dose", notebook: true },
-  { id: "usgs-geomag", name: "USGS Geomagnetism", cat: "Radiation", key: false, desc: "United States — 14 observatories, 1-min geomagnetic field", notebook: true },
+  { id: "usgs-geomag", name: "USGS Geomagnetism", cat: "Radiation", key: false, desc: "United States — 14 observatories, 1-min geomagnetic field", notebook: true, mqtt: true },
 
   // ── Maritime and Vessel Tracking ──
   { id: "aisstream", name: "AISStream", cat: "Maritime", key: true, desc: "Global — AIS via WebSocket, ~200 km from shore" },
