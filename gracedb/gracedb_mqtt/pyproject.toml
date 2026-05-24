@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "gracedb-mqtt"
+version = "0.1.0"
+description = "GraceDB bridge to MQTT/UNS"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+aiohttp = ">=3.10.5"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+gracedb_producer_data = {path = "../gracedb_producer/gracedb_producer_data"}
+gracedb_mqtt_producer_data = {path = "../gracedb_mqtt_producer/gracedb_mqtt_producer_data"}
+gracedb_mqtt_producer_mqtt_client = {path = "../gracedb_mqtt_producer/gracedb_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+gracedb-mqtt = "gracedb_mqtt:main"

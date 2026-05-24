@@ -249,7 +249,7 @@ class TestParseSuperevent:
         assert superevent.space_coinc_far is None
         assert superevent.preferred_event_id is None
         assert superevent.pipeline is None
-        assert superevent.group is None
+        assert superevent.group == "unknown"
 
     def test_parse_gps_times(self):
         """Test that GPS times are correctly parsed as doubles."""
@@ -450,7 +450,7 @@ class TestSupereventDataClass:
             labels_json='[]',
             preferred_event_id=None,
             pipeline=None,
-            group=None,
+            group="unknown",
             instruments=None,
             gw_id=None,
             submitter="read-cvmfs-emfollow",
@@ -482,7 +482,7 @@ class TestSupereventDataClass:
             "labels_json": "[]",
             "preferred_event_id": None,
             "pipeline": None,
-            "group": None,
+            "group": "unknown",
             "instruments": None,
             "gw_id": None,
             "submitter": "test",

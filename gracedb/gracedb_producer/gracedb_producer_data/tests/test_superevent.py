@@ -28,27 +28,27 @@ class Test_Superevent(unittest.TestCase):
         Create instance of Superevent for testing
         """
         instance = Superevent(
-            superevent_id='chsgfrianhkcfsewuacs',
-            category='ovqdweyytjhplrzhwcft',
-            created='ywkbusihqyxeivrjyhdz',
-            t_start=float(57.86909684085193),
-            t_0=float(18.058402107780335),
-            t_end=float(73.06691382468237),
-            far=float(6.017896048483918),
-            time_coinc_far=float(80.87791558185566),
-            space_coinc_far=float(97.14702915413146),
-            labels_json='esaywotsmvjwkxwxpaqn',
-            preferred_event_id='iazrdwijrperwqqbuhiv',
-            pipeline='cgnvhgyqieadeaiypjlm',
-            group='nymrcnnxftyscmtaxmgm',
-            instruments='clcukoaupplxczjlzrdi',
-            gw_id='mxfopfphyfpleajrijhu',
-            submitter='kadcmygohnrtiivflvmc',
-            em_type='ntihdljtukjwwvriladc',
-            search='gwygqiglzrdthusrplfq',
+            superevent_id='vgswadfmfpgvmqujoujp',
+            category='zzmobrbgiehfwstpshre',
+            created='yzfntnforedezovacbct',
+            t_start=float(32.58771595434175),
+            t_0=float(85.28898271754592),
+            t_end=float(74.10501221500893),
+            far=float(66.04346105495111),
+            time_coinc_far=float(41.047733283164256),
+            space_coinc_far=float(54.06233743776223),
+            labels_json='qmeudppyaiabcgpsfkld',
+            preferred_event_id='qcjqhfzipfolorasxlrt',
+            pipeline='isqnidjjcrduspqqiyrl',
+            group='yefjkngjndmgdhexnpvm',
+            instruments='rjlqmpckogpxkrdziexc',
+            gw_id='aysvmshhglqjlbuekvvu',
+            submitter='ptodddzaytcobsdymniw',
+            em_type='hoefgetakotirsouexmd',
+            search='edtfhkzkbhwhnvjujkyi',
             far_is_upper_limit=True,
-            nevents=int(100),
-            self_uri='doitgxwhckumcekrujdt'
+            nevents=int(15),
+            self_uri='iklmcskwezpypulptrcr'
         )
         return instance
 
@@ -57,7 +57,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test superevent_id property
         """
-        test_value = 'chsgfrianhkcfsewuacs'
+        test_value = 'vgswadfmfpgvmqujoujp'
         self.instance.superevent_id = test_value
         self.assertEqual(self.instance.superevent_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test category property
         """
-        test_value = 'ovqdweyytjhplrzhwcft'
+        test_value = 'zzmobrbgiehfwstpshre'
         self.instance.category = test_value
         self.assertEqual(self.instance.category, test_value)
     
@@ -73,7 +73,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test created property
         """
-        test_value = 'ywkbusihqyxeivrjyhdz'
+        test_value = 'yzfntnforedezovacbct'
         self.instance.created = test_value
         self.assertEqual(self.instance.created, test_value)
     
@@ -81,7 +81,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test t_start property
         """
-        test_value = float(57.86909684085193)
+        test_value = float(32.58771595434175)
         self.instance.t_start = test_value
         self.assertEqual(self.instance.t_start, test_value)
     
@@ -89,7 +89,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test t_0 property
         """
-        test_value = float(18.058402107780335)
+        test_value = float(85.28898271754592)
         self.instance.t_0 = test_value
         self.assertEqual(self.instance.t_0, test_value)
     
@@ -97,7 +97,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test t_end property
         """
-        test_value = float(73.06691382468237)
+        test_value = float(74.10501221500893)
         self.instance.t_end = test_value
         self.assertEqual(self.instance.t_end, test_value)
     
@@ -105,7 +105,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test far property
         """
-        test_value = float(6.017896048483918)
+        test_value = float(66.04346105495111)
         self.instance.far = test_value
         self.assertEqual(self.instance.far, test_value)
     
@@ -113,7 +113,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test time_coinc_far property
         """
-        test_value = float(80.87791558185566)
+        test_value = float(41.047733283164256)
         self.instance.time_coinc_far = test_value
         self.assertEqual(self.instance.time_coinc_far, test_value)
     
@@ -121,7 +121,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test space_coinc_far property
         """
-        test_value = float(97.14702915413146)
+        test_value = float(54.06233743776223)
         self.instance.space_coinc_far = test_value
         self.assertEqual(self.instance.space_coinc_far, test_value)
     
@@ -129,7 +129,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test labels_json property
         """
-        test_value = 'esaywotsmvjwkxwxpaqn'
+        test_value = 'qmeudppyaiabcgpsfkld'
         self.instance.labels_json = test_value
         self.assertEqual(self.instance.labels_json, test_value)
     
@@ -137,7 +137,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test preferred_event_id property
         """
-        test_value = 'iazrdwijrperwqqbuhiv'
+        test_value = 'qcjqhfzipfolorasxlrt'
         self.instance.preferred_event_id = test_value
         self.assertEqual(self.instance.preferred_event_id, test_value)
     
@@ -145,7 +145,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test pipeline property
         """
-        test_value = 'cgnvhgyqieadeaiypjlm'
+        test_value = 'isqnidjjcrduspqqiyrl'
         self.instance.pipeline = test_value
         self.assertEqual(self.instance.pipeline, test_value)
     
@@ -153,7 +153,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test group property
         """
-        test_value = 'nymrcnnxftyscmtaxmgm'
+        test_value = 'yefjkngjndmgdhexnpvm'
         self.instance.group = test_value
         self.assertEqual(self.instance.group, test_value)
     
@@ -161,7 +161,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test instruments property
         """
-        test_value = 'clcukoaupplxczjlzrdi'
+        test_value = 'rjlqmpckogpxkrdziexc'
         self.instance.instruments = test_value
         self.assertEqual(self.instance.instruments, test_value)
     
@@ -169,7 +169,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test gw_id property
         """
-        test_value = 'mxfopfphyfpleajrijhu'
+        test_value = 'aysvmshhglqjlbuekvvu'
         self.instance.gw_id = test_value
         self.assertEqual(self.instance.gw_id, test_value)
     
@@ -177,7 +177,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test submitter property
         """
-        test_value = 'kadcmygohnrtiivflvmc'
+        test_value = 'ptodddzaytcobsdymniw'
         self.instance.submitter = test_value
         self.assertEqual(self.instance.submitter, test_value)
     
@@ -185,7 +185,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test em_type property
         """
-        test_value = 'ntihdljtukjwwvriladc'
+        test_value = 'hoefgetakotirsouexmd'
         self.instance.em_type = test_value
         self.assertEqual(self.instance.em_type, test_value)
     
@@ -193,7 +193,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test search property
         """
-        test_value = 'gwygqiglzrdthusrplfq'
+        test_value = 'edtfhkzkbhwhnvjujkyi'
         self.instance.search = test_value
         self.assertEqual(self.instance.search, test_value)
     
@@ -209,7 +209,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test nevents property
         """
-        test_value = int(100)
+        test_value = int(15)
         self.instance.nevents = test_value
         self.assertEqual(self.instance.nevents, test_value)
     
@@ -217,7 +217,7 @@ class Test_Superevent(unittest.TestCase):
         """
         Test self_uri property
         """
-        test_value = 'doitgxwhckumcekrujdt'
+        test_value = 'iklmcskwezpypulptrcr'
         self.instance.self_uri = test_value
         self.assertEqual(self.instance.self_uri, test_value)
     
@@ -230,3 +230,22 @@ class Test_Superevent(unittest.TestCase):
         new_instance = Superevent.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Superevent.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Superevent.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

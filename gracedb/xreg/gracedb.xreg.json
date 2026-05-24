@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/org.ligo.gracedb"
       ]
+    },
+    "org.ligo.gracedb.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/org.ligo.gracedb.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -48,6 +67,21 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/org.ligo.gracedb.jstruct/schemas/org.ligo.gracedb.Superevent"
+        }
+      }
+    },
+    "org.ligo.gracedb.mqtt": {
+      "description": "MQTT/5.0 transport variant for GraceDB superevents. Non-retained QoS-1 event stream routed by category, physics group, and superevent id under seismic/intl/ligo/gracedb/...",
+      "messages": {
+        "org.ligo.gracedb.mqtt.Superevent": {
+          "name": "Superevent",
+          "basemessageurl": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -105,11 +139,17 @@
                               "description": "False alarm rate in Hz. Lower values indicate a more significant event. For example, 1e-14 Hz corresponds to roughly one false alarm per 3 million years."
                             },
                             "time_coinc_far": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Time-coincidence false alarm rate in Hz from the RAVEN pipeline, representing the probability of a temporal coincidence with an external trigger. Null if no external coincidence was evaluated."
                             },
                             "space_coinc_far": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Space-and-time-coincidence false alarm rate in Hz from the RAVEN pipeline, incorporating both temporal and spatial overlap with an external trigger. Null if no external coincidence was evaluated."
                             },
                             "labels_json": {
@@ -117,23 +157,35 @@
                               "description": "JSON-encoded array of label strings attached to this superevent, e.g. '[\"EM_READY\",\"GCN_PRELIM_SENT\",\"SKYMAP_READY\"]'. Labels track alert lifecycle: EM_READY (electromagnetic follow-up viable), GCN_PRELIM_SENT (GCN preliminary notice sent), SKYMAP_READY (sky localization map available), EMBRIGHT_READY (source classification available), PASTRO_READY (probability of astrophysical origin available), ADVOK/ADVNO (advocate approval/rejection), SIGNIF_LOCKED (significance frozen), DQR_REQUEST (data quality review requested), HIGH_PROFILE (high-profile candidate), RAVEN_ALERT (external trigger coincidence found)."
                             },
                             "preferred_event_id": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "GraceDB event ID of the preferred pipeline event (the best detection) associated with this superevent, e.g. 'M632680'. Null if no preferred event has been selected."
                             },
                             "pipeline": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Name of the detection pipeline that produced the preferred event, e.g. 'gstlal', 'MBTAOnline', 'SPIIR', 'PyCBC'. Null if no preferred event has been set."
                             },
                             "group": {
-                              "type": ["string", "null"],
-                              "description": "Physics group of the preferred event: 'CBC' (compact binary coalescence), 'Burst' (unmodeled transient), or 'Test'. Null if no preferred event has been set."
+                              "type": "string",
+                              "description": "Physics group of the preferred event: 'CBC' (compact binary coalescence), 'Burst' (unmodeled transient), 'Test', or 'unknown' when GraceDB has not supplied preferred-event group data."
                             },
                             "instruments": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Comma-separated list of detector instruments that contributed to the preferred event, e.g. 'H1,L1,V1' for LIGO Hanford, LIGO Livingston, and Virgo. Null if no preferred event has been set."
                             },
                             "gw_id": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Official gravitational wave event name assigned after confirmation, e.g. 'GW200115'. Null if the event has not been confirmed or named."
                             },
                             "submitter": {
@@ -141,19 +193,31 @@
                               "description": "Username or service account that submitted the superevent to GraceDB, e.g. 'read-cvmfs-emfollow'."
                             },
                             "em_type": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Identifier of the associated electromagnetic event from an external trigger (e.g. a Fermi GBM or Swift trigger ID). Null if no external EM association exists."
                             },
                             "search": {
-                              "type": ["string", "null"],
+                              "type": [
+                                "string",
+                                "null"
+                              ],
                               "description": "Search type of the preferred event: 'AllSky' (standard all-sky search), 'MDC' (mock data challenge), 'BBH' (binary black hole targeted), 'EarlyWarning' (pre-merger alert). Null if no preferred event has been set."
                             },
                             "far_is_upper_limit": {
-                              "type": ["boolean", "null"],
+                              "type": [
+                                "boolean",
+                                "null"
+                              ],
                               "description": "Whether the reported FAR value is an upper limit rather than an exact estimate. True indicates the actual false alarm rate may be lower. Null if no preferred event has been set."
                             },
                             "nevents": {
-                              "type": ["int32", "null"],
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
                               "description": "Number of pipeline events aggregated into this superevent. Null if the preferred event data is not available."
                             },
                             "self_uri": {
@@ -164,6 +228,7 @@
                           "required": [
                             "superevent_id",
                             "category",
+                            "group",
                             "created",
                             "t_start",
                             "t_0",
@@ -237,12 +302,18 @@
                   },
                   {
                     "name": "time_coinc_far",
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "doc": "Time-coincidence false alarm rate in Hz from the RAVEN pipeline. Null if no external coincidence was evaluated."
                   },
                   {
                     "name": "space_coinc_far",
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "doc": "Space-and-time-coincidence false alarm rate in Hz from the RAVEN pipeline. Null if no external coincidence was evaluated."
                   },
                   {
@@ -252,27 +323,39 @@
                   },
                   {
                     "name": "preferred_event_id",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "doc": "GraceDB event ID of the preferred pipeline event associated with this superevent. Null if no preferred event has been selected."
                   },
                   {
                     "name": "pipeline",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "doc": "Name of the detection pipeline that produced the preferred event, e.g. 'gstlal', 'MBTAOnline', 'SPIIR', 'PyCBC'. Null if not set."
                   },
                   {
                     "name": "group",
-                    "type": ["string", "null"],
-                    "doc": "Physics group of the preferred event: 'CBC' (compact binary coalescence), 'Burst' (unmodeled transient), or 'Test'. Null if not set."
+                    "type": "string",
+                    "doc": "Physics group of the preferred event: 'CBC', 'Burst', 'Test', or 'unknown' when not supplied."
                   },
                   {
                     "name": "instruments",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "doc": "Comma-separated list of detector instruments that contributed to the preferred event, e.g. 'H1,L1,V1'. Null if not set."
                   },
                   {
                     "name": "gw_id",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "doc": "Official gravitational wave event name assigned after confirmation. Null if the event has not been confirmed or named."
                   },
                   {
@@ -282,22 +365,34 @@
                   },
                   {
                     "name": "em_type",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "doc": "Identifier of the associated electromagnetic event from an external trigger. Null if no external EM association exists."
                   },
                   {
                     "name": "search",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "doc": "Search type of the preferred event: 'AllSky', 'MDC', 'BBH', 'EarlyWarning'. Null if not set."
                   },
                   {
                     "name": "far_is_upper_limit",
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "doc": "Whether the reported FAR value is an upper limit rather than an exact estimate. Null if not set."
                   },
                   {
                     "name": "nevents",
-                    "type": ["int", "null"],
+                    "type": [
+                      "int",
+                      "null"
+                    ],
                     "doc": "Number of pipeline events aggregated into this superevent. Null if not available."
                   },
                   {
