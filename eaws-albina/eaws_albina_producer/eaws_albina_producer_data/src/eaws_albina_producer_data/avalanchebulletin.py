@@ -38,6 +38,8 @@ class AvalancheBulletin:
         danger_patterns_json (typing.Optional[str])
         avalanche_activity_highlights (typing.Optional[str])
         snowpack_structure_comment (typing.Optional[str])
+        country (str)
+        danger_level (str)
     """
     
     
@@ -56,6 +58,8 @@ class AvalancheBulletin:
     danger_patterns_json: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="danger_patterns_json"))
     avalanche_activity_highlights: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="avalanche_activity_highlights"))
     snowpack_structure_comment: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="snowpack_structure_comment"))
+    country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
+    danger_level: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="danger_level"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'AvalancheBulletin':
@@ -182,19 +186,21 @@ class AvalancheBulletin:
             An instance of the dataclass.
         """
         return cls(
-            region_id='qjyiwxiokkptmghvhstc',
-            region_name='wgczzsvtyuhpriycpywk',
-            bulletin_id='rnbspyxqncepfxmajlli',
+            region_id='ctucuojhuutuiycyzcpj',
+            region_name='rrsalmnyfemwxjtohasn',
+            bulletin_id='yunppijfjhjdqrgcxwbe',
             publication_time=datetime.datetime.now(datetime.timezone.utc),
             valid_time_start=datetime.datetime.now(datetime.timezone.utc),
             valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='qxoppjypaxflljwyzrxi',
+            lang='qzruzmwdykunajthgiep',
             max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(55),
-            danger_ratings_json='lanedingueqjwpsuaesg',
-            avalanche_problems_json='kvrhegqhsjjihijbziny',
-            tendency_type='eafedtcvbgxfalfpduuf',
-            danger_patterns_json='bezqerousrgwnskrbumx',
-            avalanche_activity_highlights='vyyqvwzepuclcxkpdgyg',
-            snowpack_structure_comment='izsibvubkmcdnevgnswu'
+            max_danger_rating_value=int(82),
+            danger_ratings_json='nzfdtlygecvfqeuobiop',
+            avalanche_problems_json='rjnkkkryxcjzgcnjsnci',
+            tendency_type='lbtfbobfisnxkfmwgtzl',
+            danger_patterns_json='zekblwjgugwvmzlplohc',
+            avalanche_activity_highlights='siabujgohkdsfbvrzuqb',
+            snowpack_structure_comment='rruemgcvowhjjwhrkmwf',
+            country='npicpqmygegjudllqitd',
+            danger_level='ujlglfvzdyrhqvpttixl'
         )

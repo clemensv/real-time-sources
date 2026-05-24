@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from eaws_albina_producer_data.maxdangerratingenum import MaxDangerRatingenum
+from eaws_albina_mqtt_producer_data.maxdangerratingenum import MaxDangerRatingenum
 
 
 class Test_MaxDangerRatingenum(unittest.TestCase):

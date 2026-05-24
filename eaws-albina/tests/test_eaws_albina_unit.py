@@ -254,11 +254,13 @@ class TestParseBulletins:
         assert len(events) == 1
         e = events[0]
         assert e.region_id == "AT-07-04-02"
+        assert e.country == "at"
         assert e.region_name == "Karwendel Mountains East"
         assert e.bulletin_id == "6b548ab7-da3e-406a-bcab-087393335eca"
         assert e.lang == "en"
         assert e.max_danger_rating is not None
         assert e.max_danger_rating.value == "considerable"
+        assert e.danger_level == "considerable"
         assert e.max_danger_rating_value == 3
         assert e.tendency_type == "steady"
         assert e.avalanche_activity_highlights is not None
@@ -298,7 +300,9 @@ class TestParseBulletins:
         assert "AT-07-03" in region_ids
         for e in events:
             assert e.bulletin_id == "multi-region-bulletin"
+            assert e.country == "at"
             assert e.max_danger_rating.value == "high"
+            assert e.danger_level == "high"
             assert e.max_danger_rating_value == 4
 
     def test_parse_empty_bulletins(self):
@@ -519,6 +523,7 @@ class TestDataclasses:
 
         event = AvalancheBulletin(
             region_id="AT-07-04-02",
+            country="at",
             region_name="Karwendel Mountains East",
             bulletin_id="test-id",
             publication_time=datetime.datetime(2026, 4, 8, 15, 0, 0, tzinfo=datetime.timezone.utc),
@@ -526,6 +531,7 @@ class TestDataclasses:
             valid_time_end=datetime.datetime(2026, 4, 9, 15, 0, 0, tzinfo=datetime.timezone.utc),
             lang="en",
             max_danger_rating=MaxDangerRatingenum.considerable,
+            danger_level="considerable",
             max_danger_rating_value=3,
             danger_ratings_json="[]",
             avalanche_problems_json="[]",
@@ -543,6 +549,7 @@ class TestDataclasses:
 
         event = AvalancheBulletin(
             region_id="IT-32-BZ-01",
+            country="it",
             region_name="Test Region",
             bulletin_id="test-id-2",
             publication_time=datetime.datetime(2026, 4, 8, 15, 0, 0, tzinfo=datetime.timezone.utc),
@@ -550,6 +557,7 @@ class TestDataclasses:
             valid_time_end=datetime.datetime(2026, 4, 9, 15, 0, 0, tzinfo=datetime.timezone.utc),
             lang="de",
             max_danger_rating=None,
+            danger_level="unknown",
             max_danger_rating_value=None,
             danger_ratings_json="[]",
             avalanche_problems_json="[]",
@@ -577,6 +585,7 @@ class TestDataclasses:
 
         event = AvalancheBulletin(
             region_id="AT-07-01",
+            country="at",
             region_name="Test",
             bulletin_id="dict-test",
             publication_time=datetime.datetime(2026, 4, 8, 15, 0, 0, tzinfo=datetime.timezone.utc),
@@ -584,6 +593,7 @@ class TestDataclasses:
             valid_time_end=datetime.datetime(2026, 4, 9, 15, 0, 0, tzinfo=datetime.timezone.utc),
             lang="en",
             max_danger_rating=MaxDangerRatingenum.low,
+            danger_level="low",
             max_danger_rating_value=1,
             danger_ratings_json='[{"mainValue":"low"}]',
             avalanche_problems_json="[]",

@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/org.EAWS.ALBINA.Bulletins"
       ]
+    },
+    "org.EAWS.ALBINA.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/org.EAWS.ALBINA.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -63,6 +82,21 @@
           "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheBulletin"
         }
       }
+    },
+    "org.EAWS.ALBINA.mqtt": {
+      "description": "MQTT/5.0 transport variant for EAWS ALBINA avalanche bulletins. Non-retained QoS-1 bulletin events route by country, region, and danger level under alerts/at/eaws/eaws-albina/...",
+      "messages": {
+        "org.EAWS.ALBINA.mqtt.AvalancheBulletin": {
+          "name": "AvalancheBulletin",
+          "basemessageurl": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/at/eaws/eaws-albina/{country}/{region_id}/{danger_level}/bulletin",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -81,6 +115,7 @@
                 "name": "AvalancheBulletin",
                 "required": [
                   "region_id",
+                  "country",
                   "region_name",
                   "bulletin_id",
                   "publication_time",
@@ -88,7 +123,8 @@
                   "valid_time_end",
                   "lang",
                   "danger_ratings_json",
-                  "avalanche_problems_json"
+                  "avalanche_problems_json",
+                  "danger_level"
                 ],
                 "properties": {
                   "region_id": {
@@ -175,6 +211,14 @@
                       "null"
                     ],
                     "description": "Description of current snowpack structure and layering from snowpackStructure.comment. May contain HTML markup. Null if not provided."
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "Lowercase ISO 3166-1 alpha-2 country code derived from the CAAML region_id prefix, e.g. at or it."
+                  },
+                  "danger_level": {
+                    "type": "string",
+                    "description": "Topic-safe EAWS danger level derived from the highest danger rating, or 'unknown' when no rating is present."
                   }
                 }
               }
