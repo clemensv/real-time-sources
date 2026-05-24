@@ -56,3 +56,17 @@ This document describes the events emitted by the GDACS Disaster Alert bridge.
 | `description` | `string?` | No | Brief summary of the disaster event. |
 | `link` | `string?` | No | URL to the full GDACS event report page. |
 | `pub_date` | `datetime?` | No | Date and time when this RSS item was published or last updated. |
+
+---
+
+## Message Group: GDACS.Alerts.mqtt
+
+MQTT/5.0 transport variant for GDACS disaster alerts. Non-retained QoS-1 alert events route by disaster event type, event-level GDACS alert color, affected country, and event id under alerts/intl/gdacs/gdacs/... GDACS is both provider and source in this single-feed namespace branch; subscribe with wildcards across the color axis to follow episode-level alert transitions.
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `alerts/intl/gdacs/gdacs/{event_type}/{alert_color}/{country}/{event_id}/alert` | `GDACS.DisasterAlert` | `false` | `1` | `` |

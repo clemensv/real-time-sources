@@ -84,3 +84,26 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnina-bbk%2Fazure-template-with-eventhub.json)
+
+## Transports
+
+This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-nina-bbk-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+
+The MQTT contract is source-specific: MQTT/5.0 transport variant for Germany NINA/BBK CAP warnings. Non-retained QoS-1 warning events route by German federal state, native CAP severity, and warning id under alerts/de/nina/nina-bbk/... The state axis is derived from CAP area administrative codes (warnVerwaltungsbereiche) with sender-code fallback.
+
+MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/nina_bbk.xreg.json`:
+
+| Topic pattern | Message type | Delivery |
+|---|---|---|
+| `alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning` | `NINA.CivilWarning` | QoS 1, retain=false |
+
+Four Azure Container Instance deployment shapes are documented for this source:
+
+| Transport | Template |
+|---|---|
+| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
+| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
+| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
+| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+
+See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.

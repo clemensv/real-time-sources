@@ -43,7 +43,7 @@ const SOURCES = [
   { id: "hko-hong-kong", name: "HKO Hong Kong", cat: "Weather", key: false, desc: "Hong Kong — 27 temp stations, 18 rainfall districts", notebook: true },
   { id: "jma-japan", name: "JMA Japan", cat: "Weather", key: false, desc: "Japan — weather bulletins, warnings, forecasts", notebook: true },
   { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", notebook: true },
-  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings" },
+  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", mqtt: true },
   { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true },
   { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", notebook: true },
   { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov" },
@@ -67,12 +67,12 @@ const SOURCES = [
 
   // ── Disaster Alerts and Civil Protection ──
   { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", notebook: true },
-  { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true },
-  { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts" },
+  { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true, mqtt: true },
+  { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts", mqtt: true },
   { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", mqtt: true },
   { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC" },
-  { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police" },
-  { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins" },
+  { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police", mqtt: true },
+  { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins", mqtt: true },
   { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", notebook: true, mqtt: true },
   { id: "usgs-earthquakes", name: "USGS Earthquakes", cat: "Disasters", key: false, desc: "Global — seismic events", notebook: true, mqtt: true },
 
@@ -88,7 +88,7 @@ const SOURCES = [
 
   // ── Aviation ──
   { id: "mode-s", name: "Mode-S", cat: "Aviation", key: false, desc: "Local — ADS-B via dump1090 receivers" },
-  { id: "vatsim", name: "VATSIM", cat: "Aviation", key: false, desc: "Global — virtual aviation network, pilots & controllers", notebook: true },
+  { id: "vatsim", name: "VATSIM", cat: "Aviation", key: false, desc: "Global — virtual aviation network, pilots & controllers", notebook: true, mqtt: true },
 
   // ── Road and Public Transport ──
   { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true },
@@ -107,7 +107,7 @@ const SOURCES = [
   { id: "wsdot", name: "WSDOT", cat: "Transport", key: true, desc: "Washington State — ~1,000 traffic flow sensors (requires free key)", notebook: true },
 
   // ── Railway ──
-  { id: "entur-norway", name: "Entur Norway", cat: "Railway", key: false, desc: "Norway — national real-time transit, SIRI ET/VM/SX" },
+  { id: "entur-norway", name: "Entur Norway", cat: "Railway", key: false, desc: "Norway — national real-time transit, SIRI ET/VM/SX", mqtt: true },
   { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true, mqtt: true },
 
   // ── Nightlife and Live Entertainment ──
@@ -132,7 +132,7 @@ const SOURCES = [
   { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API" },
 
   // ── Scientific Research ──
-  { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true },
+  { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true, mqtt: true },
 ];
 
 /* ── Derived data ──────────────────────────────────────────────────────── */

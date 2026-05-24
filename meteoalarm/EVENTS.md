@@ -43,3 +43,17 @@ distributed through the EUMETNET Meteoalarm system. Follows the CAP
 
 Warnings from 30+ European national meteorological services aggregated by
 EUMETNET: `https://feeds.meteoalarm.org/api/v1/warnings/feeds-{country}`
+
+---
+
+## Message Group: Meteoalarm.Warnings.mqtt
+
+MQTT/5.0 transport variant for Meteoalarm CAP weather warnings. Non-retained QoS-1 warning events route by country feed slug, native CAP severity, normalized Meteoalarm awareness type, and CAP identifier under alerts/intl/meteoalarm/meteoalarm/... The awareness_type axis is derived from the Meteoalarm awareness_type parameter label and normalized for MQTT topic safety.
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning` | `Meteoalarm.WeatherWarning` | `false` | `1` | `` |
