@@ -48,13 +48,43 @@ Three subagents must review the MQTT design **before** generation runs:
 
 | Aspect | Reviewer | What to ask |
 |--------|----------|-------------|
-| Topic tree | `Antwerp City Intelligence` is **not** the right one. Use the **MQTT Unified Namespace expert** if a user-provided UNS agent is listed in `<available_skills>`; otherwise consult the `xRegistry Expert` who knows the UNS-on-xRegistry mapping. | Validate the hierarchy depth, segment naming, wildcard fitness, retained vs non-retained per event type, QoS, single-vs-multi-topic-per-object decisions. |
+| Topic tree | `UNS Catalog Architect` if available; otherwise consult the `xRegistry Expert` who knows the UNS-on-xRegistry mapping. | Validate the hierarchy depth, segment naming, wildcard fitness, retained vs non-retained per event type, QoS, single-vs-multi-topic-per-object decisions. |
 | xRegistry MQTT contract | `xRegistry Expert` | Validate the `MQTT/5.0` endpoint, the dedicated `<source>.mqtt` messagegroup with `basemessageurl` references back into the transport-neutral group, and the `protocoloptions.properties` (topic / qos / retain). |
 | Schemas | `JSON Structure Expert` | Re-confirm that JsonStructure schemas (shared with Kafka) still cover every field; add no MQTT-specific schema drift. |
 
 Do not skip these reviews. Even when the same human contract author
 also wrote the Kafka contract, MQTT-specific decisions (retained slots,
 wildcards, key/topic alignment) require an independent expert pass.
+
+## Mandatory Pre-merge Documentation Gate
+
+A feeder PR is **NOT mergeable** until every one of the following docs
+mentions MQTT in a meaningful way. Both reviewers (xRegistry + UNS) and
+the implementing agent must verify this BEFORE opening the PR. Reject
+or fix any PR that fails the gate.
+
+| File | Required MQTT content |
+|------|------------------------|
+| `<source>/README.md` | A "Transports" (or equivalently named) section that names the MQTT app, explains the Kafka vs MQTT choice for this source, and lists all four deployment templates (Kafka container, Kafka + Event Hubs, MQTT container, MQTT + Event Grid namespace). |
+| `<source>/CONTAINER.md` | An MQTT section with env-var table (broker host, port, TLS, auth mode, topic prefix, retain default, QoS default) and the two MQTT Deploy-to-Azure badges. |
+| `<source>/EVENTS.md` | The MQTT messagegroup with the literal topic patterns (e.g. `air-quality/be/issep/...`) per message type. Must be regenerated from the updated xreg, not hand-edited. |
+| Root `README.md` | The source's row appends the MQTT image link and the two MQTT deploy badges. |
+| `ghpages/app.js` and `ghpages/catalog.json` | `mqtt: true` set on the source entry so the portal renders the MQTT deploy buttons. |
+
+Each of these MUST be touched in the same PR as the MQTT feeder code.
+PRs that ship code without docs are bug-causing and have happened
+repeatedly — do not allow it.
+
+**Reviewer checklist (paste into PR description or review comment):**
+
+- [ ] `<source>/README.md` mentions MQTT and the four deploy templates
+- [ ] `<source>/CONTAINER.md` has MQTT env-var table + two MQTT badges
+- [ ] `<source>/EVENTS.md` shows the MQTT messagegroup + topic patterns
+- [ ] Root `README.md` row has MQTT image + two MQTT badges
+- [ ] `ghpages/app.js` and `ghpages/catalog.json` set `mqtt: true`
+
+If any box is unchecked, the PR is incomplete — either fix in branch
+or re-open as a "doc backfill" PR before declaring the feeder done.
 
 ## Inputs
 
