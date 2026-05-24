@@ -2,6 +2,12 @@
 
 This document describes the events that are emitted by the RSS API Bridge.
 
+## MQTT/UNS topics
+
+The MQTT feeder publishes each RSS/Atom item as a non-retained QoS 1 binary CloudEvent at `news/intl/rss/rss/{feed_slug}/{item}`. `feed_slug` is a topic-safe stable slug derived from the feed URL; `item` is a topic-safe stable token derived from the entry id/link/title. Feed categories/tags, when present in the source payload, remain payload data and are intentionally not topic axes.
+
+Example subscriptions: all items for a feed: `news/intl/rss/rss/{feed_slug}/+`; all configured feeds: `news/intl/rss/rss/+/+`.
+
 - [Microsoft.OpenData.RssFeeds](#message-group-microsoftopendatarssfeeds)
   - [Microsoft.OpenData.RssFeeds.FeedItem](#message-microsoftopendatarssfeedsfeeditem)
 

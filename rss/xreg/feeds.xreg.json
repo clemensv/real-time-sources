@@ -20,6 +20,25 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.RssFeeds"
       ]
+    },
+    "Microsoft.OpenData.RssFeeds.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -44,6 +63,22 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.jstruct/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.mqtt": {
+      "description": "MQTT/5.0 transport variant for RSS/Atom feed items. Non-retained QoS-1 item events are routed by feed_slug and topic-safe item token; source category remains in the payload and is intentionally not a topic axis.",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.mqtt.FeedItem": {
+          "name": "FeedItem",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "news/intl/rss/rss/{feed_slug}/{item}",
+            "qos": 1,
+            "retain": false
+          },
+          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem"
         }
       }
     }
@@ -329,6 +364,18 @@
                           "name": "FeedItem",
                           "type": "object",
                           "properties": {
+                            "feed_slug": {
+                              "type": "string",
+                              "description": "Topic-safe stable slug derived from the configured feed URL.",
+                              "minLength": 1,
+                              "pattern": "^[A-Za-z0-9._-]+$"
+                            },
+                            "item": {
+                              "type": "string",
+                              "description": "Topic-safe stable item token derived from the feed entry id/link/title and used for MQTT routing.",
+                              "minLength": 1,
+                              "pattern": "^[A-Za-z0-9._-]+$"
+                            },
                             "author": {
                               "default": null,
                               "description": "Information about the feed item's author.",
@@ -436,7 +483,10 @@
                               "description": "A collection of links related to the feed item."
                             }
                           },
-                          "required": [],
+                          "required": [
+                            "feed_slug",
+                            "item"
+                          ],
                           "description": "Represents an item in an RSS feed, containing metadata such as the author, title, and content."
                         }
                       }
@@ -465,6 +515,18 @@
                 "namespace": "Microsoft.OpenData.RssFeeds",
                 "doc": "Represents an item in an RSS feed, containing metadata such as the author, title, and content.",
                 "fields": [
+                  {
+                    "name": "feed_slug",
+                    "type": "string",
+                    "doc": "Topic-safe stable slug derived from the configured feed URL.",
+                    "default": ""
+                  },
+                  {
+                    "name": "item",
+                    "type": "string",
+                    "doc": "Topic-safe stable item token derived from the feed entry id/link/title and used for MQTT routing.",
+                    "default": ""
+                  },
                   {
                     "name": "author",
                     "type": [

@@ -5,9 +5,11 @@ RSS Bridge
 import argparse
 import asyncio
 from datetime import datetime, timedelta, timezone
+import hashlib
 import json
 import logging
 import os
+import re
 import sys
 import time
 from typing import Dict, List, Optional
@@ -45,6 +47,24 @@ FEEDSTORE_FILE = os.path.join(USER_DIR, ".rss-grabber-feedstore.xml")
 __version__ = "1.0.0"
 
 USER_AGENT = f"Event Stream RSS Agent {__version__}"
+
+
+def topic_token(value: str, fallback: str = "unknown") -> str:
+    raw = value or fallback
+    slug = re.sub(r"[^a-z0-9]+", "-", raw.lower()).strip("-") or fallback
+    digest = hashlib.sha1(raw.encode("utf-8", errors="ignore")).hexdigest()[:12]
+    if len(slug) > 80:
+        slug = slug[:80].strip("-")
+    return f"{slug}-{digest}" if digest not in slug else slug
+
+
+def feed_slug_from_url(feed_url: str) -> str:
+    parsed = urlparse(feed_url if "://" in feed_url else f"https://{feed_url}")
+    basis = f"{parsed.netloc}{parsed.path}".strip("/") or feed_url
+    if parsed.query:
+        basis = f"{basis}?{parsed.query}"
+    return topic_token(basis)
+
 
 
 def load_state():
@@ -425,6 +445,8 @@ def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDat
                 pub_date = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
                 if pub_date > last_checked_datetime:
                     item: FeedItem = feeditem_from_feedparser_entry(feed, entry)
+                    item.feed_slug = feed_slug_from_url(feed_url)
+                    item.item = topic_token(item.id or entry.get('link') or entry.get('title') or feed_url)
                     try:
                         new_items.append(item)
                     except Exception as e:
@@ -457,6 +479,18 @@ def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDat
         if next_check_time > datetime.now(timezone.utc) + timedelta(hours=12):
             next_check_time = datetime.now(timezone.utc) + timedelta(hours=12)
 
+        if new_items:
+            new_items.sort(key=lambda value: value.published or datetime.min.replace(tzinfo=timezone.utc))
+            for item in new_items:
+                logging.info("Sending item %s for feed %s", item.id, feed_url)
+                producer_instance.send_microsoft_open_data_rss_feeds_feed_item(
+                    _sourceurl=feed_url,
+                    _item_id=item.id or item.item,
+                    data=item,
+                    flush_producer=False,
+                )
+        producer_instance.producer.flush()
+
         state[feed_url] = {
             "last_checked": datetime.now(timezone.utc).isoformat(),
             "skip": False,
@@ -464,12 +498,6 @@ def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDat
             "etag": response.headers.get('ETag'),
             "next_check_time": next_check_time.isoformat()
         }
-
-        if new_items:
-            for item in new_items:
-                logging.info("Sending item %s for feed %s", item.id, feed_url)
-                producer_instance.send_microsoft_open_data_rss_feeds_feed_item(_sourceurl=feed_url, _item_id=item.id, data=item, flush_producer=False)
-        producer_instance.producer.flush()
 
     except RequestException as e:
         if e.response is not None:
