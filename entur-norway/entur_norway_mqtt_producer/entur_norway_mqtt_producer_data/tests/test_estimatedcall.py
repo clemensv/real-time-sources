@@ -8,7 +8,8 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from entur_norway_producer_data.no.entur.estimatedcall import EstimatedCall
+from entur_norway_mqtt_producer_data.no.entur.estimatedcall import EstimatedCall
+import datetime
 
 
 class Test_EstimatedCall(unittest.TestCase):
@@ -28,18 +29,18 @@ class Test_EstimatedCall(unittest.TestCase):
         Create instance of EstimatedCall for testing
         """
         instance = EstimatedCall(
-            stop_point_ref='uawungjueqdnhargzira',
-            order=int(15),
-            stop_point_name='gbbqkjnzatctamcqqvoa',
-            aimed_arrival_time='btoiwasuplcpmqsjwyju',
-            expected_arrival_time='maoxdqplbacytffmmjkq',
-            aimed_departure_time='ebztikrwtyodjpjptihx',
-            expected_departure_time='lqlyyxltzrzthnnspmxw',
-            arrival_status='xjyruywaadbufnjplioa',
-            departure_status='xsajynbmcvwfgmozypva',
-            departure_platform_name='ksdyqltmqfzhfbuotttp',
-            arrival_boarding_activity='iohaxqfmtiuimlsanbbs',
-            departure_boarding_activity='ujprfqxtoaxowuollsyo',
+            stop_point_ref='djxugsdmhkysswryosny',
+            order=int(30),
+            stop_point_name='yqpqwxxnqvrlhducbbor',
+            aimed_arrival_time=datetime.datetime.now(datetime.timezone.utc),
+            expected_arrival_time=datetime.datetime.now(datetime.timezone.utc),
+            aimed_departure_time=datetime.datetime.now(datetime.timezone.utc),
+            expected_departure_time=datetime.datetime.now(datetime.timezone.utc),
+            arrival_status='iorfzuzpwqzyoevytscw',
+            departure_status='xeopaeiwkodxtdrurrli',
+            departure_platform_name='kpfopycmvwydcgieyoiq',
+            arrival_boarding_activity='coalodkowvksjfnbjgtz',
+            departure_boarding_activity='tczammiifbhlytwwumos',
             is_cancellation=True,
             is_extra_stop=False
         )
@@ -50,7 +51,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test stop_point_ref property
         """
-        test_value = 'uawungjueqdnhargzira'
+        test_value = 'djxugsdmhkysswryosny'
         self.instance.stop_point_ref = test_value
         self.assertEqual(self.instance.stop_point_ref, test_value)
     
@@ -58,7 +59,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test order property
         """
-        test_value = int(15)
+        test_value = int(30)
         self.instance.order = test_value
         self.assertEqual(self.instance.order, test_value)
     
@@ -66,7 +67,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test stop_point_name property
         """
-        test_value = 'gbbqkjnzatctamcqqvoa'
+        test_value = 'yqpqwxxnqvrlhducbbor'
         self.instance.stop_point_name = test_value
         self.assertEqual(self.instance.stop_point_name, test_value)
     
@@ -74,7 +75,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test aimed_arrival_time property
         """
-        test_value = 'btoiwasuplcpmqsjwyju'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.aimed_arrival_time = test_value
         self.assertEqual(self.instance.aimed_arrival_time, test_value)
     
@@ -82,7 +83,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test expected_arrival_time property
         """
-        test_value = 'maoxdqplbacytffmmjkq'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.expected_arrival_time = test_value
         self.assertEqual(self.instance.expected_arrival_time, test_value)
     
@@ -90,7 +91,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test aimed_departure_time property
         """
-        test_value = 'ebztikrwtyodjpjptihx'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.aimed_departure_time = test_value
         self.assertEqual(self.instance.aimed_departure_time, test_value)
     
@@ -98,7 +99,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test expected_departure_time property
         """
-        test_value = 'lqlyyxltzrzthnnspmxw'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.expected_departure_time = test_value
         self.assertEqual(self.instance.expected_departure_time, test_value)
     
@@ -106,7 +107,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test arrival_status property
         """
-        test_value = 'xjyruywaadbufnjplioa'
+        test_value = 'iorfzuzpwqzyoevytscw'
         self.instance.arrival_status = test_value
         self.assertEqual(self.instance.arrival_status, test_value)
     
@@ -114,7 +115,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test departure_status property
         """
-        test_value = 'xsajynbmcvwfgmozypva'
+        test_value = 'xeopaeiwkodxtdrurrli'
         self.instance.departure_status = test_value
         self.assertEqual(self.instance.departure_status, test_value)
     
@@ -122,7 +123,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test departure_platform_name property
         """
-        test_value = 'ksdyqltmqfzhfbuotttp'
+        test_value = 'kpfopycmvwydcgieyoiq'
         self.instance.departure_platform_name = test_value
         self.assertEqual(self.instance.departure_platform_name, test_value)
     
@@ -130,7 +131,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test arrival_boarding_activity property
         """
-        test_value = 'iohaxqfmtiuimlsanbbs'
+        test_value = 'coalodkowvksjfnbjgtz'
         self.instance.arrival_boarding_activity = test_value
         self.assertEqual(self.instance.arrival_boarding_activity, test_value)
     
@@ -138,7 +139,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test departure_boarding_activity property
         """
-        test_value = 'ujprfqxtoaxowuollsyo'
+        test_value = 'tczammiifbhlytwwumos'
         self.instance.departure_boarding_activity = test_value
         self.assertEqual(self.instance.departure_boarding_activity, test_value)
     
@@ -158,12 +159,22 @@ class Test_EstimatedCall(unittest.TestCase):
         self.instance.is_extra_stop = test_value
         self.assertEqual(self.instance.is_extra_stop, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = EstimatedCall.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = EstimatedCall.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

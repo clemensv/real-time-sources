@@ -7,6 +7,7 @@ import pytest
 from entur_norway.entur_norway import (
     EnturNorwayBridge,
     _bool_text,
+    _topic_value,
     _find_multilingual_text,
     parse_connection_string,
     parse_duration_to_seconds,
@@ -233,7 +234,7 @@ class TestParseEtJourneys:
         root = ET.fromstring(f'<Siri xmlns="{SIRI_NS}"><ServiceDelivery/></Siri>')
         assert self.bridge.parse_et_journeys(root) == []
 
-    def test_missing_framed_ref_skipped(self):
+    def test_missing_framed_ref_uses_unknown(self):
         xml = f"""<Siri xmlns="{SIRI_NS}">
           <ServiceDelivery>
             <EstimatedTimetableDelivery>
@@ -246,7 +247,13 @@ class TestParseEtJourneys:
           </ServiceDelivery>
         </Siri>"""
         root = ET.fromstring(xml)
-        assert self.bridge.parse_et_journeys(root) == []
+        journeys = self.bridge.parse_et_journeys(root)
+        assert len(journeys) == 1
+        op_day, sj_id, evj = journeys[0]
+        assert op_day == 'unknown'
+        assert sj_id == 'unknown'
+        assert evj.operator_ref == 'unknown'
+        assert evj.line_ref == 'NSB:Line:R10'
 
     def test_cancellation_flag(self):
         xml = f"""<Siri xmlns="{SIRI_NS}">
@@ -388,7 +395,7 @@ class TestParseVmJourneys:
         root = ET.fromstring(f'<Siri xmlns="{SIRI_NS}"><ServiceDelivery/></Siri>')
         assert self.bridge.parse_vm_journeys(root) == []
 
-    def test_missing_line_ref_skipped(self):
+    def test_missing_line_ref_uses_unknown(self):
         xml = f"""<Siri xmlns="{SIRI_NS}">
           <ServiceDelivery>
             <VehicleMonitoringDelivery>
@@ -406,7 +413,10 @@ class TestParseVmJourneys:
           </ServiceDelivery>
         </Siri>"""
         root = ET.fromstring(xml)
-        assert self.bridge.parse_vm_journeys(root) == []
+        journeys = self.bridge.parse_vm_journeys(root)
+        assert len(journeys) == 1
+        assert journeys[0][2].line_ref == 'unknown'
+        assert journeys[0][2].operator_ref == 'NSB'
 
     def test_negative_delay(self):
         xml = VM_XML.replace('<Delay>PT2M30S</Delay>', '<Delay>-PT1M</Delay>')
@@ -500,7 +510,7 @@ class TestParseSxSituations:
         root = ET.fromstring(f'<Siri xmlns="{SIRI_NS}"><ServiceDelivery/></Siri>')
         assert self.bridge.parse_sx_situations(root) == []
 
-    def test_missing_situation_number_skipped(self):
+    def test_missing_situation_number_uses_unknown(self):
         xml = f"""<Siri xmlns="{SIRI_NS}">
           <ServiceDelivery>
             <SituationExchangeDelivery>
@@ -513,7 +523,10 @@ class TestParseSxSituations:
           </ServiceDelivery>
         </Siri>"""
         root = ET.fromstring(xml)
-        assert self.bridge.parse_sx_situations(root) == []
+        situations = self.bridge.parse_sx_situations(root)
+        assert len(situations) == 1
+        assert situations[0][0] == 'unknown'
+        assert situations[0][1].severity == 'unknown'
 
     def test_no_situations_element(self):
         xml = f"""<Siri xmlns="{SIRI_NS}">

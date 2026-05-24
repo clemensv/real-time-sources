@@ -8,7 +8,8 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from entur_norway_producer_data.no.entur.validityperiod import ValidityPeriod
+from entur_norway_mqtt_producer_data.no.entur.validityperiod import ValidityPeriod
+import datetime
 
 
 class Test_ValidityPeriod(unittest.TestCase):
@@ -28,8 +29,8 @@ class Test_ValidityPeriod(unittest.TestCase):
         Create instance of ValidityPeriod for testing
         """
         instance = ValidityPeriod(
-            start_time='mzwzzqapvfowwedioxrc',
-            end_time='fyfbmmxtxuzaotspyfhu'
+            start_time=datetime.datetime.now(datetime.timezone.utc),
+            end_time=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_ValidityPeriod(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'mzwzzqapvfowwedioxrc'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -46,16 +47,26 @@ class Test_ValidityPeriod(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'fyfbmmxtxuzaotspyfhu'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = ValidityPeriod.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = ValidityPeriod.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

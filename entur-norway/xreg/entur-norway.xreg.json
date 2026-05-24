@@ -41,6 +41,25 @@
       "messagegroups": [
         "#/messagegroups/no.entur.situations"
       ]
+    },
+    "no.entur.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/no.entur.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -135,6 +154,41 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/no.entur.jstruct/schemas/no.entur.PtSituationElement"
+        }
+      }
+    },
+    "no.entur.mqtt": {
+      "description": "MQTT/5.0 transport variant for Entur Norway SIRI real-time feeds. Non-retained QoS-1 streams route Estimated Timetable, Vehicle Monitoring, and Situation Exchange payloads by raw SIRI identifiers under transit/no/entur/entur-norway/... Missing routing fields are emitted as the literal unknown by the bridge.",
+      "messages": {
+        "no.entur.mqtt.EstimatedVehicleJourney": {
+          "name": "EstimatedVehicleJourney",
+          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "no.entur.mqtt.MonitoredVehicleJourney": {
+          "name": "MonitoredVehicleJourney",
+          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "no.entur.mqtt.PtSituationElement": {
+          "name": "PtSituationElement",
+          "basemessageurl": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     }
@@ -653,9 +707,7 @@
                           "estimated_calls": {
                             "type": "array",
                             "items": {
-                              "type": {
-                                "$ref": "#/definitions/no/entur/EstimatedCall"
-                              }
+                              "$ref": "#/definitions/no/entur/EstimatedCall"
                             },
                             "description": "Ordered list of estimated arrival and departure times for each stop along the journey. May be a partial list if is_complete_stop_sequence is false."
                           }
@@ -1032,11 +1084,8 @@
                             ]
                           },
                           "severity": {
-                            "type": [
-                              "string",
-                              "null"
-                            ],
-                            "description": "SIRI Severity classification of the impact of this situation on passenger services.",
+                            "type": "string",
+                            "description": "SIRI Severity classification of the impact of this situation on passenger services, or 'unknown' when absent.",
                             "altnames": {
                               "xml": "Severity"
                             },
@@ -1098,15 +1147,14 @@
                           "validity_periods": {
                             "type": "array",
                             "items": {
-                              "type": {
-                                "$ref": "#/definitions/no/entur/ValidityPeriod"
-                              }
+                              "$ref": "#/definitions/no/entur/ValidityPeriod"
                             },
                             "description": "One or more time windows during which this situation is active, from the SIRI ValidityPeriod elements."
                           }
                         },
                         "required": [
                           "situation_number",
+                          "severity",
                           "creation_time"
                         ]
                       }
@@ -1719,12 +1767,8 @@
                   },
                   {
                     "name": "severity",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null,
-                    "doc": "SIRI Severity: unknown, noImpact, verySlight, slight, normal, severe, verySevere, undefined."
+                    "type": "string",
+                    "doc": "SIRI Severity classification, or 'unknown' when absent."
                   },
                   {
                     "name": "keywords",

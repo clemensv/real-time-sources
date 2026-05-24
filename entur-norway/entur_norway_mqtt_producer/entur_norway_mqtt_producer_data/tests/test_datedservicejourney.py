@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from entur_norway_producer_data.no.entur.datedservicejourney import DatedServiceJourney
+from entur_norway_mqtt_producer_data.no.entur.datedservicejourney import DatedServiceJourney
 
 
 class Test_DatedServiceJourney(unittest.TestCase):
@@ -28,18 +28,18 @@ class Test_DatedServiceJourney(unittest.TestCase):
         Create instance of DatedServiceJourney for testing
         """
         instance = DatedServiceJourney(
-            service_journey_id='ywvchixlxdrlgzbhvljt',
-            operating_day='xawctugimeqlyiuwyeho',
-            line_ref='yoyzcmhcojrtenofzpww',
-            operator_ref='yfpziqykbqzitocfyuxq',
-            direction_ref='hblpsovqpisoatqrjmll',
-            vehicle_mode='hzscrrfpwrioymisyoqx',
-            route_ref='gfhmkbjpdtqfstbuotqn',
-            published_line_name='hhsmaydwgxcexbzyvxtz',
-            external_line_ref='lzrgucvmcxituofohnqu',
-            origin_name='zjnhexscroywtowauudi',
-            destination_name='phxjsfvxuzjyxcgfcbei',
-            data_source='jklvyeajhtqjolkmksra'
+            service_journey_id='wpcdkzopsonqfjifmypm',
+            operating_day='elpxrmzfexqmtryaftmq',
+            line_ref='nflrztopdrstiqmejbct',
+            operator_ref='kefuvdddfuubbifxrcyn',
+            direction_ref='bjosodtvwcujojhohhli',
+            vehicle_mode='pzgmxjiyqyqpicrezcdb',
+            route_ref='pirnagfydkciqmlrapix',
+            published_line_name='txazpasynzplknpccbfu',
+            external_line_ref='unnpekzlletsxbhddict',
+            origin_name='xujzzxdnepoymnbhxihu',
+            destination_name='jaajqepsvgzzopcqezsv',
+            data_source='lynxqsflxzivuebvqicg'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test service_journey_id property
         """
-        test_value = 'ywvchixlxdrlgzbhvljt'
+        test_value = 'wpcdkzopsonqfjifmypm'
         self.instance.service_journey_id = test_value
         self.assertEqual(self.instance.service_journey_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test operating_day property
         """
-        test_value = 'xawctugimeqlyiuwyeho'
+        test_value = 'elpxrmzfexqmtryaftmq'
         self.instance.operating_day = test_value
         self.assertEqual(self.instance.operating_day, test_value)
     
@@ -64,7 +64,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test line_ref property
         """
-        test_value = 'yoyzcmhcojrtenofzpww'
+        test_value = 'nflrztopdrstiqmejbct'
         self.instance.line_ref = test_value
         self.assertEqual(self.instance.line_ref, test_value)
     
@@ -72,7 +72,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'yfpziqykbqzitocfyuxq'
+        test_value = 'kefuvdddfuubbifxrcyn'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     
@@ -80,7 +80,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test direction_ref property
         """
-        test_value = 'hblpsovqpisoatqrjmll'
+        test_value = 'bjosodtvwcujojhohhli'
         self.instance.direction_ref = test_value
         self.assertEqual(self.instance.direction_ref, test_value)
     
@@ -88,7 +88,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test vehicle_mode property
         """
-        test_value = 'hzscrrfpwrioymisyoqx'
+        test_value = 'pzgmxjiyqyqpicrezcdb'
         self.instance.vehicle_mode = test_value
         self.assertEqual(self.instance.vehicle_mode, test_value)
     
@@ -96,7 +96,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test route_ref property
         """
-        test_value = 'gfhmkbjpdtqfstbuotqn'
+        test_value = 'pirnagfydkciqmlrapix'
         self.instance.route_ref = test_value
         self.assertEqual(self.instance.route_ref, test_value)
     
@@ -104,7 +104,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test published_line_name property
         """
-        test_value = 'hhsmaydwgxcexbzyvxtz'
+        test_value = 'txazpasynzplknpccbfu'
         self.instance.published_line_name = test_value
         self.assertEqual(self.instance.published_line_name, test_value)
     
@@ -112,7 +112,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test external_line_ref property
         """
-        test_value = 'lzrgucvmcxituofohnqu'
+        test_value = 'unnpekzlletsxbhddict'
         self.instance.external_line_ref = test_value
         self.assertEqual(self.instance.external_line_ref, test_value)
     
@@ -120,7 +120,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test origin_name property
         """
-        test_value = 'zjnhexscroywtowauudi'
+        test_value = 'xujzzxdnepoymnbhxihu'
         self.instance.origin_name = test_value
         self.assertEqual(self.instance.origin_name, test_value)
     
@@ -128,7 +128,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'phxjsfvxuzjyxcgfcbei'
+        test_value = 'jaajqepsvgzzopcqezsv'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -136,16 +136,26 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'jklvyeajhtqjolkmksra'
+        test_value = 'lynxqsflxzivuebvqicg'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = DatedServiceJourney.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = DatedServiceJourney.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+
