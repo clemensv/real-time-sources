@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "paris-bicycle-counters-mqtt"
+version = "0.1.0"
+description = "Paris bicycle counters bridge to MQTT/UNS"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+paris_bicycle_counters_mqtt_producer_data = {path = "../paris_bicycle_counters_mqtt_producer/paris_bicycle_counters_mqtt_producer_data"}
+paris_bicycle_counters_mqtt_producer_mqtt_client = {path = "../paris_bicycle_counters_mqtt_producer/paris_bicycle_counters_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+paris-bicycle-counters-mqtt = "paris_bicycle_counters_mqtt:main"

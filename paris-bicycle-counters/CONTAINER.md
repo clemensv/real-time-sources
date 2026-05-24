@@ -10,6 +10,8 @@ The City of Paris provides publicly available bicycle counting data through the 
 
 The bridge polls the Paris Open Data bicycle counter API and writes new observations to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Previously seen counter_id + date pairs are tracked in a state file to prevent duplicates.
 
+An MQTT/UNS variant is available via `Dockerfile.mqtt`. It publishes MQTT 5.0 binary-mode CloudEvents under `traffic/fr/paris/paris-bicycle-counters/{counter_id}/{event}`: retained QoS 1 counter `info` records and non-retained QoS 1 hourly `count` events.
+
 ## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a
@@ -56,6 +58,20 @@ $ docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
     ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
 ```
+
+### With an MQTT Broker
+
+Build or pull the MQTT image and provide an MQTT broker URL:
+
+```shell
+$ docker build -f Dockerfile.mqtt -t paris-bicycle-counters-mqtt .
+$ docker run --rm \
+    -e MQTT_BROKER_URL='mqtt://broker:1883' \
+    -e ONCE_MODE='true' \
+    paris-bicycle-counters-mqtt
+```
+
+Optional MQTT environment variables are `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `MQTT_CONTENT_MODE` (`binary` or `structured`), and `PARIS_BICYCLE_COUNTERS_MQTT_STATE_FILE`.
 
 ### Preserving State Between Restarts
 

@@ -4046,3 +4046,119 @@ class TestCarbonIntensityMqttDockerFlow:
                 assert payload.get('region_id') is not None
             else:
                 assert parts[4] == 'national'
+
+# ---- paris-bicycle-counters ---------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def paris_bicycle_counters_mqtt_image():
+    return build_image('paris-bicycle-counters', dockerfile='Dockerfile.mqtt', tag='test-paris-bicycle-counters-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_paris_bicycle_counters():
+    container, network, host_port = _generic_mosquitto(
+        'paris-bicycle-counters-mqtt-e2e', 'paris-bicycle-counters-mqtt-e2e-broker'
+    )
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'paris-bicycle-counters-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestParisBicycleCountersMqttDockerFlow:
+    """Verify the paris-bicycle-counters-mqtt container publishes a valid UNS tree."""
+
+    def test_emits_uns_topics(self, mosquitto_paris_bicycle_counters, paris_bicycle_counters_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_paris_bicycle_counters['internal_host']}:{mosquitto_paris_bicycle_counters['internal_port']}"
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'retain': bool(msg.retain), 'qos': msg.qos, 'user_properties': props, 'payload': payload})
+
+        sub = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        sub.on_message = on_message
+        sub.connect('127.0.0.1', mosquitto_paris_bicycle_counters['host_port'], 30)
+        sub.subscribe('traffic/fr/paris/paris-bicycle-counters/#', qos=1)
+        sub.loop_start()
+        try:
+            feeder = client.containers.run(
+                paris_bicycle_counters_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=mosquitto_paris_bicycle_counters['network'],
+                environment={
+                    'MQTT_BROKER_URL': broker_url,
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            try:
+                result = feeder.wait(timeout=420)
+                logs = feeder.logs().decode('utf-8', errors='replace')
+                assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            finally:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            deadline = time.time() + 20
+            while len(messages) < 2 and time.time() < deadline:
+                time.sleep(0.5)
+        finally:
+            sub.loop_stop()
+            sub.disconnect()
+
+        assert messages, 'No MQTT messages received from broker'
+        info = [m for m in messages if m['topic'].endswith('/info')]
+        counts = [m for m in messages if m['topic'].endswith('/count')]
+        assert info, 'No counter info messages published'
+        assert counts, 'No count event messages published'
+        retained_info = _collect_messages_topic(
+            '127.0.0.1', mosquitto_paris_bicycle_counters['host_port'],
+            'traffic/fr/paris/paris-bicycle-counters/+/info', timeout=20.0,
+        )
+        assert retained_info and all(m['retain'] is True for m in retained_info), 'No retained /info messages for late subscribers'
+        for sample in messages:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert up.get('_contenttype') == 'application/json'
+            assert sample['qos'] == 1
+            parts = sample['topic'].split('/')
+            assert parts[:4] == ['traffic', 'fr', 'paris', 'paris-bicycle-counters']
+            assert len(parts) == 6
+            payload = _to_dict(sample['payload'])
+            assert payload is not None
+            assert payload.get('counter_id') == parts[4] == up['subject']
+            if parts[5] == 'info':
+                assert up.get('type') == 'FR.Paris.OpenData.Velo.Counter'
+            else:
+                assert parts[5] == 'count'
+                assert sample['retain'] is False
+                assert up.get('type') == 'FR.Paris.OpenData.Velo.BicycleCount'
+                assert payload.get('date')

@@ -127,6 +127,7 @@ class TestCounterDataclass:
 
     def test_create_counter(self):
         counter = Counter(
+            ce_id="counter-1/info",
             counter_id="100047537-101047537",
             counter_name="26 boulevard de Ménilmontant SE-NO",
             channel_name="SE-NO",
@@ -143,6 +144,7 @@ class TestCounterDataclass:
 
     def test_counter_nullable_fields(self):
         counter = Counter(
+            ce_id="counter-1/info",
             counter_id="test-id",
             counter_name="Test Counter",
             channel_name=None,
@@ -157,6 +159,7 @@ class TestCounterDataclass:
 
     def test_counter_to_json(self):
         counter = Counter(
+            ce_id="counter-1/info",
             counter_id="test-id",
             counter_name="Test Counter",
             channel_name="SE-NO",
@@ -171,6 +174,7 @@ class TestCounterDataclass:
 
     def test_counter_from_dict(self):
         data = {
+            "ce_id": "abc-123/info",
             "counter_id": "abc-123",
             "counter_name": "Test",
             "channel_name": "N-S",
@@ -195,6 +199,7 @@ class TestBicycleCountDataclass:
     def test_create_bicycle_count(self):
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         bc = BicycleCount(
+            ce_id="counter-1/2026-04-06T09:00Z/count",
             counter_id="100036719-103036719",
             counter_name="18 quai de l'Hôtel de Ville SE-NO",
             count=79,
@@ -209,6 +214,7 @@ class TestBicycleCountDataclass:
     def test_bicycle_count_nullable_count(self):
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         bc = BicycleCount(
+            ce_id="counter-1/2026-04-06T09:00Z/count",
             counter_id="test-id",
             counter_name="Test Counter",
             count=None,
@@ -221,6 +227,7 @@ class TestBicycleCountDataclass:
     def test_bicycle_count_to_json(self):
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         bc = BicycleCount(
+            ce_id="counter-1/2026-04-06T09:00Z/count",
             counter_id="test-id",
             counter_name="Test Counter",
             count=42,
@@ -242,6 +249,7 @@ class TestBicycleCountDataclass:
     def test_bicycle_count_zero_count(self):
         dt = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
         bc = BicycleCount(
+            ce_id="counter-1/2026-04-06T09:00Z/count",
             counter_id="test-id",
             counter_name="Test Counter",
             count=0,
@@ -408,9 +416,9 @@ class TestDedupCounts:
         dt1 = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         dt2 = datetime(2025, 12, 6, 16, 0, 0, tzinfo=timezone.utc)
         counts = [
-            BicycleCount(counter_id="c1", counter_name="C1", count=10, date=dt1,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="C1", count=10, date=dt1,
                          longitude=2.0, latitude=48.0),
-            BicycleCount(counter_id="c2", counter_name="C2", count=20, date=dt2,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c2", counter_name="C2", count=20, date=dt2,
                          longitude=2.1, latitude=48.1),
         ]
         new_counts, seen = ParisBicycleCounterPoller.dedup_counts(counts, set())
@@ -420,9 +428,9 @@ class TestDedupCounts:
     def test_dedup_with_duplicates(self):
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         counts = [
-            BicycleCount(counter_id="c1", counter_name="C1", count=10, date=dt,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="C1", count=10, date=dt,
                          longitude=2.0, latitude=48.0),
-            BicycleCount(counter_id="c1", counter_name="C1", count=10, date=dt,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="C1", count=10, date=dt,
                          longitude=2.0, latitude=48.0),
         ]
         new_counts, seen = ParisBicycleCounterPoller.dedup_counts(counts, set())
@@ -431,7 +439,7 @@ class TestDedupCounts:
     def test_dedup_with_seen_keys(self):
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         counts = [
-            BicycleCount(counter_id="c1", counter_name="C1", count=10, date=dt,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="C1", count=10, date=dt,
                          longitude=2.0, latitude=48.0),
         ]
         seen = {f"c1|{dt.isoformat()}"}
@@ -443,9 +451,9 @@ class TestDedupCounts:
         dt1 = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         dt2 = datetime(2025, 12, 6, 16, 0, 0, tzinfo=timezone.utc)
         counts = [
-            BicycleCount(counter_id="c1", counter_name="C1", count=10, date=dt1,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="C1", count=10, date=dt1,
                          longitude=2.0, latitude=48.0),
-            BicycleCount(counter_id="c1", counter_name="C1", count=20, date=dt2,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="C1", count=20, date=dt2,
                          longitude=2.0, latitude=48.0),
         ]
         new_counts, seen = ParisBicycleCounterPoller.dedup_counts(counts, set())
@@ -499,12 +507,12 @@ class TestPollAndSend:
     @patch('paris_bicycle_counters.paris_bicycle_counters.ParisBicycleCounterPoller.fetch_counter_locations')
     def test_poll_and_send_once(self, mock_locations, mock_counts, tmp_path):
         mock_locations.return_value = [
-            Counter(counter_id="c1", counter_name="Counter 1", channel_name="SE-NO",
+            Counter(ce_id="counter/info", counter_id="c1", counter_name="Counter 1", channel_name="SE-NO",
                     installation_date="2020-01-01", longitude=2.0, latitude=48.0)
         ]
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         mock_counts.return_value = [
-            BicycleCount(counter_id="c1", counter_name="Counter 1", count=42,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="Counter 1", count=42,
                          date=dt, longitude=2.0, latitude=48.0)
         ]
 
@@ -528,7 +536,7 @@ class TestPollAndSend:
         mock_locations.return_value = []
         dt = datetime.now(timezone.utc) - timedelta(hours=1)
         mock_counts.return_value = [
-            BicycleCount(counter_id="c1", counter_name="Counter 1", count=42,
+            BicycleCount(ce_id="c1/2026-01-01T00:00Z/count", counter_id="c1", counter_name="Counter 1", count=42,
                          date=dt, longitude=2.0, latitude=48.0)
         ]
 
@@ -627,6 +635,7 @@ class TestEdgeCases:
 
     def test_counter_byte_array_json(self):
         counter = Counter(
+            ce_id="counter-1/info",
             counter_id="test-id", counter_name="Test",
             channel_name=None, installation_date=None,
             longitude=2.0, latitude=48.0,
@@ -639,6 +648,7 @@ class TestEdgeCases:
     def test_bicycle_count_byte_array_json(self):
         dt = datetime(2025, 12, 6, 15, 0, 0, tzinfo=timezone.utc)
         bc = BicycleCount(
+            ce_id="counter-1/2026-04-06T09:00Z/count",
             counter_id="test-id", counter_name="Test",
             count=42, date=dt, longitude=2.0, latitude=48.0,
         )
@@ -649,6 +659,7 @@ class TestEdgeCases:
 
     def test_counter_from_data_dict(self):
         data = {
+            "ce_id": "test-id/info",
             "counter_id": "test-id", "counter_name": "Test",
             "channel_name": None, "installation_date": None,
             "longitude": 2.0, "latitude": 48.0,

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./paris_bicycle_counters_mqtt_producer_data
+pip install ./paris_bicycle_counters_mqtt_producer_mqtt_client
