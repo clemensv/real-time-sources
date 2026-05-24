@@ -324,6 +324,11 @@ class USGSDataPoller:
                 flush_producer=False
             )
 
+        async def flush_transport(producer):
+            result = producer.producer.flush()
+            if hasattr(result, "__await__"):
+                await result
+
         stations_sent = False
         last_polled_times = self.load_last_polled_times()
         if self.force_data_refresh:
@@ -350,8 +355,8 @@ class USGSDataPoller:
                                 _source_uri=self.BASE_URL, _agency_cd=site.agency_cd, _site_no=site.site_no, data=site, flush_producer=False
                             )
                             if count_stations % 1000 == 0:
-                                self.site_producer.producer.flush()
-                        self.site_producer.producer.flush()
+                                await flush_transport(self.site_producer)
+                        await flush_transport(self.site_producer)
                         logger.info("Processed stations for state %s: %d", state_code, count_stations)
 
                 count_records = 0
@@ -485,8 +490,8 @@ class USGSDataPoller:
                                         last_polled_times[parameter_name] = {}
                                     last_polled_times[parameter_name][site_no] = timestamp
                     if count_records % 1000 == 0:
-                        self.values_producer.producer.flush()
-                self.values_producer.producer.flush()
+                        await flush_transport(self.values_producer)
+                await flush_transport(self.values_producer)
                 self.save_last_polled_times(last_polled_times)
                 logger.info("Processed records for state %s: %d", state_code, count_records)
                 counts_str = ', '.join([f"{k}: {v}" for k, v in counts.items()])
