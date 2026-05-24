@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "cbp-border-wait-mqtt"
+version = "0.1.0"
+description = "US CBP Border Wait Times MQTT/UNS bridge"
+authors = []
+packages = [{ include = "cbp_border_wait_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+cbp-border-wait = {path = ".."}
+cbp_border_wait_mqtt_producer_data = {path = "../cbp_border_wait_mqtt_producer/cbp_border_wait_mqtt_producer_data"}
+cbp_border_wait_mqtt_producer_mqtt_client = {path = "../cbp_border_wait_mqtt_producer/cbp_border_wait_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+cbp-border-wait-mqtt = "cbp_border_wait_mqtt:main"

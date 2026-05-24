@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from cbp_border_wait_producer_data.gov.cbp.borderwait.port import Port
+from cbp_border_wait_mqtt_producer_data.gov.cbp.borderwait.port import Port
 
 
 class Test_Port(unittest.TestCase):
@@ -28,14 +28,15 @@ class Test_Port(unittest.TestCase):
         Create instance of Port for testing
         """
         instance = Port(
-            port_number='cmymhrdxevjmszcrkvhv',
-            port_name='zcovsefpwylupooizodz',
-            border='ixzhsyjnlpgkrfwmlrhl',
-            crossing_name='qnzczwyxqnhjkpdeopxt',
-            hours='awtqjsarmncfhbctbjnd',
-            passenger_vehicle_max_lanes=int(65),
-            commercial_vehicle_max_lanes=int(29),
-            pedestrian_max_lanes=int(8)
+            port_number='ffmrgvvnybqassedxkrl',
+            port_name='fbzupzydsspkzaxwnadb',
+            border='xqhsmngocuasemtwesnx',
+            crossing_name='mcrdtjtbojvbfzwmisht',
+            hours='apomcuzykcxtxrbcirfg',
+            passenger_vehicle_max_lanes=int(1),
+            commercial_vehicle_max_lanes=int(38),
+            pedestrian_max_lanes=int(97),
+            border_slug='vgaskfspoenylfyzbojk'
         )
         return instance
 
@@ -44,7 +45,7 @@ class Test_Port(unittest.TestCase):
         """
         Test port_number property
         """
-        test_value = 'cmymhrdxevjmszcrkvhv'
+        test_value = 'ffmrgvvnybqassedxkrl'
         self.instance.port_number = test_value
         self.assertEqual(self.instance.port_number, test_value)
     
@@ -52,7 +53,7 @@ class Test_Port(unittest.TestCase):
         """
         Test port_name property
         """
-        test_value = 'zcovsefpwylupooizodz'
+        test_value = 'fbzupzydsspkzaxwnadb'
         self.instance.port_name = test_value
         self.assertEqual(self.instance.port_name, test_value)
     
@@ -60,7 +61,7 @@ class Test_Port(unittest.TestCase):
         """
         Test border property
         """
-        test_value = 'ixzhsyjnlpgkrfwmlrhl'
+        test_value = 'xqhsmngocuasemtwesnx'
         self.instance.border = test_value
         self.assertEqual(self.instance.border, test_value)
     
@@ -68,7 +69,7 @@ class Test_Port(unittest.TestCase):
         """
         Test crossing_name property
         """
-        test_value = 'qnzczwyxqnhjkpdeopxt'
+        test_value = 'mcrdtjtbojvbfzwmisht'
         self.instance.crossing_name = test_value
         self.assertEqual(self.instance.crossing_name, test_value)
     
@@ -76,7 +77,7 @@ class Test_Port(unittest.TestCase):
         """
         Test hours property
         """
-        test_value = 'awtqjsarmncfhbctbjnd'
+        test_value = 'apomcuzykcxtxrbcirfg'
         self.instance.hours = test_value
         self.assertEqual(self.instance.hours, test_value)
     
@@ -84,7 +85,7 @@ class Test_Port(unittest.TestCase):
         """
         Test passenger_vehicle_max_lanes property
         """
-        test_value = int(65)
+        test_value = int(1)
         self.instance.passenger_vehicle_max_lanes = test_value
         self.assertEqual(self.instance.passenger_vehicle_max_lanes, test_value)
     
@@ -92,7 +93,7 @@ class Test_Port(unittest.TestCase):
         """
         Test commercial_vehicle_max_lanes property
         """
-        test_value = int(29)
+        test_value = int(38)
         self.instance.commercial_vehicle_max_lanes = test_value
         self.assertEqual(self.instance.commercial_vehicle_max_lanes, test_value)
     
@@ -100,16 +101,34 @@ class Test_Port(unittest.TestCase):
         """
         Test pedestrian_max_lanes property
         """
-        test_value = int(8)
+        test_value = int(97)
         self.instance.pedestrian_max_lanes = test_value
         self.assertEqual(self.instance.pedestrian_max_lanes, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_border_slug_property(self):
         """
-        Test to_byte_array method with avro media type
+        Test border_slug property
         """
-        media_type = "application/vnd.apache.avro+avro"
+        test_value = 'vgaskfspoenylfyzbojk'
+        self.instance.border_slug = test_value
+        self.assertEqual(self.instance.border_slug, test_value)
+    
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = Port.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Port.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

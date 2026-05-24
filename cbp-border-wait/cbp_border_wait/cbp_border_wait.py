@@ -49,6 +49,13 @@ def _save_state(state_file: str, data: dict) -> None:
         logging.warning("Could not save state to %s: %s", state_file, exc)
 
 
+def slugify_topic_segment(value: str, fallback: str = "unknown") -> str:
+    """Normalize a display value into a lowercase MQTT topic segment."""
+    import re
+    slug = re.sub(r"[^a-z0-9]+", "-", str(value or "").lower()).strip("-")
+    return slug or fallback
+
+
 def parse_int_or_none(value: str) -> Optional[int]:
     """Parse an integer from a CBP string value.
 
@@ -164,10 +171,12 @@ class CbpBorderWaitAPI:
         pv = raw.get("passenger_vehicle_lanes", {})
         cv = raw.get("commercial_vehicle_lanes", {})
         ped = raw.get("pedestrian_lanes", {})
+        border = raw.get("border", "")
         return Port(
             port_number=raw.get("port_number", ""),
+            border_slug=slugify_topic_segment(border),
             port_name=raw.get("port_name", ""),
-            border=raw.get("border", ""),
+            border=border,
             crossing_name=raw.get("crossing_name", ""),
             hours=raw.get("hours", ""),
             passenger_vehicle_max_lanes=parse_int_or_none(pv.get("maximum_lanes", "")),
@@ -202,10 +211,12 @@ class CbpBorderWaitAPI:
         cv_std_delay, cv_std_lanes, cv_std_status = _extract_lane(cv.get("standard_lanes", {}))
         cv_fast_delay, cv_fast_lanes, cv_fast_status = _extract_lane(cv.get("FAST_lanes", {}))
 
+        border = raw.get("border", "")
         return WaitTime(
             port_number=raw.get("port_number", ""),
+            border_slug=slugify_topic_segment(border),
             port_name=raw.get("port_name", ""),
-            border=raw.get("border", ""),
+            border=border,
             crossing_name=raw.get("crossing_name", ""),
             port_status=raw.get("port_status", ""),
             date=raw.get("date", ""),

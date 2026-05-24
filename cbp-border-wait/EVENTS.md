@@ -84,3 +84,24 @@ This document describes the events emitted by the US CBP Border Wait Times Bridg
 | `commercial_vehicle_fast_lanes_open` | *integer / null* | — | FAST commercial vehicle lanes open |
 | `commercial_vehicle_fast_operational_status` | *string / null* | — | FAST commercial vehicle status |
 | `construction_notice` | *string / null* | — | Construction or closure notice text |
+
+## MQTT/UNS topic tree
+
+The MQTT feeder publishes MQTT 5.0 binary-mode CloudEvents under the Unified Namespace root `traffic/us/cbp/cbp-border-wait`.
+
+| Event | Topic | Retain | QoS | Notes |
+|---|---|---:|---:|---|
+| `gov.cbp.borderwait.Port` | `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info` | true | 1 | Port reference snapshot. |
+| `gov.cbp.borderwait.WaitTime` | `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time` | true | 1 | Current wait-time snapshot; retained publish expires after 7200 seconds. |
+
+`{border_slug}` is a required lowercase kebab-case routing segment derived from the upstream `border` field (`canadian-border` or `mexican-border`). `{port_number}` is a required six-digit CBP port identifier and matches the Kafka key and CloudEvents subject.
+
+### Subscription patterns
+
+| Use case | Subscription |
+|---|---|
+| One crossing, both leaves | `traffic/us/cbp/cbp-border-wait/+/{port_number}/#` |
+| All Canada-border crossings | `traffic/us/cbp/cbp-border-wait/canadian-border/+/+` |
+| All Mexico-border wait times | `traffic/us/cbp/cbp-border-wait/mexican-border/+/wait-time` |
+| Port reference data for every crossing | `traffic/us/cbp/cbp-border-wait/+/+/info` |
+| Entire CBP border wait tree | `traffic/us/cbp/cbp-border-wait/#` |

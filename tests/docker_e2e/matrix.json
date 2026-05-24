@@ -310,6 +310,12 @@
       "image": "irail-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "irail_mqtt"
+    },
+    {
+      "dir": "cbp-border-wait",
+      "image": "cbp-border-wait-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "cbp_border_wait_mqtt"
     }
   ],
   "flow": [
@@ -589,6 +595,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestIRailMqttDockerFlow"
+    },
+    {
+      "dir": "cbp-border-wait",
+      "image": "cbp-border-wait-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCbpBorderWaitMqttDockerFlow"
     }
   ]
 }
