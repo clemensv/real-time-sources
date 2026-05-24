@@ -328,6 +328,12 @@
       "image": "paris-bicycle-counters-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "paris_bicycle_counters_mqtt"
+    },
+    {
+      "dir": "australia-wildfires",
+      "image": "australia-wildfires-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "australia_wildfires_mqtt"
     }
   ],
   "flow": [
@@ -628,6 +634,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestParisBicycleCountersMqttDockerFlow"
+    },
+    {
+      "dir": "australia-wildfires",
+      "image": "australia-wildfires-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestAustraliaWildfiresMqttDockerFlow"
     }
   ]
 }
