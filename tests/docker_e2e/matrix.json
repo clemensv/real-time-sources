@@ -298,6 +298,12 @@
       "image": "usgs-geomag-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "usgs_geomag_mqtt"
+    },
+    {
+      "dir": "seattle-911",
+      "image": "seattle-911-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "seattle_911_mqtt"
     }
   ],
   "flow": [
@@ -563,6 +569,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUSGSGeomagMqttDockerFlow"
+    },
+    {
+      "dir": "seattle-911",
+      "image": "seattle-911-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSeattle911MqttDockerFlow"
     }
   ]
 }
