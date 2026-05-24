@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./king_county_marine_mqtt_producer_data
+pip install ./king_county_marine_mqtt_producer_mqtt_client

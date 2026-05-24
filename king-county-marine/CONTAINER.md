@@ -35,13 +35,30 @@ docker run --rm \
   ghcr.io/clemensv/real-time-sources-king-county-marine:latest
 ```
 
+### MQTT/UNS image
+
+```bash
+docker build -f Dockerfile.mqtt -t king-county-marine-mqtt .
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtt://host.docker.internal:1883" \
+  ghcr.io/clemensv/real-time-sources/king-county-marine-mqtt:latest
+```
+
+The MQTT image publishes retained QoS 1 binary CloudEvents under
+`maritime/us/wa/king-county/king-county-marine/{station_id}/{event}`. Mount
+`/var/lib/king-county-marine` to persist de-duplication state across restarts.
+
 ## Environment Variables
 
 | Variable | Required | Description |
 |---|---|---|
 | `CONNECTION_STRING` | Yes | Kafka/Event Hubs/Fabric connection string |
 | `KAFKA_ENABLE_TLS` | No | Set `false` for plain Kafka in local and Docker E2E runs |
-| `KING_COUNTY_MARINE_STATE_FILE` | No | Path to dedupe state; default `/mnt/fileshare/king_county_marine_state.json` |
+| `KING_COUNTY_MARINE_STATE_FILE` | No | Path to dedupe state; default `/mnt/fileshare/king_county_marine_state.json` for Kafka and `/var/lib/king-county-marine/state.json` for MQTT |
+| `MQTT_BROKER_URL` | MQTT only | MQTT broker URL such as `mqtt://broker:1883` or `mqtts://broker:8883` |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT only | Optional MQTT credentials |
+| `MQTT_CONTENT_MODE` | MQTT only | CloudEvents MQTT content mode (`binary`, default, or `structured`) |
+| `KING_COUNTY_MARINE_SAMPLE_MODE` | MQTT test only | Publish one deterministic sample station and reading instead of polling live Socrata feeds |
 
 ## Deploying into Azure Container Instances
 

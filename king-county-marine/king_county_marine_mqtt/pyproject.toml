@@ -1,0 +1,23 @@
+[project]
+name = "king-county-marine-mqtt"
+version = "0.1.0"
+description = "King County Marine MQTT/UNS feeder"
+requires-python = ">=3.10"
+dependencies = [
+    "paho-mqtt",
+    "dataclasses_json",
+    "cloudevents",
+    "king-county-marine",
+    "king_county_marine_mqtt_producer_data",
+    "king_county_marine_mqtt_producer_mqtt_client",
+]
+
+[project.scripts]
+king-county-marine-mqtt = "king_county_marine_mqtt.app:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["king_county_marine_mqtt*"]
