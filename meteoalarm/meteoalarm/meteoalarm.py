@@ -5,6 +5,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
@@ -84,6 +85,16 @@ def _find_param(info: dict, name: str) -> Optional[str]:
     return None
 
 
+def _topic_slug(value: Any, default: str = "unknown") -> str:
+    """Normalize upstream labels for MQTT topic segments."""
+    text = _safe_str(value) or default
+    if ";" in text:
+        text = text.split(";")[-1]
+    text = text.lower().replace("/", "-").replace("+", "-").replace("#", "-").replace("\x00", "-")
+    text = re.sub(r"[^a-z0-9._-]+", "-", text).strip("-._")
+    return text or default
+
+
 def normalize_warning(alert_obj: dict, country: str) -> Optional[WeatherWarning]:
     """Normalize a Meteoalarm CAP alert JSON into a WeatherWarning data class."""
     identifier = _safe_str(alert_obj.get("identifier"))
@@ -117,7 +128,8 @@ def normalize_warning(alert_obj: dict, country: str) -> Optional[WeatherWarning]
     language = _safe_str(info.get("language"))
 
     awareness_level = _find_param(info, "awareness_level")
-    awareness_type = _find_param(info, "awareness_type")
+    awareness_type_raw = _find_param(info, "awareness_type")
+    awareness_type = _topic_slug(awareness_type_raw)
 
     area_desc, geocodes = _collect_areas(info)
 
@@ -147,6 +159,7 @@ def normalize_warning(alert_obj: dict, country: str) -> Optional[WeatherWarning]
         contact=contact,
         awareness_level=awareness_level,
         awareness_type=awareness_type,
+        awareness_type_raw=awareness_type_raw,
         area_desc=area_desc if area_desc else None,
         geocodes=geocodes if geocodes else None,
         language=language,

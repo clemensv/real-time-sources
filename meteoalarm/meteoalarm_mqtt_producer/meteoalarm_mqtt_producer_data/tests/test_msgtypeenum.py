@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
+from meteoalarm_mqtt_producer_data.msgtypeenum import MsgTypeenum
 
 
 class Test_MsgTypeenum(unittest.TestCase):

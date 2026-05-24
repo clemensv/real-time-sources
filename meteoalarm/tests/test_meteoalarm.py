@@ -12,7 +12,9 @@ from meteoalarm.meteoalarm import (
     _first_info,
     _collect_areas,
     _find_param,
+    _topic_slug,
 )
+from meteoalarm_mqtt.app import _topic_segment
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -128,6 +130,17 @@ class TestCollectAreas:
         assert codes == ""
 
 
+class TestTopicNormalization:
+    def test_awareness_type_slug_uses_native_label(self):
+        assert _topic_slug("2; Snow/Ice") == "snow-ice"
+        assert _topic_slug("1; Wind") == "wind"
+
+    def test_mqtt_topic_segment_defends_against_forbidden_chars(self):
+        assert _topic_segment(" A/B + #\tC\nD\x00 ") == "A-B-----C-D-"
+        assert _topic_segment("") == "unknown"
+        assert _topic_segment(None) == "unknown"
+
+
 class TestFindParam:
     def test_found(self):
         info = {"parameter": [{"valueName": "awareness_level", "value": "2; yellow; Moderate"}]}
@@ -153,7 +166,8 @@ class TestNormalizeWarning:
         assert w.urgency == "Immediate"
         assert w.event == "STURMBÖEN"
         assert w.awareness_level == "2; yellow; Moderate"
-        assert w.awareness_type == "1; Wind"
+        assert w.awareness_type == "wind"
+        assert w.awareness_type_raw == "1; Wind"
         assert "Bayreuth" in w.area_desc
         assert "DE042" in w.geocodes
         assert w.msg_type == "Alert"

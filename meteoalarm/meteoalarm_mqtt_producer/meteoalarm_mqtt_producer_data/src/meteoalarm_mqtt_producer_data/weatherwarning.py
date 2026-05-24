@@ -12,13 +12,13 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
-from meteoalarm_producer_data.categoryenum import CategoryEnum
-from meteoalarm_producer_data.urgencyenum import UrgencyEnum
-from meteoalarm_producer_data.scopeenum import ScopeEnum
-from meteoalarm_producer_data.certaintyenum import CertaintyEnum
-from meteoalarm_producer_data.severityenum import SeverityEnum
-from meteoalarm_producer_data.statusenum import StatusEnum
+from meteoalarm_mqtt_producer_data.statusenum import StatusEnum
+from meteoalarm_mqtt_producer_data.msgtypeenum import MsgTypeenum
+from meteoalarm_mqtt_producer_data.urgencyenum import UrgencyEnum
+from meteoalarm_mqtt_producer_data.severityenum import SeverityEnum
+from meteoalarm_mqtt_producer_data.categoryenum import CategoryEnum
+from meteoalarm_mqtt_producer_data.scopeenum import ScopeEnum
+from meteoalarm_mqtt_producer_data.certaintyenum import CertaintyEnum
 import datetime
 
 
@@ -210,30 +210,30 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            identifier='jcseyfrokqmmmotvqcac',
-            sender='pamiynplxlshsvdukjos',
+            identifier='kupkvnvjgnrkeazyqsgn',
+            sender='gmfffrutmuhpvtcmtaaa',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            country='rfxguxjeugezntzlkwft',
-            event='vgscwrddhfxkpvgnrylk',
+            country='nsceovquxoajivorxnkf',
+            event='jlnbgxmprtdguaqhqcay',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='djetvtjklfuwrhrxpsto',
-            description='whgnjwqnlqvkuilakxew',
-            instruction='ssqrbsbrnyzaivjmnpho',
+            headline='rlbchtfhexeqbgapbyal',
+            description='lwwpdxbcaydvlzunrorp',
+            instruction='kjingzcigprlvnelzxpe',
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            web='fapxhttuddwwpsngmpnd',
-            contact='jmpcgiqzakmdpkgurdvf',
-            awareness_level='fucadwszoyzusdanmgxw',
-            awareness_type='nutybjeigshssdzrpznf',
-            area_desc='qqzazmtnfbyrcdspcdcz',
-            geocodes='mzukrkpcjatyopaxjhqq',
-            language='auotomzgkcwzfsmeulgg',
-            awareness_type_raw='pvjpszmmufjuztyxbacq'
+            web='ptigqkngpdkbswsjigzt',
+            contact='vlwdwgjcjvhsqofqmess',
+            awareness_level='rezzueymjdrydidgmmaw',
+            awareness_type='ffvvkskdkrxgpzllrjem',
+            area_desc='gmczlhltnvikhynalvpt',
+            geocodes='fkyerqwjgwrbspertexu',
+            language='lbaawrldanwgfuocjvwx',
+            awareness_type_raw='nbdzlwzvjaqbpayttbug'
         )
