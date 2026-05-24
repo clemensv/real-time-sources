@@ -73,3 +73,27 @@ configured.
 - Docs: https://www.epa.gov/enviro/web-services
 - Hourly city/state endpoint pattern: `https://data.epa.gov/dmapservice/getEnvirofactsUVHOURLY/CITY/{City}/STATE/{State}/JSON`
 - Daily city/state endpoint pattern: `https://data.epa.gov/dmapservice/getEnvirofactsUVDAILY/CITY/{City}/STATE/{State}/JSON`
+
+## Transports
+
+This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-epa-uv-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+
+The MQTT contract is source-specific: MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-1 UV forecast leaves under uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/..., where {state} is lowercase US state, {city_slug} is lowercase kebab-case city, and {location_id} preserves the existing Kafka/CloudEvents entity id intentionally for subject/key compatibility even though it is derivable from state+city. Hourly slots use topic-safe {forecast_hour}=YYYYMMDDTHH; daily slots use {forecast_date}=YYYY-MM-DD. Message expiry bounds retained forecast slots so stale forecasts age out.
+
+MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/epa_uv.xreg.json`:
+
+| Topic pattern | Message type | Delivery |
+|---|---|---|
+| `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}` | `US.EPA.UVIndex.HourlyForecast` | QoS 1, retain=true, expiry=172800s |
+| `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}` | `US.EPA.UVIndex.DailyForecast` | QoS 1, retain=true, expiry=1209600s |
+
+Four Azure Container Instance deployment shapes are documented for this source:
+
+| Transport | Template |
+|---|---|
+| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
+| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
+| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
+| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+
+See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.

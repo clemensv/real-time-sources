@@ -126,3 +126,27 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-geomag%2Fazure-template-with-eventhub.json)
+
+## Transports
+
+This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-usgs-geomag-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+
+The MQTT contract is source-specific: MQTT/5.0 transport variants for USGS geomagnetic observatory reference data and one-minute readings. Topics are retained QoS-1 leaves under space-weather/us/usgs/usgs-geomag/{iaga_code}/..., where {iaga_code} in the topic is the lowercased IAGA observatory code; the payload field may carry the canonical upstream code. Producers MUST lowercase {iaga_code} for the topic and consumers MUST treat topic filters as case-sensitive. The info leaf is retained reference metadata with no expiry. The reading leaf is a latched current 1-minute observation with Message Expiry Interval 7200 seconds; if the retained value expires, interpret the empty topic as observatory or bridge silence for at least two hours, not a zero magnetic-field reading. The iaga_code is the join key between retained info and readings.
+
+MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/usgs_geomag.xreg.json`:
+
+| Topic pattern | Message type | Delivery |
+|---|---|---|
+| `space-weather/us/usgs/usgs-geomag/{iaga_code}/info` | `gov.usgs.geomag.Observatory` | QoS 1, retain=true |
+| `space-weather/us/usgs/usgs-geomag/{iaga_code}/reading` | `gov.usgs.geomag.MagneticFieldReading` | QoS 1, retain=true, expiry=7200s |
+
+Four Azure Container Instance deployment shapes are documented for this source:
+
+| Transport | Template |
+|---|---|
+| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
+| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
+| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
+| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+
+See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.

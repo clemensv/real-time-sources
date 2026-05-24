@@ -63,3 +63,18 @@ One-minute resolution geomagnetic field variation reading.
 | `d` | *number* | minutes of arc | Declination angle |
 | `z` | *number* | nT | Vertical intensity component |
 | `f` | *number* | nT | Total field intensity |
+
+---
+
+## Message Group: gov.usgs.geomag.mqtt
+
+MQTT/5.0 transport variants for USGS geomagnetic observatory reference data and one-minute readings. Topics are retained QoS-1 leaves under space-weather/us/usgs/usgs-geomag/{iaga_code}/..., where {iaga_code} in the topic is the lowercased IAGA observatory code; the payload field may carry the canonical upstream code. Producers MUST lowercase {iaga_code} for the topic and consumers MUST treat topic filters as case-sensitive. The info leaf is retained reference metadata with no expiry. The reading leaf is a latched current 1-minute observation with Message Expiry Interval 7200 seconds; if the retained value expires, interpret the empty topic as observatory or bridge silence for at least two hours, not a zero magnetic-field reading. The iaga_code is the join key between retained info and readings.
+
+The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+
+### MQTT topics
+
+| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
+|---|---|---|---|---|
+| `space-weather/us/usgs/usgs-geomag/{iaga_code}/info` | `gov.usgs.geomag.Observatory` | `true` | `1` | `` |
+| `space-weather/us/usgs/usgs-geomag/{iaga_code}/reading` | `gov.usgs.geomag.MagneticFieldReading` | `true` | `1` | `7200` |
