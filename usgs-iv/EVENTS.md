@@ -2,6 +2,16 @@
 
 This document describes the events that are emitted by the USGS Instantaneous Values API Bridge.
 
+## MQTT/UNS topics
+
+The MQTT feeder publishes binary CloudEvents with QoS 1 under the hydro UNS root:
+
+- Site metadata: `hydro/us/usgs/usgs-iv/{site_no}/info` (retained, 30-day expiry)
+- Timeseries metadata: `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/timeseries` (retained, 30-day expiry)
+- Latest observations: `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation` (retained, 24-hour expiry)
+
+The topic uses the existing schema field names `site_no`, `parameter_cd`, and `timeseries_cd`; `agency_cd` remains in the CloudEvent subject and payload. Example subscriptions: all values for one site: `hydro/us/usgs/usgs-iv/01646500/+/+/observation`; one parameter at one site: `hydro/us/usgs/usgs-iv/01646500/00060/+/observation`.
+
 - [USGS.Sites](#message-group-usgssites)
   - [USGS.Sites.Site](#message-usgssitessite)
   - [USGS.Sites.SiteTimeseries](#message-usgssitessitetimeseries)

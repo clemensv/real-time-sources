@@ -42,6 +42,27 @@
         "#/messagegroups/USGS.SiteTimeseries",
         "#/messagegroups/USGS.InstantaneousValues"
       ]
+    },
+    "USGS.IV.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/USGS.Sites.mqtt",
+        "#/messagegroups/USGS.SiteTimeseries.mqtt",
+        "#/messagegroups/USGS.InstantaneousValues.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -718,6 +739,329 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.GateOpening"
+        }
+      }
+    },
+    "USGS.Sites.mqtt": {
+      "description": "MQTT/5.0 transport variants for USGS site metadata. Topics are retained QoS-1 site info leaves under hydro/us/usgs/usgs-iv/{site_no}/info. The manifest intentionally uses existing schema field names site_no and parameter_cd rather than adding aliases.",
+      "messages": {
+        "USGS.Sites.mqtt.Site": {
+          "name": "Site",
+          "basemessageurl": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/info",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 2592000
+          }
+        }
+      }
+    },
+    "USGS.SiteTimeseries.mqtt": {
+      "description": "MQTT/5.0 transport variants for USGS site timeseries metadata. Retained QoS-1 leaves use existing schema fields site_no, parameter_cd, and timeseries_cd to preserve the Kafka identity axes.",
+      "messages": {
+        "USGS.SiteTimeseries.mqtt.SiteTimeseries": {
+          "name": "SiteTimeseries",
+          "basemessageurl": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/timeseries",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 2592000
+          }
+        }
+      }
+    },
+    "USGS.InstantaneousValues.mqtt": {
+      "description": "MQTT/5.0 transport variants for USGS instantaneous values. Retained QoS-1 latest-observation leaves use existing schema fields site_no, parameter_cd, and timeseries_cd to avoid collapsing independent USGS time series; message expiry limits stale latest values.",
+      "messages": {
+        "USGS.InstantaneousValues.mqtt.OtherParameter": {
+          "name": "OtherParameter",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Precipitation": {
+          "name": "Precipitation",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Streamflow": {
+          "name": "Streamflow",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.GageHeight": {
+          "name": "GageHeight",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WaterTemperature": {
+          "name": "WaterTemperature",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.DissolvedOxygen": {
+          "name": "DissolvedOxygen",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.pH": {
+          "name": "pH",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.SpecificConductance": {
+          "name": "SpecificConductance",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Turbidity": {
+          "name": "Turbidity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.AirTemperature": {
+          "name": "AirTemperature",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WindSpeed": {
+          "name": "WindSpeed",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WindDirection": {
+          "name": "WindDirection",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.RelativeHumidity": {
+          "name": "RelativeHumidity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.BarometricPressure": {
+          "name": "BarometricPressure",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.TurbidityFNU": {
+          "name": "TurbidityFNU",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.fDOM": {
+          "name": "fDOM",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.ReservoirStorage": {
+          "name": "ReservoirStorage",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29": {
+          "name": "LakeElevationNGVD29",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WaterDepth": {
+          "name": "WaterDepth",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.EquipmentStatus": {
+          "name": "EquipmentStatus",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge": {
+          "name": "TidallyFilteredDischarge",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.WaterVelocity": {
+          "name": "WaterVelocity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29": {
+          "name": "EstuaryElevationNGVD29",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88": {
+          "name": "LakeElevationNAVD88",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.Salinity": {
+          "name": "Salinity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
+        },
+        "USGS.InstantaneousValues.mqtt.GateOpening": {
+          "name": "GateOpening",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 86400
+          }
         }
       }
     }
