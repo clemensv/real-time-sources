@@ -1,4 +1,4 @@
-""" HourlyForecast dataclass. """
+""" DailyForecast dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,31 +15,31 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class HourlyForecast:
+class DailyForecast:
     """
-    Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.
+    Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.
     
     Attributes:
         location_id (str)
         city (str)
         state (str)
-        forecast_datetime (str)
+        forecast_date (str)
         uv_index (int)
+        uv_alert (str)
         city_slug (str)
-        forecast_hour (str)
     """
     
     
     location_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location_id"))
     city: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="city"))
     state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
-    forecast_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_datetime"))
+    forecast_date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_date"))
     uv_index: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uv_index"))
+    uv_alert: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uv_alert"))
     city_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="city_slug"))
-    forecast_hour: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_hour"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'HourlyForecast':
+    def from_serializer_dict(cls, data: dict) -> 'DailyForecast':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -112,7 +112,7 @@ class HourlyForecast:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['HourlyForecast']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['DailyForecast']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -149,13 +149,13 @@ class HourlyForecast:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return HourlyForecast.from_serializer_dict(_record)
+                return DailyForecast.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'HourlyForecast':
+    def create_instance(cls) -> 'DailyForecast':
         """
         Creates an instance of the dataclass with test values.
         
@@ -163,11 +163,11 @@ class HourlyForecast:
             An instance of the dataclass.
         """
         return cls(
-            location_id='otzfaojtbagfodbrwjpk',
-            city='xndurnhipyfnpoewteik',
-            state='jfiilbgkznlunuhizprj',
-            forecast_datetime='wkiexiouqytxmmubukqz',
-            uv_index=int(75),
-            city_slug='sxzgxrefopedzhqrdekz',
-            forecast_hour='nwzbnckfqhjcysgpaxcf'
+            location_id='qsoujvqszlyyvxhqruqo',
+            city='jyuhjmmkhcemrwcxswvl',
+            state='txgizpyhrjwvvvayqwyg',
+            forecast_date='mjrhprgkwnbtmnxazpxu',
+            uv_index=int(35),
+            uv_alert='uowusuukktubnxfnwoub',
+            city_slug='vyxozgferrohlvndgepz'
         )

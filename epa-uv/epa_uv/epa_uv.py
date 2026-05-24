@@ -101,8 +101,10 @@ def parse_hourly_row(city: str, state: str, row: dict) -> HourlyForecast:
     return HourlyForecast(
         location_id=location_id,
         city=city,
-        state=state,
+        city_slug=slugify(city),
+        state=state.lower(),
         forecast_datetime=parsed_dt.strftime("%Y-%m-%dT%H:%M:%S"),
+        forecast_hour=parsed_dt.strftime("%Y%m%dT%H"),
         uv_index=int(row["UV_VALUE"]),
     )
 
@@ -114,7 +116,8 @@ def parse_daily_row(city: str, state: str, row: dict) -> DailyForecast:
     return DailyForecast(
         location_id=location_id,
         city=city,
-        state=state,
+        city_slug=slugify(city),
+        state=state.lower(),
         forecast_date=parsed_date.strftime("%Y-%m-%d"),
         uv_index=int(row["UV_INDEX"]),
         uv_alert=str(row["UV_ALERT"]),

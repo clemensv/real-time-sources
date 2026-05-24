@@ -286,6 +286,12 @@
       "image": "rws-waterwebservices-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "rws_waterwebservices_mqtt"
+    },
+    {
+      "dir": "epa-uv",
+      "image": "epa-uv-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "epa_uv_mqtt"
     }
   ],
   "flow": [
@@ -537,6 +543,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestRWSWaterwebservicesMqttDockerFlow"
+    },
+    {
+      "dir": "epa-uv",
+      "image": "epa-uv-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEPAUVMqttDockerFlow"
     }
   ]
 }

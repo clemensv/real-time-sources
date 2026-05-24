@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "US.EPA.UVIndex.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,7 +17,30 @@
           "key": "{location_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/US.EPA.UVIndex"]
+      "messagegroups": [
+        "#/messagegroups/US.EPA.UVIndex"
+      ]
+    },
+    "US.EPA.UVIndex.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/US.EPA.UVIndex.mqtt"
+      ]
     }
   },
   "messagegroups": {
@@ -58,6 +83,33 @@
           "dataschemauri": "#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast"
         }
       }
+    },
+    "US.EPA.UVIndex.mqtt": {
+      "description": "MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-1 UV forecast leaves under uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/..., where {state} is lowercase US state, {city_slug} is lowercase kebab-case city, and {location_id} preserves the existing Kafka/CloudEvents entity id intentionally for subject/key compatibility even though it is derivable from state+city. Hourly slots use topic-safe {forecast_hour}=YYYYMMDDTHH; daily slots use {forecast_date}=YYYY-MM-DD. Message expiry bounds retained forecast slots so stale forecasts age out.",
+      "messages": {
+        "US.EPA.UVIndex.mqtt.HourlyForecast": {
+          "name": "HourlyForecast",
+          "basemessageurl": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 172800
+          }
+        },
+        "US.EPA.UVIndex.mqtt.DailyForecast": {
+          "name": "DailyForecast",
+          "basemessageurl": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 1209600
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -77,8 +129,10 @@
                 "required": [
                   "location_id",
                   "city",
+                  "city_slug",
                   "state",
                   "forecast_datetime",
+                  "forecast_hour",
                   "uv_index"
                 ],
                 "name": "HourlyForecast",
@@ -94,15 +148,23 @@
                   },
                   "state": {
                     "type": "string",
-                    "description": "Two-letter state abbreviation for the requested city."
+                    "description": "Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge."
                   },
                   "forecast_datetime": {
                     "type": "string",
-                    "description": "Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset."
+                    "description": "Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset. Used as the retained MQTT hourly slot with message expiry."
                   },
                   "uv_index": {
                     "type": "integer",
                     "description": "Hourly UV Index forecast value."
+                  },
+                  "city_slug": {
+                    "type": "string",
+                    "description": "Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix."
+                  },
+                  "forecast_hour": {
+                    "type": "string",
+                    "description": "Topic-safe retained forecast slot in YYYYMMDDTHH form, derived from forecast_datetime with zero padding and no offset, colon, slash, plus, or hash characters."
                   }
                 }
               }
@@ -123,6 +185,7 @@
                 "required": [
                   "location_id",
                   "city",
+                  "city_slug",
                   "state",
                   "forecast_date",
                   "uv_index",
@@ -141,11 +204,11 @@
                   },
                   "state": {
                     "type": "string",
-                    "description": "Two-letter state abbreviation for the requested city."
+                    "description": "Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge."
                   },
                   "forecast_date": {
                     "type": "string",
-                    "description": "Forecast date normalized to YYYY-MM-DD."
+                    "description": "Topic-safe forecast date normalized to YYYY-MM-DD. Used as the retained MQTT daily slot with message expiry."
                   },
                   "uv_index": {
                     "type": "integer",
@@ -154,6 +217,10 @@
                   "uv_alert": {
                     "type": "string",
                     "description": "Character flag indicating whether a UV alert is issued for the forecast day."
+                  },
+                  "city_slug": {
+                    "type": "string",
+                    "description": "Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix."
                   }
                 }
               }

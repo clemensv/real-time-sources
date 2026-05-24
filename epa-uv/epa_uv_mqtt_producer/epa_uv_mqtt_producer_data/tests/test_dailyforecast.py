@@ -1,5 +1,5 @@
 """
-Test case for HourlyForecast
+Test case for DailyForecast
 """
 
 import os
@@ -8,33 +8,33 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from epa_uv_producer_data.hourlyforecast import HourlyForecast
+from epa_uv_mqtt_producer_data.dailyforecast import DailyForecast
 
 
-class Test_HourlyForecast(unittest.TestCase):
+class Test_DailyForecast(unittest.TestCase):
     """
-    Test case for HourlyForecast
+    Test case for DailyForecast
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_HourlyForecast.create_instance()
+        self.instance = Test_DailyForecast.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of HourlyForecast for testing
+        Create instance of DailyForecast for testing
         """
-        instance = HourlyForecast(
-            location_id='otzfaojtbagfodbrwjpk',
-            city='xndurnhipyfnpoewteik',
-            state='jfiilbgkznlunuhizprj',
-            forecast_datetime='wkiexiouqytxmmubukqz',
-            uv_index=int(75),
-            city_slug='sxzgxrefopedzhqrdekz',
-            forecast_hour='nwzbnckfqhjcysgpaxcf'
+        instance = DailyForecast(
+            location_id='qsoujvqszlyyvxhqruqo',
+            city='jyuhjmmkhcemrwcxswvl',
+            state='txgizpyhrjwvvvayqwyg',
+            forecast_date='mjrhprgkwnbtmnxazpxu',
+            uv_index=int(35),
+            uv_alert='uowusuukktubnxfnwoub',
+            city_slug='vyxozgferrohlvndgepz'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test location_id property
         """
-        test_value = 'otzfaojtbagfodbrwjpk'
+        test_value = 'qsoujvqszlyyvxhqruqo'
         self.instance.location_id = test_value
         self.assertEqual(self.instance.location_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test city property
         """
-        test_value = 'xndurnhipyfnpoewteik'
+        test_value = 'jyuhjmmkhcemrwcxswvl'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
     
@@ -59,41 +59,41 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'jfiilbgkznlunuhizprj'
+        test_value = 'txgizpyhrjwvvvayqwyg'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
-    def test_forecast_datetime_property(self):
+    def test_forecast_date_property(self):
         """
-        Test forecast_datetime property
+        Test forecast_date property
         """
-        test_value = 'wkiexiouqytxmmubukqz'
-        self.instance.forecast_datetime = test_value
-        self.assertEqual(self.instance.forecast_datetime, test_value)
+        test_value = 'mjrhprgkwnbtmnxazpxu'
+        self.instance.forecast_date = test_value
+        self.assertEqual(self.instance.forecast_date, test_value)
     
     def test_uv_index_property(self):
         """
         Test uv_index property
         """
-        test_value = int(75)
+        test_value = int(35)
         self.instance.uv_index = test_value
         self.assertEqual(self.instance.uv_index, test_value)
+    
+    def test_uv_alert_property(self):
+        """
+        Test uv_alert property
+        """
+        test_value = 'uowusuukktubnxfnwoub'
+        self.instance.uv_alert = test_value
+        self.assertEqual(self.instance.uv_alert, test_value)
     
     def test_city_slug_property(self):
         """
         Test city_slug property
         """
-        test_value = 'sxzgxrefopedzhqrdekz'
+        test_value = 'vyxozgferrohlvndgepz'
         self.instance.city_slug = test_value
         self.assertEqual(self.instance.city_slug, test_value)
-    
-    def test_forecast_hour_property(self):
-        """
-        Test forecast_hour property
-        """
-        test_value = 'nwzbnckfqhjcysgpaxcf'
-        self.instance.forecast_hour = test_value
-        self.assertEqual(self.instance.forecast_hour, test_value)
     
     def test_to_byte_array_json(self):
         """
@@ -101,7 +101,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = HourlyForecast.from_data(bytes_data, media_type)
+        new_instance = DailyForecast.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -110,7 +110,7 @@ class Test_HourlyForecast(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = HourlyForecast.from_json(json_data)
+        new_instance = DailyForecast.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 
