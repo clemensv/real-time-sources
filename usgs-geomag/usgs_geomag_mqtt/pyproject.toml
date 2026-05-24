@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "usgs-geomag-mqtt"
+version = "0.1.0"
+description = "USGS Geomagnetism bridge to MQTT/UNS"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+usgs_geomag_mqtt_producer_data = {path = "../usgs_geomag_mqtt_producer/usgs_geomag_mqtt_producer_data"}
+usgs_geomag_mqtt_producer_mqtt_client = {path = "../usgs_geomag_mqtt_producer/usgs_geomag_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+usgs-geomag-mqtt = "usgs_geomag_mqtt:main"

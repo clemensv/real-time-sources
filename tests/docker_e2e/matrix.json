@@ -292,6 +292,12 @@
       "image": "epa-uv-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "epa_uv_mqtt"
+    },
+    {
+      "dir": "usgs-geomag",
+      "image": "usgs-geomag-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "usgs_geomag_mqtt"
     }
   ],
   "flow": [
@@ -550,6 +556,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEPAUVMqttDockerFlow"
+    },
+    {
+      "dir": "usgs-geomag",
+      "image": "usgs-geomag-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUSGSGeomagMqttDockerFlow"
     }
   ]
 }
