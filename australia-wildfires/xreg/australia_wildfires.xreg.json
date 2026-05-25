@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/AU.Gov.Emergency.Wildfires"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Australia Wildfires CloudEvents on the `australia-wildfires` topic keyed by `{state}/{incident_id}`."
     },
     "AU.Gov.Emergency.Wildfires.Mqtt": {
       "usage": [
@@ -41,7 +42,7 @@
       "messagegroups": [
         "#/messagegroups/AU.Gov.Emergency.Wildfires.mqtt"
       ],
-      "description": "MQTT/5.0 binary-mode CloudEvents producer for the Australian wildfires UNS topic tree."
+      "description": "MQTT 5 producer endpoint for Australia Wildfires CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -63,12 +64,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.jstruct/schemas/AU.Gov.Emergency.Wildfires.FireIncident"
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.jstruct/schemas/AU.Gov.Emergency.Wildfires.FireIncident",
+          "description": "An incident update from Australian emergency-services incident feeds. It reports the current status, location, and classification for a wildfire or emergency incident."
         }
-      }
+      },
+      "description": "Events from Australia Wildfires covering Australian wildfire incidents. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "AU.Gov.Emergency.Wildfires.mqtt": {
-      "description": "MQTT/5.0 transport variant for Australian bushfire incidents. The UNS topic tree is wildfire/au/{state}/{status}/{incident_id}/incident. QoS 1 and retain=false are used because incident updates are time-varying event updates rather than static reference data; consumers deduplicate by {state}/{incident_id} and CloudEvents id.",
+      "description": "MQTT 5 variant of the Australia Wildfires events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "AU.Gov.Emergency.Wildfires.mqtt.FireIncident": {
           "name": "FireIncident",
@@ -99,7 +102,7 @@
                 "$id": "https://emergency.gov.au/schemas/AU/Gov/Emergency/Wildfires/FireIncident",
                 "type": "object",
                 "name": "FireIncident",
-                "description": "Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services: NSW Rural Fire Service (GeoJSON major-incidents feed), VicEmergency (GeoJSON all-hazards feed filtered to fire events), and Queensland Fire Department (GeoJSON bushfire-alert feed). Each record represents a single active fire incident with its alert level, location, size, and responsible agency.",
+                "description": "An incident update from Australian emergency-services incident feeds. It reports the current status, location, and classification for a wildfire or emergency incident.",
                 "required": [
                   "incident_id",
                   "state",
@@ -194,6 +197,10 @@
         }
       }
     }
+  },
+  "description": "Australia Wildfires publishes bushfire incident status updates from Australian emergency-services incident feeds for Australian wildfire incidents. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for Australia Wildfires, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
-
