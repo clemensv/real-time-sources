@@ -130,3 +130,7 @@ Data is sourced from the [TfL Unified API](https://api.tfl.gov.uk/). The API is 
 - `/Road` — Road corridor catalog
 - `/Road/all/Status` — Current status for all corridors
 - `/Road/all/Disruption` — Active disruptions on the road network
+
+## AMQP 1.0 companion
+
+This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
