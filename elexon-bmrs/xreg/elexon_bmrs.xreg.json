@@ -20,6 +20,54 @@
       "messagegroups": [
         "#/messagegroups/UK.Co.Elexon.BMRS"
       ]
+    },
+    "UK.Co.Elexon.BMRS.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Co.Elexon.BMRS.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for elexon-bmrs."
+    },
+    "UK.Co.Elexon.BMRS.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/elexon-bmrs"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "elexon-bmrs"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Co.Elexon.BMRS.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for elexon-bmrs."
     }
   },
   "messagegroups": {
@@ -60,6 +108,128 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn"
+        },
+        "UK.Co.Elexon.BMRS.Info": {
+          "name": "Info",
+          "envelope": "CloudEvents/1.0",
+          "description": "Retained reference information for MQTT/AMQP topic discovery.",
+          "envelopemetadata": {
+            "type": {
+              "value": "UK.Co.Elexon.BMRS.Info"
+            },
+            "source": {
+              "value": "https://github.com/clemensv/real-time-sources"
+            },
+            "subject": {
+              "value": "{settlement_period}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.Info"
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.mqtt": {
+      "description": "MQTT 5.0 binary-mode CloudEvents variant of UK.Co.Elexon.BMRS.",
+      "messages": {
+        "UK.Co.Elexon.BMRS.mqtt.GenerationMix": {
+          "name": "GenerationMix",
+          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/gb/elexon/elexon-bmrs/gb/{settlement_date}/{settlement_period}/generation-mix",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "UK.Co.Elexon.BMRS.mqtt.DemandOutturn": {
+          "name": "DemandOutturn",
+          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/gb/elexon/elexon-bmrs/gb/{settlement_date}/{settlement_period}/demand-outturn",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "UK.Co.Elexon.BMRS.mqtt.Info": {
+          "name": "Info",
+          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/gb/elexon/elexon-bmrs/gb/{settlement_date}/{settlement_period}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "UK.Co.Elexon.BMRS.amqp": {
+      "description": "AMQP 1.0 binary-mode CloudEvents variant of UK.Co.Elexon.BMRS.",
+      "messages": {
+        "UK.Co.Elexon.BMRS.amqp.GenerationMix": {
+          "name": "GenerationMix",
+          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{settlement_period}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{settlement_period}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.amqp.DemandOutturn": {
+          "name": "DemandOutturn",
+          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{settlement_period}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{settlement_period}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.amqp.Info": {
+          "name": "Info",
+          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{settlement_period}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{settlement_period}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
         }
       }
     }
@@ -92,103 +262,154 @@
                     "description": "UTC start time of the settlement period as reported by the BMRS generation outturn summary endpoint."
                   },
                   "biomass_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from biomass-fuelled power stations in megawatts (MW). Biomass includes dedicated biomass plants and biomass co-firing units.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "ccgt_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from combined cycle gas turbine (CCGT) power stations in megawatts (MW). CCGT is the primary gas-fired generation technology in GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "coal_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from coal-fired power stations in megawatts (MW).",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "nuclear_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from nuclear power stations in megawatts (MW).",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "wind_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from wind farms (onshore and offshore combined) in megawatts (MW).",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "ocgt_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from open cycle gas turbine (OCGT) power stations in megawatts (MW). OCGT units are typically used for peaking and reserve.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "oil_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from oil-fired power stations in megawatts (MW).",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "npshyd_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from non-pumped-storage hydroelectric power stations in megawatts (MW).",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "ps_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from pumped storage hydroelectric power stations in megawatts (MW). PS units can act as both generation and demand.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intfr_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the France interconnector (IFA) in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intned_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the Netherlands interconnector (BritNed) in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intnem_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the Belgium interconnector (Nemo Link) in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intelec_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the East-West Interconnector (EWIC) to Ireland in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intifa2_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the IFA2 interconnector to France in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intnsl_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the North Sea Link interconnector to Norway in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "intvkl_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Net import via the Viking Link interconnector to Denmark in megawatts (MW). Positive values indicate import to GB.",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "other_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Generation output from other fuel types not individually categorised in megawatts (MW).",
                     "unit": "MW",
                     "symbol": "MW"
@@ -234,13 +455,19 @@
                     "description": "UTC timestamp when the demand outturn data was published by Elexon."
                   },
                   "initial_demand_outturn_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Initial national demand outturn (INDO) in megawatts (MW). This is the metered generation output less station transformer, unit transformer, and pumped storage demand, measured at the Grid Supply Point (GSP).",
                     "unit": "MW",
                     "symbol": "MW"
                   },
                   "initial_transmission_system_demand_outturn_mw": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Initial transmission system demand outturn (ITSDO) in megawatts (MW). This represents the national demand plus station demand, pumping, and interconnector exports.",
                     "unit": "MW",
                     "symbol": "MW"
@@ -248,6 +475,114 @@
                 },
                 "$id": "https://data.elexon.co.uk/schemas/UK/Co/Elexon/BMRS/DemandOutturn",
                 "description": "Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon."
+              }
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.Info": {
+          "name": "Info",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/elexon-bmrs/Info",
+                "type": "object",
+                "name": "Info",
+                "description": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope.",
+                "required": [
+                  "info_id",
+                  "name"
+                ],
+                "properties": {
+                  "info_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  "country": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries."
+                  },
+                  "city": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "City segment used in civic-events topic routing, or null when not applicable."
+                  },
+                  "category": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Event category segment used in topic routing, or null when not applicable."
+                  },
+                  "price_area": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Energy market price area or bidding zone represented by this reference record, when applicable."
+                  },
+                  "settlement_date": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "GB settlement date for Elexon retained information topics when applicable."
+                  },
+                  "settlement_period": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "GB settlement period for Elexon retained information topics when applicable."
+                  },
+                  "area_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Electricity control area or utility service area code represented by this record when applicable."
+                  },
+                  "segment": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Ticketmaster classification segment used for wildcard topic routing, when applicable."
+                  },
+                  "entity_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable upstream entity identifier for reference topics, when applicable."
+                  },
+                  "event_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable upstream event identifier for event-scoped reference topics, when applicable."
+                  },
+                  "venue_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable venue identifier for venue-scoped civic event topics, when applicable."
+                  }
+                }
               }
             }
           }
