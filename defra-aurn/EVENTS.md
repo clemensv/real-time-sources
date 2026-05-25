@@ -1,6 +1,6 @@
 # Defra AURN Bridge Usage Guide Events
 
-This bridge polls the UK Defra Automatic Urban and Rural Network (AURN) SOS Timeseries API and republishes station metadata, timeseries metadata, and fresh hourly observations to Kafka as CloudEvents in structured JSON mode.
+DEFRA AURN publishes pollutant concentration measurements from the UK Department for Environment, Food and Rural Affairs Automatic Urban and Rural Network for UK air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `uk.gov.defra.aurn.Station`
 
 #### What it tells you
 
-Reference metadata for a Defra AURN monitoring station entry as published by the 52°North SOS Timeseries API stations collection. Metadata for a Defra AURN monitoring station as returned by GET /stations. The bridge flattens the GeoJSON feature into a payload with the station identifier, the upstream display label, and WGS84 latitude and longitude values taken from geometry.coordinates[0] and geometry.coordinates[1], because this API returns coordinates in latitude, longitude order.
+Reference metadata for a Defra AURN monitoring station entry as published by the 52°North SOS Timeseries API stations collection.
 
 #### Identity
 
@@ -81,7 +81,7 @@ CloudEvents type: `uk.gov.defra.aurn.Timeseries`
 
 #### What it tells you
 
-Reference metadata for a Defra AURN station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers. Reference metadata for a Defra AURN station and pollutant timeseries combination, assembled from GET /timeseries/{id}?expanded=true. The payload preserves the stable timeseries identifier, linked station metadata, unit of measurement, and pollutant taxonomy references published in parameters.phenomenon and parameters.category.
+Reference metadata for a Defra AURN station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.
 
 #### Identity
 
@@ -138,7 +138,7 @@ CloudEvents type: `uk.gov.defra.aurn.Observation`
 
 #### What it tells you
 
-Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window. Observation value from GET /timeseries/{id}/getData. The bridge converts the upstream Unix millisecond timestamp to an ISO 8601 UTC timestamp string and republishes the measurement value together with the timeseries identifier and unit of measurement from the reference metadata.
+Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.
 
 #### Identity
 
