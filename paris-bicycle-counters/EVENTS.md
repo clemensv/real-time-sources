@@ -1,6 +1,6 @@
 # Paris Bicycle Counters Poller Events
 
-MQTT/5.0 transport variants for Paris bicycle counters. Topics route by stable MQTT-safe counter_id (upstream id_compteur; values containing /, +, #, or NUL are dropped) under traffic/fr/paris/paris-bicycle-counters/{counter_id}/... . Counter reference records are retained QoS 1; hourly bicycle counts are non-retained QoS 1 events.
+Paris Bicycle Counters publishes bicycle count observations from Paris open-data bicycle counter feeds for Paris bicycle-counting stations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `FR.Paris.OpenData.Velo.Counter`
 
 #### What it tells you
 
-Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.
+A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -94,7 +94,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Bicycle Count
 
@@ -102,7 +102,7 @@ CloudEvents type: `FR.Paris.OpenData.Velo.BicycleCount`
 
 #### What it tells you
 
-Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.
+A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -144,7 +144,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ## Conventions
 

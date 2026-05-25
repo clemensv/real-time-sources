@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/FR.Paris.OpenData.Velo"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Paris Bicycle Counters CloudEvents on the `paris-bicycle-counters` topic keyed by `{counter_id}`."
     },
     "FR.Paris.OpenData.Velo.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/FR.Paris.OpenData.Velo.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for Paris Bicycle Counters CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -66,7 +68,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.Counter"
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.Counter",
+          "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value."
         },
         "FR.Paris.OpenData.Velo.BicycleCount": {
           "name": "BicycleCount",
@@ -92,12 +95,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.BicycleCount"
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.BicycleCount",
+          "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Paris Bicycle Counters covering Paris bicycle-counting stations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "FR.Paris.OpenData.Velo.mqtt": {
-      "description": "MQTT/5.0 transport variants for Paris bicycle counters. Topics route by stable MQTT-safe counter_id (upstream id_compteur; values containing /, +, #, or NUL are dropped) under traffic/fr/paris/paris-bicycle-counters/{counter_id}/... . Counter reference records are retained QoS 1; hourly bicycle counts are non-retained QoS 1 events.",
+      "description": "MQTT 5 variant of the Paris Bicycle Counters events. It carries the same transport semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "FR.Paris.OpenData.Velo.mqtt.Counter": {
           "name": "Counter",
@@ -142,7 +147,7 @@
                   "counter_name"
                 ],
                 "name": "Counter",
-                "description": "Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.",
+                "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.",
                 "properties": {
                   "counter_id": {
                     "type": "string",
@@ -225,7 +230,7 @@
                   "date"
                 ],
                 "name": "BicycleCount",
-                "description": "Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.",
+                "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.",
                 "properties": {
                   "counter_id": {
                     "type": "string",
@@ -295,5 +300,10 @@
         }
       }
     }
+  },
+  "description": "Paris Bicycle Counters publishes bicycle count observations from Paris open-data bicycle counter feeds for Paris bicycle-counting stations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for Paris Bicycle Counters, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
