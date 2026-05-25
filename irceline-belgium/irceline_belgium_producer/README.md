@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - BeIrcelineStationsEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    BeIrcelineTimeseriesEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrcelineTimeseriesEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrcelineStationsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrcelineStationsAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrcelineTimeseriesMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrcelineTimeseriesAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - BeIrcelineTimeseriesProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BeIrcelineStationsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BeIrcelineStationsAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BeIrcelineTimeseriesMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BeIrcelineTimeseriesAmqpProducersolution for event-driven applications.
 
 
 
@@ -153,7 +177,8 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `be.irceline.Station`:
+Asynchronous handler hook for `be.irceline.Station`: A reference record published by Belgium's IRCELINE interregional
+environment agency. It lets consumers label, group, and route the live measurement or forecast events.
 
 ## Generated Producer Classes
 
@@ -233,6 +258,154 @@ be_irceline_timeseries_dispatcher.be_irceline_station_async = be_irceline_statio
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_station_async = be_irceline_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_station_async = be_irceline_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_station_async = be_irceline_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_station_async = be_irceline_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -269,7 +442,8 @@ async def send_be_irceline_station(
 
 
 
-Send a single `be.irceline.Station` message.Args:
+Send a single `be.irceline.Station` message. A reference record published by Belgium's IRCELINE interregional
+environment agency. It lets consumers label, group, and route the live measurement or forecast events.Args:
 
 - `record`: The Kafka record.
 
@@ -449,7 +623,9 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `be.irceline.Timeseries`:
+Asynchronous handler hook for `be.irceline.Timeseries`: A current environmental measurement from Belgium's IRCELINE
+interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed
+reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -529,6 +705,154 @@ be_irceline_timeseries_dispatcher.be_irceline_timeseries_async = be_irceline_tim
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_timeseries_async = be_irceline_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_timeseries_async = be_irceline_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_timeseries_async = be_irceline_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_timeseries_async = be_irceline_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -548,7 +872,9 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `be.irceline.Observation`:
+Asynchronous handler hook for `be.irceline.Observation`: A current environmental measurement from Belgium's IRCELINE
+interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed
+reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -628,6 +954,154 @@ be_irceline_timeseries_dispatcher.be_irceline_observation_async = be_irceline_ob
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_observation_async = be_irceline_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_observation_async = be_irceline_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_observation_async = be_irceline_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_observation_async = be_irceline_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -664,7 +1138,9 @@ async def send_be_irceline_timeseries(
 
 
 
-Send a single `be.irceline.Timeseries` message.Args:
+Send a single `be.irceline.Timeseries` message. A current environmental measurement from Belgium's IRCELINE
+interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed
+reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -767,7 +1243,9 @@ async def send_be_irceline_observation(
 
 
 
-Send a single `be.irceline.Observation` message.Args:
+Send a single `be.irceline.Observation` message. A current environmental measurement from Belgium's IRCELINE
+interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed
+reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -825,6 +1303,2564 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_be_irceline_observation_batch(```
+
+    messages=[
+
+        Observation(...),Initializes the runner with a Kafka consumer.
+
+        Observation(...),
+
+        Observation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BeIrcelineStationsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BeIrcelineStationsMqttEventDispatcher` handles events for the be.irceline.Stations.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from irceline_belgium_producer import BeIrcelineStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_be_irceline_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BeIrcelineStationsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irceline_stations_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irceline_stations_mqtt_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irceline.Stations.mqtt.Station`: A reference record published by Belgium's IRCELINE
+interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_dispatcher.be_irceline_stations_mqtt_station_async = be_irceline_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_dispatcher.be_irceline_stations_mqtt_station_async = be_irceline_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_stations_mqtt_station_async = be_irceline_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_stations_mqtt_station_async = be_irceline_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_stations_mqtt_station_async = be_irceline_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_stations_mqtt_station_async = be_irceline_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_be_irceline_stations_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irceline_stations_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irceline.Stations.mqtt.Station` message. A reference record published by Belgium's IRCELINE
+interregional environment agency. It lets consumers label, group, and route the live measurement or forecast
+events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irceline_stations_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irceline.Stations.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irceline_stations_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BeIrcelineStationsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BeIrcelineStationsAmqpEventDispatcher` handles events for the be.irceline.Stations.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from irceline_belgium_producer import BeIrcelineStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_be_irceline_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BeIrcelineStationsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irceline_stations_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irceline_stations_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irceline.Stations.amqp.Station`: A reference record published by Belgium's IRCELINE
+interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_dispatcher.be_irceline_stations_amqp_station_async = be_irceline_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_dispatcher.be_irceline_stations_amqp_station_async = be_irceline_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_stations_amqp_station_async = be_irceline_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_stations_amqp_station_async = be_irceline_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_stations_amqp_station_async = be_irceline_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Station`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_stations_amqp_station_async = be_irceline_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_be_irceline_stations_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irceline_stations_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irceline.Stations.amqp.Station` message. A reference record published by Belgium's IRCELINE
+interregional environment agency. It lets consumers label, group, and route the live measurement or forecast
+events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irceline_stations_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irceline.Stations.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irceline_stations_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BeIrcelineTimeseriesMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BeIrcelineTimeseriesMqttEventDispatcher` handles events for the be.irceline.Timeseries.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from irceline_belgium_producer import BeIrcelineStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_be_irceline_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BeIrcelineTimeseriesMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irceline_timeseries_mqtt_timeseries_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irceline_timeseries_mqtt_timeseries_async:  Callable[[ConsumerRecord, CloudEvent,
+Timeseries], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irceline.Timeseries.mqtt.Timeseries`: A current environmental measurement from
+Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements
+when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_dispatcher.be_irceline_timeseries_mqtt_timeseries_async =
+be_irceline_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_dispatcher.be_irceline_timeseries_mqtt_timeseries_async =
+be_irceline_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_timeseries_mqtt_timeseries_async =
+be_irceline_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_timeseries_mqtt_timeseries_async =
+be_irceline_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_timeseries_mqtt_timeseries_async =
+be_irceline_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_timeseries_mqtt_timeseries_async =
+be_irceline_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irceline_timeseries_mqtt_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irceline_timeseries_mqtt_observation_async:  Callable[[ConsumerRecord, CloudEvent,
+Observation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irceline.Timeseries.mqtt.Observation`: A current environmental measurement from
+Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements
+when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_dispatcher.be_irceline_timeseries_mqtt_observation_async =
+be_irceline_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_dispatcher.be_irceline_timeseries_mqtt_observation_async =
+be_irceline_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_timeseries_mqtt_observation_async =
+be_irceline_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_timeseries_mqtt_observation_async =
+be_irceline_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_timeseries_mqtt_observation_async =
+be_irceline_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_timeseries_mqtt_observation_async =
+be_irceline_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_be_irceline_timeseries_mqtt_timeseries`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irceline_timeseries_mqtt_timeseries(
+
+    self,##### `_process_event`
+
+    data: Timeseries,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irceline.Timeseries.mqtt.Timeseries` message. A current environmental measurement from Belgium's
+IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the
+upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Timeseries`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irceline_timeseries_mqtt_timeseries(
+
+    data=Timeseries(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irceline.Timeseries.mqtt.Timeseries` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irceline_timeseries_mqtt_timeseries_batch(```
+
+    messages=[
+
+        Timeseries(...),Initializes the runner with a Kafka consumer.
+
+        Timeseries(...),
+
+        Timeseries(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irceline_timeseries_mqtt_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irceline_timeseries_mqtt_observation(
+
+    self,##### `_process_event`
+
+    data: Observation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irceline.Timeseries.mqtt.Observation` message. A current environmental measurement from Belgium's
+IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the
+upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Observation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irceline_timeseries_mqtt_observation(
+
+    data=Observation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irceline.Timeseries.mqtt.Observation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irceline_timeseries_mqtt_observation_batch(```
+
+    messages=[
+
+        Observation(...),Initializes the runner with a Kafka consumer.
+
+        Observation(...),
+
+        Observation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BeIrcelineTimeseriesAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BeIrcelineTimeseriesAmqpEventDispatcher` handles events for the be.irceline.Timeseries.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from irceline_belgium_producer import BeIrcelineStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_be_irceline_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BeIrcelineTimeseriesAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BeIrcelineStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irceline_timeseries_amqp_timeseries_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irceline_timeseries_amqp_timeseries_async:  Callable[[ConsumerRecord, CloudEvent,
+Timeseries], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irceline.Timeseries.amqp.Timeseries`: A current environmental measurement from
+Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements
+when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_dispatcher.be_irceline_timeseries_amqp_timeseries_async =
+be_irceline_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_dispatcher.be_irceline_timeseries_amqp_timeseries_async =
+be_irceline_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_timeseries_amqp_timeseries_async =
+be_irceline_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_timeseries_amqp_timeseries_async =
+be_irceline_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_timeseries_amqp_timeseries_async =
+be_irceline_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Timeseries`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_timeseries_amqp_timeseries_async =
+be_irceline_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irceline_timeseries_amqp_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irceline_timeseries_amqp_observation_async:  Callable[[ConsumerRecord, CloudEvent,
+Observation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irceline.Timeseries.amqp.Observation`: A current environmental measurement from
+Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements
+when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_dispatcher.be_irceline_timeseries_amqp_observation_async =
+be_irceline_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_dispatcher.be_irceline_timeseries_amqp_observation_async =
+be_irceline_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_mqtt_dispatcher.be_irceline_timeseries_amqp_observation_async =
+be_irceline_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineStationsAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_stations_amqp_dispatcher.be_irceline_timeseries_amqp_observation_async =
+be_irceline_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesMqttProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_mqtt_dispatcher.be_irceline_timeseries_amqp_observation_async =
+be_irceline_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrcelineTimeseriesAmqpProducer- `data`: The event data of type `irceline_belgium_producer_data.Observation`.
+
+
+
+Producer for `be.irceline.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irceline_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+BeIrcelineTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irceline_timeseries_amqp_dispatcher.be_irceline_timeseries_amqp_observation_async =
+be_irceline_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_be_irceline_timeseries_amqp_timeseries`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irceline_timeseries_amqp_timeseries(
+
+    self,##### `_process_event`
+
+    data: Timeseries,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irceline.Timeseries.amqp.Timeseries` message. A current environmental measurement from Belgium's
+IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the
+upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Timeseries`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irceline_timeseries_amqp_timeseries(
+
+    data=Timeseries(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irceline.Timeseries.amqp.Timeseries` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irceline_timeseries_amqp_timeseries_batch(```
+
+    messages=[
+
+        Timeseries(...),Initializes the runner with a Kafka consumer.
+
+        Timeseries(...),
+
+        Timeseries(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irceline_timeseries_amqp_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irceline_timeseries_amqp_observation(
+
+    self,##### `_process_event`
+
+    data: Observation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irceline.Timeseries.amqp.Observation` message. A current environmental measurement from Belgium's
+IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the
+upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Observation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irceline_timeseries_amqp_observation(
+
+    data=Observation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irceline.Timeseries.amqp.Observation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irceline_timeseries_amqp_observation_batch(```
 
     messages=[
 

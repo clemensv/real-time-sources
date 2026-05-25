@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineStationsEventProducer
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineTimeseriesEventProducer
+from irceline_belgium_producer_kafka_producer.producer import BeIrcelineStationsMqttEventProducer
+from irceline_belgium_producer_kafka_producer.producer import BeIrcelineStationsAmqpEventProducer
+from irceline_belgium_producer_kafka_producer.producer import BeIrcelineTimeseriesMqttEventProducer
+from irceline_belgium_producer_kafka_producer.producer import BeIrcelineTimeseriesAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -90,6 +94,86 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'be.irceline.Observation' event to Kafka topic.
     await be_irceline_timeseries_event_producer.send_be_irceline_observation(_timeseries_id = 'TODO: replace me', data = _observation)
     print(f"Sent 'be.irceline.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        be_irceline_stations_mqtt_event_producer = BeIrcelineStationsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        be_irceline_stations_mqtt_event_producer = BeIrcelineStationsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- be.irceline.Stations.mqtt.Station ----
+    # TODO: Supply event data for the be.irceline.Stations.mqtt.Station event
+    _station = Station()
+
+    # sends the 'be.irceline.Stations.mqtt.Station' event to Kafka topic.
+    await be_irceline_stations_mqtt_event_producer.send_be_irceline_stations_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'be.irceline.Stations.mqtt.Station' event: {_station.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        be_irceline_stations_amqp_event_producer = BeIrcelineStationsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        be_irceline_stations_amqp_event_producer = BeIrcelineStationsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- be.irceline.Stations.amqp.Station ----
+    # TODO: Supply event data for the be.irceline.Stations.amqp.Station event
+    _station = Station()
+
+    # sends the 'be.irceline.Stations.amqp.Station' event to Kafka topic.
+    await be_irceline_stations_amqp_event_producer.send_be_irceline_stations_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'be.irceline.Stations.amqp.Station' event: {_station.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        be_irceline_timeseries_mqtt_event_producer = BeIrcelineTimeseriesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        be_irceline_timeseries_mqtt_event_producer = BeIrcelineTimeseriesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- be.irceline.Timeseries.mqtt.Timeseries ----
+    # TODO: Supply event data for the be.irceline.Timeseries.mqtt.Timeseries event
+    _timeseries = Timeseries()
+
+    # sends the 'be.irceline.Timeseries.mqtt.Timeseries' event to Kafka topic.
+    await be_irceline_timeseries_mqtt_event_producer.send_be_irceline_timeseries_mqtt_timeseries(_timeseries_id = 'TODO: replace me', data = _timeseries)
+    print(f"Sent 'be.irceline.Timeseries.mqtt.Timeseries' event: {_timeseries.to_json()}")
+
+    # ---- be.irceline.Timeseries.mqtt.Observation ----
+    # TODO: Supply event data for the be.irceline.Timeseries.mqtt.Observation event
+    _observation = Observation()
+
+    # sends the 'be.irceline.Timeseries.mqtt.Observation' event to Kafka topic.
+    await be_irceline_timeseries_mqtt_event_producer.send_be_irceline_timeseries_mqtt_observation(_timeseries_id = 'TODO: replace me', data = _observation)
+    print(f"Sent 'be.irceline.Timeseries.mqtt.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        be_irceline_timeseries_amqp_event_producer = BeIrcelineTimeseriesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        be_irceline_timeseries_amqp_event_producer = BeIrcelineTimeseriesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- be.irceline.Timeseries.amqp.Timeseries ----
+    # TODO: Supply event data for the be.irceline.Timeseries.amqp.Timeseries event
+    _timeseries = Timeseries()
+
+    # sends the 'be.irceline.Timeseries.amqp.Timeseries' event to Kafka topic.
+    await be_irceline_timeseries_amqp_event_producer.send_be_irceline_timeseries_amqp_timeseries(_timeseries_id = 'TODO: replace me', data = _timeseries)
+    print(f"Sent 'be.irceline.Timeseries.amqp.Timeseries' event: {_timeseries.to_json()}")
+
+    # ---- be.irceline.Timeseries.amqp.Observation ----
+    # TODO: Supply event data for the be.irceline.Timeseries.amqp.Observation event
+    _observation = Observation()
+
+    # sends the 'be.irceline.Timeseries.amqp.Observation' event to Kafka topic.
+    await be_irceline_timeseries_amqp_event_producer.send_be_irceline_timeseries_amqp_observation(_timeseries_id = 'TODO: replace me', data = _observation)
+    print(f"Sent 'be.irceline.Timeseries.amqp.Observation' event: {_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

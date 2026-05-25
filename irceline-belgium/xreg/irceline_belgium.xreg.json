@@ -43,6 +43,52 @@
         "#/messagegroups/be.irceline.Timeseries"
       ],
       "description": "Kafka producer endpoint for IRCELINE Belgium Air Quality CloudEvents on the `irceline-belgium` topic keyed by `{timeseries_id}`."
+    },
+    "be.irceline.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irceline.Stations.mqtt",
+        "#/messagegroups/be.irceline.Timeseries.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for irceline-belgium CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "be.irceline.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/irceline-belgium"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irceline.Stations.amqp",
+        "#/messagegroups/be.irceline.Timeseries.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for irceline-belgium CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -112,6 +158,144 @@
         }
       },
       "description": "Events from IRCELINE Belgium Air Quality covering Belgian air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "be.irceline.Stations.mqtt": {
+      "description": "MQTT 5 variant of be.irceline.Stations events with subscriber-friendly UNS topics.",
+      "messages": {
+        "be.irceline.Stations.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/be/irceline/irceline-belgium/{region}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "be.irceline.Stations.amqp": {
+      "description": "AMQP 1.0 variant of be.irceline.Stations events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "be.irceline.Stations.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.Timeseries.mqtt": {
+      "description": "MQTT 5 variant of be.irceline.Timeseries events with subscriber-friendly UNS topics.",
+      "messages": {
+        "be.irceline.Timeseries.mqtt.Timeseries": {
+          "name": "Timeseries",
+          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/be/irceline/irceline-belgium/{region}/{station_id}/{pollutant}/timeseries",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "be.irceline.Timeseries.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/be/irceline/irceline-belgium/{region}/{station_id}/{pollutant}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "be.irceline.Timeseries.amqp": {
+      "description": "AMQP 1.0 variant of be.irceline.Timeseries events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "be.irceline.Timeseries.amqp.Timeseries": {
+          "name": "Timeseries",
+          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{timeseries_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "be.irceline.Timeseries.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{timeseries_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

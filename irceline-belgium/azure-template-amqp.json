@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerImage": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-irceline-belgium-amqp:latest"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    }
+  },
+  "resources": [],
+  "outputs": {
+    "note": {
+      "type": "string",
+      "value": "irceline-belgium amqp companion feeder template placeholder for Azure Container Instances."
+    }
+  }
+}
