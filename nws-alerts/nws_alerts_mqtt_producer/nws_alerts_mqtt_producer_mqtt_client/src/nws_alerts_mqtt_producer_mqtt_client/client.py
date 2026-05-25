@@ -186,11 +186,7 @@ def get_default_topic_mappings_nws_alerts_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "NWS.WeatherAlert.Minor.mqtt": "alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert",
-        "NWS.WeatherAlert.Moderate.mqtt": "alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert",
-        "NWS.WeatherAlert.Severe.mqtt": "alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert",
-        "NWS.WeatherAlert.Extreme.mqtt": "alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert",
-        "NWS.WeatherAlert.Unknown.mqtt": "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert",
+        "NWS.WeatherAlert.mqtt": "alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert",
     }
 
 
@@ -243,15 +239,7 @@ class NWSAlertsMqttMqttClient(_ClientBase):
         
         # Message handler callbacks (Dispatcher pattern)
         
-        self.nws_weather_alert_minor_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, nws_alerts_mqtt_producer_data.WeatherAlert, Dict[str, str]], Awaitable[None]]] = None
-        
-        self.nws_weather_alert_moderate_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, nws_alerts_mqtt_producer_data.WeatherAlert, Dict[str, str]], Awaitable[None]]] = None
-        
-        self.nws_weather_alert_severe_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, nws_alerts_mqtt_producer_data.WeatherAlert, Dict[str, str]], Awaitable[None]]] = None
-        
-        self.nws_weather_alert_extreme_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, nws_alerts_mqtt_producer_data.WeatherAlert, Dict[str, str]], Awaitable[None]]] = None
-        
-        self.nws_weather_alert_unknown_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, nws_alerts_mqtt_producer_data.WeatherAlert, Dict[str, str]], Awaitable[None]]] = None
+        self.nws_weather_alert_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, nws_alerts_mqtt_producer_data.WeatherAlert, Dict[str, str]], Awaitable[None]]] = None
         
         
         # Attach message callback
@@ -297,63 +285,15 @@ class NWSAlertsMqttMqttClient(_ClientBase):
         
         
         if event_type == "NWS.WeatherAlert":
-            if self.nws_weather_alert_minor_mqtt_async:
+            if self.nws_weather_alert_mqtt_async:
                 try:
                     content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
                     # CloudEvent.data is now a dict or string, not bytes
                     data = nws_alerts_mqtt_producer_data.WeatherAlert.from_data(cloud_event.data, content_type)
-                    topic_params = self._extract_topic_params(mqtt_message.topic, "NWS.WeatherAlert.Minor.mqtt")
-                    await self.nws_weather_alert_minor_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "NWS.WeatherAlert.mqtt")
+                    await self.nws_weather_alert_mqtt_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
-                    print(f"Error in nws_weather_alert_minor_mqtt handler: {e}")
-            return
-        
-        if event_type == "NWS.WeatherAlert":
-            if self.nws_weather_alert_moderate_mqtt_async:
-                try:
-                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
-                    # CloudEvent.data is now a dict or string, not bytes
-                    data = nws_alerts_mqtt_producer_data.WeatherAlert.from_data(cloud_event.data, content_type)
-                    topic_params = self._extract_topic_params(mqtt_message.topic, "NWS.WeatherAlert.Moderate.mqtt")
-                    await self.nws_weather_alert_moderate_mqtt_async(mqtt_message, cloud_event, data, topic_params)
-                except Exception as e:
-                    print(f"Error in nws_weather_alert_moderate_mqtt handler: {e}")
-            return
-        
-        if event_type == "NWS.WeatherAlert":
-            if self.nws_weather_alert_severe_mqtt_async:
-                try:
-                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
-                    # CloudEvent.data is now a dict or string, not bytes
-                    data = nws_alerts_mqtt_producer_data.WeatherAlert.from_data(cloud_event.data, content_type)
-                    topic_params = self._extract_topic_params(mqtt_message.topic, "NWS.WeatherAlert.Severe.mqtt")
-                    await self.nws_weather_alert_severe_mqtt_async(mqtt_message, cloud_event, data, topic_params)
-                except Exception as e:
-                    print(f"Error in nws_weather_alert_severe_mqtt handler: {e}")
-            return
-        
-        if event_type == "NWS.WeatherAlert":
-            if self.nws_weather_alert_extreme_mqtt_async:
-                try:
-                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
-                    # CloudEvent.data is now a dict or string, not bytes
-                    data = nws_alerts_mqtt_producer_data.WeatherAlert.from_data(cloud_event.data, content_type)
-                    topic_params = self._extract_topic_params(mqtt_message.topic, "NWS.WeatherAlert.Extreme.mqtt")
-                    await self.nws_weather_alert_extreme_mqtt_async(mqtt_message, cloud_event, data, topic_params)
-                except Exception as e:
-                    print(f"Error in nws_weather_alert_extreme_mqtt handler: {e}")
-            return
-        
-        if event_type == "NWS.WeatherAlert":
-            if self.nws_weather_alert_unknown_mqtt_async:
-                try:
-                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
-                    # CloudEvent.data is now a dict or string, not bytes
-                    data = nws_alerts_mqtt_producer_data.WeatherAlert.from_data(cloud_event.data, content_type)
-                    topic_params = self._extract_topic_params(mqtt_message.topic, "NWS.WeatherAlert.Unknown.mqtt")
-                    await self.nws_weather_alert_unknown_mqtt_async(mqtt_message, cloud_event, data, topic_params)
-                except Exception as e:
-                    print(f"Error in nws_weather_alert_unknown_mqtt handler: {e}")
+                    print(f"Error in nws_weather_alert_mqtt handler: {e}")
             return
         
     
@@ -400,9 +340,10 @@ class NWSAlertsMqttMqttClient(_ClientBase):
 
     # Producer methods
     
-    async def publish_nws_weather_alert_minor_mqtt(self,
+    async def publish_nws_weather_alert_mqtt(self,
         alert_id: str,
         state: str,
+        severity: str,
         event_type: str,
         data: nws_alerts_mqtt_producer_data.WeatherAlert,
         topic: Optional[str] = None,
@@ -410,340 +351,26 @@ class NWSAlertsMqttMqttClient(_ClientBase):
         retain: Optional[bool] = None,
         content_type: str = "application/json") -> None:
         """
-        Publish the 'NWS.WeatherAlert.Minor.mqtt' event to an MQTT topic.
+        Publish the 'NWS.WeatherAlert.mqtt' event to an MQTT topic.
 
         Args:
         
             alert_id: URI template variable for 'alert_id'
             state: URI template variable for 'state'
+            severity: URI template variable for 'severity'
             event_type: URI template variable for 'event_type'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert'
+            topic: Optional topic override. If not provided, uses default topic 'alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert"
+        target_topic = topic if topic is not None else "alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert"
         _topic_template_values: Dict[str, str] = {
             "alert_id": str(alert_id),
             "state": str(state),
-            "event_type": str(event_type),
-        }
-        if _topic_template_values:
-            target_topic = _apply_topic_template(target_topic, _topic_template_values)
-
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        byte_data = data.to_byte_array(content_type) if data is not None else b''
-        # to_byte_array returns str for text content types (e.g. JSON);
-        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
-        # to_binary/to_structured embed the str directly which then becomes
-        # a JSON string literal containing the JSON document. Coerce to
-        # bytes up-front so receivers can json.loads(payload) once.
-        if isinstance(byte_data, str):
-            byte_data = byte_data.encode('utf-8')
-        event = CloudEvent(attributes, byte_data)
-
-        _effective_qos = 1 if qos is None else qos
-        _effective_retain = False if retain is None else retain
-
-        publish_kwargs: Dict[str, typing.Any] = {
-            "qos": _effective_qos,
-            "retain": _effective_retain,
-        }
-
-        if self.content_mode == "structured":
-            _headers, body = to_structured(event)
-            payload = body
-        else:
-            headers, body = to_binary(event)
-            payload = body
-            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
-            if mqtt5_props is not None:
-                publish_kwargs["properties"] = mqtt5_props
-
-        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
-        # exact serialized representation; paho-mqtt would UTF-8 encode a
-        # str, but a dict (from structured mode) would crash, and any
-        # double-encoding upstream would land on the wire untouched.
-        if isinstance(payload, dict):
-            payload = json.dumps(payload).encode('utf-8')
-        elif isinstance(payload, str):
-            payload = payload.encode('utf-8')
-
-        self.client.publish(target_topic, payload, **publish_kwargs)
-
-    
-    async def publish_nws_weather_alert_moderate_mqtt(self,
-        alert_id: str,
-        state: str,
-        event_type: str,
-        data: nws_alerts_mqtt_producer_data.WeatherAlert,
-        topic: Optional[str] = None,
-        qos: Optional[int] = None,
-        retain: Optional[bool] = None,
-        content_type: str = "application/json") -> None:
-        """
-        Publish the 'NWS.WeatherAlert.Moderate.mqtt' event to an MQTT topic.
-
-        Args:
-        
-            alert_id: URI template variable for 'alert_id'
-            state: URI template variable for 'state'
-            event_type: URI template variable for 'event_type'
-            data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert'
-                with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
-            content_type: The content type for the event data.
-        """
-        target_topic = topic if topic is not None else "alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert"
-        _topic_template_values: Dict[str, str] = {
-            "alert_id": str(alert_id),
-            "state": str(state),
-            "event_type": str(event_type),
-        }
-        if _topic_template_values:
-            target_topic = _apply_topic_template(target_topic, _topic_template_values)
-
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        byte_data = data.to_byte_array(content_type) if data is not None else b''
-        # to_byte_array returns str for text content types (e.g. JSON);
-        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
-        # to_binary/to_structured embed the str directly which then becomes
-        # a JSON string literal containing the JSON document. Coerce to
-        # bytes up-front so receivers can json.loads(payload) once.
-        if isinstance(byte_data, str):
-            byte_data = byte_data.encode('utf-8')
-        event = CloudEvent(attributes, byte_data)
-
-        _effective_qos = 1 if qos is None else qos
-        _effective_retain = False if retain is None else retain
-
-        publish_kwargs: Dict[str, typing.Any] = {
-            "qos": _effective_qos,
-            "retain": _effective_retain,
-        }
-
-        if self.content_mode == "structured":
-            _headers, body = to_structured(event)
-            payload = body
-        else:
-            headers, body = to_binary(event)
-            payload = body
-            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
-            if mqtt5_props is not None:
-                publish_kwargs["properties"] = mqtt5_props
-
-        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
-        # exact serialized representation; paho-mqtt would UTF-8 encode a
-        # str, but a dict (from structured mode) would crash, and any
-        # double-encoding upstream would land on the wire untouched.
-        if isinstance(payload, dict):
-            payload = json.dumps(payload).encode('utf-8')
-        elif isinstance(payload, str):
-            payload = payload.encode('utf-8')
-
-        self.client.publish(target_topic, payload, **publish_kwargs)
-
-    
-    async def publish_nws_weather_alert_severe_mqtt(self,
-        alert_id: str,
-        state: str,
-        event_type: str,
-        data: nws_alerts_mqtt_producer_data.WeatherAlert,
-        topic: Optional[str] = None,
-        qos: Optional[int] = None,
-        retain: Optional[bool] = None,
-        content_type: str = "application/json") -> None:
-        """
-        Publish the 'NWS.WeatherAlert.Severe.mqtt' event to an MQTT topic.
-
-        Args:
-        
-            alert_id: URI template variable for 'alert_id'
-            state: URI template variable for 'state'
-            event_type: URI template variable for 'event_type'
-            data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert'
-                with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
-            content_type: The content type for the event data.
-        """
-        target_topic = topic if topic is not None else "alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert"
-        _topic_template_values: Dict[str, str] = {
-            "alert_id": str(alert_id),
-            "state": str(state),
-            "event_type": str(event_type),
-        }
-        if _topic_template_values:
-            target_topic = _apply_topic_template(target_topic, _topic_template_values)
-
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        byte_data = data.to_byte_array(content_type) if data is not None else b''
-        # to_byte_array returns str for text content types (e.g. JSON);
-        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
-        # to_binary/to_structured embed the str directly which then becomes
-        # a JSON string literal containing the JSON document. Coerce to
-        # bytes up-front so receivers can json.loads(payload) once.
-        if isinstance(byte_data, str):
-            byte_data = byte_data.encode('utf-8')
-        event = CloudEvent(attributes, byte_data)
-
-        _effective_qos = 1 if qos is None else qos
-        _effective_retain = False if retain is None else retain
-
-        publish_kwargs: Dict[str, typing.Any] = {
-            "qos": _effective_qos,
-            "retain": _effective_retain,
-        }
-
-        if self.content_mode == "structured":
-            _headers, body = to_structured(event)
-            payload = body
-        else:
-            headers, body = to_binary(event)
-            payload = body
-            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
-            if mqtt5_props is not None:
-                publish_kwargs["properties"] = mqtt5_props
-
-        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
-        # exact serialized representation; paho-mqtt would UTF-8 encode a
-        # str, but a dict (from structured mode) would crash, and any
-        # double-encoding upstream would land on the wire untouched.
-        if isinstance(payload, dict):
-            payload = json.dumps(payload).encode('utf-8')
-        elif isinstance(payload, str):
-            payload = payload.encode('utf-8')
-
-        self.client.publish(target_topic, payload, **publish_kwargs)
-
-    
-    async def publish_nws_weather_alert_extreme_mqtt(self,
-        alert_id: str,
-        state: str,
-        event_type: str,
-        data: nws_alerts_mqtt_producer_data.WeatherAlert,
-        topic: Optional[str] = None,
-        qos: Optional[int] = None,
-        retain: Optional[bool] = None,
-        content_type: str = "application/json") -> None:
-        """
-        Publish the 'NWS.WeatherAlert.Extreme.mqtt' event to an MQTT topic.
-
-        Args:
-        
-            alert_id: URI template variable for 'alert_id'
-            state: URI template variable for 'state'
-            event_type: URI template variable for 'event_type'
-            data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert'
-                with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
-            content_type: The content type for the event data.
-        """
-        target_topic = topic if topic is not None else "alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert"
-        _topic_template_values: Dict[str, str] = {
-            "alert_id": str(alert_id),
-            "state": str(state),
-            "event_type": str(event_type),
-        }
-        if _topic_template_values:
-            target_topic = _apply_topic_template(target_topic, _topic_template_values)
-
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        byte_data = data.to_byte_array(content_type) if data is not None else b''
-        # to_byte_array returns str for text content types (e.g. JSON);
-        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
-        # to_binary/to_structured embed the str directly which then becomes
-        # a JSON string literal containing the JSON document. Coerce to
-        # bytes up-front so receivers can json.loads(payload) once.
-        if isinstance(byte_data, str):
-            byte_data = byte_data.encode('utf-8')
-        event = CloudEvent(attributes, byte_data)
-
-        _effective_qos = 1 if qos is None else qos
-        _effective_retain = False if retain is None else retain
-
-        publish_kwargs: Dict[str, typing.Any] = {
-            "qos": _effective_qos,
-            "retain": _effective_retain,
-        }
-
-        if self.content_mode == "structured":
-            _headers, body = to_structured(event)
-            payload = body
-        else:
-            headers, body = to_binary(event)
-            payload = body
-            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
-            if mqtt5_props is not None:
-                publish_kwargs["properties"] = mqtt5_props
-
-        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
-        # exact serialized representation; paho-mqtt would UTF-8 encode a
-        # str, but a dict (from structured mode) would crash, and any
-        # double-encoding upstream would land on the wire untouched.
-        if isinstance(payload, dict):
-            payload = json.dumps(payload).encode('utf-8')
-        elif isinstance(payload, str):
-            payload = payload.encode('utf-8')
-
-        self.client.publish(target_topic, payload, **publish_kwargs)
-
-    
-    async def publish_nws_weather_alert_unknown_mqtt(self,
-        alert_id: str,
-        state: str,
-        event_type: str,
-        data: nws_alerts_mqtt_producer_data.WeatherAlert,
-        topic: Optional[str] = None,
-        qos: Optional[int] = None,
-        retain: Optional[bool] = None,
-        content_type: str = "application/json") -> None:
-        """
-        Publish the 'NWS.WeatherAlert.Unknown.mqtt' event to an MQTT topic.
-
-        Args:
-        
-            alert_id: URI template variable for 'alert_id'
-            state: URI template variable for 'state'
-            event_type: URI template variable for 'event_type'
-            data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert'
-                with URI template placeholders substituted from the keyword arguments.
-            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
-            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
-            content_type: The content type for the event data.
-        """
-        target_topic = topic if topic is not None else "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert"
-        _topic_template_values: Dict[str, str] = {
-            "alert_id": str(alert_id),
-            "state": str(state),
+            "severity": str(severity),
             "event_type": str(event_type),
         }
         if _topic_template_values:

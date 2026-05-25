@@ -43,6 +43,28 @@
         "#/messagegroups/NWS.Alerts.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for NWS Alerts CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "NWS.Alerts.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/nws-alerts"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NWS.Alerts.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for NWS Alerts CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -71,56 +93,52 @@
       "description": "Events from NWS Alerts covering U.S. weather alert areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "NWS.Alerts.mqtt": {
-      "description": "MQTT 5 variant of the NWS Alerts events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
+      "description": "MQTT 5 variant of NWS Alerts events. The topic exposes state, CAP severity, normalized event type, and stable alert identifier for broker-side subscriptions.",
       "messages": {
-        "NWS.WeatherAlert.Minor.mqtt": {
-          "name": "WeatherAlertMinor",
+        "NWS.WeatherAlert.mqtt": {
+          "name": "WeatherAlert",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert",
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert",
             "qos": 1,
             "retain": false
           }
-        },
-        "NWS.WeatherAlert.Moderate.mqtt": {
-          "name": "WeatherAlertModerate",
+        }
+      }
+    },
+    "NWS.Alerts.amqp": {
+      "description": "AMQP 1.0 variant of NWS Alerts events. It carries the same CAP alert semantics as the base Kafka event for queue and topic consumers.",
+      "messages": {
+        "NWS.WeatherAlert.amqp": {
+          "name": "WeatherAlert",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
-          "protocol": "MQTT/5.0",
+          "protocol": "AMQP/1.0",
           "protocoloptions": {
-            "topic_name": "alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert",
-            "qos": 1,
-            "retain": false
-          }
-        },
-        "NWS.WeatherAlert.Severe.mqtt": {
-          "name": "WeatherAlertSevere",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
-          "protocol": "MQTT/5.0",
-          "protocoloptions": {
-            "topic_name": "alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert",
-            "qos": 1,
-            "retain": false
-          }
-        },
-        "NWS.WeatherAlert.Extreme.mqtt": {
-          "name": "WeatherAlertExtreme",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
-          "protocol": "MQTT/5.0",
-          "protocoloptions": {
-            "topic_name": "alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert",
-            "qos": 1,
-            "retain": false
-          }
-        },
-        "NWS.WeatherAlert.Unknown.mqtt": {
-          "name": "WeatherAlertUnknown",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
-          "protocol": "MQTT/5.0",
-          "protocoloptions": {
-            "topic_name": "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert",
-            "qos": 1,
-            "retain": false
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "AMQP message subject carrying the stable NWS alert identifier; mirrors the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Two-letter U.S. state or territory routing token derived from UGC/SAME geocodes."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "CAP 1.2 severity vocabulary normalized to minor, moderate, severe, extreme, or unknown."
+              },
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "URL-safe NWS event/hazard type such as tornado-warning or flood-watch."
+              }
+            }
           }
         }
       }

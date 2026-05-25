@@ -343,7 +343,9 @@
     "cat": "Weather",
     "key": false,
     "desc": "United States — active alerts via api.weather.gov",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nws-forecasts",

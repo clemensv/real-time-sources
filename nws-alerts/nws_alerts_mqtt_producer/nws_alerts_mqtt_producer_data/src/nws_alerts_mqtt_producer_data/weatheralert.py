@@ -12,11 +12,11 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nws_alerts_mqtt_producer_data.statusenum import StatusEnum
-from nws_alerts_mqtt_producer_data.messagetypeenum import MessageTypeenum
-from nws_alerts_mqtt_producer_data.urgencyenum import UrgencyEnum
-from nws_alerts_mqtt_producer_data.severityenum import SeverityEnum
 from nws_alerts_mqtt_producer_data.certaintyenum import CertaintyEnum
+from nws_alerts_mqtt_producer_data.messagetypeenum import MessageTypeenum
+from nws_alerts_mqtt_producer_data.severityenum import SeverityEnum
+from nws_alerts_mqtt_producer_data.urgencyenum import UrgencyEnum
+from nws_alerts_mqtt_producer_data.statusenum import StatusEnum
 import datetime
 
 
@@ -24,7 +24,7 @@ import datetime
 @dataclass
 class WeatherAlert:
     """
-    A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.
+    A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
     
     Attributes:
         alert_id (str)
@@ -214,10 +214,10 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='fivzwgfgagtxposrsohr',
-            area_desc='wsqlqfqvwvczcrppqyfv',
-            same_codes='vmfevplqynpytqyahrwd',
-            ugc_codes='tgrpimwldytkrsklpmby',
+            alert_id='rxkgsebuqdjokrglnvts',
+            area_desc='tusfqdzfwkqemfhmnyoi',
+            same_codes='qmksrcluihqshaothiih',
+            ugc_codes='tdfxwlayslmfmrjtxyrl',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
@@ -225,22 +225,22 @@ class WeatherAlert:
             ends=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             message_type=MessageTypeenum.Alert,
-            category='bbrbxvlxkcwsleenetpd',
+            category='mhlseqizcqyfgllzggxa',
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='hmkmgulyyvsxvmdiqxrr',
-            sender='kstkvpoqvbnhnjcmvuim',
-            sender_name='noaklgrufawycdxjajwa',
-            headline='gzojkiyfryjvsrtwljfm',
-            description='zoocjifvpiurrjwoougn',
-            instruction='nmpptfqhdoztbmwobhln',
-            response='ortxppgflkpnflziiyiz',
-            scope='acyldudajjpmkixmzcmw',
-            code='iesdthrcgvqenvqnqrqi',
-            nws_headline='vefiajvnvefdjsflpjri',
-            vtec='bbsxatoqnwaqcxivwhzd',
-            web='kvtzfmrfbohveelcsqbw',
-            state='cwvsdfhksodpyomtzqxc',
-            event_type='xgnwhtjcddwzctuuqwsr'
+            event='xzwfqmlbheemmbjqbkdm',
+            sender='aglnpydyemrtlsdpaxhq',
+            sender_name='jyocjfseyfvwbwrsjmkw',
+            headline='dnermgdgnnainktnkyjj',
+            description='xvvlsachkghryxvgcfcd',
+            instruction='ljftjkcpcfwwxirmmpwo',
+            response='bbkhzraevwvyqbykktnf',
+            scope='ikawawxdeasjsltljluu',
+            code='onpukgmkpnoljotdnmix',
+            nws_headline='pnuucwqsjlwamaellsof',
+            vtec='fzqvxlqcltqsyvfibgfn',
+            web='umuitwasbenpqsrudxsq',
+            state='jwzbekuzzskwiiatfncm',
+            event_type='eppawiavoklkqiqwgruc'
         )

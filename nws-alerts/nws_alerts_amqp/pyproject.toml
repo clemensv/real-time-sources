@@ -1,0 +1,26 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "nws-alerts-amqp"
+version = "0.1.0"
+description = "NWS CAP weather alerts -> AMQP 1.0 bridge"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "nws_alerts_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+aiohttp = ">=3.10.5"
+python-qpid-proton = ">=0.40.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+azure-identity = ">=1.17.0"
+azure-core = ">=1.30.0"
+nws-alerts = { path = ".." }
+nws_alerts_amqp_producer_data = { path = "../nws_alerts_amqp_producer/nws_alerts_amqp_producer_data" }
+nws_alerts_amqp_producer_amqp_producer = { path = "../nws_alerts_amqp_producer/nws_alerts_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+nws-alerts-amqp = "nws_alerts_amqp.app:main"

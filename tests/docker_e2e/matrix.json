@@ -612,6 +612,12 @@
       "image": "meteoalarm-amqp",
       "file": "Dockerfile.amqp",
       "module": "meteoalarm_amqp"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nws_alerts_amqp"
     }
   ],
   "flow": [
@@ -1240,6 +1246,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMeteoalarmAmqpDockerFlow"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNwsAlertsAmqpDockerFlow"
     }
   ]
 }

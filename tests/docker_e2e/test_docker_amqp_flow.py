@@ -146,6 +146,14 @@ class AmqpDockerFlowBase:
                 pass
 
 
+class TestNwsAlertsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nws-alerts"
+    image = "nws-alerts-amqp"
+    env = {"NWS_ALERTS_AMQP_EMIT_MOCK_CORPUS": "true", "ONCE_MODE": "true"}
+    expected_types = {"NWS.WeatherAlert"}
+    expected_count = 5
+
+
 class TestKystverketAisAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "kystverket-ais"
     image = "kystverket-ais-amqp"
