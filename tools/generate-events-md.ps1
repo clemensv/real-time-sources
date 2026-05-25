@@ -1,37 +1,93 @@
 <#
 .SYNOPSIS
-    This script generates event markdown files.
-
+    Regenerates source EVENTS.md files from xRegistry manifests.
 .DESCRIPTION
-    The script is designed to automate the generation of markdown files for events.
-    It should be executed from the specified directory to ensure all dependencies and resources are correctly referenced.
-
-.PARAMETER None
-    No parameters are required for this script.
-
-.EXAMPLE
-    To run this script, navigate to the directory using pushd and execute the script.
-
-.NOTES
-    Author: [Your Name]
-    Date: [Date]
-    FilePath: /c:/git/real-time-sources/tools/generate-events-md.ps1
+    Discovery is repo-driven: every top-level <source>\xreg\*.xreg.json manifest
+    is picked up automatically. To add a source, commit the xRegistry manifest;
+    this script derives title/description metadata and writes <source>\EVENTS.md.
+.PARAMETER Source
+    Optional top-level source folder id to regenerate.
+.PARAMETER Check
+    Regenerate into a repository-local scratch directory and fail when committed
+    EVENTS.md differs. Intended as a future CI gate.
 #>
+[CmdletBinding()]
+param([string]$Source, [switch]$Check)
 
-pushd $PSScriptRoot
+$ErrorActionPreference = 'Continue'
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoRoot = Split-Path -Parent $ScriptDir
+$PrintDoc = Join-Path $ScriptDir 'printdoc.py'
+$ScratchDir = Join-Path $RepoRoot '.events-md-check'
 
-python .\printdoc.py ..\gtfs\xreg\gtfs.xreg.json --title "GTFS API Bridge Events" --description "This document describes the events that are emitted by the GTFS API Bridge." --output ..\gtfs\EVENTS.md
-python .\printdoc.py ..\pegelonline\xreg\pegelonline.xreg.json --title "PegelOnline API Bridge Events" --description "This document describes the events that are emitted by the PegelOnline API Bridge." --output ..\pegelonline\EVENTS.md
-python .\printdoc.py ..\rss\xreg\feeds.xreg.json --title "RSS API Bridge Events" --description "This document describes the events that are emitted by the RSS API Bridge." --output ..\rss\EVENTS.md
-python .\printdoc.py ..\noaa\xreg\noaa.xreg.json --title "NOAA Tides and Currents API Bridge Events" --description "This document describes the events that are emitted by the NOAA API Bridge." --output ..\noaa\EVENTS.md
-python .\printdoc.py ..\noaa-ndbc\xreg\noaa_ndbc.xreg.json --title "NOAA NDBC Buoy Observations Bridge Events" --description "This document describes the events emitted by the NOAA NDBC Buoy Observations bridge." --output ..\noaa-ndbc\EVENTS.md
-python .\printdoc.py ..\usgs-iv\xreg\usgs_iv.xreg.json --title "USGS Instantaneous Values API Bridge Events" --description "This document describes the events that are emitted by the USGS Instantaneous Values API Bridge." --output ..\usgs-iv\EVENTS.md
-python .\printdoc.py ..\mode-s\xreg\mode_s.xreg.json --title "Mode-S API Bridge Events" --description "This document describes the events that are emitted by the Mode-S API Bridge." --output ..\mode-s\EVENTS.md
-python .\printdoc.py ..\dwd\xreg\dwd.xreg.json --title "DWD Open Data Bridge Events" --description "This document describes the events emitted by the DWD Open Data bridge." --output ..\dwd\EVENTS.md
-python .\printdoc.py ..\digitraffic-maritime\xreg\digitraffic_maritime.xreg.json --title "Digitraffic Marine Bridge Events" --description "This document describes the events emitted by the Digitraffic Marine bridge." --output ..\digitraffic-maritime\EVENTS.md
-python .\printdoc.py ..\kystverket-ais\xreg\ais.xreg.json --title "Kystverket AIS Bridge Events" --description "This document describes the events emitted by the Kystverket AIS bridge." --output ..\kystverket-ais\EVENTS.md
-python .\printdoc.py ..\entsoe\xreg\entsoe.xreg.json --title "ENTSO-E Transparency Platform Bridge Events" --description "This document describes the events that are emitted by the ENTSO-E Transparency Platform Bridge." --output ..\entsoe\EVENTS.md
-python .\printdoc.py ..\laqn-london\xreg\laqn_london.xreg.json --title "LAQN London Air Quality Network Bridge Events" --description "This document describes the events emitted by the LAQN London Air Quality Network bridge." --output ..\laqn-london\EVENTS.md
-python .\printdoc.py ..\uba-airdata\xreg\uba_airdata.xreg.json --title "UBA Germany Air Quality Bridge Events" --description "This document describes the events emitted by the UBA Germany Air Quality bridge." --output ..\uba-airdata\EVENTS.md
-
-popd
+function Humanize([string]$Value) {
+    (($Value -split '[-_\s]+' | Where-Object { $_ }) | ForEach-Object { $_.Substring(0,1).ToUpperInvariant() + $(if ($_.Length -gt 1) { $_.Substring(1) } else { '' }) }) -join ' '
+}
+function Read-ReadmeInfo([string]$SourceDir) {
+    $r=[ordered]@{Title=$null;Description=$null}; $path=Join-Path $SourceDir 'README.md'
+    if (-not (Test-Path $path)) { return $r }
+    $lines=Get-Content $path -Encoding UTF8
+    foreach ($line in $lines) { if ($line -match '^#\s+(.+)$') { $r.Title=$Matches[1].Trim(); break } }
+    $seen=$false; $para=@()
+    foreach ($line in $lines) {
+        if (-not $seen) { if ($line -match '^#\s+') { $seen=$true }; continue }
+        if ([string]::IsNullOrWhiteSpace($line)) { if ($para.Count) { break } else { continue } }
+        if ($line -match '^(#|```|\||!\[)') { if ($para.Count) { break } else { continue } }
+        $para += $line.Trim()
+    }
+    if ($para.Count) { $r.Description = ($para -join ' ') }
+    return $r
+}
+function Read-XregInfo([string]$Manifest) {
+    $r=[ordered]@{Title=$null;Description=$null}
+    try { $j=Get-Content $Manifest -Raw -Encoding UTF8 | ConvertFrom-Json -Depth 100 } catch { return $r }
+    if ($j.name) { $r.Title = "$($j.name) Events" }
+    if ($j.description) { $r.Description = [string]$j.description }
+    elseif ($j.documentation) {
+        if ($j.documentation -is [string]) { $r.Description=[string]$j.documentation }
+        elseif ($j.documentation.description) { $r.Description=[string]$j.documentation.description }
+        elseif ($j.documentation.url) { $r.Description=[string]$j.documentation.url }
+    }
+    if (-not $r.Description -and $j.messagegroups) {
+        $g=$j.messagegroups.PSObject.Properties | ForEach-Object { $_.Value } | Where-Object { $_.description } | Select-Object -First 1
+        if ($g) { $r.Description=[string]$g.description }
+    }
+    return $r
+}
+function Get-Entries {
+    $excluded=@('.git','.github','tools','ghpages','docs','tests','node_modules','.events-md-check')
+    Get-ChildItem $RepoRoot -Directory | Where-Object { $excluded -notcontains $_.Name -and ((-not $Source) -or $_.Name -eq $Source) } | ForEach-Object {
+        $dir=$_; $xreg=Join-Path $dir.FullName 'xreg'; if (-not (Test-Path $xreg)) { return }
+        Get-ChildItem $xreg -Filter '*.xreg.json' -File | ForEach-Object {
+            $xi=Read-XregInfo $_.FullName; $ri=Read-ReadmeInfo $dir.FullName; $human=Humanize $dir.Name
+            [pscustomobject]@{
+                Source=$dir.Name; Manifest=$_.FullName; Output=(Join-Path $dir.FullName 'EVENTS.md')
+                Title=$(if ($xi.Title) { $xi.Title } elseif ($ri.Title) { "$($ri.Title) Events" } else { "$human Bridge Events" })
+                Description=$(if ($xi.Description) { $xi.Description } elseif ($ri.Description) { $ri.Description } else { "This document describes the CloudEvents emitted by the $human bridge." })
+            }
+        }
+    }
+}
+$entries=@(Get-Entries | Sort-Object Source, Manifest)
+if ($Source -and -not $entries.Count) { Write-Error "No top-level source with xRegistry manifest found for '$Source'."; exit 2 }
+if (-not $entries.Count) { Write-Error 'No top-level xRegistry manifests found.'; exit 2 }
+if ($Check) { if (Test-Path $ScratchDir) { Remove-Item $ScratchDir -Recurse -Force }; New-Item $ScratchDir -ItemType Directory -Force | Out-Null }
+$fail=@(); $stale=@()
+foreach ($e in $entries) {
+    $target = if ($Check) { Join-Path $ScratchDir "$($e.Source).EVENTS.md" } else { $e.Output }
+    Write-Host "Generating $($e.Source): $($e.Manifest) -> $target"
+    $old=$env:PRINTDOC_SUPPRESS_COMPAT_NOTICE; $env:PRINTDOC_SUPPRESS_COMPAT_NOTICE='1'
+    & python $PrintDoc $e.Manifest --title $e.Title --description $e.Description --output $target
+    if ($null -eq $old) { Remove-Item Env:\PRINTDOC_SUPPRESS_COMPAT_NOTICE -ErrorAction SilentlyContinue } else { $env:PRINTDOC_SUPPRESS_COMPAT_NOTICE=$old }
+    if ($LASTEXITCODE -ne 0) { $fail += $e.Source; continue }
+    if ($Check) {
+        if (-not (Test-Path $e.Output)) { $stale += "$($e.Source) (missing EVENTS.md)"; continue }
+        $diff=& git --no-pager diff --no-index -- $e.Output $target 2>$null
+        if ($LASTEXITCODE -ne 0) { $stale += $e.Source; $diff | Select-Object -First 80 | ForEach-Object { Write-Host $_ } }
+    }
+}
+if ($Check -and (Test-Path $ScratchDir)) { Remove-Item $ScratchDir -Recurse -Force }
+if ($fail.Count) { Write-Error "EVENTS.md generation failed for: $($fail -join ', ')" }
+if ($stale.Count) { Write-Error "Stale EVENTS.md files: $($stale -join ', ')" }
+if ($fail.Count -or $stale.Count) { exit 1 }
+Write-Host "Processed $($entries.Count) xRegistry manifest(s)."
