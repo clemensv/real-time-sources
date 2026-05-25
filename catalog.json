@@ -530,7 +530,9 @@
     "cat": "Disasters",
     "key": false,
     "desc": "United States — active wildfire incidents, NIFC",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nina-bbk",

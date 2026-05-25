@@ -4998,3 +4998,38 @@ class TestEurdepRadiationMqttDockerFlow:
             assert sample['retain'] is True and sample['qos'] == 1
             for required in ('id','source','type','subject','time','specversion'): assert required in sample['user_properties']
             payload = _to_dict(sample['payload']); assert payload and 'station_id' in payload and 'country' in payload
+
+
+# ---- nifc-usa-wildfires -----------------------------------------------
+
+@pytest.fixture(scope='module')
+def nifc_usa_wildfires_mqtt_image():
+    return build_image('nifc-usa-wildfires', dockerfile='Dockerfile.mqtt', tag='test-nifc-usa-wildfires-mqtt')
+
+@pytest.fixture()
+def mosquitto_nifc_usa_wildfires():
+    container, network, host_port = _generic_mosquitto('nifc-usa-wildfires-mqtt-e2e', 'nifc-usa-wildfires-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'nifc-usa-wildfires-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNifcUsaWildfiresMqttDockerFlow:
+    def test_emits_incident_topic(self, mosquitto_nifc_usa_wildfires, nifc_usa_wildfires_mqtt_image):
+        client=docker.from_env(); broker_url=f"mqtt://{mosquitto_nifc_usa_wildfires['internal_host']}:{mosquitto_nifc_usa_wildfires['internal_port']}"
+        feeder=client.containers.run(nifc_usa_wildfires_mqtt_image.id, detach=True, remove=False, network=mosquitto_nifc_usa_wildfires['network'], environment={'MQTT_BROKER_URL':broker_url,'ONCE_MODE':'true','PYTHONUNBUFFERED':'1','NIFC_USA_WILDFIRES_SAMPLE_MODE':'true'})
+        try:
+            result=feeder.wait(timeout=300); logs=feeder.logs().decode('utf-8',errors='replace'); assert result.get('StatusCode')==0, f"Feeder exited non-zero: {result}\n{logs}"
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages=_collect_messages_topic('127.0.0.1', mosquitto_nifc_usa_wildfires['host_port'], 'wildfire/us/nifc/nifc-usa-wildfires/#', timeout=20.0)
+        assert messages
+        incident=[m for m in messages if m['topic'].endswith('/incident')]; assert incident
+        sample=incident[0]; assert sample['user_properties'].get('type')=='Gov.NIFC.Wildfires.WildfireIncident'
+        for required in ('id','source','type','subject','time','specversion'): assert required in sample['user_properties']
+        payload=_to_dict(sample['payload']); assert payload and payload['state']=='ca' and payload['status']=='active'
+        parts=sample['topic'].split('/'); assert parts[:5]==['wildfire','us','nifc','nifc-usa-wildfires','ca']; assert parts[5]=='active'

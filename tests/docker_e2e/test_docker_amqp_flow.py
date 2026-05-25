@@ -268,3 +268,11 @@ class TestEurdepRadiationAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"ONCE_MODE": "true", "EURDEP_RADIATION_SAMPLE_MODE": "true"}
     expected_types = {"eu.jrc.eurdep.Station", "eu.jrc.eurdep.DoseRateReading"}
     expected_count = 2
+
+
+class TestNifcUsaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nifc-usa-wildfires"
+    image = "nifc-usa-wildfires-amqp"
+    env = {"ONCE_MODE": "true", "NIFC_USA_WILDFIRES_SAMPLE_MODE": "true"}
+    expected_types = {"Gov.NIFC.Wildfires.WildfireIncident"}
+    expected_count = 1

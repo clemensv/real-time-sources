@@ -630,6 +630,18 @@
       "image": "eurdep-radiation-amqp",
       "file": "Dockerfile.amqp",
       "module": "eurdep_radiation_amqp"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nifc_usa_wildfires_mqtt"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nifc_usa_wildfires_amqp"
     }
   ],
   "flow": [
@@ -1279,6 +1291,20 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEurdepRadiationAmqpDockerFlow"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNifcUsaWildfiresMqttDockerFlow"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNifcUsaWildfiresAmqpDockerFlow"
     }
   ]
 }
