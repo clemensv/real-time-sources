@@ -9,11 +9,11 @@ const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 /* ── Source catalog ────────────────────────────────────────────────────── */
 const SOURCES = [
   // ── Hydrology and Water Monitoring ──
-  { id: "bafu-hydro", name: "BAFU Hydro", cat: "Hydrology", key: false, desc: "Switzerland — ~300 stations, FOEN", notebook: true },
+  { id: "bafu-hydro", name: "BAFU Hydro", cat: "Hydrology", key: false, desc: "Switzerland — ~300 stations, FOEN", notebook: true, mqtt: true, amqp: true  },
   { id: "canada-eccc-wateroffice", name: "Canada ECCC Water Office", cat: "Hydrology", key: false, desc: "Canada — ~2,100 hydrometric stations, ECCC/WSC" },
   { id: "cdec-reservoirs", name: "CDEC Reservoirs", cat: "Hydrology", key: false, desc: "California — ~2,600 stations, DWR", notebook: true },
-  { id: "chmi-hydro", name: "CHMI Hydro", cat: "Hydrology", key: false, desc: "Czech Republic — CHMU", notebook: true },
-  { id: "german-waters", name: "German Waters", cat: "Hydrology", key: false, desc: "Germany — 12 state portals, ~2,724 stations" },
+  { id: "chmi-hydro", name: "CHMI Hydro", cat: "Hydrology", key: false, desc: "Czech Republic — CHMU", notebook: true, mqtt: true, amqp: true  },
+  { id: "german-waters", name: "German Waters", cat: "Hydrology", key: false, desc: "Germany — 12 state portals, ~2,724 stations", mqtt: true, amqp: true  },
   { id: "hubeau-hydrometrie", name: "Hub'Eau Hydrometrie", cat: "Hydrology", key: false, desc: "France — ~6,300 stations", notebook: true },
   { id: "imgw-hydro", name: "IMGW Hydro", cat: "Hydrology", key: false, desc: "Poland — IMGW-PIB", notebook: true },
   { id: "ireland-opw-waterlevel", name: "Ireland OPW Water Level", cat: "Hydrology", key: false, desc: "Ireland — ~500 OPW hydrometric stations", notebook: true },
@@ -21,10 +21,10 @@ const SOURCES = [
   { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", notebook: true },
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true },
   { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations" },
-  { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true },
+  { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true, mqtt: true, amqp: true  },
   { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true, amqp: true },
-  { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true },
-  { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", notebook: true },
+  { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true, mqtt: true, amqp: true  },
+  { id: "smhi-hydro", name: "SMHI Hydro", cat: "Hydrology", key: false, desc: "Sweden — SMHI", notebook: true, mqtt: true, amqp: true  },
   { id: "snotel", name: "SNOTEL Snow", cat: "Hydrology", key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS", notebook: true },
   { id: "syke-hydro", name: "SYKE Hydro", cat: "Hydrology", key: false, desc: "Finland — SYKE", notebook: true },
   { id: "uk-ea-flood-monitoring", name: "UK EA Flood Monitoring", cat: "Hydrology", key: false, desc: "England — ~4,000 stations", notebook: true },
@@ -63,7 +63,7 @@ const SOURCES = [
   { id: "luchtmeetnet-nl", name: "Luchtmeetnet Netherlands", cat: "Air Quality", key: false, desc: "Netherlands — station measurements, components, LKI index", notebook: true },
   { id: "sensor-community", name: "Sensor.Community", cat: "Air Quality", key: false, desc: "Global — citizen air sensors, PM and climate readings", notebook: true },
   { id: "uba-airdata", name: "UBA AirData", cat: "Air Quality", key: false, desc: "Germany — stations, pollutant components, hourly measures", notebook: true },
-  { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors" },
+  { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors", mqtt: true, amqp: true  },
 
   // ── Disaster Alerts and Civil Protection ──
   { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", notebook: true },

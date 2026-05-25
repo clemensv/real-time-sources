@@ -375,3 +375,145 @@ class TestEntsoeAmqpDockerFlow:
             annotations = dict(getattr(m, "annotations", None) or {})
             partition_key = annotations.get(symbol("x-opt-partition-key")) or annotations.get("x-opt-partition-key")
             assert partition_key == ce["subject"]
+# ---------------------------------------------------------------------------
+# AMQP companion backfill feeders (mock-mode, generic Artemis broker)
+# ---------------------------------------------------------------------------
+
+HYDRO_AMQP_SOURCES = [
+    ("bafu-hydro", "test-bafu-hydro-amqp", "CH.BAFU.Hydrology.Station", "CH.BAFU.Hydrology.WaterLevelObservation"),
+    ("chmi-hydro", "test-chmi-hydro-amqp", "CZ.Gov.CHMI.Hydro.Station", "CZ.Gov.CHMI.Hydro.WaterLevelObservation"),
+    ("german-waters", "test-german-waters-amqp", "DE.Waters.Hydrology.Station", "DE.Waters.Hydrology.WaterLevelObservation"),
+    ("nve-hydro", "test-nve-hydro-amqp", "NO.NVE.Hydrology.Station", "NO.NVE.Hydrology.WaterLevelObservation"),
+    ("rws-waterwebservices", "test-rws-waterwebservices-amqp", "NL.RWS.Waterwebservices.Station", "NL.RWS.Waterwebservices.WaterLevelObservation"),
+    ("smhi-hydro", "test-smhi-hydro-amqp", "SE.Gov.SMHI.Hydro.Station", "SE.Gov.SMHI.Hydro.DischargeObservation"),
+    ("wallonia-issep", "test-wallonia-issep-amqp", "be.issep.airquality.SensorConfiguration", "be.issep.airquality.Observation"),
+]
+
+
+def _load_source_schemas(source_dir: str) -> Dict[str, Dict[str, Any]]:
+    xreg_dir = os.path.join(REPO_ROOT, source_dir, "xreg")
+    xreg_name = next(n for n in os.listdir(xreg_dir) if n.endswith(".xreg.json"))
+    with open(os.path.join(xreg_dir, xreg_name), "r", encoding="utf-8") as fh:
+        manifest = json.load(fh)
+    schemagroup = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
+    return {name: schema["versions"]["1"]["schema"] for name, schema in schemagroup["schemas"].items()}
+
+
+def _run_generic_amqp_artemis_flow(source_dir: str, image_tag: str, station_type: str, telemetry_type: str) -> None:
+    queue = source_dir
+    client = docker.from_env()
+    image = build_image(source_dir, dockerfile="Dockerfile.amqp", tag=image_tag)
+    network = client.networks.create(f"{source_dir}-amqp-e2e", driver="bridge")
+    host_port = _find_free_port()
+    broker = None
+    try:
+        broker = client.containers.run(
+            ARTEMIS_IMAGE,
+            name=f"{source_dir}-amqp-e2e-broker",
+            detach=True,
+            remove=True,
+            network=network.name,
+            ports={"5672/tcp": host_port},
+            environment={
+                "ARTEMIS_USER": ARTEMIS_USER,
+                "ARTEMIS_PASSWORD": ARTEMIS_PASSWORD,
+                "ANONYMOUS_LOGIN": "false",
+                "EXTRA_ARGS": f"--queues {queue}",
+            },
+        )
+        deadline = time.time() + 90
+        while time.time() < deadline:
+            try:
+                with closing(socket.create_connection(("127.0.0.1", host_port), timeout=1)):
+                    logs = broker.logs().decode("utf-8", errors="replace")
+                    if "Server is now live" in logs or ("AMQP" in logs and "started" in logs.lower()):
+                        break
+            except OSError:
+                pass
+            time.sleep(2)
+        else:
+            pytest.skip(f"Artemis broker not ready. Tail:\n{broker.logs().decode('utf-8', errors='replace')[-2000:]}")
+        time.sleep(3)
+        feeder = client.containers.run(
+            image.id,
+            detach=True,
+            remove=False,
+            network=network.name,
+            environment={
+                "AMQP_HOST": f"{source_dir}-amqp-e2e-broker",
+                "AMQP_PORT": "5672",
+                "AMQP_ADDRESS": queue,
+                "AMQP_USERNAME": ARTEMIS_USER,
+                "AMQP_PASSWORD": ARTEMIS_PASSWORD,
+                "AMQP_AUTH_MODE": "password",
+                "MOCK_MODE": "true",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
+        finally:
+            feeder.remove(force=True)
+        messages = _receive_messages("127.0.0.1", host_port, queue, ARTEMIS_USER, ARTEMIS_PASSWORD, expected=2, timeout=30)
+        assert messages, "No AMQP messages received from Artemis"
+        by_type: Dict[str, List[Any]] = {}
+        for message in messages:
+            ce = _extract_ce_attrs(message)
+            by_type.setdefault(ce.get("type"), []).append((message, ce))
+        assert station_type in by_type, sorted(by_type)
+        assert telemetry_type in by_type, sorted(by_type)
+        schemas = _load_source_schemas(source_dir)
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        for ce_type in (station_type, telemetry_type):
+            sample_msg, sample_ce = by_type[ce_type][0]
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in sample_ce, f"Missing CE attribute {required!r}: {sample_ce}"
+            schema = schemas[ce_type]
+            assert not validator_factory.validate(schema)
+            data = _body_to_obj(sample_msg)
+            assert isinstance(data, dict), data
+            errors = InstanceValidator(schema, extended=True).validate_instance(data)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+    finally:
+        if broker is not None:
+            try:
+                broker.kill()
+            except docker.errors.APIError:
+                pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestBafuHydroAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[0])
+
+class TestChmiHydroAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[1])
+
+class TestGermanWatersAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[2])
+
+class TestNveHydroAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[3])
+
+class TestRwsWaterwebservicesAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[4])
+
+class TestSmhiHydroAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[5])
+
+class TestWalloniaIssepAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[6])
