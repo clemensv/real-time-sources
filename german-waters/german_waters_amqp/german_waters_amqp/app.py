@@ -328,7 +328,8 @@ def main(argv: Optional[list] = None) -> None:
         username = args.username
         password = args.password
         address = args.address
-    providers = _resolve_providers(args.providers, args.exclude_providers)    feed(
+    providers = _resolve_providers(args.providers, args.exclude_providers)
+    feed(
             providers, host, port, args.polling_interval,
             username=username, password=password, tls=tls,
             client_id=args.client_id, state_file=args.state_file,
