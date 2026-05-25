@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_mqtt_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class ParkingLorry:
     """
-    Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.
+    A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
     
     Attributes:
         identifier (str)
@@ -195,25 +195,25 @@ class ParkingLorry:
             An instance of the dataclass.
         """
         return cls(
-            identifier='taccxpwsegrjlrzyeufl',
-            road='ykypqmuvwlphcofdlbvd',
-            road_ids=['tpptyczemttsejgrgscr', 'mzczbkmitxcngbqkmlqk'],
+            identifier='mzunamhxvclipnjmdhle',
+            road='edtlebhtnayqnwmvhwaa',
+            road_ids=['lfjxnbpiewgfduwkzzpf', 'uxoopehqbamjinfjdiho'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='skgbooqkjplepsccnlcf',
-            subtitle='eytygfxlhztdpmcwbctg',
+            display_type=DisplayTypeenum.WARNING,
+            title='wnjpgqfdaakfvgjnluan',
+            subtitle='ueikgyfzcgjuxuxcjnzk',
             description_lines=None,
-            future=False,
+            future=True,
             is_blocked=True,
-            icon='augbvgbtblbthwbinhma',
-            start_lc_position=int(79),
-            extent='pmtgxvxzjrpvihysblzv',
-            point='gwvmzusnjvjrwcqmxejq',
-            coordinate_lat=float(56.50729939921716),
-            coordinate_lon=float(44.817244839537196),
-            route_recommendation_json='ebbytbikfymcvguznouh',
+            icon='dqgbeevllaxgckgnfdft',
+            start_lc_position=int(41),
+            extent='bknyzjqdlitgphzacrhg',
+            point='zozshyjhuouawinkghae',
+            coordinate_lat=float(4.263027646682172),
+            coordinate_lon=float(81.37912459042718),
+            route_recommendation_json='hcjxqdarqjbvpxmzzxxv',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(96),
-            lorry_space_count=int(85)
+            car_space_count=int(20),
+            lorry_space_count=int(100)
         )

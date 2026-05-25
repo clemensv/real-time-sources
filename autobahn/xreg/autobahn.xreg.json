@@ -43,6 +43,27 @@
         "#/messagegroups/DE.Autobahn.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for Autobahn CloudEvents using the topic hierarchy and retain settings declared in this manifest."
+    },
+    "DE.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "autobahn"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.Autobahn.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -1073,6 +1094,641 @@
             "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/resolved",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "DE.Autobahn.amqp": {
+      "description": "AMQP 1.0 bindings for autobahn.",
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared.amqp": {
+          "name": "RoadworkAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.RoadworkUpdated.amqp": {
+          "name": "RoadworkUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.RoadworkResolved.amqp": {
+          "name": "RoadworkResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared.amqp": {
+          "name": "ShortTermRoadworkAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated.amqp": {
+          "name": "ShortTermRoadworkUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved.amqp": {
+          "name": "ShortTermRoadworkResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ClosureAppeared.amqp": {
+          "name": "ClosureAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ClosureUpdated.amqp": {
+          "name": "ClosureUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ClosureResolved.amqp": {
+          "name": "ClosureResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureAppeared.amqp": {
+          "name": "EntryExitClosureAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureUpdated.amqp": {
+          "name": "EntryExitClosureUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.EntryExitClosureResolved.amqp": {
+          "name": "EntryExitClosureResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WarningAppeared.amqp": {
+          "name": "WarningAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WarningUpdated.amqp": {
+          "name": "WarningUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WarningResolved.amqp": {
+          "name": "WarningResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared.amqp": {
+          "name": "WeightLimit35RestrictionAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated.amqp": {
+          "name": "WeightLimit35RestrictionUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved.amqp": {
+          "name": "WeightLimit35RestrictionResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WebcamAppeared.amqp": {
+          "name": "WebcamAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WebcamUpdated.amqp": {
+          "name": "WebcamUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WebcamResolved.amqp": {
+          "name": "WebcamResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryAppeared.amqp": {
+          "name": "ParkingLorryAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryUpdated.amqp": {
+          "name": "ParkingLorryUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorryResolved.amqp": {
+          "name": "ParkingLorryResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared.amqp": {
+          "name": "ElectricChargingStationAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated.amqp": {
+          "name": "ElectricChargingStationUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ElectricChargingStationResolved.amqp": {
+          "name": "ElectricChargingStationResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared.amqp": {
+          "name": "StrongElectricChargingStationAppeared",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated.amqp": {
+          "name": "StrongElectricChargingStationUpdated",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved.amqp": {
+          "name": "StrongElectricChargingStationResolved",
+          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
           }
         }
       }

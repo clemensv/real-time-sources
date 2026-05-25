@@ -155,7 +155,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.RoadworkAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.RoadworkAppeared.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -198,7 +200,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.RoadworkUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.RoadworkUpdated.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -241,7 +245,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.RoadworkResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.RoadworkResolved.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -284,7 +290,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkAppeared.mqtt`: A traffic or service situation update
+from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert
+affecting the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -328,7 +336,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkUpdated.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -372,7 +382,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkResolved.mqtt`: A traffic or service situation update
+from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert
+affecting the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -416,7 +428,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ClosureAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ClosureAppeared.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -458,7 +472,9 @@ de_autobahn_closure_updated_mqtt_async:  Callable[[PartitionContext, EventData, 
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ClosureUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ClosureUpdated.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -501,7 +517,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ClosureResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ClosureResolved.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -544,7 +562,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.EntryExitClosureAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.EntryExitClosureAppeared.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -588,7 +608,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.EntryExitClosureUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.EntryExitClosureUpdated.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -632,7 +654,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.EntryExitClosureResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.EntryExitClosureResolved.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -676,7 +700,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WarningAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WarningAppeared.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -719,7 +745,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WarningUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WarningUpdated.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -762,7 +790,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WarningResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WarningResolved.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -805,7 +835,9 @@ RoadEvent], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -849,7 +881,9 @@ RoadEvent], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -893,7 +927,9 @@ RoadEvent], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionResolved.mqtt`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -936,7 +972,9 @@ de_autobahn_webcam_appeared_mqtt_async:  Callable[[PartitionContext, EventData, 
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WebcamAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WebcamAppeared.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -978,7 +1016,9 @@ de_autobahn_webcam_updated_mqtt_async:  Callable[[PartitionContext, EventData, C
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WebcamUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WebcamUpdated.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1020,7 +1060,9 @@ de_autobahn_webcam_resolved_mqtt_async:  Callable[[PartitionContext, EventData, 
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.WebcamResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.WebcamResolved.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1063,7 +1105,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ParkingLorryAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ParkingLorryAppeared.mqtt`: A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1107,7 +1151,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ParkingLorryUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ParkingLorryUpdated.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1150,7 +1196,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ParkingLorryResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ParkingLorryResolved.mqtt`: A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1194,7 +1242,9 @@ ChargingStation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationAppeared.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1238,7 +1288,9 @@ ChargingStation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationUpdated.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1282,7 +1334,9 @@ ChargingStation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationResolved.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1326,7 +1380,9 @@ ChargingStation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationAppeared.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationAppeared.mqtt`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1370,7 +1426,9 @@ ChargingStation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationUpdated.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationUpdated.mqtt`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -1414,7 +1472,9 @@ ChargingStation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationResolved.mqtt`:
+```Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationResolved.mqtt`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

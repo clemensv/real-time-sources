@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_mqtt_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class RoadEvent:
     """
-    Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+    A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
     
     Attributes:
         identifier (str)
@@ -199,27 +199,27 @@ class RoadEvent:
             An instance of the dataclass.
         """
         return cls(
-            identifier='wrlinoxxiqlgtxifmxzb',
-            road='slimshtvkcwkpewkoucy',
-            road_ids=['serqfyeqsgdhbkipqhuo', 'bwewbmavtmktlhgokrhn', 'cvpumlnyvdevoeqnpldg', 'kyztynvkfpdbqtahdeen', 'pokzyoheoruufzzgdkgp'],
+            identifier='tcfelggrvfvrkaqcadox',
+            road='tyuufhrlooopwasrafsf',
+            road_ids=['oegqpjnywhamwclywllt', 'lqyoetabaidurewfigfv'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='ahjgzdqakrllslcqtbkc',
-            subtitle='zvhoyhgnfjqgpsoteonm',
+            display_type=DisplayTypeenum.WARNING,
+            title='amzaeibwibyiabyftxqv',
+            subtitle='hyrzvpeasyayrgbosgmu',
             description_lines=None,
-            future=False,
-            is_blocked=True,
-            icon='slpudnbeinnraqpvvfxw',
-            start_lc_position=int(5),
+            future=True,
+            is_blocked=False,
+            icon='lbutkugqosejlbwtxwgd',
+            start_lc_position=int(23),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='zrehnjkbsodygfajikzt',
-            point='bosgfksvqnxpxzmhmlmb',
-            coordinate_lat=float(35.69835929983016),
-            coordinate_lon=float(76.0289964082437),
-            geometry_json='gxoalwevzaojfcluwmzn',
-            impact_lower='nzxqqxjumzzbmozrbszp',
-            impact_upper='ufvrbuvjcpcfzxfpdvdx',
+            extent='fvpvtqxlosbrmrakljnb',
+            point='lgcppqyconliedsazmmp',
+            coordinate_lat=float(66.42450798206805),
+            coordinate_lon=float(47.87769091380104),
+            geometry_json='tjzcwhxihyoyuvvpdoix',
+            impact_lower='xhavqrkzmixfeinxjnet',
+            impact_upper='bxvcrommxkmrzjtxkxcw',
             impact_symbols=None,
-            route_recommendation_json='osmwplgrrqkrewrmpnil',
+            route_recommendation_json='ojyocsjqfrvilolzbieo',
             footer_lines=None
         )

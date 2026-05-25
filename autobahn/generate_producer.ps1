@@ -1,31 +1,11 @@
 $ErrorActionPreference = 'Stop'
-
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "autobahn.xreg.json"
-$outputDir = Join-Path $scriptDir "autobahn_producer"
+$xregFile = Join-Path $scriptDir 'xreg\autobahn.xreg.json'
 
-Write-Host "Generating Autobahn producer from $xregFile"
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'DE.Autobahn.Kafka' --projectname autobahn_producer --output (Join-Path $scriptDir 'autobahn_producer')
 
-if (-not (Test-Path $xregFile)) {
-    throw "xRegistry file not found: $xregFile"
-}
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'DE.Autobahn.Mqtt' --projectname autobahn_mqtt_producer --output (Join-Path $scriptDir 'autobahn_mqtt_producer')
 
-if (Test-Path $outputDir) {
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-xrcg generate `
-    --style kafkaproducer `
-    --language py `
-    --projectname autobahn-producer `
-    --definitions $xregFile `
-    --output $outputDir
-
-if ($LASTEXITCODE -ne 0) {
-    throw "Producer generation failed"
-}
-
-Write-Host "Generation complete. Output in $outputDir" -ForegroundColor Green
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'DE.Amqp' --projectname autobahn_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'autobahn_amqp_producer')

@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_mqtt_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class ChargingStation:
     """
-    Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+    A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         identifier (str)
@@ -193,24 +193,24 @@ class ChargingStation:
             An instance of the dataclass.
         """
         return cls(
-            identifier='viqclsyeyyqemxuombnf',
-            road='wsjyeoweppqwnyuijivu',
-            road_ids=['cfnakpjumhfququcyxrz'],
+            identifier='mbjjkrrtqufgkrbhimsq',
+            road='ufsnbkfbhpzrskyxqwgj',
+            road_ids=['lktwvdcswwiufnhxkmqu', 'diebtkpnpnzpkiouuzjm'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='qcpsnokrnzljopscyngy',
-            subtitle='kqmbkhyjogeltddnddnv',
+            display_type=DisplayTypeenum.WARNING,
+            title='auyinwlqisjllefddvbi',
+            subtitle='qoevjbbpuwexkjdgbeui',
             description_lines=None,
             future=False,
             is_blocked=True,
-            icon='ngybixgokjndwlpwlcis',
-            extent='atzthplqgafglmqtatzs',
-            point='orlxrszxqmrtukyzkkca',
-            coordinate_lat=float(78.89221695906431),
-            coordinate_lon=float(74.34221479979338),
-            address_line='ssomvqtgbyubkjcddqfz',
-            charging_point_count=int(63),
-            charging_points_json='erifcjovibrfqhaivvop',
-            route_recommendation_json='mwpmhrffkjdcbviccddy',
+            icon='cgzqfnwsciemwwgjpkor',
+            extent='ahapzvxmromxtzumessv',
+            point='nzjfbtkydeqvwteqvdpw',
+            coordinate_lat=float(1.3781182408482473),
+            coordinate_lon=float(63.7257782015496),
+            address_line='warvnaogedxjwxcjkuyc',
+            charging_point_count=int(83),
+            charging_points_json='utbxpzbsnccocanqfttx',
+            route_recommendation_json='rpbwwbhvroetbmjwdtwt',
             footer_lines=None
         )

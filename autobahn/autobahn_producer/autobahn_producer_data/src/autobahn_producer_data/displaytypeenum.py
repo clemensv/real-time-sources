@@ -3,9 +3,9 @@ from enum import Enum
 
 class DisplayTypeenum(Enum):
     """
-    Autobahn API display_type for webcam items.
+    Autobahn API display_type for warning items.
     """
-    WEBCAM = 'WEBCAM'
+    WARNING = 'WARNING'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'DisplayTypeenum':

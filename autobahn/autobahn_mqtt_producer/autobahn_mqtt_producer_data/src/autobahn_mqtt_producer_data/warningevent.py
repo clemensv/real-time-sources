@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_mqtt_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class WarningEvent:
     """
-    Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.
+    A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
     
     Attributes:
         identifier (str)
@@ -207,31 +207,31 @@ class WarningEvent:
             An instance of the dataclass.
         """
         return cls(
-            identifier='hkvzvhyuvuwzcqddpcwv',
-            road='aeprovgrqnreqodcjmng',
-            road_ids=['lphfsmkzgawagqlchklp', 'fawzrapbwkhhvuikafku', 'jsvfepxckbxdehycjivg'],
+            identifier='ktekummczqkfbqbysraa',
+            road='ozflmwdxonsxvxzfxqbf',
+            road_ids=['yrllrsbdqlfzmanwwotf', 'orndrdeidjlbtunvwgme', 'hwmwwykvhiunczodfvse', 'aqooliwcymgjfgqofbur', 'uiuzgtsyldusnnctomhp'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='ryzuleuzbzjztrghdzeh',
-            subtitle='esciwnqgzpfhtmseyeni',
+            display_type=DisplayTypeenum.WARNING,
+            title='zjpvggaqhxoedcfszyce',
+            subtitle='vbgkcbmdnagdugxfyhiu',
             description_lines=None,
             future=True,
-            is_blocked=True,
-            icon='syyghnhrejlxypwntfpi',
-            start_lc_position=int(29),
+            is_blocked=False,
+            icon='icjgaymmepdixjiymgjv',
+            start_lc_position=int(77),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='gayhnuezonlgqjesomks',
-            point='ingcfgbxdqzlwrufoxzu',
-            coordinate_lat=float(91.40676967748577),
-            coordinate_lon=float(34.08501460819785),
-            geometry_json='wsjdefzuysmxexdyfbfl',
-            impact_lower='yagsphdwqqgwbrvkmaqj',
-            impact_upper='sdhzimzzkdrubdljjtlj',
+            extent='utuvfohyqalvfuwlcwwb',
+            point='remjaoscexrddarrfufr',
+            coordinate_lat=float(90.94001066529978),
+            coordinate_lon=float(78.3360527279899),
+            geometry_json='dhfhowngrxfmxilnzwcg',
+            impact_lower='qwzromngnstvjenxadnk',
+            impact_upper='kixactauiavliuhnpkqc',
             impact_symbols=None,
-            route_recommendation_json='vbhajcxzolfafqekqmqw',
+            route_recommendation_json='dvxlyxgeswhkppzezgtd',
             footer_lines=None,
-            delay_minutes=int(93),
-            average_speed_kmh=int(48),
-            abnormal_traffic_type='eahbkyvxrrodmxranbbv',
-            source_name='wsljjfaijtroyutnpqmv'
+            delay_minutes=int(26),
+            average_speed_kmh=int(17),
+            abnormal_traffic_type='fnlbybirwbweufcqmucw',
+            source_name='usqibxepsuxbjiwapodg'
         )

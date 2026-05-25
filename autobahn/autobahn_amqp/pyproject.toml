@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autobahn-amqp"
+version = "0.1.0"
+description = "AMQP companion feeder for Autobahn"
+requires-python = ">=3.10"
+dependencies = ["python-qpid-proton>=0.40.0"]
+
+[project.scripts]
+autobahn-amqp = "autobahn_amqp.app:main"
+
+[tool.setuptools.packages.find]
+include = ["autobahn_amqp*"]
