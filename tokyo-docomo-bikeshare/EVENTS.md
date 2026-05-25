@@ -1,6 +1,6 @@
 # Tokyo Docomo Bikeshare Events
 
-Real-time bikeshare data for **Tokyo Docomo Bikeshare** (ドコモ・バイクシェア), Japan's largest bikeshare network with 1,794 dock-based stations across the central wards of Tokyo (Chiyoda, Minato, Shibuya, Shinjuku, and others).
+Tokyo Docomo Bikeshare publishes station status and availability updates from Docomo Bike Share open feeds for Tokyo bike-share stations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `JP.ODPT.DocomoBikeshare.BikeshareSystem`
 
 #### What it tells you
 
-Metadata describing the Tokyo Docomo Bikeshare system, sourced from the GBFS 2.3 system_information.json feed published by the Open Data Platform for Transportation (ODPT).
+A transport update from Docomo Bike Share open feeds. It carries station status and availability updates for Tokyo bike-share stations.
 
 #### Identity
 
@@ -99,7 +99,7 @@ CloudEvents type: `JP.ODPT.DocomoBikeshare.BikeshareStation`
 
 #### What it tells you
 
-Physical location and static attributes of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_information.json feed published by the Open Data Platform for Transportation (ODPT).
+A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -158,7 +158,7 @@ CloudEvents type: `JP.ODPT.DocomoBikeshare.BikeshareStationStatus`
 
 #### What it tells you
 
-Real-time availability and operational status of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_status.json feed published by the Open Data Platform for Transportation (ODPT). Updates on a 60-second TTL.
+A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
