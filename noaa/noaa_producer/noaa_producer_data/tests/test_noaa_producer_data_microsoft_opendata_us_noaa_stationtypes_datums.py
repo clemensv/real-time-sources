@@ -28,7 +28,7 @@ class Test_Datums(unittest.TestCase):
         Create instance of Datums for testing
         """
         instance = Datums(
-            self_='tffkzcjwqewsqgofkjkj'
+            self_='khyqaucyekqpwoskakoi'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Datums(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'tffkzcjwqewsqgofkjkj'
+        test_value = 'khyqaucyekqpwoskakoi'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

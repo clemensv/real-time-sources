@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA"
       ]
+    },
+    "Microsoft.OpenData.US.NOAA.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for noaa CloudEvents using the documented UNS topic hierarchy."
+    },
+    "Microsoft.OpenData.US.NOAA.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/noaa"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for noaa CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -272,6 +316,510 @@
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.CurrentPredictions"
         }
       }
+    },
+    "Microsoft.OpenData.US.NOAA.mqtt": {
+      "description": "MQTT 5 variant of noaa events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.mqtt.WaterLevel": {
+          "name": "WaterLevel",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterLevel",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Predictions": {
+          "name": "Predictions",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Predictions",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/predictions",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.AirPressure": {
+          "name": "AirPressure",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirPressure",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/air-pressure",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.AirTemperature": {
+          "name": "AirTemperature",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirTemperature",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/air-temperature",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.WaterTemperature": {
+          "name": "WaterTemperature",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterTemperature",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/water-temperature",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Wind": {
+          "name": "Wind",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Wind",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/wind",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Humidity": {
+          "name": "Humidity",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Humidity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/humidity",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Conductivity": {
+          "name": "Conductivity",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Conductivity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/conductivity",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Salinity": {
+          "name": "Salinity",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Salinity",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/salinity",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Visibility": {
+          "name": "Visibility",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/visibility",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.Currents": {
+          "name": "Currents",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Currents",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/currents",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions": {
+          "name": "CurrentPredictions",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/current-predictions",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.amqp": {
+      "description": "AMQP 1.0 variant of noaa events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.amqp.WaterLevel": {
+          "name": "WaterLevel",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterLevel",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Predictions": {
+          "name": "Predictions",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Predictions",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.AirPressure": {
+          "name": "AirPressure",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirPressure",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.AirTemperature": {
+          "name": "AirTemperature",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirTemperature",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.WaterTemperature": {
+          "name": "WaterTemperature",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterTemperature",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Wind": {
+          "name": "Wind",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Wind",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Humidity": {
+          "name": "Humidity",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Humidity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Conductivity": {
+          "name": "Conductivity",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Conductivity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Salinity": {
+          "name": "Salinity",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Salinity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Visibility": {
+          "name": "Visibility",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.Currents": {
+          "name": "Currents",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Currents",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions": {
+          "name": "CurrentPredictions",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -340,9 +888,12 @@
                                 "description": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
                               },
                               "quality": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/QualityLevel"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -398,6 +949,10 @@
                               "value": {
                                 "type": "double",
                                 "description": "{\"description\": \"Value of the prediction\"}"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -459,6 +1014,10 @@
                               "rate_of_change_exceeded": {
                                 "type": "boolean",
                                 "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -523,6 +1082,10 @@
                               "rate_of_change_exceeded": {
                                 "type": "boolean",
                                 "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -587,6 +1150,10 @@
                               "rate_of_change_exceeded": {
                                 "type": "boolean",
                                 "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -659,6 +1226,10 @@
                               "rate_of_change_exceeded": {
                                 "type": "boolean",
                                 "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -725,6 +1296,10 @@
                               "rate_of_change_exceeded": {
                                 "type": "boolean",
                                 "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -789,6 +1364,10 @@
                               "rate_of_change_exceeded": {
                                 "type": "boolean",
                                 "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -845,6 +1424,10 @@
                               "grams_per_kg": {
                                 "type": "double",
                                 "description": "{\"description\": \"Grams of salt per kilogram of water\"}"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -887,6 +1470,14 @@
                               "properties": {
                                 "self": {
                                   "type": "string"
+                                },
+                                "region": {
+                                  "type": "string",
+                                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
+                                },
+                                "station_id": {
+                                  "type": "string",
+                                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                                 }
                               },
                               "required": [
@@ -1055,49 +1646,40 @@
                                 "description": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}"
                               },
                               "details": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/details"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "sensors": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/sensors"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "floodlevels": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/floodlevels"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "datums": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/datums"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "supersededdatums": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/supersededdatums"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "harmonicConstituents": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/harmonicConstituents"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "benchmarks": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/benchmarks"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "tidePredOffsets": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/tidePredOffsets"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "ofsMapOffsets": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/ofsMapOffsets"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "state": {
                                 "type": "string",
@@ -1120,9 +1702,8 @@
                                 "description": "{\"description\": \"Indicates whether the station measures storm surge data.\"}"
                               },
                               "nearby": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/nearby"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "forecast": {
                                 "type": "boolean",
@@ -1165,19 +1746,16 @@
                                 "description": "{\"description\": \"PORTS code for the station.\"}"
                               },
                               "products": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/products"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "disclaimers": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/disclaimers"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "notices": {
-                                "type": {
-                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/notices"
-                                }
+                                "type": "object",
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
                               },
                               "self": {
                                 "type": "string",
@@ -1281,6 +1859,10 @@
                               },
                               "station_id": {
                                 "type": "string"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -1341,6 +1923,10 @@
                               "bin": {
                                 "type": "string",
                                 "description": "{\"description\": \"Bin number\"}"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [
@@ -1408,6 +1994,10 @@
                               "bin": {
                                 "type": "string",
                                 "description": "{\"description\": \"Bin number\"}"
+                              },
+                              "region": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
                               }
                             },
                             "required": [

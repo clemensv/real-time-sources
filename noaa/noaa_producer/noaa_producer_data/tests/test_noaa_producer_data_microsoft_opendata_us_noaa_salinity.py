@@ -28,10 +28,10 @@ class Test_Salinity(unittest.TestCase):
         Create instance of Salinity for testing
         """
         instance = Salinity(
-            station_id='bbcegilmyywmlitgqisa',
-            timestamp='lqqivueadybsfzqpeioi',
-            salinity=float(88.65090415349667),
-            grams_per_kg=float(81.35226195496263)
+            station_id='qdgoabvigatnweabtcxt',
+            timestamp='ztqhihrftkottawfyspk',
+            salinity=float(42.10247693093958),
+            grams_per_kg=float(1.808721983482453)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'bbcegilmyywmlitgqisa'
+        test_value = 'qdgoabvigatnweabtcxt'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'lqqivueadybsfzqpeioi'
+        test_value = 'ztqhihrftkottawfyspk'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -56,7 +56,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test salinity property
         """
-        test_value = float(88.65090415349667)
+        test_value = float(42.10247693093958)
         self.instance.salinity = test_value
         self.assertEqual(self.instance.salinity, test_value)
     
@@ -64,7 +64,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test grams_per_kg property
         """
-        test_value = float(81.35226195496263)
+        test_value = float(1.808721983482453)
         self.instance.grams_per_kg = test_value
         self.assertEqual(self.instance.grams_per_kg, test_value)
     
