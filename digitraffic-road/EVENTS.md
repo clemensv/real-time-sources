@@ -1,6 +1,6 @@
 # Digitraffic Road — Finnish Road Traffic Data Events
 
-Real-time road traffic data from the Finnish national road network operated by Fintraffic. Telemetry is streamed via the Digitraffic MQTT service at `wss://tie.digitraffic.fi/mqtt` and includes TMS sensor readings, road weather sensor readings, traffic messages (incidents, road works, weight restrictions, exempted transports), and maintenance vehicle tracking. Station metadata and maintenance task type catalogs are fetched as reference data from the Digitraffic REST API at startup.
+Digitraffic Road publishes road traffic measurements and status updates from Fintraffic Digitraffic for Finnish road network sensors and traffic messages. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `fi.digitraffic.road.sensors.TmsSensorData`
 
 #### What it tells you
 
-Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
@@ -85,7 +85,7 @@ CloudEvents type: `fi.digitraffic.road.sensors.WeatherSensorData`
 
 #### What it tells you
 
-Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (JÄÄTYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
@@ -128,7 +128,7 @@ CloudEvents type: `fi.digitraffic.road.messages.TrafficAnnouncement`
 
 #### What it tells you
 
-Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+A current transport measurement or status update from Fintraffic Digitraffic. It carries road traffic measurements and status updates when the upstream feed reports a new or refreshed value. A transport update from Fintraffic Digitraffic.
 
 #### Identity
 
@@ -197,7 +197,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Road Work
 
@@ -205,7 +205,7 @@ CloudEvents type: `fi.digitraffic.road.messages.RoadWork`
 
 #### What it tells you
 
-Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
@@ -282,7 +282,7 @@ CloudEvents type: `fi.digitraffic.road.messages.WeightRestriction`
 
 #### What it tells you
 
-Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
@@ -359,7 +359,7 @@ CloudEvents type: `fi.digitraffic.road.messages.ExemptedTransport`
 
 #### What it tells you
 
-Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
@@ -436,7 +436,7 @@ CloudEvents type: `fi.digitraffic.road.maintenance.MaintenanceTracking`
 
 #### What it tells you
 
-Road maintenance vehicle tracking update from the Finnish national road network operated by Fintraffic. Each message represents a position and task report from a maintenance vehicle, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic maintenance-v2/routes/{domain}. Data originates from the Finnish Transport Infrastructure Agency's Harja system for state roads and from municipal systems for other domains.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
@@ -487,7 +487,7 @@ CloudEvents type: `fi.digitraffic.road.stations.TmsStation`
 
 #### What it tells you
 
-Traffic Measurement System (TMS) station metadata from the Finnish national road network operated by Fintraffic. Each TMS station is a fixed roadside installation that measures traffic volumes and speeds. Over 500 TMS stations are deployed across the Finnish road network.
+A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -580,7 +580,7 @@ CloudEvents type: `fi.digitraffic.road.stations.WeatherStation`
 
 #### What it tells you
 
-Road weather station metadata from the Finnish national road network operated by Fintraffic. Over 350 road weather stations measure atmospheric and road surface conditions. Station metadata includes geographic location, road address, municipality, sensor list, collection parameters, and administrative details.
+A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -673,7 +673,7 @@ CloudEvents type: `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType`
 
 #### What it tells you
 
-Maintenance task type reference from the Finnish road maintenance system operated by Fintraffic. Each task type classifies a specific road maintenance activity such as ploughing, salting, or brush clearing. Task type identifiers appear in the tasks array of MaintenanceTracking telemetry events.
+A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
 
 #### Identity
 
