@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCEventProducer
+from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCMqttEventProducer
+from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -135,6 +137,166 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement' event to Kafka topic.
     await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement(_station_id = 'TODO: replace me', data = _buoy_hourly_rain_measurement)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement' event: {_buoy_hourly_rain_measurement.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaandbcmqtt_event_producer = MicrosoftOpenDataUSNOAANDBCMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaandbcmqtt_event_producer = MicrosoftOpenDataUSNOAANDBCMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation event
+    _buoy_observation = BuoyObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation(_station_id = 'TODO: replace me', data = _buoy_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation' event: {_buoy_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation event
+    _buoy_station = BuoyStation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station(_station_id = 'TODO: replace me', data = _buoy_station)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation' event: {_buoy_station.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation event
+    _buoy_solar_radiation_observation = BuoySolarRadiationObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation(_station_id = 'TODO: replace me', data = _buoy_solar_radiation_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation' event: {_buoy_solar_radiation_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation event
+    _buoy_oceanographic_observation = BuoyOceanographicObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation(_station_id = 'TODO: replace me', data = _buoy_oceanographic_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation' event: {_buoy_oceanographic_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement event
+    _buoy_dart_measurement = BuoyDartMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement(_station_id = 'TODO: replace me', data = _buoy_dart_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement' event: {_buoy_dart_measurement.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation event
+    _buoy_continuous_wind_observation = BuoyContinuousWindObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation(_station_id = 'TODO: replace me', data = _buoy_continuous_wind_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation' event: {_buoy_continuous_wind_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement event
+    _buoy_supplemental_measurement = BuoySupplementalMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement(_station_id = 'TODO: replace me', data = _buoy_supplemental_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement' event: {_buoy_supplemental_measurement.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary event
+    _buoy_detailed_wave_summary = BuoyDetailedWaveSummary()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary(_station_id = 'TODO: replace me', data = _buoy_detailed_wave_summary)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary' event: {_buoy_detailed_wave_summary.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement event
+    _buoy_hourly_rain_measurement = BuoyHourlyRainMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcmqtt_event_producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement(_station_id = 'TODO: replace me', data = _buoy_hourly_rain_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement' event: {_buoy_hourly_rain_measurement.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaandbcamqp_event_producer = MicrosoftOpenDataUSNOAANDBCAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaandbcamqp_event_producer = MicrosoftOpenDataUSNOAANDBCAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation event
+    _buoy_observation = BuoyObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation(_station_id = 'TODO: replace me', data = _buoy_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation' event: {_buoy_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation event
+    _buoy_station = BuoyStation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station(_station_id = 'TODO: replace me', data = _buoy_station)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation' event: {_buoy_station.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation event
+    _buoy_solar_radiation_observation = BuoySolarRadiationObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation(_station_id = 'TODO: replace me', data = _buoy_solar_radiation_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation' event: {_buoy_solar_radiation_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation event
+    _buoy_oceanographic_observation = BuoyOceanographicObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation(_station_id = 'TODO: replace me', data = _buoy_oceanographic_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation' event: {_buoy_oceanographic_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement event
+    _buoy_dart_measurement = BuoyDartMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement(_station_id = 'TODO: replace me', data = _buoy_dart_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement' event: {_buoy_dart_measurement.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation event
+    _buoy_continuous_wind_observation = BuoyContinuousWindObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation(_station_id = 'TODO: replace me', data = _buoy_continuous_wind_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation' event: {_buoy_continuous_wind_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement event
+    _buoy_supplemental_measurement = BuoySupplementalMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement(_station_id = 'TODO: replace me', data = _buoy_supplemental_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement' event: {_buoy_supplemental_measurement.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary event
+    _buoy_detailed_wave_summary = BuoyDetailedWaveSummary()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary(_station_id = 'TODO: replace me', data = _buoy_detailed_wave_summary)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary' event: {_buoy_detailed_wave_summary.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement event
+    _buoy_hourly_rain_measurement = BuoyHourlyRainMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcamqp_event_producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement(_station_id = 'TODO: replace me', data = _buoy_hourly_rain_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement' event: {_buoy_hourly_rain_measurement.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

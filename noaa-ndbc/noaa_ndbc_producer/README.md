@@ -1,6 +1,6 @@
 
 
-# Noaa-ndbc-producer Kafka Producer# Noaa-ndbc-producer Event Dispatcher for Apache Kafka
+# Noaa_ndbc_producer Kafka Producer# Noaa_ndbc_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - MicrosoftOpenDataUSNOAANDBCEventDispatcher
+3. [Quick Start](#quick-start)    - MicrosoftOpenDataUSNOAANDBCEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    MicrosoftOpenDataUSNOAANDBCMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    MicrosoftOpenDataUSNOAANDBCAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - MicrosoftOpenDataUSNOAANDBCProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- MicrosoftOpenDataUSNOAANDBCMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- MicrosoftOpenDataUSNOAANDBCAmqpProducersolution for event-driven applications.
 
 
 
@@ -86,7 +98,7 @@ Initializes the dispatcher.
 
 ```python
 
-from noaa-ndbc-producer import MicrosoftOpenDataUSNOAANDBCProducer```python
+from noaa_ndbc_producer import MicrosoftOpenDataUSNOAANDBCProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -192,6 +204,84 @@ microsoft_open_data_us_noaa_ndbc_buoy_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -250,6 +340,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_station_async =
 microsoft_open_data_us_noaa_ndbc_buoy_station_event
 
 **Parameters:**```
@@ -321,6 +489,86 @@ microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_async
+= microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_async
+= microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -386,6 +634,86 @@ microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_async =
+microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_async =
+microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -444,6 +772,86 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_async =
 microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement_event
 
 **Parameters:**```
@@ -515,6 +923,86 @@ microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_async
+= microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_async
+= microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -574,6 +1062,86 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_async =
+microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_async =
+microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_async =
 microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement_event
 
 **Parameters:**```
@@ -645,6 +1213,86 @@ microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_async =
+microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_async =
+microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -704,6 +1352,86 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_async =
+microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_async =
+microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_async =
 microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_event
 
 **Parameters:**```
@@ -1634,6 +2362,4660 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement_batch(```
+
+    messages=[
+
+        BuoyHourlyRainMeasurement(...),Initializes the runner with a Kafka consumer.
+
+        BuoyHourlyRainMeasurement(...),
+
+        BuoyHourlyRainMeasurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### MicrosoftOpenDataUSNOAANDBCMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`MicrosoftOpenDataUSNOAANDBCMqttEventDispatcher` handles events for the Microsoft.OpenData.US.NOAA.NDBC.mqtt message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from noaa_ndbc_producer import MicrosoftOpenDataUSNOAANDBCProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = MicrosoftOpenDataUSNOAANDBCProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(```python
+
+    data=BuoyObservation(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The MicrosoftOpenDataUSNOAANDBCMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = MicrosoftOpenDataUSNOAANDBCProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_async:  Callable[[ConsumerRecord,
+CloudEvent, BuoyStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoySolarRadiationObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_async
+= microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_
+async = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_
+async = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyOceanographicObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_as
+ync = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_as
+ync = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyDartMeasurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyContinuousWindObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_async
+= microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_
+async = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_
+async = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_async:
+Callable[[ConsumerRecord, CloudEvent, BuoySupplementalMeasurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_asy
+nc = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_asy
+nc = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyDetailedWaveSummary], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_async
+= microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_async
+= microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyHourlyRainMeasurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_async =
+microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_asyn
+c = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_asyn
+c = microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation(
+
+    self,##### `_process_event`
+
+    data: BuoyObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation(
+
+    data=BuoyObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation_batch(```
+
+    messages=[
+
+        BuoyObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyObservation(...),
+
+        BuoyObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station(
+
+    self,##### `_process_event`
+
+    data: BuoyStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station(
+
+    data=BuoyStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station_batch(```
+
+    messages=[
+
+        BuoyStation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyStation(...),
+
+        BuoyStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation(
+
+    self,##### `_process_event`
+
+    data: BuoySolarRadiationObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoySolarRadiationObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation(
+
+    data=BuoySolarRadiationObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation_batch(```
+
+    messages=[
+
+        BuoySolarRadiationObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoySolarRadiationObservation(...),
+
+        BuoySolarRadiationObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation(
+
+    self,##### `_process_event`
+
+    data: BuoyOceanographicObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyOceanographicObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation(
+
+    data=BuoyOceanographicObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation_batch(```
+
+    messages=[
+
+        BuoyOceanographicObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyOceanographicObservation(...),
+
+        BuoyOceanographicObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement(
+
+    self,##### `_process_event`
+
+    data: BuoyDartMeasurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyDartMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement(
+
+    data=BuoyDartMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement_batch(```
+
+    messages=[
+
+        BuoyDartMeasurement(...),Initializes the runner with a Kafka consumer.
+
+        BuoyDartMeasurement(...),
+
+        BuoyDartMeasurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation(
+
+    self,##### `_process_event`
+
+    data: BuoyContinuousWindObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyContinuousWindObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation(
+
+    data=BuoyContinuousWindObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation_batch(```
+
+    messages=[
+
+        BuoyContinuousWindObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyContinuousWindObservation(...),
+
+        BuoyContinuousWindObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement(
+
+    self,##### `_process_event`
+
+    data: BuoySupplementalMeasurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoySupplementalMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement(
+
+    data=BuoySupplementalMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement_batch(```
+
+    messages=[
+
+        BuoySupplementalMeasurement(...),Initializes the runner with a Kafka consumer.
+
+        BuoySupplementalMeasurement(...),
+
+        BuoySupplementalMeasurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary(
+
+    self,##### `_process_event`
+
+    data: BuoyDetailedWaveSummary,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyDetailedWaveSummary`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary(
+
+    data=BuoyDetailedWaveSummary(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary_batch(```
+
+    messages=[
+
+        BuoyDetailedWaveSummary(...),Initializes the runner with a Kafka consumer.
+
+        BuoyDetailedWaveSummary(...),
+
+        BuoyDetailedWaveSummary(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement(
+
+    self,##### `_process_event`
+
+    data: BuoyHourlyRainMeasurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyHourlyRainMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement(
+
+    data=BuoyHourlyRainMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement_batch(```
+
+    messages=[
+
+        BuoyHourlyRainMeasurement(...),Initializes the runner with a Kafka consumer.
+
+        BuoyHourlyRainMeasurement(...),
+
+        BuoyHourlyRainMeasurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### MicrosoftOpenDataUSNOAANDBCAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`MicrosoftOpenDataUSNOAANDBCAmqpEventDispatcher` handles events for the Microsoft.OpenData.US.NOAA.NDBC.amqp message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from noaa_ndbc_producer import MicrosoftOpenDataUSNOAANDBCProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = MicrosoftOpenDataUSNOAANDBCProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(```python
+
+    data=BuoyObservation(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The MicrosoftOpenDataUSNOAANDBCAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = MicrosoftOpenDataUSNOAANDBCProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_async:  Callable[[ConsumerRecord,
+CloudEvent, BuoyStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BuoyStation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoySolarRadiationObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_async
+= microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_
+async = microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySolarRadiationObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoySolarRadiationObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_
+async = microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyOceanographicObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_as
+ync = microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyOceanographicObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyOceanographicObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_as
+ync = microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyDartMeasurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDartMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDartMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyContinuousWindObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_async
+= microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_
+async = microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyContinuousWindObservation`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: BuoyContinuousWindObservation) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_
+async = microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_async:
+Callable[[ConsumerRecord, CloudEvent, BuoySupplementalMeasurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_asy
+nc = microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoySupplementalMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoySupplementalMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_asy
+nc = microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyDetailedWaveSummary], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_async
+= microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyDetailedWaveSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyDetailedWaveSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_async
+= microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_async:
+Callable[[ConsumerRecord, CloudEvent, BuoyHourlyRainMeasurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_async =
+microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCMqttProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_mqtt_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_asyn
+c = microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANDBCAmqpProducer- `data`: The event data of type
+`noaa_ndbc_producer_data.BuoyHourlyRainMeasurement`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NDBC.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: BuoyHourlyRainMeasurement) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANDBCAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_ndbc_amqp_dispatcher.microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_asyn
+c = microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation(
+
+    self,##### `_process_event`
+
+    data: BuoyObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation(
+
+    data=BuoyObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation_batch(```
+
+    messages=[
+
+        BuoyObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyObservation(...),
+
+        BuoyObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station(
+
+    self,##### `_process_event`
+
+    data: BuoyStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station(
+
+    data=BuoyStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station_batch(```
+
+    messages=[
+
+        BuoyStation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyStation(...),
+
+        BuoyStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation(
+
+    self,##### `_process_event`
+
+    data: BuoySolarRadiationObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoySolarRadiationObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation(
+
+    data=BuoySolarRadiationObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation_batch(```
+
+    messages=[
+
+        BuoySolarRadiationObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoySolarRadiationObservation(...),
+
+        BuoySolarRadiationObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation(
+
+    self,##### `_process_event`
+
+    data: BuoyOceanographicObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyOceanographicObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation(
+
+    data=BuoyOceanographicObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation_batch(```
+
+    messages=[
+
+        BuoyOceanographicObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyOceanographicObservation(...),
+
+        BuoyOceanographicObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement(
+
+    self,##### `_process_event`
+
+    data: BuoyDartMeasurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyDartMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement(
+
+    data=BuoyDartMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement_batch(```
+
+    messages=[
+
+        BuoyDartMeasurement(...),Initializes the runner with a Kafka consumer.
+
+        BuoyDartMeasurement(...),
+
+        BuoyDartMeasurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation(
+
+    self,##### `_process_event`
+
+    data: BuoyContinuousWindObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyContinuousWindObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation(
+
+    data=BuoyContinuousWindObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation_batch(```
+
+    messages=[
+
+        BuoyContinuousWindObservation(...),Initializes the runner with a Kafka consumer.
+
+        BuoyContinuousWindObservation(...),
+
+        BuoyContinuousWindObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement(
+
+    self,##### `_process_event`
+
+    data: BuoySupplementalMeasurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoySupplementalMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement(
+
+    data=BuoySupplementalMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement_batch(```
+
+    messages=[
+
+        BuoySupplementalMeasurement(...),Initializes the runner with a Kafka consumer.
+
+        BuoySupplementalMeasurement(...),
+
+        BuoySupplementalMeasurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary(
+
+    self,##### `_process_event`
+
+    data: BuoyDetailedWaveSummary,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyDetailedWaveSummary`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary(
+
+    data=BuoyDetailedWaveSummary(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary_batch(```
+
+    messages=[
+
+        BuoyDetailedWaveSummary(...),Initializes the runner with a Kafka consumer.
+
+        BuoyDetailedWaveSummary(...),
+
+        BuoyDetailedWaveSummary(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement(
+
+    self,##### `_process_event`
+
+    data: BuoyHourlyRainMeasurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BuoyHourlyRainMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement(
+
+    data=BuoyHourlyRainMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement_batch(```
 
     messages=[
 
