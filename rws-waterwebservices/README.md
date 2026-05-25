@@ -110,3 +110,19 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template-with-eventhub.json)
 
+## AMQP 1.0 companion feeder
+
+This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `rws_waterwebservices_amqp/`, uses the generated `rws_waterwebservices_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `rws-waterwebservices`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
+
+Build and run locally:
+
+```bash
+docker build -f Dockerfile.amqp -t rws-waterwebservices-amqp .
+docker run --rm \
+  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/rws-waterwebservices \
+  -e ONCE_MODE=true \
+  rws-waterwebservices-amqp
+```
+
+For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=rws-waterwebservices`.
+
