@@ -66,6 +66,30 @@
         "#/messagegroups/USGS.InstantaneousValues.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for USGS Instantaneous Values CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "USGS.IV.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/usgs-iv"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.Sites.amqp",
+        "#/messagegroups/USGS.SiteTimeseries.amqp",
+        "#/messagegroups/USGS.InstantaneousValues.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for usgs-iv CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -1070,6 +1094,413 @@
           }
         }
       }
+    },
+    "USGS.Sites.amqp": {
+      "description": "AMQP 1.0 transport variant for usgs-iv events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "USGS.Sites.amqp.Site": {
+          "name": "Site",
+          "basemessageurl": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        }
+      }
+    },
+    "USGS.SiteTimeseries.amqp": {
+      "description": "AMQP 1.0 transport variant for usgs-iv events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "USGS.SiteTimeseries.amqp.SiteTimeseries": {
+          "name": "SiteTimeseries",
+          "basemessageurl": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        }
+      }
+    },
+    "USGS.InstantaneousValues.amqp": {
+      "description": "AMQP 1.0 transport variant for usgs-iv events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "USGS.InstantaneousValues.amqp.OtherParameter": {
+          "name": "OtherParameter",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Precipitation": {
+          "name": "Precipitation",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Streamflow": {
+          "name": "Streamflow",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.GageHeight": {
+          "name": "GageHeight",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WaterTemperature": {
+          "name": "WaterTemperature",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.DissolvedOxygen": {
+          "name": "DissolvedOxygen",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.pH": {
+          "name": "pH",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.SpecificConductance": {
+          "name": "SpecificConductance",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Turbidity": {
+          "name": "Turbidity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.AirTemperature": {
+          "name": "AirTemperature",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WindSpeed": {
+          "name": "WindSpeed",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WindDirection": {
+          "name": "WindDirection",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.RelativeHumidity": {
+          "name": "RelativeHumidity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.BarometricPressure": {
+          "name": "BarometricPressure",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.TurbidityFNU": {
+          "name": "TurbidityFNU",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.fDOM": {
+          "name": "fDOM",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.ReservoirStorage": {
+          "name": "ReservoirStorage",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.LakeElevationNGVD29": {
+          "name": "LakeElevationNGVD29",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WaterDepth": {
+          "name": "WaterDepth",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.EquipmentStatus": {
+          "name": "EquipmentStatus",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge": {
+          "name": "TidallyFilteredDischarge",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.WaterVelocity": {
+          "name": "WaterVelocity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29": {
+          "name": "EstuaryElevationNGVD29",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.LakeElevationNAVD88": {
+          "name": "LakeElevationNAVD88",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.Salinity": {
+          "name": "Salinity",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "USGS.InstantaneousValues.amqp.GateOpening": {
+          "name": "GateOpening",
+          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -1119,12 +1550,18 @@
                             "description": "Longitude in degrees-minutes-seconds text as published by USGS."
                           },
                           "dec_lat_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Latitude in decimal degrees when USGS provides decimal coordinates."
                           },
                           "dec_long_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Longitude in decimal degrees when USGS provides decimal coordinates."
                           },
@@ -1169,12 +1606,18 @@
                             "description": "Location map name."
                           },
                           "map_scale_fc": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Location map scale factor."
                           },
                           "alt_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Altitude."
                           },
@@ -1183,7 +1626,10 @@
                             "description": "Method altitude determined code."
                           },
                           "alt_acy_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Altitude accuracy."
                           },
@@ -1208,22 +1654,34 @@
                             "description": "USGS code summarizing the instrumentation installed at the site."
                           },
                           "construction_dt": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Date of first construction."
                           },
                           "inventory_dt": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Date site established or inventoried."
                           },
                           "drain_area_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Drainage area."
                           },
                           "contrib_drain_area_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Contributing drainage area."
                           },
@@ -1256,12 +1714,18 @@
                             "description": "Local aquifer type code."
                           },
                           "well_depth_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Well depth."
                           },
                           "hole_depth_va": {
-                            "type": "float",
+                            "type": [
+                              "float",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Hole depth."
                           },
@@ -1729,11 +2193,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -1797,11 +2267,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Precipitation value, inches.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -1865,11 +2341,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Discharge value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -1933,11 +2415,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Gage height value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2001,11 +2489,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Water temperature value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2069,11 +2563,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Dissolved oxygen value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2137,11 +2637,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"pH value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2205,11 +2711,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Specific conductance value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2273,11 +2785,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Turbidity value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2341,11 +2859,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Wind speed value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2409,11 +2933,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Wind direction value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2477,11 +3007,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Relative humidity value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2545,11 +3081,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Barometric pressure value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2613,11 +3155,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Air temperature value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2681,11 +3229,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Turbidity value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2749,11 +3303,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Dissolved organic matter fluorescence value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2817,11 +3377,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Reservoir storage value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2885,11 +3451,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Lake elevation above NGVD 1929.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -2953,11 +3525,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Water depth value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -3021,7 +3599,10 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "status": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Status of equipment alarm as codes.\"}"
                           },
                           "parameter_cd": {
@@ -3077,11 +3658,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Tidally filtered discharge value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -3145,11 +3732,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Water velocity value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -3213,11 +3806,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Estuary or ocean water surface elevation above NGVD 1929.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -3281,11 +3880,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Lake elevation above NAVD 1988.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -3349,11 +3954,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Salinity value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
@@ -3417,11 +4028,17 @@
                             "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
                           },
                           "value": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Gate opening value.\"}"
                           },
                           "exception": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "{\"description\": \"Exception code when the value is unavailable.\"}"
                           },
                           "qualifiers": {
