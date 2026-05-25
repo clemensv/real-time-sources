@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/PL.Gov.IMGW.Hydro"
-      ]
+      ],
+      "description": "Kafka producer endpoint for IMGW-PIB Hydrological Data CloudEvents on the `imgw-hydro` topic keyed by `{station_id}`."
     }
   },
   "messagegroups": {
@@ -41,7 +42,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.Station"
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.Station",
+          "description": "A reference record for one Polish hydrological monitoring station published by the Polish Institute of Meteorology and Water Management (IMGW-PIB). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -59,9 +61,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "description": "A current measurement from the Polish Institute of Meteorology and Water Management (IMGW-PIB) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from IMGW-PIB Hydrological Data covering Polish hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -87,13 +91,15 @@
                     "type": "string",
                     "altnames": {
                       "lang:pl": "id_stacji"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
                     "type": "string",
                     "altnames": {
                       "lang:pl": "stacja"
-                    }
+                    },
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "river": {
                     "type": [
@@ -102,7 +108,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "rzeka"
-                    }
+                    },
+                    "description": "Provider-supplied river value for this record."
                   },
                   "voivodeship": {
                     "type": [
@@ -111,23 +118,26 @@
                     ],
                     "altnames": {
                       "lang:pl": "wojewodztwo"
-                    }
+                    },
+                    "description": "Provider-supplied voivodeship value for this record."
                   },
                   "longitude": {
                     "type": [
                       "double",
                       "null"
-                    ]
+                    ],
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "latitude": {
                     "type": [
                       "double",
                       "null"
-                    ]
+                    ],
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source."
               }
             }
           }
@@ -154,13 +164,15 @@
                     "type": "string",
                     "altnames": {
                       "lang:pl": "id_stacji"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
                     "type": "string",
                     "altnames": {
                       "lang:pl": "stacja"
-                    }
+                    },
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "river": {
                     "type": [
@@ -169,7 +181,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "rzeka"
-                    }
+                    },
+                    "description": "Provider-supplied river value for this record."
                   },
                   "voivodeship": {
                     "type": [
@@ -178,19 +191,22 @@
                     ],
                     "altnames": {
                       "lang:pl": "wojewodztwo"
-                    }
+                    },
+                    "description": "Provider-supplied voivodeship value for this record."
                   },
                   "water_level": {
                     "type": "double",
                     "altnames": {
                       "lang:pl": "stan_wody"
-                    }
+                    },
+                    "description": "Current water level reported for the station."
                   },
                   "water_level_timestamp": {
                     "type": "datetime",
                     "altnames": {
                       "lang:pl": "stan_wody_data_pomiaru"
-                    }
+                    },
+                    "description": "Time associated with the water-level measurement."
                   },
                   "water_temperature": {
                     "type": [
@@ -199,7 +215,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "temperatura_wody"
-                    }
+                    },
+                    "description": "Current water temperature reported for the station."
                   },
                   "water_temperature_timestamp": {
                     "type": [
@@ -208,7 +225,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "temperatura_wody_data_pomiaru"
-                    }
+                    },
+                    "description": "Time associated with the water-temperature measurement."
                   },
                   "discharge": {
                     "type": [
@@ -217,7 +235,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "przeplyw"
-                    }
+                    },
+                    "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_timestamp": {
                     "type": [
@@ -226,7 +245,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "przeplyw_data"
-                    }
+                    },
+                    "description": "Time associated with the discharge measurement."
                   },
                   "ice_phenomenon_code": {
                     "type": [
@@ -235,7 +255,8 @@
                     ],
                     "altnames": {
                       "lang:pl": "zjawisko_lodowe"
-                    }
+                    },
+                    "description": "Provider code identifying the ice phenomenon."
                   },
                   "overgrowth_code": {
                     "type": [
@@ -244,11 +265,12 @@
                     ],
                     "altnames": {
                       "lang:pl": "zjawisko_zarastania"
-                    }
+                    },
+                    "description": "Provider code identifying the overgrowth."
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level and discharge observations in the IMGW-PIB Hydrological Data source."
               }
             }
           }
@@ -267,7 +289,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -310,7 +332,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "PL.Gov.IMGW.Hydro"
+                "namespace": "PL.Gov.IMGW.Hydro",
+                "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source."
               }
             }
           }
@@ -325,7 +348,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the IMGW-PIB Hydrological Data source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -417,12 +440,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "PL.Gov.IMGW.Hydro"
+                "namespace": "PL.Gov.IMGW.Hydro",
+                "description": "Measurement payload for observations in the IMGW-PIB Hydrological Data source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "IMGW-PIB Hydrological Data publishes water level and discharge observations from the Polish Institute of Meteorology and Water Management (IMGW-PIB) for Polish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for IMGW-PIB Hydrological Data, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
