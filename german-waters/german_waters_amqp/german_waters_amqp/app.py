@@ -172,7 +172,7 @@ def _publish_observations(
 
 
 def _publish_mock(producer: DEWatersHydrologyAmqpProducer) -> None:
-    station = Station(station_id="mock-station", station_name="Mock Station", water_body="Mock River", state="BY", region="Mock", provider="mock", latitude=50.0, longitude=8.0, river_km=1.0, altitude=100.0, station_type="gauge", warn_level_cm=200.0, alarm_level_cm=300.0, warn_level_m3s=None, alarm_level_m3s=None)
+    station = Station(station_id="mock-station", station_name="Mock Station", water_body="Mock River", state="BY", region="Mock", provider="mock", latitude=50.0, longitude=8.0, river_km=1.0, altitude=100.0, station_type="gauge", warn_level_cm=200.0, alarm_level_cm=300.0, warn_level_m3s=20.0, alarm_level_m3s=30.0)
     observation = WaterLevelObservation(station_id="mock-station", provider="mock", water_body="Mock River", water_level=123.0, water_level_unit="cm", water_level_timestamp=datetime.now(timezone.utc), discharge=12.3, discharge_unit="m3/s", discharge_timestamp=datetime.now(timezone.utc), trend=None, situation=None)
     producer.send_station(data=station, _station_id="mock-station", _water_body="mock-river")
     producer.send_water_level_observation(data=observation, _station_id="mock-station", _water_body="mock-river")
