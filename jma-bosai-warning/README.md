@@ -39,3 +39,14 @@ MQTT topics:
 - `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/warning` (non-retained weather warning records)
 
 Configuration is via environment variables or CLI flags. Required Kafka configuration is either `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS`.
+
+## AMQP 1.0 companion feeder
+
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `jma-bosai-warning`).
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=jma-bosai-warning   ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+```
+
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-amqp.json)
+
