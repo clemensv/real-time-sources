@@ -252,3 +252,32 @@ class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"METEOALARM_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {"Meteoalarm.WeatherWarning"}
     expected_count = 1
+
+
+class TestJmaBosaiAmedasAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-amedas"
+    image = "jma-bosai-amedas-amqp"
+    env = {"JMA_BOSAI_AMEDAS_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"JP.JMA.Amedas.Station", "JP.JMA.Amedas.Observation"}
+    expected_count = 2
+
+class TestJmaBosaiQuakeAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-quake"
+    image = "jma-bosai-quake-amqp"
+    env = {"JMA_BOSAI_QUAKE_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"JP.JMA.Quake.EarthquakeReport"}
+    expected_count = 1
+
+class TestJmaBosaiVolcanoAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-volcano"
+    image = "jma-bosai-volcano-amqp"
+    env = {"JMA_BOSAI_VOLCANO_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"JP.JMA.Volcano.Volcano", "JP.JMA.Volcano.VolcanicWarning", "JP.JMA.Volcano.VolcanicEruption"}
+    expected_count = 3
+
+class TestJmaBosaiWarningAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-warning"
+    image = "jma-bosai-warning-amqp"
+    env = {"JMA_BOSAI_WARNING_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"JP.JMA.Warning.Office", "JP.JMA.Warning.WeatherWarning", "JP.JMA.Tsunami.TsunamiAlert"}
+    expected_count = 3

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "jma-bosai-warning-amqp"
+version = "0.1.0"
+description = "AMQP feeder for jma-bosai-warning"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "jma_bosai_warning_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+python-qpid-proton = ">=0.40.0"
+jma_bosai_warning = { path = ".." }
+jma_bosai_warning_amqp_producer_data = { path = "../jma_bosai_warning_amqp_producer/jma_bosai_warning_amqp_producer_data" }
+jma_bosai_warning_amqp_producer_amqp_producer = { path = "../jma_bosai_warning_amqp_producer/jma_bosai_warning_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+jma-bosai-warning-amqp = "jma_bosai_warning_amqp.app:main"

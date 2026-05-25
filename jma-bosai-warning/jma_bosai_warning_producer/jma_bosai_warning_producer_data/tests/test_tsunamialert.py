@@ -9,9 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_producer_data.tsunamialert import TsunamiAlert
-from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
-from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_warning_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_producer_data.affectedcoastalregion import AffectedCoastalRegion
+from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
 import datetime
 
 
@@ -32,17 +33,19 @@ class Test_TsunamiAlert(unittest.TestCase):
         Create instance of TsunamiAlert for testing
         """
         instance = TsunamiAlert(
-            event_id='wpnkhztnzcgqzcrjtyfu',
-            serial=int(67),
+            event_id='wnjdcodpmdxbjyjxrbxk',
+            serial=int(1),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='xtmqoilnovayyixespny',
-            title_en='mdiinkusgmedjdegfifu',
-            bulletin_type='jkrpqayphakjqqkmivcy',
-            detail_url='vvzpmsukbwxhitzmlslf',
-            affected_coastal_regions=[None, None, None],
-            observations=[None, None, None, None, None]
+            title_jp='mofgfmgjmzsosquskuis',
+            title_en='biovkougykhkyioizszr',
+            bulletin_type='lqnmlnvoglybmnofkobh',
+            detail_url='xsltufjxxowiodscypix',
+            affected_coastal_regions=[None, None],
+            observations=[None, None],
+            prefecture='ylillzmwlbvtwftoevnh',
+            severity=SeverityEnum.info
         )
         return instance
 
@@ -51,7 +54,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'wpnkhztnzcgqzcrjtyfu'
+        test_value = 'wnjdcodpmdxbjyjxrbxk'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -59,7 +62,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test serial property
         """
-        test_value = int(67)
+        test_value = int(1)
         self.instance.serial = test_value
         self.assertEqual(self.instance.serial, test_value)
     
@@ -91,7 +94,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_jp property
         """
-        test_value = 'xtmqoilnovayyixespny'
+        test_value = 'mofgfmgjmzsosquskuis'
         self.instance.title_jp = test_value
         self.assertEqual(self.instance.title_jp, test_value)
     
@@ -99,7 +102,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test title_en property
         """
-        test_value = 'mdiinkusgmedjdegfifu'
+        test_value = 'biovkougykhkyioizszr'
         self.instance.title_en = test_value
         self.assertEqual(self.instance.title_en, test_value)
     
@@ -107,7 +110,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test bulletin_type property
         """
-        test_value = 'jkrpqayphakjqqkmivcy'
+        test_value = 'lqnmlnvoglybmnofkobh'
         self.instance.bulletin_type = test_value
         self.assertEqual(self.instance.bulletin_type, test_value)
     
@@ -115,7 +118,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test detail_url property
         """
-        test_value = 'vvzpmsukbwxhitzmlslf'
+        test_value = 'xsltufjxxowiodscypix'
         self.instance.detail_url = test_value
         self.assertEqual(self.instance.detail_url, test_value)
     
@@ -123,7 +126,7 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test affected_coastal_regions property
         """
-        test_value = [None, None, None]
+        test_value = [None, None]
         self.instance.affected_coastal_regions = test_value
         self.assertEqual(self.instance.affected_coastal_regions, test_value)
     
@@ -131,9 +134,25 @@ class Test_TsunamiAlert(unittest.TestCase):
         """
         Test observations property
         """
-        test_value = [None, None, None, None, None]
+        test_value = [None, None]
         self.instance.observations = test_value
         self.assertEqual(self.instance.observations, test_value)
+    
+    def test_prefecture_property(self):
+        """
+        Test prefecture property
+        """
+        test_value = 'ylillzmwlbvtwftoevnh'
+        self.instance.prefecture = test_value
+        self.assertEqual(self.instance.prefecture, test_value)
+    
+    def test_severity_property(self):
+        """
+        Test severity property
+        """
+        test_value = SeverityEnum.info
+        self.instance.severity = test_value
+        self.assertEqual(self.instance.severity, test_value)
     
     def test_to_byte_array_json(self):
         """

@@ -12,9 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
-from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_warning_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_producer_data.affectedcoastalregion import AffectedCoastalRegion
+from jma_bosai_warning_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_warning_producer_data.tsunamiobservation import TsunamiObservation
 import datetime
 
 
@@ -22,7 +23,7 @@ import datetime
 @dataclass
 class TsunamiAlert:
     """
-    Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.
+    JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.
     
     Attributes:
         event_id (str)
@@ -36,6 +37,8 @@ class TsunamiAlert:
         detail_url (str)
         affected_coastal_regions (typing.List[AffectedCoastalRegion])
         observations (typing.List[TsunamiObservation])
+        prefecture (str)
+        severity (SeverityEnum)
     """
     
     
@@ -50,6 +53,8 @@ class TsunamiAlert:
     detail_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="detail_url"))
     affected_coastal_regions: typing.List[AffectedCoastalRegion]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="affected_coastal_regions"))
     observations: typing.List[TsunamiObservation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observations"))
+    prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
+    severity: SeverityEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TsunamiAlert':
@@ -176,15 +181,17 @@ class TsunamiAlert:
             An instance of the dataclass.
         """
         return cls(
-            event_id='wpnkhztnzcgqzcrjtyfu',
-            serial=int(67),
+            event_id='wnjdcodpmdxbjyjxrbxk',
+            serial=int(1),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='xtmqoilnovayyixespny',
-            title_en='mdiinkusgmedjdegfifu',
-            bulletin_type='jkrpqayphakjqqkmivcy',
-            detail_url='vvzpmsukbwxhitzmlslf',
-            affected_coastal_regions=[None, None, None],
-            observations=[None, None, None, None, None]
+            title_jp='mofgfmgjmzsosquskuis',
+            title_en='biovkougykhkyioizszr',
+            bulletin_type='lqnmlnvoglybmnofkobh',
+            detail_url='xsltufjxxowiodscypix',
+            affected_coastal_regions=[None, None],
+            observations=[None, None],
+            prefecture='ylillzmwlbvtwftoevnh',
+            severity=SeverityEnum.info
         )

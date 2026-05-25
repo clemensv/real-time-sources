@@ -39,3 +39,17 @@ MQTT topics:
 - `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/warning` (non-retained weather warning records)
 
 Configuration is via environment variables or CLI flags. Required Kafka configuration is either `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS`.
+
+
+## MQTT and AMQP companion transports
+
+This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+
+Topic templates:
+- `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}`
+- `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami`
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt:latest` (`Dockerfile.mqtt`)
+- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest` (`Dockerfile.amqp`)
+- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
+- Severity uses Japan-native lowercase `advisory`/`warning`/`emergency`; office info records use `info`.

@@ -35,3 +35,17 @@ docker run --rm -e MQTT_BROKER_URL="mqtt://host.docker.internal:1883" jma-bosai-
 The MQTT feeder publishes retained office references to `alerts/jp/jma/jma-bosai-warning/{prefecture}/REFERENCE/{office_code}/{area_code}/office` and non-retained warning records to `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/warning`.
 
 For Azure Event Hubs or Fabric Event Streams, pass the full connection string in `CONNECTION_STRING`. Events are CloudEvents; see `EVENTS.md` for schemas and keys.
+
+
+## MQTT and AMQP companion transports
+
+This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+
+Topic templates:
+- `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}`
+- `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami`
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt:latest` (`Dockerfile.mqtt`)
+- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest` (`Dockerfile.amqp`)
+- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
+- Severity uses Japan-native lowercase `advisory`/`warning`/`emergency`; office info records use `info`.

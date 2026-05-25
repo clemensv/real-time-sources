@@ -53,6 +53,13 @@ async def handle_jp_jma_warning_mqtt_weather_warning(mqtt_msg,cloud_event, jp_jm
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
     print(f"  Data: {jp_jma_warning_mqtt_weather_warning_data}")
 
+async def handle_jp_jma_warning_mqtt_tsunami_alert(mqtt_msg,cloud_event, jp_jma_warning_mqtt_tsunami_alert_data):
+    """ Handles the JP.JMA.Warning.mqtt.TsunamiAlert message """
+    print(f"Received JP.JMA.Warning.mqtt.TsunamiAlert on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {jp_jma_warning_mqtt_tsunami_alert_data}")
+
 async def main(broker_host, broker_port, topic, username=None, password=None):
     """ Main function for MQTT client """
     print(f"Connecting to {broker_host}:{broker_port}...")

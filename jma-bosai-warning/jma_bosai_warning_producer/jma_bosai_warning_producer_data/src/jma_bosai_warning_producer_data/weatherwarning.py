@@ -22,7 +22,7 @@ import datetime
 @dataclass
 class WeatherWarning:
     """
-    JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.
+    JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.
     
     Attributes:
         prefecture (str)
@@ -176,15 +176,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='upcjoayxipqfvkuhbakt',
-            severity=SeverityEnum.REFERENCE,
-            office_code='nchjuxrjaywlkozcjabl',
-            area_code='atrbqtrtlmonivzyylup',
-            event=EventEnum.warning,
-            area_name='eydorkmolqbxhhujjqxh',
+            prefecture='cjrcscfmzlqgkruuwglw',
+            severity=SeverityEnum.info,
+            office_code='jpggxrtdhndolqkwirtp',
+            area_code='nvyfrnbtmkjobdgwvmul',
+            event=EventEnum.info,
+            area_name='yplysjgrpatdachhqepl',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='tjcdtwhtabzasjzhqlbh',
+            headline_text='wrhjkbopdpugbkpwitcd',
             warnings=[None],
             time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

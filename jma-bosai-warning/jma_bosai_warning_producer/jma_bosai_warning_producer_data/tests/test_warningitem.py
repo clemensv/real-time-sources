@@ -30,11 +30,11 @@ class Test_WarningItem(unittest.TestCase):
         Create instance of WarningItem for testing
         """
         instance = WarningItem(
-            code='fktclkxjeqwkavqxycth',
-            code_description_jp='bcpftlcnlrnlqvhlartj',
-            code_description_en='oavllirmpojcymegrxtc',
+            code='ttlxbepgutprjmhqtftq',
+            code_description_jp='nnqsstjpqalnhvnqrfxj',
+            code_description_en='oxxhhcfmbcexnimyxhnu',
             status=StatusEnum.ISSUED,
-            severity=SeverityEnum.REFERENCE
+            severity=SeverityEnum.info
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'fktclkxjeqwkavqxycth'
+        test_value = 'ttlxbepgutprjmhqtftq'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -51,7 +51,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code_description_jp property
         """
-        test_value = 'bcpftlcnlrnlqvhlartj'
+        test_value = 'nnqsstjpqalnhvnqrfxj'
         self.instance.code_description_jp = test_value
         self.assertEqual(self.instance.code_description_jp, test_value)
     
@@ -59,7 +59,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test code_description_en property
         """
-        test_value = 'oavllirmpojcymegrxtc'
+        test_value = 'oxxhhcfmbcexnimyxhnu'
         self.instance.code_description_en = test_value
         self.assertEqual(self.instance.code_description_en, test_value)
     
@@ -75,7 +75,7 @@ class Test_WarningItem(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.REFERENCE
+        test_value = SeverityEnum.info
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     

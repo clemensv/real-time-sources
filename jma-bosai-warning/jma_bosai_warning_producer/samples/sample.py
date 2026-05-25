@@ -35,6 +35,7 @@ from confluent_kafka import Producer as KafkaProducer
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMAWarningEventProducer
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMATsunamiEventProducer
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMAWarningMqttEventProducer
+from jma_bosai_warning_producer_kafka_producer.producer import JPJMAWarningAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -115,6 +116,46 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'JP.JMA.Warning.mqtt.WeatherWarning' event to Kafka topic.
     await jpjmawarning_mqtt_event_producer.send_jp_jma_warning_mqtt_weather_warning(_feedurl = 'TODO: replace me', _office_code = 'TODO: replace me', _area_code = 'TODO: replace me', data = _weather_warning)
     print(f"Sent 'JP.JMA.Warning.mqtt.WeatherWarning' event: {_weather_warning.to_json()}")
+
+    # ---- JP.JMA.Warning.mqtt.TsunamiAlert ----
+    # TODO: Supply event data for the JP.JMA.Warning.mqtt.TsunamiAlert event
+    _tsunami_alert = TsunamiAlert()
+
+    # sends the 'JP.JMA.Warning.mqtt.TsunamiAlert' event to Kafka topic.
+    await jpjmawarning_mqtt_event_producer.send_jp_jma_warning_mqtt_tsunami_alert(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _serial = 'TODO: replace me', data = _tsunami_alert)
+    print(f"Sent 'JP.JMA.Warning.mqtt.TsunamiAlert' event: {_tsunami_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        jpjmawarning_amqp_event_producer = JPJMAWarningAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        jpjmawarning_amqp_event_producer = JPJMAWarningAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- JP.JMA.Warning.amqp.Office ----
+    # TODO: Supply event data for the JP.JMA.Warning.amqp.Office event
+    _office = Office()
+
+    # sends the 'JP.JMA.Warning.amqp.Office' event to Kafka topic.
+    await jpjmawarning_amqp_event_producer.send_jp_jma_warning_amqp_office(_feedurl = 'TODO: replace me', _office_code = 'TODO: replace me', _area_code = 'TODO: replace me', data = _office)
+    print(f"Sent 'JP.JMA.Warning.amqp.Office' event: {_office.to_json()}")
+
+    # ---- JP.JMA.Warning.amqp.WeatherWarning ----
+    # TODO: Supply event data for the JP.JMA.Warning.amqp.WeatherWarning event
+    _weather_warning = WeatherWarning()
+
+    # sends the 'JP.JMA.Warning.amqp.WeatherWarning' event to Kafka topic.
+    await jpjmawarning_amqp_event_producer.send_jp_jma_warning_amqp_weather_warning(_feedurl = 'TODO: replace me', _office_code = 'TODO: replace me', _area_code = 'TODO: replace me', data = _weather_warning)
+    print(f"Sent 'JP.JMA.Warning.amqp.WeatherWarning' event: {_weather_warning.to_json()}")
+
+    # ---- JP.JMA.Warning.amqp.TsunamiAlert ----
+    # TODO: Supply event data for the JP.JMA.Warning.amqp.TsunamiAlert event
+    _tsunami_alert = TsunamiAlert()
+
+    # sends the 'JP.JMA.Warning.amqp.TsunamiAlert' event to Kafka topic.
+    await jpjmawarning_amqp_event_producer.send_jp_jma_warning_amqp_tsunami_alert(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _serial = 'TODO: replace me', data = _tsunami_alert)
+    print(f"Sent 'JP.JMA.Warning.amqp.TsunamiAlert' event: {_tsunami_alert.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

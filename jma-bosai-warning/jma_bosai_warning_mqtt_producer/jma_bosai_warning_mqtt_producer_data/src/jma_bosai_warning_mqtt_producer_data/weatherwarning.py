@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_warning_mqtt_producer_data.warningitem import WarningItem
 from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_mqtt_producer_data.eventenum import EventEnum
+from jma_bosai_warning_mqtt_producer_data.warningitem import WarningItem
 import datetime
 
 
@@ -22,7 +22,7 @@ import datetime
 @dataclass
 class WeatherWarning:
     """
-    JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.
+    JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.
     
     Attributes:
         prefecture (str)
@@ -176,15 +176,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='qhcrjffvwichrapfuers',
-            severity=SeverityEnum.REFERENCE,
-            office_code='bgzjfcnoaddeaxbtipyy',
-            area_code='wichfjpddlwrafsuqajy',
-            event=EventEnum.office,
-            area_name='rulbbegfuneeibdntzjh',
+            prefecture='qasaktmnxfgdqydnqsyc',
+            severity=SeverityEnum.info,
+            office_code='xhlxoasyzothzfdujmks',
+            area_code='tzbdnmquwyrppzedeogn',
+            event=EventEnum.info,
+            area_name='fnwwjkwftbzbutxouirs',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='luidrbbbaelvfpdlcjel',
-            warnings=[None, None, None, None],
-            time_defines=[datetime.datetime.now(datetime.timezone.utc)]
+            headline_text='uyjdhkfueqrnbougrxzj',
+            warnings=[None, None],
+            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

@@ -1,0 +1,77 @@
+
+"""
+Sample usage of jma_bosai_warning_amqp_producer_amqp_producer
+
+This example demonstrates how to send messages using the AMQP 1.0 producer.
+"""
+import sys
+from jma_bosai_warning_amqp_producer_amqp_producer import *
+
+def main():
+    """Main function"""
+    
+    
+    # Create producer
+    print("Creating AMQP producer...")
+    producer = JPJMAWarningAmqpProducer(
+        host="localhost",  # Change to your AMQP broker hostname
+        address="my-queue",  # Change to your queue/topic name
+        port=5672,  # Use 5671 for TLS
+        username="guest",  # Change to your username
+        password="guest",  # Change to your password
+        content_mode='structured',  # or 'binary' for CloudEvents
+        format_type='application/json'
+    )
+    
+    try:
+        
+        
+        # Send Office message
+        print("Sending Office message...")
+        # TODO: Create a Office instance with actual data
+        # data = Office(...)
+        # producer.send_office(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("Office message sent successfully!")
+        
+        
+        
+        # Send WeatherWarning message
+        print("Sending WeatherWarning message...")
+        # TODO: Create a WeatherWarning instance with actual data
+        # data = WeatherWarning(...)
+        # producer.send_weather_warning(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherWarning message sent successfully!")
+        
+        
+        
+        # Send TsunamiAlert message
+        print("Sending TsunamiAlert message...")
+        # TODO: Create a TsunamiAlert instance with actual data
+        # data = TsunamiAlert(...)
+        # producer.send_tsunami_alert(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("TsunamiAlert message sent successfully!")
+        
+        
+        print("\nAll messages sent successfully!")
+        
+    except Exception as e:
+        print(f"Error sending messages: {e}", file=sys.stderr)
+        return 1
+    finally:
+        producer.close()
+        print("Producer closed")
+    
+    return 0
+    
+
+if __name__ == "__main__":
+    sys.exit(main())

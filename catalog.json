@@ -920,7 +920,9 @@
     "key": false,
     "desc": "Japan — ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-quake",
@@ -929,7 +931,9 @@
     "key": false,
     "desc": "Japan — JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-volcano",
@@ -938,7 +942,9 @@
     "key": false,
     "desc": "Japan — 111 volcanoes, alert levels, eruption observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-warning",
@@ -947,7 +953,9 @@
     "key": false,
     "desc": "Japan — per-prefecture weather warnings + tsunami alerts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "tepco-denkiyoho",
