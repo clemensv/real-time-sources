@@ -4,8 +4,8 @@ MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-
 
 ## At a glance
 
-- **Event types:** 2 documented event types (4 transport bindings in the manifest).
-- **Transports:** KAFKA, MQTT/5.0
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{location_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -43,6 +43,20 @@ c.loop_forever()
 ```
 
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `epa-uv`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/epa-uv')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -52,7 +66,7 @@ CloudEvents type: `US.EPA.UVIndex.HourlyForecast`
 
 #### What it tells you
 
-Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.
+An hourly UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast valid hour, normalized location identity, and UV index value for operational exposure planning. Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.
 
 #### Identity
 
@@ -64,6 +78,7 @@ Each event identifies the real-world resource with `{location_id}`. `{location_i
 | --- | --- |
 | `KAFKA` | topic `epa-uv`, key `{location_id}` |
 | `MQTT/5.0` | topic `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/epa-uv`, message subject `{location_id}`; application properties state `{state}`, city_slug `{city_slug}`, forecast_hour `{forecast_hour}` |
 
 #### Payload
 
@@ -102,7 +117,7 @@ CloudEvents type: `US.EPA.UVIndex.DailyForecast`
 
 #### What it tells you
 
-Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.
+A daily UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast date, normalized location identity, UV index value, and EPA UV alert indicator for public-health planning. Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.
 
 #### Identity
 
@@ -114,6 +129,7 @@ Each event identifies the real-world resource with `{location_id}`. `{location_i
 | --- | --- |
 | `KAFKA` | topic `epa-uv`, key `{location_id}` |
 | `MQTT/5.0` | topic `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/epa-uv`, message subject `{location_id}`; application properties state `{state}`, city_slug `{city_slug}`, forecast_date `{forecast_date}` |
 
 #### Payload
 

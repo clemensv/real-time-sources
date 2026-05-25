@@ -516,6 +516,12 @@
       "image": "aisstream-amqp",
       "file": "Dockerfile.amqp",
       "module": "aisstream_amqp"
+    },
+    {
+      "dir": "epa-uv",
+      "image": "epa-uv-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "epa_uv_amqp"
     }
   ],
   "flow": [
@@ -983,6 +989,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAisstreamAmqpDockerFlow"
+    },
+    {
+      "dir": "epa-uv",
+      "image": "epa-uv-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEpaUvAmqpDockerFlow"
     }
   ]
 }

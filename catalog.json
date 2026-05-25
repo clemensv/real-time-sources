@@ -385,7 +385,8 @@
     "desc": "United States — city-scoped hourly and daily UV forecasts",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "fmi-finland",

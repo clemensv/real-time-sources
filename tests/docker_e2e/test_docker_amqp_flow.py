@@ -181,3 +181,11 @@ class TestAisstreamAmqpDockerFlow(AmqpDockerFlowBase):
     image = "aisstream-amqp"
     env = {"AISSTREAM_MOCK": "true"}
     expected_types = {"IO.AISstream.mqtt.PositionReport", "IO.AISstream.mqtt.ShipStatic", "IO.AISstream.mqtt.AidToNavigation"}
+
+class TestEpaUvAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "epa-uv"
+    image = "epa-uv-amqp"
+    env = {"EPA_UV_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"US.EPA.UVIndex.HourlyForecast", "US.EPA.UVIndex.DailyForecast"}
+    expected_count = 2
+
