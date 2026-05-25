@@ -654,6 +654,18 @@
       "image": "dwd-amqp",
       "file": "Dockerfile.amqp",
       "module": "dwd_amqp"
+    },
+    {
+      "dir": "dwd-pollenflug",
+      "image": "dwd-pollenflug-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "dwd_pollenflug_mqtt"
+    },
+    {
+      "dir": "dwd-pollenflug",
+      "image": "dwd-pollenflug-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "dwd_pollenflug_amqp"
     }
   ],
   "flow": [
@@ -1330,6 +1342,18 @@
       "image": "dwd-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDwdAmqpDockerFlow"
+    },
+    {
+      "dir": "dwd-pollenflug",
+      "image": "dwd-pollenflug-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDwdPollenflugMqttDockerFlow"
+    },
+    {
+      "dir": "dwd-pollenflug",
+      "image": "dwd-pollenflug-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDwdPollenflugAmqpDockerFlow"
     }
   ]
 }

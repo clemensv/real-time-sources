@@ -284,3 +284,11 @@ class TestDwdAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"DWD_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'DE.DWD.CDC.ExtremeTemperature10Min', 'DE.DWD.CDC.ExtremeWind10Min', 'DE.DWD.Forecast.IconD2ForecastFile', 'DE.DWD.Weather.Alert', 'DE.DWD.CDC.Wind10Min', 'DE.DWD.Radar.RadarProductCatalog', 'DE.DWD.Forecast.ForecastModelCatalog', 'DE.DWD.CDC.StationMetadata', 'DE.DWD.CDC.AirTemperature10Min', 'DE.DWD.CDC.Precipitation10Min', 'DE.DWD.CDC.Solar10Min', 'DE.DWD.Radar.RadarFileProduct', 'DE.DWD.CDC.HourlyObservation'}
     expected_count = 13
+
+
+class TestDwdPollenflugAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "dwd-pollenflug"
+    image = "dwd-pollenflug-amqp"
+    env = {"DWD_POLLENFLUG_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'DE.DWD.Pollenflug.PollenForecast', 'DE.DWD.Pollenflug.Region'}
+    expected_count = 2

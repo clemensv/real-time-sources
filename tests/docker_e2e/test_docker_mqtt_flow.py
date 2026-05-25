@@ -5019,3 +5019,23 @@ def mosquitto_dwd():
 class TestDwdMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_dwd, dwd_mqtt_image):
         _run_mqtt_contract_flow('dwd', dwd_mqtt_image, mosquitto_dwd, extra_env={'DWD_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def dwd_pollenflug_mqtt_image():
+    return build_image('dwd-pollenflug', dockerfile='Dockerfile.mqtt', tag='test-dwd-pollenflug-mqtt')
+
+@pytest.fixture()
+def mosquitto_dwd_pollenflug():
+    container, network, host_port = _generic_mosquitto('dwd-pollenflug-mqtt-e2e', 'dwd-pollenflug-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'dwd-pollenflug-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestDwdPollenflugMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_dwd_pollenflug, dwd_pollenflug_mqtt_image):
+        _run_mqtt_contract_flow('dwd-pollenflug', dwd_pollenflug_mqtt_image, mosquitto_dwd_pollenflug, extra_env={'DWD_POLLENFLUG_MOCK': 'true'}, timeout=300)

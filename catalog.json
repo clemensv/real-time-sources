@@ -260,7 +260,9 @@
     "key": false,
     "desc": "Germany — daily pollen forecasts, 27 regions",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "dmi",
