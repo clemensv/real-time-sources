@@ -180,3 +180,44 @@ Deploy the MQTT container against an existing MQTT 5 broker:
 Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template-with-eventgrid-mqtt.json)
+
+## AMQP 1.0 container
+
+The AMQP companion image publishes the same `Usgs Iv` CloudEvents to a generic AMQP 1.0 broker, Azure Service Bus with Entra ID CBS, or a SAS-token Service Bus-compatible endpoint.
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest
+```
+
+### Generic AMQP broker (SASL PLAIN)
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=usgs-iv   ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest
+```
+
+### Azure Service Bus (Entra ID)
+
+```bash
+docker run --rm   -e AMQP_HOST=<namespace>.servicebus.windows.net   -e AMQP_PORT=5671   -e AMQP_TLS=true   -e AMQP_ADDRESS=usgs-iv   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default   ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest
+```
+
+### Service Bus emulator / SAS CBS
+
+```bash
+docker run --rm   -e AMQP_HOST=servicebus-emulator   -e AMQP_PORT=5672   -e AMQP_ADDRESS=usgs-iv   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey   -e AMQP_SAS_KEY=<base64-key>   ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest
+```
+
+| Variable | Description | Default |
+|---|---|---|
+| `AMQP_BROKER_URL` | Optional AMQP URI for generic brokers. | unset |
+| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URI is supplied. | `localhost` / `5672` |
+| `AMQP_ADDRESS` | Queue/topic/address to publish to. | `usgs-iv` |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | unset |
+| `AMQP_TLS` | Use TLS (`true`, `1`, or `yes`). | `false` |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra token scope and optional managed identity client ID. | Service Bus scope / unset |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | unset |
+| `AMQP_CONTENT_MODE` | CloudEvents content mode: `binary` or `structured`. | `binary` |
+
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template-amqp.json)
+
