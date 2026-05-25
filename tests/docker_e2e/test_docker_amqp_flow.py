@@ -190,6 +190,54 @@ class TestAisstreamAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"AISSTREAM_MOCK": "true"}
     expected_types = {"IO.AISstream.mqtt.PositionReport", "IO.AISstream.mqtt.ShipStatic", "IO.AISstream.mqtt.AidToNavigation"}
 
+class TestAustraliaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "australia-wildfires"
+    image = "australia-wildfires-amqp"
+    env = {"AUSTRALIA_WILDFIRES_SAMPLE_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {"AU.Gov.Emergency.Wildfires.FireIncident"}
+    expected_count = 1
+
+
+class TestCarbonIntensityAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "carbon-intensity"
+    image = "carbon-intensity-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {"uk.org.carbonintensity.Intensity", "uk.org.carbonintensity.GenerationMix", "uk.org.carbonintensity.RegionalIntensity"}
+    expected_count = 3
+
+
+class TestRssAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "rss"
+    image = "rss-amqp"
+    env = {"RSS_SAMPLE_MODE": "true"}
+    expected_types = {"Microsoft.OpenData.RssFeeds.FeedItem"}
+    expected_count = 1
+
+
+class TestWikimediaEventstreamsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "wikimedia-eventstreams"
+    image = "wikimedia-eventstreams-amqp"
+    env = {"WIKIMEDIA_EVENTSTREAMS_MOCK": "true"}
+    expected_types = {"Wikimedia.EventStreams.RecentChange"}
+    expected_count = 4
+
+
+class TestWikimediaOsmDiffsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "wikimedia-osm-diffs"
+    image = "wikimedia-osm-diffs-amqp"
+    env = {"OSM_DIFFS_MOCK": "true"}
+    expected_types = {"Org.OpenStreetMap.Diffs.MapChange", "Org.OpenStreetMap.Diffs.ReplicationState"}
+    expected_count = 4
+
+
+class TestBlueskyAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bluesky"
+    image = "bluesky-amqp"
+    env = {"BLUESKY_MOCK": "true"}
+    expected_types = {"Bluesky.Feed.Post", "Bluesky.Feed.Like", "Bluesky.Feed.Repost", "Bluesky.Graph.Follow", "Bluesky.Graph.Block", "Bluesky.Actor.Profile"}
+    expected_count = 6
+
+
 class TestEpaUvAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "epa-uv"
     image = "epa-uv-amqp"

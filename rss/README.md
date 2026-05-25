@@ -200,3 +200,16 @@ Four Azure Container Instance deployment shapes are documented for this source:
 | MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
 
 See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
+
+
+## AMQP 1.0 feeder
+
+This source also ships an AMQP 1.0 companion container (`Dockerfile.amqp`, image `ghcr.io/clemensv/real-time-sources-rss-amqp:latest`). It publishes the same CloudEvents contract documented in [EVENTS.md](EVENTS.md) to a single AMQP address named `rss` by default. Use it for enterprise queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, or Azure Service Bus.
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/rss   -e RSS_SAMPLE_MODE=true   ghcr.io/clemensv/real-time-sources-rss-amqp:latest
+```
+
+Azure Service Bus deployment (new namespace, queue, managed identity, and ACI):
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Finfra%2Fazure-template-amqp.json)

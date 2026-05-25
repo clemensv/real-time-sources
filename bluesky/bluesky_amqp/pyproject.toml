@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bluesky-amqp"
+version = "0.1.0"
+description = "AMQP 1.0 feeder for Bluesky firehose"
+requires-python = ">=3.10"
+dependencies = [
+    "python-qpid-proton>=0.40.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "avro>=1.11.3",
+    "azure-identity>=1.17.0",
+    "azure-core>=1.30.0",
+    "aiohttp>=3.10.5",
+    "atproto>=0.0.63",
+    "pydantic>=2.7.0",
+]
+
+[project.scripts]
+bluesky-amqp = "bluesky_amqp.app:main"
+
+[tool.setuptools.packages.find]
+include = ["bluesky_amqp*"]

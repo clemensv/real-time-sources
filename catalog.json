@@ -495,7 +495,9 @@
     "key": false,
     "desc": "Australia — NSW, QLD, VIC bushfire incidents",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "eaws-albina",
@@ -609,7 +611,7 @@
     "name": "AISStream",
     "cat": "Maritime",
     "key": true,
-    "desc": "Global — AIS via WebSocket, ~200 km from shore",
+    "desc": "Global â€” AIS via WebSocket, ~200 km from shore",
     "kql": true,
     "amqp": true,
     "mqtt": true
@@ -627,7 +629,7 @@
     "name": "Kystverket AIS",
     "cat": "Maritime",
     "key": false,
-    "desc": "Norway / Svalbard — raw TCP AIS, ~34 msg/s",
+    "desc": "Norway / Svalbard â€” raw TCP AIS, ~34 msg/s",
     "kql": true,
     "amqp": true,
     "mqtt": true
@@ -637,7 +639,7 @@
     "name": "Mode-S",
     "cat": "Aviation",
     "key": false,
-    "desc": "Local — ADS-B via dump1090 receivers",
+    "desc": "Local â€” ADS-B via dump1090 receivers",
     "kql": true,
     "amqp": true,
     "mqtt": true
@@ -805,7 +807,9 @@
     "key": false,
     "desc": "United Kingdom — national grid carbon intensity",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "elexon-bmrs",
@@ -850,7 +854,9 @@
     "cat": "Social",
     "key": false,
     "desc": "Global — posts, likes, reposts, follows",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "wikimedia-osm-diffs",
@@ -859,7 +865,9 @@
     "key": false,
     "desc": "Global — OSM minutely replication diffs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "rss",
@@ -868,7 +876,8 @@
     "key": false,
     "desc": "Any — configurable RSS/Atom feed URLs or OPML files",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "wikimedia-eventstreams",
@@ -876,7 +885,9 @@
     "cat": "Social",
     "key": false,
     "desc": "Global — Wikipedia, Wikidata, Commons recent changes",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "billetto",
