@@ -56,3 +56,16 @@ The MQTT feeder publishes non-retained QoS 1 CloudEvents to `seismic/jp/jma/jma-
 ## Delivery behavior
 
 The bridge polls `list.json`, skips already-seen `(eid, ser)` report serials, fetches the detail JSON when available, and emits one `JP.JMA.Quake.EarthquakeReport` per new report. State is persisted only after Kafka flush returns success.
+
+
+## MQTT and AMQP companion transports
+
+This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+
+Topic templates:
+- `seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report`
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-mqtt:latest` (`Dockerfile.mqtt`)
+- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest` (`Dockerfile.amqp`)
+- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
+- `magnitude_bucket` uses `m0` through `m9`; unknown or negative magnitude uses `mx`.

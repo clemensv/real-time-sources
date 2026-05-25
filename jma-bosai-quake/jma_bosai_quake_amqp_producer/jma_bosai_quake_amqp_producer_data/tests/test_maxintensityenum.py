@@ -1,0 +1,40 @@
+import os
+import sys
+import unittest
+
+sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
+
+from jma_bosai_quake_amqp_producer_data.maxintensityenum import MaxIntensityenum
+
+
+class Test_MaxIntensityenum(unittest.TestCase):
+    """
+    Test case for MaxIntensityenum
+    """
+
+    def setUp(self):
+        """
+        Setup test
+        """
+        self.instance = MaxIntensityenum.INTENSITY_1
+
+    @staticmethod
+    def create_instance():
+        """
+        Create instance of MaxIntensityenum
+        """
+        return MaxIntensityenum.INTENSITY_1
+
+    def test_enum_values(self):
+        """
+        Test that all enum values are defined
+        """
+        self.assertEqual(MaxIntensityenum.INTENSITY_1.value, '1')
+        self.assertEqual(MaxIntensityenum.INTENSITY_2.value, '2')
+        self.assertEqual(MaxIntensityenum.INTENSITY_3.value, '3')
+        self.assertEqual(MaxIntensityenum.INTENSITY_4.value, '4')
+        self.assertEqual(MaxIntensityenum.VALUE_5_.value, '5-')
+        self.assertEqual(MaxIntensityenum.VALUE_5_.value, '5+')
+        self.assertEqual(MaxIntensityenum.VALUE_6_.value, '6-')
+        self.assertEqual(MaxIntensityenum.VALUE_6_.value, '6+')
+        self.assertEqual(MaxIntensityenum.INTENSITY_7.value, '7')

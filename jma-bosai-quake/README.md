@@ -57,3 +57,16 @@ Configuration can also be supplied via environment variables: `CONNECTION_STRING
 ## State
 
 The bridge persists a FIFO set of the latest 1000 `(eid, ser)` tuples in `./state/jma-bosai-quake.json` by default. State advances only after Kafka flush succeeds, so failed deliveries are retried on the next poll.
+
+
+## MQTT and AMQP companion transports
+
+This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+
+Topic templates:
+- `seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report`
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-mqtt:latest` (`Dockerfile.mqtt`)
+- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest` (`Dockerfile.amqp`)
+- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
+- `magnitude_bucket` uses `m0` through `m9`; unknown or negative magnitude uses `mx`.

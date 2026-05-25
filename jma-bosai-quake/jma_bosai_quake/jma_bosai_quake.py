@@ -175,13 +175,11 @@ def prefecture_slug(epicenter_area_en: str | None, affected_prefectures: List[Af
 
 def magnitude_bucket(magnitude: Optional[float]) -> str:
     if magnitude is None:
-        return "magnitude-unknown"
-    if magnitude < 1:
-        return "magnitude-lt1"
+        return "mx"
     bucket = int(magnitude)
-    if bucket >= 9:
-        return "magnitude-9plus"
-    return f"magnitude-{bucket}"
+    if bucket < 0:
+        return "mx"
+    return f"m{min(bucket, 9)}"
 
 
 def extract_tsunami_possible(detail: Optional[Dict[str, Any]]) -> Optional[bool]:
