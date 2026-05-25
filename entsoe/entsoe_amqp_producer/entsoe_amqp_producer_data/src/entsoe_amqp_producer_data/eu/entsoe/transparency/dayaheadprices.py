@@ -161,10 +161,10 @@ class DayAheadPrices:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='luujxvyagmchraskowoc',
-            price=float(75.34612452694205),
-            currency='smrasmoqyijkespqrplf',
-            unitName='wagambjtcorsotrhdjaw',
-            resolution='idkrpmgszcdzildzacet',
-            documentType='pwkrfgsviupwihyskrfi'
+            inDomain='pwqagifaotbyrsfxqbqf',
+            price=float(49.378457822975975),
+            currency='tuxhwaxcuyvugihersjy',
+            unitName='uwfmfovfcfysgehsocft',
+            resolution='bfaiirxnixgdzalpyqyk',
+            documentType='raohvflzhiykfgcromcy'
         )

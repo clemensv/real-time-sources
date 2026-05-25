@@ -28,12 +28,12 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         Create instance of CrossBorderPhysicalFlows for testing
         """
         instance = CrossBorderPhysicalFlows(
-            inDomain='dxeyknjelpvnojbszjdn',
-            outDomain='sahxpnfcccfpecbwnxig',
-            quantity=float(63.32753880241262),
-            resolution='suiuwnfyrndvwbjaoiuk',
-            documentType='dzztjyjkzravhgvynewg',
-            unitName='ciremthkvnzqmckapzfn'
+            inDomain='sihpkrywrisyarjeptga',
+            outDomain='mnvjcacfgdyombrzlzhw',
+            quantity=float(45.64938689143293),
+            resolution='gefucviurnoopkemmctp',
+            documentType='ixuwkbuixufctfbgcawd',
+            unitName='dgearnusptfjemreujuj'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'dxeyknjelpvnojbszjdn'
+        test_value = 'sihpkrywrisyarjeptga'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -50,7 +50,7 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         """
         Test outDomain property
         """
-        test_value = 'sahxpnfcccfpecbwnxig'
+        test_value = 'mnvjcacfgdyombrzlzhw'
         self.instance.outDomain = test_value
         self.assertEqual(self.instance.outDomain, test_value)
     
@@ -58,7 +58,7 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(63.32753880241262)
+        test_value = float(45.64938689143293)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -66,7 +66,7 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'suiuwnfyrndvwbjaoiuk'
+        test_value = 'gefucviurnoopkemmctp'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -74,7 +74,7 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'dzztjyjkzravhgvynewg'
+        test_value = 'ixuwkbuixufctfbgcawd'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -82,7 +82,7 @@ class Test_CrossBorderPhysicalFlows(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'ciremthkvnzqmckapzfn'
+        test_value = 'dgearnusptfjemreujuj'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

@@ -28,11 +28,11 @@ class Test_ReservoirFillingInformation(unittest.TestCase):
         Create instance of ReservoirFillingInformation for testing
         """
         instance = ReservoirFillingInformation(
-            inDomain='trxcffejqvgfsohvlzzv',
-            quantity=float(42.167799429739276),
-            resolution='sfzqhwidlbwwnahndgjn',
-            documentType='dcbpufnbkxizuuptbhxf',
-            unitName='nboqnuikjjyntpmpslhf'
+            inDomain='zvuqmdfhbsbsjsvcgjwm',
+            quantity=float(5.885422207058677),
+            resolution='tregotnemdhgohrhkvxp',
+            documentType='qahvbmuominqfuvjzdhc',
+            unitName='gqekegtvgvocghagtrtw'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ReservoirFillingInformation(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'trxcffejqvgfsohvlzzv'
+        test_value = 'zvuqmdfhbsbsjsvcgjwm'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_ReservoirFillingInformation(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(42.167799429739276)
+        test_value = float(5.885422207058677)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_ReservoirFillingInformation(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'sfzqhwidlbwwnahndgjn'
+        test_value = 'tregotnemdhgohrhkvxp'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_ReservoirFillingInformation(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'dcbpufnbkxizuuptbhxf'
+        test_value = 'qahvbmuominqfuvjzdhc'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,7 +73,7 @@ class Test_ReservoirFillingInformation(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'nboqnuikjjyntpmpslhf'
+        test_value = 'gqekegtvgvocghagtrtw'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

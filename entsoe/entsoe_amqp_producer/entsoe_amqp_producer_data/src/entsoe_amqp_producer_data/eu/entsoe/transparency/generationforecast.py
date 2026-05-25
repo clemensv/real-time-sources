@@ -159,9 +159,9 @@ class GenerationForecast:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='qpzxauskvnojtetqnzes',
-            quantity=float(86.78442605695068),
-            resolution='zgxejwkdqmuyclytppld',
-            documentType='jvmeujnxwuycrmrlplbb',
-            unitName='zdornpoujzycpjddudnn'
+            inDomain='gtsctzqfisdcoaynjopg',
+            quantity=float(33.40845385954301),
+            resolution='rxaudovfnonvretkcjpv',
+            documentType='ejbgaxqpaokynbwsykmk',
+            unitName='xfcmnnkrwfbbpgbfqyww'
         )
