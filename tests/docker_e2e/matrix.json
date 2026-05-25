@@ -468,6 +468,24 @@
       "image": "entur-norway-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "entur_norway_mqtt"
+    },
+    {
+      "dir": "entsoe",
+      "image": "entsoe-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "entsoe_kafka"
+    },
+    {
+      "dir": "entsoe",
+      "image": "entsoe-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "entsoe_mqtt"
+    },
+    {
+      "dir": "entsoe",
+      "image": "entsoe-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "entsoe_amqp"
     }
   ],
   "flow": [
@@ -880,6 +898,26 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEnturNorwayMqttDockerFlow"
+    },
+    {
+      "dir": "entsoe",
+      "image": "entsoe-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEntsoeMqttDockerFlow"
+    },
+    {
+      "dir": "entsoe",
+      "image": "entsoe-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestEntsoeAmqpDockerFlow"
+    },
+    {
+      "dir": "entsoe",
+      "image": "entsoe-kafka",
+      "file": "Dockerfile.kafka",
+      "test_class": "TestEntsoeKafkaDockerFlow"
     }
   ]
 }

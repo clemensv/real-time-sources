@@ -1,6 +1,6 @@
 
 
-# Entsoe-producer Kafka Producer# Entsoe-producer Event Dispatcher for Apache Kafka
+# Entsoe_producer Kafka Producer# Entsoe_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -19,7 +19,19 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyByDomainPsrTypeEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyCrossBorderEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyCrossBorderEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyByDomainMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyByDomainPsrTypeMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyCrossBorderMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyByDomainAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyByDomainPsrTypeAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    EuEntsoeTransparencyCrossBorderAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -51,6 +63,30 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - EuEntsoeTransparencyCrossBorderProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- EuEntsoeTransparencyByDomainMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- EuEntsoeTransparencyByDomainPsrTypeMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- EuEntsoeTransparencyCrossBorderMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- EuEntsoeTransparencyByDomainAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- EuEntsoeTransparencyByDomainPsrTypeAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- EuEntsoeTransparencyCrossBorderAmqpProducersolution for event-driven applications.
 
 
 
@@ -98,7 +134,7 @@ Initializes the dispatcher.
 
 ```python
 
-from entsoe-producer import EuEntsoeTransparencyByDomainProducer```python
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -282,6 +318,242 @@ eu_entsoe_transparency_day_ahead_prices_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_day_ahead_prices_async =
+eu_entsoe_transparency_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_day_ahead_prices_async =
+eu_entsoe_transparency_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_day_ahead_prices_async =
+eu_entsoe_transparency_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_day_ahead_prices_async =
+eu_entsoe_transparency_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_day_ahead_prices_async =
+eu_entsoe_transparency_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_day_ahead_prices_async =
+eu_entsoe_transparency_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -418,6 +690,242 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_actual_total_load_async =
+eu_entsoe_transparency_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_actual_total_load_async =
+eu_entsoe_transparency_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_actual_total_load_async =
+eu_entsoe_transparency_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_actual_total_load_async =
+eu_entsoe_transparency_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_actual_total_load_async =
+eu_entsoe_transparency_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_actual_total_load_async =
+eu_entsoe_transparency_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_actual_total_load_async =
 eu_entsoe_transparency_actual_total_load_event
 
 **Parameters:**```
@@ -567,6 +1075,244 @@ eu_entsoe_transparency_load_forecast_margin_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_load_forecast_margin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_load_forecast_margin_async =
+eu_entsoe_transparency_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_load_forecast_margin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_load_forecast_margin_async =
+eu_entsoe_transparency_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_load_forecast_margin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_load_forecast_margin_async =
+eu_entsoe_transparency_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_load_forecast_margin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_load_forecast_margin_async =
+eu_entsoe_transparency_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_load_forecast_margin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_load_forecast_margin_async =
+eu_entsoe_transparency_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_load_forecast_margin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_load_forecast_margin_async =
+eu_entsoe_transparency_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -704,6 +1450,244 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_generation_forecast_async =
+eu_entsoe_transparency_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_generation_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_generation_forecast_async =
+eu_entsoe_transparency_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_generation_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_generation_forecast_async =
+eu_entsoe_transparency_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_generation_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_generation_forecast_async =
+eu_entsoe_transparency_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_generation_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_generation_forecast_async =
+eu_entsoe_transparency_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_generation_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_generation_forecast_async =
+eu_entsoe_transparency_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_generation_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_generation_forecast_async =
 eu_entsoe_transparency_generation_forecast_event
 
 **Parameters:**```
@@ -855,6 +1839,246 @@ eu_entsoe_transparency_reservoir_filling_information_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_reservoir_filling_information_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_reservoir_filling_information_async =
+eu_entsoe_transparency_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_reservoir_filling_information_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_reservoir_filling_information_async =
+eu_entsoe_transparency_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_reservoir_filling_information_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_reservoir_filling_information_async =
+eu_entsoe_transparency_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_reservoir_filling_information_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_reservoir_filling_information_async =
+eu_entsoe_transparency_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_reservoir_filling_information_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_reservoir_filling_information_async =
+eu_entsoe_transparency_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_reservoir_filling_information_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_reservoir_filling_information_async =
+eu_entsoe_transparency_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -991,6 +2215,242 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_actual_generation_async =
+eu_entsoe_transparency_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_actual_generation_async =
+eu_entsoe_transparency_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_actual_generation_async =
+eu_entsoe_transparency_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_actual_generation_async =
+eu_entsoe_transparency_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_actual_generation_async =
+eu_entsoe_transparency_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_actual_generation_async =
+eu_entsoe_transparency_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_actual_generation_async =
 eu_entsoe_transparency_actual_generation_event
 
 **Parameters:**```
@@ -1668,7 +3128,7 @@ Initializes the dispatcher.
 
 ```python
 
-from entsoe-producer import EuEntsoeTransparencyByDomainProducer```python
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -1854,6 +3314,246 @@ eu_entsoe_transparency_actual_generation_per_type_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_per_type_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_actual_generation_per_type_async =
+eu_entsoe_transparency_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_per_type_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_actual_generation_per_type_async =
+eu_entsoe_transparency_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_per_type_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_actual_generation_per_type_async =
+eu_entsoe_transparency_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_per_type_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_actual_generation_per_type_async =
+eu_entsoe_transparency_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_per_type_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_actual_generation_per_type_async =
+eu_entsoe_transparency_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_actual_generation_per_type_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_actual_generation_per_type_async =
+eu_entsoe_transparency_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1991,6 +3691,244 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
+eu_entsoe_transparency_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
+eu_entsoe_transparency_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
+eu_entsoe_transparency_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
+eu_entsoe_transparency_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
+eu_entsoe_transparency_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
+eu_entsoe_transparency_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_wind_solar_forecast_async =
 eu_entsoe_transparency_wind_solar_forecast_event
 
 **Parameters:**```
@@ -2140,6 +4078,244 @@ eu_entsoe_transparency_wind_solar_generation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_wind_solar_generation_async =
+eu_entsoe_transparency_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_wind_solar_generation_async =
+eu_entsoe_transparency_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_wind_solar_generation_async =
+eu_entsoe_transparency_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_wind_solar_generation_async =
+eu_entsoe_transparency_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_wind_solar_generation_async =
+eu_entsoe_transparency_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_wind_solar_generation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_wind_solar_generation_async =
+eu_entsoe_transparency_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -2280,6 +4456,246 @@ responsible for calling the appropriate handler function when a message is recei
 
 eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_async =
 eu_entsoe_transparency_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_installed_generation_capacity_per_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_async =
+eu_entsoe_transparency_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_installed_generation_capacity_per_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_
+async = eu_entsoe_transparency_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_installed_generation_capacity_per_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_async
+= eu_entsoe_transparency_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_installed_generation_capacity_per_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_async =
+eu_entsoe_transparency_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_installed_generation_capacity_per_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_
+async = eu_entsoe_transparency_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_installed_generation_capacity_per_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_installed_generation_capacity_per_type_async
+= eu_entsoe_transparency_installed_generation_capacity_per_type_event
 
 **Parameters:**```
 
@@ -2751,7 +5167,7 @@ Initializes the dispatcher.
 
 ```python
 
-from entsoe-producer import EuEntsoeTransparencyByDomainProducer```python
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -2938,6 +5354,246 @@ eu_entsoe_transparency_cross_border_physical_flows_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_physical_flows_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_physical_flows_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_physical_flows_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_physical_flows_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_physical_flows_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_physical_flows_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -3032,6 +5688,11348 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_eu_entsoe_transparency_cross_border_physical_flows_batch(```
+
+    messages=[
+
+        CrossBorderPhysicalFlows(...),Initializes the runner with a Kafka consumer.
+
+        CrossBorderPhysicalFlows(...),
+
+        CrossBorderPhysicalFlows(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### EuEntsoeTransparencyByDomainMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`EuEntsoeTransparencyByDomainMqttEventDispatcher` handles events for the eu.entsoe.transparency.ByDomain.mqtt message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_eu_entsoe_transparency_day_ahead_prices(```python
+
+    data=DayAheadPrices(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The EuEntsoeTransparencyByDomainMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async:
+Callable[[ConsumerRecord, CloudEvent, DayAheadPrices], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices`: MQTT/UNS binary CloudEvents variant
+for DayAheadPrices. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot
+never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async:
+Callable[[ConsumerRecord, CloudEvent, ActualTotalLoad], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad`: MQTT/UNS binary CloudEvents
+variant for ActualTotalLoad. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async
+= eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async
+= eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_total_load_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async:
+Callable[[ConsumerRecord, CloudEvent, LoadForecastMargin], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin`: MQTT/UNS binary CloudEvents
+variant for LoadForecastMargin. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_asy
+nc = eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_asy
+nc = eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async:
+Callable[[ConsumerRecord, CloudEvent, GenerationForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast`: MQTT/UNS binary CloudEvents
+variant for GenerationForecast. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_asyn
+c = eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_asyn
+c = eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_generation_forecast_async =
+eu_entsoe_transparency_by_domain_mqtt_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_async:
+Callable[[ConsumerRecord, CloudEvent, ReservoirFillingInformation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation`: MQTT/UNS binary
+CloudEvents variant for ReservoirFillingInformation. ENTSO-E poll cycles emit individual market time-series points;
+retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_async =
+eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information
+_async = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_async
+= eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_asy
+nc = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_inform
+ation_async = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_
+async = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_asy
+nc = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_inform
+ation_async = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_
+async = eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_mqtt_actual_generation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_mqtt_actual_generation_async:
+Callable[[ConsumerRecord, CloudEvent, ActualGeneration], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration`: MQTT/UNS binary CloudEvents
+variant for ActualGeneration. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async
+= eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async
+= eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_mqtt_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_mqtt_actual_generation_async =
+eu_entsoe_transparency_by_domain_mqtt_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(
+
+    self,##### `_process_event`
+
+    data: DayAheadPrices,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices` message. MQTT/UNS binary CloudEvents variant for
+DayAheadPrices. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never
+misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DayAheadPrices`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(
+
+    data=DayAheadPrices(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices_batch(```
+
+    messages=[
+
+        DayAheadPrices(...),Initializes the runner with a Kafka consumer.
+
+        DayAheadPrices(...),
+
+        DayAheadPrices(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(
+
+    self,##### `_process_event`
+
+    data: ActualTotalLoad,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad` message. MQTT/UNS binary CloudEvents variant for
+ActualTotalLoad. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never
+misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ActualTotalLoad`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(
+
+    data=ActualTotalLoad(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load_batch(```
+
+    messages=[
+
+        ActualTotalLoad(...),Initializes the runner with a Kafka consumer.
+
+        ActualTotalLoad(...),
+
+        ActualTotalLoad(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(
+
+    self,##### `_process_event`
+
+    data: LoadForecastMargin,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin` message. MQTT/UNS binary CloudEvents variant for
+LoadForecastMargin. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot
+never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LoadForecastMargin`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(
+
+    data=LoadForecastMargin(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin_batch(```
+
+    messages=[
+
+        LoadForecastMargin(...),Initializes the runner with a Kafka consumer.
+
+        LoadForecastMargin(...),
+
+        LoadForecastMargin(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(
+
+    self,##### `_process_event`
+
+    data: GenerationForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast` message. MQTT/UNS binary CloudEvents variant for
+GenerationForecast. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot
+never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GenerationForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(
+
+    data=GenerationForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast_batch(```
+
+    messages=[
+
+        GenerationForecast(...),Initializes the runner with a Kafka consumer.
+
+        GenerationForecast(...),
+
+        GenerationForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(
+
+    self,##### `_process_event`
+
+    data: ReservoirFillingInformation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation` message. MQTT/UNS binary CloudEvents
+variant for ReservoirFillingInformation. ENTSO-E poll cycles emit individual market time-series points; retain is false
+so a retained slot never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ReservoirFillingInformation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(
+
+    data=ReservoirFillingInformation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information_batch(```
+
+    messages=[
+
+        ReservoirFillingInformation(...),Initializes the runner with a Kafka consumer.
+
+        ReservoirFillingInformation(...),
+
+        ReservoirFillingInformation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_mqtt_actual_generation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(
+
+    self,##### `_process_event`
+
+    data: ActualGeneration,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration` message. MQTT/UNS binary CloudEvents variant for
+ActualGeneration. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot
+never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ActualGeneration`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(
+
+    data=ActualGeneration(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_mqtt_actual_generation_batch(```
+
+    messages=[
+
+        ActualGeneration(...),Initializes the runner with a Kafka consumer.
+
+        ActualGeneration(...),
+
+        ActualGeneration(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions###
+EuEntsoeTransparencyByDomainPsrTypeMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`EuEntsoeTransparencyByDomainPsrTypeMqttEventDispatcher` handles events for the
+eu.entsoe.transparency.ByDomainPsrType.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_eu_entsoe_transparency_day_ahead_prices(```python
+
+    data=DayAheadPrices(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The EuEntsoeTransparencyByDomainPsrTypeMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_async:
+Callable[[ConsumerRecord, CloudEvent, ActualGenerationPerType], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType`: MQTT/UNS binary
+CloudEvents variant for ActualGenerationPerType. ENTSO-E poll cycles emit individual market time-series points; retain
+is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_as
+ync = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_pe
+r_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type
+_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_ty
+pe_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generati
+on_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per
+_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_ty
+pe_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generati
+on_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per
+_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_async:
+Callable[[ConsumerRecord, CloudEvent, WindSolarForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast`: MQTT/UNS binary
+CloudEvents variant for WindSolarForecast. ENTSO-E poll cycles emit individual market time-series points; retain is
+false so a retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_async =
+eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_
+async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_async
+= eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_asyn
+c = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_fore
+cast_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_a
+sync = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_asyn
+c = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_fore
+cast_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_a
+sync = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_async:
+Callable[[ConsumerRecord, CloudEvent, WindSolarGeneration], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration`: MQTT/UNS binary
+CloudEvents variant for WindSolarGeneration. ENTSO-E poll cycles emit individual market time-series points; retain is
+false so a retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_async =
+eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generatio
+n_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_asyn
+c = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_as
+ync = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_gene
+ration_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation
+_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_as
+ync = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_gene
+ration_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation
+_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',#####
+`eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-
+password'eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_async:
+Callable[[ConsumerRecord, CloudEvent, InstalledGenerationCapacityPerType], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType`: MQTT/UNS
+binary CloudEvents variant for InstalledGenerationCapacityPerType. ENTSO-E poll cycles emit individual market time-
+series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current
+state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity
+_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation
+_capacity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capac
+ity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_cap
+acity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_gener
+ation_capacity_per_type_async =
+eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_
+capacity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_cap
+acity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_gener
+ation_capacity_per_type_async =
+eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_
+capacity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(
+
+    self,##### `_process_event`
+
+    data: ActualGenerationPerType,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType` message. MQTT/UNS binary CloudEvents
+variant for ActualGenerationPerType. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ActualGenerationPerType`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(
+
+    data=ActualGenerationPerType(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type_batch(```
+
+    messages=[
+
+        ActualGenerationPerType(...),Initializes the runner with a Kafka consumer.
+
+        ActualGenerationPerType(...),
+
+        ActualGenerationPerType(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(
+
+    self,##### `_process_event`
+
+    data: WindSolarForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast` message. MQTT/UNS binary CloudEvents
+variant for WindSolarForecast. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WindSolarForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(
+
+    data=WindSolarForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast_batch(```
+
+    messages=[
+
+        WindSolarForecast(...),Initializes the runner with a Kafka consumer.
+
+        WindSolarForecast(...),
+
+        WindSolarForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(
+
+    self,##### `_process_event`
+
+    data: WindSolarGeneration,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration` message. MQTT/UNS binary CloudEvents
+variant for WindSolarGeneration. ENTSO-E poll cycles emit individual market time-series points; retain is false so a
+retained slot never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WindSolarGeneration`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(
+
+    data=WindSolarGeneration(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation_batch(```
+
+    messages=[
+
+        WindSolarGeneration(...),Initializes the runner with a Kafka consumer.
+
+        WindSolarGeneration(...),
+
+        WindSolarGeneration(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type`Dispatchers have the
+following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(
+
+    self,##### `_process_event`
+
+    data: InstalledGenerationCapacityPerType,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType` message. MQTT/UNS binary
+CloudEvents variant for InstalledGenerationCapacityPerType. ENTSO-E poll cycles emit individual market time-series
+points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current
+state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `InstalledGenerationCapacityPerType`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(
+
+    data=InstalledGenerationCapacityPerType(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type_batch(```
+
+    messages=[
+
+        InstalledGenerationCapacityPerType(...),Initializes the runner with a Kafka consumer.
+
+        InstalledGenerationCapacityPerType(...),
+
+        InstalledGenerationCapacityPerType(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### EuEntsoeTransparencyCrossBorderMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`EuEntsoeTransparencyCrossBorderMqttEventDispatcher` handles events for the eu.entsoe.transparency.CrossBorder.mqtt
+message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_eu_entsoe_transparency_day_ahead_prices(```python
+
+    data=DayAheadPrices(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The EuEntsoeTransparencyCrossBorderMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_async:
+Callable[[ConsumerRecord, CloudEvent, CrossBorderPhysicalFlows], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows`: MQTT/UNS binary
+CloudEvents variant for CrossBorderPhysicalFlows. ENTSO-E poll cycles emit individual market time-series points; retain
+is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flow
+s_async = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_asyn
+c = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_as
+ync = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical
+_flows_async = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows
+_async = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_as
+ync = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical
+_flows_async = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows
+_async = eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(
+
+    self,##### `_process_event`
+
+    data: CrossBorderPhysicalFlows,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows` message. MQTT/UNS binary CloudEvents
+variant for CrossBorderPhysicalFlows. ENTSO-E poll cycles emit individual market time-series points; retain is false so
+a retained slot never misrepresents an old forecast or historical MTU point as current state.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `CrossBorderPhysicalFlows`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(
+
+    data=CrossBorderPhysicalFlows(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows_batch(```
+
+    messages=[
+
+        CrossBorderPhysicalFlows(...),Initializes the runner with a Kafka consumer.
+
+        CrossBorderPhysicalFlows(...),
+
+        CrossBorderPhysicalFlows(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### EuEntsoeTransparencyByDomainAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`EuEntsoeTransparencyByDomainAmqpEventDispatcher` handles events for the eu.entsoe.transparency.ByDomain.amqp message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_eu_entsoe_transparency_day_ahead_prices(```python
+
+    data=DayAheadPrices(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The EuEntsoeTransparencyByDomainAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async:
+Callable[[ConsumerRecord, CloudEvent, DayAheadPrices], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices`: AMQP 1.0 binary CloudEvents variant
+for DayAheadPrices, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the
+Kafka key template {inDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: DayAheadPrices) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_async =
+eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_amqp_actual_total_load_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_amqp_actual_total_load_async:
+Callable[[ConsumerRecord, CloudEvent, ActualTotalLoad], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad`: AMQP 1.0 binary CloudEvents
+variant for ActualTotalLoad, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key
+mirror the Kafka key template {inDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async
+= eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async
+= eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_total_load_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualTotalLoad) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_total_load_async =
+eu_entsoe_transparency_by_domain_amqp_actual_total_load_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async:
+Callable[[ConsumerRecord, CloudEvent, LoadForecastMargin], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin`: AMQP 1.0 binary CloudEvents
+variant for LoadForecastMargin, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key
+mirror the Kafka key template {inDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_asy
+nc = eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_asy
+nc = eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.LoadForecastMargin`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: LoadForecastMargin) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_async =
+eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_amqp_generation_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_amqp_generation_forecast_async:
+Callable[[ConsumerRecord, CloudEvent, GenerationForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.amqp.GenerationForecast`: AMQP 1.0 binary CloudEvents
+variant for GenerationForecast, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key
+mirror the Kafka key template {inDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_asyn
+c = eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_asyn
+c = eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.GenerationForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_generation_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: GenerationForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_generation_forecast_async =
+eu_entsoe_transparency_by_domain_amqp_generation_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_async:
+Callable[[ConsumerRecord, CloudEvent, ReservoirFillingInformation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation`: AMQP 1.0 binary
+CloudEvents variant for ReservoirFillingInformation, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure
+x-opt-partition-key mirror the Kafka key template {inDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_async =
+eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information
+_async = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_async
+= eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_asy
+nc = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_inform
+ation_async = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_
+async = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_asy
+nc = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_inform
+ation_async = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ReservoirFillingInformation`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ReservoirFillingInformation) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_
+async = eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_amqp_actual_generation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_amqp_actual_generation_async:
+Callable[[ConsumerRecord, CloudEvent, ActualGeneration], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomain.amqp.ActualGeneration`: AMQP 1.0 binary CloudEvents
+variant for ActualGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key
+mirror the Kafka key template {inDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async
+= eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async
+= eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_amqp_actual_generation_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ActualGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_amqp_actual_generation_async =
+eu_entsoe_transparency_by_domain_amqp_actual_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(
+
+    self,##### `_process_event`
+
+    data: DayAheadPrices,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices` message. AMQP 1.0 binary CloudEvents variant for
+DayAheadPrices, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka
+key template {inDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DayAheadPrices`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(
+
+    data=DayAheadPrices(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices_batch(```
+
+    messages=[
+
+        DayAheadPrices(...),Initializes the runner with a Kafka consumer.
+
+        DayAheadPrices(...),
+
+        DayAheadPrices(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_amqp_actual_total_load`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(
+
+    self,##### `_process_event`
+
+    data: ActualTotalLoad,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad` message. AMQP 1.0 binary CloudEvents variant for
+ActualTotalLoad, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the
+Kafka key template {inDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ActualTotalLoad`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(
+
+    data=ActualTotalLoad(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_actual_total_load_batch(```
+
+    messages=[
+
+        ActualTotalLoad(...),Initializes the runner with a Kafka consumer.
+
+        ActualTotalLoad(...),
+
+        ActualTotalLoad(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(
+
+    self,##### `_process_event`
+
+    data: LoadForecastMargin,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin` message. AMQP 1.0 binary CloudEvents variant for
+LoadForecastMargin, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the
+Kafka key template {inDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LoadForecastMargin`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(
+
+    data=LoadForecastMargin(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin_batch(```
+
+    messages=[
+
+        LoadForecastMargin(...),Initializes the runner with a Kafka consumer.
+
+        LoadForecastMargin(...),
+
+        LoadForecastMargin(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_amqp_generation_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(
+
+    self,##### `_process_event`
+
+    data: GenerationForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.amqp.GenerationForecast` message. AMQP 1.0 binary CloudEvents variant for
+GenerationForecast, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the
+Kafka key template {inDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GenerationForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(
+
+    data=GenerationForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.amqp.GenerationForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_generation_forecast_batch(```
+
+    messages=[
+
+        GenerationForecast(...),Initializes the runner with a Kafka consumer.
+
+        GenerationForecast(...),
+
+        GenerationForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(
+
+    self,##### `_process_event`
+
+    data: ReservoirFillingInformation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation` message. AMQP 1.0 binary CloudEvents
+variant for ReservoirFillingInformation, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-
+partition-key mirror the Kafka key template {inDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ReservoirFillingInformation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(
+
+    data=ReservoirFillingInformation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information_batch(```
+
+    messages=[
+
+        ReservoirFillingInformation(...),Initializes the runner with a Kafka consumer.
+
+        ReservoirFillingInformation(...),
+
+        ReservoirFillingInformation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_amqp_actual_generation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_amqp_actual_generation(
+
+    self,##### `_process_event`
+
+    data: ActualGeneration,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomain.amqp.ActualGeneration` message. AMQP 1.0 binary CloudEvents variant for
+ActualGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the
+Kafka key template {inDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ActualGeneration`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_actual_generation(
+
+    data=ActualGeneration(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomain.amqp.ActualGeneration` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_amqp_actual_generation_batch(```
+
+    messages=[
+
+        ActualGeneration(...),Initializes the runner with a Kafka consumer.
+
+        ActualGeneration(...),
+
+        ActualGeneration(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions###
+EuEntsoeTransparencyByDomainPsrTypeAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`EuEntsoeTransparencyByDomainPsrTypeAmqpEventDispatcher` handles events for the
+eu.entsoe.transparency.ByDomainPsrType.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_eu_entsoe_transparency_day_ahead_prices(```python
+
+    data=DayAheadPrices(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The EuEntsoeTransparencyByDomainPsrTypeAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_async:
+Callable[[ConsumerRecord, CloudEvent, ActualGenerationPerType], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType`: AMQP 1.0 binary
+CloudEvents variant for ActualGenerationPerType, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure
+x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_as
+ync = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_pe
+r_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type
+_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_ty
+pe_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generati
+on_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per
+_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_ty
+pe_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generati
+on_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.ActualGenerationPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: ActualGenerationPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per
+_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_async:
+Callable[[ConsumerRecord, CloudEvent, WindSolarForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast`: AMQP 1.0 binary
+CloudEvents variant for WindSolarForecast, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-
+partition-key mirror the Kafka key template {inDomain}/{psrType}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_async =
+eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_
+async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_async
+= eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_asyn
+c = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_fore
+cast_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_a
+sync = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_asyn
+c = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_fore
+cast_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarForecast`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: WindSolarForecast) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_a
+sync = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_async:
+Callable[[ConsumerRecord, CloudEvent, WindSolarGeneration], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration`: AMQP 1.0 binary
+CloudEvents variant for WindSolarGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-
+partition-key mirror the Kafka key template {inDomain}/{psrType}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_async =
+eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generatio
+n_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_asyn
+c = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_as
+ync = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_gene
+ration_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation
+_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_as
+ync = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_gene
+ration_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.WindSolarGeneration`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: WindSolarGeneration) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation
+_async = eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',#####
+`eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-
+password'eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_async:
+Callable[[ConsumerRecord, CloudEvent, InstalledGenerationCapacityPerType], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType`: AMQP 1.0
+binary CloudEvents variant for InstalledGenerationCapacityPerType, sent to the `entsoe` AMQP address. The CloudEvent
+subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity
+_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation
+_capacity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capac
+ity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_cap
+acity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_gener
+ation_capacity_per_type_async =
+eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_
+capacity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_cap
+acity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_gener
+ation_capacity_per_type_async =
+eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event(record:
+ConsumerRecord, cloud_event: CloudEvent, data: InstalledGenerationCapacityPerType) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_
+capacity_per_type_async = eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(
+
+    self,##### `_process_event`
+
+    data: ActualGenerationPerType,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType` message. AMQP 1.0 binary CloudEvents
+variant for ActualGenerationPerType, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-
+partition-key mirror the Kafka key template {inDomain}/{psrType}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ActualGenerationPerType`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(
+
+    data=ActualGenerationPerType(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type_batch(```
+
+    messages=[
+
+        ActualGenerationPerType(...),Initializes the runner with a Kafka consumer.
+
+        ActualGenerationPerType(...),
+
+        ActualGenerationPerType(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(
+
+    self,##### `_process_event`
+
+    data: WindSolarForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast` message. AMQP 1.0 binary CloudEvents
+variant for WindSolarForecast, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key
+mirror the Kafka key template {inDomain}/{psrType}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WindSolarForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(
+
+    data=WindSolarForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast_batch(```
+
+    messages=[
+
+        WindSolarForecast(...),Initializes the runner with a Kafka consumer.
+
+        WindSolarForecast(...),
+
+        WindSolarForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(
+
+    self,##### `_process_event`
+
+    data: WindSolarGeneration,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration` message. AMQP 1.0 binary CloudEvents
+variant for WindSolarGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key
+mirror the Kafka key template {inDomain}/{psrType}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WindSolarGeneration`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(
+
+    data=WindSolarGeneration(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation_batch(```
+
+    messages=[
+
+        WindSolarGeneration(...),Initializes the runner with a Kafka consumer.
+
+        WindSolarGeneration(...),
+
+        WindSolarGeneration(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type`Dispatchers have the
+following protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(
+
+    self,##### `_process_event`
+
+    data: InstalledGenerationCapacityPerType,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType` message. AMQP 1.0 binary
+CloudEvents variant for InstalledGenerationCapacityPerType, sent to the `entsoe` AMQP address. The CloudEvent subject
+and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `InstalledGenerationCapacityPerType`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(
+
+    data=InstalledGenerationCapacityPerType(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type_batch(```
+
+    messages=[
+
+        InstalledGenerationCapacityPerType(...),Initializes the runner with a Kafka consumer.
+
+        InstalledGenerationCapacityPerType(...),
+
+        InstalledGenerationCapacityPerType(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### EuEntsoeTransparencyCrossBorderAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`EuEntsoeTransparencyCrossBorderAmqpEventDispatcher` handles events for the eu.entsoe.transparency.CrossBorder.amqp
+message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entsoe_producer import EuEntsoeTransparencyByDomainProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_eu_entsoe_transparency_day_ahead_prices(```python
+
+    data=DayAheadPrices(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The EuEntsoeTransparencyCrossBorderAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = EuEntsoeTransparencyByDomainProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_async:
+Callable[[ConsumerRecord, CloudEvent, CrossBorderPhysicalFlows], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows`: AMQP 1.0 binary
+CloudEvents variant for CrossBorderPhysicalFlows, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure
+x-opt-partition-key mirror the Kafka key template {inDomain}/{outDomain}.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_async =
+eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flow
+s_async = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_asyn
+c = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_mqtt_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_as
+ync = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_mqtt_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical
+_flows_async = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderMqttProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_mqtt_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows
+_async = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomain.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_amqp_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_as
+ync = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyByDomainPsrTypeAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.ByDomainPsrType.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_by_domain_psr_type_amqp_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical
+_flows_async = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### EuEntsoeTransparencyCrossBorderAmqpProducer- `data`: The event data of type
+`entsoe_producer_data.CrossBorderPhysicalFlows`.
+
+
+
+Producer for `eu.entsoe.transparency.CrossBorder.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event(record: ConsumerRecord,
+cloud_event: CloudEvent, data: CrossBorderPhysicalFlows) -> None:
+
+```python    # Process the event data
+
+EuEntsoeTransparencyCrossBorderAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+eu_entsoe_transparency_cross_border_amqp_dispatcher.eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows
+_async = eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows`Dispatchers have the following
+protected methods:
+
+
+
+```python### Methods:
+
+async def send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(
+
+    self,##### `_process_event`
+
+    data: CrossBorderPhysicalFlows,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows` message. AMQP 1.0 binary CloudEvents
+variant for CrossBorderPhysicalFlows, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-
+partition-key mirror the Kafka key template {inDomain}/{outDomain}.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `CrossBorderPhysicalFlows`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(
+
+    data=CrossBorderPhysicalFlows(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows_batch(```
 
     messages=[
 

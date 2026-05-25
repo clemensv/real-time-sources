@@ -118,7 +118,7 @@ const SOURCES = [
   { id: "elexon-bmrs", name: "Elexon BMRS", cat: "Energy", key: false, desc: "Great Britain — electricity market, generation, demand", notebook: true },
   { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true },
   { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true },
-  { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)" },
+  { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", mqtt: true, amqp: true },
 
   // ── Social Media and News ──
   { id: "bluesky", name: "Bluesky Firehose", cat: "Social", key: false, desc: "Global — posts, likes, reposts, follows" },

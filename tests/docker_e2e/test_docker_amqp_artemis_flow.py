@@ -320,3 +320,46 @@ class TestPegelonlineAmqpArtemisFlow:
             )
             errors = InstanceValidator(schema, extended=True).validate_instance(data)
             assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+@pytest.fixture(scope="module")
+def entsoe_amqp_image():
+    return build_image("entsoe", dockerfile="Dockerfile.amqp", tag="test-entsoe-amqp")
+
+
+class TestEntsoeAmqpDockerFlow:
+    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, entsoe_amqp_image):
+        client = docker.from_env()
+        feeder = client.containers.run(
+            entsoe_amqp_image.id, detach=True, remove=False, network=artemis_broker["network"],
+            environment={
+                "AMQP_HOST": artemis_broker["internal_host"],
+                "AMQP_PORT": str(artemis_broker["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker["queue"],
+                "AMQP_USERNAME": artemis_broker["user"],
+                "AMQP_PASSWORD": artemis_broker["password"],
+                "AMQP_AUTH_MODE": "password",
+                "ENTSOE_SAMPLE_MODE": "true",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages = _receive_messages("127.0.0.1", artemis_broker["host_port"], artemis_broker["queue"], artemis_broker["user"], artemis_broker["password"], expected=11, timeout=60)
+        assert len(messages) >= 11
+        types = {_extract_ce_attrs(m).get("type") for m in messages}
+        assert "eu.entsoe.transparency.DayAheadPrices" in types
+        assert "eu.entsoe.transparency.CrossBorderPhysicalFlows" in types
+        for m in messages[:3]:
+            assert getattr(m, 'content_type', None) == 'application/json'
+            ce = _extract_ce_attrs(m)
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in ce, ce
+            data = _body_to_obj(m)
+            assert isinstance(data, dict), data

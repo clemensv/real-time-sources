@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [DayAheadPrices] (
+.create-merge table ['eu.entsoe.transparency.DayAheadPrices'] (
    [inDomain]: string,
    [price]: real,
    [currency]: string,
@@ -39,7 +39,7 @@
    [___subject]: string
 );
 
-.alter table [DayAheadPrices] column-docstrings (
+.alter table ['eu.entsoe.transparency.DayAheadPrices'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [price]: "{\"description\": \"Day-ahead price\"}",
    [currency]: "{\"description\": \"Currency code (EUR)\"}",
@@ -53,7 +53,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DayAheadPrices] ingestion json mapping "DayAheadPrices_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.DayAheadPrices'] ingestion json mapping "eu.entsoe.transparency.DayAheadPrices_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -66,11 +66,11 @@
   {"column": "currency", "path": "$.currency"},
   {"column": "unitName", "path": "$.unitName"},
   {"column": "resolution", "path": "$.resolution"},
-  {"column": "documentType", "path": "$.documentType"},
+  {"column": "documentType", "path": "$.documentType"}
 ]
 ```
 
-.create-or-alter table [DayAheadPrices] ingestion json mapping "DayAheadPrices_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.DayAheadPrices'] ingestion json mapping "eu.entsoe.transparency.DayAheadPrices_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -83,28 +83,28 @@
   {"column": "currency", "path": "$.data.currency"},
   {"column": "unitName", "path": "$.data.unitName"},
   {"column": "resolution", "path": "$.data.resolution"},
-  {"column": "documentType", "path": "$.data.documentType"},
+  {"column": "documentType", "path": "$.data.documentType"}
 ]
 ```
 
-.drop materialized-view DayAheadPricesLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.DayAheadPricesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DayAheadPricesLatest on table DayAheadPrices {
-    DayAheadPrices | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.DayAheadPricesLatest'] on table ['eu.entsoe.transparency.DayAheadPrices'] {
+    ['eu.entsoe.transparency.DayAheadPrices'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DayAheadPrices] policy update
+.alter table ['eu.entsoe.transparency.DayAheadPrices'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.DayAheadPrices') | project['inDomain'] = tostring(data.['inDomain']),['price'] = toreal(data.['price']),['currency'] = tostring(data.['currency']),['unitName'] = tostring(data.['unitName']),['resolution'] = tostring(data.['resolution']),['documentType'] = tostring(data.['documentType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [ActualTotalLoad] (
+.create-merge table ['eu.entsoe.transparency.ActualTotalLoad'] (
    [inDomain]: string,
    [quantity]: real,
    [resolution]: string,
@@ -117,7 +117,7 @@
    [___subject]: string
 );
 
-.alter table [ActualTotalLoad] column-docstrings (
+.alter table ['eu.entsoe.transparency.ActualTotalLoad'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [quantity]: "{\"description\": \"Total load in MW\"}",
    [resolution]: "{\"description\": \"ISO 8601 duration\"}",
@@ -130,7 +130,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ActualTotalLoad] ingestion json mapping "ActualTotalLoad_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.ActualTotalLoad'] ingestion json mapping "eu.entsoe.transparency.ActualTotalLoad_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -142,11 +142,11 @@
   {"column": "quantity", "path": "$.quantity"},
   {"column": "resolution", "path": "$.resolution"},
   {"column": "outDomain", "path": "$.outDomain"},
-  {"column": "documentType", "path": "$.documentType"},
+  {"column": "documentType", "path": "$.documentType"}
 ]
 ```
 
-.create-or-alter table [ActualTotalLoad] ingestion json mapping "ActualTotalLoad_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.ActualTotalLoad'] ingestion json mapping "eu.entsoe.transparency.ActualTotalLoad_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -158,28 +158,28 @@
   {"column": "quantity", "path": "$.data.quantity"},
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "outDomain", "path": "$.data.outDomain"},
-  {"column": "documentType", "path": "$.data.documentType"},
+  {"column": "documentType", "path": "$.data.documentType"}
 ]
 ```
 
-.drop materialized-view ActualTotalLoadLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.ActualTotalLoadLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ActualTotalLoadLatest on table ActualTotalLoad {
-    ActualTotalLoad | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.ActualTotalLoadLatest'] on table ['eu.entsoe.transparency.ActualTotalLoad'] {
+    ['eu.entsoe.transparency.ActualTotalLoad'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ActualTotalLoad] policy update
+.alter table ['eu.entsoe.transparency.ActualTotalLoad'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualTotalLoad') | project['inDomain'] = tostring(data.['inDomain']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['outDomain'] = tostring(data.['outDomain']),['documentType'] = tostring(data.['documentType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [LoadForecastMargin] (
+.create-merge table ['eu.entsoe.transparency.LoadForecastMargin'] (
    [inDomain]: string,
    [quantity]: real,
    [resolution]: string,
@@ -192,7 +192,7 @@
    [___subject]: string
 );
 
-.alter table [LoadForecastMargin] column-docstrings (
+.alter table ['eu.entsoe.transparency.LoadForecastMargin'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [quantity]: "{\"description\": \"Forecast margin in MW\"}",
    [resolution]: "{\"description\": \"ISO 8601 duration\"}",
@@ -205,7 +205,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LoadForecastMargin] ingestion json mapping "LoadForecastMargin_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.LoadForecastMargin'] ingestion json mapping "eu.entsoe.transparency.LoadForecastMargin_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -217,11 +217,11 @@
   {"column": "quantity", "path": "$.quantity"},
   {"column": "resolution", "path": "$.resolution"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [LoadForecastMargin] ingestion json mapping "LoadForecastMargin_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.LoadForecastMargin'] ingestion json mapping "eu.entsoe.transparency.LoadForecastMargin_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -233,28 +233,28 @@
   {"column": "quantity", "path": "$.data.quantity"},
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view LoadForecastMarginLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.LoadForecastMarginLatest'] ifexists;
 
-.create materialized-view with (backfill=true) LoadForecastMarginLatest on table LoadForecastMargin {
-    LoadForecastMargin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.LoadForecastMarginLatest'] on table ['eu.entsoe.transparency.LoadForecastMargin'] {
+    ['eu.entsoe.transparency.LoadForecastMargin'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LoadForecastMargin] policy update
+.alter table ['eu.entsoe.transparency.LoadForecastMargin'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.LoadForecastMargin') | project['inDomain'] = tostring(data.['inDomain']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [GenerationForecast] (
+.create-merge table ['eu.entsoe.transparency.GenerationForecast'] (
    [inDomain]: string,
    [quantity]: real,
    [resolution]: string,
@@ -267,7 +267,7 @@
    [___subject]: string
 );
 
-.alter table [GenerationForecast] column-docstrings (
+.alter table ['eu.entsoe.transparency.GenerationForecast'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [quantity]: "{\"description\": \"Forecast total generation in MW\"}",
    [resolution]: "{\"description\": \"ISO 8601 duration\"}",
@@ -280,7 +280,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [GenerationForecast] ingestion json mapping "GenerationForecast_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.GenerationForecast'] ingestion json mapping "eu.entsoe.transparency.GenerationForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -292,11 +292,11 @@
   {"column": "quantity", "path": "$.quantity"},
   {"column": "resolution", "path": "$.resolution"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [GenerationForecast] ingestion json mapping "GenerationForecast_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.GenerationForecast'] ingestion json mapping "eu.entsoe.transparency.GenerationForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -308,28 +308,28 @@
   {"column": "quantity", "path": "$.data.quantity"},
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view GenerationForecastLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.GenerationForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) GenerationForecastLatest on table GenerationForecast {
-    GenerationForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.GenerationForecastLatest'] on table ['eu.entsoe.transparency.GenerationForecast'] {
+    ['eu.entsoe.transparency.GenerationForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [GenerationForecast] policy update
+.alter table ['eu.entsoe.transparency.GenerationForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.GenerationForecast') | project['inDomain'] = tostring(data.['inDomain']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [ReservoirFillingInformation] (
+.create-merge table ['eu.entsoe.transparency.ReservoirFillingInformation'] (
    [inDomain]: string,
    [quantity]: real,
    [resolution]: string,
@@ -342,7 +342,7 @@
    [___subject]: string
 );
 
-.alter table [ReservoirFillingInformation] column-docstrings (
+.alter table ['eu.entsoe.transparency.ReservoirFillingInformation'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [quantity]: "{\"description\": \"Stored energy in MWh\"}",
    [resolution]: "{\"description\": \"ISO 8601 duration\"}",
@@ -355,7 +355,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ReservoirFillingInformation] ingestion json mapping "ReservoirFillingInformation_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.ReservoirFillingInformation'] ingestion json mapping "eu.entsoe.transparency.ReservoirFillingInformation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -367,11 +367,11 @@
   {"column": "quantity", "path": "$.quantity"},
   {"column": "resolution", "path": "$.resolution"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [ReservoirFillingInformation] ingestion json mapping "ReservoirFillingInformation_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.ReservoirFillingInformation'] ingestion json mapping "eu.entsoe.transparency.ReservoirFillingInformation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -383,28 +383,28 @@
   {"column": "quantity", "path": "$.data.quantity"},
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view ReservoirFillingInformationLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.ReservoirFillingInformationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ReservoirFillingInformationLatest on table ReservoirFillingInformation {
-    ReservoirFillingInformation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.ReservoirFillingInformationLatest'] on table ['eu.entsoe.transparency.ReservoirFillingInformation'] {
+    ['eu.entsoe.transparency.ReservoirFillingInformation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ReservoirFillingInformation] policy update
+.alter table ['eu.entsoe.transparency.ReservoirFillingInformation'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ReservoirFillingInformation') | project['inDomain'] = tostring(data.['inDomain']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [ActualGeneration] (
+.create-merge table ['eu.entsoe.transparency.ActualGeneration'] (
    [inDomain]: string,
    [quantity]: real,
    [resolution]: string,
@@ -417,7 +417,7 @@
    [___subject]: string
 );
 
-.alter table [ActualGeneration] column-docstrings (
+.alter table ['eu.entsoe.transparency.ActualGeneration'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [quantity]: "{\"description\": \"Total actual generation in MW\"}",
    [resolution]: "{\"description\": \"ISO 8601 duration\"}",
@@ -430,7 +430,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ActualGeneration] ingestion json mapping "ActualGeneration_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.ActualGeneration'] ingestion json mapping "eu.entsoe.transparency.ActualGeneration_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -442,11 +442,11 @@
   {"column": "quantity", "path": "$.quantity"},
   {"column": "resolution", "path": "$.resolution"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [ActualGeneration] ingestion json mapping "ActualGeneration_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.ActualGeneration'] ingestion json mapping "eu.entsoe.transparency.ActualGeneration_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -458,28 +458,28 @@
   {"column": "quantity", "path": "$.data.quantity"},
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view ActualGenerationLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.ActualGenerationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ActualGenerationLatest on table ActualGeneration {
-    ActualGeneration | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.ActualGenerationLatest'] on table ['eu.entsoe.transparency.ActualGeneration'] {
+    ['eu.entsoe.transparency.ActualGeneration'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ActualGeneration] policy update
+.alter table ['eu.entsoe.transparency.ActualGeneration'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualGeneration') | project['inDomain'] = tostring(data.['inDomain']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [ActualGenerationPerType] (
+.create-merge table ['eu.entsoe.transparency.ActualGenerationPerType'] (
    [inDomain]: string,
    [psrType]: string,
    [quantity]: real,
@@ -494,7 +494,7 @@
    [___subject]: string
 );
 
-.alter table [ActualGenerationPerType] column-docstrings (
+.alter table ['eu.entsoe.transparency.ActualGenerationPerType'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [psrType]: "{\"description\": \"Production type code (B01=Biomass, B02=Lignite, ...)\"}",
    [quantity]: "{\"description\": \"Generated power in MW\"}",
@@ -509,7 +509,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ActualGenerationPerType] ingestion json mapping "ActualGenerationPerType_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.ActualGenerationPerType'] ingestion json mapping "eu.entsoe.transparency.ActualGenerationPerType_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -523,11 +523,11 @@
   {"column": "resolution", "path": "$.resolution"},
   {"column": "businessType", "path": "$.businessType"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [ActualGenerationPerType] ingestion json mapping "ActualGenerationPerType_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.ActualGenerationPerType'] ingestion json mapping "eu.entsoe.transparency.ActualGenerationPerType_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -541,28 +541,28 @@
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "businessType", "path": "$.data.businessType"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view ActualGenerationPerTypeLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.ActualGenerationPerTypeLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ActualGenerationPerTypeLatest on table ActualGenerationPerType {
-    ActualGenerationPerType | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.ActualGenerationPerTypeLatest'] on table ['eu.entsoe.transparency.ActualGenerationPerType'] {
+    ['eu.entsoe.transparency.ActualGenerationPerType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ActualGenerationPerType] policy update
+.alter table ['eu.entsoe.transparency.ActualGenerationPerType'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualGenerationPerType') | project['inDomain'] = tostring(data.['inDomain']),['psrType'] = tostring(data.['psrType']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['businessType'] = tostring(data.['businessType']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [WindSolarForecast] (
+.create-merge table ['eu.entsoe.transparency.WindSolarForecast'] (
    [inDomain]: string,
    [psrType]: string,
    [quantity]: real,
@@ -577,7 +577,7 @@
    [___subject]: string
 );
 
-.alter table [WindSolarForecast] column-docstrings (
+.alter table ['eu.entsoe.transparency.WindSolarForecast'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [psrType]: "{\"description\": \"Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)\"}",
    [quantity]: "{\"description\": \"Forecast power in MW\"}",
@@ -592,7 +592,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WindSolarForecast] ingestion json mapping "WindSolarForecast_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.WindSolarForecast'] ingestion json mapping "eu.entsoe.transparency.WindSolarForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -606,11 +606,11 @@
   {"column": "resolution", "path": "$.resolution"},
   {"column": "businessType", "path": "$.businessType"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [WindSolarForecast] ingestion json mapping "WindSolarForecast_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.WindSolarForecast'] ingestion json mapping "eu.entsoe.transparency.WindSolarForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -624,28 +624,28 @@
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "businessType", "path": "$.data.businessType"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view WindSolarForecastLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.WindSolarForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WindSolarForecastLatest on table WindSolarForecast {
-    WindSolarForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.WindSolarForecastLatest'] on table ['eu.entsoe.transparency.WindSolarForecast'] {
+    ['eu.entsoe.transparency.WindSolarForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WindSolarForecast] policy update
+.alter table ['eu.entsoe.transparency.WindSolarForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.WindSolarForecast') | project['inDomain'] = tostring(data.['inDomain']),['psrType'] = tostring(data.['psrType']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['businessType'] = tostring(data.['businessType']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [WindSolarGeneration] (
+.create-merge table ['eu.entsoe.transparency.WindSolarGeneration'] (
    [inDomain]: string,
    [psrType]: string,
    [quantity]: real,
@@ -660,7 +660,7 @@
    [___subject]: string
 );
 
-.alter table [WindSolarGeneration] column-docstrings (
+.alter table ['eu.entsoe.transparency.WindSolarGeneration'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [psrType]: "{\"description\": \"Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)\"}",
    [quantity]: "{\"description\": \"Actual wind/solar generation in MW\"}",
@@ -675,7 +675,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WindSolarGeneration] ingestion json mapping "WindSolarGeneration_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.WindSolarGeneration'] ingestion json mapping "eu.entsoe.transparency.WindSolarGeneration_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -689,11 +689,11 @@
   {"column": "resolution", "path": "$.resolution"},
   {"column": "businessType", "path": "$.businessType"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [WindSolarGeneration] ingestion json mapping "WindSolarGeneration_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.WindSolarGeneration'] ingestion json mapping "eu.entsoe.transparency.WindSolarGeneration_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -707,28 +707,28 @@
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "businessType", "path": "$.data.businessType"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view WindSolarGenerationLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.WindSolarGenerationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WindSolarGenerationLatest on table WindSolarGeneration {
-    WindSolarGeneration | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.WindSolarGenerationLatest'] on table ['eu.entsoe.transparency.WindSolarGeneration'] {
+    ['eu.entsoe.transparency.WindSolarGeneration'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WindSolarGeneration] policy update
+.alter table ['eu.entsoe.transparency.WindSolarGeneration'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.WindSolarGeneration') | project['inDomain'] = tostring(data.['inDomain']),['psrType'] = tostring(data.['psrType']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['businessType'] = tostring(data.['businessType']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [InstalledGenerationCapacityPerType] (
+.create-merge table ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] (
    [inDomain]: string,
    [psrType]: string,
    [quantity]: real,
@@ -743,7 +743,7 @@
    [___subject]: string
 );
 
-.alter table [InstalledGenerationCapacityPerType] column-docstrings (
+.alter table ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the bidding zone\"}",
    [psrType]: "{\"description\": \"Production type code (B01=Biomass, B02=Lignite, ...)\"}",
    [quantity]: "{\"description\": \"Installed capacity in MW\"}",
@@ -758,7 +758,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [InstalledGenerationCapacityPerType] ingestion json mapping "InstalledGenerationCapacityPerType_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] ingestion json mapping "eu.entsoe.transparency.InstalledGenerationCapacityPerType_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -772,11 +772,11 @@
   {"column": "resolution", "path": "$.resolution"},
   {"column": "businessType", "path": "$.businessType"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [InstalledGenerationCapacityPerType] ingestion json mapping "InstalledGenerationCapacityPerType_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] ingestion json mapping "eu.entsoe.transparency.InstalledGenerationCapacityPerType_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -790,28 +790,28 @@
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "businessType", "path": "$.data.businessType"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view InstalledGenerationCapacityPerTypeLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.InstalledGenerationCapacityPerTypeLatest'] ifexists;
 
-.create materialized-view with (backfill=true) InstalledGenerationCapacityPerTypeLatest on table InstalledGenerationCapacityPerType {
-    InstalledGenerationCapacityPerType | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.InstalledGenerationCapacityPerTypeLatest'] on table ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] {
+    ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [InstalledGenerationCapacityPerType] policy update
+.alter table ['eu.entsoe.transparency.InstalledGenerationCapacityPerType'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.InstalledGenerationCapacityPerType') | project['inDomain'] = tostring(data.['inDomain']),['psrType'] = tostring(data.['psrType']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['businessType'] = tostring(data.['businessType']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table [CrossBorderPhysicalFlows] (
+.create-merge table ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] (
    [inDomain]: string,
    [outDomain]: string,
    [quantity]: real,
@@ -825,7 +825,7 @@
    [___subject]: string
 );
 
-.alter table [CrossBorderPhysicalFlows] column-docstrings (
+.alter table ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] column-docstrings (
    [inDomain]: "{\"description\": \"EIC code of the importing bidding zone\"}",
    [outDomain]: "{\"description\": \"EIC code of the exporting bidding zone\"}",
    [quantity]: "{\"description\": \"Physical flow in MW\"}",
@@ -839,7 +839,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [CrossBorderPhysicalFlows] ingestion json mapping "CrossBorderPhysicalFlows_json_flat"
+.create-or-alter table ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] ingestion json mapping "eu.entsoe.transparency.CrossBorderPhysicalFlows_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -852,11 +852,11 @@
   {"column": "quantity", "path": "$.quantity"},
   {"column": "resolution", "path": "$.resolution"},
   {"column": "documentType", "path": "$.documentType"},
-  {"column": "unitName", "path": "$.unitName"},
+  {"column": "unitName", "path": "$.unitName"}
 ]
 ```
 
-.create-or-alter table [CrossBorderPhysicalFlows] ingestion json mapping "CrossBorderPhysicalFlows_json_ce_structured"
+.create-or-alter table ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] ingestion json mapping "eu.entsoe.transparency.CrossBorderPhysicalFlows_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -869,24 +869,27 @@
   {"column": "quantity", "path": "$.data.quantity"},
   {"column": "resolution", "path": "$.data.resolution"},
   {"column": "documentType", "path": "$.data.documentType"},
-  {"column": "unitName", "path": "$.data.unitName"},
+  {"column": "unitName", "path": "$.data.unitName"}
 ]
 ```
 
-.drop materialized-view CrossBorderPhysicalFlowsLatest ifexists;
+.drop materialized-view ['eu.entsoe.transparency.CrossBorderPhysicalFlowsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CrossBorderPhysicalFlowsLatest on table CrossBorderPhysicalFlows {
-    CrossBorderPhysicalFlows | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.entsoe.transparency.CrossBorderPhysicalFlowsLatest'] on table ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] {
+    ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [CrossBorderPhysicalFlows] policy update
+.alter table ['eu.entsoe.transparency.CrossBorderPhysicalFlows'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.CrossBorderPhysicalFlows') | project['inDomain'] = tostring(data.['inDomain']),['outDomain'] = tostring(data.['outDomain']),['quantity'] = toreal(data.['quantity']),['resolution'] = tostring(data.['resolution']),['documentType'] = tostring(data.['documentType']),['unitName'] = tostring(data.['unitName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "IsTransactional": true,
+  "PropagateIngestionProperties": true
 }]
 ```
+
+
+.alter table _cloudevents_dispatch policy retention softdelete = 0d recoverability = disabled;
 

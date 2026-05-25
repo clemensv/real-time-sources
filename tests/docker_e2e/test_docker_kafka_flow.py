@@ -97,6 +97,10 @@ def pegelonline_image():
     return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def entsoe_kafka_image():
+    return build_image('entsoe', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def hubeau_image():
     return build_image('hubeau-hydrometrie')
 
@@ -957,6 +961,25 @@ class TestBlitzortungDockerFlow:
 # ---------------------------------------------------------------------------
 # Pegelonline (German water levels)
 # ---------------------------------------------------------------------------
+
+
+
+class TestEntsoeKafkaDockerFlow:
+    TOPIC = 'test-entsoe'
+
+    def test_emits_all_sample_families(self, kafka: KafkaFixture, entsoe_kafka_image):
+        _run_kafka_flow_test(
+            kafka, entsoe_kafka_image, self.TOPIC,
+            reference_types=None, telemetry_types=None,
+            required_exact_types=[
+                'eu.entsoe.transparency.DayAheadPrices',
+                'eu.entsoe.transparency.ActualTotalLoad',
+                'eu.entsoe.transparency.ActualGenerationPerType',
+                'eu.entsoe.transparency.CrossBorderPhysicalFlows',
+            ],
+            extra_env={'ENTSOE_SAMPLE_MODE': 'true'},
+            min_messages=11, timeout=180,
+        )
 
 class TestPegelonlineDockerFlow:
     TOPIC = 'test-pegelonline'

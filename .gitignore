@@ -35,3 +35,5 @@ energy-charts/.venv/
 .venv/
 origin_merged.json
 pr_integration.json
+
+tmp/

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "entsoe-mqtt"
+version = "0.1.0"
+packages = [{include = "entsoe_mqtt"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+azure-identity = ">=1.17.0"
+entsoe-core = {path = "../entsoe_core"}
+entsoe_mqtt_producer_data = {path = "../entsoe_mqtt_producer/entsoe_mqtt_producer_data"}
+entsoe_mqtt_producer_mqtt_client = {path = "../entsoe_mqtt_producer/entsoe_mqtt_producer_mqtt_client"}
