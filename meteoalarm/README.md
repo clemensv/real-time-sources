@@ -2,7 +2,7 @@
 
 This bridge polls the EUMETNET Meteoalarm API for severe weather warnings from
 30+ European national meteorological services and forwards them to Apache
-Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
+Kafka, Azure Event Hubs, Microsoft Fabric Event Streams, MQTT 5.0, or AMQP 1.0 as CloudEvents.
 
 ## Data Source
 
@@ -95,3 +95,23 @@ Four Azure Container Instance deployment shapes are documented for this source:
 | MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
 
 See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
+
+## AMQP 1.0 companion feeder
+
+This source now ships Kafka, MQTT, and AMQP 1.0 transport variants. The AMQP container (`ghcr.io/clemensv/real-time-sources-meteoalarm-amqp:latest`) publishes the same CloudEvents payloads as the Kafka and MQTT feeders to a single broker address named `meteoalarm` by default, using binary-mode AMQP 1.0 for generic brokers or Azure Service Bus.
+
+Run locally against an AMQP 1.0 broker:
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=broker \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=meteoalarm \
+  -e AMQP_USERNAME=admin \
+  -e AMQP_PASSWORD=admin \
+  -e AMQP_AUTH_MODE=password \
+  ghcr.io/clemensv/real-time-sources-meteoalarm-amqp:latest
+```
+
+Deploy to Azure Service Bus with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus queue, storage-backed state share, a user-assigned managed identity, and an Azure Container Instance configured for AMQP CBS / Entra ID authentication.
+

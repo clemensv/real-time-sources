@@ -528,6 +528,12 @@
       "image": "hongkong-epd-amqp",
       "file": "Dockerfile.amqp",
       "module": "hongkong_epd_amqp"
+    },
+    {
+      "dir": "meteoalarm",
+      "image": "meteoalarm-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "meteoalarm_amqp"
     }
   ],
   "flow": [
@@ -1009,6 +1015,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestHongkongEpdAmqpDockerFlow"
+    },
+    {
+      "dir": "meteoalarm",
+      "image": "meteoalarm-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestMeteoalarmAmqpDockerFlow"
     }
   ]
 }

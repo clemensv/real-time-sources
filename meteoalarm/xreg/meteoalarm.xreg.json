@@ -41,6 +41,28 @@
         }
       ],
       "description": "MQTT 5 producer endpoint for Meteoalarm CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "Meteoalarm.Warnings.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/meteoalarm"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Meteoalarm.Warnings.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for Meteoalarm warning CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -79,6 +101,42 @@
             "topic_name": "alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning",
             "qos": 1,
             "retain": false
+          }
+        }
+      }
+    },
+    "Meteoalarm.Warnings.amqp": {
+      "description": "AMQP 1.0 variant of the Meteoalarm weather-warning events for queue-oriented consumers and Azure Service Bus deployments.",
+      "messages": {
+        "Meteoalarm.Warnings.amqp.WeatherWarning": {
+          "name": "WeatherWarning",
+          "basemessageurl": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{identifier}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
+              }
+            },
+            "application_properties": {
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "Country feed slug for Service Bus subscription filters and AMQP consumer routing."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "CAP severity level for Service Bus subscription filters and AMQP consumer routing."
+              },
+              "awareness_type": {
+                "type": "uritemplate",
+                "value": "{awareness_type}",
+                "description": "Meteoalarm awareness type slug for Service Bus subscription filters and AMQP consumer routing."
+              }
+            }
           }
         }
       }

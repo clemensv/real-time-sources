@@ -197,3 +197,11 @@ class TestHongkongEpdAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"HK.Gov.EPD.AQHI.Station", "HK.Gov.EPD.AQHI.AQHIReading"}
     expected_count = 2
 
+
+class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "meteoalarm"
+    image = "meteoalarm-amqp"
+    env = {"METEOALARM_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"Meteoalarm.WeatherWarning"}
+    expected_count = 1
+
