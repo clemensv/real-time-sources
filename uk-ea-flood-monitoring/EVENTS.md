@@ -1,6 +1,6 @@
 # UK Environment Agency Flood Monitoring API Bridge Events
 
-This project bridges the [UK Environment Agency Flood Monitoring API](https://environment.data.gov.uk/flood-monitoring/doc/reference) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams. It provides real-time water level and flow data from approximately 4,000 monitoring stations across England.
+UK Environment Agency Flood Monitoring publishes water level and flow observations from the Environment Agency flood-monitoring API for monitoring stations across England. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,11 +38,11 @@ CloudEvents type: `UK.Gov.Environment.EA.FloodMonitoring.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one monitoring stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_reference}`. `{station_reference}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_reference}`. `{station_reference}` is provider-supplied station reference value for this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -54,16 +54,16 @@ Each event identifies the real-world resource with `{station_reference}`. `{stat
 
 `Station` payloads are JSON object. Required fields: `station_reference`, `label`, `lat`, `long`, `notation`.
 
-- **`station_reference`** (string, required): No description provided.
-- **`label`** (string, required): No description provided.
-- **`river_name`** (string or null, optional): No description provided.
-- **`catchment_name`** (string or null, optional): No description provided.
-- **`town`** (string or null, optional): No description provided.
-- **`lat`** (double, required): No description provided.
-- **`long`** (double, required): No description provided.
-- **`notation`** (string, required): No description provided.
-- **`status`** (string or null, optional): No description provided.
-- **`date_opened`** (string or null, optional): No description provided.
+- **`station_reference`** (string, required): Provider-supplied station reference value for this record.
+- **`label`** (string, required): Provider-supplied label value for this record.
+- **`river_name`** (string or null, optional): Name of the river or watercourse observed at the station.
+- **`catchment_name`** (string or null, optional): Human-readable name of the catchment.
+- **`town`** (string or null, optional): Provider-supplied town value for this record.
+- **`lat`** (double, required): Provider-supplied lat value for this record.
+- **`long`** (double, required): Provider-supplied long value for this record.
+- **`notation`** (string, required): Provider-supplied notation value for this record.
+- **`status`** (string or null, optional): Provider status value for the station, measurement, or alert.
+- **`date_opened`** (string or null, optional): Provider-supplied date opened value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -93,11 +93,11 @@ CloudEvents type: `UK.Gov.Environment.EA.FloodMonitoring.Reading`
 
 #### What it tells you
 
-This event carries reading data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reading event from the Environment Agency flood-monitoring API. It represents source data for monitoring stations across England as published by the upstream feed. Payload record for reading events in the UK Environment Agency Flood Monitoring source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_reference}`. `{station_reference}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_reference}`. `{station_reference}` is provider-supplied station reference value for this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -109,10 +109,10 @@ Each event identifies the real-world resource with `{station_reference}`. `{stat
 
 `Reading` payloads are JSON object. Required fields: `station_reference`, `date_time`, `measure`, `value`.
 
-- **`station_reference`** (string, required): No description provided.
-- **`date_time`** (datetime, required): No description provided.
-- **`measure`** (string, required): No description provided.
-- **`value`** (double, required): No description provided.
+- **`station_reference`** (string, required): Provider-supplied station reference value for this record.
+- **`date_time`** (datetime, required): Time associated with the date time value.
+- **`measure`** (string, required): Provider-supplied measure value for this record.
+- **`value`** (double, required): Measured value reported by the upstream provider.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

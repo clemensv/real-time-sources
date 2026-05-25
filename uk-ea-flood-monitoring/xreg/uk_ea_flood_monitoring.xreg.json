@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring"
-      ]
+      ],
+      "description": "Kafka producer endpoint for UK Environment Agency Flood Monitoring CloudEvents on the `uk-ea-flood-monitoring` topic keyed by `{station_reference}`."
     }
   },
   "messagegroups": {
@@ -41,7 +42,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.jstruct/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station"
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.jstruct/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "description": "A reference record for one monitoring stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "UK.Gov.Environment.EA.FloodMonitoring.Reading": {
           "name": "Reading",
@@ -59,9 +61,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.jstruct/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading"
+          "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.jstruct/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "description": "A reading event from the Environment Agency flood-monitoring API. It represents source data for monitoring stations across England as published by the upstream feed."
         }
-      }
+      },
+      "description": "Events from UK Environment Agency Flood Monitoring covering monitoring stations across England and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -87,38 +91,63 @@
                 "name": "Station",
                 "properties": {
                   "station_reference": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied station reference value for this record."
                   },
                   "label": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied label value for this record."
                   },
                   "river_name": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Name of the river or watercourse observed at the station."
                   },
                   "catchment_name": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable name of the catchment."
                   },
                   "town": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider-supplied town value for this record."
                   },
                   "lat": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied lat value for this record."
                   },
                   "long": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied long value for this record."
                   },
                   "notation": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied notation value for this record."
                   },
                   "status": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider status value for the station, measurement, or alert."
                   },
                   "date_opened": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider-supplied date opened value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source."
               }
             }
           }
@@ -142,20 +171,24 @@
                 "name": "Reading",
                 "properties": {
                   "station_reference": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied station reference value for this record."
                   },
                   "date_time": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the date time value."
                   },
                   "measure": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied measure value for this record."
                   },
                   "value": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Measured value reported by the upstream provider."
                   }
                 },
                 "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Reading",
-                "description": "Reading"
+                "description": "Payload record for reading events in the UK Environment Agency Flood Monitoring source."
               }
             }
           }
@@ -174,7 +207,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.",
                 "fields": [
                   {
                     "name": "station_reference",
@@ -237,7 +270,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "UK.Gov.Environment.EA.FloodMonitoring"
+                "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
+                "description": "Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source."
               }
             }
           }
@@ -252,7 +286,7 @@
               "schema": {
                 "type": "record",
                 "name": "Reading",
-                "doc": "Reading",
+                "doc": "Measurement payload for observations in the UK Environment Agency Flood Monitoring source.",
                 "fields": [
                   {
                     "name": "station_reference",
@@ -274,12 +308,18 @@
                     "type": "double"
                   }
                 ],
-                "namespace": "UK.Gov.Environment.EA.FloodMonitoring"
+                "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
+                "description": "Measurement payload for observations in the UK Environment Agency Flood Monitoring source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "UK Environment Agency Flood Monitoring publishes water level and flow observations from the Environment Agency flood-monitoring API for monitoring stations across England. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for UK Environment Agency Flood Monitoring, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
