@@ -20,7 +20,8 @@
       "messagegroups": [
         "#/messagegroups/GeneralTransitFeedRealTime",
         "#/messagegroups/GeneralTransitFeedStatic"
-      ]
+      ],
+      "description": "Kafka producer endpoint for GTFS Realtime CloudEvents on the `gtfs` topic keyed by `{agencyid}`."
     }
   },
   "messagegroups": {
@@ -65,7 +66,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A vehicle or vessel update from public GTFS and GTFS Realtime feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
         },
         "GeneralTransitFeedRealTime.Trip.TripUpdate": {
           "messageid": "GeneralTransitFeedRealTime.Trip.TripUpdate",
@@ -105,7 +107,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedRealTime.Alert.Alert": {
           "messageid": "GeneralTransitFeedRealTime.Alert.Alert",
@@ -145,12 +148,14 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A traffic or service situation update from public GTFS and GTFS Realtime feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         }
       },
       "createdat": "2024-10-18T13:47:59.334831",
       "epoch": 0,
-      "modifiedat": "2024-10-18T13:47:59.334831"
+      "modifiedat": "2024-10-18T13:47:59.334831",
+      "description": "Events from GTFS Realtime covering transit agencies, routes, trips, stops, and vehicles. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "GeneralTransitFeedStatic": {
       "messagegroupid": "GeneralTransitFeedStatic",
@@ -193,7 +198,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.Areas": {
           "messageid": "GeneralTransitFeedStatic.Areas",
@@ -233,7 +239,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Attributions": {
           "messageid": "GeneralTransitFeedStatic.Attributions",
@@ -273,7 +280,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeed.BookingRules": {
           "messageid": "GeneralTransitFeed.BookingRules",
@@ -313,7 +321,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FareAttributes": {
           "messageid": "GeneralTransitFeedStatic.FareAttributes",
@@ -353,7 +362,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FareLegRules": {
           "messageid": "GeneralTransitFeedStatic.FareLegRules",
@@ -393,7 +403,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FareMedia": {
           "messageid": "GeneralTransitFeedStatic.FareMedia",
@@ -433,7 +444,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FareProducts": {
           "messageid": "GeneralTransitFeedStatic.FareProducts",
@@ -473,7 +485,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FareRules": {
           "messageid": "GeneralTransitFeedStatic.FareRules",
@@ -513,7 +526,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FareTransferRules": {
           "messageid": "GeneralTransitFeedStatic.FareTransferRules",
@@ -553,7 +567,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.FeedInfo": {
           "messageid": "GeneralTransitFeedStatic.FeedInfo",
@@ -593,7 +608,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Frequencies": {
           "messageid": "GeneralTransitFeedStatic.Frequencies",
@@ -633,7 +649,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Levels": {
           "messageid": "GeneralTransitFeedStatic.Levels",
@@ -673,7 +690,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.LocationGeoJson": {
           "messageid": "GeneralTransitFeedStatic.LocationGeoJson",
@@ -713,7 +731,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.LocationGroups": {
           "messageid": "GeneralTransitFeedStatic.LocationGroups",
@@ -753,7 +772,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.LocationGroupStores": {
           "messageid": "GeneralTransitFeedStatic.LocationGroupStores",
@@ -793,7 +813,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.Networks": {
           "messageid": "GeneralTransitFeedStatic.Networks",
@@ -833,7 +854,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Pathways": {
           "messageid": "GeneralTransitFeedStatic.Pathways",
@@ -873,7 +895,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.RouteNetworks": {
           "messageid": "GeneralTransitFeedStatic.RouteNetworks",
@@ -913,7 +936,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.Routes": {
           "messageid": "GeneralTransitFeedStatic.Routes",
@@ -953,7 +977,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.Shapes": {
           "messageid": "GeneralTransitFeedStatic.Shapes",
@@ -993,7 +1018,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.StopAreas": {
           "messageid": "GeneralTransitFeedStatic.StopAreas",
@@ -1033,7 +1059,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.Stops": {
           "messageid": "GeneralTransitFeedStatic.Stops",
@@ -1073,7 +1100,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.StopTimes": {
           "messageid": "GeneralTransitFeedStatic.StopTimes",
@@ -1113,7 +1141,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "GeneralTransitFeedStatic.Timeframes": {
           "messageid": "GeneralTransitFeedStatic.Timeframes",
@@ -1153,7 +1182,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Transfers": {
           "messageid": "GeneralTransitFeedStatic.Transfers",
@@ -1193,7 +1223,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Translations": {
           "messageid": "GeneralTransitFeedStatic.Translations",
@@ -1233,7 +1264,8 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         },
         "GeneralTransitFeedStatic.Trips": {
           "messageid": "GeneralTransitFeedStatic.Trips",
@@ -1273,12 +1305,14 @@
               "description": "Provider name",
               "required": true
             }
-          }
+          },
+          "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
         }
       },
       "createdat": "2024-10-18T13:48:10.557688",
       "epoch": 0,
-      "modifiedat": "2024-10-18T13:48:10.557688"
+      "modifiedat": "2024-10-18T13:48:10.557688",
+      "description": "Events from GTFS Realtime covering transit agencies, routes, trips, stops, and vehicles. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     }
   },
   "schemagroups": {
@@ -1485,7 +1519,7 @@
                           }
                         },
                         "required": [],
-                        "description": "Realtime positioning information for a given vehicle."
+                        "description": "A vehicle or vessel update from public GTFS and GTFS Realtime feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
                       }
                     }
                   }
@@ -1676,7 +1710,7 @@
                           "trip",
                           "stop_time_update"
                         ],
-                        "description": "Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful."
+                        "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                       }
                     }
                   }
@@ -1913,7 +1947,7 @@
                           "active_period",
                           "informed_entity"
                         ],
-                        "description": "An alert, indicating some sort of incident in the public transit network."
+                        "description": "A traffic or service situation update from public GTFS and GTFS Realtime feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
                       }
                     }
                   }
@@ -2209,7 +2243,8 @@
                     ]
                   }
                 ],
-                "doc": "Realtime positioning information for a given vehicle."
+                "doc": "Realtime positioning information for a given vehicle.",
+                "description": "A vehicle or vessel update from public GTFS and GTFS Realtime feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
               },
               "createdat": "2024-10-18T13:47:58.386919",
               "epoch": 0,
@@ -2460,7 +2495,8 @@
                     "doc": "specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future."
                   }
                 ],
-                "doc": "Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful."
+                "doc": "Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful.",
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:02.088029",
               "epoch": 0,
@@ -2768,7 +2804,8 @@
                     "doc": "description should add to the information of the header."
                   }
                 ],
-                "doc": "An alert, indicating some sort of incident in the public transit network."
+                "doc": "An alert, indicating some sort of incident in the public transit network.",
+                "description": "A traffic or service situation update from public GTFS and GTFS Realtime feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
               },
               "createdat": "2024-10-18T13:48:05.926645",
               "epoch": 0,
@@ -2841,7 +2878,7 @@
                         "agencyUrl",
                         "agencyTimezone"
                       ],
-                      "description": "Information about the transit agencies."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -2890,7 +2927,7 @@
                         "areaId",
                         "areaName"
                       ],
-                      "description": "Defines areas."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -2974,7 +3011,7 @@
                       "required": [
                         "organizationName"
                       ],
-                      "description": "Provides information about the attributions."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3023,7 +3060,7 @@
                         "bookingRuleId",
                         "bookingRuleName"
                       ],
-                      "description": "Defines booking rules."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3087,7 +3124,7 @@
                         "currencyType",
                         "paymentMethod"
                       ],
-                      "description": "Defines fare attributes."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3146,7 +3183,7 @@
                         "fareLegRuleId",
                         "fareProductId"
                       ],
-                      "description": "Defines fare leg rules."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3195,7 +3232,7 @@
                         "fareMediaId",
                         "fareMediaName"
                       ],
-                      "description": "Defines fare media."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3244,7 +3281,7 @@
                         "fareProductId",
                         "fareProductName"
                       ],
-                      "description": "Defines fare products."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3298,7 +3335,7 @@
                       "required": [
                         "fareId"
                       ],
-                      "description": "Defines fare rules."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3362,7 +3399,7 @@
                         "fareTransferRuleId",
                         "fareProductId"
                       ],
-                      "description": "Defines fare transfer rules."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3436,7 +3473,7 @@
                         "feedPublisherUrl",
                         "feedLang"
                       ],
-                      "description": "Provides information about the GTFS feed itself."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3490,7 +3527,7 @@
                         "endTime",
                         "headwaySecs"
                       ],
-                      "description": "Defines frequencies."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3534,7 +3571,7 @@
                         "levelId",
                         "levelIndex"
                       ],
-                      "description": "Defines levels."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3578,7 +3615,7 @@
                         "locationGeoJsonType",
                         "locationGeoJsonData"
                       ],
-                      "description": "Defines location GeoJSON data."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -3627,7 +3664,7 @@
                         "locationGroupId",
                         "locationGroupName"
                       ],
-                      "description": "Defines location groups."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -3671,7 +3708,7 @@
                         "locationGroupId",
                         "storeId"
                       ],
-                      "description": "Defines location group stores."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -3720,7 +3757,7 @@
                         "networkId",
                         "networkName"
                       ],
-                      "description": "Defines networks."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3809,7 +3846,7 @@
                         "pathwayMode",
                         "isBidirectional"
                       ],
-                      "description": "Defines pathways."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -3853,7 +3890,7 @@
                         "routeId",
                         "networkId"
                       ],
-                      "description": "Defines route networks."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -3996,7 +4033,7 @@
                         "continuousPickup",
                         "continuousDropOff"
                       ],
-                      "description": "Identifies a route."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -4050,7 +4087,7 @@
                         "shapePtLon",
                         "shapePtSequence"
                       ],
-                      "description": "Defines shapes."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -4094,7 +4131,7 @@
                         "stopId",
                         "areaId"
                       ],
-                      "description": "Defines stop areas."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -4224,7 +4261,7 @@
                         "locationType",
                         "wheelchairBoarding"
                       ],
-                      "description": "Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -4376,7 +4413,7 @@
                         "dropOffType",
                         "timepoint"
                       ],
-                      "description": "Represents times that a vehicle arrives at and departs from individual stops for each trip."
+                      "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
                     }
                   }
                 }
@@ -4548,7 +4585,7 @@
                         "timeframeGroupId",
                         "serviceDates"
                       ],
-                      "description": "Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -4597,7 +4634,7 @@
                         "toStopId",
                         "transferType"
                       ],
-                      "description": "Defines transfers."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -4646,7 +4683,7 @@
                         "language",
                         "translation"
                       ],
-                      "description": "Defines translations."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -4823,13 +4860,15 @@
                         "serviceDates": {
                           "type": {
                             "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
-                          }
+                          },
+                          "description": "Calendar service pattern that identifies dates when this trip or route is scheduled to operate."
                         },
                         "serviceExceptions": {
                           "type": "array",
                           "items": {
                             "$ref": "#/definitions/GeneralTransitFeedStatic/CalendarDates"
-                          }
+                          },
+                          "description": "Calendar-date exceptions that add or remove service on specific dates."
                         },
                         "tripId": {
                           "type": "string",
@@ -4883,7 +4922,7 @@
                         "wheelchairAccessible",
                         "bikesAllowed"
                       ],
-                      "description": "Identifies a trip."
+                      "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
                     }
                   }
                 }
@@ -4965,7 +5004,8 @@
                     "default": null,
                     "doc": "Email address actively monitored by the agency’s customer service department."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:48:09.615958",
               "epoch": 0,
@@ -5015,7 +5055,8 @@
                     "default": null,
                     "doc": "URL of a web page about the area."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:13.396415",
               "epoch": 0,
@@ -5132,7 +5173,8 @@
                     "default": null,
                     "doc": "Phone number associated with the attribution."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:17.274791",
               "epoch": 0,
@@ -5182,7 +5224,8 @@
                     "default": null,
                     "doc": "URL of a web page about the booking rule."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:21.181899",
               "epoch": 0,
@@ -5251,7 +5294,8 @@
                     "default": null,
                     "doc": "Length of time in seconds before a transfer expires."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:24.820565",
               "epoch": 0,
@@ -5319,7 +5363,8 @@
                     "default": null,
                     "doc": "Identifies the destination area."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:28.496946",
               "epoch": 0,
@@ -5369,7 +5414,8 @@
                     "default": null,
                     "doc": "URL of a web page about the fare media."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:32.146791",
               "epoch": 0,
@@ -5419,7 +5465,8 @@
                     "default": null,
                     "doc": "URL of a web page about the fare product."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:36.101368",
               "epoch": 0,
@@ -5482,7 +5529,8 @@
                     "default": null,
                     "doc": "Identifies the fare zone that a rider will enter or leave."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:39.788513",
               "epoch": 0,
@@ -5559,7 +5607,8 @@
                     "default": null,
                     "doc": "Type of duration for the transfer."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:43.422035",
               "epoch": 0,
@@ -5650,7 +5699,8 @@
                     "default": null,
                     "doc": "URL for a web page that allows a feed consumer to contact the data publisher."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:47.038627",
               "epoch": 0,
@@ -5701,7 +5751,8 @@
                     "default": null,
                     "doc": "When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:50.701266",
               "epoch": 0,
@@ -5742,7 +5793,8 @@
                     "default": null,
                     "doc": "Name of the level."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:48:54.369996",
               "epoch": 0,
@@ -5779,7 +5831,8 @@
                     "type": "string",
                     "doc": "GeoJSON data."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:48:58.114853",
               "epoch": 0,
@@ -5829,7 +5882,8 @@
                     "default": null,
                     "doc": "URL of a web page about the location group."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:01.792371",
               "epoch": 0,
@@ -5866,7 +5920,8 @@
                     "type": "string",
                     "doc": "Identifies a store."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:05.485799",
               "epoch": 0,
@@ -5916,7 +5971,8 @@
                     "default": null,
                     "doc": "URL of a web page about the network."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:09.124828",
               "epoch": 0,
@@ -6026,7 +6082,8 @@
                     "default": null,
                     "doc": "Reversed signposting information for the pathway."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:12.77505",
               "epoch": 0,
@@ -6063,7 +6120,8 @@
                     "type": "string",
                     "doc": "Identifies a network."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:16.443796",
               "epoch": 0,
@@ -6229,7 +6287,8 @@
                     "default": null,
                     "doc": "Identifies a group of routes."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:20.138434",
               "epoch": 0,
@@ -6280,7 +6339,8 @@
                     "default": null,
                     "doc": "Actual distance traveled along the shape from the first shape point to the specified shape point."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:23.84702",
               "epoch": 0,
@@ -6317,7 +6377,8 @@
                     "type": "string",
                     "doc": "Identifies an area."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:27.526738",
               "epoch": 0,
@@ -6484,7 +6545,8 @@
                     "default": null,
                     "doc": "Platform identifier for a platform stop."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:31.180454",
               "epoch": 0,
@@ -6647,7 +6709,8 @@
                     },
                     "doc": "Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times."
                   }
-                ]
+                ],
+                "description": "A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               },
               "createdat": "2024-10-18T13:49:34.844474",
               "epoch": 0,
@@ -6793,7 +6856,8 @@
                     ],
                     "doc": "Identifies a set of dates when service is available for one or more routes."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:38.592004",
               "epoch": 0,
@@ -6839,7 +6903,8 @@
                     "default": null,
                     "doc": "Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id)."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:42.267607",
               "epoch": 0,
@@ -6881,7 +6946,8 @@
                     "type": "string",
                     "doc": "Translated value."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:45.952537",
               "epoch": 0,
@@ -7098,7 +7164,8 @@
                     },
                     "doc": "Indicates whether bikes are allowed."
                   }
-                ]
+                ],
+                "description": "A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles."
               },
               "createdat": "2024-10-18T13:49:49.701913",
               "epoch": 0,
@@ -7108,5 +7175,10 @@
         }
       }
     }
+  },
+  "description": "GTFS Realtime publishes transit reference records and realtime vehicle, trip, and service-alert updates from public GTFS and GTFS Realtime feeds for transit agencies, routes, trips, stops, and vehicles. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for GTFS Realtime, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
