@@ -39,6 +39,28 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.RssFeeds.mqtt"
       ]
+    },
+    "Microsoft.OpenData.RssFeeds.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/rss"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.RssFeeds.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for rss CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -79,6 +101,25 @@
             "retain": false
           },
           "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem"
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.amqp": {
+      "description": "AMQP 1.0 variant of the rss events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.amqp.FeedItem": {
+          "name": "FeedItem",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{item_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
+          }
         }
       }
     }
