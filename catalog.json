@@ -249,7 +249,9 @@
     "cat": "Weather",
     "key": false,
     "desc": "Germany — ~1,450 stations, observations and CAP alerts",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "dwd-pollenflug",

@@ -87,6 +87,56 @@
         "#/messagegroups/DE.DWD.Forecast"
       ],
       "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{file_url}`."
+    },
+    "DE.DWD.CDC.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.CDC.mqtt",
+        "#/messagegroups/DE.DWD.Weather.mqtt",
+        "#/messagegroups/DE.DWD.Radar.mqtt",
+        "#/messagegroups/DE.DWD.Forecast.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for dwd."
+    },
+    "DE.DWD.CDC.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/dwd"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.CDC.amqp",
+        "#/messagegroups/DE.DWD.Weather.amqp",
+        "#/messagegroups/DE.DWD.Radar.amqp",
+        "#/messagegroups/DE.DWD.Forecast.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for dwd."
     }
   },
   "messagegroups": {
@@ -356,6 +406,731 @@
         }
       },
       "description": "Events from DWD Weather covering German weather stations, alerts, radar, and forecast products. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "DE.DWD.CDC.mqtt": {
+      "description": "MQTT 5 companion message group for DE.DWD.CDC.",
+      "messages": {
+        "DE.DWD.CDC.mqtt.StationMetadata": {
+          "name": "StationMetadata",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.StationMetadata"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.AirTemperature10Min": {
+          "name": "AirTemperature10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.AirTemperature10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/air-temperature-10min",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.Precipitation10Min": {
+          "name": "Precipitation10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.Precipitation10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/precipitation-10min",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.Wind10Min": {
+          "name": "Wind10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.Wind10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/wind-10min",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.Solar10Min": {
+          "name": "Solar10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.Solar10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/solar-10min",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.HourlyObservation": {
+          "name": "HourlyObservation",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.HourlyObservation"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/hourly-observation",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeWind10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/extreme-wind-10min",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.CDC.mqtt.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeTemperature10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/extreme-temperature-10min",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "DE.DWD.CDC.amqp": {
+      "description": "AMQP 1.0 companion message group for DE.DWD.CDC.",
+      "messages": {
+        "DE.DWD.CDC.amqp.StationMetadata": {
+          "name": "StationMetadata",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.StationMetadata"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.AirTemperature10Min": {
+          "name": "AirTemperature10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.AirTemperature10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.Precipitation10Min": {
+          "name": "Precipitation10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.Precipitation10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.Wind10Min": {
+          "name": "Wind10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.Wind10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.Solar10Min": {
+          "name": "Solar10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.Solar10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.HourlyObservation": {
+          "name": "HourlyObservation",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.HourlyObservation"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeWind10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "DE.DWD.CDC.amqp.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeTemperature10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Weather.mqtt": {
+      "description": "MQTT 5 companion message group for DE.DWD.Weather.",
+      "messages": {
+        "DE.DWD.Weather.mqtt.Alert": {
+          "name": "Alert",
+          "basemessageurl": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Weather.Alert"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{state}/{severity}/{identifier}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/de/dwd/dwd/{state}/{severity}/{identifier}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "DE.DWD.Weather.amqp": {
+      "description": "AMQP 1.0 companion message group for DE.DWD.Weather.",
+      "messages": {
+        "DE.DWD.Weather.amqp.Alert": {
+          "name": "Alert",
+          "basemessageurl": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Weather.Alert"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{state}/{severity}/{identifier}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{state}/{severity}/{identifier}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.mqtt": {
+      "description": "MQTT 5 companion message group for DE.DWD.Radar.",
+      "messages": {
+        "DE.DWD.Radar.mqtt.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarProductCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{kind}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/catalogs/{kind}/catalog",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.Radar.mqtt.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarFileProduct"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{product_type}/{file_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/products/radar/{product_type}/{file_id}/file",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.amqp": {
+      "description": "AMQP 1.0 companion message group for DE.DWD.Radar.",
+      "messages": {
+        "DE.DWD.Radar.amqp.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarProductCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{kind}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{kind}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "DE.DWD.Radar.amqp.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarFileProduct"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{product_type}/{file_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{product_type}/{file_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.mqtt": {
+      "description": "MQTT 5 companion message group for DE.DWD.Forecast.",
+      "messages": {
+        "DE.DWD.Forecast.mqtt.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.ForecastModelCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{kind}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/catalogs/{kind}/catalog",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.Forecast.mqtt.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.IconD2ForecastFile"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{variable}/{file_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/de/dwd/dwd/products/icon-d2/{variable}/{file_id}/file",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.amqp": {
+      "description": "AMQP 1.0 companion message group for DE.DWD.Forecast.",
+      "messages": {
+        "DE.DWD.Forecast.amqp.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.ForecastModelCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{kind}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{kind}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "DE.DWD.Forecast.amqp.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.IconD2ForecastFile"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{variable}/{file_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{variable}/{file_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -493,6 +1268,10 @@
                       "lang:de": "TD_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/AirTemperature10Min",
@@ -551,6 +1330,10 @@
                       "lang:de": "RWS_IND_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Precipitation10Min",
@@ -609,6 +1392,10 @@
                       "lang:de": "DD_10"
                     },
                     "description": "Wind direction reported by the station."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Wind10Min",
@@ -681,6 +1468,10 @@
                       "lang:de": "LS_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Solar10Min",
@@ -738,6 +1529,10 @@
                   "unit": {
                     "type": "string",
                     "description": "Unit used for the reported value."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/HourlyObservation",
@@ -828,6 +1623,10 @@
                   "geocodes": {
                     "type": "string",
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/DE/DWD/Weather.schema.json",
@@ -893,6 +1692,10 @@
                       "lang:de": "DX_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeWind10Min",
@@ -951,6 +1754,10 @@
                       "lang:de": "TN_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeTemperature10Min",
@@ -990,6 +1797,14 @@
                   "description": {
                     "type": "string",
                     "description": "Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "kind": {
+                    "type": "string",
+                    "description": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarProductCatalog",
@@ -1038,6 +1853,18 @@
                       "null"
                     ],
                     "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites)."
+                  },
+                  "file_id": {
+                    "type": "string",
+                    "description": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "product_type": {
+                    "type": "string",
+                    "description": "Normalized routing field 'product_type' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarFileProduct",
@@ -1077,6 +1904,14 @@
                   "description": {
                     "type": "string",
                     "description": "Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "kind": {
+                    "type": "string",
+                    "description": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/ForecastModelCatalog",
@@ -1160,6 +1995,18 @@
                       "null"
                     ],
                     "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "variable": {
+                    "type": "string",
+                    "description": "Normalized routing field 'variable' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "file_id": {
+                    "type": "string",
+                    "description": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/IconD2ForecastFile",

@@ -642,6 +642,18 @@
       "image": "bom-australia-amqp",
       "file": "Dockerfile.amqp",
       "module": "bom_australia_amqp"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "dwd_mqtt"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "dwd_amqp"
     }
   ],
   "flow": [
@@ -1306,6 +1318,18 @@
       "image": "bom-australia-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBomAustraliaAmqpDockerFlow"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDwdMqttDockerFlow"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDwdAmqpDockerFlow"
     }
   ]
 }

@@ -276,3 +276,11 @@ class TestBomAustraliaAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"BOM_AUSTRALIA_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'AU.Gov.BOM.Weather.Station', 'AU.Gov.BOM.Warning.WarningBulletin', 'AU.Gov.BOM.Weather.WeatherObservation'}
     expected_count = 3
+
+
+class TestDwdAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "dwd"
+    image = "dwd-amqp"
+    env = {"DWD_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'DE.DWD.CDC.ExtremeTemperature10Min', 'DE.DWD.CDC.ExtremeWind10Min', 'DE.DWD.Forecast.IconD2ForecastFile', 'DE.DWD.Weather.Alert', 'DE.DWD.CDC.Wind10Min', 'DE.DWD.Radar.RadarProductCatalog', 'DE.DWD.Forecast.ForecastModelCatalog', 'DE.DWD.CDC.StationMetadata', 'DE.DWD.CDC.AirTemperature10Min', 'DE.DWD.CDC.Precipitation10Min', 'DE.DWD.CDC.Solar10Min', 'DE.DWD.Radar.RadarFileProduct', 'DE.DWD.CDC.HourlyObservation'}
+    expected_count = 13
