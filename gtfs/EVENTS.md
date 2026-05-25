@@ -1,6 +1,6 @@
 # GTFS and GTFS-RT API Bridge Usage Guide Events
 
-GTFS Realtime publishes transit reference records and realtime vehicle, trip, and service-alert updates from public GTFS and GTFS Realtime feeds for transit agencies, routes, trips, stops, and vehicles. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
+**GTFS and GTFS-RT API Bridge** is a tool that fetches GTFS (General Transit Feed Specification) Realtime and Static data from various transit agency sources, processes the data, and publishes it to Kafka topics using SASL PLAIN authentication. This tool can be integrated with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
 
 ## At a glance
 
@@ -37,7 +37,7 @@ CloudEvents type: `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
 
 #### What it tells you
 
-A vehicle or vessel update from public GTFS and GTFS Realtime feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
+Realtime positioning information for a given vehicle.
 
 #### Identity
 
@@ -155,7 +155,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
 ### Trip Update
 
@@ -163,7 +163,7 @@ CloudEvents type: `GeneralTransitFeedRealTime.Trip.TripUpdate`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule.
 
 #### Identity
 
@@ -256,7 +256,7 @@ CloudEvents type: `GeneralTransitFeedRealTime.Alert.Alert`
 
 #### What it tells you
 
-A traffic or service situation update from public GTFS and GTFS Realtime feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
+An alert, indicating some sort of incident in the public transit network.
 
 #### Identity
 
@@ -363,7 +363,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Agency`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Information about the transit agencies.
 
 #### Identity
 
@@ -414,7 +414,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Areas`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines areas.
 
 #### Identity
 
@@ -457,7 +457,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Attributions`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Provides information about the attributions.
 
 #### Identity
 
@@ -514,7 +514,7 @@ CloudEvents type: `GeneralTransitFeed.BookingRules`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines booking rules.
 
 #### Identity
 
@@ -557,7 +557,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FareAttributes`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines fare attributes.
 
 #### Identity
 
@@ -606,7 +606,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FareLegRules`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines fare leg rules.
 
 #### Identity
 
@@ -653,7 +653,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FareMedia`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines fare media.
 
 #### Identity
 
@@ -696,7 +696,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FareProducts`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines fare products.
 
 #### Identity
 
@@ -739,7 +739,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FareRules`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines fare rules.
 
 #### Identity
 
@@ -784,7 +784,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FareTransferRules`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines fare transfer rules.
 
 #### Identity
 
@@ -833,7 +833,7 @@ CloudEvents type: `GeneralTransitFeedStatic.FeedInfo`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Provides information about the GTFS feed itself.
 
 #### Identity
 
@@ -886,7 +886,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Frequencies`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines frequencies.
 
 #### Identity
 
@@ -931,7 +931,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Levels`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines levels.
 
 #### Identity
 
@@ -972,7 +972,7 @@ CloudEvents type: `GeneralTransitFeedStatic.LocationGeoJson`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Defines location GeoJSON data.
 
 #### Identity
 
@@ -1013,7 +1013,7 @@ CloudEvents type: `GeneralTransitFeedStatic.LocationGroups`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Defines location groups.
 
 #### Identity
 
@@ -1056,7 +1056,7 @@ CloudEvents type: `GeneralTransitFeedStatic.LocationGroupStores`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Defines location group stores.
 
 #### Identity
 
@@ -1097,7 +1097,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Networks`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines networks.
 
 #### Identity
 
@@ -1140,7 +1140,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Pathways`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines pathways.
 
 #### Identity
 
@@ -1199,7 +1199,7 @@ CloudEvents type: `GeneralTransitFeedStatic.RouteNetworks`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Defines route networks.
 
 #### Identity
 
@@ -1240,7 +1240,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Routes`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Identifies a route.
 
 #### Identity
 
@@ -1329,7 +1329,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Shapes`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines shapes.
 
 #### Identity
 
@@ -1374,7 +1374,7 @@ CloudEvents type: `GeneralTransitFeedStatic.StopAreas`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Defines stop areas.
 
 #### Identity
 
@@ -1415,7 +1415,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Stops`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.
 
 #### Identity
 
@@ -1492,7 +1492,7 @@ CloudEvents type: `GeneralTransitFeedStatic.StopTimes`
 
 #### What it tells you
 
-A reference record from public GTFS and GTFS Realtime feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
+Represents times that a vehicle arrives at and departs from individual stops for each trip.
 
 #### Identity
 
@@ -1579,7 +1579,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Timeframes`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.
 
 #### Identity
 
@@ -1622,7 +1622,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Transfers`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines transfers.
 
 #### Identity
 
@@ -1665,7 +1665,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Translations`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Defines translations.
 
 #### Identity
 
@@ -1708,7 +1708,7 @@ CloudEvents type: `GeneralTransitFeedStatic.Trips`
 
 #### What it tells you
 
-A transport update from public GTFS and GTFS Realtime feeds. It carries transit reference records and realtime vehicle, trip, and service-alert updates for transit agencies, routes, trips, stops, and vehicles.
+Identifies a trip.
 
 #### Identity
 
@@ -1725,8 +1725,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 `Trips` payloads are JSON object. Required fields: `routeId`, `serviceDates`, `serviceExceptions`, `tripId`, `directionId`, `wheelchairAccessible`, `bikesAllowed`.
 
 - **`routeId`** (string, required): Identifies a route.
-- **`serviceDates`** (object, required): Calendar service pattern that identifies dates when this trip or route is scheduled to operate. See [Calendar](#payload-generaltransitfeedstatic-trips-calendar).
-- **`serviceExceptions`** (array of object, required): Calendar-date exceptions that add or remove service on specific dates.
+- **`serviceDates`** (object, required): No description provided. See [Calendar](#payload-generaltransitfeedstatic-trips-calendar).
+- **`serviceExceptions`** (array of object, required): No description provided.
 - **`tripId`** (string, required): Identifies a trip.
 - **`tripHeadsign`** (string, optional): Text that appears on signage identifying the trip's destination to riders.
 - **`tripShortName`** (string, optional): Public facing text used to identify the trip to riders.
