@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.DWD.CDC"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{station_id}`."
     },
     "DE.DWD.Weather.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.DWD.Weather"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{identifier}`."
     },
     "DE.DWD.Radar.Kafka": {
       "usage": [
@@ -61,7 +63,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.DWD.Radar"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{file_url}`."
     },
     "DE.DWD.Forecast.Kafka": {
       "usage": [
@@ -82,7 +85,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.DWD.Forecast"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{file_url}`."
     }
   },
   "messagegroups": {
@@ -104,7 +108,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.StationMetadata"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.StationMetadata",
+          "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "DE.DWD.CDC.AirTemperature10Min": {
           "name": "AirTemperature10Min",
@@ -122,7 +127,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.AirTemperature10Min"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.AirTemperature10Min",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.CDC.Precipitation10Min": {
           "name": "Precipitation10Min",
@@ -140,7 +146,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Precipitation10Min"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Precipitation10Min",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.CDC.Wind10Min": {
           "name": "Wind10Min",
@@ -158,7 +165,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Wind10Min"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Wind10Min",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.CDC.Solar10Min": {
           "name": "Solar10Min",
@@ -176,7 +184,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Solar10Min"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Solar10Min",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.CDC.HourlyObservation": {
           "name": "HourlyObservation",
@@ -194,7 +203,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.HourlyObservation"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.HourlyObservation",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.CDC.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
@@ -212,7 +222,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeWind10Min"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeWind10Min",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.CDC.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
@@ -230,9 +241,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeTemperature10Min"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeTemperature10Min",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from DWD Weather covering German weather stations, alerts, radar, and forecast products. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "DE.DWD.Weather": {
       "messages": {
@@ -252,9 +265,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.Weather.Alert"
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.Weather.Alert",
+          "description": "A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area."
         }
-      }
+      },
+      "description": "Events from DWD Weather covering German weather stations, alerts, radar, and forecast products. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "DE.DWD.Radar": {
       "messages": {
@@ -274,7 +289,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarProductCatalog"
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarProductCatalog",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         },
         "DE.DWD.Radar.RadarFileProduct": {
           "name": "RadarFileProduct",
@@ -292,9 +308,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarFileProduct"
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarFileProduct",
+          "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from DWD Weather covering German weather stations, alerts, radar, and forecast products. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "DE.DWD.Forecast": {
       "messages": {
@@ -314,7 +332,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.ForecastModelCatalog"
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.ForecastModelCatalog",
+          "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
         },
         "DE.DWD.Forecast.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
@@ -332,9 +351,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.IconD2ForecastFile"
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.IconD2ForecastFile",
+          "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
         }
-      }
+      },
+      "description": "Events from DWD Weather covering German weather stations, alerts, radar, and forecast products. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -363,32 +384,40 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the station or monitoring site."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station or site in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station or site in WGS 84 coordinates."
                   },
                   "elevation": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Elevation of the station above mean sea level or the provider datum."
                   },
                   "state": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "State, province, or administrative region for the station or area."
                   },
                   "from_date": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Start date when the station, product, or metadata record is valid."
                   },
                   "to_date": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "End date when the station, product, or metadata record is valid, when known."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/StationMetadata",
-                "description": "StationMetadata"
+                "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events."
               }
             }
           }
@@ -413,53 +442,61 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "pressure_station_level": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "PP_10"
-                    }
+                    },
+                    "description": "Reference details for a station, monitoring site, or reporting area in the DWD Weather source."
                   },
                   "air_temperature_2m": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "TT_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_5cm": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "TM5_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "relative_humidity": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "RF_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "dew_point_temperature": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "TD_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/AirTemperature10Min",
-                "description": "AirTemperature10Min"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -484,35 +521,40 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "precipitation_height": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "RWS_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "precipitation_indicator": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "RWS_IND_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Precipitation10Min",
-                "description": "Precipitation10Min"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -537,35 +579,40 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "FF_10"
-                    }
+                    },
+                    "description": "Wind speed reported by the station."
                   },
                   "wind_direction": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "DD_10"
-                    }
+                    },
+                    "description": "Wind direction reported by the station."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Wind10Min",
-                "description": "Wind10Min"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -590,47 +637,54 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "global_radiation": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "GS_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "sunshine_duration": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "SD_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "diffuse_radiation": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "DS_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "longwave_radiation": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "LS_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Solar10Min",
-                "description": "Solar10Min"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -656,32 +710,38 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "parameter": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "value": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Measured or forecast value reported by the upstream provider."
                   },
                   "unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the reported value."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/HourlyObservation",
-                "description": "HourlyObservation"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -706,56 +766,72 @@
                 "name": "Alert",
                 "properties": {
                   "identifier": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "sender": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "sent": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "status": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider status value for the station, product, warning, or measurement."
                   },
                   "msg_type": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "severity": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider severity level for a warning or alert."
                   },
                   "urgency": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "certainty": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "event": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider event type, warning type, or product event category."
                   },
                   "headline": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "description": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "effective": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "onset": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "expires": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "area_desc": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "geocodes": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   }
                 },
                 "$id": "https://example.com/DE/DWD/Weather.schema.json",
-                "description": "Alert"
+                "description": "A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area."
               }
             }
           }
@@ -780,41 +856,47 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed_maximum": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "FX_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed_minimum": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "FNX_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_direction_at_maximum": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "DX_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeWind10Min",
-                "description": "ExtremeWind10Min"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -839,35 +921,40 @@
                     "type": "string",
                     "altnames": {
                       "lang:de": "STATIONS_ID"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the station or monitoring site."
                   },
                   "timestamp": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "MESS_DATUM"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the value."
                   },
                   "quality_level": {
                     "type": "int32",
                     "altnames": {
                       "lang:de": "QN"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_maximum_2m": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "TX_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_minimum_5cm": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "TN_10"
-                    }
+                    },
+                    "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeTemperature10Min",
-                "description": "ExtremeTemperature10Min"
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -906,7 +993,7 @@
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarProductCatalog",
-                "description": "Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -954,7 +1041,7 @@
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarFileProduct",
-                "description": "Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload."
+                "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -993,7 +1080,7 @@
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/ForecastModelCatalog",
-                "description": "Reference (catalog) event describing a single NWP forecast model family published by DWD Open Data. One event is emitted per model the first time the bridge observes it, so consumers can build a catalog of available models and the URLs from which their forecast files can be discovered."
+                "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
               }
             }
           }
@@ -1076,12 +1163,17 @@
                   }
                 },
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/IconD2ForecastFile",
-                "description": "Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload."
+                "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "DWD Weather publishes weather observations, warnings, and forecast product updates from Germany's Deutscher Wetterdienst (DWD) for German weather stations, alerts, radar, and forecast products. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for DWD Weather, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
