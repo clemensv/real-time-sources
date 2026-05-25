@@ -690,6 +690,18 @@
       "image": "geosphere-austria-amqp",
       "file": "Dockerfile.amqp",
       "module": "geosphere_austria_amqp"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "hko_hong_kong_mqtt"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "hko_hong_kong_amqp"
     }
   ],
   "flow": [
@@ -1402,6 +1414,18 @@
       "image": "geosphere-austria-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGeosphereAustriaAmqpDockerFlow"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestHkoHongKongMqttDockerFlow"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestHkoHongKongAmqpDockerFlow"
     }
   ]
 }

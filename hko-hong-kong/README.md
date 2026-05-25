@@ -60,3 +60,12 @@ configured.
 Run this feeder as a scheduled Microsoft Fabric notebook (no container required) via
 [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
 which uploads [`notebook/hko-hong-kong-feed.ipynb`](notebook/hko-hong-kong-feed.ipynb) and binds it to a Lakehouse, KQL database, and Event Stream in your Fabric workspace.
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`hko-hong-kong`). Docker E2E mock mode is available through `HKO_HONG_KONG_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/hko-hong-kong-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/hko-hong-kong-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

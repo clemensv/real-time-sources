@@ -308,3 +308,11 @@ class TestGeosphereAustriaAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"GEOSPHERE_AUSTRIA_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'at.geosphere.tawes.WeatherStation', 'at.geosphere.tawes.WeatherObservation'}
     expected_count = 2
+
+
+class TestHkoHongKongAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "hko-hong-kong"
+    image = "hko-hong-kong-amqp"
+    env = {"HKO_HONG_KONG_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'HK.Gov.HKO.Weather.WeatherObservation', 'HK.Gov.HKO.Weather.Station'}
+    expected_count = 2

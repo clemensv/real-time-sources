@@ -303,7 +303,9 @@
     "key": false,
     "desc": "Hong Kong — 27 temp stations, 18 rainfall districts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-japan",
