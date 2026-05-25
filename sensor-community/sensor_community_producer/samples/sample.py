@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from sensor_community_producer_kafka_producer.producer import IoSensorCommunityEventProducer
+from sensor_community_producer_kafka_producer.producer import IoSensorCommunityMqttEventProducer
+from sensor_community_producer_kafka_producer.producer import IoSensorCommunityAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'io.sensor.community.SensorReading' event to Kafka topic.
     await io_sensor_community_event_producer.send_io_sensor_community_sensor_reading(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor_reading)
     print(f"Sent 'io.sensor.community.SensorReading' event: {_sensor_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        io_sensor_community_mqtt_event_producer = IoSensorCommunityMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        io_sensor_community_mqtt_event_producer = IoSensorCommunityMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- io.sensor.community.mqtt.SensorInfo ----
+    # TODO: Supply event data for the io.sensor.community.mqtt.SensorInfo event
+    _sensor_info = SensorInfo()
+
+    # sends the 'io.sensor.community.mqtt.SensorInfo' event to Kafka topic.
+    await io_sensor_community_mqtt_event_producer.send_io_sensor_community_mqtt_sensor_info(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor_info)
+    print(f"Sent 'io.sensor.community.mqtt.SensorInfo' event: {_sensor_info.to_json()}")
+
+    # ---- io.sensor.community.mqtt.SensorReading ----
+    # TODO: Supply event data for the io.sensor.community.mqtt.SensorReading event
+    _sensor_reading = SensorReading()
+
+    # sends the 'io.sensor.community.mqtt.SensorReading' event to Kafka topic.
+    await io_sensor_community_mqtt_event_producer.send_io_sensor_community_mqtt_sensor_reading(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor_reading)
+    print(f"Sent 'io.sensor.community.mqtt.SensorReading' event: {_sensor_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        io_sensor_community_amqp_event_producer = IoSensorCommunityAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        io_sensor_community_amqp_event_producer = IoSensorCommunityAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- io.sensor.community.amqp.SensorInfo ----
+    # TODO: Supply event data for the io.sensor.community.amqp.SensorInfo event
+    _sensor_info = SensorInfo()
+
+    # sends the 'io.sensor.community.amqp.SensorInfo' event to Kafka topic.
+    await io_sensor_community_amqp_event_producer.send_io_sensor_community_amqp_sensor_info(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor_info)
+    print(f"Sent 'io.sensor.community.amqp.SensorInfo' event: {_sensor_info.to_json()}")
+
+    # ---- io.sensor.community.amqp.SensorReading ----
+    # TODO: Supply event data for the io.sensor.community.amqp.SensorReading event
+    _sensor_reading = SensorReading()
+
+    # sends the 'io.sensor.community.amqp.SensorReading' event to Kafka topic.
+    await io_sensor_community_amqp_event_producer.send_io_sensor_community_amqp_sensor_reading(_feedurl = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor_reading)
+    print(f"Sent 'io.sensor.community.amqp.SensorReading' event: {_sensor_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
