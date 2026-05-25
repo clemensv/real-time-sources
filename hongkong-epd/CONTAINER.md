@@ -1,4 +1,4 @@
-# Hong Kong EPD AQHI — Container Deployment
+# Hong Kong EPD AQHI — Kafka, MQTT, and AMQP Container Deployment
 
 ## Upstream Source
 
@@ -113,3 +113,68 @@ air-quality/hk/epd/hongkong-epd/central-and-western/+/aqhi
 # Reference data for every station
 air-quality/hk/epd/hongkong-epd/+/+/info
 ```
+
+## AMQP 1.0 container variant
+
+Image: `ghcr.io/clemensv/real-time-sources-hongkong-epd-amqp:latest`
+
+The AMQP companion publishes Hong Kong EPD AQHI CloudEvents to generic AMQP 1.0 brokers with SASL PLAIN, Azure Service Bus with Entra ID CBS, or Service Bus-compatible SAS CBS. It uses the same event schemas as the Kafka and MQTT variants.
+
+### Generic AMQP broker
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=broker \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=hongkong-epd \
+  -e AMQP_USERNAME=admin \
+  -e AMQP_PASSWORD=admin \
+  -e AMQP_AUTH_MODE=password \
+  ghcr.io/clemensv/real-time-sources-hongkong-epd-amqp:latest
+```
+
+### Azure Service Bus with Entra ID
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=<namespace>.servicebus.windows.net \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS=hongkong-epd \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default \
+  -e AMQP_ENTRA_CLIENT_ID=<managed-identity-client-id> \
+  ghcr.io/clemensv/real-time-sources-hongkong-epd-amqp:latest
+```
+
+### Service Bus emulator / SAS CBS
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=servicebus-emulator \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=hongkong-epd \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey \
+  -e AMQP_SAS_KEY=<key> \
+  ghcr.io/clemensv/real-time-sources-hongkong-epd-amqp:latest
+```
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `AMQP_BROKER_URL` | Optional `amqp://` or `amqps://` URL; path overrides `AMQP_ADDRESS`. | empty |
+| `AMQP_HOST` / `AMQP_PORT` | AMQP broker host and port when no broker URL is supplied. | `localhost` / `5672` (`5671` with TLS) |
+| `AMQP_ADDRESS` | Queue, topic, or link target address. | `hongkong-epd` |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
+| `AMQP_TLS` | Enable TLS; automatically true for Entra auth. | `false` |
+| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS put-token. | `https://servicebus.azure.net/.default` |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. | empty |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials for Service Bus-compatible brokers. | empty |
+| `AMQP_CONTENT_MODE` | CloudEvents AMQP content mode. | `binary` |
+| `POLLING_INTERVAL` | Poll interval in seconds. | source-specific |
+| `STATE_FILE` | Persistent dedupe state file path. | source-specific |
+| `HONGKONG_EPD_MOCK` | Emit built-in sample events for Docker E2E and offline validation. | `false` |
+
+Use `azure-template-with-servicebus.json` or `infra/azure-template-amqp.json` for one-click Azure Service Bus deployment. The templates create a queue, Azure Files state share, ACI, user-assigned managed identity, and `Azure Service Bus Data Sender` role assignment scoped to the queue.
+
