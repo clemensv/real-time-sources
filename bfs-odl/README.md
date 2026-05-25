@@ -104,3 +104,10 @@ This bridge can also run as a scheduled Fabric notebook
 [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
 which builds a per-source Fabric Environment, binds Lakehouse + KQL +
 Event Stream, and schedules single-cycle runs of `bfs-odl feed --once`.
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships separate Kafka, MQTT, and AMQP containers. The MQTT companion publishes binary-mode CloudEvents to `radiation/ch/bfs/bfs-odl/{canton}/{station_id}/{event}` (`info`, `dose-rate`) with retained QoS 1 messages for last-known-value consumers. The AMQP companion publishes the same CloudEvents to AMQP 1.0 brokers or Azure Service Bus using the station subject and a `canton` application property for filtering.
+
+Images: `ghcr.io/clemensv/real-time-sources-bfs-odl-mqtt:latest`, `ghcr.io/clemensv/real-time-sources-bfs-odl-amqp:latest`. Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`, and `infra/azure-template-amqp.json`.

@@ -54,6 +54,12 @@
       "module": "bfs_odl_mqtt"
     },
     {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bfs_odl_amqp"
+    },
+    {
       "dir": "canada-aqhi",
       "module": "canada_aqhi"
     },
@@ -654,6 +660,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBfsOdlMqttDockerFlow"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBfsOdlAmqpDockerFlow"
     },
     {
       "dir": "bafu-hydro",

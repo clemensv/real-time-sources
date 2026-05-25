@@ -577,7 +577,9 @@
     "key": false,
     "desc": "Germany — ~1,700 stations, hourly gamma dose rate",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "eurdep-radiation",

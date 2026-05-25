@@ -190,6 +190,14 @@ class TestAustraliaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
+class TestBfsOdlAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bfs-odl"
+    image = "bfs-odl-amqp"
+    env = {"ONCE_MODE": "true", "BFS_ODL_SAMPLE_MODE": "true"}
+    expected_types = {"de.bfs.odl.Station", "de.bfs.odl.DoseRateMeasurement"}
+    expected_count = 2
+
+
 class TestCarbonIntensityAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "carbon-intensity"
     image = "carbon-intensity-amqp"

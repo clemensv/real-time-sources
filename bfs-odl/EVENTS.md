@@ -1,11 +1,11 @@
 # BfS ODL — Ambient Gamma Dose Rate Monitoring Events
 
-MQTT/5.0 transport variants of the BfS ODL CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under radiation/de/bfs/bfs-odl/{state}/{station_id}/... The {state} placeholder is derived from the station's AGS-based Kennziffer (first two digits map to a German Bundesland) and normalized to lowercase kebab-case before publishing.
+MQTT/5.0 transport variants of the BfS ODL CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under radiation/ch/bfs/bfs-odl/{canton}/{station_id}/...
 
 ## At a glance
 
-- **Event types:** 2 documented event types (4 transport bindings in the manifest).
-- **Transports:** KAFKA, MQTT/5.0
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -31,18 +31,32 @@ while True:
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 ### MQTT 5
 
-Connect to `mqtt://localhost:1883` and subscribe to `radiation/de/bfs/bfs-odl/+/+/info`, `radiation/de/bfs/bfs-odl/+/+/dose-rate`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+Connect to `mqtt://localhost:1883` and subscribe to `radiation/ch/bfs/bfs-odl/+/+/info`, `radiation/ch/bfs/bfs-odl/+/+/dose-rate`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
 ```python
 import paho.mqtt.client as mqtt
 c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
 c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
 c.connect('localhost',1883)
-c.subscribe(('radiation/de/bfs/bfs-odl/+/+/info', 1))
+c.subscribe(('radiation/ch/bfs/bfs-odl/+/+/info', 1))
 c.loop_forever()
 ```
 
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `bfs-odl`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/bfs-odl')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -62,15 +76,15 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `radiation/de/bfs/bfs-odl/{state}/{station_id}/info`, retain `true`, QoS `1` |
+| `MQTT/5.0` | topic `radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info`, retain `true`, QoS `1` |
 | `KAFKA` | topic `bfs-odl`, key `{station_id}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bfs-odl`, message subject `{station_id}`; application properties canton `{canton}` |
 
 #### Payload
 
-`Station` payloads are JSON object. Required fields: `station_id`, `state`, `station_code`, `name`, `postal_code`, `site_status`, `site_status_text`, `kid`, `height_above_sea`, `longitude`, `latitude`.
+`Station` payloads are JSON object. Required fields: `station_id`, `station_code`, `name`, `postal_code`, `site_status`, `site_status_text`, `kid`, `height_above_sea`, `longitude`, `latitude`, `canton`.
 
 - **`station_id`** (string, required): Nine-digit station identifier (Kennziffer) assigned by BfS in the IMIS network. Composed of the official municipality key (AGS) prefix and a station sequence number. Example: '033510091'. This is the stable key used for timeseries retrieval.
-- **`state`** (string, required): German federal state (Bundesland) derived from the first two digits of the station Kennziffer (AGS prefix). Normalized to lowercase kebab-case for use as the {state} segment in the MQTT/UNS topic. Example: 'niedersachsen', 'bayern', 'nordrhein-westfalen'.
 - **`station_code`** (string, required): Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area.
 - **`name`** (string, required): Human-readable name of the station location, typically a German municipality or locality name. Example: 'Flensburg'.
 - **`postal_code`** (string, required): German postal code (Postleitzahl / PLZ) of the station location. Five digits as a string.
@@ -80,6 +94,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`height_above_sea`** (double or null, required, m): Elevation of the station above mean sea level in meters (Normalhöhennull / NHN). Determines the cosmic radiation component. Null if unknown.
 - **`longitude`** (double, required, deg (°)): Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates.
 - **`latitude`** (double, required, deg (°)): Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates.
+- **`canton`** (string, required): Lowercase topic-safe canton or administrative-region segment used as the {canton} routing axis in the radiation/ch/bfs/bfs-odl topic tree.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -87,7 +102,6 @@ Synthetic example values are generated deterministically from the schema: consta
 ```json
 {
   "station_id": "string",
-  "state": "string",
   "station_code": "string",
   "name": "string",
   "postal_code": "string",
@@ -96,7 +110,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "kid": 0,
   "height_above_sea": 0,
   "longitude": 0,
-  "latitude": 0
+  "latitude": 0,
+  "canton": "string"
 }
 ```
 
@@ -120,15 +135,15 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate`, retain `true`, QoS `1` |
+| `MQTT/5.0` | topic `radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate`, retain `true`, QoS `1` |
 | `KAFKA` | topic `bfs-odl`, key `{station_id}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bfs-odl`, message subject `{station_id}`; application properties canton `{canton}` |
 
 #### Payload
 
-`Dose Rate Measurement` payloads are JSON object. Required fields: `station_id`, `state`, `start_measure`, `end_measure`, `value`, `value_cosmic`, `value_terrestrial`, `validated`, `nuclide`.
+`Dose Rate Measurement` payloads are JSON object. Required fields: `station_id`, `start_measure`, `end_measure`, `value`, `value_cosmic`, `value_terrestrial`, `validated`, `nuclide`, `canton`.
 
 - **`station_id`** (string, required): Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.
-- **`state`** (string, required): German federal state (Bundesland) derived from the station Kennziffer. Propagated from station catalog so subscribers can route by state without a catalog join. Used as the {state} segment of the MQTT/UNS topic.
 - **`start_measure`** (string, required): Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'.
 - **`end_measure`** (string, required): End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'.
 - **`value`** (double or null, required, uSv/h (µSv/h)): Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.
@@ -136,6 +151,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`value_terrestrial`** (double or null, required, uSv/h (µSv/h)): Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.
 - **`validated`** (int32, required): Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated.
 - **`nuclide`** (string, required): Nuclide identifier describing the type of radiation measured. For standard ODL probes this is always 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).
+- **`canton`** (string, required): Lowercase topic-safe canton or administrative-region segment used as the {canton} routing axis in the radiation/ch/bfs/bfs-odl topic tree.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -143,14 +159,14 @@ Synthetic example values are generated deterministically from the schema: consta
 ```json
 {
   "station_id": "string",
-  "state": "string",
   "start_measure": "string",
   "end_measure": "string",
   "value": 0,
   "value_cosmic": 0,
   "value_terrestrial": 0,
   "validated": 0,
-  "nuclide": "string"
+  "nuclide": "string",
+  "canton": "string"
 }
 ```
 
