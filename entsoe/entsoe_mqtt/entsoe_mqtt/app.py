@@ -38,7 +38,7 @@ def _build_data(point: TimeSeriesPoint):
     dt = point.document_type
     if dt == 'A75': return ActualGenerationPerType(inDomain=point.in_domain, psrType=point.psr_type, quantity=point.quantity or 0.0, resolution=point.resolution, businessType=point.business_type, documentType=dt, unitName=point.unit_name or 'MAW')
     if dt == 'A44': return DayAheadPrices(inDomain=point.in_domain, price=point.price or 0.0, currency=point.currency or 'EUR', unitName=point.unit_name or 'MWH', resolution=point.resolution, documentType=dt)
-    if dt == 'A65': return ActualTotalLoad(inDomain=point.in_domain, quantity=point.quantity or 0.0, resolution=point.resolution, outDomain=point.out_domain, documentType=dt)
+    if dt == 'A65': return ActualTotalLoad(inDomain=point.in_domain, quantity=point.quantity or 0.0, resolution=point.resolution, outDomain=point.out_domain or "not-applicable", documentType=dt)
     if dt == 'A69': return WindSolarForecast(inDomain=point.in_domain, psrType=point.psr_type, quantity=point.quantity or 0.0, resolution=point.resolution, businessType=point.business_type, documentType=dt, unitName=point.unit_name or 'MAW')
     if dt == 'A70': return LoadForecastMargin(inDomain=point.in_domain, quantity=point.quantity or 0.0, resolution=point.resolution, documentType=dt, unitName=point.unit_name or 'MAW')
     if dt == 'A71': return GenerationForecast(inDomain=point.in_domain, quantity=point.quantity or 0.0, resolution=point.resolution, documentType=dt, unitName=point.unit_name or 'MAW')

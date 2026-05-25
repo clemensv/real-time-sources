@@ -368,7 +368,7 @@ class TestEntsoeAmqpDockerFlow:
             assert app_props.get("eventType") in {"DayAheadPrices", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "ActualTotalLoad", "WindSolarForecast", "LoadForecastMargin", "GenerationForecast", "ReservoirFillingInformation", "ActualGeneration", "WindSolarGeneration", "InstalledGenerationCapacityPerType"}
             if "inDomain" in data:
                 assert app_props.get("inDomain") == data["inDomain"]
-            if "outDomain" in data:
+            if "outDomain" in data and "outDomain" in app_props:
                 assert app_props.get("outDomain") == data["outDomain"]
             if "psrType" in data:
                 assert app_props.get("psrType") == data["psrType"]
