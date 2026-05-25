@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/syke-hydro" \
+      org.opencontainers.image.title="syke-hydro → MQTT/UNS bridge" \
+      org.opencontainers.image.description="Publishes syke-hydro CloudEvents over MQTT 5.0 into the documented Unified Namespace topic tree." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/syke-hydro/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./syke_hydro_mqtt_producer/syke_hydro_mqtt_producer_data \
+ && pip install --no-cache-dir ./syke_hydro_mqtt_producer/syke_hydro_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./syke_hydro_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "syke_hydro_mqtt", "feed"]
