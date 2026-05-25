@@ -43,6 +43,28 @@
         "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for ČHMÚ Hydrological Data CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "CZ.Gov.CHMI.Hydro.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/chmi-hydro"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CZ.Gov.CHMI.Hydro.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for chmi-hydro CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/water-level",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.amqp": {
+      "description": "AMQP 1.0 variant of the chmi-hydro events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "stream_name": {
+                "type": "uritemplate",
+                "value": "{stream_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (stream_name)."
+              }
+            }
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "stream_name": {
+                "type": "uritemplate",
+                "value": "{stream_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (stream_name)."
+              }
+            }
           }
         }
       }
