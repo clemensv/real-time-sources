@@ -189,3 +189,11 @@ class TestEpaUvAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"US.EPA.UVIndex.HourlyForecast", "US.EPA.UVIndex.DailyForecast"}
     expected_count = 2
 
+
+class TestHongkongEpdAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "hongkong-epd"
+    image = "hongkong-epd-amqp"
+    env = {"HONGKONG_EPD_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"HK.Gov.EPD.AQHI.Station", "HK.Gov.EPD.AQHI.AQHIReading"}
+    expected_count = 2
+

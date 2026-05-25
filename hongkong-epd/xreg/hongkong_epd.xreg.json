@@ -43,6 +43,28 @@
         "#/messagegroups/HK.Gov.EPD.AQHI.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for Hong Kong EPD Air Quality CloudEvents using the source topic hierarchy and retain settings declared in this manifest."
+    },
+    "HK.Gov.EPD.AQHI.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/hongkong-epd"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/HK.Gov.EPD.AQHI.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for Hong Kong EPD AQHI CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "air-quality/hk/epd/hongkong-epd/{district}/{station_id}/aqhi",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.amqp": {
+      "description": "AMQP 1.0 variant of the Hong Kong EPD air-quality events for queue-oriented consumers and Azure Service Bus deployments.",
+      "messages": {
+        "HK.Gov.EPD.AQHI.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
+              }
+            },
+            "application_properties": {
+              "district": {
+                "type": "uritemplate",
+                "value": "{district}",
+                "description": "Hong Kong 18-district administrative area normalized for routing and Service Bus subscription filters."
+              }
+            }
+          }
+        },
+        "HK.Gov.EPD.AQHI.amqp.AQHIReading": {
+          "name": "AQHIReading",
+          "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
+              }
+            },
+            "application_properties": {
+              "district": {
+                "type": "uritemplate",
+                "value": "{district}",
+                "description": "Hong Kong 18-district administrative area normalized for routing and Service Bus subscription filters."
+              }
+            }
           }
         }
       }

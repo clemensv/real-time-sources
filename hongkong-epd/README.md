@@ -2,7 +2,7 @@
 
 This bridge fetches the Hong Kong Environmental Protection Department's
 [Air Quality Health Index (AQHI)](https://www.aqhi.gov.hk/) feed and emits
-CloudEvents into Apache Kafka or Azure Event Hubs.
+CloudEvents into Apache Kafka or Azure Event Hubs, MQTT 5.0, and AMQP 1.0.
 
 ## Data Model
 
@@ -69,3 +69,23 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhongkong-epd%2Fazure-template-with-eventhub.json)
+
+## AMQP 1.0 companion feeder
+
+This source now ships Kafka, MQTT, and AMQP 1.0 transport variants. The AMQP container (`ghcr.io/clemensv/real-time-sources-hongkong-epd-amqp:latest`) publishes the same CloudEvents payloads as the Kafka and MQTT feeders to a single broker address named `hongkong-epd` by default, using binary-mode AMQP 1.0 for generic brokers or Azure Service Bus.
+
+Run locally against an AMQP 1.0 broker:
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=broker \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=hongkong-epd \
+  -e AMQP_USERNAME=admin \
+  -e AMQP_PASSWORD=admin \
+  -e AMQP_AUTH_MODE=password \
+  ghcr.io/clemensv/real-time-sources-hongkong-epd-amqp:latest
+```
+
+Deploy to Azure Service Bus with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus queue, storage-backed state share, a user-assigned managed identity, and an Azure Container Instance configured for AMQP CBS / Entra ID authentication.
+

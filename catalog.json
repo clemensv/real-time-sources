@@ -413,7 +413,9 @@
     "key": false,
     "desc": "Hong Kong — 18 AQHI stations, hourly health index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "irceline-belgium",
