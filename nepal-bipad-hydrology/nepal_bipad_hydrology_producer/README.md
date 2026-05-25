@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - NpGovBipadHydrologyEventDispatcher
+3. [Quick Start](#quick-start)    - NpGovBipadHydrologyEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NpGovBipadHydrologyMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NpGovBipadHydrologyAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NpGovBipadHydrologyProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NpGovBipadHydrologyMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NpGovBipadHydrologyAmqpProducersolution for event-driven applications.
 
 
 
@@ -147,8 +159,9 @@ RiverStation], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `np.gov.bipad.hydrology.RiverStation`: Reference data for a BIPAD river monitoring station
-in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.
+Asynchronous handler hook for `np.gov.bipad.hydrology.RiverStation`: A reference record for one river monitoring
+stations in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog
+so consumers can interpret measurement events.
 
 ## Generated Producer Classes
 
@@ -193,6 +206,84 @@ np_gov_bipad_hydrology_river_station_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyMqttProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_mqtt_dispatcher.np_gov_bipad_hydrology_river_station_async =
+np_gov_bipad_hydrology_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyAmqpProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_amqp_dispatcher.np_gov_bipad_hydrology_river_station_async =
+np_gov_bipad_hydrology_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -212,8 +303,9 @@ CloudEvent, WaterLevelReading], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `np.gov.bipad.hydrology.WaterLevelReading`: Real-time water level telemetry reading from a
-BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.
+Asynchronous handler hook for `np.gov.bipad.hydrology.WaterLevelReading`: A current measurement from Nepal's BIPAD
+Portal for one monitoring site. It carries river water level observations when the upstream feed reports a new or
+refreshed value.
 
 ## Generated Producer Classes
 
@@ -258,6 +350,86 @@ np_gov_bipad_hydrology_water_level_reading_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyMqttProducer- `data`: The event data of type
+`nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_mqtt_dispatcher.np_gov_bipad_hydrology_water_level_reading_async =
+np_gov_bipad_hydrology_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyAmqpProducer- `data`: The event data of type
+`nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_amqp_dispatcher.np_gov_bipad_hydrology_water_level_reading_async =
+np_gov_bipad_hydrology_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -294,8 +466,9 @@ async def send_np_gov_bipad_hydrology_river_station(
 
 
 
-Send a single `np.gov.bipad.hydrology.RiverStation` message. Reference data for a BIPAD river monitoring station in
-Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.Args:
+Send a single `np.gov.bipad.hydrology.RiverStation` message. A reference record for one river monitoring stations in
+Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog so
+consumers can interpret measurement events.Args:
 
 - `record`: The Kafka record.
 
@@ -398,8 +571,9 @@ async def send_np_gov_bipad_hydrology_water_level_reading(
 
 
 
-Send a single `np.gov.bipad.hydrology.WaterLevelReading` message. Real-time water level telemetry reading from a BIPAD
-river monitoring station in Nepal, including current water level, alert status, and trend direction.Args:
+Send a single `np.gov.bipad.hydrology.WaterLevelReading` message. A current measurement from Nepal's BIPAD Portal for
+one monitoring site. It carries river water level observations when the upstream feed reports a new or refreshed
+value.Args:
 
 - `record`: The Kafka record.
 
@@ -457,6 +631,1194 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_np_gov_bipad_hydrology_water_level_reading_batch(```
+
+    messages=[
+
+        WaterLevelReading(...),Initializes the runner with a Kafka consumer.
+
+        WaterLevelReading(...),
+
+        WaterLevelReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NpGovBipadHydrologyMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NpGovBipadHydrologyMqttEventDispatcher` handles events for the np.gov.bipad.hydrology.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from nepal_bipad_hydrology_producer import NpGovBipadHydrologyProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NpGovBipadHydrologyProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_np_gov_bipad_hydrology_river_station(```python
+
+    data=RiverStation(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NpGovBipadHydrologyMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NpGovBipadHydrologyProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `np_gov_bipad_hydrology_mqtt_river_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'np_gov_bipad_hydrology_mqtt_river_station_async:  Callable[[ConsumerRecord, CloudEvent,
+RiverStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `np.gov.bipad.hydrology.mqtt.RiverStation`: A reference record for one river monitoring
+stations in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog
+so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_mqtt_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_dispatcher.np_gov_bipad_hydrology_mqtt_river_station_async =
+np_gov_bipad_hydrology_mqtt_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyMqttProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_mqtt_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_mqtt_dispatcher.np_gov_bipad_hydrology_mqtt_river_station_async =
+np_gov_bipad_hydrology_mqtt_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyAmqpProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_mqtt_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_amqp_dispatcher.np_gov_bipad_hydrology_mqtt_river_station_async =
+np_gov_bipad_hydrology_mqtt_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `np_gov_bipad_hydrology_mqtt_water_level_reading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'np_gov_bipad_hydrology_mqtt_water_level_reading_async:  Callable[[ConsumerRecord,
+CloudEvent, WaterLevelReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `np.gov.bipad.hydrology.mqtt.WaterLevelReading`: A current measurement from Nepal's BIPAD
+Portal for one monitoring site. It carries river water level observations when the upstream feed reports a new or
+refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_mqtt_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_dispatcher.np_gov_bipad_hydrology_mqtt_water_level_reading_async =
+np_gov_bipad_hydrology_mqtt_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyMqttProducer- `data`: The event data of type
+`nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_mqtt_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_mqtt_dispatcher.np_gov_bipad_hydrology_mqtt_water_level_reading_async =
+np_gov_bipad_hydrology_mqtt_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyAmqpProducer- `data`: The event data of type
+`nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_mqtt_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_amqp_dispatcher.np_gov_bipad_hydrology_mqtt_water_level_reading_async =
+np_gov_bipad_hydrology_mqtt_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_np_gov_bipad_hydrology_mqtt_river_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_np_gov_bipad_hydrology_mqtt_river_station(
+
+    self,##### `_process_event`
+
+    data: RiverStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `np.gov.bipad.hydrology.mqtt.RiverStation` message. A reference record for one river monitoring stations
+in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog so
+consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RiverStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_np_gov_bipad_hydrology_mqtt_river_station(
+
+    data=RiverStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `np.gov.bipad.hydrology.mqtt.RiverStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_np_gov_bipad_hydrology_mqtt_river_station_batch(```
+
+    messages=[
+
+        RiverStation(...),Initializes the runner with a Kafka consumer.
+
+        RiverStation(...),
+
+        RiverStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_np_gov_bipad_hydrology_mqtt_water_level_reading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_np_gov_bipad_hydrology_mqtt_water_level_reading(
+
+    self,##### `_process_event`
+
+    data: WaterLevelReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `np.gov.bipad.hydrology.mqtt.WaterLevelReading` message. A current measurement from Nepal's BIPAD Portal
+for one monitoring site. It carries river water level observations when the upstream feed reports a new or refreshed
+value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WaterLevelReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_np_gov_bipad_hydrology_mqtt_water_level_reading(
+
+    data=WaterLevelReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `np.gov.bipad.hydrology.mqtt.WaterLevelReading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_np_gov_bipad_hydrology_mqtt_water_level_reading_batch(```
+
+    messages=[
+
+        WaterLevelReading(...),Initializes the runner with a Kafka consumer.
+
+        WaterLevelReading(...),
+
+        WaterLevelReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NpGovBipadHydrologyAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NpGovBipadHydrologyAmqpEventDispatcher` handles events for the np.gov.bipad.hydrology.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from nepal_bipad_hydrology_producer import NpGovBipadHydrologyProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NpGovBipadHydrologyProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_np_gov_bipad_hydrology_river_station(```python
+
+    data=RiverStation(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NpGovBipadHydrologyAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NpGovBipadHydrologyProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `np_gov_bipad_hydrology_amqp_river_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'np_gov_bipad_hydrology_amqp_river_station_async:  Callable[[ConsumerRecord, CloudEvent,
+RiverStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `np.gov.bipad.hydrology.amqp.RiverStation`: A reference record for one river monitoring
+stations in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog
+so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_amqp_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_dispatcher.np_gov_bipad_hydrology_amqp_river_station_async =
+np_gov_bipad_hydrology_amqp_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyMqttProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_amqp_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_mqtt_dispatcher.np_gov_bipad_hydrology_amqp_river_station_async =
+np_gov_bipad_hydrology_amqp_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyAmqpProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.RiverStation`.
+
+
+
+Producer for `np.gov.bipad.hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_amqp_river_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RiverStation) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_amqp_dispatcher.np_gov_bipad_hydrology_amqp_river_station_async =
+np_gov_bipad_hydrology_amqp_river_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `np_gov_bipad_hydrology_amqp_water_level_reading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'np_gov_bipad_hydrology_amqp_water_level_reading_async:  Callable[[ConsumerRecord,
+CloudEvent, WaterLevelReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `np.gov.bipad.hydrology.amqp.WaterLevelReading`: A current measurement from Nepal's BIPAD
+Portal for one monitoring site. It carries river water level observations when the upstream feed reports a new or
+refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyProducer- `data`: The event data of type `nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_amqp_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_dispatcher.np_gov_bipad_hydrology_amqp_water_level_reading_async =
+np_gov_bipad_hydrology_amqp_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyMqttProducer- `data`: The event data of type
+`nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_amqp_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_mqtt_dispatcher.np_gov_bipad_hydrology_amqp_water_level_reading_async =
+np_gov_bipad_hydrology_amqp_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NpGovBipadHydrologyAmqpProducer- `data`: The event data of type
+`nepal_bipad_hydrology_producer_data.WaterLevelReading`.
+
+
+
+Producer for `np.gov.bipad.hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def np_gov_bipad_hydrology_amqp_water_level_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelReading) -> None:
+
+```python    # Process the event data
+
+NpGovBipadHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+np_gov_bipad_hydrology_amqp_dispatcher.np_gov_bipad_hydrology_amqp_water_level_reading_async =
+np_gov_bipad_hydrology_amqp_water_level_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_np_gov_bipad_hydrology_amqp_river_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_np_gov_bipad_hydrology_amqp_river_station(
+
+    self,##### `_process_event`
+
+    data: RiverStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `np.gov.bipad.hydrology.amqp.RiverStation` message. A reference record for one river monitoring stations
+in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog so
+consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RiverStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_np_gov_bipad_hydrology_amqp_river_station(
+
+    data=RiverStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `np.gov.bipad.hydrology.amqp.RiverStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_np_gov_bipad_hydrology_amqp_river_station_batch(```
+
+    messages=[
+
+        RiverStation(...),Initializes the runner with a Kafka consumer.
+
+        RiverStation(...),
+
+        RiverStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_np_gov_bipad_hydrology_amqp_water_level_reading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_np_gov_bipad_hydrology_amqp_water_level_reading(
+
+    self,##### `_process_event`
+
+    data: WaterLevelReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `np.gov.bipad.hydrology.amqp.WaterLevelReading` message. A current measurement from Nepal's BIPAD Portal
+for one monitoring site. It carries river water level observations when the upstream feed reports a new or refreshed
+value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WaterLevelReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_np_gov_bipad_hydrology_amqp_water_level_reading(
+
+    data=WaterLevelReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `np.gov.bipad.hydrology.amqp.WaterLevelReading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_np_gov_bipad_hydrology_amqp_water_level_reading_batch(```
 
     messages=[
 

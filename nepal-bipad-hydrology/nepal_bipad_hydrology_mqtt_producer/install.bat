@@ -1,0 +1,2 @@
+pip install .\nepal_bipad_hydrology_mqtt_producer_data
+pip install .\nepal_bipad_hydrology_mqtt_producer_mqtt_client
