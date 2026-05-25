@@ -121,3 +121,7 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-goes%2Fazure-template-with-eventhub.json)
+
+## MQTT and AMQP images
+
+Build with Dockerfile.mqtt for MQTT 5 or Dockerfile.amqp for AMQP 1.0. MQTT uses MQTT_BROKER_URL; AMQP uses AMQP_HOST, AMQP_PORT, AMQP_ADDRESS, AMQP_USERNAME, AMQP_PASSWORD, and AMQP_AUTH_MODE (password, ntra, or sas). Service Bus deployment uses zure-template-with-servicebus.json and is mirrored at infra/azure-template-amqp.json.

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "noaa-goes-amqp"
+version = "0.1.0"
+description = "AMQP feeder for noaa-goes"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "noaa_goes_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+python-qpid-proton = ">=0.40.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+noaa_goes_amqp_producer_data = { path = "../noaa_goes_amqp_producer/noaa_goes_amqp_producer_data" }
+
+[tool.poetry.scripts]
+noaa-goes-amqp = "noaa_goes_amqp.app:main"

@@ -326,7 +326,9 @@
     "key": false,
     "desc": "Global — space weather, solar wind, K-index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "noaa-nws",

@@ -1,3 +1,3 @@
-from .noaa import GoesMagnetometer, PlanetaryKIndex, SolarWindSummary, GoesProtonFlux, XrayFlare, SpaceWeatherAlert, SolarWindPlasma, GoesXrayFlux, GoesElectronFlux, SolarWindMagField
+from .noaa import GoesMagnetometer, SolarWindSummary, SpaceWeatherAlert, GoesProtonFlux, PlanetaryKIndex, XrayFlare, SolarWindPlasma, GoesXrayFlux, GoesElectronFlux, SolarWindMagField
 
-__all__ = ["GoesMagnetometer", "PlanetaryKIndex", "SolarWindSummary", "GoesProtonFlux", "XrayFlare", "SpaceWeatherAlert", "SolarWindPlasma", "GoesXrayFlux", "GoesElectronFlux", "SolarWindMagField"]
+__all__ = ["GoesMagnetometer", "SolarWindSummary", "SpaceWeatherAlert", "GoesProtonFlux", "PlanetaryKIndex", "XrayFlare", "SolarWindPlasma", "GoesXrayFlux", "GoesElectronFlux", "SolarWindMagField"]

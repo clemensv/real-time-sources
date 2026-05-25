@@ -28,9 +28,9 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         Create instance of SpaceWeatherAlert for testing
         """
         instance = SpaceWeatherAlert(
-            product_id='rtfvhjwloaqiagbdcolu',
-            issue_datetime='nebbrzqnynmrgzzsvtqz',
-            message='mnwfdpyrypwkjxnmkelu'
+            product_id='rgxehhlmqfturezpoudt',
+            issue_datetime='tlblwwqabbhzbycsbupn',
+            message='zjumlpsuzrnvffdbdqpv'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         """
         Test product_id property
         """
-        test_value = 'rtfvhjwloaqiagbdcolu'
+        test_value = 'rgxehhlmqfturezpoudt'
         self.instance.product_id = test_value
         self.assertEqual(self.instance.product_id, test_value)
     
@@ -47,7 +47,7 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         """
         Test issue_datetime property
         """
-        test_value = 'nebbrzqnynmrgzzsvtqz'
+        test_value = 'tlblwwqabbhzbycsbupn'
         self.instance.issue_datetime = test_value
         self.assertEqual(self.instance.issue_datetime, test_value)
     
@@ -55,10 +55,19 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         """
         Test message property
         """
-        test_value = 'mnwfdpyrypwkjxnmkelu'
+        test_value = 'zjumlpsuzrnvffdbdqpv'
         self.instance.message = test_value
         self.assertEqual(self.instance.message, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = SpaceWeatherAlert.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type
