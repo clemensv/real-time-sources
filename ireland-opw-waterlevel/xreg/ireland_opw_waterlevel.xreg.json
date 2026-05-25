@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/ie.gov.opw.waterlevel"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Ireland OPW waterlevel.ie CloudEvents on the `ireland-opw-waterlevel` topic keyed by `{station_ref}`."
     }
   },
   "messagegroups": {
@@ -28,7 +29,7 @@
         "ie.gov.opw.waterlevel.Station": {
           "name": "Station",
           "envelope": "CloudEvents/1.0",
-          "description": "Reference data for an OPW hydrometric station in Ireland, including location and region.",
+          "description": "A reference record for one Irish hydrometric station published by Ireland's Office of Public Works (OPW). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
           "envelopemetadata": {
             "type": {
               "value": "ie.gov.opw.waterlevel.Station"
@@ -48,7 +49,7 @@
         "ie.gov.opw.waterlevel.WaterLevelReading": {
           "name": "WaterLevelReading",
           "envelope": "CloudEvents/1.0",
-          "description": "A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.",
+          "description": "A current measurement from Ireland's Office of Public Works (OPW) for one monitoring site. It carries water level, temperature, and sensor voltage observations when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "ie.gov.opw.waterlevel.WaterLevelReading"
@@ -65,7 +66,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.jstruct/schemas/ie.gov.opw.waterlevel.WaterLevelReading"
         }
-      }
+      },
+      "description": "Events from Ireland OPW waterlevel.ie covering Irish hydrometric stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -126,7 +128,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reference details for one monitoring station or site in the Ireland OPW waterlevel.ie source."
               }
             }
           }
@@ -165,7 +168,10 @@
                                 "description": "Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres)."
                               },
                               "value": {
-                                "type": ["double", "null"],
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
                                 "description": "Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation."
                               },
                               "datetime": {
@@ -191,7 +197,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the Ireland OPW waterlevel.ie source."
               }
             }
           }
@@ -235,7 +242,8 @@
                     "type": "double",
                     "doc": "Latitude of the station location in WGS84 decimal degrees."
                   }
-                ]
+                ],
+                "description": "Reference details for one monitoring station or site in the Ireland OPW waterlevel.ie source."
               }
             }
           },
@@ -268,7 +276,10 @@
                   },
                   {
                     "name": "value",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation."
                   },
                   {
@@ -281,7 +292,8 @@
                     "type": "int",
                     "doc": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the Ireland OPW waterlevel.ie source."
               }
             }
           },
@@ -289,5 +301,10 @@
         }
       }
     }
+  },
+  "description": "Ireland OPW waterlevel.ie publishes water level, temperature, and sensor voltage observations from Ireland's Office of Public Works (OPW) for Irish hydrometric stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Ireland OPW waterlevel.ie, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

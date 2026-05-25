@@ -1,6 +1,6 @@
 # Ireland OPW waterlevel.ie Bridge Events
 
-This project provides a bridge that reads real-time water level, temperature, and voltage data from Ireland's OPW (Office of Public Works) hydrometric stations via the [waterlevel.ie](https://waterlevel.ie) GeoJSON API and emits the data as CloudEvents to Apache Kafka, Azure Event Hubs, or Fabric Event Streams.
+Ireland OPW waterlevel.ie publishes water level, temperature, and sensor voltage observations from Ireland's Office of Public Works (OPW) for Irish hydrometric stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `ie.gov.opw.waterlevel.Station`
 
 #### What it tells you
 
-Reference data for an OPW hydrometric station in Ireland, including location and region.
+A reference record for one Irish hydrometric station published by Ireland's Office of Public Works (OPW). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference data for an OPW hydrometric station in Ireland, including location and region.
 
 #### Identity
 
@@ -83,7 +83,7 @@ CloudEvents type: `ie.gov.opw.waterlevel.WaterLevelReading`
 
 #### What it tells you
 
-A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.
+A current measurement from Ireland's Office of Public Works (OPW) for one monitoring site. It carries water level, temperature, and sensor voltage observations when the upstream feed reports a new or refreshed value. A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.
 
 #### Identity
 
