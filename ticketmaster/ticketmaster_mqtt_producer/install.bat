@@ -1,0 +1,2 @@
+pip install .\ticketmaster_mqtt_producer_data
+pip install .\ticketmaster_mqtt_producer_mqtt_client
