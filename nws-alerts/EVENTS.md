@@ -1,6 +1,6 @@
 # NWS CAP Weather Alerts Bridge Events
 
-MQTT/5.0 mirror of NWS CAP weather alerts, published into the Unified-Namespace topic tree 'alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert'. CAP severity is baked as one of five literal sub-tree partitions (minor, moderate, severe, extreme, unknown) so every template placeholder resolves from an enriched WeatherAlert schema field. Alerts are QoS-1 non-retained one-shot lifecycle events.
+NWS Alerts publishes CAP weather watches, warnings, advisories, and updates from the U.S. National Weather Service for U.S. weather alert areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `NWS.WeatherAlert`
 
 #### What it tells you
 
-A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard. A weather or non-weather alert from the US National Weather Service (NWS/NOAA).
+A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
 
 #### Identity
 
@@ -104,39 +104,39 @@ Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is
 - **`event_type`** (string, required): Lowercase kebab-case slug derived from the CAP event field for topic partitioning.
 ##### `status` values
 
-- `Actual`
-- `Exercise`
-- `System`
-- `Test`
-- `Draft`
+- `Actual`: Provider value `Actual` for this coded alert field.
+- `Exercise`: Provider value `Exercise` for this coded alert field.
+- `System`: Provider value `System` for this coded alert field.
+- `Test`: Provider value `Test` for this coded alert field.
+- `Draft`: Provider value `Draft` for this coded alert field.
 ##### `message_type` values
 
-- `Alert`
-- `Update`
-- `Cancel`
-- `Ack`
-- `Error`
+- `Alert`: Provider value `Alert` for this coded alert field.
+- `Update`: Provider value `Update` for this coded alert field.
+- `Cancel`: Provider value `Cancel` for this coded alert field.
+- `Ack`: Provider value `Ack` for this coded alert field.
+- `Error`: Provider value `Error` for this coded alert field.
 ##### `severity` values
 
-- `Extreme`
-- `Severe`
-- `Moderate`
-- `Minor`
-- `Unknown`
+- `Extreme`: Provider value `Extreme` for this coded alert field.
+- `Severe`: Provider value `Severe` for this coded alert field.
+- `Moderate`: Provider value `Moderate` for this coded alert field.
+- `Minor`: Provider value `Minor` for this coded alert field.
+- `Unknown`: Provider value `Unknown` for this coded alert field.
 ##### `certainty` values
 
-- `Observed`
-- `Likely`
-- `Possible`
-- `Unlikely`
-- `Unknown`
+- `Observed`: Provider value `Observed` for this coded alert field.
+- `Likely`: Provider value `Likely` for this coded alert field.
+- `Possible`: Provider value `Possible` for this coded alert field.
+- `Unlikely`: Provider value `Unlikely` for this coded alert field.
+- `Unknown`: Provider value `Unknown` for this coded alert field.
 ##### `urgency` values
 
-- `Immediate`
-- `Expected`
-- `Future`
-- `Past`
-- `Unknown`
+- `Immediate`: Provider value `Immediate` for this coded alert field.
+- `Expected`: Provider value `Expected` for this coded alert field.
+- `Future`: Provider value `Future` for this coded alert field.
+- `Past`: Provider value `Past` for this coded alert field.
+- `Unknown`: Provider value `Unknown` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

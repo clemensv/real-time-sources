@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NWS.Alerts"
-      ]
+      ],
+      "description": "Kafka producer endpoint for NWS Alerts CloudEvents on the `nws-alerts` topic keyed by `{alert_id}`."
     },
     "NWS.Alerts.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NWS.Alerts.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for NWS Alerts CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -65,10 +67,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NWS.jstruct/schemas/NWS.WeatherAlert"
         }
-      }
+      },
+      "description": "Events from NWS Alerts covering U.S. weather alert areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "NWS.Alerts.mqtt": {
-      "description": "MQTT/5.0 mirror of NWS CAP weather alerts, published into the Unified-Namespace topic tree 'alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert'. CAP severity is baked as one of five literal sub-tree partitions (minor, moderate, severe, extreme, unknown) so every template placeholder resolves from an enriched WeatherAlert schema field. Alerts are QoS-1 non-retained one-shot lifecycle events.",
+      "description": "MQTT 5 variant of the NWS Alerts events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "NWS.WeatherAlert.Minor.mqtt": {
           "name": "WeatherAlertMinor",
@@ -139,7 +142,7 @@
                 "$id": "https://api.weather.gov/schemas/NWS/WeatherAlert",
                 "name": "WeatherAlert",
                 "type": "object",
-                "description": "A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.",
+                "description": "A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.",
                 "required": [
                   "alert_id",
                   "event",
@@ -204,7 +207,14 @@
                       "System",
                       "Test",
                       "Draft"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Actual": "Provider value `Actual` for this coded alert field.",
+                      "Exercise": "Provider value `Exercise` for this coded alert field.",
+                      "System": "Provider value `System` for this coded alert field.",
+                      "Test": "Provider value `Test` for this coded alert field.",
+                      "Draft": "Provider value `Draft` for this coded alert field."
+                    }
                   },
                   "message_type": {
                     "type": "string",
@@ -218,6 +228,13 @@
                     ],
                     "altnames": {
                       "json": "messageType"
+                    },
+                    "descriptions": {
+                      "Alert": "Provider value `Alert` for this coded alert field.",
+                      "Update": "Provider value `Update` for this coded alert field.",
+                      "Cancel": "Provider value `Cancel` for this coded alert field.",
+                      "Ack": "Provider value `Ack` for this coded alert field.",
+                      "Error": "Provider value `Error` for this coded alert field."
                     }
                   },
                   "category": {
@@ -233,7 +250,14 @@
                       "Moderate",
                       "Minor",
                       "Unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Extreme": "Provider value `Extreme` for this coded alert field.",
+                      "Severe": "Provider value `Severe` for this coded alert field.",
+                      "Moderate": "Provider value `Moderate` for this coded alert field.",
+                      "Minor": "Provider value `Minor` for this coded alert field.",
+                      "Unknown": "Provider value `Unknown` for this coded alert field."
+                    }
                   },
                   "certainty": {
                     "type": "string",
@@ -244,7 +268,14 @@
                       "Possible",
                       "Unlikely",
                       "Unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Observed": "Provider value `Observed` for this coded alert field.",
+                      "Likely": "Provider value `Likely` for this coded alert field.",
+                      "Possible": "Provider value `Possible` for this coded alert field.",
+                      "Unlikely": "Provider value `Unlikely` for this coded alert field.",
+                      "Unknown": "Provider value `Unknown` for this coded alert field."
+                    }
                   },
                   "urgency": {
                     "type": "string",
@@ -255,7 +286,14 @@
                       "Future",
                       "Past",
                       "Unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Immediate": "Provider value `Immediate` for this coded alert field.",
+                      "Expected": "Provider value `Expected` for this coded alert field.",
+                      "Future": "Provider value `Future` for this coded alert field.",
+                      "Past": "Provider value `Past` for this coded alert field.",
+                      "Unknown": "Provider value `Unknown` for this coded alert field."
+                    }
                   },
                   "event": {
                     "type": "string",
@@ -323,5 +361,10 @@
         }
       }
     }
+  },
+  "description": "NWS Alerts publishes CAP weather watches, warnings, advisories, and updates from the U.S. National Weather Service for U.S. weather alert areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for NWS Alerts, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
