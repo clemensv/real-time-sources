@@ -1,6 +1,6 @@
 # AISstream.io Bridge Usage Guide Events
 
-**AISstream.io Bridge** connects to the AISstream.io WebSocket API for real-time global AIS vessel tracking and forwards decoded messages to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
+AISStream publishes vessel position, voyage, safety, and static AIS messages from AISStream public AIS firehose for AIS-equipped vessels received by the AISStream network. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -51,7 +51,7 @@ CloudEvents type: `IO.AISstream.PositionReport`
 
 #### What it tells you
 
-This event carries position report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -67,23 +67,23 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Position Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`NavigationalStatus`** (int32, optional): No description provided.
-- **`RateOfTurn`** (int32, optional): No description provided.
-- **`Sog`** (double, optional): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`Cog`** (double, optional): No description provided.
-- **`TrueHeading`** (int32, optional): No description provided.
-- **`Timestamp`** (int32, optional): No description provided.
-- **`SpecialManoeuvreIndicator`** (int32, optional): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`CommunicationState`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`NavigationalStatus`** (int32, optional): Provider field for navigational status in this record.
+- **`RateOfTurn`** (int32, optional): Provider field for rate of turn in this record.
+- **`Sog`** (double, optional): Provider field for sog in this record.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`Cog`** (double, optional): Provider field for cog in this record.
+- **`TrueHeading`** (int32, optional): Provider field for true heading in this record.
+- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
+- **`SpecialManoeuvreIndicator`** (int32, optional): Provider field for special manoeuvre indicator in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -120,7 +120,7 @@ CloudEvents type: `IO.AISstream.ShipStaticData`
 
 #### What it tells you
 
-This event carries ship static data data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -136,40 +136,40 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Ship Static Data` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`AisVersion`** (int32, optional): No description provided.
-- **`ImoNumber`** (int32, optional): No description provided.
-- **`CallSign`** (string, optional): No description provided.
-- **`Name`** (string, optional): No description provided.
-- **`Type`** (int32, optional): No description provided.
-- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-shipstaticdata-dimension).
-- **`FixType`** (int32, optional): No description provided.
-- **`Eta`** (object, optional): No description provided. See [Eta](#payload-io-aisstream-shipstaticdata-eta).
-- **`MaximumStaticDraught`** (double, optional): No description provided.
-- **`Destination`** (string, optional): No description provided.
-- **`Dte`** (boolean, optional): No description provided.
-- **`Spare`** (boolean, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`AisVersion`** (int32, optional): Provider field for ais version in this record.
+- **`ImoNumber`** (int32, optional): Provider field for imo number in this record.
+- **`CallSign`** (string, optional): Provider field for call sign in this record.
+- **`Name`** (string, optional): Human-readable name of the resource.
+- **`Type`** (int32, optional): Provider field for type in this record.
+- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-shipstaticdata-dimension).
+- **`FixType`** (int32, optional): Provider field for fix type in this record.
+- **`Eta`** (object, optional): Provider field for eta in this record. See [Eta](#payload-io-aisstream-shipstaticdata-eta).
+- **`MaximumStaticDraught`** (double, optional): Provider field for maximum static draught in this record.
+- **`Destination`** (string, optional): Provider field for destination in this record.
+- **`Dte`** (boolean, optional): Provider field for dte in this record.
+- **`Spare`** (boolean, optional): Provider field for spare in this record.
 ##### Dimension
 <a id="payload-io-aisstream-shipstaticdata-dimension"></a>
 
-Nested record.
+Provider field for dimension in this record.
 
-- **`A`** (int32, required): No description provided.
-- **`B`** (int32, required): No description provided.
-- **`C`** (int32, required): No description provided.
-- **`D`** (int32, required): No description provided.
+- **`A`** (int32, required): Provider field for a in this record.
+- **`B`** (int32, required): Provider field for b in this record.
+- **`C`** (int32, required): Provider field for c in this record.
+- **`D`** (int32, required): Provider field for d in this record.
 ##### Eta
 <a id="payload-io-aisstream-shipstaticdata-eta"></a>
 
-Nested record.
+Provider field for eta in this record.
 
-- **`Month`** (int32, required): No description provided.
-- **`Day`** (int32, required): No description provided.
-- **`Hour`** (int32, required): No description provided.
-- **`Minute`** (int32, required): No description provided.
+- **`Month`** (int32, required): Provider field for month in this record.
+- **`Day`** (int32, required): Provider field for day in this record.
+- **`Hour`** (int32, required): Provider field for hour in this record.
+- **`Minute`** (int32, required): Provider field for minute in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -215,7 +215,7 @@ CloudEvents type: `IO.AISstream.StandardClassBPositionReport`
 
 #### What it tells you
 
-This event carries standard class bposition report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -231,28 +231,28 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Standard Class Bposition Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`Sog`** (double, optional): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`Cog`** (double, optional): No description provided.
-- **`TrueHeading`** (int32, optional): No description provided.
-- **`Timestamp`** (int32, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`ClassBUnit`** (boolean, optional): No description provided.
-- **`ClassBDisplay`** (boolean, optional): No description provided.
-- **`ClassBDsc`** (boolean, optional): No description provided.
-- **`ClassBBand`** (boolean, optional): No description provided.
-- **`ClassBMsg22`** (boolean, optional): No description provided.
-- **`AssignedMode`** (boolean, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`CommunicationStateIsItdma`** (boolean, optional): No description provided.
-- **`CommunicationState`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`Sog`** (double, optional): Provider field for sog in this record.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`Cog`** (double, optional): Provider field for cog in this record.
+- **`TrueHeading`** (int32, optional): Provider field for true heading in this record.
+- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`ClassBUnit`** (boolean, optional): Provider field for class b unit in this record.
+- **`ClassBDisplay`** (boolean, optional): Provider field for class b display in this record.
+- **`ClassBDsc`** (boolean, optional): Provider field for class b dsc in this record.
+- **`ClassBBand`** (boolean, optional): Provider field for class b band in this record.
+- **`ClassBMsg22`** (boolean, optional): Provider field for class b msg22 in this record.
+- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`CommunicationStateIsItdma`** (boolean, optional): Provider field for communication state is itdma in this record.
+- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -294,7 +294,7 @@ CloudEvents type: `IO.AISstream.ExtendedClassBPositionReport`
 
 #### What it tells you
 
-This event carries extended class bposition report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -310,36 +310,36 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Extended Class Bposition Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`Sog`** (double, optional): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`Cog`** (double, optional): No description provided.
-- **`TrueHeading`** (int32, optional): No description provided.
-- **`Timestamp`** (int32, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`Name`** (string, optional): No description provided.
-- **`Type`** (int32, optional): No description provided.
-- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-extendedclassbpositionreport-dimension).
-- **`FixType`** (int32, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`Dte`** (boolean, optional): No description provided.
-- **`AssignedMode`** (boolean, optional): No description provided.
-- **`Spare3`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`Sog`** (double, optional): Provider field for sog in this record.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`Cog`** (double, optional): Provider field for cog in this record.
+- **`TrueHeading`** (int32, optional): Provider field for true heading in this record.
+- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`Name`** (string, optional): Human-readable name of the resource.
+- **`Type`** (int32, optional): Provider field for type in this record.
+- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-extendedclassbpositionreport-dimension).
+- **`FixType`** (int32, optional): Provider field for fix type in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`Dte`** (boolean, optional): Provider field for dte in this record.
+- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
+- **`Spare3`** (int32, optional): Provider field for spare3 in this record.
 ##### Dimension
 <a id="payload-io-aisstream-extendedclassbpositionreport-dimension"></a>
 
-Nested record.
+Provider field for dimension in this record.
 
-- **`A`** (int32, required): No description provided.
-- **`B`** (int32, required): No description provided.
-- **`C`** (int32, required): No description provided.
-- **`D`** (int32, required): No description provided.
+- **`A`** (int32, required): Provider field for a in this record.
+- **`B`** (int32, required): Provider field for b in this record.
+- **`C`** (int32, required): Provider field for c in this record.
+- **`D`** (int32, required): Provider field for d in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -385,7 +385,7 @@ CloudEvents type: `IO.AISstream.AidsToNavigationReport`
 
 #### What it tells you
 
-This event carries aids to navigation report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -401,34 +401,34 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Aids To Navigation Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Type`** (int32, optional): No description provided.
-- **`Name`** (string, optional): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-aidstonavigationreport-dimension).
-- **`Fixtype`** (int32, optional): No description provided.
-- **`Timestamp`** (int32, optional): No description provided.
-- **`OffPosition`** (boolean, optional): No description provided.
-- **`AtoN`** (int32, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`VirtualAtoN`** (boolean, optional): No description provided.
-- **`AssignedMode`** (boolean, optional): No description provided.
-- **`Spare`** (boolean, optional): No description provided.
-- **`NameExtension`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Type`** (int32, optional): Provider field for type in this record.
+- **`Name`** (string, optional): Human-readable name of the resource.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-aidstonavigationreport-dimension).
+- **`Fixtype`** (int32, optional): Provider field for fixtype in this record.
+- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
+- **`OffPosition`** (boolean, optional): Provider field for off position in this record.
+- **`AtoN`** (int32, optional): Provider field for ato n in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`VirtualAtoN`** (boolean, optional): Provider field for virtual ato n in this record.
+- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
+- **`Spare`** (boolean, optional): Provider field for spare in this record.
+- **`NameExtension`** (string, optional): Provider field for name extension in this record.
 ##### Dimension
 <a id="payload-io-aisstream-aidstonavigationreport-dimension"></a>
 
-Nested record.
+Provider field for dimension in this record.
 
-- **`A`** (int32, required): No description provided.
-- **`B`** (int32, required): No description provided.
-- **`C`** (int32, required): No description provided.
-- **`D`** (int32, required): No description provided.
+- **`A`** (int32, required): Provider field for a in this record.
+- **`B`** (int32, required): Provider field for b in this record.
+- **`C`** (int32, required): Provider field for c in this record.
+- **`D`** (int32, required): Provider field for d in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -472,7 +472,7 @@ CloudEvents type: `IO.AISstream.StaticDataReport`
 
 #### What it tells you
 
-This event carries static data report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -488,44 +488,44 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Static Data Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Reserved`** (int32, optional): No description provided.
-- **`PartNumber`** (boolean, optional): No description provided.
-- **`ReportA`** (object, optional): No description provided. See [ReportA](#payload-io-aisstream-staticdatareport-reporta).
-- **`ReportB`** (object, optional): No description provided. See [ReportB](#payload-io-aisstream-staticdatareport-reportb).
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Reserved`** (int32, optional): Provider field for reserved in this record.
+- **`PartNumber`** (boolean, optional): Provider field for part number in this record.
+- **`ReportA`** (object, optional): Provider field for report a in this record. See [ReportA](#payload-io-aisstream-staticdatareport-reporta).
+- **`ReportB`** (object, optional): Provider field for report b in this record. See [ReportB](#payload-io-aisstream-staticdatareport-reportb).
 ##### ReportA
 <a id="payload-io-aisstream-staticdatareport-reporta"></a>
 
-Nested record.
+Provider field for report a in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`Name`** (string, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Name`** (string, required): Human-readable name of the resource.
 ##### ReportB
 <a id="payload-io-aisstream-staticdatareport-reportb"></a>
 
-Nested record.
+Provider field for report b in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`ShipType`** (int32, optional): No description provided.
-- **`VendorIDName`** (string, optional): No description provided.
-- **`VenderIDModel`** (int32, optional): No description provided.
-- **`VenderIDSerial`** (int32, optional): No description provided.
-- **`CallSign`** (string, optional): No description provided.
-- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-staticdatareport-reportb-dimension).
-- **`FixType`** (int32, optional): No description provided.
-- **`Spare`** (int32, optional): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`ShipType`** (int32, optional): Provider field for ship type in this record.
+- **`VendorIDName`** (string, optional): Provider field for vendor i d name in this record.
+- **`VenderIDModel`** (int32, optional): Provider field for vender i d model in this record.
+- **`VenderIDSerial`** (int32, optional): Provider field for vender i d serial in this record.
+- **`CallSign`** (string, optional): Provider field for call sign in this record.
+- **`Dimension`** (object, optional): Provider field for dimension in this record. See [Dimension](#payload-io-aisstream-staticdatareport-reportb-dimension).
+- **`FixType`** (int32, optional): Provider field for fix type in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
 ##### Dimension
 <a id="payload-io-aisstream-staticdatareport-dimension"></a>
 
-Nested record.
+Provider field for dimension in this record.
 
-- **`A`** (int32, required): No description provided.
-- **`B`** (int32, required): No description provided.
-- **`C`** (int32, required): No description provided.
-- **`D`** (int32, required): No description provided.
+- **`A`** (int32, required): Provider field for a in this record.
+- **`B`** (int32, required): Provider field for b in this record.
+- **`C`** (int32, required): Provider field for c in this record.
+- **`D`** (int32, required): Provider field for d in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -571,7 +571,7 @@ CloudEvents type: `IO.AISstream.BaseStationReport`
 
 #### What it tells you
 
-This event carries base station report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -587,24 +587,24 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Base Station Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`UtcYear`** (int32, optional): No description provided.
-- **`UtcMonth`** (int32, optional): No description provided.
-- **`UtcDay`** (int32, optional): No description provided.
-- **`UtcHour`** (int32, optional): No description provided.
-- **`UtcMinute`** (int32, optional): No description provided.
-- **`UtcSecond`** (int32, optional): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`FixType`** (int32, optional): No description provided.
-- **`LongRangeEnable`** (boolean, optional): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`CommunicationState`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`UtcYear`** (int32, optional): Provider field for utc year in this record.
+- **`UtcMonth`** (int32, optional): Provider field for utc month in this record.
+- **`UtcDay`** (int32, optional): Provider field for utc day in this record.
+- **`UtcHour`** (int32, optional): Provider field for utc hour in this record.
+- **`UtcMinute`** (int32, optional): Provider field for utc minute in this record.
+- **`UtcSecond`** (int32, optional): Provider field for utc second in this record.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`FixType`** (int32, optional): Provider field for fix type in this record.
+- **`LongRangeEnable`** (boolean, optional): Provider field for long range enable in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -642,7 +642,7 @@ CloudEvents type: `IO.AISstream.SafetyBroadcastMessage`
 
 #### What it tells you
 
-This event carries safety broadcast message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -658,12 +658,12 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Safety Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Text`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Text`** (string, optional): Provider field for text in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -689,7 +689,7 @@ CloudEvents type: `IO.AISstream.StandardSearchAndRescueAircraftReport`
 
 #### What it tells you
 
-This event carries standard search and rescue aircraft report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -705,25 +705,25 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Standard Search And Rescue Aircraft Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Altitude`** (int32, optional): No description provided.
-- **`Sog`** (double, optional): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`Cog`** (double, optional): No description provided.
-- **`Timestamp`** (int32, optional): No description provided.
-- **`AltFromBaro`** (boolean, optional): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`Dte`** (boolean, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`AssignedMode`** (boolean, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`CommunicationStateIsItdma`** (boolean, optional): No description provided.
-- **`CommunicationState`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Altitude`** (int32, optional): Provider field for altitude in this record.
+- **`Sog`** (double, optional): Provider field for sog in this record.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`Cog`** (double, optional): Provider field for cog in this record.
+- **`Timestamp`** (int32, optional): Time when the provider recorded or published the update.
+- **`AltFromBaro`** (boolean, optional): Provider field for alt from baro in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`Dte`** (boolean, optional): Provider field for dte in this record.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`AssignedMode`** (boolean, optional): Provider field for assigned mode in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`CommunicationStateIsItdma`** (boolean, optional): Provider field for communication state is itdma in this record.
+- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -762,7 +762,7 @@ CloudEvents type: `IO.AISstream.LongRangeAisBroadcastMessage`
 
 #### What it tells you
 
-This event carries long range ais broadcast message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
 
 #### Identity
 
@@ -778,19 +778,19 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Long Range Ais Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`PositionAccuracy`** (boolean, optional): No description provided.
-- **`Raim`** (boolean, optional): No description provided.
-- **`NavigationalStatus`** (int32, optional): No description provided.
-- **`Longitude`** (double, required): No description provided.
-- **`Latitude`** (double, required): No description provided.
-- **`Sog`** (double, optional): No description provided.
-- **`Cog`** (double, optional): No description provided.
-- **`PositionLatency`** (boolean, optional): No description provided.
-- **`Spare`** (boolean, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`PositionAccuracy`** (boolean, optional): Provider field for position accuracy in this record.
+- **`Raim`** (boolean, optional): Provider field for raim in this record.
+- **`NavigationalStatus`** (int32, optional): Provider field for navigational status in this record.
+- **`Longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`Sog`** (double, optional): Provider field for sog in this record.
+- **`Cog`** (double, optional): Provider field for cog in this record.
+- **`PositionLatency`** (boolean, optional): Provider field for position latency in this record.
+- **`Spare`** (boolean, optional): Provider field for spare in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -815,7 +815,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Addressed Safety Message
 
@@ -823,7 +823,7 @@ CloudEvents type: `IO.AISstream.AddressedSafetyMessage`
 
 #### What it tells you
 
-This event carries addressed safety message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -839,15 +839,15 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Addressed Safety Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Sequenceinteger`** (int32, optional): No description provided.
-- **`DestinationID`** (int32, optional): No description provided.
-- **`Retransmission`** (boolean, optional): No description provided.
-- **`Spare`** (boolean, optional): No description provided.
-- **`Text`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Sequenceinteger`** (int32, optional): Provider field for sequenceinteger in this record.
+- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
+- **`Retransmission`** (boolean, optional): Provider field for retransmission in this record.
+- **`Spare`** (boolean, optional): Provider field for spare in this record.
+- **`Text`** (string, optional): Provider field for text in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -876,7 +876,7 @@ CloudEvents type: `IO.AISstream.AddressedBinaryMessage`
 
 #### What it tells you
 
-This event carries addressed binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -892,24 +892,24 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Addressed Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Sequenceinteger`** (int32, optional): No description provided.
-- **`DestinationID`** (int32, optional): No description provided.
-- **`Retransmission`** (boolean, optional): No description provided.
-- **`Spare`** (boolean, optional): No description provided.
-- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-addressedbinarymessage-applicationid).
-- **`BinaryData`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Sequenceinteger`** (int32, optional): Provider field for sequenceinteger in this record.
+- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
+- **`Retransmission`** (boolean, optional): Provider field for retransmission in this record.
+- **`Spare`** (boolean, optional): Provider field for spare in this record.
+- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-addressedbinarymessage-applicationid).
+- **`BinaryData`** (string, optional): Provider field for binary data in this record.
 ##### ApplicationID
 <a id="payload-io-aisstream-addressedbinarymessage-applicationid"></a>
 
-Nested record.
+Provider field for application i d in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`DesignatedAreaCode`** (int32, required): No description provided.
-- **`FunctionIdentifier`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
+- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -943,7 +943,7 @@ CloudEvents type: `IO.AISstream.AssignedModeCommand`
 
 #### What it tells you
 
-This event carries assigned mode command data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -959,12 +959,12 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Assigned Mode Command` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Commands`** (map, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Commands`** (map, optional): Provider field for commands in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -990,7 +990,7 @@ CloudEvents type: `IO.AISstream.BinaryAcknowledge`
 
 #### What it tells you
 
-This event carries binary acknowledge data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1006,12 +1006,12 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Binary Acknowledge` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Destinations`** (map, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Destinations`** (map, optional): Provider field for destinations in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1037,7 +1037,7 @@ CloudEvents type: `IO.AISstream.BinaryBroadcastMessage`
 
 #### What it tells you
 
-This event carries binary broadcast message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1053,21 +1053,21 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Binary Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-binarybroadcastmessage-applicationid).
-- **`BinaryData`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-binarybroadcastmessage-applicationid).
+- **`BinaryData`** (string, optional): Provider field for binary data in this record.
 ##### ApplicationID
 <a id="payload-io-aisstream-binarybroadcastmessage-applicationid"></a>
 
-Nested record.
+Provider field for application i d in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`DesignatedAreaCode`** (int32, required): No description provided.
-- **`FunctionIdentifier`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
+- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1098,7 +1098,7 @@ CloudEvents type: `IO.AISstream.ChannelManagement`
 
 #### What it tells you
 
-This event carries channel management data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1114,40 +1114,40 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Channel Management` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`ChannelA`** (int32, optional): No description provided.
-- **`ChannelB`** (int32, optional): No description provided.
-- **`TxRxMode`** (int32, optional): No description provided.
-- **`LowPower`** (boolean, optional): No description provided.
-- **`Area`** (object, optional): No description provided. See [Area](#payload-io-aisstream-channelmanagement-area).
-- **`Unicast`** (object, optional): No description provided. See [Unicast](#payload-io-aisstream-channelmanagement-unicast).
-- **`IsAddressed`** (boolean, optional): No description provided.
-- **`BwA`** (boolean, optional): No description provided.
-- **`BwB`** (boolean, optional): No description provided.
-- **`TransitionalZoneSize`** (int32, optional): No description provided.
-- **`Spare4`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`ChannelA`** (int32, optional): Provider field for channel a in this record.
+- **`ChannelB`** (int32, optional): Provider field for channel b in this record.
+- **`TxRxMode`** (int32, optional): Provider field for tx rx mode in this record.
+- **`LowPower`** (boolean, optional): Provider field for low power in this record.
+- **`Area`** (object, optional): Provider field for area in this record. See [Area](#payload-io-aisstream-channelmanagement-area).
+- **`Unicast`** (object, optional): Provider field for unicast in this record. See [Unicast](#payload-io-aisstream-channelmanagement-unicast).
+- **`IsAddressed`** (boolean, optional): Provider field for is addressed in this record.
+- **`BwA`** (boolean, optional): Provider field for bw a in this record.
+- **`BwB`** (boolean, optional): Provider field for bw b in this record.
+- **`TransitionalZoneSize`** (int32, optional): Provider field for transitional zone size in this record.
+- **`Spare4`** (int32, optional): Provider field for spare4 in this record.
 ##### Area
 <a id="payload-io-aisstream-channelmanagement-area"></a>
 
-Nested record.
+Provider field for area in this record.
 
-- **`Longitude1`** (double, required): No description provided.
-- **`Latitude1`** (double, required): No description provided.
-- **`Longitude2`** (double, required): No description provided.
-- **`Latitude2`** (double, required): No description provided.
+- **`Longitude1`** (double, required): Provider field for longitude1 in this record.
+- **`Latitude1`** (double, required): Provider field for latitude1 in this record.
+- **`Longitude2`** (double, required): Provider field for longitude2 in this record.
+- **`Latitude2`** (double, required): Provider field for latitude2 in this record.
 ##### Unicast
 <a id="payload-io-aisstream-channelmanagement-unicast"></a>
 
-Nested record.
+Provider field for unicast in this record.
 
-- **`AddressStation1`** (int32, required): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`AddressStation2`** (int32, required): No description provided.
-- **`Spare3`** (int32, optional): No description provided.
+- **`AddressStation1`** (int32, required): Provider field for address station1 in this record.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`AddressStation2`** (int32, required): Provider field for address station2 in this record.
+- **`Spare3`** (int32, optional): Provider field for spare3 in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1193,7 +1193,7 @@ CloudEvents type: `IO.AISstream.CoordinatedUTCInquiry`
 
 #### What it tells you
 
-This event carries coordinated utcinquiry data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1209,13 +1209,13 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Coordinated Utcinquiry` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`DestinationID`** (int32, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1242,7 +1242,7 @@ CloudEvents type: `IO.AISstream.DataLinkManagementMessage`
 
 #### What it tells you
 
-This event carries data link management message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1258,12 +1258,12 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Data Link Management Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Data`** (map, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Data`** (map, optional): Provider field for data in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1289,7 +1289,7 @@ CloudEvents type: `IO.AISstream.GnssBroadcastBinaryMessage`
 
 #### What it tells you
 
-This event carries gnss broadcast binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1305,15 +1305,15 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Gnss Broadcast Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`Longitude`** (double, optional): No description provided.
-- **`Latitude`** (double, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`Data`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`Longitude`** (double, optional): Longitude of the resource in WGS 84 coordinates.
+- **`Latitude`** (double, optional): Latitude of the resource in WGS 84 coordinates.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`Data`** (string, optional): Provider field for data in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1342,7 +1342,7 @@ CloudEvents type: `IO.AISstream.GroupAssignmentCommand`
 
 #### What it tells you
 
-This event carries group assignment command data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1358,22 +1358,22 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Group Assignment Command` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`Longitude1`** (double, optional): No description provided.
-- **`Latitude1`** (double, optional): No description provided.
-- **`Longitude2`** (double, optional): No description provided.
-- **`Latitude2`** (double, optional): No description provided.
-- **`StationType`** (int32, optional): No description provided.
-- **`ShipType`** (int32, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`TxRxMode`** (int32, optional): No description provided.
-- **`ReportingInterval`** (int32, optional): No description provided.
-- **`QuietTime`** (int32, optional): No description provided.
-- **`Spare3`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`Longitude1`** (double, optional): Provider field for longitude1 in this record.
+- **`Latitude1`** (double, optional): Provider field for latitude1 in this record.
+- **`Longitude2`** (double, optional): Provider field for longitude2 in this record.
+- **`Latitude2`** (double, optional): Provider field for latitude2 in this record.
+- **`StationType`** (int32, optional): Provider field for station type in this record.
+- **`ShipType`** (int32, optional): Provider field for ship type in this record.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`TxRxMode`** (int32, optional): Provider field for tx rx mode in this record.
+- **`ReportingInterval`** (int32, optional): Provider field for reporting interval in this record.
+- **`QuietTime`** (int32, optional): Provider field for quiet time in this record.
+- **`Spare3`** (int32, optional): Provider field for spare3 in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1409,7 +1409,7 @@ CloudEvents type: `IO.AISstream.Interrogation`
 
 #### What it tells you
 
-This event carries interrogation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1425,43 +1425,43 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Interrogation` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`Station1Msg1`** (object, optional): No description provided. See [Station1Msg1](#payload-io-aisstream-interrogation-station1msg1).
-- **`Station1Msg2`** (object, optional): No description provided. See [Station1Msg2](#payload-io-aisstream-interrogation-station1msg2).
-- **`Station2`** (object, optional): No description provided. See [Station2](#payload-io-aisstream-interrogation-station2).
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`Station1Msg1`** (object, optional): Provider field for station1 msg1 in this record. See [Station1Msg1](#payload-io-aisstream-interrogation-station1msg1).
+- **`Station1Msg2`** (object, optional): Provider field for station1 msg2 in this record. See [Station1Msg2](#payload-io-aisstream-interrogation-station1msg2).
+- **`Station2`** (object, optional): Provider field for station2 in this record. See [Station2](#payload-io-aisstream-interrogation-station2).
 ##### Station1Msg1
 <a id="payload-io-aisstream-interrogation-station1msg1"></a>
 
-Nested record.
+Provider field for station1 msg1 in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`StationID`** (int32, required): No description provided.
-- **`MessageID`** (int32, required): No description provided.
-- **`SlotOffset`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`StationID`** (int32, required): Provider field for station i d in this record.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`SlotOffset`** (int32, required): Provider field for slot offset in this record.
 ##### Station1Msg2
 <a id="payload-io-aisstream-interrogation-station1msg2"></a>
 
-Nested record.
+Provider field for station1 msg2 in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`MessageID`** (int32, required): No description provided.
-- **`SlotOffset`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`SlotOffset`** (int32, required): Provider field for slot offset in this record.
 ##### Station2
 <a id="payload-io-aisstream-interrogation-station2"></a>
 
-Nested record.
+Provider field for station2 in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`StationID`** (int32, required): No description provided.
-- **`MessageID`** (int32, required): No description provided.
-- **`SlotOffset`** (int32, required): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`StationID`** (int32, required): Provider field for station i d in this record.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`SlotOffset`** (int32, required): Provider field for slot offset in this record.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1506,7 +1506,7 @@ CloudEvents type: `IO.AISstream.MultiSlotBinaryMessage`
 
 #### What it tells you
 
-This event carries multi slot binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1522,27 +1522,27 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Multi Slot Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`DestinationIDValid`** (boolean, optional): No description provided.
-- **`ApplicationIDValid`** (boolean, optional): No description provided.
-- **`DestinationID`** (int32, optional): No description provided.
-- **`Spare1`** (int32, optional): No description provided.
-- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-multislotbinarymessage-applicationid).
-- **`Payload`** (string, optional): No description provided.
-- **`Spare2`** (int32, optional): No description provided.
-- **`CommunicationStateIsItdma`** (boolean, optional): No description provided.
-- **`CommunicationState`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`DestinationIDValid`** (boolean, optional): Provider field for destination i d valid in this record.
+- **`ApplicationIDValid`** (boolean, optional): Provider field for application i d valid in this record.
+- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
+- **`Spare1`** (int32, optional): Provider field for spare1 in this record.
+- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-multislotbinarymessage-applicationid).
+- **`Payload`** (string, optional): Provider field for payload in this record.
+- **`Spare2`** (int32, optional): Provider field for spare2 in this record.
+- **`CommunicationStateIsItdma`** (boolean, optional): Provider field for communication state is itdma in this record.
+- **`CommunicationState`** (int32, optional): Provider field for communication state in this record.
 ##### ApplicationID
 <a id="payload-io-aisstream-multislotbinarymessage-applicationid"></a>
 
-Nested record.
+Provider field for application i d in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`DesignatedAreaCode`** (int32, required): No description provided.
-- **`FunctionIdentifier`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
+- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1579,7 +1579,7 @@ CloudEvents type: `IO.AISstream.SingleSlotBinaryMessage`
 
 #### What it tells you
 
-This event carries single slot binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1595,24 +1595,24 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Single Slot Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-- **`MessageID`** (int32, required): No description provided.
-- **`RepeatIndicator`** (int32, optional): No description provided.
-- **`UserID`** (int32, required): No description provided.
-- **`Valid`** (boolean, required): No description provided.
-- **`DestinationIDValid`** (boolean, optional): No description provided.
-- **`ApplicationIDValid`** (boolean, optional): No description provided.
-- **`DestinationID`** (int32, optional): No description provided.
-- **`Spare`** (int32, optional): No description provided.
-- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-singleslotbinarymessage-applicationid).
-- **`Payload`** (string, optional): No description provided.
+- **`MessageID`** (int32, required): Provider field for message i d in this record.
+- **`RepeatIndicator`** (int32, optional): Provider field for repeat indicator in this record.
+- **`UserID`** (int32, required): Provider field for user i d in this record.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`DestinationIDValid`** (boolean, optional): Provider field for destination i d valid in this record.
+- **`ApplicationIDValid`** (boolean, optional): Provider field for application i d valid in this record.
+- **`DestinationID`** (int32, optional): Provider field for destination i d in this record.
+- **`Spare`** (int32, optional): Provider field for spare in this record.
+- **`ApplicationID`** (object, optional): Provider field for application i d in this record. See [ApplicationID](#payload-io-aisstream-singleslotbinarymessage-applicationid).
+- **`Payload`** (string, optional): Provider field for payload in this record.
 ##### ApplicationID
 <a id="payload-io-aisstream-singleslotbinarymessage-applicationid"></a>
 
-Nested record.
+Provider field for application i d in this record.
 
-- **`Valid`** (boolean, required): No description provided.
-- **`DesignatedAreaCode`** (int32, required): No description provided.
-- **`FunctionIdentifier`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): Provider field for valid in this record.
+- **`DesignatedAreaCode`** (int32, required): Provider field for designated area code in this record.
+- **`FunctionIdentifier`** (int32, required): Provider field for function identifier in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1646,7 +1646,7 @@ CloudEvents type: `IO.AISstream.mqtt.PositionReport`
 
 #### What it tells you
 
-Position report (Type 1/2/3/4/9/18/19/27) projected onto the UNS axes.
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1681,9 +1681,9 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 - **`message_id`** (int32, required): Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27).
 ##### `msg_type` values
 
-- `position-report`
-- `static`
-- `aid-to-navigation`
+- `position-report`: Provider coded value `position-report` for this field.
+- `static`: Provider coded value `static` for this field.
+- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1720,7 +1720,7 @@ CloudEvents type: `IO.AISstream.mqtt.ShipStatic`
 
 #### What it tells you
 
-Static and voyage-related data (Type 5 ShipStaticData / Type 24 StaticDataReport).
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1756,9 +1756,9 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 - **`message_id`** (int32, required): Original ITU-R M.1371 message ID (5 or 24).
 ##### `msg_type` values
 
-- `position-report`
-- `static`
-- `aid-to-navigation`
+- `position-report`: Provider coded value `position-report` for this field.
+- `static`: Provider coded value `static` for this field.
+- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1796,7 +1796,7 @@ CloudEvents type: `IO.AISstream.mqtt.AidToNavigation`
 
 #### What it tells you
 
-Aid-to-Navigation report (Type 21).
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
 
 #### Identity
 
@@ -1827,9 +1827,9 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 - **`message_id`** (int32, required): Original ITU-R M.1371 message ID (21).
 ##### `msg_type` values
 
-- `position-report`
-- `static`
-- `aid-to-navigation`
+- `position-report`: Provider coded value `position-report` for this field.
+- `static`: Provider coded value `static` for this field.
+- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
