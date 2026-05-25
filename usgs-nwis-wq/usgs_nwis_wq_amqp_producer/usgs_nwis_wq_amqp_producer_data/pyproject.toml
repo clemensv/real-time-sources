@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "usgs-nwis-wq-producer-data"
+name = "usgs-nwis-wq-amqp-producer-data"
 version = "0.1.0"
 description = "A package for handling JSON Structure schema data"
 authors = ["Your Name"]
 license = "MIT"
-packages = [ { include = "usgs_nwis_wq_producer_data", from="src" } ]
+packages = [ { include = "usgs_nwis_wq_amqp_producer_data", from="src" } ]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"

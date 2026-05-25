@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from usgs_nwis_wq_producer_data.usgs_nwis_wq_producer_data.waterqualityreading import WaterQualityReading
+from usgs_nwis_wq_mqtt_producer_data.waterqualityreading import WaterQualityReading
 
 
 class Test_WaterQualityReading(unittest.TestCase):
@@ -28,14 +28,15 @@ class Test_WaterQualityReading(unittest.TestCase):
         Create instance of WaterQualityReading for testing
         """
         instance = WaterQualityReading(
-            site_number='txxwaxagefohvekptdxp',
-            site_name='afcixkatcrgerbovxelh',
-            parameter_code='qmdanawaudreuopdthlw',
-            parameter_name='rlyjbyjfvcnsapelyxvy',
-            value=float(42.09335089418504),
-            unit='nnhlxzpuemxmimaubpwn',
-            qualifier='vdbmhgrpqqhzzfeszbsx',
-            date_time='auixutlzqrlkmrchvsxt'
+            site_number='tmthbfxwetsdbwatrfeo',
+            site_name='cnvolrqrsfzxpcthnwti',
+            parameter_code='kddanooqupjpiehcpyfu',
+            parameter_name='hpabsufhhsgimzyqyygy',
+            value=float(81.20821943227084),
+            unit='haglwfyhnvubzkhflcvy',
+            qualifier='gwdrhrgnocjeztceeong',
+            date_time='lxdrvpxlyqkpoixrphtb',
+            state='fsuahkjzssbihottrjie'
         )
         return instance
 
@@ -44,7 +45,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test site_number property
         """
-        test_value = 'txxwaxagefohvekptdxp'
+        test_value = 'tmthbfxwetsdbwatrfeo'
         self.instance.site_number = test_value
         self.assertEqual(self.instance.site_number, test_value)
     
@@ -52,7 +53,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test site_name property
         """
-        test_value = 'afcixkatcrgerbovxelh'
+        test_value = 'cnvolrqrsfzxpcthnwti'
         self.instance.site_name = test_value
         self.assertEqual(self.instance.site_name, test_value)
     
@@ -60,7 +61,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test parameter_code property
         """
-        test_value = 'qmdanawaudreuopdthlw'
+        test_value = 'kddanooqupjpiehcpyfu'
         self.instance.parameter_code = test_value
         self.assertEqual(self.instance.parameter_code, test_value)
     
@@ -68,7 +69,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test parameter_name property
         """
-        test_value = 'rlyjbyjfvcnsapelyxvy'
+        test_value = 'hpabsufhhsgimzyqyygy'
         self.instance.parameter_name = test_value
         self.assertEqual(self.instance.parameter_name, test_value)
     
@@ -76,7 +77,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(42.09335089418504)
+        test_value = float(81.20821943227084)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -84,7 +85,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'nnhlxzpuemxmimaubpwn'
+        test_value = 'haglwfyhnvubzkhflcvy'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     
@@ -92,7 +93,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test qualifier property
         """
-        test_value = 'vdbmhgrpqqhzzfeszbsx'
+        test_value = 'gwdrhrgnocjeztceeong'
         self.instance.qualifier = test_value
         self.assertEqual(self.instance.qualifier, test_value)
     
@@ -100,16 +101,34 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test date_time property
         """
-        test_value = 'auixutlzqrlkmrchvsxt'
+        test_value = 'lxdrvpxlyqkpoixrphtb'
         self.instance.date_time = test_value
         self.assertEqual(self.instance.date_time, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_state_property(self):
         """
-        Test to_byte_array method with avro media type
+        Test state property
         """
-        media_type = "application/vnd.apache.avro+avro"
+        test_value = 'fsuahkjzssbihottrjie'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
+    
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = WaterQualityReading.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = WaterQualityReading.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+
