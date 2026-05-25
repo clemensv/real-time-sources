@@ -43,6 +43,51 @@
         "#/messagegroups/NL.NDW.Traffic.Situations"
       ],
       "description": "Kafka producer endpoint for NDL Netherlands CloudEvents on the `ndl-traffic-situations` topic keyed by `{situation_id}`."
+    },
+    "NL.NDW.Traffic.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.Traffic.Measurements.mqtt",
+        "#/messagegroups/NL.NDW.Traffic.Situations.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "NL.NDW.Traffic.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "ndl-netherlands"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.Traffic.Measurements.amqp",
+        "#/messagegroups/NL.NDW.Traffic.Situations.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -112,6 +157,119 @@
         }
       },
       "description": "Events from NDL Netherlands covering Dutch road network sites and traffic situations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "NL.NDW.Traffic.Measurements.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for ndl-netherlands.",
+      "messages": {
+        "NL.NDW.Traffic.TrafficSpeed.mqtt": {
+          "name": "TrafficSpeed",
+          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TrafficSpeed",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndl/ndl-netherlands/{road}/{site_id}/speed",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NL.NDW.Traffic.TravelTime.mqtt": {
+          "name": "TravelTime",
+          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndl/ndl-netherlands/{road}/{site_id}/travel-time",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "NL.NDW.Traffic.Situations.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for ndl-netherlands.",
+      "messages": {
+        "NL.NDW.Traffic.TrafficSituation.mqtt": {
+          "name": "TrafficSituation",
+          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Situations/messages/NL.NDW.Traffic.TrafficSituation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndl/ndl-netherlands/situations/{road}/{situation_id}/event",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "NL.NDW.Traffic.Measurements.amqp": {
+      "description": "AMQP 1.0 bindings for ndl-netherlands.",
+      "messages": {
+        "NL.NDW.Traffic.TrafficSpeed.amqp": {
+          "name": "TrafficSpeed",
+          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TrafficSpeed",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.Traffic.TravelTime.amqp": {
+          "name": "TravelTime",
+          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "NL.NDW.Traffic.Situations.amqp": {
+      "description": "AMQP 1.0 bindings for ndl-netherlands.",
+      "messages": {
+        "NL.NDW.Traffic.TrafficSituation.amqp": {
+          "name": "TrafficSituation",
+          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Situations/messages/NL.NDW.Traffic.TrafficSituation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

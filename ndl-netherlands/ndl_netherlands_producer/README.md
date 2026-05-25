@@ -1,6 +1,6 @@
 
 
-# Ndl-netherlands-producer Kafka Producer# Ndl-netherlands-producer Event Dispatcher for Apache Kafka
+# Ndl_netherlands_producer Kafka Producer# Ndl_netherlands_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,9 +15,7 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - NLNDWTrafficMeasurementsEventDispatcher,
-
-4. [Generated Producer Classes](#generated-producer-classes)    NLNDWTrafficSituationsEventDispatcher
+3. [Quick Start](#quick-start)    - NLNDWTrafficMeasurementsEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -41,10 +39,6 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NLNDWTrafficMeasurementsProducersolution for event-driven applications.
-
-It includes both plain Kafka messages and CloudEvents, offering a versatile
-
-- NLNDWTrafficSituationsProducersolution for event-driven applications.
 
 
 
@@ -92,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from ndl-netherlands-producer import NLNDWTrafficMeasurementsProducer```python
+from ndl_netherlands_producer import NLNDWTrafficMeasurementsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -199,44 +193,6 @@ nl_ndw_traffic_measurements_dispatcher.nl_ndw_traffic_traffic_speed_async = nl_n
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
-- `client_id`: Optional client identifier- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### NLNDWTrafficSituationsProducer- `data`: The event data of type `ndl_netherlands_producer_data.TrafficSpeed`.
-
-
-
-Producer for `NL.NDW.Traffic.Situations` message group.Example:
-
-
-
-#### Constructor```python
-
-async def nl_ndw_traffic_traffic_speed_event(record: ConsumerRecord, cloud_event: CloudEvent, data: TrafficSpeed) ->
-None:
-
-```python    # Process the event data
-
-NLNDWTrafficSituationsProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-nl_ndw_traffic_situations_dispatcher.nl_ndw_traffic_traffic_speed_async = nl_ndw_traffic_traffic_speed_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -296,43 +252,6 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 nl_ndw_traffic_measurements_dispatcher.nl_ndw_traffic_travel_time_async = nl_ndw_traffic_travel_time_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### NLNDWTrafficSituationsProducer- `data`: The event data of type `ndl_netherlands_producer_data.TravelTime`.
-
-
-
-Producer for `NL.NDW.Traffic.Situations` message group.Example:
-
-
-
-#### Constructor```python
-
-async def nl_ndw_traffic_travel_time_event(record: ConsumerRecord, cloud_event: CloudEvent, data: TravelTime) -> None:
-
-```python    # Process the event data
-
-NLNDWTrafficSituationsProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-nl_ndw_traffic_situations_dispatcher.nl_ndw_traffic_travel_time_async = nl_ndw_traffic_travel_time_event
 
 **Parameters:**```
 
@@ -547,308 +466,6 @@ await producer.send_nl_ndw_traffic_travel_time_batch(```
         TravelTime(...),
 
         TravelTime(...)Args:
-
-    ],- `consumer`: The Kafka consumer.
-
-    partition_key='batch-001'
-
-)#####  `__aenter__()`
-
-```
-
-Enters the asynchronous context and starts the processor.
-
-
-
-
-
-**Apache Kafka** is a distributed streaming platform that:
-
-- **Handles high-throughput** real-time data feeds with low latency
-
-- **Provides durability** through log-based storage with configurable retention
-
-- **Scales horizontally** across multiple brokers and partitions### NLNDWTrafficSituationsEventDispatcher
-
-- **Enables pub/sub messaging** with topic-based routing
-
-`NLNDWTrafficSituationsEventDispatcher` handles events for the NL.NDW.Traffic.Situations message group.
-
-Use cases: Event streaming, log aggregation, real-time analytics, data integration.
-
-#### Methods:
-
-## Quick Start
-
-##### `__init__`:
-
-### Installation
-
-```python
-
-```bash__init__(self)-> None
-
-pip install confluent-kafka cloudevents pydantic```
-
-```
-
-Initializes the dispatcher.
-
-### Basic Usage
-
-##### `create_processor`:
-
-```python
-
-from ndl-netherlands-producer import NLNDWTrafficMeasurementsProducer```python
-
-create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
-
-# Create producer```
-
-producer = NLNDWTrafficMeasurementsProducer(
-
-    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
-
-    client_id='my-producer'
-
-)Args:
-
-- `bootstrap_servers`: The Kafka bootstrap servers.
-
-- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
-
-# Send single message
-
-await producer.send_nl_ndw_traffic_traffic_speed(```python
-
-    data=TrafficSpeed(...),add_consumer(self, consumer: KafkaConsumer)
-
-    partition_key='device-123'```
-
-)Adds a Kafka consumer to the dispatcher.
-
-
-
-# Close producerArgs:
-
-await producer.close()- `consumer`: The Kafka consumer.
-
-```
-
-#### Event Handlers
-
-### With SSL/SASL
-
-The NLNDWTrafficSituationsEventDispatcher defines the following event handler hooks.
-
-```python
-
-producer = NLNDWTrafficMeasurementsProducer(
-
-    bootstrap_servers='localhost:9093',
-
-    security_protocol='SASL_SSL',##### `nl_ndw_traffic_traffic_situation_async`
-
-    sasl_mechanism='PLAIN',
-
-    sasl_username='your-username',```python
-
-    sasl_password='your-password'nl_ndw_traffic_traffic_situation_async:  Callable[[ConsumerRecord, CloudEvent,
-TrafficSituation], Awaitable[None]]
-
-)```
-
-```
-
-Asynchronous handler hook for `NL.NDW.Traffic.TrafficSituation`: Current traffic situation record from the Dutch NDW
-DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other
-traffic-affecting events on the Dutch road network.
-
-## Generated Producer Classes
-
-The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
-
-- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### NLNDWTrafficMeasurementsProducer- `data`: The event data of type `ndl_netherlands_producer_data.TrafficSituation`.
-
-
-
-Producer for `NL.NDW.Traffic.Measurements` message group.Example:
-
-
-
-#### Constructor```python
-
-async def nl_ndw_traffic_traffic_situation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-TrafficSituation) -> None:
-
-```python    # Process the event data
-
-NLNDWTrafficMeasurementsProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-nl_ndw_traffic_measurements_dispatcher.nl_ndw_traffic_traffic_situation_async = nl_ndw_traffic_traffic_situation_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### NLNDWTrafficSituationsProducer- `data`: The event data of type `ndl_netherlands_producer_data.TrafficSituation`.
-
-
-
-Producer for `NL.NDW.Traffic.Situations` message group.Example:
-
-
-
-#### Constructor```python
-
-async def nl_ndw_traffic_traffic_situation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-TrafficSituation) -> None:
-
-```python    # Process the event data
-
-NLNDWTrafficSituationsProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-nl_ndw_traffic_situations_dispatcher.nl_ndw_traffic_traffic_situation_async = nl_ndw_traffic_traffic_situation_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier
-
-- `**kwargs`: Additional Kafka producer configuration
-
-
-
-#### Send Methods## Internals
-
-
-
-### Dispatchers
-
-##### `send_nl_ndw_traffic_traffic_situation`Dispatchers have the following protected methods:
-
-
-
-```python### Methods:
-
-async def send_nl_ndw_traffic_traffic_situation(
-
-    self,##### `_process_event`
-
-    data: TrafficSituation,
-
-    partition_key: Optional[str] = None,```python
-
-    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
-
-    topic: Optional[str] = None```
-
-) -> None
-
-```Processes an incoming event.
-
-
-
-Send a single `NL.NDW.Traffic.TrafficSituation` message. Current traffic situation record from the Dutch NDW DATEX II
-actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-
-affecting events on the Dutch road network.Args:
-
-- `record`: The Kafka record.
-
-**Parameters:**
-
-- `data`: Message data of type `TrafficSituation`
-
-- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
-
-- `headers`: Optional message headers
-
-- `topic`: Optional topic override (uses default topic if not specified)```python
-
-_dispatch_cloud_event(self, record, cloud_event)
-
-**Example:**```
-
-
-
-```pythonDispatches a CloudEvent to the appropriate handler.
-
-await producer.send_nl_ndw_traffic_traffic_situation(
-
-    data=TrafficSituation(...),Args:
-
-    partition_key='device-001',- `record`: The Kafka record.
-
-    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
-
-)
-
-```
-
-Send multiple `NL.NDW.Traffic.TrafficSituation` messages in a batch.
-
-### EventProcessorRunner
-
-**Parameters:**
-
-- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
-dispatching events to the appropriate handlers.
-
-- `partition_key`: Optional partition key for all messages
-
-- `headers`: Optional headers for all messages#### Methods
-
-- `topic`: Optional topic override
-
-##### `__init__`
-
-**Example:**
-
-```python
-
-```python__init__(consumer: KafkaConsumer)
-
-await producer.send_nl_ndw_traffic_traffic_situation_batch(```
-
-    messages=[
-
-        TrafficSituation(...),Initializes the runner with a Kafka consumer.
-
-        TrafficSituation(...),
-
-        TrafficSituation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
