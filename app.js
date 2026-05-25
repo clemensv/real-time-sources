@@ -17,7 +17,7 @@ const SOURCES = [
   { id: "hubeau-hydrometrie", name: "Hub'Eau Hydrometrie", cat: "Hydrology", key: false, desc: "France — ~6,300 stations", notebook: true },
   { id: "imgw-hydro", name: "IMGW Hydro", cat: "Hydrology", key: false, desc: "Poland — IMGW-PIB", notebook: true },
   { id: "ireland-opw-waterlevel", name: "Ireland OPW Water Level", cat: "Hydrology", key: false, desc: "Ireland — ~500 OPW hydrometric stations", notebook: true },
-  { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", notebook: true },
+  { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", notebook: true, amqp: true, mqtt: true },
   { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", notebook: true },
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true },
   { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations" },
@@ -82,13 +82,13 @@ const SOURCES = [
   { id: "usgs-geomag", name: "USGS Geomagnetism", cat: "Radiation", key: false, desc: "United States — 14 observatories, 1-min geomagnetic field", notebook: true, mqtt: true },
 
   // ── Maritime and Vessel Tracking ──
-  { id: "aisstream", name: "AISStream", cat: "Maritime", key: true, desc: "Global — AIS via WebSocket, ~200 km from shore" },
+  { id: "aisstream", name: "AISStream", cat: "Maritime", key: true, desc: "Global — AIS via WebSocket, ~200 km from shore", amqp: true, mqtt: true },
   { id: "digitraffic-maritime", name: "Digitraffic Maritime", cat: "Maritime", key: false, desc: "Finland / Baltic Sea — AIS via MQTT" },
-  { id: "kystverket-ais", name: "Kystverket AIS", cat: "Maritime", key: false, desc: "Norway / Svalbard — raw TCP AIS, ~34 msg/s" },
+  { id: "kystverket-ais", name: "Kystverket AIS", cat: "Maritime", key: false, desc: "Norway / Svalbard — raw TCP AIS, ~34 msg/s", amqp: true, mqtt: true },
 
   // ── Aviation ──
-  { id: "mode-s", name: "Mode-S", cat: "Aviation", key: false, desc: "Local — ADS-B via dump1090 receivers" },
-  { id: "vatsim", name: "VATSIM", cat: "Aviation", key: false, desc: "Global — virtual aviation network, pilots & controllers", notebook: true, mqtt: true },
+  { id: "mode-s", name: "Mode-S", cat: "Aviation", key: false, desc: "Local — ADS-B via dump1090 receivers", amqp: true, mqtt: true },
+  { id: "vatsim", name: "VATSIM", cat: "Aviation", key: false, desc: "Global — virtual aviation network, pilots & controllers", notebook: true, mqtt: true, amqp: true },
 
   // ── Road and Public Transport ──
   { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true },

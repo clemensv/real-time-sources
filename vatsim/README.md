@@ -109,3 +109,10 @@ Four Azure Container Instance deployment shapes are documented for this source:
 | MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
 
 See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
+
+
+## AMQP 1.0 companion feeder
+
+This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-vatsim-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=vatsim` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
+
+Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.

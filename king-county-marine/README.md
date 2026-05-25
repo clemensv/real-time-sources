@@ -65,3 +65,10 @@ The notebook lives at [`notebook/king-county-marine-feed.ipynb`](notebook/king-c
 - King County buoy search surface: https://data.kingcounty.gov/
 - Catalog search: https://api.us.socrata.com/api/catalog/v1?search_context=data.kingcounty.gov&q=buoy
 - Marine monitoring portal: https://green2.kingcounty.gov/marine-buoy/
+
+
+## AMQP 1.0 companion feeder
+
+This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-king-county-marine-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=king-county-marine` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
+
+Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.
