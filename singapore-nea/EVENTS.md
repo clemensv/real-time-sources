@@ -1,12 +1,12 @@
 # Singapore NEA Weather and Air Quality Bridge Events
 
-This bridge fetches real-time weather observations and regional air quality data from the [Singapore National Environment Agency (NEA)](https://data.gov.sg/datasets?topics=environment) and emits them as CloudEvents into Apache Kafka or Azure Event Hubs.
+Singapore NEA Environment publishes weather observations, air-quality readings, and environmental indexes from Singapore's National Environment Agency (NEA) for Singapore weather and air-quality regions and stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 5 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 1 reference/catalog event type and 4 telemetry event types.
+- **Reference vs telemetry:** 0 reference/catalog event types and 5 telemetry event types.
 - **Identity:** `{station_id}`, `{region}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,7 +38,7 @@ CloudEvents type: `SG.Gov.NEA.Weather.Station`
 
 #### What it tells you
 
-Reference data for a Singapore NEA weather observation station. Stations are identified by a stable device ID (e.g. S109) and include location coordinates.
+A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -77,7 +77,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Weather Observation
 
@@ -85,7 +85,7 @@ CloudEvents type: `SG.Gov.NEA.Weather.WeatherObservation`
 
 #### What it tells you
 
-Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity and wind every minute. Fields are null when the station does not report that parameter.
+A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -136,7 +136,7 @@ CloudEvents type: `SG.Gov.NEA.AirQuality.Region`
 
 #### What it tells you
 
-Reference data for a Singapore NEA air quality monitoring region. NEA divides Singapore into five geographic regions for PSI and PM2.5 reporting.
+A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -169,7 +169,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Psireading
 
@@ -177,7 +177,7 @@ CloudEvents type: `SG.Gov.NEA.AirQuality.PSIReading`
 
 #### What it tells you
 
-Pollutant Standards Index (PSI) reading for a Singapore NEA air quality region. PSI is a composite index calculated from six pollutant sub-indices. Published hourly by the NEA via data.gov.sg.
+A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -242,7 +242,7 @@ CloudEvents type: `SG.Gov.NEA.AirQuality.PM25Reading`
 
 #### What it tells you
 
-Hourly PM2.5 concentration reading for a Singapore NEA air quality region. Fine particulate matter with aerodynamic diameter less than or equal to 2.5 micrometres. Published hourly by NEA.
+A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
