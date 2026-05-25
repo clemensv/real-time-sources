@@ -1,5 +1,5 @@
 """
-Test case for Counter
+Test case for BicycleCount
 """
 
 import os
@@ -8,33 +8,34 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from paris_bicycle_counters_producer_data.counter import Counter
+from paris_bicycle_counters_amqp_producer_data.bicyclecount import BicycleCount
+import datetime
 
 
-class Test_Counter(unittest.TestCase):
+class Test_BicycleCount(unittest.TestCase):
     """
-    Test case for Counter
+    Test case for BicycleCount
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Counter.create_instance()
+        self.instance = Test_BicycleCount.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Counter for testing
+        Create instance of BicycleCount for testing
         """
-        instance = Counter(
-            counter_id='ljgyauqrngsfsrkbvyci',
-            counter_name='axrumpxvqjgzxxlbibib',
-            channel_name='sdstcbyoranpwzxpricm',
-            installation_date='rmxsgmshposzpprgrbgk',
-            longitude=float(93.11708818989946),
-            latitude=float(91.58047919211869),
-            ce_id='unzwgydwdvjlggozeoew'
+        instance = BicycleCount(
+            counter_id='hbdclzhsbkcvvqymarje',
+            counter_name='rnujsakoxpvqktsmgqgh',
+            count=int(23),
+            date=datetime.datetime.now(datetime.timezone.utc),
+            longitude=float(59.93136047641745),
+            latitude=float(81.21450524219246),
+            ce_id='akwiejbnniukrbchudli'
         )
         return instance
 
@@ -43,7 +44,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test counter_id property
         """
-        test_value = 'ljgyauqrngsfsrkbvyci'
+        test_value = 'hbdclzhsbkcvvqymarje'
         self.instance.counter_id = test_value
         self.assertEqual(self.instance.counter_id, test_value)
     
@@ -51,31 +52,31 @@ class Test_Counter(unittest.TestCase):
         """
         Test counter_name property
         """
-        test_value = 'axrumpxvqjgzxxlbibib'
+        test_value = 'rnujsakoxpvqktsmgqgh'
         self.instance.counter_name = test_value
         self.assertEqual(self.instance.counter_name, test_value)
     
-    def test_channel_name_property(self):
+    def test_count_property(self):
         """
-        Test channel_name property
+        Test count property
         """
-        test_value = 'sdstcbyoranpwzxpricm'
-        self.instance.channel_name = test_value
-        self.assertEqual(self.instance.channel_name, test_value)
+        test_value = int(23)
+        self.instance.count = test_value
+        self.assertEqual(self.instance.count, test_value)
     
-    def test_installation_date_property(self):
+    def test_date_property(self):
         """
-        Test installation_date property
+        Test date property
         """
-        test_value = 'rmxsgmshposzpprgrbgk'
-        self.instance.installation_date = test_value
-        self.assertEqual(self.instance.installation_date, test_value)
+        test_value = datetime.datetime.now(datetime.timezone.utc)
+        self.instance.date = test_value
+        self.assertEqual(self.instance.date, test_value)
     
     def test_longitude_property(self):
         """
         Test longitude property
         """
-        test_value = float(93.11708818989946)
+        test_value = float(59.93136047641745)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -83,7 +84,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(91.58047919211869)
+        test_value = float(81.21450524219246)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +92,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'unzwgydwdvjlggozeoew'
+        test_value = 'akwiejbnniukrbchudli'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     
@@ -101,7 +102,7 @@ class Test_Counter(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Counter.from_data(bytes_data, media_type)
+        new_instance = BicycleCount.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -110,7 +111,7 @@ class Test_Counter(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = Counter.from_json(json_data)
+        new_instance = BicycleCount.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 

@@ -157,7 +157,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `FR.Paris.OpenData.Velo.mqtt.Counter`:
+```Asynchronous handler hook for `FR.Paris.OpenData.Velo.mqtt.Counter`: A current transport measurement or status update
+from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new
+or refreshed value.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -201,7 +203,9 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `FR.Paris.OpenData.Velo.mqtt.BicycleCount`:
+```Asynchronous handler hook for `FR.Paris.OpenData.Velo.mqtt.BicycleCount`: A current transport measurement or status
+update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports
+a new or refreshed value.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

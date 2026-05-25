@@ -1,4 +1,4 @@
-""" BicycleCount dataclass. """
+""" Counter dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,22 +10,20 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
 import json
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class BicycleCount:
+class Counter:
     """
     A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         counter_id (str)
         counter_name (str)
-        count (typing.Optional[int])
-        date (datetime.datetime)
+        channel_name (typing.Optional[str])
+        installation_date (typing.Optional[str])
         longitude (typing.Optional[float])
         latitude (typing.Optional[float])
         ce_id (str)
@@ -34,14 +32,14 @@ class BicycleCount:
     
     counter_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="counter_id"))
     counter_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="counter_name"))
-    count: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="count"))
-    date: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    channel_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="channel_name"))
+    installation_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="installation_date"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     ce_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ce_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'BicycleCount':
+    def from_serializer_dict(cls, data: dict) -> 'Counter':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +112,7 @@ class BicycleCount:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['BicycleCount']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Counter']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -151,13 +149,13 @@ class BicycleCount:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return BicycleCount.from_serializer_dict(_record)
+                return Counter.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'BicycleCount':
+    def create_instance(cls) -> 'Counter':
         """
         Creates an instance of the dataclass with test values.
         
@@ -165,11 +163,11 @@ class BicycleCount:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='nqqwodbxddmyevibanig',
-            counter_name='nlyxifhfvzduxzbrogew',
-            count=int(34),
-            date=datetime.datetime.now(datetime.timezone.utc),
-            longitude=float(37.47562025944228),
-            latitude=float(55.463849846277235),
-            ce_id='hnhgrqjlkezloofgybxd'
+            counter_id='lxzjyungwwqscszwfsny',
+            counter_name='ahzbrqcszyncrdxzbisf',
+            channel_name='oolipruhypljkdfdjdbc',
+            installation_date='tmoxeffgxnnpzdcsrfwq',
+            longitude=float(60.29176915988443),
+            latitude=float(13.822545475476256),
+            ce_id='vggncaxilmekeaawcsoj'
         )

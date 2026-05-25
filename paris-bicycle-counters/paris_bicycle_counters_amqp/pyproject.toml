@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paris-bicycle-counters-amqp"
+version = "0.1.0"
+description = "AMQP companion feeder for Paris Bicycle Counters"
+requires-python = ">=3.10"
+dependencies = ["python-qpid-proton>=0.40.0"]
+
+[project.scripts]
+paris-bicycle-counters-amqp = "paris_bicycle_counters_amqp.app:main"
+
+[tool.setuptools.packages.find]
+include = ["paris_bicycle_counters_amqp*"]

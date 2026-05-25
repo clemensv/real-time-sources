@@ -1,30 +1,11 @@
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\paris_bicycle_counters.xreg.json"
-$outputDir = Join-Path $projectRoot "paris_bicycle_counters_producer"
+$xregFile = Join-Path $scriptDir 'xreg\paris_bicycle_counters.xreg.json'
 
-Write-Host "Generating Paris Bicycle Counters producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'FR.Paris.OpenData.Velo.Kafka' --projectname paris_bicycle_counters_producer --output (Join-Path $scriptDir 'paris_bicycle_counters_producer')
 
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'FR.Paris.OpenData.Velo.Mqtt' --projectname paris_bicycle_counters_mqtt_producer --output (Join-Path $scriptDir 'paris_bicycle_counters_mqtt_producer')
 
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname paris-bicycle-counters-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Next steps:" -ForegroundColor Cyan
-    Write-Host "  1. Run copy_generated_producer.ps1 to copy files into the main package" -ForegroundColor Gray
-    Write-Host "  2. Run fix_imports.ps1 to fix generated import paths" -ForegroundColor Gray
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit 1
-}
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'FR.Paris.OpenData.Amqp' --projectname paris_bicycle_counters_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'paris_bicycle_counters_amqp_producer')

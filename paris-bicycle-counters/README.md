@@ -128,3 +128,13 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-eventhub.json)
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `paris-bicycle-counters` by default.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt:latest`
+- AMQP image: `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp:latest`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`

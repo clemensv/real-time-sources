@@ -17,7 +17,7 @@ import json
 @dataclass
 class Counter:
     """
-    Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.
+    A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         counter_id (str)
@@ -163,11 +163,11 @@ class Counter:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='calenwkulyhdiqztweae',
-            counter_name='sndpxhkutaruqtilujxi',
-            channel_name='yvrfxujkcujxbapaaxka',
-            installation_date='qtypxthvuhgoisznxotg',
-            longitude=float(71.2167451470225),
-            latitude=float(13.712512642205986),
-            ce_id='eflsyyzzhstvorwptpfx'
+            counter_id='ljgyauqrngsfsrkbvyci',
+            counter_name='axrumpxvqjgzxxlbibib',
+            channel_name='sdstcbyoranpwzxpricm',
+            installation_date='rmxsgmshposzpprgrbgk',
+            longitude=float(93.11708818989946),
+            latitude=float(91.58047919211869),
+            ce_id='unzwgydwdvjlggozeoew'
         )
