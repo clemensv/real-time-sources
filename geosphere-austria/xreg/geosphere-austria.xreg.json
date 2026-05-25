@@ -21,6 +21,50 @@
         "#/messagegroups/at.geosphere.tawes"
       ],
       "description": "Kafka producer endpoint for GeoSphere Austria Weather CloudEvents on the `geosphere-austria-tawes` topic keyed by `{station_id}`."
+    },
+    "at.geosphere.tawes.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/at.geosphere.tawes.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for geosphere-austria."
+    },
+    "at.geosphere.tawes.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/geosphere-austria"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/at.geosphere.tawes.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for geosphere-austria."
     }
   },
   "messagegroups": {
@@ -68,6 +112,130 @@
         }
       },
       "description": "Events from GeoSphere Austria Weather covering Austrian weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "at.geosphere.tawes.mqtt": {
+      "description": "MQTT 5 companion message group for at.geosphere.tawes.",
+      "messages": {
+        "at.geosphere.tawes.mqtt.WeatherStation": {
+          "name": "WeatherStation",
+          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "envelopemetadata": {
+            "type": {
+              "value": "at.geosphere.tawes.WeatherStation"
+            },
+            "source": {
+              "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "at.geosphere.tawes.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "at.geosphere.tawes.WeatherObservation"
+            },
+            "source": {
+              "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "at.geosphere.tawes.amqp": {
+      "description": "AMQP 1.0 companion message group for at.geosphere.tawes.",
+      "messages": {
+        "at.geosphere.tawes.amqp.WeatherStation": {
+          "name": "WeatherStation",
+          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "envelopemetadata": {
+            "type": {
+              "value": "at.geosphere.tawes.WeatherStation"
+            },
+            "source": {
+              "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "bundesland": {
+                "type": "uritemplate",
+                "value": "{bundesland}",
+                "description": "Routing value for bundesland."
+              }
+            }
+          }
+        },
+        "at.geosphere.tawes.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "at.geosphere.tawes.WeatherObservation"
+            },
+            "source": {
+              "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "bundesland": {
+                "type": "uritemplate",
+                "value": "{bundesland}",
+                "description": "Routing value for bundesland."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -127,6 +295,10 @@
                                 "null"
                               ],
                               "description": "Austrian federal state (Bundesland) where the station is located, for example 'Wien', 'Tirol', 'Steiermark'. Sourced from the GeoSphere metadata 'state' field. Null when the metadata does not include a state."
+                            },
+                            "bundesland": {
+                              "type": "string",
+                              "description": "Normalized routing field 'bundesland' added for MQTT/AMQP subscriber filtering."
                             }
                           },
                           "required": [
@@ -444,6 +616,10 @@
                               "altnames": {
                                 "json": "GLOW"
                               }
+                            },
+                            "bundesland": {
+                              "type": "string",
+                              "description": "Normalized routing field 'bundesland' added for MQTT/AMQP subscriber filtering."
                             }
                           },
                           "required": [

@@ -678,6 +678,18 @@
       "image": "environment-canada-amqp",
       "file": "Dockerfile.amqp",
       "module": "environment_canada_amqp"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "geosphere_austria_mqtt"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "geosphere_austria_amqp"
     }
   ],
   "flow": [
@@ -1378,6 +1390,18 @@
       "image": "environment-canada-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnvironmentCanadaAmqpDockerFlow"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGeosphereAustriaMqttDockerFlow"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGeosphereAustriaAmqpDockerFlow"
     }
   ]
 }

@@ -723,3 +723,4 @@ AMQP 1.0 companion images and Service Bus deployment templates are available for
 - `dwd`: MQTT + AMQP companion feeders (`dwd-mqtt`, `dwd-amqp`).
 - `dwd-pollenflug`: MQTT + AMQP companion feeders (`dwd-pollenflug-mqtt`, `dwd-pollenflug-amqp`).
 - `environment-canada`: MQTT + AMQP companion feeders (`environment-canada-mqtt`, `environment-canada-amqp`).
+- `geosphere-austria`: MQTT + AMQP companion feeders (`geosphere-austria-mqtt`, `geosphere-austria-amqp`).

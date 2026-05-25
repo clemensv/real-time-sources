@@ -5059,3 +5059,23 @@ def mosquitto_environment_canada():
 class TestEnvironmentCanadaMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_environment_canada, environment_canada_mqtt_image):
         _run_mqtt_contract_flow('environment-canada', environment_canada_mqtt_image, mosquitto_environment_canada, extra_env={'ENVIRONMENT_CANADA_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def geosphere_austria_mqtt_image():
+    return build_image('geosphere-austria', dockerfile='Dockerfile.mqtt', tag='test-geosphere-austria-mqtt')
+
+@pytest.fixture()
+def mosquitto_geosphere_austria():
+    container, network, host_port = _generic_mosquitto('geosphere-austria-mqtt-e2e', 'geosphere-austria-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'geosphere-austria-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestGeosphereAustriaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_geosphere_austria, geosphere_austria_mqtt_image):
+        _run_mqtt_contract_flow('geosphere-austria', geosphere_austria_mqtt_image, mosquitto_geosphere_austria, extra_env={'GEOSPHERE_AUSTRIA_MOCK': 'true'}, timeout=300)

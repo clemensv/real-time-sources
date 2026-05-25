@@ -292,7 +292,9 @@
     "key": false,
     "desc": "Austria — ~280 TAWES stations, 10-min obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "hko-hong-kong",
