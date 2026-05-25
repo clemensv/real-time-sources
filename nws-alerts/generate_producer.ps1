@@ -28,17 +28,6 @@ if ($LASTEXITCODE -ne 0) {
     throw "Producer generation failed"
 }
 
-
 & (Join-Path $scriptDir "generate_mqtt_producer.ps1")
 
-$amqpOutputDir = Join-Path $scriptDir "nws_alerts_amqp_producer"
-if (Test-Path $amqpOutputDir) { Remove-Item -Path $amqpOutputDir -Recurse -Force }
-xrcg generate `
-    --style amqpproducer `
-    --language py `
-    --definitions $xregFile `
-    --endpoint NWS.Alerts.Amqp `
-    --projectname nws_alerts_amqp_producer `
-    --template-args azure_cbs_target=servicebus `
-    --output $amqpOutputDir
-if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }
+& (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")

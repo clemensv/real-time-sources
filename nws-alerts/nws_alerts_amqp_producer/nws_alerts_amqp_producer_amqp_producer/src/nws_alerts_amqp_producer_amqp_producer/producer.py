@@ -597,21 +597,19 @@ class NWSAlertsAmqpProducer:
 
     
     
-    def send_amqp(self,
+    def send_weather_alert_minor(self,
         data: WeatherAlert,
         _alert_id: str,
         _state: str,
-        _severity: str,
         _event_type: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `NWS.WeatherAlert.amqp` message
+        Send the `NWS.Alerts.amqp.WeatherAlertMinor` message
         A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
         
         Args:
             _alert_id (str): Value for placeholder alert_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
-            _severity (str): Value for AMQP protocol option placeholder severity
             _event_type (str): Value for AMQP protocol option placeholder event_type
             data (WeatherAlert): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
@@ -659,7 +657,6 @@ class NWSAlertsAmqpProducer:
 
         app_properties = {}
         app_properties["state"] = "{state}".format(state=_state)
-        app_properties["severity"] = "{severity}".format(severity=_severity)
         app_properties["event_type"] = "{event_type}".format(event_type=_event_type)
         if app_properties:
             if amqp_msg.properties is None:
@@ -672,30 +669,415 @@ class NWSAlertsAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_weather_alert_minor_batch(self,
         data_array: typing.List[WeatherAlert],
         _alert_id: str,
         _state: str,
-        _severity: str,
         _event_type: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `NWS.WeatherAlert.amqp` messages
+        Send multiple `NWS.Alerts.amqp.WeatherAlertMinor` messages
         
         Args:
             data_array (typing.List[WeatherAlert]): Array of message data objects
             _alert_id (str): Value for placeholder alert_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
-            _severity (str): Value for AMQP protocol option placeholder severity
             _event_type (str): Value for AMQP protocol option placeholder event_type
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_weather_alert_minor(
                 data=data,
                 _alert_id=_alert_id,
                 _state=_state,
-                _severity=_severity,
+                _event_type=_event_type,
+                content_type=content_type)
+    
+    
+    def send_weather_alert_moderate(self,
+        data: WeatherAlert,
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `NWS.Alerts.amqp.WeatherAlertModerate` message
+        A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+        
+        Args:
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            data (WeatherAlert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "NWS.WeatherAlert",
+            "source":
+            "https://api.weather.gov",
+            "subject":
+            "{alert_id}".format(alert_id=_alert_id),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{alert_id}".format(alert_id=_alert_id)
+
+        app_properties = {}
+        app_properties["state"] = "{state}".format(state=_state)
+        app_properties["event_type"] = "{event_type}".format(event_type=_event_type)
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_weather_alert_moderate_batch(self,
+        data_array: typing.List[WeatherAlert],
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `NWS.Alerts.amqp.WeatherAlertModerate` messages
+        
+        Args:
+            data_array (typing.List[WeatherAlert]): Array of message data objects
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_weather_alert_moderate(
+                data=data,
+                _alert_id=_alert_id,
+                _state=_state,
+                _event_type=_event_type,
+                content_type=content_type)
+    
+    
+    def send_weather_alert_severe(self,
+        data: WeatherAlert,
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `NWS.Alerts.amqp.WeatherAlertSevere` message
+        A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+        
+        Args:
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            data (WeatherAlert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "NWS.WeatherAlert",
+            "source":
+            "https://api.weather.gov",
+            "subject":
+            "{alert_id}".format(alert_id=_alert_id),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{alert_id}".format(alert_id=_alert_id)
+
+        app_properties = {}
+        app_properties["state"] = "{state}".format(state=_state)
+        app_properties["event_type"] = "{event_type}".format(event_type=_event_type)
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_weather_alert_severe_batch(self,
+        data_array: typing.List[WeatherAlert],
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `NWS.Alerts.amqp.WeatherAlertSevere` messages
+        
+        Args:
+            data_array (typing.List[WeatherAlert]): Array of message data objects
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_weather_alert_severe(
+                data=data,
+                _alert_id=_alert_id,
+                _state=_state,
+                _event_type=_event_type,
+                content_type=content_type)
+    
+    
+    def send_weather_alert_extreme(self,
+        data: WeatherAlert,
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `NWS.Alerts.amqp.WeatherAlertExtreme` message
+        A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+        
+        Args:
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            data (WeatherAlert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "NWS.WeatherAlert",
+            "source":
+            "https://api.weather.gov",
+            "subject":
+            "{alert_id}".format(alert_id=_alert_id),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{alert_id}".format(alert_id=_alert_id)
+
+        app_properties = {}
+        app_properties["state"] = "{state}".format(state=_state)
+        app_properties["event_type"] = "{event_type}".format(event_type=_event_type)
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_weather_alert_extreme_batch(self,
+        data_array: typing.List[WeatherAlert],
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `NWS.Alerts.amqp.WeatherAlertExtreme` messages
+        
+        Args:
+            data_array (typing.List[WeatherAlert]): Array of message data objects
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_weather_alert_extreme(
+                data=data,
+                _alert_id=_alert_id,
+                _state=_state,
+                _event_type=_event_type,
+                content_type=content_type)
+    
+    
+    def send_weather_alert_unknown(self,
+        data: WeatherAlert,
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `NWS.Alerts.amqp.WeatherAlertUnknown` message
+        A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+        
+        Args:
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            data (WeatherAlert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "NWS.WeatherAlert",
+            "source":
+            "https://api.weather.gov",
+            "subject":
+            "{alert_id}".format(alert_id=_alert_id),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{alert_id}".format(alert_id=_alert_id)
+
+        app_properties = {}
+        app_properties["state"] = "{state}".format(state=_state)
+        app_properties["event_type"] = "{event_type}".format(event_type=_event_type)
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_weather_alert_unknown_batch(self,
+        data_array: typing.List[WeatherAlert],
+        _alert_id: str,
+        _state: str,
+        _event_type: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `NWS.Alerts.amqp.WeatherAlertUnknown` messages
+        
+        Args:
+            data_array (typing.List[WeatherAlert]): Array of message data objects
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _state (str): Value for AMQP protocol option placeholder state
+            _event_type (str): Value for AMQP protocol option placeholder event_type
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_weather_alert_unknown(
+                data=data,
+                _alert_id=_alert_id,
+                _state=_state,
                 _event_type=_event_type,
                 content_type=content_type)
     

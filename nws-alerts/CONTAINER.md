@@ -72,24 +72,6 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnws-alerts%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP images
+## AMQP 1.0 companion
 
-The source ships separate Kafka, MQTT, and AMQP containers. The AMQP image targets generic AMQP 1.0 brokers with SASL PLAIN or Azure Service Bus with Entra/SAS CBS authentication.
-
-```bash
-docker build -f Dockerfile.amqp -t nws-alerts-amqp .
-docker run --rm -e AMQP_HOST=broker -e AMQP_PORT=5672 -e AMQP_ADDRESS=nws-alerts -e AMQP_USERNAME=admin -e AMQP_PASSWORD=admin nws-alerts-amqp
-```
-
-| Variable | Required | Description |
-|---|---|---|
-| `AMQP_BROKER_URL` | AMQP only | Broker URL, optionally including `/address` |
-| `AMQP_HOST` / `AMQP_PORT` | AMQP only | Broker host and port when no URL is supplied |
-| `AMQP_ADDRESS` | AMQP only | Queue/topic address, default `nws-alerts` |
-| `AMQP_AUTH_MODE` | AMQP only | `password`, `entra`, or `sas` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | password | SASL PLAIN credentials |
-| `AMQP_ENTRA_CLIENT_ID` | entra | Optional user-assigned managed identity client id |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | sas | Shared Access Signature credentials |
-| `NWS_ALERTS_AMQP_EMIT_MOCK_CORPUS` | tests | Emit five synthetic alerts and exit |
-
-Deploy MQTT with `azure-template-mqtt.json` or `azure-template-with-eventgrid-mqtt.json`; deploy AMQP with `azure-template-with-servicebus.json` (mirrored at `infra/azure-template-amqp.json`).
+This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.

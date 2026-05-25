@@ -4,8 +4,8 @@ USGS Instantaneous Values publishes instantaneous water observations such as gau
 
 ## At a glance
 
-- **Event types:** 28 documented event types (56 transport bindings in the manifest).
-- **Transports:** KAFKA, MQTT/5.0
+- **Event types:** 28 documented event types (84 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 3 reference/catalog event types and 25 telemetry event types.
 - **Identity:** `{agency_cd}/{site_no}`, `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -43,6 +43,20 @@ c.loop_forever()
 ```
 
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `usgs-iv`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/usgs-iv')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -64,6 +78,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}` |
 
 #### Payload
 
@@ -75,8 +90,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 - **`site_tp_cd`** (string, required): USGS site-type code describing the kind of monitoring location, such as stream, lake, well, or atmospheric site.
 - **`lat_va`** (string, required): Latitude in degrees-minutes-seconds text as published by USGS.
 - **`long_va`** (string, required): Longitude in degrees-minutes-seconds text as published by USGS.
-- **`dec_lat_va`** (float, optional): Latitude in decimal degrees when USGS provides decimal coordinates.
-- **`dec_long_va`** (float, optional): Longitude in decimal degrees when USGS provides decimal coordinates.
+- **`dec_lat_va`** (float or null, optional): Latitude in decimal degrees when USGS provides decimal coordinates.
+- **`dec_long_va`** (float or null, optional): Longitude in decimal degrees when USGS provides decimal coordinates.
 - **`coord_meth_cd`** (string, required): USGS method code describing how the latitude and longitude were determined.
 - **`coord_acy_cd`** (string, required): USGS accuracy code for the published coordinates.
 - **`coord_datum_cd`** (string, required): Horizontal datum code for the degrees-minutes-seconds coordinates.
@@ -87,19 +102,19 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 - **`country_cd`** (string, required): Country code for the site location.
 - **`land_net_ds`** (string, required): Land net location description.
 - **`map_nm`** (string, required): Location map name.
-- **`map_scale_fc`** (float, optional): Location map scale factor.
-- **`alt_va`** (float, optional): Altitude.
+- **`map_scale_fc`** (float or null, optional): Location map scale factor.
+- **`alt_va`** (float or null, optional): Altitude.
 - **`alt_meth_cd`** (string, required): Method altitude determined code.
-- **`alt_acy_va`** (float, optional): Altitude accuracy.
+- **`alt_acy_va`** (float or null, optional): Altitude accuracy.
 - **`alt_datum_cd`** (string, required): Altitude datum code.
 - **`huc_cd`** (string, required): Hydrologic Unit Code identifying the watershed containing the site.
 - **`basin_cd`** (string, required): Drainage basin code.
 - **`topo_cd`** (string, required): Topographic setting code.
 - **`instruments_cd`** (string, required): USGS code summarizing the instrumentation installed at the site.
-- **`construction_dt`** (string, optional): Date of first construction.
-- **`inventory_dt`** (string, optional): Date site established or inventoried.
-- **`drain_area_va`** (float, optional): Drainage area.
-- **`contrib_drain_area_va`** (float, optional): Contributing drainage area.
+- **`construction_dt`** (string or null, optional): Date of first construction.
+- **`inventory_dt`** (string or null, optional): Date site established or inventoried.
+- **`drain_area_va`** (float or null, optional): Drainage area.
+- **`contrib_drain_area_va`** (float or null, optional): Contributing drainage area.
 - **`tz_cd`** (string, required): Time-zone code used for local timestamps at the site.
 - **`local_time_fg`** (boolean, required): Flag indicating whether timestamps are reported in the site local time zone.
 - **`reliability_cd`** (string, required): USGS reliability code describing the expected reliability of the site data.
@@ -107,8 +122,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 - **`nat_aqfr_cd`** (string, required): National aquifer code.
 - **`aqfr_cd`** (string, required): Local aquifer code.
 - **`aqfr_type_cd`** (string, required): Local aquifer type code.
-- **`well_depth_va`** (float, optional): Well depth.
-- **`hole_depth_va`** (float, optional): Hole depth.
+- **`well_depth_va`** (float or null, optional): Well depth.
+- **`hole_depth_va`** (float or null, optional): Hole depth.
 - **`depth_src_cd`** (string, required): Source of depth data.
 - **`project_no`** (string, required): USGS project number associated with the site, when provided.
 #### Example payload
@@ -184,6 +199,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/timeseries`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -230,6 +246,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -237,8 +254,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -282,6 +299,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -289,8 +307,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Precipitation value, inches."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Precipitation value, inches."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -334,6 +352,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -341,8 +360,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Discharge value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Discharge value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -386,6 +405,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -393,8 +413,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Gage height value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Gage height value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -438,6 +458,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -445,8 +466,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Water temperature value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Water temperature value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -490,6 +511,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -497,8 +519,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Dissolved oxygen value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Dissolved oxygen value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -542,6 +564,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -549,8 +572,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "pH value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "pH value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -594,6 +617,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -601,8 +625,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Specific conductance value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Specific conductance value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -646,6 +670,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -653,8 +678,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Turbidity value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Turbidity value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -698,6 +723,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -705,8 +731,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Air temperature value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Air temperature value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -750,6 +776,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -757,8 +784,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Wind speed value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Wind speed value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -802,6 +829,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -809,8 +837,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Wind direction value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Wind direction value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -854,6 +882,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -861,8 +890,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Relative humidity value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Relative humidity value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -906,6 +935,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -913,8 +943,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Barometric pressure value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Barometric pressure value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -958,6 +988,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -965,8 +996,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Turbidity value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Turbidity value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1010,6 +1041,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1017,8 +1049,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Dissolved organic matter fluorescence value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Dissolved organic matter fluorescence value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1062,6 +1094,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1069,8 +1102,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Reservoir storage value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Reservoir storage value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1114,6 +1147,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1121,8 +1155,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Lake elevation above NGVD 1929."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Lake elevation above NGVD 1929."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1166,6 +1200,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1173,8 +1208,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Water depth value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Water depth value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1218,6 +1253,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1225,7 +1261,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`status`** (string, optional): {"description": "Status of equipment alarm as codes."}
+- **`status`** (string or null, optional): {"description": "Status of equipment alarm as codes."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
 #### Example payload
@@ -1264,6 +1300,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1271,8 +1308,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Tidally filtered discharge value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Tidally filtered discharge value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1316,6 +1353,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1323,8 +1361,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Water velocity value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Water velocity value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1368,6 +1406,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1375,8 +1414,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Estuary or ocean water surface elevation above NGVD 1929."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Estuary or ocean water surface elevation above NGVD 1929."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1420,6 +1459,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1427,8 +1467,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Lake elevation above NAVD 1988."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Lake elevation above NAVD 1988."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1472,6 +1512,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1479,8 +1520,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Salinity value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Salinity value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1524,6 +1565,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 | --- | --- |
 | `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 | `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-iv`, message subject `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
 
 #### Payload
 
@@ -1531,8 +1573,8 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}/{param
 
 - **`site_no`** (string, required): {"description": "USGS site number."}
 - **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
-- **`value`** (double, optional): {"description": "Gate opening value."}
-- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`value`** (double or null, optional): {"description": "Gate opening value."}
+- **`exception`** (string or null, optional): {"description": "Exception code when the value is unavailable."}
 - **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
 - **`parameter_cd`** (string, required): {"description": "Parameter code."}
 - **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
@@ -1584,3 +1626,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - USGS Water Services: <https://waterservices.usgs.gov/>
+- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>

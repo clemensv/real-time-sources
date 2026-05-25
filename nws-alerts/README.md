@@ -82,27 +82,6 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnws-alerts%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP companion transports
+## AMQP 1.0 companion
 
-NWS CAP alerts now ship as three isolated container images: Kafka/Event Hubs (`nws-alerts`), MQTT 5 (`nws-alerts-mqtt`), and AMQP 1.0 (`nws-alerts-amqp`). Emergency-management dashboards and notification routers can use MQTT topic filters such as `alerts/us/noaa/nws-alerts/+/severe/+/+/alert`; queue-oriented consumers can use AMQP with a broker address named `nws-alerts` by default.
-
-| Transport | Image | Routing shape |
-|---|---|---|
-| Kafka/Event Hubs | `ghcr.io/clemensv/real-time-sources-nws-alerts:latest` | topic `nws-alerts`, key `{alert_id}` |
-| MQTT 5 | `ghcr.io/clemensv/real-time-sources-nws-alerts-mqtt:latest` | `alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert` |
-| AMQP 1.0 | `ghcr.io/clemensv/real-time-sources-nws-alerts-amqp:latest` | address `nws-alerts`, subject `{alert_id}` |
-
-Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
-
-AMQP local example:
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=broker \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=nws-alerts \
-  -e AMQP_USERNAME=admin \
-  -e AMQP_PASSWORD=admin \
-  -e AMQP_AUTH_MODE=password \
-  ghcr.io/clemensv/real-time-sources-nws-alerts-amqp:latest
-```
+This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.

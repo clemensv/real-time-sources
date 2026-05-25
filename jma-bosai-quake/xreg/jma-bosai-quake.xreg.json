@@ -41,6 +41,28 @@
         }
       ],
       "description": "MQTT 5 producer endpoint for JMA Bosai Earthquake CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "JP.JMA.Quake.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/jma-bosai-quake"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Quake.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for jma-bosai-quake CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -80,6 +102,25 @@
             "topic_name": "seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report",
             "qos": 1,
             "retain": false
+          }
+        }
+      }
+    },
+    "JP.JMA.Quake.amqp": {
+      "description": "AMQP 1.0 transport variant for jma-bosai-quake events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "JP.JMA.Quake.amqp.EarthquakeReport": {
+          "name": "EarthquakeReport",
+          "basemessageurl": "/messagegroups/JP.JMA.Quake/messages/JP.JMA.Quake.EarthquakeReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "jp.jma.quake/{event_id}/{serial}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
           }
         }
       }

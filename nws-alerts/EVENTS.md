@@ -4,7 +4,7 @@ NWS Alerts publishes CAP weather watches, warnings, advisories, and updates from
 
 ## At a glance
 
-- **Event types:** 1 documented event type (3 transport bindings in the manifest).
+- **Event types:** 1 documented event type (11 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{alert_id}` identifies the resource each event is about.
@@ -31,14 +31,14 @@ while True:
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 ### MQTT 5
 
-Connect to `mqtt://localhost:1883` and subscribe to `alerts/us/noaa/nws-alerts/+/+/+/+/alert`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/us/noaa/nws-alerts/+/minor/+/+/alert`, `alerts/us/noaa/nws-alerts/+/moderate/+/+/alert`, `alerts/us/noaa/nws-alerts/+/severe/+/+/alert`, `alerts/us/noaa/nws-alerts/+/extreme/+/+/alert`, `alerts/us/noaa/nws-alerts/+/unknown/+/+/alert`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
 ```python
 import paho.mqtt.client as mqtt
 c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
 c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
 c.connect('localhost',1883)
-c.subscribe(('alerts/us/noaa/nws-alerts/+/+/+/+/alert', 1))
+c.subscribe(('alerts/us/noaa/nws-alerts/+/minor/+/+/alert', 1))
 c.loop_forever()
 ```
 
@@ -77,8 +77,12 @@ Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `nws-alerts`, key `{alert_id}` |
-| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/nws-alerts`, message subject `{alert_id}`; application properties state `{state}`, severity `{severity}`, event_type `{event_type}` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/nws-alerts`, message subject `{alert_id}`; application properties state `{state}`, event_type `{event_type}` |
 
 #### Payload
 

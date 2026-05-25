@@ -12,11 +12,11 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nws_alerts_amqp_producer_data.statusenum import StatusEnum
-from nws_alerts_amqp_producer_data.messagetypeenum import MessageTypeenum
-from nws_alerts_amqp_producer_data.urgencyenum import UrgencyEnum
 from nws_alerts_amqp_producer_data.certaintyenum import CertaintyEnum
+from nws_alerts_amqp_producer_data.messagetypeenum import MessageTypeenum
 from nws_alerts_amqp_producer_data.severityenum import SeverityEnum
+from nws_alerts_amqp_producer_data.statusenum import StatusEnum
+from nws_alerts_amqp_producer_data.urgencyenum import UrgencyEnum
 import datetime
 
 
@@ -214,10 +214,10 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='cquuedkbhnsrzgtvdowk',
-            area_desc='rxemlcxyihrxrblpjtta',
-            same_codes='sclwhkwpldsstkylhrzd',
-            ugc_codes='kzfhwzkwpmettvkzkosl',
+            alert_id='mzuaiwfninkrigpclvzj',
+            area_desc='pexfthvspjkiblkyudjb',
+            same_codes='vfgfmiimekdmpdxrhwai',
+            ugc_codes='drdlvgggkmalgfqvmjyh',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
@@ -225,22 +225,22 @@ class WeatherAlert:
             ends=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             message_type=MessageTypeenum.Alert,
-            category='huviwlwelxipbmthtmbc',
+            category='rxgrsovmxvggogdjwgsg',
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='iofinvvcqpgfzimgecmi',
-            sender='fwnrwfphncuhsfwxohsi',
-            sender_name='xjteslppiebgnjwlogpw',
-            headline='ynvdltwstdtitepvyecs',
-            description='cthclokkaynvsazvjdms',
-            instruction='gyevunjkhmjdwxamdanp',
-            response='gchfzutzbmdjsqwycjxi',
-            scope='zxhxnrdawcygwedkgesq',
-            code='aiglxotsejwytwxwgbti',
-            nws_headline='tmmdjzyoimsublfuygyv',
-            vtec='rypkxioipqguhgbkgebv',
-            web='phufvvljsmopkzlqbwdm',
-            state='juxosybcpmmoourasimc',
-            event_type='jckcwaqhlklriykscrog'
+            event='kljwypyeljbaxbgiyklo',
+            sender='sddimsyqjuplvefdfent',
+            sender_name='ezwnuzigayohqnloqgoy',
+            headline='mquriviztpixzmwaawvr',
+            description='tkjfwrigipqarfukvnzy',
+            instruction='fsemdsxyapiayxorguth',
+            response='nxcymlphtypspvctnspw',
+            scope='efgwozyuoeemzkievveq',
+            code='spdmdqvjicntgxvpjshk',
+            nws_headline='vohadcuoqmebjhujhrvy',
+            vtec='ckysrdcolmkvkktzoipp',
+            web='yjrosuynudgszujcizsg',
+            state='uijcltdhrudicurawmzw',
+            event_type='kevvsrkqcbxgddoofesr'
         )

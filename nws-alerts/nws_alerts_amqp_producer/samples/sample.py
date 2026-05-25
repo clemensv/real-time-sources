@@ -26,15 +26,63 @@ def main():
     try:
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WeatherAlertMinor message
+        print("Sending WeatherAlertMinor message...")
         # TODO: Create a WeatherAlert instance with actual data
         # data = WeatherAlert(...)
-        # producer.send_amqp(
+        # producer.send_weather_alert_minor(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WeatherAlertMinor message sent successfully!")
+        
+        
+        
+        # Send WeatherAlertModerate message
+        print("Sending WeatherAlertModerate message...")
+        # TODO: Create a WeatherAlert instance with actual data
+        # data = WeatherAlert(...)
+        # producer.send_weather_alert_moderate(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherAlertModerate message sent successfully!")
+        
+        
+        
+        # Send WeatherAlertSevere message
+        print("Sending WeatherAlertSevere message...")
+        # TODO: Create a WeatherAlert instance with actual data
+        # data = WeatherAlert(...)
+        # producer.send_weather_alert_severe(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherAlertSevere message sent successfully!")
+        
+        
+        
+        # Send WeatherAlertExtreme message
+        print("Sending WeatherAlertExtreme message...")
+        # TODO: Create a WeatherAlert instance with actual data
+        # data = WeatherAlert(...)
+        # producer.send_weather_alert_extreme(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherAlertExtreme message sent successfully!")
+        
+        
+        
+        # Send WeatherAlertUnknown message
+        print("Sending WeatherAlertUnknown message...")
+        # TODO: Create a WeatherAlert instance with actual data
+        # data = WeatherAlert(...)
+        # producer.send_weather_alert_unknown(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherAlertUnknown message sent successfully!")
         
         
         print("\nAll messages sent successfully!")

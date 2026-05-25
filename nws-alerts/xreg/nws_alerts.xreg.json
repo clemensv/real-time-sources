@@ -57,14 +57,17 @@
         "deployed": false,
         "endpoints": [
           {
-            "uri": "amqps://localhost:5671/nws-alerts"
+            "uri": "amqp://localhost:5672/nws-alerts"
           }
-        ]
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "nws-alerts"
+        }
       },
       "messagegroups": [
         "#/messagegroups/NWS.Alerts.amqp"
-      ],
-      "description": "AMQP 1.0 producer endpoint for NWS Alerts CloudEvents on the configured broker address."
+      ]
     }
   },
   "messagegroups": {
@@ -93,14 +96,54 @@
       "description": "Events from NWS Alerts covering U.S. weather alert areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "NWS.Alerts.mqtt": {
-      "description": "MQTT 5 variant of NWS Alerts events. The topic exposes state, CAP severity, normalized event type, and stable alert identifier for broker-side subscriptions.",
+      "description": "MQTT 5 variant of the NWS Alerts events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
-        "NWS.WeatherAlert.mqtt": {
-          "name": "WeatherAlert",
+        "NWS.WeatherAlert.Minor.mqtt": {
+          "name": "WeatherAlertMinor",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic_name": "alerts/us/noaa/nws-alerts/{state}/{severity}/{event_type}/{alert_id}/alert",
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Moderate.mqtt": {
+          "name": "WeatherAlertModerate",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Severe.mqtt": {
+          "name": "WeatherAlertSevere",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Extreme.mqtt": {
+          "name": "WeatherAlertExtreme",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NWS.WeatherAlert.Unknown.mqtt": {
+          "name": "WeatherAlertUnknown",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert",
             "qos": 1,
             "retain": false
           }
@@ -108,10 +151,10 @@
       }
     },
     "NWS.Alerts.amqp": {
-      "description": "AMQP 1.0 variant of NWS Alerts events. It carries the same CAP alert semantics as the base Kafka event for queue and topic consumers.",
+      "description": "AMQP 1.0 transport variants for nws-alerts. All CloudEvents are published to the nws-alerts address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
       "messages": {
-        "NWS.WeatherAlert.amqp": {
-          "name": "WeatherAlert",
+        "NWS.Alerts.amqp.WeatherAlertMinor": {
+          "name": "WeatherAlertMinor",
           "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
@@ -119,27 +162,166 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{alert_id}",
-                "description": "AMQP message subject carrying the stable NWS alert identifier; mirrors the CloudEvent subject and Kafka key."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
             "application_properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
-                "description": "Two-letter U.S. state or territory routing token derived from UGC/SAME geocodes."
-              },
-              "severity": {
-                "type": "uritemplate",
-                "value": "{severity}",
-                "description": "CAP 1.2 severity vocabulary normalized to minor, moderate, severe, extreme, or unknown."
+                "description": "AMQP application property mirroring the state routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               },
               "event_type": {
                 "type": "uritemplate",
                 "value": "{event_type}",
-                "description": "URL-safe NWS event/hazard type such as tornado-warning or flood-watch."
+                "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "NWS.Alerts.amqp.WeatherAlertMinor"
+        },
+        "NWS.Alerts.amqp.WeatherAlertModerate": {
+          "name": "WeatherAlertModerate",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "AMQP application property mirroring the state routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "NWS.Alerts.amqp.WeatherAlertModerate"
+        },
+        "NWS.Alerts.amqp.WeatherAlertSevere": {
+          "name": "WeatherAlertSevere",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "AMQP application property mirroring the state routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "NWS.Alerts.amqp.WeatherAlertSevere"
+        },
+        "NWS.Alerts.amqp.WeatherAlertExtreme": {
+          "name": "WeatherAlertExtreme",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "AMQP application property mirroring the state routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "NWS.Alerts.amqp.WeatherAlertExtreme"
+        },
+        "NWS.Alerts.amqp.WeatherAlertUnknown": {
+          "name": "WeatherAlertUnknown",
+          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "AMQP application property mirroring the state routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "NWS.Alerts.amqp.WeatherAlertUnknown"
         }
       }
     }

@@ -130,7 +130,27 @@ producer = NWSAlertsAmqpProducer(
 
 # Send a message
 
-producer.send_amqp(
+producer.send_weather_alert_minor(
+    data=WeatherAlert(...),
+    content_type="application/json"
+)
+
+producer.send_weather_alert_moderate(
+    data=WeatherAlert(...),
+    content_type="application/json"
+)
+
+producer.send_weather_alert_severe(
+    data=WeatherAlert(...),
+    content_type="application/json"
+)
+
+producer.send_weather_alert_extreme(
+    data=WeatherAlert(...),
+    content_type="application/json"
+)
+
+producer.send_weather_alert_unknown(
     data=WeatherAlert(...),
     content_type="application/json"
 )
@@ -158,7 +178,7 @@ The producer constructor accepts:
 
 
 
-##### `send_amqp()`
+##### `send_weather_alert_minor()`
 A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and
 Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
 
@@ -167,9 +187,89 @@ Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
 - `_alert_id` (str): Value for placeholder alert_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_weather_alert_minor_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WeatherAlertMinor messages in sequence.
+
+**Parameters:**
+- `data_array` (List[WeatherAlert]): Array of message data objects
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_weather_alert_moderate()`
+A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and
+Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+
+**Parameters:**
+- `data` (WeatherAlert): The message data object
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_weather_alert_moderate_batch()`
+
+Send multiple WeatherAlertModerate messages in sequence.
+
+**Parameters:**
+- `data_array` (List[WeatherAlert]): Array of message data objects
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_weather_alert_severe()`
+A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and
+Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+
+**Parameters:**
+- `data` (WeatherAlert): The message data object
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_weather_alert_severe_batch()`
+
+Send multiple WeatherAlertSevere messages in sequence.
+
+**Parameters:**
+- `data_array` (List[WeatherAlert]): Array of message data objects
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_weather_alert_extreme()`
+A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and
+Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+
+**Parameters:**
+- `data` (WeatherAlert): The message data object
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_weather_alert_extreme_batch()`
+
+Send multiple WeatherAlertExtreme messages in sequence.
+
+**Parameters:**
+- `data_array` (List[WeatherAlert]): Array of message data objects
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_weather_alert_unknown()`
+A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and
+Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.
+
+**Parameters:**
+- `data` (WeatherAlert): The message data object
+- `_alert_id` (str): Value for placeholder alert_id in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_weather_alert_unknown_batch()`
+
+Send multiple WeatherAlertUnknown messages in sequence.
 
 **Parameters:**
 - `data_array` (List[WeatherAlert]): Array of message data objects
@@ -214,7 +314,7 @@ class BatchProducer:
         async def send_one(data):
             async with self.semaphore:
                 await asyncio.to_thread(
-                    self.producer.send_amqp,
+                    self.producer.send_weather_alert_minor,
                     data
                 )
 
@@ -303,7 +403,7 @@ class ResilientProducer:
         """Send message with automatic retry on connection failure."""
         for attempt in range(max_retries):
             try:
-                self.producer.send_amqp(data)
+                self.producer.send_weather_alert_minor(data)
                 return
             except Exception as e:
                 if attempt < max_retries - 1:
@@ -328,7 +428,7 @@ Add extension attributes to CloudEvents:
 producer = NWSAlertsAmqpProducer(host="localhost", address="my-queue")
 
 # CloudEvents extension attributes can be added via metadata
-producer.send_amqp(
+producer.send_weather_alert_minor(
     data=data,
     _tenant="contoso",           # Custom extension attribute
     _deviceid="device-001",      # Custom extension attribute
@@ -385,7 +485,7 @@ def send_with_retry(
     """
     for attempt in range(max_retries):
         try:
-            producer.send_amqp(data)
+            producer.send_weather_alert_minor(data)
             return  # Success
         except errors.AMQPConnectionError as e:
             if attempt < max_retries - 1:
@@ -426,7 +526,7 @@ class CircuitBreakerProducer:
                 self.failure_count = 0
 
         try:
-            self.producer.send_amqp(data)
+            self.producer.send_weather_alert_minor(data)
             self.failure_count = 0  # Reset on success
         except Exception as e:
             self.failure_count += 1
