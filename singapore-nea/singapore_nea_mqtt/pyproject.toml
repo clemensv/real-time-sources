@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "singapore-nea-mqtt"
+version = "0.1.0"
+description = "MQTT feeder for singapore-nea"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "singapore_nea_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+singapore_nea_mqtt_producer_data = { path = "../singapore_nea_mqtt_producer/singapore_nea_mqtt_producer_data" }
+singapore_nea_mqtt_producer_mqtt_client = { path = "../singapore_nea_mqtt_producer/singapore_nea_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+singapore-nea-mqtt = "singapore_nea_mqtt.app:main"

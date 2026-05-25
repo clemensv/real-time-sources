@@ -74,3 +74,7 @@ configured.
 ## Fabric notebook hosting
 
 This source can also run as a scheduled Microsoft Fabric notebook (single-cycle execution per run). Deploy via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook template lives at [`notebook/singapore-nea-feed.ipynb`](notebook/singapore-nea-feed.ipynb).
+
+## MQTT and AMQP companion transports
+
+This source ships Kafka/Event Hubs, MQTT 5, and AMQP 1.0 containers. MQTT provides topic-filtered operational subscriptions; AMQP provides queue/topic delivery for enterprise brokers and Azure Service Bus. Deployment templates are available for BYO Kafka/Event Hubs, provisioned Event Hubs, BYO MQTT, Event Grid MQTT, and Service Bus AMQP.

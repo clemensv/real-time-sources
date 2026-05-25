@@ -273,3 +273,9 @@ class TestNwsForecastsAmqpDockerFlow(AmqpDockerFlowBase):
     image = "nws-forecasts-amqp"
     expected_types = {"Microsoft.OpenData.US.NOAA.NWS.ForecastZone", "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast", "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"}
     expected_count = 3
+
+class TestSingaporeNeaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "singapore-nea"
+    image = "singapore-nea-amqp"
+    expected_types = {"SG.Gov.NEA.Weather.Station", "SG.Gov.NEA.Weather.WeatherObservation", "SG.Gov.NEA.AirQuality.PSIReading", "SG.Gov.NEA.AirQuality.PM25Reading"}
+    expected_count = 5

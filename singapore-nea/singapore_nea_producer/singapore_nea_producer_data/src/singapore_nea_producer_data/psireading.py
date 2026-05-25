@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class PSIReading:
     """
-    Pollutant Standards Index (PSI) reading for a Singapore NEA air quality region. PSI is a composite index calculated from six pollutant sub-indices. Published hourly by the NEA via data.gov.sg.
+    A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.
     
     Attributes:
         region (str)
@@ -181,19 +181,19 @@ class PSIReading:
             An instance of the dataclass.
         """
         return cls(
-            region='rwmeoxpfhotwlxbkhckk',
+            region='rkbynxgzylpthqtfocjx',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            psi_twenty_four_hourly=int(31),
-            o3_sub_index=int(17),
-            pm10_sub_index=int(66),
-            pm10_twenty_four_hourly=int(10),
-            pm25_sub_index=int(33),
-            pm25_twenty_four_hourly=int(7),
-            co_sub_index=int(78),
-            co_eight_hour_max=int(91),
-            so2_sub_index=int(77),
-            so2_twenty_four_hourly=int(60),
-            no2_one_hour_max=int(48),
-            o3_eight_hour_max=int(77)
+            psi_twenty_four_hourly=int(96),
+            o3_sub_index=int(62),
+            pm10_sub_index=int(49),
+            pm10_twenty_four_hourly=int(63),
+            pm25_sub_index=int(81),
+            pm25_twenty_four_hourly=int(20),
+            co_sub_index=int(99),
+            co_eight_hour_max=int(31),
+            so2_sub_index=int(91),
+            so2_twenty_four_hourly=int(34),
+            no2_one_hour_max=int(93),
+            o3_eight_hour_max=int(94)
         )
