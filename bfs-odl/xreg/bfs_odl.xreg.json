@@ -41,6 +41,28 @@
       "messagegroups": [
         "#/messagegroups/de.bfs.odl.mqtt"
       ]
+    },
+    "de.bfs.odl.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/bfs-odl"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/de.bfs.odl.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for bfs-odl CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,39 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/de.bfs.odl.jstruct/schemas/de.bfs.odl.DoseRateMeasurement"
+        }
+      }
+    },
+    "de.bfs.odl.amqp": {
+      "description": "AMQP 1.0 transport variant for bfs-odl events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "de.bfs.odl.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "de.bfs.odl.amqp.DoseRateMeasurement": {
+          "name": "DoseRateMeasurement",
+          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
         }
       }
     }

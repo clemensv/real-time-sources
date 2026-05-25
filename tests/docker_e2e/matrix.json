@@ -684,6 +684,60 @@
       "image": "paris-bicycle-counters-amqp",
       "file": "Dockerfile.amqp",
       "module": "paris_bicycle_counters_amqp"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "image": "usgs-earthquakes-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_earthquakes_amqp"
+    },
+    {
+      "dir": "usgs-geomag",
+      "image": "usgs-geomag-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_geomag_amqp"
+    },
+    {
+      "dir": "usgs-iv",
+      "image": "usgs-iv-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_iv_amqp"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_bosai_quake_amqp"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_bosai_warning_amqp"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "blitzortung_amqp"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bfs_odl_amqp"
+    },
+    {
+      "dir": "gracedb",
+      "image": "gracedb-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gracedb_amqp"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "image": "inpe-deter-brazil-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "inpe_deter_brazil_amqp"
     }
   ],
   "flow": [
@@ -1396,6 +1450,69 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestParisBicycleCountersAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "image": "usgs-earthquakes-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSEarthquakesAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-geomag",
+      "image": "usgs-geomag-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSGeomagAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-iv",
+      "image": "usgs-iv-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSIVAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaBosaiQuakeAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaBosaiWarningAmqpDockerFlow"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBlitzortungAmqpDockerFlow"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBfsOdlAmqpDockerFlow"
+    },
+    {
+      "dir": "gracedb",
+      "image": "gracedb-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGracedbAmqpDockerFlow"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "image": "inpe-deter-brazil-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestInpeDeterBrazilAmqpDockerFlow"
     }
   ]
 }
