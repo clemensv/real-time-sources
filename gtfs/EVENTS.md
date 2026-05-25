@@ -1,11 +1,11 @@
 # GTFS and GTFS-RT API Bridge Usage Guide Events
 
-**GTFS and GTFS-RT API Bridge** is a tool that fetches GTFS (General Transit Feed Specification) Realtime and Static data from various transit agency sources, processes the data, and publishes it to Kafka topics using SASL PLAIN authentication. This tool can be integrated with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
+MQTT 5 UNS topic bindings for gtfs.
 
 ## At a glance
 
-- **Event types:** 31 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 31 documented event types (93 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 31 telemetry event types.
 - **Identity:** `{agencyid}` identifies the resource each event is about.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -28,6 +28,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `transit/intl/gtfs/gtfs/+/+/vehicle/+`, `transit/intl/gtfs/gtfs/+/+/trip-update/+`, `transit/intl/gtfs/gtfs/+/+/alert/+`, `transit/intl/gtfs/gtfs/+/static/agency/+`, `transit/intl/gtfs/gtfs/+/static/areas/+`, `transit/intl/gtfs/gtfs/+/static/attributions/+`, `transit/intl/gtfs/gtfs/+/static/booking-rules/+`, `transit/intl/gtfs/gtfs/+/static/fare-attributes/+`, `transit/intl/gtfs/gtfs/+/static/fare-leg-rules/+`, `transit/intl/gtfs/gtfs/+/static/fare-media/+`, `transit/intl/gtfs/gtfs/+/static/fare-products/+`, `transit/intl/gtfs/gtfs/+/static/fare-rules/+`, `transit/intl/gtfs/gtfs/+/static/fare-transfer-rules/+`, `transit/intl/gtfs/gtfs/+/static/feed-info/+`, `transit/intl/gtfs/gtfs/+/static/frequencies/+`, `transit/intl/gtfs/gtfs/+/static/levels/+`, `transit/intl/gtfs/gtfs/+/static/location-geo-json/+`, `transit/intl/gtfs/gtfs/+/static/location-groups/+`, `transit/intl/gtfs/gtfs/+/static/location-group-stores/+`, `transit/intl/gtfs/gtfs/+/static/networks/+`, `transit/intl/gtfs/gtfs/+/static/pathways/+`, `transit/intl/gtfs/gtfs/+/static/route-networks/+`, `transit/intl/gtfs/gtfs/+/static/routes/+`, `transit/intl/gtfs/gtfs/+/static/shapes/+`, `transit/intl/gtfs/gtfs/+/static/stop-areas/+`, `transit/intl/gtfs/gtfs/+/static/stops/+`, `transit/intl/gtfs/gtfs/+/static/stop-times/+`, `transit/intl/gtfs/gtfs/+/static/timeframes/+`, `transit/intl/gtfs/gtfs/+/static/transfers/+`, `transit/intl/gtfs/gtfs/+/static/translations/+`, `transit/intl/gtfs/gtfs/+/static/trips/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('transit/intl/gtfs/gtfs/+/+/vehicle/+', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `broker-configured address`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/events')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -48,6 +76,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/{route_id}/vehicle/{vehicle_id}`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -174,6 +204,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/{route_id}/trip-update/{trip_id}`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -267,6 +299,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/{route_id}/alert/{alert_id}`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -374,6 +408,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/agency/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -425,6 +461,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/areas/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -468,6 +506,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/attributions/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -525,6 +565,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/booking-rules/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -568,6 +610,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/fare-attributes/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -617,6 +661,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/fare-leg-rules/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -664,6 +710,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/fare-media/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -707,6 +755,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/fare-products/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -750,6 +800,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/fare-rules/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -795,6 +847,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/fare-transfer-rules/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -844,6 +898,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/feed-info/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -897,6 +953,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/frequencies/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -942,6 +1000,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/levels/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -983,6 +1043,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/location-geo-json/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1024,6 +1086,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/location-groups/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1067,6 +1131,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/location-group-stores/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1108,6 +1174,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/networks/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1151,6 +1219,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/pathways/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1210,6 +1280,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/route-networks/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1251,6 +1323,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/routes/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1340,6 +1414,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/shapes/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1385,6 +1461,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/stop-areas/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1426,6 +1504,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/stops/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1503,6 +1583,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/stop-times/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1590,6 +1672,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/timeframes/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1633,6 +1717,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/transfers/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1676,6 +1762,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/translations/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 
@@ -1719,6 +1807,8 @@ Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `gtfs`, key `{agencyid}` |
+| `MQTT/5.0` | topic `transit/intl/gtfs/gtfs/{agencyid}/static/trips/{row_id}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{agencyid}` |
 
 #### Payload
 

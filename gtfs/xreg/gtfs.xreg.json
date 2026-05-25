@@ -21,6 +21,51 @@
         "#/messagegroups/GeneralTransitFeedRealTime",
         "#/messagegroups/GeneralTransitFeedStatic"
       ]
+    },
+    "GeneralTransitFeedRealTime.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/GeneralTransitFeedRealTime.mqtt",
+        "#/messagegroups/GeneralTransitFeedStatic.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "GeneralTransitFeedRealTime.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "gtfs"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/GeneralTransitFeedRealTime.amqp",
+        "#/messagegroups/GeneralTransitFeedStatic.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -1279,6 +1324,987 @@
       "createdat": "2024-10-18T13:48:10.557688",
       "epoch": 0,
       "modifiedat": "2024-10-18T13:48:10.557688"
+    },
+    "GeneralTransitFeedRealTime.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for gtfs.",
+      "messages": {
+        "GeneralTransitFeedRealTime.Vehicle.VehiclePosition.mqtt": {
+          "name": "VehiclePosition",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/{route_id}/vehicle/{vehicle_id}",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "GeneralTransitFeedRealTime.Trip.TripUpdate.mqtt": {
+          "name": "TripUpdate",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Trip.TripUpdate",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/{route_id}/trip-update/{trip_id}",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "GeneralTransitFeedRealTime.Alert.Alert.mqtt": {
+          "name": "Alert",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/{route_id}/alert/{alert_id}",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "GeneralTransitFeedStatic.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for gtfs.",
+      "messages": {
+        "GeneralTransitFeedStatic.Agency.mqtt": {
+          "name": "Agency",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Agency",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/agency/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Areas.mqtt": {
+          "name": "Areas",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Areas",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/areas/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Attributions.mqtt": {
+          "name": "Attributions",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/attributions/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeed.BookingRules.mqtt": {
+          "name": "BookingRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeed.BookingRules",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/booking-rules/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FareAttributes.mqtt": {
+          "name": "FareAttributes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-attributes/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FareLegRules.mqtt": {
+          "name": "FareLegRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareLegRules",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-leg-rules/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FareMedia.mqtt": {
+          "name": "FareMedia",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareMedia",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-media/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FareProducts.mqtt": {
+          "name": "FareProducts",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareProducts",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-products/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FareRules.mqtt": {
+          "name": "FareRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareRules",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-rules/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FareTransferRules.mqtt": {
+          "name": "FareTransferRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareTransferRules",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-transfer-rules/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.FeedInfo.mqtt": {
+          "name": "FeedInfo",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FeedInfo",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/feed-info/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Frequencies.mqtt": {
+          "name": "Frequencies",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Frequencies",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/frequencies/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Levels.mqtt": {
+          "name": "Levels",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Levels",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/levels/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.LocationGeoJson.mqtt": {
+          "name": "LocationGeoJson",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGeoJson",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/location-geo-json/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.LocationGroups.mqtt": {
+          "name": "LocationGroups",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroups",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/location-groups/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.LocationGroupStores.mqtt": {
+          "name": "LocationGroupStores",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroupStores",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/location-group-stores/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Networks.mqtt": {
+          "name": "Networks",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Networks",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/networks/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Pathways.mqtt": {
+          "name": "Pathways",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Pathways",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/pathways/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.RouteNetworks.mqtt": {
+          "name": "RouteNetworks",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.RouteNetworks",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/route-networks/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Routes.mqtt": {
+          "name": "Routes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Routes",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/routes/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Shapes.mqtt": {
+          "name": "Shapes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Shapes",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/shapes/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.StopAreas.mqtt": {
+          "name": "StopAreas",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopAreas",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/stop-areas/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Stops.mqtt": {
+          "name": "Stops",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/stops/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.StopTimes.mqtt": {
+          "name": "StopTimes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopTimes",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/stop-times/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Timeframes.mqtt": {
+          "name": "Timeframes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Timeframes",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/timeframes/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Transfers.mqtt": {
+          "name": "Transfers",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Transfers",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/transfers/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Translations.mqtt": {
+          "name": "Translations",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Translations",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/translations/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "GeneralTransitFeedStatic.Trips.mqtt": {
+          "name": "Trips",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Trips",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/trips/{row_id}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "GeneralTransitFeedRealTime.amqp": {
+      "description": "AMQP 1.0 bindings for gtfs.",
+      "messages": {
+        "GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp": {
+          "name": "VehiclePosition",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedRealTime.Trip.TripUpdate.amqp": {
+          "name": "TripUpdate",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Trip.TripUpdate",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedRealTime.Alert.Alert.amqp": {
+          "name": "Alert",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "GeneralTransitFeedStatic.amqp": {
+      "description": "AMQP 1.0 bindings for gtfs.",
+      "messages": {
+        "GeneralTransitFeedStatic.Agency.amqp": {
+          "name": "Agency",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Agency",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Areas.amqp": {
+          "name": "Areas",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Areas",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Attributions.amqp": {
+          "name": "Attributions",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeed.BookingRules.amqp": {
+          "name": "BookingRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeed.BookingRules",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FareAttributes.amqp": {
+          "name": "FareAttributes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FareLegRules.amqp": {
+          "name": "FareLegRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareLegRules",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FareMedia.amqp": {
+          "name": "FareMedia",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareMedia",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FareProducts.amqp": {
+          "name": "FareProducts",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareProducts",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FareRules.amqp": {
+          "name": "FareRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareRules",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FareTransferRules.amqp": {
+          "name": "FareTransferRules",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareTransferRules",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.FeedInfo.amqp": {
+          "name": "FeedInfo",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FeedInfo",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Frequencies.amqp": {
+          "name": "Frequencies",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Frequencies",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Levels.amqp": {
+          "name": "Levels",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Levels",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.LocationGeoJson.amqp": {
+          "name": "LocationGeoJson",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGeoJson",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.LocationGroups.amqp": {
+          "name": "LocationGroups",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroups",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.LocationGroupStores.amqp": {
+          "name": "LocationGroupStores",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroupStores",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Networks.amqp": {
+          "name": "Networks",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Networks",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Pathways.amqp": {
+          "name": "Pathways",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Pathways",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.RouteNetworks.amqp": {
+          "name": "RouteNetworks",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.RouteNetworks",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Routes.amqp": {
+          "name": "Routes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Routes",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Shapes.amqp": {
+          "name": "Shapes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Shapes",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.StopAreas.amqp": {
+          "name": "StopAreas",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopAreas",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Stops.amqp": {
+          "name": "Stops",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.StopTimes.amqp": {
+          "name": "StopTimes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopTimes",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Timeframes.amqp": {
+          "name": "Timeframes",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Timeframes",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Transfers.amqp": {
+          "name": "Transfers",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Transfers",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Translations.amqp": {
+          "name": "Translations",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Translations",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "GeneralTransitFeedStatic.Trips.amqp": {
+          "name": "Trips",
+          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Trips",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agencyid}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
