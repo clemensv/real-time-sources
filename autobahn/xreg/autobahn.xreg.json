@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.Autobahn"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Autobahn CloudEvents on the `autobahn` topic keyed by `{identifier}`."
     },
     "DE.Autobahn.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.Autobahn.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for Autobahn CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -66,7 +68,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.RoadworkUpdated": {
           "name": "RoadworkUpdated",
@@ -88,7 +91,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.RoadworkResolved": {
           "name": "RoadworkResolved",
@@ -110,7 +114,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.ShortTermRoadworkAppeared": {
           "name": "ShortTermRoadworkAppeared",
@@ -132,7 +137,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.ShortTermRoadworkUpdated": {
           "name": "ShortTermRoadworkUpdated",
@@ -154,7 +160,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.ShortTermRoadworkResolved": {
           "name": "ShortTermRoadworkResolved",
@@ -176,7 +183,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.WarningAppeared": {
           "name": "WarningAppeared",
@@ -198,7 +206,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.WarningUpdated": {
           "name": "WarningUpdated",
@@ -220,7 +229,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.WarningResolved": {
           "name": "WarningResolved",
@@ -242,7 +252,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.ClosureAppeared": {
           "name": "ClosureAppeared",
@@ -264,7 +275,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.ClosureUpdated": {
           "name": "ClosureUpdated",
@@ -286,7 +298,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.ClosureResolved": {
           "name": "ClosureResolved",
@@ -308,7 +321,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.EntryExitClosureAppeared": {
           "name": "EntryExitClosureAppeared",
@@ -330,7 +344,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.EntryExitClosureUpdated": {
           "name": "EntryExitClosureUpdated",
@@ -352,7 +367,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.EntryExitClosureResolved": {
           "name": "EntryExitClosureResolved",
@@ -374,7 +390,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
         },
         "DE.Autobahn.WeightLimit35RestrictionAppeared": {
           "name": "WeightLimit35RestrictionAppeared",
@@ -396,7 +413,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.WeightLimit35RestrictionUpdated": {
           "name": "WeightLimit35RestrictionUpdated",
@@ -418,7 +436,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.WeightLimit35RestrictionResolved": {
           "name": "WeightLimit35RestrictionResolved",
@@ -440,7 +459,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.ParkingLorryAppeared": {
           "name": "ParkingLorryAppeared",
@@ -462,7 +482,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.ParkingLorryUpdated": {
           "name": "ParkingLorryUpdated",
@@ -484,7 +505,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.ParkingLorryResolved": {
           "name": "ParkingLorryResolved",
@@ -506,7 +528,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.ElectricChargingStationAppeared": {
           "name": "ElectricChargingStationAppeared",
@@ -528,7 +551,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+          "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "DE.Autobahn.ElectricChargingStationUpdated": {
           "name": "ElectricChargingStationUpdated",
@@ -550,7 +574,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+          "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "DE.Autobahn.ElectricChargingStationResolved": {
           "name": "ElectricChargingStationResolved",
@@ -572,7 +597,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+          "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "DE.Autobahn.StrongElectricChargingStationAppeared": {
           "name": "StrongElectricChargingStationAppeared",
@@ -594,7 +620,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+          "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "DE.Autobahn.StrongElectricChargingStationUpdated": {
           "name": "StrongElectricChargingStationUpdated",
@@ -616,7 +643,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+          "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "DE.Autobahn.StrongElectricChargingStationResolved": {
           "name": "StrongElectricChargingStationResolved",
@@ -638,7 +666,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+          "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "DE.Autobahn.WebcamAppeared": {
           "name": "WebcamAppeared",
@@ -660,7 +689,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.WebcamUpdated": {
           "name": "WebcamUpdated",
@@ -682,7 +712,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         },
         "DE.Autobahn.WebcamResolved": {
           "name": "WebcamResolved",
@@ -704,13 +735,15 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam",
+          "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
         }
-      }
+      },
+      "description": "Events from Autobahn covering German motorway segments, roadworks, closures, and traffic messages. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "DE.Autobahn.mqtt": {
       "messagegroupid": "DE.Autobahn.mqtt",
-      "description": "MQTT/5.0 mirror of the DE.Autobahn CloudEvents, published into the Unified-Namespace topic tree 'traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}'. {kind} (10 values) and {state} (appeared/updated/resolved) are literally baked per-message so xrcg can resolve every placeholder from schema fields. Lifecycle-event families (roadwork, short-term-roadwork, closure, entry-exit-closure, warning) are QoS-1 non-retained — they are state-change notifications, not LKV slots. Stable-object families (weight-limit-3-5, webcam, parking-lorry, electric-charging-station, strong-electric-charging-station) are QoS-1 retained so late subscribers see the current state of every known object; the bridge publishes an empty retained payload on `resolved` to clear the slot.",
+      "description": "MQTT 5 variant of the Autobahn events. It carries the same transport semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "DE.Autobahn.RoadworkAppeared.mqtt": {
           "messageid": "DE.Autobahn.RoadworkAppeared.mqtt",
@@ -1064,7 +1097,8 @@
                     "name": "StringList",
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
@@ -1095,7 +1129,8 @@
                   "road_ids": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "minItems": 1,
                     "uniqueItems": true,
@@ -1117,6 +1152,13 @@
                     "description": "Autobahn API display_type value that identifies the road-event subtype.",
                     "altnames": {
                       "autobahn-api": "display_type"
+                    },
+                    "descriptions": {
+                      "ROADWORKS": "Provider coded value `ROADWORKS` for this field.",
+                      "SHORT_TERM_ROADWORKS": "Provider coded value `SHORT_TERM_ROADWORKS` for this field.",
+                      "CLOSURE": "Provider coded value `CLOSURE` for this field.",
+                      "CLOSURE_ENTRY_EXIT": "Provider coded value `CLOSURE_ENTRY_EXIT` for this field.",
+                      "WEIGHT_LIMIT_35": "Provider coded value `WEIGHT_LIMIT_35` for this field."
                     }
                   },
                   "title": {
@@ -1304,7 +1346,7 @@
                     }
                   }
                 },
-                "description": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure."
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -1325,7 +1367,8 @@
                     "name": "StringList",
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
@@ -1356,7 +1399,8 @@
                   "road_ids": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "minItems": 1,
                     "uniqueItems": true,
@@ -1374,6 +1418,9 @@
                     "description": "Autobahn API display_type for warning items.",
                     "altnames": {
                       "autobahn-api": "display_type"
+                    },
+                    "descriptions": {
+                      "WARNING": "Provider coded value `WARNING` for this field."
                     }
                   },
                   "title": {
@@ -1605,7 +1652,7 @@
                     }
                   }
                 },
-                "description": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning."
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -1626,7 +1673,8 @@
                     "name": "StringList",
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
@@ -1657,7 +1705,8 @@
                   "road_ids": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "minItems": 1,
                     "uniqueItems": true,
@@ -1675,6 +1724,9 @@
                     "description": "Autobahn API display_type for lorry parking items.",
                     "altnames": {
                       "autobahn-api": "display_type"
+                    },
+                    "descriptions": {
+                      "PARKING": "Provider coded value `PARKING` for this field."
                     }
                   },
                   "title": {
@@ -1838,7 +1890,7 @@
                     "description": "Number of lorry spaces parsed from description lines that contain LKW Stellplätze."
                   }
                 },
-                "description": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry."
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -1859,7 +1911,8 @@
                     "name": "StringList",
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
@@ -1890,7 +1943,8 @@
                   "road_ids": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "minItems": 1,
                     "uniqueItems": true,
@@ -1909,6 +1963,10 @@
                     "description": "Autobahn API display_type for charging-station items.",
                     "altnames": {
                       "autobahn-api": "display_type"
+                    },
+                    "descriptions": {
+                      "ELECTRIC_CHARGING_STATION": "Provider coded value `ELECTRIC_CHARGING_STATION` for this field.",
+                      "STRONG_ELECTRIC_CHARGING_STATION": "Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field."
                     }
                   },
                   "title": {
@@ -2056,7 +2114,7 @@
                     }
                   }
                 },
-                "description": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station."
+                "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
             }
           }
@@ -2077,7 +2135,8 @@
                     "name": "StringList",
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
                   }
@@ -2108,7 +2167,8 @@
                   "road_ids": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
                     },
                     "minItems": 1,
                     "uniqueItems": true,
@@ -2126,6 +2186,9 @@
                     "description": "Autobahn API display_type for webcam items.",
                     "altnames": {
                       "autobahn-api": "display_type"
+                    },
+                    "descriptions": {
+                      "WEBCAM": "Provider coded value `WEBCAM` for this field."
                     }
                   },
                   "title": {
@@ -2281,7 +2344,7 @@
                     }
                   }
                 },
-                "description": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam."
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -2481,7 +2544,8 @@
                     ],
                     "default": null
                   }
-                ]
+                ],
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -2709,7 +2773,8 @@
                     ],
                     "default": null
                   }
-                ]
+                ],
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -2889,7 +2954,8 @@
                     ],
                     "default": null
                   }
-                ]
+                ],
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
@@ -3058,7 +3124,8 @@
                     ],
                     "default": null
                   }
-                ]
+                ],
+                "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
             }
           }
@@ -3227,12 +3294,18 @@
                     ],
                     "default": null
                   }
-                ]
+                ],
+                "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "Autobahn publishes road traffic incidents, closures, webcams, and travel information from Germany's Autobahn GmbH traffic APIs for German motorway segments, roadworks, closures, and traffic messages. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for Autobahn, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

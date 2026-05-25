@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/IO.AISstream"
-      ]
+      ],
+      "description": "Kafka producer endpoint for AISStream CloudEvents on the `aisstream` topic keyed by `{mmsi}`."
     },
     "IO.AISstream.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/IO.AISstream.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for AISStream CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.PositionReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.PositionReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.ShipStaticData": {
           "name": "ShipStaticData",
@@ -80,7 +83,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ShipStaticData"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ShipStaticData",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.StandardClassBPositionReport": {
           "name": "StandardClassBPositionReport",
@@ -98,7 +102,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardClassBPositionReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardClassBPositionReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.ExtendedClassBPositionReport": {
           "name": "ExtendedClassBPositionReport",
@@ -116,7 +121,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ExtendedClassBPositionReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ExtendedClassBPositionReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.AidsToNavigationReport": {
           "name": "AidsToNavigationReport",
@@ -134,7 +140,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AidsToNavigationReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AidsToNavigationReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.StaticDataReport": {
           "name": "StaticDataReport",
@@ -152,7 +159,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StaticDataReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StaticDataReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.BaseStationReport": {
           "name": "BaseStationReport",
@@ -170,7 +178,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport",
+          "description": "A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "IO.AISstream.SafetyBroadcastMessage": {
           "name": "SafetyBroadcastMessage",
@@ -188,7 +197,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SafetyBroadcastMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SafetyBroadcastMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.StandardSearchAndRescueAircraftReport": {
           "name": "StandardSearchAndRescueAircraftReport",
@@ -206,7 +216,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardSearchAndRescueAircraftReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardSearchAndRescueAircraftReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.LongRangeAisBroadcastMessage": {
           "name": "LongRangeAisBroadcastMessage",
@@ -224,7 +235,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage",
+          "description": "A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
         },
         "IO.AISstream.AddressedSafetyMessage": {
           "name": "AddressedSafetyMessage",
@@ -242,7 +254,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedSafetyMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedSafetyMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.AddressedBinaryMessage": {
           "name": "AddressedBinaryMessage",
@@ -260,7 +273,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedBinaryMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.AssignedModeCommand": {
           "name": "AssignedModeCommand",
@@ -278,7 +292,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AssignedModeCommand"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AssignedModeCommand",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.BinaryAcknowledge": {
           "name": "BinaryAcknowledge",
@@ -296,7 +311,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryAcknowledge"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryAcknowledge",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.BinaryBroadcastMessage": {
           "name": "BinaryBroadcastMessage",
@@ -314,7 +330,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryBroadcastMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryBroadcastMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.ChannelManagement": {
           "name": "ChannelManagement",
@@ -332,7 +349,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ChannelManagement"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ChannelManagement",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.CoordinatedUTCInquiry": {
           "name": "CoordinatedUTCInquiry",
@@ -350,7 +368,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.CoordinatedUTCInquiry"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.CoordinatedUTCInquiry",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.DataLinkManagementMessage": {
           "name": "DataLinkManagementMessage",
@@ -368,7 +387,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.DataLinkManagementMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.DataLinkManagementMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.GnssBroadcastBinaryMessage": {
           "name": "GnssBroadcastBinaryMessage",
@@ -386,7 +406,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GnssBroadcastBinaryMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GnssBroadcastBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.GroupAssignmentCommand": {
           "name": "GroupAssignmentCommand",
@@ -404,7 +425,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GroupAssignmentCommand"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GroupAssignmentCommand",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.Interrogation": {
           "name": "Interrogation",
@@ -422,7 +444,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.Interrogation"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.Interrogation",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.MultiSlotBinaryMessage": {
           "name": "MultiSlotBinaryMessage",
@@ -440,7 +463,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.SingleSlotBinaryMessage": {
           "name": "SingleSlotBinaryMessage",
@@ -458,9 +482,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage"
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         }
-      }
+      },
+      "description": "Events from AISStream covering AIS-equipped vessels received by the AISStream network. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "IO.AISstream.mqtt": {
       "envelope": "CloudEvents/1.0",
@@ -488,7 +514,8 @@
             "retain": false
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.PositionReport"
+          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.PositionReport",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.mqtt.ShipStatic": {
           "messageid": "IO.AISstream.mqtt.ShipStatic.mqtt",
@@ -513,7 +540,8 @@
             "retain": false
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.ShipStatic"
+          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.ShipStatic",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         },
         "IO.AISstream.mqtt.AidToNavigation": {
           "messageid": "IO.AISstream.mqtt.AidToNavigation.mqtt",
@@ -538,9 +566,11 @@
             "retain": false
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.AidToNavigation"
+          "dataschemauri": "#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.AidToNavigation",
+          "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
         }
-      }
+      },
+      "description": "MQTT 5 variant of the AISStream events. It carries the same transport semantics as the base events with MQTT topic routing and retain behavior declared per message."
     }
   },
   "schemagroups": {
@@ -566,58 +596,76 @@
                 "name": "PositionReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "NavigationalStatus": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for navigational status in this record."
                   },
                   "RateOfTurn": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for rate of turn in this record."
                   },
                   "Sog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for sog in this record."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Cog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for cog in this record."
                   },
                   "TrueHeading": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for true heading in this record."
                   },
                   "Timestamp": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "SpecialManoeuvreIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for special manoeuvre indicator in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "CommunicationState": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for communication state in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/PositionReport"
+                "$id": "https://example.com/schemas/IO/AISstream/PositionReport",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -640,31 +688,40 @@
                 "name": "ShipStaticData",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "AisVersion": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for ais version in this record."
                   },
                   "ImoNumber": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for imo number in this record."
                   },
                   "CallSign": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for call sign in this record."
                   },
                   "Name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the resource."
                   },
                   "Type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for type in this record."
                   },
                   "Dimension": {
                     "type": "object",
@@ -677,21 +734,27 @@
                     "name": "Dimension",
                     "properties": {
                       "A": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for a in this record."
                       },
                       "B": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for b in this record."
                       },
                       "C": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for c in this record."
                       },
                       "D": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for d in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for dimension in this record."
                   },
                   "FixType": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for fix type in this record."
                   },
                   "Eta": {
                     "type": "object",
@@ -704,33 +767,43 @@
                     "name": "Eta",
                     "properties": {
                       "Month": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for month in this record."
                       },
                       "Day": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for day in this record."
                       },
                       "Hour": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for hour in this record."
                       },
                       "Minute": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for minute in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for eta in this record."
                   },
                   "MaximumStaticDraught": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for maximum static draught in this record."
                   },
                   "Destination": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for destination in this record."
                   },
                   "Dte": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for dte in this record."
                   },
                   "Spare": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for spare in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/ShipStaticData"
+                "$id": "https://example.com/schemas/IO/AISstream/ShipStaticData",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -755,73 +828,96 @@
                 "name": "StandardClassBPositionReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "Sog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for sog in this record."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Cog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for cog in this record."
                   },
                   "TrueHeading": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for true heading in this record."
                   },
                   "Timestamp": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   },
                   "ClassBUnit": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for class b unit in this record."
                   },
                   "ClassBDisplay": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for class b display in this record."
                   },
                   "ClassBDsc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for class b dsc in this record."
                   },
                   "ClassBBand": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for class b band in this record."
                   },
                   "ClassBMsg22": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for class b msg22 in this record."
                   },
                   "AssignedMode": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for assigned mode in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "CommunicationStateIsItdma": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for communication state is itdma in this record."
                   },
                   "CommunicationState": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for communication state in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/StandardClassBPositionReport"
+                "$id": "https://example.com/schemas/IO/AISstream/StandardClassBPositionReport",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -846,49 +942,64 @@
                 "name": "ExtendedClassBPositionReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "Sog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for sog in this record."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Cog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for cog in this record."
                   },
                   "TrueHeading": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for true heading in this record."
                   },
                   "Timestamp": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   },
                   "Name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the resource."
                   },
                   "Type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for type in this record."
                   },
                   "Dimension": {
                     "type": "object",
@@ -901,36 +1012,47 @@
                     "name": "Dimension",
                     "properties": {
                       "A": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for a in this record."
                       },
                       "B": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for b in this record."
                       },
                       "C": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for c in this record."
                       },
                       "D": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for d in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for dimension in this record."
                   },
                   "FixType": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for fix type in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "Dte": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for dte in this record."
                   },
                   "AssignedMode": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for assigned mode in this record."
                   },
                   "Spare3": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare3 in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/ExtendedClassBPositionReport"
+                "$id": "https://example.com/schemas/IO/AISstream/ExtendedClassBPositionReport",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -955,31 +1077,40 @@
                 "name": "AidsToNavigationReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for type in this record."
                   },
                   "Name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the resource."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Dimension": {
                     "type": "object",
@@ -992,48 +1123,63 @@
                     "name": "Dimension",
                     "properties": {
                       "A": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for a in this record."
                       },
                       "B": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for b in this record."
                       },
                       "C": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for c in this record."
                       },
                       "D": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for d in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for dimension in this record."
                   },
                   "Fixtype": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for fixtype in this record."
                   },
                   "Timestamp": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "OffPosition": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for off position in this record."
                   },
                   "AtoN": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for ato n in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "VirtualAtoN": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for virtual ato n in this record."
                   },
                   "AssignedMode": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for assigned mode in this record."
                   },
                   "Spare": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for spare in this record."
                   },
                   "NameExtension": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for name extension in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/AidsToNavigationReport"
+                "$id": "https://example.com/schemas/IO/AISstream/AidsToNavigationReport",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1056,22 +1202,28 @@
                 "name": "StaticDataReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Reserved": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for reserved in this record."
                   },
                   "PartNumber": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for part number in this record."
                   },
                   "ReportA": {
                     "type": "object",
@@ -1082,12 +1234,15 @@
                     "name": "ReportA",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "Name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Human-readable name of the resource."
                       }
-                    }
+                    },
+                    "description": "Provider field for report a in this record."
                   },
                   "ReportB": {
                     "type": "object",
@@ -1097,22 +1252,28 @@
                     "name": "ReportB",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "ShipType": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for ship type in this record."
                       },
                       "VendorIDName": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Provider field for vendor i d name in this record."
                       },
                       "VenderIDModel": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for vender i d model in this record."
                       },
                       "VenderIDSerial": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for vender i d serial in this record."
                       },
                       "CallSign": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Provider field for call sign in this record."
                       },
                       "Dimension": {
                         "type": "object",
@@ -1125,29 +1286,38 @@
                         "name": "Dimension",
                         "properties": {
                           "A": {
-                            "type": "int32"
+                            "type": "int32",
+                            "description": "Provider field for a in this record."
                           },
                           "B": {
-                            "type": "int32"
+                            "type": "int32",
+                            "description": "Provider field for b in this record."
                           },
                           "C": {
-                            "type": "int32"
+                            "type": "int32",
+                            "description": "Provider field for c in this record."
                           },
                           "D": {
-                            "type": "int32"
+                            "type": "int32",
+                            "description": "Provider field for d in this record."
                           }
-                        }
+                        },
+                        "description": "Provider field for dimension in this record."
                       },
                       "FixType": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for fix type in this record."
                       },
                       "Spare": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for spare in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for report b in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/StaticDataReport"
+                "$id": "https://example.com/schemas/IO/AISstream/StaticDataReport",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1172,61 +1342,80 @@
                 "name": "BaseStationReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "UtcYear": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for utc year in this record."
                   },
                   "UtcMonth": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for utc month in this record."
                   },
                   "UtcDay": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for utc day in this record."
                   },
                   "UtcHour": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for utc hour in this record."
                   },
                   "UtcMinute": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for utc minute in this record."
                   },
                   "UtcSecond": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for utc second in this record."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "FixType": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for fix type in this record."
                   },
                   "LongRangeEnable": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for long range enable in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "CommunicationState": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for communication state in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/BaseStationReport"
+                "$id": "https://example.com/schemas/IO/AISstream/BaseStationReport",
+                "description": "A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
               }
             }
           }
@@ -1249,25 +1438,32 @@
                 "name": "SafetyBroadcastMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Text": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for text in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/SafetyBroadcastMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/SafetyBroadcastMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1292,64 +1488,84 @@
                 "name": "StandardSearchAndRescueAircraftReport",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Altitude": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for altitude in this record."
                   },
                   "Sog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for sog in this record."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Cog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for cog in this record."
                   },
                   "Timestamp": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "AltFromBaro": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for alt from baro in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "Dte": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for dte in this record."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   },
                   "AssignedMode": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for assigned mode in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "CommunicationStateIsItdma": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for communication state is itdma in this record."
                   },
                   "CommunicationState": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for communication state in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/StandardSearchAndRescueAircraftReport"
+                "$id": "https://example.com/schemas/IO/AISstream/StandardSearchAndRescueAircraftReport",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1374,46 +1590,60 @@
                 "name": "LongRangeAisBroadcastMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "PositionAccuracy": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "Raim": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for raim in this record."
                   },
                   "NavigationalStatus": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for navigational status in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Sog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for sog in this record."
                   },
                   "Cog": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for cog in this record."
                   },
                   "PositionLatency": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for position latency in this record."
                   },
                   "Spare": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for spare in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/LongRangeAisBroadcastMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/LongRangeAisBroadcastMessage",
+                "description": "A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
               }
             }
           }
@@ -1436,34 +1666,44 @@
                 "name": "AddressedSafetyMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Sequenceinteger": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for sequenceinteger in this record."
                   },
                   "DestinationID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for destination i d in this record."
                   },
                   "Retransmission": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for retransmission in this record."
                   },
                   "Spare": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for spare in this record."
                   },
                   "Text": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for text in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/AddressedSafetyMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/AddressedSafetyMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1486,28 +1726,36 @@
                 "name": "AddressedBinaryMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Sequenceinteger": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for sequenceinteger in this record."
                   },
                   "DestinationID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for destination i d in this record."
                   },
                   "Retransmission": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for retransmission in this record."
                   },
                   "Spare": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for spare in this record."
                   },
                   "ApplicationID": {
                     "type": "object",
@@ -1519,21 +1767,27 @@
                     "name": "ApplicationID",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "DesignatedAreaCode": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for designated area code in this record."
                       },
                       "FunctionIdentifier": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for function identifier in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for application i d in this record."
                   },
                   "BinaryData": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for binary data in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/AddressedBinaryMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/AddressedBinaryMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1556,28 +1810,35 @@
                 "name": "AssignedModeCommand",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Commands": {
                     "type": "map",
                     "values": {
                       "type": "string"
-                    }
+                    },
+                    "description": "Provider field for commands in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/AssignedModeCommand"
+                "$id": "https://example.com/schemas/IO/AISstream/AssignedModeCommand",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1600,28 +1861,35 @@
                 "name": "BinaryAcknowledge",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Destinations": {
                     "type": "map",
                     "values": {
                       "type": "string"
-                    }
+                    },
+                    "description": "Provider field for destinations in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/BinaryAcknowledge"
+                "$id": "https://example.com/schemas/IO/AISstream/BinaryAcknowledge",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1644,19 +1912,24 @@
                 "name": "BinaryBroadcastMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "ApplicationID": {
                     "type": "object",
@@ -1668,21 +1941,27 @@
                     "name": "ApplicationID",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "DesignatedAreaCode": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for designated area code in this record."
                       },
                       "FunctionIdentifier": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for function identifier in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for application i d in this record."
                   },
                   "BinaryData": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for binary data in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/BinaryBroadcastMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/BinaryBroadcastMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1705,31 +1984,40 @@
                 "name": "ChannelManagement",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "ChannelA": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for channel a in this record."
                   },
                   "ChannelB": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for channel b in this record."
                   },
                   "TxRxMode": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for tx rx mode in this record."
                   },
                   "LowPower": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for low power in this record."
                   },
                   "Area": {
                     "type": "object",
@@ -1742,18 +2030,23 @@
                     "name": "Area",
                     "properties": {
                       "Longitude1": {
-                        "type": "double"
+                        "type": "double",
+                        "description": "Provider field for longitude1 in this record."
                       },
                       "Latitude1": {
-                        "type": "double"
+                        "type": "double",
+                        "description": "Provider field for latitude1 in this record."
                       },
                       "Longitude2": {
-                        "type": "double"
+                        "type": "double",
+                        "description": "Provider field for longitude2 in this record."
                       },
                       "Latitude2": {
-                        "type": "double"
+                        "type": "double",
+                        "description": "Provider field for latitude2 in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for area in this record."
                   },
                   "Unicast": {
                     "type": "object",
@@ -1764,36 +2057,47 @@
                     "name": "Unicast",
                     "properties": {
                       "AddressStation1": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for address station1 in this record."
                       },
                       "Spare2": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for spare2 in this record."
                       },
                       "AddressStation2": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for address station2 in this record."
                       },
                       "Spare3": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for spare3 in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for unicast in this record."
                   },
                   "IsAddressed": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for is addressed in this record."
                   },
                   "BwA": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for bw a in this record."
                   },
                   "BwB": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for bw b in this record."
                   },
                   "TransitionalZoneSize": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for transitional zone size in this record."
                   },
                   "Spare4": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare4 in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/ChannelManagement"
+                "$id": "https://example.com/schemas/IO/AISstream/ChannelManagement",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1816,28 +2120,36 @@
                 "name": "CoordinatedUTCInquiry",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "DestinationID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for destination i d in this record."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/CoordinatedUTCInquiry"
+                "$id": "https://example.com/schemas/IO/AISstream/CoordinatedUTCInquiry",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1860,28 +2172,35 @@
                 "name": "DataLinkManagementMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Data": {
                     "type": "map",
                     "values": {
                       "type": "string"
-                    }
+                    },
+                    "description": "Provider field for data in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/DataLinkManagementMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/DataLinkManagementMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1904,34 +2223,44 @@
                 "name": "GnssBroadcastBinaryMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "Longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "Latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   },
                   "Data": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for data in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/GnssBroadcastBinaryMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/GnssBroadcastBinaryMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -1954,55 +2283,72 @@
                 "name": "GroupAssignmentCommand",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "Longitude1": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for longitude1 in this record."
                   },
                   "Latitude1": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for latitude1 in this record."
                   },
                   "Longitude2": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for longitude2 in this record."
                   },
                   "Latitude2": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for latitude2 in this record."
                   },
                   "StationType": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for station type in this record."
                   },
                   "ShipType": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for ship type in this record."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   },
                   "TxRxMode": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for tx rx mode in this record."
                   },
                   "ReportingInterval": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for reporting interval in this record."
                   },
                   "QuietTime": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for quiet time in this record."
                   },
                   "Spare3": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare3 in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/GroupAssignmentCommand"
+                "$id": "https://example.com/schemas/IO/AISstream/GroupAssignmentCommand",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -2025,19 +2371,24 @@
                 "name": "Interrogation",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "Station1Msg1": {
                     "type": "object",
@@ -2050,18 +2401,23 @@
                     "name": "Station1Msg1",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "StationID": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for station i d in this record."
                       },
                       "MessageID": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for message i d in this record."
                       },
                       "SlotOffset": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for slot offset in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for station1 msg1 in this record."
                   },
                   "Station1Msg2": {
                     "type": "object",
@@ -2073,18 +2429,23 @@
                     "name": "Station1Msg2",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "Spare": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for spare in this record."
                       },
                       "MessageID": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for message i d in this record."
                       },
                       "SlotOffset": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for slot offset in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for station1 msg2 in this record."
                   },
                   "Station2": {
                     "type": "object",
@@ -2097,27 +2458,35 @@
                     "name": "Station2",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "Spare1": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for spare1 in this record."
                       },
                       "StationID": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for station i d in this record."
                       },
                       "MessageID": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for message i d in this record."
                       },
                       "SlotOffset": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for slot offset in this record."
                       },
                       "Spare2": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for spare2 in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for station2 in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/Interrogation"
+                "$id": "https://example.com/schemas/IO/AISstream/Interrogation",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -2140,28 +2509,36 @@
                 "name": "MultiSlotBinaryMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "DestinationIDValid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for destination i d valid in this record."
                   },
                   "ApplicationIDValid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for application i d valid in this record."
                   },
                   "DestinationID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for destination i d in this record."
                   },
                   "Spare1": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare1 in this record."
                   },
                   "ApplicationID": {
                     "type": "object",
@@ -2173,30 +2550,39 @@
                     "name": "ApplicationID",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "DesignatedAreaCode": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for designated area code in this record."
                       },
                       "FunctionIdentifier": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for function identifier in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for application i d in this record."
                   },
                   "Payload": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for payload in this record."
                   },
                   "Spare2": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare2 in this record."
                   },
                   "CommunicationStateIsItdma": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for communication state is itdma in this record."
                   },
                   "CommunicationState": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for communication state in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/MultiSlotBinaryMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/MultiSlotBinaryMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -2219,28 +2605,36 @@
                 "name": "SingleSlotBinaryMessage",
                 "properties": {
                   "MessageID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for message i d in this record."
                   },
                   "RepeatIndicator": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for repeat indicator in this record."
                   },
                   "UserID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for user i d in this record."
                   },
                   "Valid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for valid in this record."
                   },
                   "DestinationIDValid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for destination i d valid in this record."
                   },
                   "ApplicationIDValid": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Provider field for application i d valid in this record."
                   },
                   "DestinationID": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for destination i d in this record."
                   },
                   "Spare": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for spare in this record."
                   },
                   "ApplicationID": {
                     "type": "object",
@@ -2252,21 +2646,27 @@
                     "name": "ApplicationID",
                     "properties": {
                       "Valid": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Provider field for valid in this record."
                       },
                       "DesignatedAreaCode": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for designated area code in this record."
                       },
                       "FunctionIdentifier": {
-                        "type": "int32"
+                        "type": "int32",
+                        "description": "Provider field for function identifier in this record."
                       }
-                    }
+                    },
+                    "description": "Provider field for application i d in this record."
                   },
                   "Payload": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for payload in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage"
+                "$id": "https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network."
               }
             }
           }
@@ -2287,7 +2687,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "PositionReport",
-                "description": "Position report (Type 1/2/3/4/9/18/19/27) projected onto the UNS axes.",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
                 "required": [
                   "mmsi",
                   "flag",
@@ -2326,7 +2726,12 @@
                       "static",
                       "aid-to-navigation"
                     ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+                    "descriptions": {
+                      "position-report": "Provider coded value `position-report` for this field.",
+                      "static": "Provider coded value `static` for this field.",
+                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
+                    }
                   },
                   "user_id": {
                     "type": "int32",
@@ -2393,7 +2798,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "ShipStatic",
-                "description": "Static and voyage-related data (Type 5 ShipStaticData / Type 24 StaticDataReport).",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
                 "required": [
                   "mmsi",
                   "flag",
@@ -2432,7 +2837,12 @@
                       "static",
                       "aid-to-navigation"
                     ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+                    "descriptions": {
+                      "position-report": "Provider coded value `position-report` for this field.",
+                      "static": "Provider coded value `static` for this field.",
+                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
+                    }
                   },
                   "user_id": {
                     "type": "int32",
@@ -2503,7 +2913,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "AidToNavigation",
-                "description": "Aid-to-Navigation report (Type 21).",
+                "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
                 "required": [
                   "mmsi",
                   "flag",
@@ -2544,7 +2954,12 @@
                       "static",
                       "aid-to-navigation"
                     ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+                    "descriptions": {
+                      "position-report": "Provider coded value `position-report` for this field.",
+                      "static": "Provider coded value `static` for this field.",
+                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
+                    }
                   },
                   "user_id": {
                     "type": "int32",
@@ -2586,5 +3001,10 @@
         }
       }
     }
+  },
+  "description": "AISStream publishes vessel position, voyage, safety, and static AIS messages from AISStream public AIS firehose for AIS-equipped vessels received by the AISStream network. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for AISStream, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

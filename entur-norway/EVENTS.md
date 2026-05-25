@@ -1,6 +1,6 @@
 # Entur Norway SIRI Bridge Events
 
-Message group for dated service journey reference data and real-time journey telemetry (ET and VM). All messages in this group share the journeys/{operating_day}/{service_journey_id} Kafka key.
+Entur Norway publishes transit realtime updates from Entur public transport feeds for Norwegian public-transport stops, lines, and journeys. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 

@@ -1,12 +1,12 @@
 # Digitraffic Marine Bridge Usage Guide Events
 
-**Digitraffic Marine Bridge** connects to Finland's [Digitraffic](https://www.digitraffic.fi/) MQTT stream for real-time AIS vessel tracking and also polls Digitraffic's Port Call REST APIs for vessel visit and companion reference data. Both paths are forwarded to Kafka as [CloudEvents](https://cloudevents.io/) in JSON format.
+Digitraffic Maritime publishes maritime traffic and fairway updates from Fintraffic Digitraffic for Finnish maritime fairways and vessels. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
 - **Event types:** 5 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 1 reference/catalog event type and 4 telemetry event types.
+- **Reference vs telemetry:** 0 reference/catalog event types and 5 telemetry event types.
 - **Identity:** `{mmsi}`, `{port_call_id}`, `{vessel_id}`, `{locode}` identifies the resource each event is about.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
@@ -37,11 +37,11 @@ CloudEvents type: `fi.digitraffic.marine.ais.VesselLocation`
 
 #### What it tells you
 
-AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.
+A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is provider field for mmsi in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -53,17 +53,17 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Vessel Location` payloads are JSON object. Required fields: `time`, `sog`, `cog`, `navStat`, `rot`, `posAcc`, `raim`, `heading`, `lon`, `lat`.
 
-- **`mmsi`** (int32, optional): No description provided.
-- **`time`** (int32, required): No description provided.
-- **`sog`** (double, required): No description provided.
-- **`cog`** (double, required): No description provided.
-- **`navStat`** (int32, required): No description provided.
-- **`rot`** (int32, required): No description provided.
-- **`posAcc`** (boolean, required): No description provided.
-- **`raim`** (boolean, required): No description provided.
-- **`heading`** (int32, required): No description provided.
-- **`lon`** (double, required): No description provided.
-- **`lat`** (double, required): No description provided.
+- **`mmsi`** (int32, optional): Provider field for mmsi in this record.
+- **`time`** (int32, required): Time when the provider recorded or published the update.
+- **`sog`** (double, required): Provider field for sog in this record.
+- **`cog`** (double, required): Provider field for cog in this record.
+- **`navStat`** (int32, required): Provider field for nav stat in this record.
+- **`rot`** (int32, required): Provider field for rot in this record.
+- **`posAcc`** (boolean, required): Provider field for pos acc in this record.
+- **`raim`** (boolean, required): Provider field for raim in this record.
+- **`heading`** (int32, required): Provider field for heading in this record.
+- **`lon`** (double, required): Provider field for lon in this record.
+- **`lat`** (double, required): Provider field for lat in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -94,11 +94,11 @@ CloudEvents type: `fi.digitraffic.marine.ais.VesselMetadata`
 
 #### What it tells you
 
-AIS vessel static and voyage data from Digitraffic MQTT stream. Represents decoded AIS message type 5/24 data.
+A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is provider field for mmsi in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -110,20 +110,20 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Vessel Metadata` payloads are JSON object. Required fields: `timestamp`.
 
-- **`mmsi`** (int32, optional): No description provided.
-- **`timestamp`** (int32, required): No description provided.
-- **`name`** (string, optional): No description provided.
-- **`callSign`** (string, optional): No description provided.
-- **`imo`** (int32, optional): No description provided.
-- **`type`** (int32, optional): No description provided.
-- **`draught`** (int32, optional): No description provided.
-- **`eta`** (int32, optional): No description provided.
-- **`destination`** (string, optional): No description provided.
-- **`posType`** (int32, optional): No description provided.
-- **`refA`** (int32, optional): No description provided.
-- **`refB`** (int32, optional): No description provided.
-- **`refC`** (int32, optional): No description provided.
-- **`refD`** (int32, optional): No description provided.
+- **`mmsi`** (int32, optional): Provider field for mmsi in this record.
+- **`timestamp`** (int32, required): Time when the provider recorded or published the update.
+- **`name`** (string, optional): Human-readable name of the resource.
+- **`callSign`** (string, optional): Provider field for call sign in this record.
+- **`imo`** (int32, optional): Provider field for imo in this record.
+- **`type`** (int32, optional): Provider field for type in this record.
+- **`draught`** (int32, optional): Provider field for draught in this record.
+- **`eta`** (int32, optional): Provider field for eta in this record.
+- **`destination`** (string, optional): Provider field for destination in this record.
+- **`posType`** (int32, optional): Provider field for pos type in this record.
+- **`refA`** (int32, optional): Provider field for ref a in this record.
+- **`refB`** (int32, optional): Provider field for ref b in this record.
+- **`refC`** (int32, optional): Provider field for ref c in this record.
+- **`refD`** (int32, optional): Provider field for ref d in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -149,7 +149,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Port Call
 
@@ -157,7 +157,7 @@ CloudEvents type: `fi.digitraffic.marine.portcall.PortCall`
 
 #### What it tells you
 
-Port call update from Digitraffic's Portnet-backed port-call API. Each event represents one vessel visit plan or update keyed by the Digitraffic port call identifier and carries the vessel identity, routing context, assigned agents, and berth-area timing details.
+A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.
 
 #### Identity
 
@@ -257,7 +257,7 @@ CloudEvents type: `fi.digitraffic.marine.portcall.VesselDetails`
 
 #### What it tells you
 
-Reference record from Digitraffic's Port Call vessel-details API. Each event represents the current known metadata for one vessel entity keyed by Digitraffic's stable vessel identifier and includes identity, construction, dimensions, registration, and contact details sourced from Portnet.
+A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
 
 #### Identity
 
@@ -388,7 +388,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Port Location
 
@@ -396,7 +396,7 @@ CloudEvents type: `fi.digitraffic.marine.portcall.PortLocation`
 
 #### What it tells you
 
-Reference record from Digitraffic's Port Call ports API. Each event represents one SafeSeaNet port location keyed by UN/LOCODE together with its point geometry, port-area definitions, and berth catalog from the same upstream snapshot.
+A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 

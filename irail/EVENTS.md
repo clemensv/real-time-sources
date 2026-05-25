@@ -1,6 +1,6 @@
 # iRail Belgian Railway Bridge Events
 
-MQTT/5.0 transport variants for iRail Belgian railway station metadata and live board snapshots. Topics are retained QoS-1 state leaves under transit/be/irail/irail/{station_id}/{event}. The station_id topic axis preserves the existing Kafka/CloudEvents subject. Use transit/be/irail/irail/{station_id}/# for one station, transit/be/irail/irail/+/station-board for all departure boards, and transit/be/irail/irail/+/arrival-board for all arrival boards. Board snapshots use message expiry so stale liveboards age out if polling stops.
+iRail publishes train departure, arrival, and connection updates from the Belgian iRail train data API for Belgian railway stations, vehicles, and connections. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 

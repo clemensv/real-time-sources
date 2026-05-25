@@ -1,6 +1,6 @@
 # Madrid Real-Time Traffic (Informo) Events
 
-This bridge polls the Madrid Informo traffic sensor API and sends traffic data to Apache Kafka as CloudEvents.
+Madrid Traffic publishes traffic intensity and occupancy measurements from Madrid open traffic sensor feeds for Madrid traffic sensors. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `es.madrid.informo.MeasurementPoint`
 
 #### What it tells you
 
-Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions.
+A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -87,7 +87,7 @@ CloudEvents type: `es.madrid.informo.TrafficReading`
 
 #### What it tells you
 
-Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets.
+A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

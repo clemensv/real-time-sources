@@ -1,6 +1,6 @@
 # Kystverket AIS Bridge Usage Guide Events
 
-MQTT/5.0 non-retained UNS variants of the Kystverket AIS CloudEvents. Each event family (position-report, static, aid-to-navigation) gets a dedicated topic with the kebab family literal baked as the trailing segment. QoS 0, retain=false — there is no LKV slot for a firehose.
+Kystverket AIS publishes vessel position and voyage updates from the Norwegian Coastal Administration for AIS-equipped vessels in Norwegian waters. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -51,11 +51,11 @@ CloudEvents type: `NO.Kystverket.AIS.PositionReportClassA`
 
 #### What it tells you
 
-This event carries position report class a data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is provider field for mmsi in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -67,18 +67,18 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Position Report Class A` payloads are JSON object. Required fields: `mmsi`, `longitude`, `latitude`, `timestamp`.
 
-- **`mmsi`** (int32, required): No description provided.
-- **`navigation_status`** (int32, optional): No description provided.
-- **`rate_of_turn`** (double, optional): No description provided.
-- **`speed_over_ground`** (double, optional): No description provided.
-- **`position_accuracy`** (int32, optional): No description provided.
-- **`longitude`** (double, required): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`course_over_ground`** (double, optional): No description provided.
-- **`true_heading`** (int32, optional): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`station_id`** (string, optional): No description provided.
-- **`msg_type`** (int32, optional): No description provided.
+- **`mmsi`** (int32, required): Provider field for mmsi in this record.
+- **`navigation_status`** (int32, optional): Provider field for navigation status in this record.
+- **`rate_of_turn`** (double, optional): Provider field for rate of turn in this record.
+- **`speed_over_ground`** (double, optional): Provider field for speed over ground in this record.
+- **`position_accuracy`** (int32, optional): Provider field for position accuracy in this record.
+- **`longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`course_over_ground`** (double, optional): Provider field for course over ground in this record.
+- **`true_heading`** (int32, optional): Provider field for true heading in this record.
+- **`timestamp`** (string, required): Time when the provider recorded or published the update.
+- **`station_id`** (string, optional): Stable identifier assigned by the upstream provider for the station or stop.
+- **`msg_type`** (int32, optional): Provider field for msg type in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -110,11 +110,11 @@ CloudEvents type: `NO.Kystverket.AIS.StaticVoyageData`
 
 #### What it tells you
 
-This event carries static voyage data data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is provider field for mmsi in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -126,23 +126,23 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Static Voyage Data` payloads are JSON object. Required fields: `mmsi`, `timestamp`.
 
-- **`mmsi`** (int32, required): No description provided.
-- **`imo_number`** (int32, optional): No description provided.
-- **`callsign`** (string, optional): No description provided.
-- **`ship_name`** (string, optional): No description provided.
-- **`ship_type`** (int32, optional): No description provided.
-- **`dimension_to_bow`** (int32, optional): No description provided.
-- **`dimension_to_stern`** (int32, optional): No description provided.
-- **`dimension_to_port`** (int32, optional): No description provided.
-- **`dimension_to_starboard`** (int32, optional): No description provided.
-- **`draught`** (double, optional): No description provided.
-- **`destination`** (string, optional): No description provided.
-- **`eta_month`** (int32, optional): No description provided.
-- **`eta_day`** (int32, optional): No description provided.
-- **`eta_hour`** (int32, optional): No description provided.
-- **`eta_minute`** (int32, optional): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`station_id`** (string, optional): No description provided.
+- **`mmsi`** (int32, required): Provider field for mmsi in this record.
+- **`imo_number`** (int32, optional): Provider field for imo number in this record.
+- **`callsign`** (string, optional): Provider field for callsign in this record.
+- **`ship_name`** (string, optional): Human-readable name of the ship.
+- **`ship_type`** (int32, optional): Provider field for ship type in this record.
+- **`dimension_to_bow`** (int32, optional): Provider field for dimension to bow in this record.
+- **`dimension_to_stern`** (int32, optional): Provider field for dimension to stern in this record.
+- **`dimension_to_port`** (int32, optional): Provider field for dimension to port in this record.
+- **`dimension_to_starboard`** (int32, optional): Provider field for dimension to starboard in this record.
+- **`draught`** (double, optional): Provider field for draught in this record.
+- **`destination`** (string, optional): Provider field for destination in this record.
+- **`eta_month`** (int32, optional): Provider field for eta month in this record.
+- **`eta_day`** (int32, optional): Provider field for eta day in this record.
+- **`eta_hour`** (int32, optional): Provider field for eta hour in this record.
+- **`eta_minute`** (int32, optional): Provider field for eta minute in this record.
+- **`timestamp`** (string, required): Time when the provider recorded or published the update.
+- **`station_id`** (string, optional): Stable identifier assigned by the upstream provider for the station or stop.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -179,11 +179,11 @@ CloudEvents type: `NO.Kystverket.AIS.PositionReportClassB`
 
 #### What it tells you
 
-This event carries position report class b data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is provider field for mmsi in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -195,16 +195,16 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Position Report Class B` payloads are JSON object. Required fields: `mmsi`, `longitude`, `latitude`, `timestamp`.
 
-- **`mmsi`** (int32, required): No description provided.
-- **`speed_over_ground`** (double, optional): No description provided.
-- **`position_accuracy`** (int32, optional): No description provided.
-- **`longitude`** (double, required): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`course_over_ground`** (double, optional): No description provided.
-- **`true_heading`** (int32, optional): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`station_id`** (string, optional): No description provided.
-- **`msg_type`** (int32, optional): No description provided.
+- **`mmsi`** (int32, required): Provider field for mmsi in this record.
+- **`speed_over_ground`** (double, optional): Provider field for speed over ground in this record.
+- **`position_accuracy`** (int32, optional): Provider field for position accuracy in this record.
+- **`longitude`** (double, required): Longitude of the resource in WGS 84 coordinates.
+- **`latitude`** (double, required): Latitude of the resource in WGS 84 coordinates.
+- **`course_over_ground`** (double, optional): Provider field for course over ground in this record.
+- **`true_heading`** (int32, optional): Provider field for true heading in this record.
+- **`timestamp`** (string, required): Time when the provider recorded or published the update.
+- **`station_id`** (string, optional): Stable identifier assigned by the upstream provider for the station or stop.
+- **`msg_type`** (int32, optional): Provider field for msg type in this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -234,11 +234,11 @@ CloudEvents type: `NO.Kystverket.AIS.StaticDataClassB`
 
 #### What it tells you
 
-This event carries static data class b data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is provider field for mmsi in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -250,17 +250,17 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a paylo
 
 `Static Data Class B` payloads are JSON object. Required fields: `mmsi`, `timestamp`.
 
-- **`mmsi`** (int32, required): No description provided.
-- **`part_number`** (int32, optional): No description provided.
-- **`ship_name`** (string, optional): No description provided.
-- **`ship_type`** (int32, optional): No description provided.
-- **`callsign`** (string, optional): No description provided.
-- **`dimension_to_bow`** (int32, optional): No description provided.
-- **`dimension_to_stern`** (int32, optional): No description provided.
-- **`dimension_to_port`** (int32, optional): No description provided.
-- **`dimension_to_starboard`** (int32, optional): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`station_id`** (string, optional): No description provided.
+- **`mmsi`** (int32, required): Provider field for mmsi in this record.
+- **`part_number`** (int32, optional): Provider field for part number in this record.
+- **`ship_name`** (string, optional): Human-readable name of the ship.
+- **`ship_type`** (int32, optional): Provider field for ship type in this record.
+- **`callsign`** (string, optional): Provider field for callsign in this record.
+- **`dimension_to_bow`** (int32, optional): Provider field for dimension to bow in this record.
+- **`dimension_to_stern`** (int32, optional): Provider field for dimension to stern in this record.
+- **`dimension_to_port`** (int32, optional): Provider field for dimension to port in this record.
+- **`dimension_to_starboard`** (int32, optional): Provider field for dimension to starboard in this record.
+- **`timestamp`** (string, required): Time when the provider recorded or published the update.
+- **`station_id`** (string, optional): Stable identifier assigned by the upstream provider for the station or stop.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -291,7 +291,7 @@ CloudEvents type: `NO.Kystverket.AIS.AidToNavigation`
 
 #### What it tells you
 
-Aid-to-Navigation report (Type 21) projected onto the UNS axes.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
@@ -323,9 +323,9 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 - **`ais_msg_type`** (int32, required): Original ITU-R M.1371 message ID (21).
 ##### `msg_type` values
 
-- `position-report`
-- `static`
-- `aid-to-navigation`
+- `position-report`: Provider coded value `position-report` for this field.
+- `static`: Provider coded value `static` for this field.
+- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -358,7 +358,7 @@ CloudEvents type: `NO.Kystverket.AIS.PositionReport`
 
 #### What it tells you
 
-AIS position report (Type 1/2/3/18/19) projected onto the UNS axes.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
@@ -393,9 +393,9 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 - **`ais_msg_type`** (int32, required): Original ITU-R M.1371 message ID (1, 2, 3, 18, or 19).
 ##### `msg_type` values
 
-- `position-report`
-- `static`
-- `aid-to-navigation`
+- `position-report`: Provider coded value `position-report` for this field.
+- `static`: Provider coded value `static` for this field.
+- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -431,7 +431,7 @@ CloudEvents type: `NO.Kystverket.AIS.ShipStatic`
 
 #### What it tells you
 
-AIS static and voyage-related data (Type 5 / Type 24) projected onto the UNS axes.
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
 
 #### Identity
 
@@ -469,9 +469,9 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 - **`ais_msg_type`** (int32, required): Original ITU-R M.1371 message ID (5 or 24).
 ##### `msg_type` values
 
-- `position-report`
-- `static`
-- `aid-to-navigation`
+- `position-report`: Provider coded value `position-report` for this field.
+- `static`: Provider coded value `static` for this field.
+- `aid-to-navigation`: Provider coded value `aid-to-navigation` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

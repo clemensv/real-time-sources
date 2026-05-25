@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NO.Kystverket.AIS"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Kystverket AIS CloudEvents on the `ais` topic keyed by `{mmsi}`."
     },
     "NO.Kystverket.AIS.Mqtt": {
       "usage": [
@@ -35,7 +36,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NO.Kystverket.AIS.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for Kystverket AIS CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -57,7 +59,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReportClassA"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReportClassA",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         },
         "NO.Kystverket.AIS.StaticVoyageData": {
           "name": "StaticVoyageData",
@@ -75,7 +78,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.StaticVoyageData"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.StaticVoyageData",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         },
         "NO.Kystverket.AIS.PositionReportClassB": {
           "name": "PositionReportClassB",
@@ -93,7 +97,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReportClassB"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReportClassB",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         },
         "NO.Kystverket.AIS.StaticDataClassB": {
           "name": "StaticDataClassB",
@@ -111,7 +116,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.StaticDataClassB"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.StaticDataClassB",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         },
         "NO.Kystverket.AIS.AidToNavigation": {
           "name": "AidToNavigation",
@@ -129,7 +135,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         },
         "NO.Kystverket.AIS.PositionReport": {
           "name": "PositionReport",
@@ -147,7 +154,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReport"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReport",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         },
         "NO.Kystverket.AIS.ShipStatic": {
           "name": "ShipStatic",
@@ -165,12 +173,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.ShipStatic"
+          "dataschemauri": "#/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.ShipStatic",
+          "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
         }
-      }
+      },
+      "description": "Events from Kystverket AIS covering AIS-equipped vessels in Norwegian waters. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "NO.Kystverket.AIS.mqtt": {
-      "description": "MQTT/5.0 non-retained UNS variants of the Kystverket AIS CloudEvents. Each event family (position-report, static, aid-to-navigation) gets a dedicated topic with the kebab family literal baked as the trailing segment. QoS 0, retain=false — there is no LKV slot for a firehose.",
+      "description": "MQTT 5 variant of the Kystverket AIS events. It carries the same transport semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "NO.Kystverket.AIS.mqtt.PositionReport": {
           "name": "PositionReport",
@@ -227,43 +237,56 @@
                 "name": "PositionReportClassA",
                 "properties": {
                   "mmsi": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for mmsi in this record."
                   },
                   "navigation_status": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for navigation status in this record."
                   },
                   "rate_of_turn": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for rate of turn in this record."
                   },
                   "speed_over_ground": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for speed over ground in this record."
                   },
                   "position_accuracy": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "course_over_ground": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for course over ground in this record."
                   },
                   "true_heading": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for true heading in this record."
                   },
                   "timestamp": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the station or stop."
                   },
                   "msg_type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for msg type in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassA"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassA",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
               }
             }
           }
@@ -285,58 +308,76 @@
                 "name": "StaticVoyageData",
                 "properties": {
                   "mmsi": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for mmsi in this record."
                   },
                   "imo_number": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for imo number in this record."
                   },
                   "callsign": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for callsign in this record."
                   },
                   "ship_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the ship."
                   },
                   "ship_type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for ship type in this record."
                   },
                   "dimension_to_bow": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to bow in this record."
                   },
                   "dimension_to_stern": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to stern in this record."
                   },
                   "dimension_to_port": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to port in this record."
                   },
                   "dimension_to_starboard": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to starboard in this record."
                   },
                   "draught": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for draught in this record."
                   },
                   "destination": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for destination in this record."
                   },
                   "eta_month": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for eta month in this record."
                   },
                   "eta_day": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for eta day in this record."
                   },
                   "eta_hour": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for eta hour in this record."
                   },
                   "eta_minute": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for eta minute in this record."
                   },
                   "timestamp": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the station or stop."
                   }
                 },
-                "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticVoyageData"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticVoyageData",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
               }
             }
           }
@@ -360,37 +401,48 @@
                 "name": "PositionReportClassB",
                 "properties": {
                   "mmsi": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for mmsi in this record."
                   },
                   "speed_over_ground": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for speed over ground in this record."
                   },
                   "position_accuracy": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for position accuracy in this record."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the resource in WGS 84 coordinates."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the resource in WGS 84 coordinates."
                   },
                   "course_over_ground": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider field for course over ground in this record."
                   },
                   "true_heading": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for true heading in this record."
                   },
                   "timestamp": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the station or stop."
                   },
                   "msg_type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for msg type in this record."
                   }
                 },
-                "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassB"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassB",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
               }
             }
           }
@@ -412,40 +464,52 @@
                 "name": "StaticDataClassB",
                 "properties": {
                   "mmsi": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for mmsi in this record."
                   },
                   "part_number": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for part number in this record."
                   },
                   "ship_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the ship."
                   },
                   "ship_type": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for ship type in this record."
                   },
                   "callsign": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider field for callsign in this record."
                   },
                   "dimension_to_bow": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to bow in this record."
                   },
                   "dimension_to_stern": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to stern in this record."
                   },
                   "dimension_to_port": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to port in this record."
                   },
                   "dimension_to_starboard": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider field for dimension to starboard in this record."
                   },
                   "timestamp": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Time when the provider recorded or published the update."
                   },
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the station or stop."
                   }
                 },
-                "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticDataClassB"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticDataClassB",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters."
               }
             }
           }
@@ -461,7 +525,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "AidToNavigation",
-                "description": "Aid-to-Navigation report (Type 21) projected onto the UNS axes.",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
                 "required": [
                   "mmsi",
                   "flag",
@@ -500,7 +564,12 @@
                       "static",
                       "aid-to-navigation"
                     ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+                    "descriptions": {
+                      "position-report": "Provider coded value `position-report` for this field.",
+                      "static": "Provider coded value `static` for this field.",
+                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
+                    }
                   },
                   "name": {
                     "type": "string",
@@ -551,7 +620,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "PositionReport",
-                "description": "AIS position report (Type 1/2/3/18/19) projected onto the UNS axes.",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
                 "required": [
                   "mmsi",
                   "flag",
@@ -589,7 +658,12 @@
                       "static",
                       "aid-to-navigation"
                     ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+                    "descriptions": {
+                      "position-report": "Provider coded value `position-report` for this field.",
+                      "static": "Provider coded value `static` for this field.",
+                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
+                    }
                   },
                   "latitude": {
                     "type": "double",
@@ -652,7 +726,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "ShipStatic",
-                "description": "AIS static and voyage-related data (Type 5 / Type 24) projected onto the UNS axes.",
+                "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
                 "required": [
                   "mmsi",
                   "flag",
@@ -689,7 +763,12 @@
                       "static",
                       "aid-to-navigation"
                     ],
-                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template."
+                    "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+                    "descriptions": {
+                      "position-report": "Provider coded value `position-report` for this field.",
+                      "static": "Provider coded value `static` for this field.",
+                      "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field."
+                    }
                   },
                   "ship_name": {
                     "type": "string",
@@ -755,5 +834,10 @@
         }
       }
     }
+  },
+  "description": "Kystverket AIS publishes vessel position and voyage updates from the Norwegian Coastal Administration for AIS-equipped vessels in Norwegian waters. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for Kystverket AIS, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

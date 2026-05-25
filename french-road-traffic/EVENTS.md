@@ -1,6 +1,6 @@
 # French Road Traffic Events
 
-Real-time traffic data from the French national non-conceded road network, published by [Bison Futé](https://www.bison-fute.gouv.fr/) via the [transport.data.gouv.fr](https://transport.data.gouv.fr/) open data portal.
+French Road Traffic publishes traffic measurements and road situations from French public road-traffic feeds for French road network sites and situations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -37,7 +37,7 @@ CloudEvents type: `fr.gouv.transport.bison_fute.TrafficFlowMeasurement`
 
 #### What it tells you
 
-Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes. Each record corresponds to one siteMeasurements element in the Bison Futé MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.
+Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes.
 
 #### Identity
 

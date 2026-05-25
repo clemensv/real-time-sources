@@ -1,6 +1,6 @@
 # WSDOT Traveler Information Events
 
-This source bridges the Washington State Department of Transportation (WSDOT) Traveler Information API and Washington State Ferries API to Apache Kafka, producing real-time data across eight event families: traffic flow, travel times, mountain pass conditions, road weather, toll rates, commercial vehicle restrictions, US-Canada border crossing wait times, and ferry vessel locations.
+WSDOT publishes traffic, travel, bridge, toll, pass, ferry, and border-wait updates from Washington State Department of Transportation for Washington road, bridge, pass, ferry, and border resources. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `us.wa.wsdot.traffic.TrafficFlowStation`
 
 #### What it tells you
 
-Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions. Metadata for a traffic flow sensor station in the WSDOT network.
+Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions.
 
 #### Identity
 
@@ -156,7 +156,7 @@ CloudEvents type: `us.wa.wsdot.traveltimes.TravelTimeRoute`
 
 #### What it tells you
 
-A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times. A named travel time route monitored by WSDOT with historical average and current real-time travel times in minutes.
+A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times.
 
 #### Identity
 
@@ -229,7 +229,7 @@ CloudEvents type: `us.wa.wsdot.mountainpass.MountainPassCondition`
 
 #### What it tells you
 
-Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions. Current conditions at a Washington State mountain pass. WSDOT monitors 16 mountain passes reporting temperature, weather, road conditions, travel advisories, and directional restrictions.
+Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions.
 
 #### Identity
 
@@ -292,7 +292,7 @@ CloudEvents type: `us.wa.wsdot.weather.WeatherStation`
 
 #### What it tells you
 
-Metadata for a WSDOT road weather information system (RWIS) station. WSDOT operates approximately 134 stations across Washington State highways. Metadata for a WSDOT RWIS station.
+Metadata for a WSDOT road weather information system (RWIS) station. WSDOT operates approximately 134 stations across Washington State highways.
 
 #### Identity
 
@@ -335,7 +335,7 @@ CloudEvents type: `us.wa.wsdot.weather.WeatherReading`
 
 #### What it tells you
 
-A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage. A current weather reading from a WSDOT RWIS station.
+A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.
 
 #### Identity
 
@@ -400,7 +400,7 @@ CloudEvents type: `us.wa.wsdot.tolls.TollRate`
 
 #### What it tells you
 
-Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167. Current toll rate for a WSDOT tolled route segment with dynamic pricing.
+Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167.
 
 #### Identity
 
@@ -544,7 +544,7 @@ CloudEvents type: `us.wa.wsdot.border.BorderCrossing`
 
 #### What it tells you
 
-Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes. US-Canada border crossing wait time in Washington State.
+Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.
 
 #### Identity
 
