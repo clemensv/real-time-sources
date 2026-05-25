@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/np.gov.bipad.hydrology"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Nepal BIPAD River Monitoring CloudEvents on the `nepal-bipad-hydrology` topic keyed by `{station_id}`."
     }
   },
   "messagegroups": {
@@ -28,7 +29,7 @@
         "np.gov.bipad.hydrology.RiverStation": {
           "name": "RiverStation",
           "envelope": "CloudEvents/1.0",
-          "description": "Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.",
+          "description": "A reference record for one river monitoring stations in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
           "envelopemetadata": {
             "type": {
               "value": "np.gov.bipad.hydrology.RiverStation"
@@ -48,7 +49,7 @@
         "np.gov.bipad.hydrology.WaterLevelReading": {
           "name": "WaterLevelReading",
           "envelope": "CloudEvents/1.0",
-          "description": "Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.",
+          "description": "A current measurement from Nepal's BIPAD Portal for one monitoring site. It carries river water level observations when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "np.gov.bipad.hydrology.WaterLevelReading"
@@ -65,7 +66,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/np.gov.bipad.hydrology.jstruct/schemas/np.gov.bipad.hydrology.WaterLevelReading"
         }
-      }
+      },
+      "description": "Events from Nepal BIPAD River Monitoring covering river monitoring stations in Nepal and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -114,19 +116,31 @@
                                 "description": "Longitude coordinate of the station in WGS84 decimal degrees, extracted from the GeoJSON point geometry."
                               },
                               "elevation": {
-                                "type": ["integer", "null"],
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
                                 "description": "Elevation of the station in meters above sea level, as reported by the BIPAD portal. Null when not available."
                               },
                               "danger_level": {
-                                "type": ["double", "null"],
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
                                 "description": "Configured danger water level threshold in meters for the station. Water levels above this indicate a danger condition. Null when not configured."
                               },
                               "warning_level": {
-                                "type": ["double", "null"],
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
                                 "description": "Configured warning water level threshold in meters for the station. Water levels above this indicate a warning condition. Null when not configured."
                               },
                               "description": {
-                                "type": ["string", "null"],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "Free-text description of the station, may include historical notes, relocation history, or elevation corrections. Null when not provided."
                               },
                               "data_source": {
@@ -134,19 +148,31 @@
                                 "description": "Origin system providing the station data, typically 'hydrology.gov.np' for Nepal Department of Hydrology and Meteorology stations."
                               },
                               "province": {
-                                "type": ["integer", "null"],
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
                                 "description": "Nepal province administrative code for the station location. Null when not assigned."
                               },
                               "district": {
-                                "type": ["integer", "null"],
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
                                 "description": "Nepal district administrative code for the station location. Null when not assigned."
                               },
                               "municipality": {
-                                "type": ["integer", "null"],
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
                                 "description": "Nepal municipality or rural municipality administrative code for the station location. Null when not assigned."
                               },
                               "ward": {
-                                "type": ["integer", "null"],
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
                                 "description": "Nepal ward-level administrative code for the station location. Null when not assigned."
                               }
                             },
@@ -163,7 +189,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reference details for one monitoring station or site in the Nepal BIPAD River Monitoring source."
               }
             }
           }
@@ -203,15 +230,24 @@
                                 "description": "Name of the river basin the station belongs to at the time of the reading."
                               },
                               "water_level": {
-                                "type": ["double", "null"],
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
                                 "description": "Current water level at the station in meters. Null when the station has no current reading available."
                               },
                               "danger_level": {
-                                "type": ["double", "null"],
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
                                 "description": "Configured danger water level threshold in meters. Null when not configured."
                               },
                               "warning_level": {
-                                "type": ["double", "null"],
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
                                 "description": "Configured warning water level threshold in meters. Null when not configured."
                               },
                               "status": {
@@ -240,7 +276,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the Nepal BIPAD River Monitoring source."
               }
             }
           }
@@ -259,21 +296,110 @@
                 "namespace": "np.gov.bipad.hydrology",
                 "doc": "Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.",
                 "fields": [
-                  { "name": "station_id", "type": "string", "doc": "Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility." },
-                  { "name": "title", "type": "string", "doc": "Human-readable name of the river station, typically in the format 'River at Location'." },
-                  { "name": "basin", "type": "string", "doc": "Name of the river basin the station belongs to." },
-                  { "name": "latitude", "type": "double", "doc": "Latitude coordinate of the station in WGS84 decimal degrees." },
-                  { "name": "longitude", "type": "double", "doc": "Longitude coordinate of the station in WGS84 decimal degrees." },
-                  { "name": "elevation", "type": ["null", "int"], "doc": "Elevation of the station in meters above sea level. Null when not available.", "default": null },
-                  { "name": "danger_level", "type": ["null", "double"], "doc": "Configured danger water level threshold in meters. Null when not configured.", "default": null },
-                  { "name": "warning_level", "type": ["null", "double"], "doc": "Configured warning water level threshold in meters. Null when not configured.", "default": null },
-                  { "name": "description", "type": ["null", "string"], "doc": "Free-text description of the station. Null when not provided.", "default": null },
-                  { "name": "data_source", "type": "string", "doc": "Origin system providing the station data, typically 'hydrology.gov.np'." },
-                  { "name": "province", "type": ["null", "int"], "doc": "Nepal province administrative code. Null when not assigned.", "default": null },
-                  { "name": "district", "type": ["null", "int"], "doc": "Nepal district administrative code. Null when not assigned.", "default": null },
-                  { "name": "municipality", "type": ["null", "int"], "doc": "Nepal municipality administrative code. Null when not assigned.", "default": null },
-                  { "name": "ward", "type": ["null", "int"], "doc": "Nepal ward-level administrative code. Null when not assigned.", "default": null }
-                ]
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Human-readable name of the river station, typically in the format 'River at Location'."
+                  },
+                  {
+                    "name": "basin",
+                    "type": "string",
+                    "doc": "Name of the river basin the station belongs to."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude coordinate of the station in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude coordinate of the station in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "elevation",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Elevation of the station in meters above sea level. Null when not available.",
+                    "default": null
+                  },
+                  {
+                    "name": "danger_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Configured danger water level threshold in meters. Null when not configured.",
+                    "default": null
+                  },
+                  {
+                    "name": "warning_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Configured warning water level threshold in meters. Null when not configured.",
+                    "default": null
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Free-text description of the station. Null when not provided.",
+                    "default": null
+                  },
+                  {
+                    "name": "data_source",
+                    "type": "string",
+                    "doc": "Origin system providing the station data, typically 'hydrology.gov.np'."
+                  },
+                  {
+                    "name": "province",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Nepal province administrative code. Null when not assigned.",
+                    "default": null
+                  },
+                  {
+                    "name": "district",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Nepal district administrative code. Null when not assigned.",
+                    "default": null
+                  },
+                  {
+                    "name": "municipality",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Nepal municipality administrative code. Null when not assigned.",
+                    "default": null
+                  },
+                  {
+                    "name": "ward",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Nepal ward-level administrative code. Null when not assigned.",
+                    "default": null
+                  }
+                ],
+                "description": "Reference details for one monitoring station or site in the Nepal BIPAD River Monitoring source."
               }
             }
           },
@@ -289,16 +415,65 @@
                 "namespace": "np.gov.bipad.hydrology",
                 "doc": "Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal.",
                 "fields": [
-                  { "name": "station_id", "type": "string", "doc": "Unique integer identifier of the river station." },
-                  { "name": "title", "type": "string", "doc": "Human-readable name of the river station at the time of the reading." },
-                  { "name": "basin", "type": "string", "doc": "Name of the river basin the station belongs to." },
-                  { "name": "water_level", "type": ["null", "double"], "doc": "Current water level at the station in meters. Null when no reading available.", "default": null },
-                  { "name": "danger_level", "type": ["null", "double"], "doc": "Configured danger water level threshold in meters. Null when not configured.", "default": null },
-                  { "name": "warning_level", "type": ["null", "double"], "doc": "Configured warning water level threshold in meters. Null when not configured.", "default": null },
-                  { "name": "status", "type": "string", "doc": "Current alert status: 'BELOW WARNING LEVEL', 'WARNING', or 'DANGER'." },
-                  { "name": "trend", "type": "string", "doc": "Direction of water level change: 'STEADY', 'RISING', or 'FALLING'." },
-                  { "name": "water_level_on", "type": "string", "doc": "ISO 8601 timestamp of when the water level was measured." }
-                ]
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Unique integer identifier of the river station."
+                  },
+                  {
+                    "name": "title",
+                    "type": "string",
+                    "doc": "Human-readable name of the river station at the time of the reading."
+                  },
+                  {
+                    "name": "basin",
+                    "type": "string",
+                    "doc": "Name of the river basin the station belongs to."
+                  },
+                  {
+                    "name": "water_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Current water level at the station in meters. Null when no reading available.",
+                    "default": null
+                  },
+                  {
+                    "name": "danger_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Configured danger water level threshold in meters. Null when not configured.",
+                    "default": null
+                  },
+                  {
+                    "name": "warning_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Configured warning water level threshold in meters. Null when not configured.",
+                    "default": null
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "doc": "Current alert status: 'BELOW WARNING LEVEL', 'WARNING', or 'DANGER'."
+                  },
+                  {
+                    "name": "trend",
+                    "type": "string",
+                    "doc": "Direction of water level change: 'STEADY', 'RISING', or 'FALLING'."
+                  },
+                  {
+                    "name": "water_level_on",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of when the water level was measured."
+                  }
+                ],
+                "description": "Measurement payload for observations in the Nepal BIPAD River Monitoring source."
               }
             }
           },
@@ -306,5 +481,10 @@
         }
       }
     }
+  },
+  "description": "Nepal BIPAD River Monitoring publishes river water level observations from Nepal's BIPAD Portal for river monitoring stations in Nepal. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Nepal BIPAD River Monitoring, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
