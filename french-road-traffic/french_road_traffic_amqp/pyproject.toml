@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "french-road-traffic-amqp"
+version = "0.1.0"
+description = "AMQP companion feeder for French Road Traffic"
+requires-python = ">=3.10"
+dependencies = ["python-qpid-proton>=0.40.0"]
+
+[project.scripts]
+french-road-traffic-amqp = "french_road_traffic_amqp.app:main"
+
+[tool.setuptools.packages.find]
+include = ["french_road_traffic_amqp*"]

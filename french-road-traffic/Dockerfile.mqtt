@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/french-road-traffic"
+LABEL org.opencontainers.image.title="French Road Traffic -> MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Publishes French Road Traffic CloudEvents over MQTT 5.0 into the source-specific UNS topic tree."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/french-road-traffic/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./french_road_traffic_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "french_road_traffic_mqtt", "feed"]

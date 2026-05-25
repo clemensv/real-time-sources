@@ -1,6 +1,6 @@
 
 
-# French-road-traffic-producer Kafka Producer# French-road-traffic-producer Event Dispatcher for Apache Kafka
+# French_road_traffic_producer Kafka Producer# French_road_traffic_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,9 +15,7 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - FrGouvTransportBisonFuteTrafficFlowEventDispatcher,
-
-4. [Generated Producer Classes](#generated-producer-classes)    FrGouvTransportBisonFuteRoadEventEventDispatcher
+3. [Quick Start](#quick-start)    - FrGouvTransportBisonFuteTrafficFlowEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -41,10 +39,6 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - FrGouvTransportBisonFuteTrafficFlowProducersolution for event-driven applications.
-
-It includes both plain Kafka messages and CloudEvents, offering a versatile
-
-- FrGouvTransportBisonFuteRoadEventProducersolution for event-driven applications.
 
 
 
@@ -93,7 +87,7 @@ Initializes the dispatcher.
 
 ```python
 
-from french-road-traffic-producer import FrGouvTransportBisonFuteTrafficFlowProducer```python
+from french_road_traffic_producer import FrGouvTransportBisonFuteTrafficFlowProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -196,46 +190,6 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 fr_gouv_transport_bison_fute_traffic_flow_dispatcher.fr_gouv_transport_bison_fute_traffic_flow_measurement_async =
-fr_gouv_transport_bison_fute_traffic_flow_measurement_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### FrGouvTransportBisonFuteRoadEventProducer- `data`: The event data of type
-`french_road_traffic_producer_data.TrafficFlowMeasurement`.
-
-
-
-Producer for `fr.gouv.transport.bison_fute.road_event` message group.Example:
-
-
-
-#### Constructor```python
-
-async def fr_gouv_transport_bison_fute_traffic_flow_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent,
-data: TrafficFlowMeasurement) -> None:
-
-```python    # Process the event data
-
-FrGouvTransportBisonFuteRoadEventProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-fr_gouv_transport_bison_fute_road_event_dispatcher.fr_gouv_transport_bison_fute_traffic_flow_measurement_async =
 fr_gouv_transport_bison_fute_traffic_flow_measurement_event
 
 **Parameters:**```
@@ -346,322 +300,6 @@ await producer.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_batch(
         TrafficFlowMeasurement(...),
 
         TrafficFlowMeasurement(...)Args:
-
-    ],- `consumer`: The Kafka consumer.
-
-    partition_key='batch-001'
-
-)#####  `__aenter__()`
-
-```
-
-Enters the asynchronous context and starts the processor.
-
-
-
-
-
-**Apache Kafka** is a distributed streaming platform that:
-
-- **Handles high-throughput** real-time data feeds with low latency
-
-- **Provides durability** through log-based storage with configurable retention
-
-- **Scales horizontally** across multiple brokers and partitions### FrGouvTransportBisonFuteRoadEventEventDispatcher
-
-- **Enables pub/sub messaging** with topic-based routing
-
-`FrGouvTransportBisonFuteRoadEventEventDispatcher` handles events for the fr.gouv.transport.bison_fute.road_event
-message group.
-
-Use cases: Event streaming, log aggregation, real-time analytics, data integration.
-
-#### Methods:
-
-## Quick Start
-
-##### `__init__`:
-
-### Installation
-
-```python
-
-```bash__init__(self)-> None
-
-pip install confluent-kafka cloudevents pydantic```
-
-```
-
-Initializes the dispatcher.
-
-### Basic Usage
-
-##### `create_processor`:
-
-```python
-
-from french-road-traffic-producer import FrGouvTransportBisonFuteTrafficFlowProducer```python
-
-create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
-
-# Create producer```
-
-producer = FrGouvTransportBisonFuteTrafficFlowProducer(
-
-    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
-
-    client_id='my-producer'
-
-)Args:
-
-- `bootstrap_servers`: The Kafka bootstrap servers.
-
-- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
-
-# Send single message
-
-await producer.send_fr_gouv_transport_bison_fute_traffic_flow_measurement(```python
-
-    data=TrafficFlowMeasurement(...),add_consumer(self, consumer: KafkaConsumer)
-
-    partition_key='device-123'```
-
-)Adds a Kafka consumer to the dispatcher.
-
-
-
-# Close producerArgs:
-
-await producer.close()- `consumer`: The Kafka consumer.
-
-```
-
-#### Event Handlers
-
-### With SSL/SASL
-
-The FrGouvTransportBisonFuteRoadEventEventDispatcher defines the following event handler hooks.
-
-```python
-
-producer = FrGouvTransportBisonFuteTrafficFlowProducer(
-
-    bootstrap_servers='localhost:9093',
-
-    security_protocol='SASL_SSL',##### `fr_gouv_transport_bison_fute_road_event_async`
-
-    sasl_mechanism='PLAIN',
-
-    sasl_username='your-username',```python
-
-    sasl_password='your-password'fr_gouv_transport_bison_fute_road_event_async:  Callable[[ConsumerRecord, CloudEvent,
-RoadEvent], Awaitable[None]]
-
-)```
-
-```
-
-Asynchronous handler hook for `fr.gouv.transport.bison_fute.RoadEvent`: Real-time road situation record from the French
-national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record
-represents a traffic incident, construction works, lane management, obstruction, or other event affecting road
-conditions. Record types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement,
-AbnormalTraffic, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction,
-InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement,
-WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and RoadsideServiceDisruption.
-
-## Generated Producer Classes
-
-The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
-
-- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### FrGouvTransportBisonFuteTrafficFlowProducer- `data`: The event data of type
-`french_road_traffic_producer_data.RoadEvent`.
-
-
-
-Producer for `fr.gouv.transport.bison_fute.traffic_flow` message group.Example:
-
-
-
-#### Constructor```python
-
-async def fr_gouv_transport_bison_fute_road_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-RoadEvent) -> None:
-
-```python    # Process the event data
-
-FrGouvTransportBisonFuteTrafficFlowProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-fr_gouv_transport_bison_fute_traffic_flow_dispatcher.fr_gouv_transport_bison_fute_road_event_async =
-fr_gouv_transport_bison_fute_road_event_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### FrGouvTransportBisonFuteRoadEventProducer- `data`: The event data of type
-`french_road_traffic_producer_data.RoadEvent`.
-
-
-
-Producer for `fr.gouv.transport.bison_fute.road_event` message group.Example:
-
-
-
-#### Constructor```python
-
-async def fr_gouv_transport_bison_fute_road_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-RoadEvent) -> None:
-
-```python    # Process the event data
-
-FrGouvTransportBisonFuteRoadEventProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-fr_gouv_transport_bison_fute_road_event_dispatcher.fr_gouv_transport_bison_fute_road_event_async =
-fr_gouv_transport_bison_fute_road_event_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier
-
-- `**kwargs`: Additional Kafka producer configuration
-
-
-
-#### Send Methods## Internals
-
-
-
-### Dispatchers
-
-##### `send_fr_gouv_transport_bison_fute_road_event`Dispatchers have the following protected methods:
-
-
-
-```python### Methods:
-
-async def send_fr_gouv_transport_bison_fute_road_event(
-
-    self,##### `_process_event`
-
-    data: RoadEvent,
-
-    partition_key: Optional[str] = None,```python
-
-    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
-
-    topic: Optional[str] = None```
-
-) -> None
-
-```Processes an incoming event.
-
-
-
-Send a single `fr.gouv.transport.bison_fute.RoadEvent` message. Real-time road situation record from the French national
-non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a
-traffic incident, construction works, lane management, obstruction, or other event affecting road conditions. Record
-types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, AbnormalTraffic,
-EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction,
-InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement,
-WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and
-RoadsideServiceDisruption.Args:
-
-- `record`: The Kafka record.
-
-**Parameters:**
-
-- `data`: Message data of type `RoadEvent`
-
-- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
-
-- `headers`: Optional message headers
-
-- `topic`: Optional topic override (uses default topic if not specified)```python
-
-_dispatch_cloud_event(self, record, cloud_event)
-
-**Example:**```
-
-
-
-```pythonDispatches a CloudEvent to the appropriate handler.
-
-await producer.send_fr_gouv_transport_bison_fute_road_event(
-
-    data=RoadEvent(...),Args:
-
-    partition_key='device-001',- `record`: The Kafka record.
-
-    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
-
-)
-
-```
-
-Send multiple `fr.gouv.transport.bison_fute.RoadEvent` messages in a batch.
-
-### EventProcessorRunner
-
-**Parameters:**
-
-- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
-dispatching events to the appropriate handlers.
-
-- `partition_key`: Optional partition key for all messages
-
-- `headers`: Optional headers for all messages#### Methods
-
-- `topic`: Optional topic override
-
-##### `__init__`
-
-**Example:**
-
-```python
-
-```python__init__(consumer: KafkaConsumer)
-
-await producer.send_fr_gouv_transport_bison_fute_road_event_batch(```
-
-    messages=[
-
-        RoadEvent(...),Initializes the runner with a Kafka consumer.
-
-        RoadEvent(...),
-
-        RoadEvent(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

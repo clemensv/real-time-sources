@@ -43,6 +43,51 @@
         "#/messagegroups/fr.gouv.transport.bison_fute.road_event"
       ],
       "description": "Kafka producer endpoint for French Road Traffic CloudEvents on the `french-road-traffic-events` topic keyed by `{situation_id}`."
+    },
+    "fr.gouv.transport.bison_fute.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fr.gouv.transport.bison_fute.traffic_flow.mqtt",
+        "#/messagegroups/fr.gouv.transport.bison_fute.road_event.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "fr.gouv.transport.bison_fute.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "french-road-traffic"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fr.gouv.transport.bison_fute.traffic_flow.amqp",
+        "#/messagegroups/fr.gouv.transport.bison_fute.road_event.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -95,6 +140,88 @@
         }
       },
       "description": "Events from French Road Traffic covering French road network sites and situations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "fr.gouv.transport.bison_fute.traffic_flow.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for french-road-traffic.",
+      "messages": {
+        "fr.gouv.transport.bison_fute.TrafficFlowMeasurement.mqtt": {
+          "name": "TrafficFlowMeasurement",
+          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fr/fr-traffic/french-road-traffic/{road}/{site_id}/flow",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "fr.gouv.transport.bison_fute.road_event.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for french-road-traffic.",
+      "messages": {
+        "fr.gouv.transport.bison_fute.RoadEvent.mqtt": {
+          "name": "RoadEvent",
+          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fr/fr-traffic/french-road-traffic/situations/{road}/{situation_id}/event",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "fr.gouv.transport.bison_fute.traffic_flow.amqp": {
+      "description": "AMQP 1.0 bindings for french-road-traffic.",
+      "messages": {
+        "fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp": {
+          "name": "TrafficFlowMeasurement",
+          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "fr.gouv.transport.bison_fute.road_event.amqp": {
+      "description": "AMQP 1.0 bindings for french-road-traffic.",
+      "messages": {
+        "fr.gouv.transport.bison_fute.RoadEvent.amqp": {
+          "name": "RoadEvent",
+          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
