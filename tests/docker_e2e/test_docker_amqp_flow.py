@@ -292,3 +292,11 @@ class TestDwdPollenflugAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"DWD_POLLENFLUG_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'DE.DWD.Pollenflug.PollenForecast', 'DE.DWD.Pollenflug.Region'}
     expected_count = 2
+
+
+class TestEnvironmentCanadaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "environment-canada"
+    image = "environment-canada-amqp"
+    env = {"ENVIRONMENT_CANADA_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'CA.Gov.ECCC.Weather.WeatherObservation', 'CA.Gov.ECCC.Weather.Station'}
+    expected_count = 2

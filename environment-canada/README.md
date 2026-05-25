@@ -63,3 +63,12 @@ The bridge can also run as a scheduled Microsoft Fabric notebook (see
 [`notebook/environment-canada-feed.ipynb`](notebook/environment-canada-feed.ipynb))
 deployed via
 [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`environment-canada`). Docker E2E mock mode is available through `ENVIRONMENT_CANADA_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/environment-canada-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/environment-canada-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

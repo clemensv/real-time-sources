@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./environment_canada_mqtt_producer_data
+pip install ./environment_canada_mqtt_producer_mqtt_client

@@ -21,6 +21,50 @@
         "#/messagegroups/CA.Gov.ECCC.Weather"
       ],
       "description": "Kafka producer endpoint for Environment Canada Weather CloudEvents on the `environment-canada` topic keyed by `{msc_id}`."
+    },
+    "CA.Gov.ECCC.Weather.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CA.Gov.ECCC.Weather.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for environment-canada."
+    },
+    "CA.Gov.ECCC.Weather.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/environment-canada"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CA.Gov.ECCC.Weather.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for environment-canada."
     }
   },
   "messagegroups": {
@@ -66,6 +110,126 @@
         }
       },
       "description": "Events from Environment Canada Weather covering Canadian weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "CA.Gov.ECCC.Weather.mqtt": {
+      "description": "MQTT 5 companion message group for CA.Gov.ECCC.Weather.",
+      "messages": {
+        "CA.Gov.ECCC.Weather.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "CA.Gov.ECCC.Weather.Station"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca"
+            },
+            "subject": {
+              "value": "{msc_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/ca/eccc/environment-canada/{province}/{msc_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "CA.Gov.ECCC.Weather.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "CA.Gov.ECCC.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca"
+            },
+            "subject": {
+              "value": "{msc_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/ca/eccc/environment-canada/{province}/{msc_id}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Weather.amqp": {
+      "description": "AMQP 1.0 companion message group for CA.Gov.ECCC.Weather.",
+      "messages": {
+        "CA.Gov.ECCC.Weather.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "CA.Gov.ECCC.Weather.Station"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca"
+            },
+            "subject": {
+              "value": "{msc_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{msc_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing value for province."
+              }
+            }
+          }
+        },
+        "CA.Gov.ECCC.Weather.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "CA.Gov.ECCC.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca"
+            },
+            "subject": {
+              "value": "{msc_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{msc_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing value for province."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -150,6 +314,10 @@
                     "description": "Station elevation above sea level in meters.",
                     "unit": "m",
                     "symbol": "m"
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }
@@ -388,6 +556,10 @@
                     "altnames": {
                       "json": "altmetr_setng"
                     }
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }

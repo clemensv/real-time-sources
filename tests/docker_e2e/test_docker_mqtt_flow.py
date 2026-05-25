@@ -5039,3 +5039,23 @@ def mosquitto_dwd_pollenflug():
 class TestDwdPollenflugMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_dwd_pollenflug, dwd_pollenflug_mqtt_image):
         _run_mqtt_contract_flow('dwd-pollenflug', dwd_pollenflug_mqtt_image, mosquitto_dwd_pollenflug, extra_env={'DWD_POLLENFLUG_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def environment_canada_mqtt_image():
+    return build_image('environment-canada', dockerfile='Dockerfile.mqtt', tag='test-environment-canada-mqtt')
+
+@pytest.fixture()
+def mosquitto_environment_canada():
+    container, network, host_port = _generic_mosquitto('environment-canada-mqtt-e2e', 'environment-canada-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'environment-canada-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestEnvironmentCanadaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_environment_canada, environment_canada_mqtt_image):
+        _run_mqtt_contract_flow('environment-canada', environment_canada_mqtt_image, mosquitto_environment_canada, extra_env={'ENVIRONMENT_CANADA_MOCK': 'true'}, timeout=300)

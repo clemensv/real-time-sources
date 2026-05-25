@@ -281,7 +281,9 @@
     "key": false,
     "desc": "Canada — ~963 SWOB stations, hourly obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "geosphere-austria",
