@@ -29,9 +29,9 @@ class Test_ConditionEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(ConditionEnum.ISSUED.value, "ISSUED")
-        self.assertEqual(ConditionEnum.RAISED.value, "RAISED")
-        self.assertEqual(ConditionEnum.LOWERED.value, "LOWERED")
-        self.assertEqual(ConditionEnum.CONTINUED.value, "CONTINUED")
-        self.assertEqual(ConditionEnum.SWITCHED.value, "SWITCHED")
-        self.assertEqual(ConditionEnum.CANCELLED.value, "CANCELLED")
+        self.assertEqual(ConditionEnum.ISSUED.value, 'ISSUED')
+        self.assertEqual(ConditionEnum.RAISED.value, 'RAISED')
+        self.assertEqual(ConditionEnum.LOWERED.value, 'LOWERED')
+        self.assertEqual(ConditionEnum.CONTINUED.value, 'CONTINUED')
+        self.assertEqual(ConditionEnum.SWITCHED.value, 'SWITCHED')
+        self.assertEqual(ConditionEnum.CANCELLED.value, 'CANCELLED')

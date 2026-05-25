@@ -11,13 +11,14 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from jma_bosai_volcano_producer_data.eventenum import EventEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Volcano:
     """
-    Reference record for one volcano in the JMA Bosai volcano catalog. JMA publishes the catalog to provide volcano names, coordinates, and whether the five-level eruption alert system operates for that volcano.
+    JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh.
     
     Attributes:
         volcano_code (str)
@@ -27,6 +28,8 @@ class Volcano:
         longitude (float)
         elevation_m (typing.Optional[float])
         level_operation (bool)
+        prefecture (str)
+        event (EventEnum)
     """
     
     
@@ -37,6 +40,8 @@ class Volcano:
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     elevation_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation_m"))
     level_operation: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level_operation"))
+    prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
+    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Volcano':
@@ -163,11 +168,13 @@ class Volcano:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='vxknxkkoplxabgsgysgt',
-            name_jp='nsrkrxctjrpeuvhiamkk',
-            name_en='zfgpecsuktumadvqpjiy',
-            latitude=float(48.39695474471636),
-            longitude=float(58.895382363825064),
-            elevation_m=float(31.790602924478062),
-            level_operation=False
+            volcano_code='cxgsaytfelmnrpldrvwq',
+            name_jp='hsrnaowritaawyhwqzss',
+            name_en='awbpbcfeprpipfzutkmi',
+            latitude=float(73.65359499570123),
+            longitude=float(0.8299254811214851),
+            elevation_m=float(22.479399722620574),
+            level_operation=True,
+            prefecture='mfiactpqikhyxkqgpyac',
+            event=EventEnum.eruption
         )
