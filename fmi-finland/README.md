@@ -112,3 +112,8 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-eventhub.json)
+
+
+## MQTT + AMQP companion feeders
+
+This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `weather/fi/fmi/fmi-finland/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `fmi-finland`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.

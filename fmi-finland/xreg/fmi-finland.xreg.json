@@ -21,6 +21,50 @@
         "#/messagegroups/fi.fmi.opendata.airquality"
       ],
       "description": "Kafka producer endpoint for FMI Finland Weather CloudEvents on the `fmi-finland-airquality` topic keyed by `{fmisid}`."
+    },
+    "fi.fmi.opendata.airquality.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.fmi.opendata.airquality.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for fmi-finland CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "fi.fmi.opendata.airquality.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/fmi-finland"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.fmi.opendata.airquality.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for fmi-finland CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -68,6 +112,78 @@
         }
       },
       "description": "Events from FMI Finland Weather covering Finnish weather observation stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "fi.fmi.opendata.airquality.mqtt": {
+      "description": "MQTT 5 variant of fi.fmi.opendata.airquality events with subscriber-friendly UNS topics.",
+      "messages": {
+        "fi.fmi.opendata.airquality.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/fi/fmi/fmi-finland/{region}/{fmisid}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "fi.fmi.opendata.airquality.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/fi/fmi/fmi-finland/{region}/{fmisid}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "fi.fmi.opendata.airquality.amqp": {
+      "description": "AMQP 1.0 variant of fi.fmi.opendata.airquality events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "fi.fmi.opendata.airquality.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{fmisid}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "fi.fmi.opendata.airquality.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{fmisid}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
