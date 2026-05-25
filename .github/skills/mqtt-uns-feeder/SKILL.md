@@ -1,6 +1,6 @@
 ---
 name: mqtt-uns-feeder
-description: "Use when adding MQTT/Unified-Namespace transport to a feeder in this repo — either alongside an existing Kafka feeder (transport split) or for a brand-new source where MQTT is the primary fit. Covers UNS topic-tree design, xRegistry MQTT messagegroup pattern, paho-mqtt v5 binary-mode CloudEvent emission, Entra JWT enhanced auth for Event Grid namespace brokers, two-app folder layout sharing a core acquisition module, Dockerfile.mqtt + dedicated pyproject, two MQTT ARM templates (BYO broker + Event Grid namespace), the read-only test-client registration helper, MQTT Docker E2E, and the four-button portal/README update."
+description: "Use when adding MQTT/Unified-Namespace transport to a feeder in this repo — either alongside an existing Kafka feeder (transport split) or for a brand-new source where MQTT is the primary fit. Covers UNS topic-tree design, xRegistry MQTT messagegroup pattern, paho-mqtt v5 binary-mode CloudEvent emission, Entra JWT enhanced auth for Event Grid namespace brokers, two-app folder layout sharing a core acquisition module, Dockerfile.mqtt + dedicated pyproject, two MQTT ARM templates (BYO broker + Event Grid namespace), the read-only test-client registration helper, MQTT Docker E2E, and the four-button portal/README update. NOTE: AMQP 1.0 transport is MANDATORY alongside MQTT — see `.github/skills/amqp-feeder/SKILL.md` and the 'Mandatory AMQP Companion' section below."
 argument-hint: "Describe the source id, what data families it emits, the upstream identifiers that will form the UNS topic hierarchy, and whether the source already has a Kafka feeder (transport split) or this is greenfield MQTT-only."
 ---
 
@@ -85,6 +85,64 @@ repeatedly — do not allow it.
 
 If any box is unchecked, the PR is incomplete — either fix in branch
 or re-open as a "doc backfill" PR before declaring the feeder done.
+
+## Mandatory AMQP Companion
+
+Every MQTT feeder PR in this repo **MUST also ship an AMQP 1.0 sibling
+feeder in the same PR**. This is non-negotiable. The three transports
+(Kafka, MQTT, AMQP) form the standard trio for every source.
+
+Rationale: MQTT is right for UNS-style consumers (low-latency, retained
+LKV, pub/sub fan-out). AMQP 1.0 is right for queue-oriented enterprise
+consumers (Azure Service Bus, ActiveMQ Artemis, Qpid Dispatch, RabbitMQ
+AMQP 1.0 plugin) where work-distribution semantics or transactional
+delivery matter. Shipping one without the other leaves half the
+consumer population unserved and creates ongoing per-source retrofit
+debt — which we are no longer willing to take on.
+
+Authoritative contract: `.github/skills/amqp-feeder/SKILL.md`. Read it
+in full alongside this document. Pegelonline is the reference
+implementation for both transports.
+
+| Required AMQP artifact | Where |
+|------------------------|-------|
+| `<source>.amqp` messagegroup + AMQP endpoint(s) in xreg | `<source>/xreg/<source>.xreg.json` |
+| AMQP CBS target generated via xrcg `--azure_cbs_target` | `<source>_amqp_producer/...` (generated) |
+| `<source>_amqp/` app folder sharing the core acquisition module | sibling of `<source>_kafka/` and `<source>_mqtt/` |
+| `Dockerfile.amqp` | `<source>/Dockerfile.amqp` |
+| `Test<Source>AmqpDockerFlow` class | `tests/docker_e2e/test_docker_amqp_flow.py` |
+| AMQP rows in `matrix.json` (`build` + `flow`) | `tests/docker_e2e/matrix.json` |
+| ARM template for Service Bus (CBS / Entra ID) | `<source>/azure-template-amqp.json` |
+| AMQP section in `CONTAINER.md` with env-var table + Deploy badges | `<source>/CONTAINER.md` |
+| AMQP messagegroup + address templates in `EVENTS.md` | `<source>/EVENTS.md` |
+| Root `README.md` row: AMQP image link + AMQP deploy badges | `README.md` |
+| `amqp: true` on the portal entry | `ghpages/app.js` + `ghpages/catalog.json` |
+| `<source>/README.md` Transports section lists Kafka + MQTT + AMQP | `<source>/README.md` |
+
+The AMQP messagegroup MUST share the schemas (single
+`schemagroups.<source>.jstruct` block) and use the SAME identity tuple
+as the Kafka subject/key and the MQTT topic. AMQP address templates
+match the topic placeholders one-for-one.
+
+**Reviewer checklist (paste into PR description or review comment):**
+
+- [ ] xreg has `<source>.amqp` messagegroup with AMQP endpoint(s) (generic SASL PLAIN + Azure Service Bus CBS)
+- [ ] xrcg regenerated with `--azure_cbs_target` and the generated `<source>_amqp_producer` is committed
+- [ ] `<source>_amqp/` app folder exists, shares core acquisition module with Kafka/MQTT apps
+- [ ] `Dockerfile.amqp` builds; OCI labels set correctly
+- [ ] `Test<Source>AmqpDockerFlow` class exists in `test_docker_amqp_flow.py`
+- [ ] `matrix.json` has the AMQP `build` row AND the AMQP `flow` row
+- [ ] CI shows the AMQP flow job actually executing and passing
+- [ ] `azure-template-amqp.json` present and referenced from CONTAINER.md
+- [ ] CONTAINER.md, EVENTS.md, source README, root README, portal entries all mention AMQP
+- [ ] AMQP identity placeholders match Kafka subject/key and MQTT topic exactly
+
+A PR that adds MQTT without AMQP is **not mergeable** — open it as
+Kafka+MQTT+AMQP from day one. If you discover mid-implementation that
+AMQP is impossible for this source (e.g. upstream payloads cannot be
+addressed under any sensible AMQP address template), document the
+reason in the PR body and request explicit user approval to ship
+MQTT-only as an exception.
 
 ## Mandatory Pre-merge Test Gate
 
@@ -469,24 +527,70 @@ A source is not done until this passes.
 
 ## Implementation Sequence
 
-1. **Topic-tree review** with the UNS expert (or the xRegistry Expert if
-   the UNS agent is not available).
+> **Three transports, one PR.** Every step that touches MQTT below has a
+> mandatory AMQP twin in the same PR (see "Mandatory AMQP Companion"
+> above and `.github/skills/amqp-feeder/SKILL.md`). Do not interleave a
+> separate "AMQP follow-up" PR — that has caused retrofit debt
+> repeatedly and is no longer allowed.
+
+1. **Topic-tree + address-template review** with the UNS expert (or the
+   xRegistry Expert if the UNS agent is not available). Both MQTT
+   topic templates AND AMQP address templates must be designed in this
+   step using the SAME identity tuple.
 2. **xRegistry edit** — add the Mqtt endpoint + the `<source>.mqtt`
+   messagegroup AND the AMQP endpoint(s) + the `<source>.amqp`
    messagegroup. Run xRegistry Expert review.
-3. **Regenerate** producers via `./generate_producer.ps1`.
-4. **Folder split** — move the existing Kafka app into `<source>_kafka/`
-   if it isn't already split. Create the `<source>_mqtt/` sibling.
-5. **MQTT runtime bridge** in `<source>_mqtt/<source>_mqtt/app.py`,
-   sharing the core acquisition module with the Kafka app.
-6. **Unit + integration tests** for the MQTT app under
-   `tests/test_<source>_mqtt_app.py`.
-7. **Dockerfile.mqtt** and the MQTT pyproject.
-8. **Two ARM templates** (BYO broker + Event Grid namespace).
-9. **MQTT Docker E2E** in `tests/docker_e2e/test_docker_mqtt_flow.py`.
-10. **Doc refresh**: CONTAINER.md, EVENTS.md, README.md, root README.md.
-11. **Portal hooks**: `mqtt: true` in `app.js` + `catalog.json`.
-12. **Live smoke test** with `Register-EventGridMqttTestClient.ps1` +
-    MQTTX (recommended even outside CI).
+3. **Regenerate** producers via `./generate_producer.ps1` (covers
+   Kafka, MQTT, AND AMQP — the script must invoke xrcg three times,
+   including the AMQP run with `--azure_cbs_target`).
+4. **Folder split** — `<source>_kafka/`, `<source>_mqtt/`,
+   `<source>_amqp/` siblings all sharing the core acquisition module.
+5. **MQTT runtime bridge** in `<source>_mqtt/<source>_mqtt/app.py` AND
+   **AMQP runtime bridge** in `<source>_amqp/<source>_amqp/app.py`,
+   both sharing the core acquisition module with the Kafka app.
+6. **Unit + integration tests** for both MQTT and AMQP apps under
+   `tests/test_<source>_mqtt_app.py` and
+   `tests/test_<source>_amqp_app.py`.
+7. **Dockerfile.mqtt** and **Dockerfile.amqp** with their pyprojects.
+8. **ARM templates** — two MQTT (BYO broker + Event Grid namespace) AND
+   one AMQP (Service Bus / generic).
+9. **Docker E2E** — MQTT class in `test_docker_mqtt_flow.py` AND AMQP
+   class in `test_docker_amqp_flow.py`, with matching `matrix.json`
+   `build` + `flow` rows for both transports.
+10. **Doc refresh**: CONTAINER.md (Kafka/MQTT/AMQP sections), EVENTS.md
+    (all three messagegroups), README.md (Transports section lists
+    six deployment templates), root README.md (MQTT + AMQP badges).
+11. **Portal hooks**: `mqtt: true` AND `amqp: true` in `app.js` +
+    `catalog.json`.
+12. **Live smoke test** — recommended for MQTT
+    (`Register-EventGridMqttTestClient.ps1` + MQTTX) AND for AMQP
+    (local Artemis or Service Bus + a CLI AMQP consumer).
+
+## Fleet Dispatch Prompt Template
+
+When dispatching a batch agent to add new feeders or retrofit existing
+ones, the prompt MUST include the following non-negotiables:
+
+1. Read this skill (`.github/skills/mqtt-uns-feeder/SKILL.md`) AND
+   `.github/skills/amqp-feeder/SKILL.md` in full before starting.
+2. Every PR ships Kafka + MQTT + AMQP together. PRs that omit AMQP are
+   rejected and force a rework loop — do not open them.
+3. Walk the three pre-merge gates against your own work before
+   opening the PR:
+   - Mandatory Pre-merge Documentation Gate
+   - Mandatory AMQP Companion
+   - Mandatory Pre-merge Test Gate
+4. Dispatch the mandatory expert reviews (xRegistry, JSON Structure,
+   Avro Schema, UNS Catalog Architect; CloudEvents + Event Streaming
+   recommended for AMQP) and address every blocker before merging.
+5. Walk the `container-and-delivery` and `feeder-release-checklist`
+   skills end-to-end. Record verdicts in the PR body.
+6. Verify CI proof-of-execution: the MQTT flow job AND the AMQP flow
+   job actually executed and passed (not just queued, not skipped by
+   path filter).
+
+If any of these is missing from the dispatch prompt, refuse to start
+work and ask the dispatcher to re-issue with the required scope.
 
 ## Common Failure Modes
 
