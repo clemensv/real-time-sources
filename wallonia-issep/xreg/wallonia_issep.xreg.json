@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/be.issep.airquality.Sensors"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Wallonia ISSeP Air Quality CloudEvents on the `wallonia-issep` topic keyed by `{configuration_id}`."
     },
     "be.issep.airquality.Sensors.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/be.issep.airquality.Sensors.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for Wallonia ISSeP Air Quality CloudEvents using the source topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.SensorConfiguration"
+          "dataschemauri": "#/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.SensorConfiguration",
+          "description": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value."
         },
         "be.issep.airquality.Observation": {
           "name": "Observation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.Observation"
+          "dataschemauri": "#/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.Observation",
+          "description": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Wallonia ISSeP Air Quality covering Walloon air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "be.issep.airquality.Sensors.mqtt": {
-      "description": "MQTT/5.0 transport variants of the ISSeP Wallonia air quality CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under aq/be/wallonia/wallonia-issep/{configuration_id}/... The bridge publishes sensor configuration info and observations per configuration_id.",
+      "description": "MQTT 5 variant of the Wallonia ISSeP Air Quality events. It carries the same source semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "be.issep.airquality.Sensors.mqtt.SensorConfiguration": {
           "name": "SensorConfiguration",
@@ -127,7 +132,7 @@
                 "name": "SensorConfiguration",
                 "type": "object",
                 "additionalProperties": false,
-                "description": "Reference data for one ISSeP Wallonia air quality sensor configuration. Each id_configuration identifies a deployed sensor unit. The bridge emits this event at startup for each distinct configuration seen in the data records.",
+                "description": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "configuration_id",
                   "province"
@@ -164,7 +169,7 @@
                 "name": "Observation",
                 "type": "object",
                 "additionalProperties": false,
-                "description": "Air quality observation from one ISSeP Wallonia sensor at a specific moment in time. Includes raw electrochemical gas readings, calibrated ppb and µg/m³ values, particulate matter concentrations, environmental parameters, reference station comparisons, and quality status flags. Negative raw values (e.g. no2=-4) are valid sensor readings and must not be filtered.",
+                "description": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "configuration_id",
                   "moment",
@@ -613,5 +618,10 @@
         }
       }
     }
+  },
+  "description": "Wallonia ISSeP Air Quality publishes pollutant concentration measurements from Wallonia's Institut Scientifique de Service Public (ISSeP) for Walloon air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Wallonia ISSeP Air Quality, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
