@@ -152,7 +152,7 @@ class TestMultiDomainPolling:
             state_file=str(tmp_path / "state.json"),
             domains=["10YDE-AT-LU---Q", "10YFR-RTE------C"],
             document_types=["A75", "A44"],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -184,7 +184,7 @@ class TestMultiDomainPolling:
             state_file=state_file,
             domains=["10YDE-AT-LU---Q"],
             document_types=["A75"],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -234,7 +234,7 @@ class TestPartialFailures:
             state_file=str(tmp_path / "state.json"),
             domains=["10YDE-AT-LU---Q", "10YFR-RTE------C"],
             document_types=["A75"],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -291,7 +291,7 @@ class TestEventDataContent:
             state_file=str(tmp_path / "state.json"),
             domains=["10YDE-AT-LU---Q"],
             document_types=["A75"],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -325,7 +325,7 @@ class TestEventDataContent:
             state_file=str(tmp_path / "state.json"),
             domains=["10YFR-RTE------C"],
             document_types=["A44"],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -424,7 +424,7 @@ class TestCrossBorderPolling:
             domains=[],
             document_types=["A11"],
             cross_border_pairs=pairs,
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -455,7 +455,7 @@ class TestCrossBorderPolling:
             domains=[],
             document_types=["A11"],
             cross_border_pairs=[pair],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
@@ -508,7 +508,7 @@ class TestCrossBorderPolling:
             domains=["10YDE-AT-LU---Q"],
             document_types=["A75", "A11"],
             cross_border_pairs=[("10Y1001A1001A83F", "10YFR-RTE------C")],
-            lookback_hours=720,
+            lookback_hours=24000,
             polling_interval=60,
         )
 
