@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/fr.gouv.transport.bison_fute.traffic_flow"
-      ]
+      ],
+      "description": "Kafka producer endpoint for French Road Traffic CloudEvents on the `french-road-traffic-flow` topic keyed by `{site_id}`."
     },
     "fr.gouv.transport.bison_fute.road_event.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/fr.gouv.transport.bison_fute.road_event"
-      ]
+      ],
+      "description": "Kafka producer endpoint for French Road Traffic CloudEvents on the `french-road-traffic-events` topic keyed by `{situation_id}`."
     }
   },
   "messagegroups": {
@@ -66,7 +68,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.TrafficFlowMeasurement"
         }
-      }
+      },
+      "description": "Events from French Road Traffic covering French road network sites and situations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "fr.gouv.transport.bison_fute.road_event": {
       "messages": {
@@ -90,7 +93,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.RoadEvent"
         }
-      }
+      },
+      "description": "Events from French Road Traffic covering French road network sites and situations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     }
   },
   "schemagroups": {
@@ -116,7 +120,7 @@
                           "TrafficFlowMeasurement": {
                             "name": "TrafficFlowMeasurement",
                             "type": "object",
-                            "description": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Each record corresponds to one siteMeasurements element in the Bison Futé MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.",
+                            "description": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes.",
                             "properties": {
                               "site_id": {
                                 "type": "string",
@@ -189,7 +193,7 @@
                           "RoadEvent": {
                             "name": "RoadEvent",
                             "type": "object",
-                            "description": "Real-time road situation record from the French national non-conceded road network DATEX II SituationPublication feed. Each record represents one situationRecord element within a situation, describing a traffic incident, construction works, lane management, environmental obstruction, or other event affecting road conditions. Location is provided as WGS84 coordinates and road identifiers.",
+                            "description": "Real-time road situation record from the French national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a traffic incident, construction works, lane management, obstruction, or other event affecting road conditions. Record types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, AbnormalTraffic, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and RoadsideServiceDisruption.",
                             "properties": {
                               "situation_id": {
                                 "type": "string",
@@ -388,7 +392,8 @@
                     "default": null,
                     "doc": "Number of vehicle observations used to compute the average speed."
                   }
-                ]
+                ],
+                "description": "A current transport measurement or status update from French public road-traffic feeds. It carries traffic measurements and road situations when the upstream feed reports a new or refreshed value."
               }
             }
           }
@@ -555,12 +560,18 @@
                     "default": null,
                     "doc": "ISO 8601 timestamp of the most recent observation."
                   }
-                ]
+                ],
+                "description": "A transport update from French public road-traffic feeds. It carries traffic measurements and road situations for French road network sites and situations."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "French Road Traffic publishes traffic measurements and road situations from French public road-traffic feeds for French road network sites and situations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for French Road Traffic, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
