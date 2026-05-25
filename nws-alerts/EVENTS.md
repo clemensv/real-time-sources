@@ -4,8 +4,8 @@ NWS Alerts publishes CAP weather watches, warnings, advisories, and updates from
 
 ## At a glance
 
-- **Event types:** 1 documented event type (6 transport bindings in the manifest).
-- **Transports:** KAFKA, MQTT/5.0
+- **Event types:** 1 documented event type (11 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{alert_id}` identifies the resource each event is about.
 - **Operations:** The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
@@ -43,6 +43,20 @@ c.loop_forever()
 ```
 
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `nws-alerts`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/nws-alerts')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -68,6 +82,7 @@ Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
 | `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/nws-alerts`, message subject `{alert_id}`; application properties state `{state}`, event_type `{event_type}` |
 
 #### Payload
 
