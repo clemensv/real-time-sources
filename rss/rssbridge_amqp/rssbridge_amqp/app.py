@@ -1,7 +1,7 @@
 """AMQP feeder for RSS/Atom feeds."""
 from __future__ import annotations
 import argparse, asyncio, logging, os
-from rssbridge.rssbridge import load_feedstore, load_state, poll_feeds, save_feedstore, save_state
+from urllib.parse import urlparse
 import rssbridge.rssbridge as bridge
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
 from rssbridge_amqp_producer_amqp_producer.producer import MicrosoftOpenDataRssFeedsAmqpProducer
