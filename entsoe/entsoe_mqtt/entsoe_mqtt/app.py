@@ -5,6 +5,9 @@ import argparse
 import asyncio
 import logging
 import os
+import threading
+import time
+from datetime import datetime, timezone
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -51,14 +54,42 @@ def _acquire_entra_token(audience: str, client_id: Optional[str]):
     from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
     credential = ManagedIdentityCredential(client_id=client_id) if client_id else DefaultAzureCredential()
     scope = audience if audience.endswith('/.default') else f'{audience}/.default'
-    return credential.get_token(scope).token
+    token = credential.get_token(scope)
+    return token.token, datetime.fromtimestamp(token.expires_on, tz=timezone.utc)
+
+
+def _start_entra_refresh_thread(paho_client, host: str, port: int, audience: str, client_id: Optional[str], expires_at: datetime):
+    stop_event = threading.Event()
+
+    def refresh_loop():
+        nonlocal expires_at
+        while not stop_event.wait(max(60.0, (expires_at - datetime.now(timezone.utc)).total_seconds() - 300.0)):
+            try:
+                token, expires_at = _acquire_entra_token(audience, client_id)
+                props = Properties(PacketTypes.CONNECT)
+                props.AuthenticationMethod = ENTRA_MQTT_AUTH_METHOD
+                props.AuthenticationData = token.encode('utf-8')
+                try:
+                    paho_client.disconnect()
+                except Exception:
+                    pass
+                paho_client.connect(host, port, keepalive=60, clean_start=True, properties=props)
+                logger.info('Refreshed MQTT Entra JWT and reconnected (expires=%s)', expires_at.isoformat())
+            except Exception as exc:
+                logger.warning('Failed to refresh MQTT Entra JWT: %s', exc)
+                time.sleep(60)
+
+    thread = threading.Thread(target=refresh_loop, name='entsoe-mqtt-entra-refresh', daemon=True)
+    thread.start()
+    return stop_event
 
 class MqttPublisher:
-    def __init__(self, domain_client, psr_client, cross_client, loop):
+    def __init__(self, domain_client, psr_client, cross_client, loop, refresh_stop=None):
         self.domain = domain_client
         self.psr = psr_client
         self.cross = cross_client
         self.loop = loop
+        self._refresh_stop = refresh_stop
         self._pending = []
         paho_client = self.domain.client
         original_publish = paho_client.publish
@@ -87,7 +118,10 @@ class MqttPublisher:
             info.wait_for_publish(timeout=30)
             if getattr(info, 'rc', 0) != 0:
                 raise RuntimeError(f'MQTT publish failed with rc={info.rc}')
-    def close(self): self._run(self.domain.disconnect())
+    def close(self):
+        if self._refresh_stop is not None:
+            self._refresh_stop.set()
+        self._run(self.domain.disconnect())
 
 def _parse_broker_url(url: str):
     parsed = urlparse(url if '://' in url else f'mqtt://{url}')
@@ -141,18 +175,21 @@ def main():
     else:
         host = args.broker_host or 'localhost'; tls = bool(args.tls) or args.auth_mode == 'entra'; port = args.broker_port or (8883 if tls else 1883); username = args.username; password = args.password
     paho = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=args.client_id or '', protocol=MQTTv5)
-    props = None
+    props = None; refresh_stop = None
     if args.auth_mode in ('password','userpass') and username: paho.username_pw_set(username, password or '')
     if args.auth_mode == 'entra':
-        props = Properties(PacketTypes.CONNECT); props.AuthenticationMethod = ENTRA_MQTT_AUTH_METHOD; props.AuthenticationData = _acquire_entra_token(args.entra_audience, args.entra_client_id).encode('utf-8')
+        token, expires_at = _acquire_entra_token(args.entra_audience, args.entra_client_id)
+        props = Properties(PacketTypes.CONNECT); props.AuthenticationMethod = ENTRA_MQTT_AUTH_METHOD; props.AuthenticationData = token.encode('utf-8')
     if tls or args.auth_mode == 'entra': paho.tls_set()
     loop = asyncio.new_event_loop(); asyncio.set_event_loop(loop)
     domain_client = EuEntsoeTransparencyByDomainMqttMqttClient(client=paho, content_mode='binary', loop=loop)
     psr_client = EuEntsoeTransparencyByDomainPsrTypeMqttMqttClient(client=paho, content_mode='binary', loop=loop)
     cross_client = EuEntsoeTransparencyCrossBorderMqttMqttClient(client=paho, content_mode='binary', loop=loop)
-    if args.auth_mode == 'entra': paho.connect(host, port, keepalive=60, clean_start=True, properties=props); paho.loop_start()
+    if args.auth_mode == 'entra':
+        paho.connect(host, port, keepalive=60, clean_start=True, properties=props); paho.loop_start()
+        refresh_stop = _start_entra_refresh_thread(paho, host, port, args.entra_audience, args.entra_client_id, expires_at)
     else: loop.run_until_complete(domain_client.connect(host, port))
-    _run_or_sample(args, MqttPublisher(domain_client, psr_client, cross_client, loop))
+    _run_or_sample(args, MqttPublisher(domain_client, psr_client, cross_client, loop, refresh_stop))
 
 if __name__ == '__main__':
     main()

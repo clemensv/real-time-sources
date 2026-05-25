@@ -1,13 +1,14 @@
 # ENTSO-E Transparency Platform Bridge Events
 
-The **ENTSO-E Transparency Platform Bridge** polls the [ENTSO-E Transparency Platform REST API](https://transparency.entsoe.eu/) for European electricity market data and emits it as [CloudEvents](https://cloudevents.io/) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+The **ENTSO-E Transparency Platform Bridge** polls the ENTSO-E REST API for European electricity market, load, generation, hydro storage, and cross-border flow documents and emits the resulting CloudEvents over Kafka, MQTT 5, and AMQP 1.0.
 
 ## At a glance
 
-- **Event types:** 11 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 11 documented event types (33 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 11 telemetry event types.
 - **Identity:** `{inDomain}`, `{inDomain}/{psrType}`, `{inDomain}/{outDomain}` identifies the resource each event is about.
+- **Operations:** The MQTT variant publishes point events at QoS 1 with retain disabled; AMQP uses binary CloudEvents with routing axes mirrored into application properties.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -28,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `energy/eu/entsoe/transparency/by-domain/+/day-ahead-prices`, `energy/eu/entsoe/transparency/by-domain/+/actual-total-load`, `energy/eu/entsoe/transparency/by-domain/+/load-forecast-margin`, `energy/eu/entsoe/transparency/by-domain/+/generation-forecast`, `energy/eu/entsoe/transparency/by-domain/+/reservoir-filling`, `energy/eu/entsoe/transparency/by-domain/+/actual-generation`, `energy/eu/entsoe/transparency/by-psr-type/+/+/actual-generation-per-type`, `energy/eu/entsoe/transparency/by-psr-type/+/+/wind-solar-forecast`, `energy/eu/entsoe/transparency/by-psr-type/+/+/wind-solar-generation`, `energy/eu/entsoe/transparency/by-psr-type/+/+/installed-generation-capacity-per-type`, `energy/eu/entsoe/transparency/cross-border/+/+/physical-flow`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('energy/eu/entsoe/transparency/by-domain/+/day-ahead-prices', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is the `entsoe` broker address. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/entsoe')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -48,6 +77,8 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-domain/{inDomain}/day-ahead-prices`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}`; application properties inDomain `{inDomain}`, eventType `DayAheadPrices` |
 
 #### Payload
 
@@ -95,6 +126,8 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-domain/{inDomain}/actual-total-load`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}`; application properties inDomain `{inDomain}`, eventType `ActualTotalLoad` |
 
 #### Payload
 
@@ -103,7 +136,7 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 - **`inDomain`** (string, required): EIC code of the bidding zone
 - **`quantity`** (double, required): Total load in MW
 - **`resolution`** (string, required): ISO 8601 duration
-- **`outDomain`** (string, optional): EIC code of the out domain, if applicable
+- **`outDomain`** (string or null, optional): EIC code of the out domain, if applicable
 - **`documentType`** (string, required): ENTSO-E document type code (A65)
 #### Example payload
 
@@ -140,6 +173,8 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-domain/{inDomain}/load-forecast-margin`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}`; application properties inDomain `{inDomain}`, eventType `LoadForecastMargin` |
 
 #### Payload
 
@@ -185,6 +220,8 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-domain/{inDomain}/generation-forecast`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}`; application properties inDomain `{inDomain}`, eventType `GenerationForecast` |
 
 #### Payload
 
@@ -230,6 +267,8 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-domain/{inDomain}/reservoir-filling`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}`; application properties inDomain `{inDomain}`, eventType `ReservoirFillingInformation` |
 
 #### Payload
 
@@ -275,6 +314,8 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-domain/{inDomain}/actual-generation`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}`; application properties inDomain `{inDomain}`, eventType `ActualGeneration` |
 
 #### Payload
 
@@ -320,6 +361,8 @@ Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inD
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-psr-type/{inDomain}/{psrType}/actual-generation-per-type`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}/{psrType}`; application properties inDomain `{inDomain}`, psrType `{psrType}`, eventType `ActualGenerationPerType` |
 
 #### Payload
 
@@ -369,6 +412,8 @@ Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inD
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-psr-type/{inDomain}/{psrType}/wind-solar-forecast`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}/{psrType}`; application properties inDomain `{inDomain}`, psrType `{psrType}`, eventType `WindSolarForecast` |
 
 #### Payload
 
@@ -418,6 +463,8 @@ Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inD
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-psr-type/{inDomain}/{psrType}/wind-solar-generation`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}/{psrType}`; application properties inDomain `{inDomain}`, psrType `{psrType}`, eventType `WindSolarGeneration` |
 
 #### Payload
 
@@ -467,6 +514,8 @@ Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inD
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/by-psr-type/{inDomain}/{psrType}/installed-generation-capacity-per-type`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}/{psrType}`; application properties inDomain `{inDomain}`, psrType `{psrType}`, eventType `InstalledGenerationCapacityPerType` |
 
 #### Payload
 
@@ -516,6 +565,8 @@ Each event identifies the real-world resource with `{inDomain}/{outDomain}`. `{i
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{outDomain}` |
+| `MQTT/5.0` | topic `energy/eu/entsoe/transparency/cross-border/{inDomain}/{outDomain}/physical-flow`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671`, message subject `{inDomain}/{outDomain}`; application properties inDomain `{inDomain}`, outDomain `{outDomain}`, eventType `CrossBorderPhysicalFlows` |
 
 #### Payload
 
@@ -559,11 +610,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+All payloads documented here are JSON. ENTSO-E MQTT topics are non-retained point-event streams, so subscribers should maintain their own latest-value state if needed. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The MQTT variant publishes non-retained QoS 1 point events; use a durable MQTT session or downstream store for replay/latest-value needs.
 
 ## References
 

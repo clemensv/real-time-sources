@@ -34,6 +34,7 @@ import os
 import socket
 import time
 import urllib.parse
+from proton import symbol
 from contextlib import closing
 from typing import Any, Dict, List
 
@@ -363,3 +364,14 @@ class TestEntsoeAmqpDockerFlow:
                 assert required in ce, ce
             data = _body_to_obj(m)
             assert isinstance(data, dict), data
+            app_props = dict(getattr(m, "properties", None) or {})
+            assert app_props.get("eventType") in {"DayAheadPrices", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "ActualTotalLoad", "WindSolarForecast", "LoadForecastMargin", "GenerationForecast", "ReservoirFillingInformation", "ActualGeneration", "WindSolarGeneration", "InstalledGenerationCapacityPerType"}
+            if "inDomain" in data:
+                assert app_props.get("inDomain") == data["inDomain"]
+            if "outDomain" in data:
+                assert app_props.get("outDomain") == data["outDomain"]
+            if "psrType" in data:
+                assert app_props.get("psrType") == data["psrType"]
+            annotations = dict(getattr(m, "annotations", None) or {})
+            partition_key = annotations.get(symbol("x-opt-partition-key")) or annotations.get("x-opt-partition-key")
+            assert partition_key == ce["subject"]
