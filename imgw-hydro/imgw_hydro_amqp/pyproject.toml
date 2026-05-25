@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "imgw-hydro-amqp"
+version = "0.1.0"
+packages = [{include = "imgw_hydro_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+dataclasses_json = ">=0.6.7"
+imgw_hydro_amqp_producer_data = {path = "../imgw_hydro_amqp_producer/imgw_hydro_amqp_producer_data"}
+imgw_hydro_amqp_producer_amqp_producer = {path = "../imgw_hydro_amqp_producer/imgw_hydro_amqp_producer_amqp_producer"}

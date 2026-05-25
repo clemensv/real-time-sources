@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for observations in the IMGW-PIB Hydrological Data source.
     Attributes:
         station_id (str): 
         station_name (str): 
@@ -50,7 +50,7 @@ class WaterLevelObservation:
     overgrowth_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="overgrowth_code"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"voivodeship\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level\", \"type\": \"double\"}, {\"name\": \"water_level_timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"water_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_temperature_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"ice_phenomenon_code\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"overgrowth_code\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"PL.Gov.IMGW.Hydro\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"Measurement payload for observations in the IMGW-PIB Hydrological Data source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"voivodeship\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level\", \"type\": \"double\"}, {\"name\": \"water_level_timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"water_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_temperature_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"ice_phenomenon_code\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"overgrowth_code\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"PL.Gov.IMGW.Hydro\", \"description\": \"Measurement payload for observations in the IMGW-PIB Hydrological Data source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
