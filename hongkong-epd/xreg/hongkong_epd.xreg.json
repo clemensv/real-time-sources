@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "HK.Gov.EPD.AQHI.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,10 +17,15 @@
           "key": "{station_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/HK.Gov.EPD.AQHI"]
+      "messagegroups": [
+        "#/messagegroups/HK.Gov.EPD.AQHI"
+      ],
+      "description": "Kafka producer endpoint for Hong Kong EPD Air Quality CloudEvents on the `hongkong-epd-aqhi` topic keyed by `{station_id}`."
     },
     "HK.Gov.EPD.AQHI.Mqtt": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "MQTT/5.0",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -32,7 +39,10 @@
           }
         ]
       },
-      "messagegroups": ["#/messagegroups/HK.Gov.EPD.AQHI.mqtt"]
+      "messagegroups": [
+        "#/messagegroups/HK.Gov.EPD.AQHI.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for Hong Kong EPD Air Quality CloudEvents using the source topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -54,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.Station"
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.Station",
+          "description": "A reference record published by Hong Kong's Environmental Protection Department. It lets consumers label, group, and route the live measurement or forecast events."
         },
         "HK.Gov.EPD.AQHI.AQHIReading": {
           "name": "AQHIReading",
@@ -72,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading"
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading",
+          "description": "A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Hong Kong EPD Air Quality covering Hong Kong air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "HK.Gov.EPD.AQHI.mqtt": {
-      "description": "MQTT/5.0 transport variants of the HK EPD AQHI CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under air-quality/hk/epd/hongkong-epd/{district}/{station_id}/... The {district} placeholder is the Hong Kong 18-district administrative area where the station is located, normalized to lowercase snake_case.",
+      "description": "MQTT 5 variant of the Hong Kong EPD Air Quality events. It carries the same source semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "HK.Gov.EPD.AQHI.mqtt.Station": {
           "name": "Station",
@@ -117,7 +130,7 @@
                 "$id": "https://www.aqhi.gov.hk/schemas/HK/Gov/EPD/AQHI/Station",
                 "type": "object",
                 "name": "Station",
-                "description": "Reference data for a Hong Kong EPD AQHI monitoring station. The EPD operates a network of General Stations and Roadside Stations across Hong Kong. Station coordinates are derived from the EPD station map.",
+                "description": "A reference record published by Hong Kong's Environmental Protection Department. It lets consumers label, group, and route the live measurement or forecast events.",
                 "required": [
                   "station_id",
                   "station_name",
@@ -180,7 +193,7 @@
                 "$id": "https://www.aqhi.gov.hk/schemas/HK/Gov/EPD/AQHI/AQHIReading",
                 "type": "object",
                 "name": "AQHIReading",
-                "description": "Air Quality Health Index (AQHI) reading for a Hong Kong EPD monitoring station. AQHI quantifies health risk from air pollution on a scale of 1 to 10+ and is calculated from concentrations of nitrogen dioxide, sulphur dioxide, ozone, and PM2.5. Published hourly by the EPD.",
+                "description": "A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "station_id",
                   "station_name",
@@ -240,5 +253,10 @@
         }
       }
     }
+  },
+  "description": "Hong Kong EPD Air Quality publishes air-quality health index and pollutant measurements from Hong Kong's Environmental Protection Department for Hong Kong air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Hong Kong EPD Air Quality, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
