@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/USGS.Sites"
-      ]
+      ],
+      "description": "Kafka producer endpoint for USGS Instantaneous Values CloudEvents on the `usgs-iv` topic keyed by `{agency_cd}/{site_no}`."
     },
     "USGS.Timeseries.Kafka": {
       "usage": [
@@ -41,7 +42,8 @@
       "messagegroups": [
         "#/messagegroups/USGS.SiteTimeseries",
         "#/messagegroups/USGS.InstantaneousValues"
-      ]
+      ],
+      "description": "Kafka producer endpoint for USGS Instantaneous Values CloudEvents on the `usgs-iv` topic keyed by `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`."
     },
     "USGS.IV.Mqtt": {
       "usage": [
@@ -62,7 +64,8 @@
         "#/messagegroups/USGS.Sites.mqtt",
         "#/messagegroups/USGS.SiteTimeseries.mqtt",
         "#/messagegroups/USGS.InstantaneousValues.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for USGS Instantaneous Values CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -71,7 +74,7 @@
         "USGS.Sites.Site": {
           "name": "Site",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS site metadata.",
+          "description": "A reference record for one United States streamgages and other monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.Sites.Site"
@@ -88,14 +91,15 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.Sites.jstruct/schemas/USGS.Sites.Site"
         }
-      }
+      },
+      "description": "Events from USGS Instantaneous Values covering United States streamgages and other monitoring sites and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "USGS.SiteTimeseries": {
       "messages": {
         "USGS.Sites.SiteTimeseries": {
           "name": "SiteTimeseries",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS site timeseries metadata.",
+          "description": "A reference record for one United States streamgages and other monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.Sites.SiteTimeseries"
@@ -112,14 +116,15 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.Sites.jstruct/schemas/USGS.Sites.SiteTimeseries"
         }
-      }
+      },
+      "description": "Events from USGS Instantaneous Values covering United States streamgages and other monitoring sites and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "USGS.InstantaneousValues": {
       "messages": {
         "USGS.InstantaneousValues.OtherParameter": {
           "name": "OtherParameter",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS other parameter data.",
+          "description": "A other parameter event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.OtherParameter"
@@ -143,7 +148,7 @@
         "USGS.InstantaneousValues.Precipitation": {
           "name": "Precipitation",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS precipitation data. Parameter code 00045.",
+          "description": "A precipitation event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.Precipitation"
@@ -167,7 +172,7 @@
         "USGS.InstantaneousValues.Streamflow": {
           "name": "Streamflow",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS streamflow data. Parameter code 00060.",
+          "description": "A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.Streamflow"
@@ -191,7 +196,7 @@
         "USGS.InstantaneousValues.GageHeight": {
           "name": "GageHeight",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS gage height data. Parameter code 00065.",
+          "description": "A gage height event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.GageHeight"
@@ -215,7 +220,7 @@
         "USGS.InstantaneousValues.WaterTemperature": {
           "name": "WaterTemperature",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS water temperature data. Parameter code 00010.",
+          "description": "A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.WaterTemperature"
@@ -239,7 +244,7 @@
         "USGS.InstantaneousValues.DissolvedOxygen": {
           "name": "DissolvedOxygen",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS dissolved oxygen data. Parameter code 00300.",
+          "description": "A dissolved oxygen event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.DissolvedOxygen"
@@ -263,7 +268,7 @@
         "USGS.InstantaneousValues.pH": {
           "name": "pH",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS pH data. Parameter code 00400.",
+          "description": "A p h event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.pH"
@@ -287,7 +292,7 @@
         "USGS.InstantaneousValues.SpecificConductance": {
           "name": "SpecificConductance",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS specific conductance data. Parameter code 00095.",
+          "description": "A specific conductance event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.SpecificConductance"
@@ -311,7 +316,7 @@
         "USGS.InstantaneousValues.Turbidity": {
           "name": "Turbidity",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS turbidity data. Parameter code 00076.",
+          "description": "A turbidity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.Turbidity"
@@ -335,7 +340,7 @@
         "USGS.InstantaneousValues.AirTemperature": {
           "name": "AirTemperature",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS air temperature data. Parameter code 00020.",
+          "description": "A air temperature event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.AirTemperature"
@@ -359,7 +364,7 @@
         "USGS.InstantaneousValues.WindSpeed": {
           "name": "WindSpeed",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS wind speed data. Parameter code 00035.",
+          "description": "A wind speed event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.WindSpeed"
@@ -383,7 +388,7 @@
         "USGS.InstantaneousValues.WindDirection": {
           "name": "WindDirection",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS wind direction data. Parameter codes 00036 and 163695.",
+          "description": "A wind direction event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.WindDirection"
@@ -407,7 +412,7 @@
         "USGS.InstantaneousValues.RelativeHumidity": {
           "name": "RelativeHumidity",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS relative humidity data. Parameter code 00052.",
+          "description": "A relative humidity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.RelativeHumidity"
@@ -431,7 +436,7 @@
         "USGS.InstantaneousValues.BarometricPressure": {
           "name": "BarometricPressure",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
+          "description": "A barometric pressure event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.BarometricPressure"
@@ -455,7 +460,7 @@
         "USGS.InstantaneousValues.TurbidityFNU": {
           "name": "TurbidityFNU",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS turbidity data (FNU). Parameter code 63680.",
+          "description": "A turbidity f n u event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.TurbidityFNU"
@@ -479,7 +484,7 @@
         "USGS.InstantaneousValues.fDOM": {
           "name": "fDOM",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
+          "description": "A f d o m event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.fDOM"
@@ -503,7 +508,7 @@
         "USGS.InstantaneousValues.ReservoirStorage": {
           "name": "ReservoirStorage",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS reservoir storage data. Parameter code 00054.",
+          "description": "A current reservoir record from the U.S. Geological Survey (USGS) Water Services API. It reports the latest storage, elevation, capacity, or related reservoir status available for one reservoir.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.ReservoirStorage"
@@ -527,7 +532,7 @@
         "USGS.InstantaneousValues.LakeElevationNGVD29": {
           "name": "LakeElevationNGVD29",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
+          "description": "A lake elevation n g v d29 event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.LakeElevationNGVD29"
@@ -551,7 +556,7 @@
         "USGS.InstantaneousValues.WaterDepth": {
           "name": "WaterDepth",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS water depth data. Parameter code 72199.",
+          "description": "A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.WaterDepth"
@@ -575,7 +580,7 @@
         "USGS.InstantaneousValues.EquipmentStatus": {
           "name": "EquipmentStatus",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS equipment alarm status data. Parameter code 99235.",
+          "description": "A equipment status event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.EquipmentStatus"
@@ -599,7 +604,7 @@
         "USGS.InstantaneousValues.TidallyFilteredDischarge": {
           "name": "TidallyFilteredDischarge",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS tidally filtered discharge data. Parameter code 72137.",
+          "description": "A tidally filtered discharge event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.TidallyFilteredDischarge"
@@ -623,7 +628,7 @@
         "USGS.InstantaneousValues.WaterVelocity": {
           "name": "WaterVelocity",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS water velocity data. Parameter code 72254.",
+          "description": "A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.WaterVelocity"
@@ -647,7 +652,7 @@
         "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
           "name": "EstuaryElevationNGVD29",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
+          "description": "A estuary elevation n g v d29 event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.EstuaryElevationNGVD29"
@@ -671,7 +676,7 @@
         "USGS.InstantaneousValues.LakeElevationNAVD88": {
           "name": "LakeElevationNAVD88",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
+          "description": "A lake elevation n a v d88 event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.LakeElevationNAVD88"
@@ -695,7 +700,7 @@
         "USGS.InstantaneousValues.Salinity": {
           "name": "Salinity",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS salinity data. Parameter code 00480.",
+          "description": "A salinity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.Salinity"
@@ -719,7 +724,7 @@
         "USGS.InstantaneousValues.GateOpening": {
           "name": "GateOpening",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS gate opening data. Parameter code 45592.",
+          "description": "A gate opening event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.InstantaneousValues.GateOpening"
@@ -740,10 +745,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.GateOpening"
         }
-      }
+      },
+      "description": "Events from USGS Instantaneous Values covering United States streamgages and other monitoring sites and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "USGS.Sites.mqtt": {
-      "description": "MQTT/5.0 transport variants for USGS site metadata. Topics are retained QoS-1 site info leaves under hydro/us/usgs/usgs-iv/{site_no}/info. The manifest intentionally uses existing schema field names site_no and parameter_cd rather than adding aliases.",
+      "description": "MQTT 5 variant of the USGS Instantaneous Values events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "USGS.Sites.mqtt.Site": {
           "name": "Site",
@@ -759,7 +765,7 @@
       }
     },
     "USGS.SiteTimeseries.mqtt": {
-      "description": "MQTT/5.0 transport variants for USGS site timeseries metadata. Retained QoS-1 leaves use existing schema fields site_no, parameter_cd, and timeseries_cd to preserve the Kafka identity axes.",
+      "description": "MQTT 5 variant of the USGS Instantaneous Values events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "USGS.SiteTimeseries.mqtt.SiteTimeseries": {
           "name": "SiteTimeseries",
@@ -775,7 +781,7 @@
       }
     },
     "USGS.InstantaneousValues.mqtt": {
-      "description": "MQTT/5.0 transport variants for USGS instantaneous values. Retained QoS-1 latest-observation leaves use existing schema fields site_no, parameter_cd, and timeseries_cd to avoid collapsing independent USGS time series; message expiry limits stale latest values.",
+      "description": "MQTT 5 variant of the USGS Instantaneous Values events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "USGS.InstantaneousValues.mqtt.OtherParameter": {
           "name": "OtherParameter",
@@ -1090,69 +1096,69 @@
                         "properties": {
                           "agency_cd": {
                             "type": "string",
-                            "description": "Agency code."
+                            "description": "USGS or partner agency code for the site. Combined with `site_no`, it forms the stable site identity used in CloudEvents subjects and transport keys."
                           },
                           "site_no": {
                             "type": "string",
-                            "description": "USGS site number."
+                            "description": "USGS site number within the agency. Combined with `agency_cd`, it uniquely identifies the monitoring location."
                           },
                           "station_nm": {
                             "type": "string",
-                            "description": "Station name."
+                            "description": "Human-readable site name published by USGS. Use `agency_cd` and `site_no` for stable joins because names can change."
                           },
                           "site_tp_cd": {
                             "type": "string",
-                            "description": "Site type code."
+                            "description": "USGS site-type code describing the kind of monitoring location, such as stream, lake, well, or atmospheric site."
                           },
                           "lat_va": {
                             "type": "string",
-                            "description": "DMS latitude."
+                            "description": "Latitude in degrees-minutes-seconds text as published by USGS."
                           },
                           "long_va": {
                             "type": "string",
-                            "description": "DMS longitude."
+                            "description": "Longitude in degrees-minutes-seconds text as published by USGS."
                           },
                           "dec_lat_va": {
                             "type": "float",
                             "default": null,
-                            "description": "Decimal latitude."
+                            "description": "Latitude in decimal degrees when USGS provides decimal coordinates."
                           },
                           "dec_long_va": {
                             "type": "float",
                             "default": null,
-                            "description": "Decimal longitude."
+                            "description": "Longitude in decimal degrees when USGS provides decimal coordinates."
                           },
                           "coord_meth_cd": {
                             "type": "string",
-                            "description": "Latitude-longitude method code."
+                            "description": "USGS method code describing how the latitude and longitude were determined."
                           },
                           "coord_acy_cd": {
                             "type": "string",
-                            "description": "Coordinate accuracy code."
+                            "description": "USGS accuracy code for the published coordinates."
                           },
                           "coord_datum_cd": {
                             "type": "string",
-                            "description": "Latitude-longitude datum code."
+                            "description": "Horizontal datum code for the degrees-minutes-seconds coordinates."
                           },
                           "dec_coord_datum_cd": {
                             "type": "string",
-                            "description": "Decimal latitude-longitude datum code."
+                            "description": "Horizontal datum code for the decimal coordinates."
                           },
                           "district_cd": {
                             "type": "string",
-                            "description": "District code."
+                            "description": "USGS district code responsible for or associated with the site."
                           },
                           "state_cd": {
                             "type": "string",
-                            "description": "State code."
+                            "description": "FIPS state code for the site location."
                           },
                           "county_cd": {
                             "type": "string",
-                            "description": "County code."
+                            "description": "FIPS county code for the site location."
                           },
                           "country_cd": {
                             "type": "string",
-                            "description": "Country code."
+                            "description": "Country code for the site location."
                           },
                           "land_net_ds": {
                             "type": "string",
@@ -1187,7 +1193,7 @@
                           },
                           "huc_cd": {
                             "type": "string",
-                            "description": "Hydrologic unit code."
+                            "description": "Hydrologic Unit Code identifying the watershed containing the site."
                           },
                           "basin_cd": {
                             "type": "string",
@@ -1199,7 +1205,7 @@
                           },
                           "instruments_cd": {
                             "type": "string",
-                            "description": "Flags for instruments at site."
+                            "description": "USGS code summarizing the instrumentation installed at the site."
                           },
                           "construction_dt": {
                             "type": "string",
@@ -1223,15 +1229,15 @@
                           },
                           "tz_cd": {
                             "type": "string",
-                            "description": "Time Zone abbreviation."
+                            "description": "Time-zone code used for local timestamps at the site."
                           },
                           "local_time_fg": {
                             "type": "boolean",
-                            "description": "Site honors Daylight Savings Time flag."
+                            "description": "Flag indicating whether timestamps are reported in the site local time zone."
                           },
                           "reliability_cd": {
                             "type": "string",
-                            "description": "Data reliability code."
+                            "description": "USGS reliability code describing the expected reliability of the site data."
                           },
                           "gw_file_cd": {
                             "type": "string",
@@ -1265,7 +1271,7 @@
                           },
                           "project_no": {
                             "type": "string",
-                            "description": "Project number."
+                            "description": "USGS project number associated with the site, when provided."
                           }
                         },
                         "required": [
@@ -1305,7 +1311,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reference details for one monitoring station or site in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1361,7 +1368,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reference details for one monitoring station or site in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1638,7 +1646,8 @@
                     "doc": "Project number.",
                     "type": "string"
                   }
-                ]
+                ],
+                "description": "Reference details for one monitoring station or site in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1682,7 +1691,8 @@
                     "doc": "Description.",
                     "type": "string"
                   }
-                ]
+                ],
+                "description": "Reference details for one monitoring station or site in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1753,7 +1763,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for other parameter events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1820,7 +1831,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for precipitation events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1887,7 +1899,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -1954,7 +1967,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2021,7 +2035,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2088,7 +2103,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for dissolved oxygen events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2155,7 +2171,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for p h events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2222,7 +2239,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for specific conductance events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2289,7 +2307,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for turbidity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2356,7 +2375,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for wind speed events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2423,7 +2443,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for wind direction events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2490,7 +2511,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for relative humidity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2557,7 +2579,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for barometric pressure events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2624,7 +2647,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2691,7 +2715,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for turbidity f n u events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2758,7 +2783,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for f d o m events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2825,7 +2851,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reservoir status record from the USGS Instantaneous Values source."
               }
             }
           }
@@ -2892,7 +2919,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for lake elevation n g v d29 events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -2959,7 +2987,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for water depth events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3014,7 +3043,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for equipment status events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3081,7 +3111,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3148,7 +3179,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for water velocity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3215,7 +3247,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for estuary elevation n g v d29 events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3282,7 +3315,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for lake elevation n a v d88 events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3349,7 +3383,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for salinity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3416,7 +3451,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Payload record for gate opening events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3484,7 +3520,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for other parameter events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3549,7 +3586,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for precipitation events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3614,7 +3652,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3679,7 +3718,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3743,7 +3783,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3807,7 +3848,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for dissolved oxygen events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3871,7 +3913,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for p h events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -3936,7 +3979,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for specific conductance events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4000,7 +4044,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for turbidity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4064,7 +4109,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for wind speed events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4128,7 +4174,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for wind direction events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4192,7 +4239,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for relative humidity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4256,7 +4304,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for barometric pressure events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4320,7 +4369,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4384,7 +4434,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for turbidity f n u events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4448,7 +4499,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for f d o m events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4512,7 +4564,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Reservoir status record from the USGS Instantaneous Values source."
               }
             }
           }
@@ -4576,7 +4629,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for lake elevation n g v d29 events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4640,7 +4694,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for water depth events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4687,7 +4742,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for equipment status events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4751,7 +4807,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4815,7 +4872,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for water velocity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4879,7 +4937,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for estuary elevation n g v d29 events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -4943,7 +5002,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for lake elevation n a v d88 events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -5007,7 +5067,8 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for salinity events in the USGS Instantaneous Values source."
               }
             }
           }
@@ -5071,12 +5132,18 @@
                     "type": "string",
                     "doc": "{\"description\": \"Timeseries code.\"}"
                   }
-                ]
+                ],
+                "description": "Payload record for gate opening events in the USGS Instantaneous Values source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "USGS Instantaneous Values publishes instantaneous water observations such as gauge height, discharge, and temperature from the U.S. Geological Survey (USGS) Water Services API for United States streamgages and other monitoring sites. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for USGS Instantaneous Values, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
