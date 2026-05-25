@@ -62,6 +62,52 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations"
       ]
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for noaa-nws."
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/noaa-nws"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for noaa-nws."
     }
   },
   "messagegroups": {
@@ -146,6 +192,195 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt": {
+      "description": "MQTT 5 companion message group for Microsoft.OpenData.US.NOAA.NWS.Alerts.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert": {
+          "name": "WeatherAlert",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{state}/{severity}/{event_type}/{alert_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/us/noaa/noaa-nws/{state}/{severity}/{event_type}/{alert_id}/alert",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp": {
+      "description": "AMQP 1.0 companion message group for Microsoft.OpenData.US.NOAA.NWS.Alerts.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert": {
+          "name": "WeatherAlert",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{state}/{severity}/{event_type}/{alert_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{state}/{severity}/{event_type}/{alert_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt": {
+      "description": "MQTT 5 companion message group for Microsoft.OpenData.US.NOAA.NWS.Observations.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation": {
+          "name": "ObservationStation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/us/noaa/noaa-nws/{state}/{zone_id}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/us/noaa/noaa-nws/{state}/{zone_id}/{station_id}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp": {
+      "description": "AMQP 1.0 companion message group for Microsoft.OpenData.US.NOAA.NWS.Observations.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation": {
+          "name": "ObservationStation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              },
+              "zone_id": {
+                "type": "uritemplate",
+                "value": "{zone_id}",
+                "description": "Routing value for zone_id."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              },
+              "zone_id": {
+                "type": "uritemplate",
+                "value": "{zone_id}",
+                "description": "Routing value for zone_id."
+              }
+            }
+          }
         }
       }
     }
@@ -265,10 +500,25 @@
                     "type": "string"
                   },
                   "headline": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "description": {
                     "type": "string"
+                  },
+                  "zone_id": {
+                    "type": "string",
+                    "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "Normalized routing field 'event_type' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert",
@@ -319,7 +569,10 @@
                     "description": "IANA timezone name for the zone, e.g. 'America/New_York'."
                   },
                   "radar_station": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Nearest NEXRAD radar station identifier, or null if none assigned."
                   }
                 },
@@ -339,7 +592,10 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
-                "required": ["station_id", "name"],
+                "required": [
+                  "station_id",
+                  "name"
+                ],
                 "name": "ObservationStation",
                 "properties": {
                   "station_id": {
@@ -351,26 +607,49 @@
                     "description": "Human-readable station name, e.g. 'New York, Kennedy International Airport'."
                   },
                   "elevation_m": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station elevation above mean sea level.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "time_zone": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "IANA timezone of the station, e.g. 'America/New_York'."
                   },
                   "forecast_zone": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "NWS forecast zone identifier associated with this station."
                   },
                   "county": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "NWS county zone identifier for the station's location."
                   },
                   "fire_weather_zone": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "NWS fire weather zone identifier for the station's location."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "zone_id": {
+                    "type": "string",
+                    "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/ObservationStation",
@@ -389,7 +668,10 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
-                "required": ["station_id", "timestamp"],
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
                 "name": "WeatherObservation",
                 "properties": {
                   "station_id": {
@@ -401,74 +683,118 @@
                     "description": "UTC timestamp of the observation."
                   },
                   "text_description": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'."
                   },
                   "temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Air temperature at the time of observation.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "dewpoint": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dew point temperature.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind direction in degrees from which the wind is blowing.",
                     "unit": "degree",
                     "symbol": "°"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Sustained wind speed.",
                     "unit": "km/h",
                     "symbol": "km/h"
                   },
                   "wind_gust": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Peak wind gust speed, null if no gusts observed.",
                     "unit": "km/h",
                     "symbol": "km/h"
                   },
                   "barometric_pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station barometric pressure (not reduced to sea level).",
                     "unit": "Pa",
                     "symbol": "Pa"
                   },
                   "sea_level_pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Atmospheric pressure reduced to mean sea level.",
                     "unit": "Pa",
                     "symbol": "Pa"
                   },
                   "visibility": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Horizontal visibility.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "relative_humidity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Relative humidity percentage.",
                     "unit": "percent",
                     "symbol": "%"
                   },
                   "wind_chill": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Calculated wind chill temperature, null when conditions do not warrant it.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "heat_index": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Calculated heat index temperature, null when conditions do not warrant it.",
                     "unit": "Cel",
                     "symbol": "°C"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "zone_id": {
+                    "type": "string",
+                    "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherObservation",

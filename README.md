@@ -727,3 +727,4 @@ AMQP 1.0 companion images and Service Bus deployment templates are available for
 - `hko-hong-kong`: MQTT + AMQP companion feeders (`hko-hong-kong-mqtt`, `hko-hong-kong-amqp`).
 - `jma-japan`: MQTT + AMQP companion feeders (`jma-japan-mqtt`, `jma-japan-amqp`).
 - `kmi-belgium`: MQTT + AMQP companion feeders (`kmi-belgium-mqtt`, `kmi-belgium-amqp`).
+- `noaa-nws`: MQTT + AMQP companion feeders (`noaa-nws-mqtt`, `noaa-nws-amqp`).

@@ -726,6 +726,18 @@
       "image": "kmi-belgium-amqp",
       "file": "Dockerfile.amqp",
       "module": "kmi_belgium_amqp"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "noaa_nws_mqtt"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "noaa_nws_amqp"
     }
   ],
   "flow": [
@@ -1474,6 +1486,18 @@
       "image": "kmi-belgium-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestKmiBelgiumAmqpDockerFlow"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNoaaNwsMqttDockerFlow"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNoaaNwsAmqpDockerFlow"
     }
   ]
 }

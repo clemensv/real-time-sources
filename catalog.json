@@ -355,7 +355,9 @@
     "key": false,
     "desc": "United States — weather alerts, CAP",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nws-alerts",

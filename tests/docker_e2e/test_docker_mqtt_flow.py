@@ -5139,3 +5139,23 @@ def mosquitto_kmi_belgium():
 class TestKmiBelgiumMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_kmi_belgium, kmi_belgium_mqtt_image):
         _run_mqtt_contract_flow('kmi-belgium', kmi_belgium_mqtt_image, mosquitto_kmi_belgium, extra_env={'KMI_BELGIUM_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def noaa_nws_mqtt_image():
+    return build_image('noaa-nws', dockerfile='Dockerfile.mqtt', tag='test-noaa-nws-mqtt')
+
+@pytest.fixture()
+def mosquitto_noaa_nws():
+    container, network, host_port = _generic_mosquitto('noaa-nws-mqtt-e2e', 'noaa-nws-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'noaa-nws-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNoaaNwsMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_noaa_nws, noaa_nws_mqtt_image):
+        _run_mqtt_contract_flow('noaa-nws', noaa_nws_mqtt_image, mosquitto_noaa_nws, extra_env={'NOAA_NWS_MOCK': 'true'}, timeout=300)

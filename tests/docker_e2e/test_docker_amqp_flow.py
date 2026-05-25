@@ -332,3 +332,11 @@ class TestKmiBelgiumAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"KMI_BELGIUM_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'BE.Gov.KMI.Weather.Station', 'BE.Gov.KMI.Weather.WeatherObservation'}
     expected_count = 2
+
+
+class TestNoaaNwsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "noaa-nws"
+    image = "noaa-nws-amqp"
+    env = {"NOAA_NWS_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'Microsoft.OpenData.US.NOAA.NWS.ObservationStation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherObservation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert'}
+    expected_count = 3
