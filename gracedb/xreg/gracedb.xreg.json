@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/org.ligo.gracedb"
-      ]
+      ],
+      "description": "Kafka producer endpoint for GraceDB CloudEvents on the `gracedb` topic keyed by `{superevent_id}`."
     },
     "org.ligo.gracedb.Mqtt": {
       "usage": [
@@ -38,7 +39,8 @@
       ],
       "messagegroups": [
         "#/messagegroups/org.ligo.gracedb.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for GraceDB CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -68,10 +70,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/org.ligo.gracedb.jstruct/schemas/org.ligo.gracedb.Superevent"
         }
-      }
+      },
+      "description": "Events from GraceDB covering gravitational-wave candidate events. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "org.ligo.gracedb.mqtt": {
-      "description": "MQTT/5.0 transport variant for GraceDB superevents. Non-retained QoS-1 event stream routed by category, physics group, and superevent id under seismic/intl/ligo/gracedb/...",
+      "description": "MQTT 5 variant of the GraceDB events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "org.ligo.gracedb.mqtt.Superevent": {
           "name": "Superevent",
@@ -400,12 +403,18 @@
                     "type": "string",
                     "doc": "HATEOAS self link for the superevent resource in the GraceDB REST API."
                   }
-                ]
+                ],
+                "description": "Payload for an emergency or hazard event from the LIGO/Virgo/KAGRPayload for a GraceDB service. It carries superevent alerts and classifications for gravitational-wave candidate events."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "GraceDB publishes superevent alerts and classifications from the LIGO/Virgo/KAGRA GraceDB service for gravitational-wave candidate events. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for GraceDB, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
