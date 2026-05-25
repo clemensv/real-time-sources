@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.
     Attributes:
         station_reference (str): 
         label (str): 
@@ -44,7 +44,7 @@ class Station:
     date_opened: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_opened"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"label\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"catchment_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"town\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"lat\", \"type\": \"double\"}, {\"name\": \"long\", \"type\": \"double\"}, {\"name\": \"notation\", \"type\": \"string\"}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"date_opened\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"label\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"catchment_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"town\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"lat\", \"type\": \"double\"}, {\"name\": \"long\", \"type\": \"double\"}, {\"name\": \"notation\", \"type\": \"string\"}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"date_opened\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\", \"description\": \"Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
