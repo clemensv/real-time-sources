@@ -494,3 +494,4 @@ class TestSmhiHydroAmqpSbEmulatorFlow:
 class TestWalloniaIssepAmqpSbEmulatorFlow:
     def test_emits_cloudevents_to_sb_emulator_queue(self):
         _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[6])
+

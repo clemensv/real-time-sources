@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the Waterinfo VMM source.
     Attributes:
         station_no (str): 
         station_name (str): 
@@ -42,7 +42,7 @@ class Station:
     ts_unitname: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts_unitname"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_no\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"station_id\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"station_latitude\", \"type\": \"double\"}, {\"name\": \"station_longitude\", \"type\": \"double\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"stationparameter_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"ts_id\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"ts_unitname\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"BE.Vlaanderen.Waterinfo.VMM\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the Waterinfo VMM source.\", \"fields\": [{\"name\": \"station_no\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"station_id\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"station_latitude\", \"type\": \"double\"}, {\"name\": \"station_longitude\", \"type\": \"double\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"stationparameter_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"ts_id\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"ts_unitname\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"BE.Vlaanderen.Waterinfo.VMM\", \"description\": \"Reference details for one monitoring station or site in the Waterinfo VMM source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

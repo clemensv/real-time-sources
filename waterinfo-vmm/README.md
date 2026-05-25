@@ -102,3 +102,10 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template-with-eventhub.json)
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-waterinfo-vmm-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/be/vmm/waterinfo-vmm/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-waterinfo-vmm-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+
+Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.

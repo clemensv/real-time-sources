@@ -4959,3 +4959,126 @@ class TestEntsoeMqttDockerFlow:
         observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
         assert 'eu.entsoe.transparency.DayAheadPrices' in observed
         assert 'eu.entsoe.transparency.CrossBorderPhysicalFlows' in observed
+
+
+# ---------------------------------------------------------------------------
+# B1 hydro/maritime MQTT companions (mock-mode)
+# ---------------------------------------------------------------------------
+
+B1_MQTT_SOURCES = [('canada-eccc-wateroffice', 'test-canada-eccc-wateroffice-mqtt', 'hydro/ca/eccc/canada-eccc-wateroffice/#', ['CA.Gov.ECCC.Hydro.Observation', 'CA.Gov.ECCC.Hydro.Station']), ('cdec-reservoirs', 'test-cdec-reservoirs-mqtt', 'hydro/us/cdec/cdec-reservoirs/#', ['gov.ca.water.cdec.ReservoirReading']), ('hubeau-hydrometrie', 'test-hubeau-hydrometrie-mqtt', 'hydro/fr/hubeau/hubeau-hydrometrie/#', ['FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation', 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station']), ('imgw-hydro', 'test-imgw-hydro-mqtt', 'hydro/pl/imgw/imgw-hydro/#', ['PL.Gov.IMGW.Hydro.Station', 'PL.Gov.IMGW.Hydro.WaterLevelObservation']), ('ireland-opw-waterlevel', 'test-ireland-opw-waterlevel-mqtt', 'hydro/ie/opw/ireland-opw-waterlevel/#', ['ie.gov.opw.waterlevel.Station', 'ie.gov.opw.waterlevel.WaterLevelReading']), ('nepal-bipad-hydrology', 'test-nepal-bipad-hydrology-mqtt', 'hydro/np/bipad/nepal-bipad-hydrology/#', ['np.gov.bipad.hydrology.RiverStation', 'np.gov.bipad.hydrology.WaterLevelReading']), ('noaa-ndbc', 'test-noaa-ndbc-mqtt', 'maritime/us/noaa/noaa-ndbc/#', ['Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement']), ('noaa', 'test-noaa-mqtt', 'maritime/us/noaa/noaa/#', ['Microsoft.OpenData.US.NOAA.AirPressure', 'Microsoft.OpenData.US.NOAA.AirTemperature', 'Microsoft.OpenData.US.NOAA.Conductivity', 'Microsoft.OpenData.US.NOAA.CurrentPredictions', 'Microsoft.OpenData.US.NOAA.Currents', 'Microsoft.OpenData.US.NOAA.Humidity', 'Microsoft.OpenData.US.NOAA.Predictions', 'Microsoft.OpenData.US.NOAA.Salinity', 'Microsoft.OpenData.US.NOAA.Station', 'Microsoft.OpenData.US.NOAA.Visibility', 'Microsoft.OpenData.US.NOAA.WaterLevel', 'Microsoft.OpenData.US.NOAA.WaterTemperature', 'Microsoft.OpenData.US.NOAA.Wind']), ('snotel', 'test-snotel-mqtt', 'hydro/us/usda/snotel/#', ['gov.usda.nrcs.snotel.SnowObservation', 'gov.usda.nrcs.snotel.Station']), ('syke-hydro', 'test-syke-hydro-mqtt', 'hydro/fi/syke/syke-hydro/#', ['FI.SYKE.Hydrology.Station', 'FI.SYKE.Hydrology.WaterLevelObservation']), ('uk-ea-flood-monitoring', 'test-uk-ea-flood-monitoring-mqtt', 'hydro/gb/ea/uk-ea-flood-monitoring/#', ['UK.Gov.Environment.EA.FloodMonitoring.Reading', 'UK.Gov.Environment.EA.FloodMonitoring.Station']), ('usgs-nwis-wq', 'test-usgs-nwis-wq-mqtt', 'hydro/us/usgs/usgs-nwis-wq/#', ['USGS.WaterQuality.Readings.WaterQualityReading', 'USGS.WaterQuality.Sites.MonitoringSite']), ('waterinfo-vmm', 'test-waterinfo-vmm-mqtt', 'hydro/be/vmm/waterinfo-vmm/#', ['BE.Vlaanderen.Waterinfo.VMM.Station', 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'])]
+
+
+def _run_b1_mqtt_flow(index: int) -> None:
+    source_dir, image_tag, topic_filter, expected_types = B1_MQTT_SOURCES[index]
+    container, network, host_port = _generic_mosquitto(
+        f'{source_dir}-b1-mqtt-e2e', f'{source_dir}-b1-mqtt-e2e-broker'
+    )
+    client = docker.from_env()
+    try:
+        image = build_image(source_dir, dockerfile='Dockerfile.mqtt', tag=image_tag)
+        feeder = client.containers.run(
+            image.id,
+            detach=True,
+            remove=False,
+            network=network.name,
+            environment={
+                'MQTT_BROKER_URL': f"mqtt://{source_dir}-b1-mqtt-e2e-broker:1883",
+                'MOCK_MODE': 'true',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+        messages = _collect_messages_topic('127.0.0.1', host_port, topic_filter, timeout=20.0)
+        assert messages, f'No MQTT messages received for {source_dir}'
+        seen_types = {m['user_properties'].get('type') for m in messages}
+        assert set(expected_types).issubset(seen_types), (source_dir, seen_types, expected_types)
+        for sample in messages[: min(3, len(messages))]:
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+            assert _to_dict(sample['payload']) is not None
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+class TestCanadaEcccWaterofficeMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(0)
+
+
+class TestCdecReservoirsMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(1)
+
+
+class TestHubeauHydrometrieMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(2)
+
+
+class TestImgwHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(3)
+
+
+class TestIrelandOpwWaterlevelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(4)
+
+
+class TestNepalBipadHydrologyMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(5)
+
+
+class TestNoaaNdbcMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(6)
+
+
+class TestNoaaMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(7)
+
+
+class TestSnotelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(8)
+
+
+class TestSykeHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(9)
+
+
+class TestUkEaFloodMonitoringMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(10)
+
+
+class TestUsgsNwisWqMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(11)
+
+
+class TestWaterinfoVmmMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(12)
+

@@ -20,7 +20,7 @@ import datetime
 @dataclass
 class WaterLevelReading:
     """
-    WaterLevelReading
+    Measurement payload for observations in the Waterinfo VMM source.
     Attributes:
         ts_id (str): 
         station_no (str): 
@@ -39,7 +39,7 @@ class WaterLevelReading:
     parameter_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_name"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelReading\", \"doc\": \"WaterLevelReading\", \"fields\": [{\"name\": \"ts_id\", \"type\": \"string\"}, {\"name\": \"station_no\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"value\", \"type\": \"double\"}, {\"name\": \"unit_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"parameter_name\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"BE.Vlaanderen.Waterinfo.VMM\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelReading\", \"doc\": \"Measurement payload for observations in the Waterinfo VMM source.\", \"fields\": [{\"name\": \"ts_id\", \"type\": \"string\"}, {\"name\": \"station_no\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"value\", \"type\": \"double\"}, {\"name\": \"unit_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"parameter_name\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"BE.Vlaanderen.Waterinfo.VMM\", \"description\": \"Measurement payload for observations in the Waterinfo VMM source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

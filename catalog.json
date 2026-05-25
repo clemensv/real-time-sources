@@ -16,7 +16,9 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Canada — ~2,100 hydrometric stations, ECCC/WSC",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "cdec-reservoirs",
@@ -25,7 +27,9 @@
     "key": false,
     "desc": "California — ~2,600 stations, DWR",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "chmi-hydro",
@@ -55,7 +59,9 @@
     "key": false,
     "desc": "France — ~6,300 stations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "imgw-hydro",
@@ -64,7 +70,9 @@
     "key": false,
     "desc": "Poland — IMGW-PIB",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ireland-opw-waterlevel",
@@ -73,7 +81,9 @@
     "key": false,
     "desc": "Ireland — ~500 OPW hydrometric stations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "king-county-marine",
@@ -93,7 +103,9 @@
     "key": false,
     "desc": "Nepal — Himalayan river basins, BIPAD",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "noaa-ndbc",
@@ -102,7 +114,9 @@
     "key": false,
     "desc": "United States — buoy observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "noaa",
@@ -110,7 +124,9 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — ~3,000 stations",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nve-hydro",
@@ -163,7 +179,9 @@
     "key": false,
     "desc": "Western US & Alaska — ~900 snowpack stations, NRCS",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "syke-hydro",
@@ -172,7 +190,9 @@
     "key": false,
     "desc": "Finland — SYKE",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "uk-ea-flood-monitoring",
@@ -181,7 +201,9 @@
     "key": false,
     "desc": "England — ~4,000 stations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "usgs-iv",
@@ -200,7 +222,9 @@
     "key": false,
     "desc": "United States — ~3,000 continuous WQ sites",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "waterinfo-vmm",
@@ -209,7 +233,9 @@
     "key": false,
     "desc": "Belgium / Flanders — ~1,785 stations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "aviationweather",
