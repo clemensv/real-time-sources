@@ -1,36 +1,26 @@
-# Generate SNOTEL producer from xRegistry definitions
+$ErrorActionPreference = 'Stop'
 
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
-Write-Host "Generating SNOTEL producer from xRegistry definitions..." -ForegroundColor Cyan
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "snotel.xreg.json"
+$xregFile = Join-Path $scriptDir "xreg\snotel.xreg.json"
+
+Write-Host "Generating snotel producers from xRegistry definitions..." -ForegroundColor Cyan
+
 $outputDir = Join-Path $scriptDir "snotel_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style kafkaproducer --language py --projectname snotel_producer --definitions $xregFile --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "Output directory: $outputDir" -ForegroundColor Gray
+$outputDir = Join-Path $scriptDir "snotel_mqtt_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style mqttclient --language py --projectname snotel_mqtt_producer --definitions $xregFile --endpoint gov.usda.nrcs.snotel.Mqtt --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Check if xreg file exists
-if (-not (Test-Path $xregFile)) {
-    Write-Host "Error: xRegistry file not found: $xregFile" -ForegroundColor Red
-    exit 1
-}
+$outputDir = Join-Path $scriptDir "snotel_amqp_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style amqpproducer --language py --projectname snotel_amqp_producer --definitions $xregFile --endpoint gov.usda.nrcs.snotel.Amqp --template-args azure_cbs_target=servicebus --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Remove old output if it exists
-if (Test-Path $outputDir) {
-    Write-Host "Removing existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-# Generate producer code
-Write-Host "Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname snotel-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "`nProducer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "`nProducer generation failed" -ForegroundColor Red
-    exit $LASTEXITCODE
-}
+Write-Host "Producer generation completed successfully" -ForegroundColor Green

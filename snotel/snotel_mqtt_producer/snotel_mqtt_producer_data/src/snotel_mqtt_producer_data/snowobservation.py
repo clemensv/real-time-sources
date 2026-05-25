@@ -165,11 +165,11 @@ class SnowObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_triplet='oolzlqwdagwmmnncitrw',
+            station_triplet='qqlhpnytbkevwtcfiasu',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            snow_water_equivalent=float(30.537273287538536),
-            snow_depth=float(65.91576316751951),
-            precipitation=float(11.429539586478343),
-            air_temperature=float(15.542660738002612),
-            state='drhkskeefddubldrpryh'
+            snow_water_equivalent=float(75.17226193904061),
+            snow_depth=float(45.59754881146324),
+            precipitation=float(59.28449279573794),
+            air_temperature=float(6.945920634458647),
+            state='vdaxdydscwouwcjumlja'
         )

@@ -1,4 +1,4 @@
-""" SnowObservation dataclass. """
+""" Station dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,38 +10,34 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
 import json
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class SnowObservation:
+class Station:
     """
-    Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings — the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/.
+    Reference metadata for a USDA NRCS SNOTEL (SNOwpack TELemetry) station. SNOTEL is an automated system of over 900 snowpack monitoring sites in the western United States and Alaska operated by the Natural Resources Conservation Service. Each station reports snowpack, precipitation, and temperature data via satellite telemetry. This reference record provides the station identity and geographic context for the hourly telemetry observations.
     
     Attributes:
         station_triplet (str)
-        date_time (datetime.datetime)
-        snow_water_equivalent (typing.Optional[float])
-        snow_depth (typing.Optional[float])
-        precipitation (typing.Optional[float])
-        air_temperature (typing.Optional[float])
-        state (typing.Optional[str])
+        name (str)
+        state (str)
+        elevation (float)
+        latitude (float)
+        longitude (float)
     """
     
     
     station_triplet: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_triplet"))
-    date_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    snow_water_equivalent: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="snow_water_equivalent"))
-    snow_depth: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="snow_depth"))
-    precipitation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation"))
-    air_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature"))
-    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
+    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    elevation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation"))
+    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'SnowObservation':
+    def from_serializer_dict(cls, data: dict) -> 'Station':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +110,7 @@ class SnowObservation:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['SnowObservation']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Station']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -151,13 +147,13 @@ class SnowObservation:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return SnowObservation.from_serializer_dict(_record)
+                return Station.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'SnowObservation':
+    def create_instance(cls) -> 'Station':
         """
         Creates an instance of the dataclass with test values.
         
@@ -165,11 +161,10 @@ class SnowObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_triplet='oolzlqwdagwmmnncitrw',
-            date_time=datetime.datetime.now(datetime.timezone.utc),
-            snow_water_equivalent=float(30.537273287538536),
-            snow_depth=float(65.91576316751951),
-            precipitation=float(11.429539586478343),
-            air_temperature=float(15.542660738002612),
-            state='drhkskeefddubldrpryh'
+            station_triplet='kzgwzqdifsnpkbpnaiil',
+            name='jpyjsvaptctmllsomvhe',
+            state='aumpaoxxlzislerbiinh',
+            elevation=float(52.62936940798571),
+            latitude=float(70.28856286177412),
+            longitude=float(57.743620167672816)
         )
