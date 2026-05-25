@@ -325,7 +325,9 @@
     "key": false,
     "desc": "Belgium — ~14 AWS stations, 10-min observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "meteoalarm",

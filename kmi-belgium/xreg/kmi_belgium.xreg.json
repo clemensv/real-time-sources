@@ -21,6 +21,50 @@
         "#/messagegroups/BE.Gov.KMI.Weather"
       ],
       "description": "Kafka producer endpoint for KMI Belgium Weather CloudEvents on the `kmi-belgium` topic keyed by `{station_code}`."
+    },
+    "BE.Gov.KMI.Weather.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BE.Gov.KMI.Weather.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for kmi-belgium."
+    },
+    "BE.Gov.KMI.Weather.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/kmi-belgium"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BE.Gov.KMI.Weather.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for kmi-belgium."
     }
   },
   "messagegroups": {
@@ -66,6 +110,126 @@
         }
       },
       "description": "Events from KMI Belgium Weather covering Belgian weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "BE.Gov.KMI.Weather.mqtt": {
+      "description": "MQTT 5 companion message group for BE.Gov.KMI.Weather.",
+      "messages": {
+        "BE.Gov.KMI.Weather.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "BE.Gov.KMI.Weather.Station"
+            },
+            "source": {
+              "value": "https://opendata.meteo.be"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/be/kmi/kmi-belgium/{region}/{station_code}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "BE.Gov.KMI.Weather.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "BE.Gov.KMI.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://opendata.meteo.be"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/be/kmi/kmi-belgium/{region}/{station_code}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "BE.Gov.KMI.Weather.amqp": {
+      "description": "AMQP 1.0 companion message group for BE.Gov.KMI.Weather.",
+      "messages": {
+        "BE.Gov.KMI.Weather.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "BE.Gov.KMI.Weather.Station"
+            },
+            "source": {
+              "value": "https://opendata.meteo.be"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_code}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing value for region."
+              }
+            }
+          }
+        },
+        "BE.Gov.KMI.Weather.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "BE.Gov.KMI.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://opendata.meteo.be"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_code}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing value for region."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -105,6 +269,10 @@
                     "description": "Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.",
                     "unit": "degree",
                     "symbol": "°"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }
@@ -289,6 +457,10 @@
                     "description": "Average direct sunshine intensity during the observation period.",
                     "unit": "W/m2",
                     "symbol": "W/m²"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }

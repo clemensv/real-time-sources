@@ -5119,3 +5119,23 @@ def mosquitto_jma_japan():
 class TestJmaJapanMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_japan, jma_japan_mqtt_image):
         _run_mqtt_contract_flow('jma-japan', jma_japan_mqtt_image, mosquitto_jma_japan, extra_env={'JMA_JAPAN_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def kmi_belgium_mqtt_image():
+    return build_image('kmi-belgium', dockerfile='Dockerfile.mqtt', tag='test-kmi-belgium-mqtt')
+
+@pytest.fixture()
+def mosquitto_kmi_belgium():
+    container, network, host_port = _generic_mosquitto('kmi-belgium-mqtt-e2e', 'kmi-belgium-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'kmi-belgium-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestKmiBelgiumMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_kmi_belgium, kmi_belgium_mqtt_image):
+        _run_mqtt_contract_flow('kmi-belgium', kmi_belgium_mqtt_image, mosquitto_kmi_belgium, extra_env={'KMI_BELGIUM_MOCK': 'true'}, timeout=300)

@@ -714,6 +714,18 @@
       "image": "jma-japan-amqp",
       "file": "Dockerfile.amqp",
       "module": "jma_japan_amqp"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "kmi_belgium_mqtt"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "kmi_belgium_amqp"
     }
   ],
   "flow": [
@@ -1450,6 +1462,18 @@
       "image": "jma-japan-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaJapanAmqpDockerFlow"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestKmiBelgiumMqttDockerFlow"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestKmiBelgiumAmqpDockerFlow"
     }
   ]
 }
