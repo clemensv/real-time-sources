@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/gov.noaa.aviationweather"
       ]
+    },
+    "gov.noaa.aviationweather.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.noaa.aviationweather.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for aviationweather."
+    },
+    "gov.noaa.aviationweather.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/aviationweather"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.noaa.aviationweather.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for aviationweather."
     }
   },
   "messagegroups": {
@@ -80,6 +124,163 @@
           "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Sigmet"
         }
       }
+    },
+    "gov.noaa.aviationweather.mqtt": {
+      "description": "MQTT 5 companion message group for gov.noaa.aviationweather.",
+      "messages": {
+        "gov.noaa.aviationweather.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Station"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "aviation/intl/noaa/aviationweather/{icao_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "gov.noaa.aviationweather.mqtt.Metar": {
+          "name": "Metar",
+          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Metar"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "aviation/intl/noaa/aviationweather/{icao_id}/metar",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "gov.noaa.aviationweather.mqtt.Sigmet": {
+          "name": "Sigmet",
+          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Sigmet"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{region}/{sigmet_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "aviation/intl/noaa/aviationweather/sigmets/{region}/{sigmet_id}/sigmet",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "gov.noaa.aviationweather.amqp": {
+      "description": "AMQP 1.0 companion message group for gov.noaa.aviationweather.",
+      "messages": {
+        "gov.noaa.aviationweather.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Station"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "gov.noaa.aviationweather.amqp.Metar": {
+          "name": "Metar",
+          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Metar"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "gov.noaa.aviationweather.amqp.Sigmet": {
+          "name": "Sigmet",
+          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Sigmet"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{region}/{sigmet_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region}/{sigmet_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -108,15 +309,24 @@
                     "description": "ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport)."
                   },
                   "iata_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations."
                   },
                   "faa_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations."
                   },
                   "wmo_id": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null."
                   },
                   "name": {
@@ -136,21 +346,33 @@
                     "symbol": "°"
                   },
                   "elevation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station field elevation in meters above mean sea level.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "state": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "State or province code where the station is located (e.g. 'NY'). May be null for non-US stations."
                   },
                   "country": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB')."
                   },
                   "site_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF')."
                   }
                 },
@@ -186,65 +408,101 @@
                     "description": "Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response."
                   },
                   "report_time": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported."
                   },
                   "temp": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Air temperature at the station. Unit: degrees Celsius.",
                     "unit": "CEL",
                     "symbol": "°C"
                   },
                   "dewp": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dewpoint temperature at the station. Unit: degrees Celsius.",
                     "unit": "CEL",
                     "symbol": "°C"
                   },
                   "wdir": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm.",
                     "unit": "deg",
                     "symbol": "°"
                   },
                   "wspd": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Sustained wind speed in knots.",
                     "unit": "[kn_i]",
                     "symbol": "kt"
                   },
                   "wgst": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Wind gust speed in knots. Null if no gusts reported.",
                     "unit": "[kn_i]",
                     "symbol": "kt"
                   },
                   "visib": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles."
                   },
                   "altim": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Altimeter setting (QNH) in hectopascals.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "slp": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Sea level pressure in hectopascals. May be null if not reported.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "qc_field": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Quality control flag bitmask from the qcField in the API response."
                   },
                   "wx_string": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist)."
                   },
                   "metar_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "METAR report type: 'METAR' for routine, 'SPECI' for special observation."
                   },
                   "raw_ob": {
@@ -252,33 +510,51 @@
                     "description": "The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station latitude in decimal degrees north from the METAR response.",
                     "unit": "deg",
                     "symbol": "°"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station longitude in decimal degrees east from the METAR response.",
                     "unit": "deg",
                     "symbol": "°"
                   },
                   "elevation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station elevation in meters above mean sea level from the METAR response.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "flt_cat": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR."
                   },
                   "clouds": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{\"cover\":\"SCT\",\"base\":5000}]'."
                   },
                   "name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US')."
                   }
                 },
@@ -323,48 +599,86 @@
                     "description": "End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z)."
                   },
                   "hazard": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc."
                   },
                   "qualifier": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs."
                   },
                   "sigmet_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs."
                   },
                   "altitude_hi": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs.",
                     "unit": "[ft_i]",
                     "symbol": "ft"
                   },
                   "altitude_low": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs.",
                     "unit": "[ft_i]",
                     "symbol": "ft"
                   },
                   "movement_dir": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international."
                   },
                   "movement_spd": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international."
                   },
                   "severity": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity."
                   },
                   "raw_sigmet": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Full raw SIGMET text as received from the upstream source."
                   },
                   "coords": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{\"lat\":41.88,\"lon\":-123.70},{\"lat\":40.00,\"lon\":-124.23}]'."
+                  },
+                  "sigmet_id": {
+                    "type": "string",
+                    "description": "Normalized routing field 'sigmet_id' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Sigmet",

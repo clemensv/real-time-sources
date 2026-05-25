@@ -252,3 +252,11 @@ class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"METEOALARM_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {"Meteoalarm.WeatherWarning"}
     expected_count = 1
+
+
+class TestAviationweatherAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "aviationweather"
+    image = "aviationweather-amqp"
+    env = {"AVIATIONWEATHER_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'gov.noaa.aviationweather.Station', 'gov.noaa.aviationweather.Sigmet', 'gov.noaa.aviationweather.Metar'}
+    expected_count = 3

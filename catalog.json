@@ -218,7 +218,9 @@
     "key": false,
     "desc": "Global — METAR, SIGMET advisories",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "blitzortung",
