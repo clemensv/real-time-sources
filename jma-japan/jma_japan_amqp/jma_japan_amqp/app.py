@@ -8,7 +8,11 @@ from typing import Any, Mapping
 _TEMPLATE = re.compile(r"\{([^}]+)\}")
 
 def _xreg_path() -> Path:
-    return next((Path(__file__).resolve().parents[2] / "xreg").glob("*.xreg.json"))
+    candidates = [Path.cwd() / "xreg", Path(__file__).resolve().parents[2] / "xreg"]
+    for candidate in candidates:
+        if candidate.exists():
+            return next(candidate.glob("*.xreg.json"))
+    raise FileNotFoundError("Could not locate source xreg directory")
 
 def _ptr(doc: Mapping[str, Any], ref: str) -> Any:
     obj: Any = doc
