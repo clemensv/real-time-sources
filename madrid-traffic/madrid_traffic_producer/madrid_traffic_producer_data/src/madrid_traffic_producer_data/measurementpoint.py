@@ -17,7 +17,7 @@ import json
 @dataclass
 class MeasurementPoint:
     """
-    Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions.
+    A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         sensor_id (str)
@@ -163,11 +163,11 @@ class MeasurementPoint:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='vzqgbqzgyerfegsvosqt',
-            description='jxixqubnkbpamzkerpjg',
-            element_type='mnoyesdmuezicxchfjer',
-            subarea='xkrhuqdhhkbagsbgmpco',
-            longitude=float(63.68754033253363),
-            latitude=float(85.24820982856797),
-            saturation_intensity=int(75)
+            sensor_id='zeqxdtoadasxyazoamon',
+            description='erzwmwrepzzlsducqvam',
+            element_type='pnmxnylgbjuvokuupuik',
+            subarea='mwbrxwvulewihpaobysz',
+            longitude=float(53.51104397739768),
+            latitude=float(49.97369191035178),
+            saturation_intensity=int(81)
         )

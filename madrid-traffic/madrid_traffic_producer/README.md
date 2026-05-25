@@ -1,6 +1,6 @@
 
 
-# Madrid-traffic-producer Kafka Producer# Madrid-traffic-producer Event Dispatcher for Apache Kafka
+# Madrid_traffic_producer Kafka Producer# Madrid_traffic_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from madrid-traffic-producer import EsMadridInformoProducer```python
+from madrid_traffic_producer import EsMadridInformoProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -147,7 +147,9 @@ MeasurementPoint], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `es.madrid.informo.MeasurementPoint`:
+Asynchronous handler hook for `es.madrid.informo.MeasurementPoint`: A current transport measurement or status update
+from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed
+reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -210,7 +212,9 @@ TrafficReading], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `es.madrid.informo.TrafficReading`:
+Asynchronous handler hook for `es.madrid.informo.TrafficReading`: A current transport measurement or status update from
+Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports
+a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -290,7 +294,9 @@ async def send_es_madrid_informo_measurement_point(
 
 
 
-Send a single `es.madrid.informo.MeasurementPoint` message.Args:
+Send a single `es.madrid.informo.MeasurementPoint` message. A current transport measurement or status update from Madrid
+open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new
+or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -393,7 +399,9 @@ async def send_es_madrid_informo_traffic_reading(
 
 
 
-Send a single `es.madrid.informo.TrafficReading` message.Args:
+Send a single `es.madrid.informo.TrafficReading` message. A current transport measurement or status update from Madrid
+open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new
+or refreshed value.Args:
 
 - `record`: The Kafka record.
 

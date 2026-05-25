@@ -1,4 +1,4 @@
-""" TrafficReading dataclass. """
+""" MeasurementPoint dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,38 +10,36 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
 import json
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class TrafficReading:
+class MeasurementPoint:
     """
     A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         sensor_id (str)
-        intensity (typing.Optional[int])
-        occupancy (typing.Optional[int])
-        load (typing.Optional[int])
-        service_level (typing.Optional[int])
-        error_flag (typing.Optional[str])
-        timestamp (datetime.datetime)
+        description (str)
+        element_type (typing.Optional[str])
+        subarea (typing.Optional[str])
+        longitude (typing.Optional[float])
+        latitude (typing.Optional[float])
+        saturation_intensity (typing.Optional[int])
     """
     
     
     sensor_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sensor_id"))
-    intensity: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="intensity"))
-    occupancy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy"))
-    load: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="load"))
-    service_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="service_level"))
-    error_flag: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="error_flag"))
-    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    description: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
+    element_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_type"))
+    subarea: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="subarea"))
+    longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    saturation_intensity: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="saturation_intensity"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'TrafficReading':
+    def from_serializer_dict(cls, data: dict) -> 'MeasurementPoint':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +112,7 @@ class TrafficReading:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['TrafficReading']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['MeasurementPoint']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -151,13 +149,13 @@ class TrafficReading:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return TrafficReading.from_serializer_dict(_record)
+                return MeasurementPoint.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'TrafficReading':
+    def create_instance(cls) -> 'MeasurementPoint':
         """
         Creates an instance of the dataclass with test values.
         
@@ -165,11 +163,11 @@ class TrafficReading:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='unvwjtxljsvlytzzfyki',
-            intensity=int(85),
-            occupancy=int(66),
-            load=int(20),
-            service_level=int(71),
-            error_flag='czodxvmnogbvbkjhmfgm',
-            timestamp=datetime.datetime.now(datetime.timezone.utc)
+            sensor_id='cscnkxwwptshcypudpgo',
+            description='yytimdxmznkjmjqpxyib',
+            element_type='xdgawuzfdoldrklwfiup',
+            subarea='hewyemxnrtqcdbcmfkfl',
+            longitude=float(79.04471928129395),
+            latitude=float(33.62992086009735),
+            saturation_intensity=int(37)
         )
