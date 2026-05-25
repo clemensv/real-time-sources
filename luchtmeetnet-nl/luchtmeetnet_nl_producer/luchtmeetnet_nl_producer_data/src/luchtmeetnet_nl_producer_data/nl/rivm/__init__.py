@@ -1,3 +1,3 @@
-from .luchtmeetnet import LKI, Component, Measurement, Station
+from .luchtmeetnet import Station, Component, LKI, Measurement
 
-__all__ = ["LKI", "Component", "Measurement", "Station"]
+__all__ = ["Station", "Component", "LKI", "Measurement"]
