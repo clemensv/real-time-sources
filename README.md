@@ -718,3 +718,4 @@ AMQP 1.0 companion images and Service Bus deployment templates are available for
 
 <!-- B2-weather MQTT+AMQP companions -->
 - `aviationweather`: MQTT + AMQP companion feeders (`aviationweather-mqtt`, `aviationweather-amqp`).
+- `blitzortung`: MQTT + AMQP companion feeders (`blitzortung-mqtt`, `blitzortung-amqp`).

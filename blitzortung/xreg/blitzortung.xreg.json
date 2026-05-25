@@ -36,6 +36,28 @@
       "messagegroups": [
         "#/messagegroups/Blitzortung.Lightning.mqtt"
       ]
+    },
+    "Blitzortung.Lightning.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/blitzortung"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Blitzortung.Lightning.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for blitzortung."
     }
   },
   "messagegroups": {
@@ -77,6 +99,42 @@
             "topic_name": "weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke",
             "qos": 0,
             "retain": false
+          }
+        }
+      }
+    },
+    "Blitzortung.Lightning.amqp": {
+      "description": "AMQP 1.0 companion message group for Blitzortung.Lightning.",
+      "messages": {
+        "Blitzortung.Lightning.amqp.LightningStroke": {
+          "name": "LightningStroke",
+          "basemessageurl": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
+          "envelopemetadata": {
+            "type": {
+              "value": "Blitzortung.Lightning.LightningStroke"
+            },
+            "source": {
+              "value": "wss://live.lightningmaps.org/"
+            },
+            "subject": {
+              "value": "{geohash5}/{geohash7}/{stroke_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{geohash5}/{geohash7}/{stroke_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
           }
         }
       }

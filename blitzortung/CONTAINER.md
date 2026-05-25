@@ -161,3 +161,12 @@ docker run --rm \
 | Strokes in the `u0yje` 5-char cell (~Frankfurt) | `weather/intl/blitzortung/blitzortung/u0yje/+/+/stroke` |
 | Strokes in a specific 7-char cell `u0yjeyu` | `weather/intl/blitzortung/blitzortung/u0yje/u0yjeyu/+/stroke` |
 | Strokes across all of central Europe via the `u` prefix | `weather/intl/blitzortung/blitzortung/u+/+/+/stroke` (note: MQTT wildcards do not support prefix matching; instead subscribe to `weather/intl/blitzortung/#` and filter client-side) |
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`blitzortung`). Docker E2E mock mode is available through `BLITZORTUNG_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/blitzortung-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/blitzortung-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

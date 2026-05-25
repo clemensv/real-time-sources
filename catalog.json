@@ -228,7 +228,9 @@
     "cat": "Weather",
     "key": false,
     "desc": "Global — community lightning strokes, seconds latency",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "bom-australia",

@@ -624,6 +624,12 @@
       "image": "aviationweather-amqp",
       "file": "Dockerfile.amqp",
       "module": "aviationweather_amqp"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "blitzortung_amqp"
     }
   ],
   "flow": [
@@ -1264,6 +1270,18 @@
       "image": "aviationweather-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAviationweatherAmqpDockerFlow"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBlitzortungMqttDockerFlow"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBlitzortungAmqpDockerFlow"
     }
   ]
 }

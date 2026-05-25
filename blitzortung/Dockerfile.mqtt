@@ -1,22 +1,14 @@
-# syntax=docker/dockerfile:1.6
-FROM python:3.10-slim
-
-LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/blitzortung"
-LABEL org.opencontainers.image.title="Blitzortung → MQTT/UNS bridge"
-LABEL org.opencontainers.image.description="Connects to the public LightningMaps / Blitzortung WebSocket firehose, normalizes each stroke with geohash5 (~5 km) and geohash7 (~150 m) axes, and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke). Non-retained, QoS 0."
-LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/blitzortung/CONTAINER.md"
-LABEL org.opencontainers.image.license="MIT"
-LABEL source.transport="mqtt"
-
-ENV PYTHONUNBUFFERED=1
-WORKDIR /app
-
-COPY . /app
-
-RUN pip install --no-cache-dir ./blitzortung_mqtt_producer/blitzortung_mqtt_producer_data \
- && pip install --no-cache-dir ./blitzortung_mqtt_producer/blitzortung_mqtt_producer_mqtt_client \
- && pip install --no-cache-dir ./blitzortung_mqtt
-
-ENV MQTT_BROKER_URL=""
-
+        # syntax=docker/dockerfile:1.6
+        FROM python:3.10-slim
+        LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/blitzortung"
+        LABEL org.opencontainers.image.title="blitzortung → MQTT companion bridge"
+        LABEL org.opencontainers.image.description="Publishes blitzortung CloudEvents over MQTT using the companion transport contract."
+        LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/blitzortung/CONTAINER.md"
+        LABEL org.opencontainers.image.license="MIT"
+        LABEL source.transport="mqtt"
+        ENV PYTHONUNBUFFERED=1
+        WORKDIR /app
+        COPY . /app
+        RUN pip install --no-cache-dir ./blitzortung_mqtt
+        ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "blitzortung_mqtt", "feed"]
