@@ -516,6 +516,42 @@
       "image": "aisstream-amqp",
       "file": "Dockerfile.amqp",
       "module": "aisstream_amqp"
+    },
+    {
+      "dir": "australia-wildfires",
+      "image": "australia-wildfires-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "australia_wildfires_amqp"
+    },
+    {
+      "dir": "carbon-intensity",
+      "image": "carbon-intensity-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "carbon_intensity_amqp"
+    },
+    {
+      "dir": "rss",
+      "image": "rss-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "rssbridge_amqp"
+    },
+    {
+      "dir": "wikimedia-eventstreams",
+      "image": "wikimedia-eventstreams-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "wikimedia_eventstreams_amqp"
+    },
+    {
+      "dir": "wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "wikimedia_osm_diffs_amqp"
+    },
+    {
+      "dir": "bluesky",
+      "image": "bluesky-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bluesky_amqp"
     }
   ],
   "flow": [
@@ -983,6 +1019,48 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAisstreamAmqpDockerFlow"
+    },
+    {
+      "dir": "australia-wildfires",
+      "image": "australia-wildfires-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestAustraliaWildfiresAmqpDockerFlow"
+    },
+    {
+      "dir": "carbon-intensity",
+      "image": "carbon-intensity-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestCarbonIntensityAmqpDockerFlow"
+    },
+    {
+      "dir": "rss",
+      "image": "rss-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestRssAmqpDockerFlow"
+    },
+    {
+      "dir": "wikimedia-eventstreams",
+      "image": "wikimedia-eventstreams-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestWikimediaEventstreamsAmqpDockerFlow"
+    },
+    {
+      "dir": "wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestWikimediaOsmDiffsAmqpDockerFlow"
+    },
+    {
+      "dir": "bluesky",
+      "image": "bluesky-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBlueskyAmqpDockerFlow"
     }
   ]
 }
