@@ -612,6 +612,114 @@
       "image": "meteoalarm-amqp",
       "file": "Dockerfile.amqp",
       "module": "meteoalarm_amqp"
+    },
+    {
+      "dir": "canada-aqhi",
+      "image": "canada-aqhi-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "canada_aqhi_mqtt"
+    },
+    {
+      "dir": "canada-aqhi",
+      "image": "canada-aqhi-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "canada_aqhi_amqp"
+    },
+    {
+      "dir": "defra-aurn",
+      "image": "defra-aurn-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "defra_aurn_mqtt"
+    },
+    {
+      "dir": "defra-aurn",
+      "image": "defra-aurn-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "defra_aurn_amqp"
+    },
+    {
+      "dir": "fmi-finland",
+      "image": "fmi-finland-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "fmi_finland_mqtt"
+    },
+    {
+      "dir": "fmi-finland",
+      "image": "fmi-finland-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "fmi_finland_amqp"
+    },
+    {
+      "dir": "gios-poland",
+      "image": "gios-poland-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "gios_poland_mqtt"
+    },
+    {
+      "dir": "gios-poland",
+      "image": "gios-poland-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gios_poland_amqp"
+    },
+    {
+      "dir": "irceline-belgium",
+      "image": "irceline-belgium-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "irceline_belgium_mqtt"
+    },
+    {
+      "dir": "irceline-belgium",
+      "image": "irceline-belgium-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "irceline_belgium_amqp"
+    },
+    {
+      "dir": "laqn-london",
+      "image": "laqn-london-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "laqn_london_mqtt"
+    },
+    {
+      "dir": "laqn-london",
+      "image": "laqn-london-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "laqn_london_amqp"
+    },
+    {
+      "dir": "luchtmeetnet-nl",
+      "image": "luchtmeetnet-nl-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "luchtmeetnet_nl_mqtt"
+    },
+    {
+      "dir": "luchtmeetnet-nl",
+      "image": "luchtmeetnet-nl-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "luchtmeetnet_nl_amqp"
+    },
+    {
+      "dir": "sensor-community",
+      "image": "sensor-community-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "sensor_community_mqtt"
+    },
+    {
+      "dir": "sensor-community",
+      "image": "sensor-community-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "sensor_community_amqp"
+    },
+    {
+      "dir": "uba-airdata",
+      "image": "uba-airdata-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "uba_airdata_mqtt"
+    },
+    {
+      "dir": "uba-airdata",
+      "image": "uba-airdata-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "uba_airdata_amqp"
     }
   ],
   "flow": [
@@ -1240,6 +1348,96 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMeteoalarmAmqpDockerFlow"
+    },
+    {
+      "dir": "canada-aqhi",
+      "test_class": "TestCanadaAqhiMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "canada-aqhi",
+      "test_class": "TestCanadaAqhiAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "defra-aurn",
+      "test_class": "TestDefraAurnMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "defra-aurn",
+      "test_class": "TestDefraAurnAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "fmi-finland",
+      "test_class": "TestFmiFinlandMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "fmi-finland",
+      "test_class": "TestFmiFinlandAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "gios-poland",
+      "test_class": "TestGiosPolandMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "gios-poland",
+      "test_class": "TestGiosPolandAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "irceline-belgium",
+      "test_class": "TestIrcelineBelgiumMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "irceline-belgium",
+      "test_class": "TestIrcelineBelgiumAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "laqn-london",
+      "test_class": "TestLaqnLondonMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "laqn-london",
+      "test_class": "TestLaqnLondonAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "luchtmeetnet-nl",
+      "test_class": "TestLuchtmeetnetNlMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "luchtmeetnet-nl",
+      "test_class": "TestLuchtmeetnetNlAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "sensor-community",
+      "test_class": "TestSensorCommunityMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "sensor-community",
+      "test_class": "TestSensorCommunityAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "uba-airdata",
+      "test_class": "TestUbaAirdataMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "uba-airdata",
+      "test_class": "TestUbaAirdataAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
     }
   ]
 }

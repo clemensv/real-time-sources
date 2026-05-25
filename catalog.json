@@ -379,7 +379,9 @@
     "key": false,
     "desc": "Canada — community AQHI observations and forecasts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "defra-aurn",
@@ -388,7 +390,9 @@
     "key": false,
     "desc": "United Kingdom — 300+ monitoring locations, hourly pollutants",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "epa-uv",
@@ -408,7 +412,9 @@
     "key": false,
     "desc": "Finland — hourly air quality observations via FMI WFS",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "gios-poland",
@@ -417,7 +423,9 @@
     "key": false,
     "desc": "Poland — ~250 stations, hourly pollutants + AQI",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "hongkong-epd",
@@ -437,7 +445,9 @@
     "key": false,
     "desc": "Belgium — station, timeseries, and hourly observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "laqn-london",
@@ -446,7 +456,9 @@
     "key": false,
     "desc": "London, UK — site metadata, species, hourly measurements",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "luchtmeetnet-nl",
@@ -455,7 +467,9 @@
     "key": false,
     "desc": "Netherlands — station measurements, components, LKI index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "sensor-community",
@@ -464,7 +478,9 @@
     "key": false,
     "desc": "Global — citizen air sensors, PM and climate readings",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "uba-airdata",
@@ -473,7 +489,9 @@
     "key": false,
     "desc": "Germany — stations, pollutant components, hourly measures",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "wallonia-issep",

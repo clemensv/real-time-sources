@@ -252,3 +252,78 @@ class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"METEOALARM_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {"Meteoalarm.WeatherWarning"}
     expected_count = 1
+
+
+# B4 AQ AMQP companion feeders
+
+
+class TestCanadaAqhiAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'canada-aqhi'
+    image = 'canada-aqhi-amqp'
+    env = {'CANADA_AQHI_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'ca.gc.weather.aqhi.Forecast', 'ca.gc.weather.aqhi.Community', 'ca.gc.weather.aqhi.Observation'}
+    expected_count = 3
+
+
+class TestDefraAurnAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'defra-aurn'
+    image = 'defra-aurn-amqp'
+    env = {'DEFRA_AURN_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'uk.gov.defra.aurn.Observation', 'uk.gov.defra.aurn.Timeseries', 'uk.gov.defra.aurn.Station'}
+    expected_count = 3
+
+
+class TestFmiFinlandAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'fmi-finland'
+    image = 'fmi-finland-amqp'
+    env = {'FMI_FINLAND_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'fi.fmi.opendata.airquality.Observation', 'fi.fmi.opendata.airquality.Station'}
+    expected_count = 2
+
+
+class TestGiosPolandAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'gios-poland'
+    image = 'gios-poland-amqp'
+    env = {'GIOS_POLAND_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'pl.gov.gios.airquality.AirQualityIndex', 'pl.gov.gios.airquality.Sensor', 'pl.gov.gios.airquality.Station', 'pl.gov.gios.airquality.Measurement'}
+    expected_count = 4
+
+
+class TestIrcelineBelgiumAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'irceline-belgium'
+    image = 'irceline-belgium-amqp'
+    env = {'IRCELINE_BELGIUM_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'be.irceline.Observation', 'be.irceline.Station', 'be.irceline.Timeseries'}
+    expected_count = 3
+
+
+class TestLaqnLondonAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'laqn-london'
+    image = 'laqn-london-amqp'
+    env = {'LAQN_LONDON_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'uk.kcl.laqn.Site', 'uk.kcl.laqn.DailyIndex', 'uk.kcl.laqn.Species', 'uk.kcl.laqn.Measurement'}
+    expected_count = 4
+
+
+class TestLuchtmeetnetNlAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'luchtmeetnet-nl'
+    image = 'luchtmeetnet-nl-amqp'
+    env = {'LUCHTMEETNET_NL_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'nl.rivm.luchtmeetnet.components.Component', 'nl.rivm.luchtmeetnet.LKI', 'nl.rivm.luchtmeetnet.Measurement', 'nl.rivm.luchtmeetnet.Station'}
+    expected_count = 4
+
+
+class TestSensorCommunityAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'sensor-community'
+    image = 'sensor-community-amqp'
+    env = {'SENSOR_COMMUNITY_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'io.sensor.community.SensorReading', 'io.sensor.community.SensorInfo'}
+    expected_count = 2
+
+
+class TestUbaAirdataAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'uba-airdata'
+    image = 'uba-airdata-amqp'
+    env = {'UBA_AIRDATA_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'de.uba.airdata.Station', 'de.uba.airdata.Measure', 'de.uba.airdata.components.Component'}
+    expected_count = 3

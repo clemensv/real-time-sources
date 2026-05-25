@@ -52,17 +52,17 @@ const SOURCES = [
   { id: "smhi-weather", name: "SMHI Weather", cat: "Weather", key: false, desc: "Sweden — ~232 stations, hourly obs", notebook: true },
 
   // ── Air Quality and Environmental Health ──
-  { id: "canada-aqhi", name: "Canada AQHI", cat: "Air Quality", key: false, desc: "Canada — community AQHI observations and forecasts", notebook: true },
-  { id: "defra-aurn", name: "Defra AURN", cat: "Air Quality", key: false, desc: "United Kingdom — 300+ monitoring locations, hourly pollutants", notebook: true },
+  { id: "canada-aqhi", name: "Canada AQHI", cat: "Air Quality", key: false, desc: "Canada — community AQHI observations and forecasts", notebook: true , mqtt: true, amqp: true},
+  { id: "defra-aurn", name: "Defra AURN", cat: "Air Quality", key: false, desc: "United Kingdom — 300+ monitoring locations, hourly pollutants", notebook: true , mqtt: true, amqp: true},
   { id: "epa-uv", name: "EPA UV Index", cat: "Air Quality", key: false, desc: "United States — city-scoped hourly and daily UV forecasts", notebook: true, mqtt: true },
-  { id: "fmi-finland", name: "FMI Finland", cat: "Air Quality", key: false, desc: "Finland — hourly air quality observations via FMI WFS", notebook: true },
-  { id: "gios-poland", name: "GIOŚ Poland", cat: "Air Quality", key: false, desc: "Poland — ~250 stations, hourly pollutants + AQI", notebook: true },
+  { id: "fmi-finland", name: "FMI Finland", cat: "Air Quality", key: false, desc: "Finland — hourly air quality observations via FMI WFS", notebook: true , mqtt: true, amqp: true},
+  { id: "gios-poland", name: "GIOŚ Poland", cat: "Air Quality", key: false, desc: "Poland — ~250 stations, hourly pollutants + AQI", notebook: true , mqtt: true, amqp: true},
   { id: "hongkong-epd", name: "Hong Kong EPD AQHI", cat: "Air Quality", key: false, desc: "Hong Kong — 18 AQHI stations, hourly health index", notebook: true },
-  { id: "irceline-belgium", name: "IRCELINE Belgium", cat: "Air Quality", key: false, desc: "Belgium — station, timeseries, and hourly observations", notebook: true },
-  { id: "laqn-london", name: "LAQN London", cat: "Air Quality", key: false, desc: "London, UK — site metadata, species, hourly measurements", notebook: true },
-  { id: "luchtmeetnet-nl", name: "Luchtmeetnet Netherlands", cat: "Air Quality", key: false, desc: "Netherlands — station measurements, components, LKI index", notebook: true },
-  { id: "sensor-community", name: "Sensor.Community", cat: "Air Quality", key: false, desc: "Global — citizen air sensors, PM and climate readings", notebook: true },
-  { id: "uba-airdata", name: "UBA AirData", cat: "Air Quality", key: false, desc: "Germany — stations, pollutant components, hourly measures", notebook: true },
+  { id: "irceline-belgium", name: "IRCELINE Belgium", cat: "Air Quality", key: false, desc: "Belgium — station, timeseries, and hourly observations", notebook: true , mqtt: true, amqp: true},
+  { id: "laqn-london", name: "LAQN London", cat: "Air Quality", key: false, desc: "London, UK — site metadata, species, hourly measurements", notebook: true , mqtt: true, amqp: true},
+  { id: "luchtmeetnet-nl", name: "Luchtmeetnet Netherlands", cat: "Air Quality", key: false, desc: "Netherlands — station measurements, components, LKI index", notebook: true , mqtt: true, amqp: true},
+  { id: "sensor-community", name: "Sensor.Community", cat: "Air Quality", key: false, desc: "Global — citizen air sensors, PM and climate readings", notebook: true , mqtt: true, amqp: true},
+  { id: "uba-airdata", name: "UBA AirData", cat: "Air Quality", key: false, desc: "Germany — stations, pollutant components, hourly measures", notebook: true , mqtt: true, amqp: true},
   { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors", mqtt: true, amqp: true  },
 
   // ── Disaster Alerts and Civil Protection ──

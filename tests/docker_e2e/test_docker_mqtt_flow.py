@@ -4959,3 +4959,89 @@ class TestEntsoeMqttDockerFlow:
         observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
         assert 'eu.entsoe.transparency.DayAheadPrices' in observed
         assert 'eu.entsoe.transparency.CrossBorderPhysicalFlows' in observed
+
+
+# ---------------------------------------------------------------------------
+# B4 AQ MQTT companion feeders
+# ---------------------------------------------------------------------------
+
+
+def _run_b4_aq_mqtt_flow(source_dir: str, image_name: str, env: Dict[str, str], topic_filter: str, expected_types: set[str]):
+    broker_name = f"{image_name}-e2e-broker"
+    network_name = f"{image_name}-e2e"
+    container, network, host_port = _generic_mosquitto(network_name, broker_name)
+    try:
+        image = build_image(source_dir, dockerfile='Dockerfile.mqtt', tag=f'test-{image_name}')
+        client = docker.from_env()
+        broker_url = f"mqtt://{broker_name}:1883"
+        feeder = client.containers.run(
+            image.id, detach=True, remove=False, network=network.name,
+            environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', **env},
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages = _collect_messages_topic('127.0.0.1', host_port, topic_filter, timeout=25.0)
+        assert messages, 'No retained messages received from broker'
+        seen = {m['user_properties'].get('type') for m in messages}
+        assert expected_types <= seen, f"Missing types: {expected_types - seen}; seen={seen}"
+        for sample in messages[: min(3, len(messages))]:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestCanadaAqhiMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('canada-aqhi', 'canada-aqhi-mqtt', {'CANADA_AQHI_MOCK': 'true'}, 'air-quality/ca/eccc/canada-aqhi/#', {'ca.gc.weather.aqhi.Forecast', 'ca.gc.weather.aqhi.Community', 'ca.gc.weather.aqhi.Observation'})
+
+
+class TestDefraAurnMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('defra-aurn', 'defra-aurn-mqtt', {'DEFRA_AURN_MOCK': 'true'}, 'air-quality/gb/defra/defra-aurn/#', {'uk.gov.defra.aurn.Observation', 'uk.gov.defra.aurn.Timeseries', 'uk.gov.defra.aurn.Station'})
+
+
+class TestFmiFinlandMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('fmi-finland', 'fmi-finland-mqtt', {'FMI_FINLAND_MOCK': 'true'}, 'weather/fi/fmi/fmi-finland/#', {'fi.fmi.opendata.airquality.Observation', 'fi.fmi.opendata.airquality.Station'})
+
+
+class TestGiosPolandMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('gios-poland', 'gios-poland-mqtt', {'GIOS_POLAND_MOCK': 'true'}, 'air-quality/pl/gios/gios-poland/#', {'pl.gov.gios.airquality.AirQualityIndex', 'pl.gov.gios.airquality.Sensor', 'pl.gov.gios.airquality.Station', 'pl.gov.gios.airquality.Measurement'})
+
+
+class TestIrcelineBelgiumMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('irceline-belgium', 'irceline-belgium-mqtt', {'IRCELINE_BELGIUM_MOCK': 'true'}, 'air-quality/be/irceline/irceline-belgium/#', {'be.irceline.Observation', 'be.irceline.Station', 'be.irceline.Timeseries'})
+
+
+class TestLaqnLondonMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('laqn-london', 'laqn-london-mqtt', {'LAQN_LONDON_MOCK': 'true'}, 'air-quality/gb/london/laqn-london/#', {'uk.kcl.laqn.Site', 'uk.kcl.laqn.DailyIndex', 'uk.kcl.laqn.Species', 'uk.kcl.laqn.Measurement'})
+
+
+class TestLuchtmeetnetNlMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('luchtmeetnet-nl', 'luchtmeetnet-nl-mqtt', {'LUCHTMEETNET_NL_MOCK': 'true'}, 'air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/#', {'nl.rivm.luchtmeetnet.components.Component', 'nl.rivm.luchtmeetnet.LKI', 'nl.rivm.luchtmeetnet.Measurement', 'nl.rivm.luchtmeetnet.Station'})
+
+
+class TestSensorCommunityMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('sensor-community', 'sensor-community-mqtt', {'SENSOR_COMMUNITY_MOCK': 'true'}, 'air-quality/intl/sensor-community/sensor-community/#', {'io.sensor.community.SensorReading', 'io.sensor.community.SensorInfo'})
+
+
+class TestUbaAirdataMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b4_aq_mqtt_flow('uba-airdata', 'uba-airdata-mqtt', {'UBA_AIRDATA_MOCK': 'true'}, 'air-quality/at/uba/uba-airdata/#', {'de.uba.airdata.Station', 'de.uba.airdata.Measure', 'de.uba.airdata.components.Component'})
