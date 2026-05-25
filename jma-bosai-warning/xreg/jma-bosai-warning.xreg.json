@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/JP.JMA.Warning"
-      ]
+      ],
+      "description": "Kafka producer endpoint for JMA Bosai Warnings CloudEvents on the `jma-bosai-warning` topic keyed by `jp.jma.warning/{office_code}/{area_code}`."
     },
     "JP.JMA.Tsunami.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/JP.JMA.Tsunami"
-      ]
+      ],
+      "description": "Kafka producer endpoint for JMA Bosai Warnings CloudEvents on the `jma-bosai-tsunami` topic keyed by `jp.jma.tsunami/{event_id}/{serial}`."
     },
     "JP.JMA.Warning.Mqtt": {
       "usage": [
@@ -59,7 +61,8 @@
         {
           "uri": "mqtt://localhost:1883"
         }
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for JMA Bosai Warnings CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -105,7 +108,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.WeatherWarning"
         }
-      }
+      },
+      "description": "Events from JMA Bosai Warnings covering Japanese weather-warning areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "JP.JMA.Tsunami": {
       "messages": {
@@ -129,10 +133,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/JP.JMA.Tsunami.jstruct/schemas/JP.JMA.Tsunami.TsunamiAlert"
         }
-      }
+      },
+      "description": "Events from JMA Bosai Warnings covering Japanese weather-warning areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "JP.JMA.Warning.mqtt": {
-      "description": "MQTT/5.0 transport variant for JMA Bosai weather warnings. Retained QoS-1 office reference records and non-retained QoS-1 warning events route by Romanized prefecture, severity, issuing office code, forecast area code, and fixed event name under alerts/jp/jma/jma-bosai-warning/... so wildcard subscribers can follow one prefecture, severity, office, or area without parsing Japanese administrative names.",
+      "description": "MQTT 5 variant of the JMA Bosai Warnings events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "JP.JMA.Warning.mqtt.Office": {
           "name": "Office",
@@ -172,7 +177,7 @@
                 "$id": "https://www.jma.go.jp/schemas/bosai/warning/Office",
                 "name": "Office",
                 "type": "object",
-                "description": "JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.",
+                "description": "JMA Bosai warning office reference data from area.json offices.",
                 "properties": {
                   "office_code": {
                     "type": "string",
@@ -210,7 +215,12 @@
                       "PREFECTURE",
                       "SUBREGION",
                       "OFFICE"
-                    ]
+                    ],
+                    "descriptions": {
+                      "PREFECTURE": "Provider value `PREFECTURE` for this coded alert field.",
+                      "SUBREGION": "Provider value `SUBREGION` for this coded alert field.",
+                      "OFFICE": "Provider value `OFFICE` for this coded alert field."
+                    }
                   },
                   "prefecture": {
                     "type": "string",
@@ -226,14 +236,24 @@
                       "ADVISORY",
                       "WARNING",
                       "EMERGENCY_WARNING"
-                    ]
+                    ],
+                    "descriptions": {
+                      "REFERENCE": "Provider value `REFERENCE` for this coded alert field.",
+                      "NONE": "Provider value `NONE` for this coded alert field.",
+                      "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                      "WARNING": "Provider value `WARNING` for this coded alert field.",
+                      "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                    }
                   },
                   "event": {
                     "type": "string",
                     "description": "Fixed MQTT topic event segment for retained office reference records.",
                     "enum": [
                       "office"
-                    ]
+                    ],
+                    "descriptions": {
+                      "office": "Provider value `office` for this coded alert field."
+                    }
                   }
                 },
                 "required": [
@@ -263,7 +283,7 @@
                 "$id": "https://www.jma.go.jp/schemas/bosai/warning/WeatherWarning",
                 "name": "WeatherWarning",
                 "type": "object",
-                "description": "JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.",
+                "description": "JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.",
                 "properties": {
                   "prefecture": {
                     "type": "string",
@@ -279,7 +299,14 @@
                       "ADVISORY",
                       "WARNING",
                       "EMERGENCY_WARNING"
-                    ]
+                    ],
+                    "descriptions": {
+                      "REFERENCE": "Provider value `REFERENCE` for this coded alert field.",
+                      "NONE": "Provider value `NONE` for this coded alert field.",
+                      "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                      "WARNING": "Provider value `WARNING` for this coded alert field.",
+                      "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                    }
                   },
                   "office_code": {
                     "type": "string",
@@ -302,7 +329,10 @@
                     "description": "Fixed MQTT topic event segment for JMA Bosai weather warning state records.",
                     "enum": [
                       "warning"
-                    ]
+                    ],
+                    "descriptions": {
+                      "warning": "Provider value `warning` for this coded alert field."
+                    }
                   },
                   "area_name": {
                     "type": "string",
@@ -452,6 +482,15 @@
                               "ADVISORY": "Advisory",
                               "EMERGENCY_WARNING": "Emergency Warning"
                             }
+                          },
+                          "descriptions": {
+                            "ISSUED": "Provider value `ISSUED` for this coded alert field.",
+                            "CONTINUED": "Provider value `CONTINUED` for this coded alert field.",
+                            "CANCELLED": "Provider value `CANCELLED` for this coded alert field.",
+                            "NO_WARNINGS_OR_ADVISORIES": "Provider value `NO_WARNINGS_OR_ADVISORIES` for this coded alert field.",
+                            "WARNING": "Provider value `WARNING` for this coded alert field.",
+                            "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                            "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
                           }
                         },
                         "severity": {
@@ -462,7 +501,13 @@
                             "ADVISORY",
                             "WARNING",
                             "EMERGENCY_WARNING"
-                          ]
+                          ],
+                          "descriptions": {
+                            "NONE": "Provider value `NONE` for this coded alert field.",
+                            "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                            "WARNING": "Provider value `WARNING` for this coded alert field.",
+                            "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                          }
                         }
                       },
                       "required": [
@@ -480,7 +525,8 @@
                     "type": "array",
                     "description": "Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.",
                     "items": {
-                      "type": "datetime"
+                      "type": "datetime",
+                      "description": "Payload for an emergency or hazard event from the Japan Meteorological Agency. It carries weather warnings and advisories for Japanese weather-warning areas."
                     },
                     "altnames": {
                       "jma-bosai": "timeSeries[].timeDefines"
@@ -520,7 +566,7 @@
                 "$id": "https://www.jma.go.jp/schemas/bosai/warning/TsunamiAlert",
                 "name": "TsunamiAlert",
                 "type": "object",
-                "description": "Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.",
+                "description": "JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.",
                 "properties": {
                   "event_id": {
                     "type": "string",
@@ -555,6 +601,11 @@
                     },
                     "altnames": {
                       "jma-bosai": "ift"
+                    },
+                    "descriptions": {
+                      "ISSUED": "Provider value `ISSUED` for this coded alert field.",
+                      "CORRECTED": "Provider value `CORRECTED` for this coded alert field.",
+                      "CANCELLED": "Provider value `CANCELLED` for this coded alert field."
                     }
                   },
                   "report_datetime": {
@@ -626,6 +677,12 @@
                               "ADVISORY": "津波注意報",
                               "FORECAST": "津波予報"
                             }
+                          },
+                          "descriptions": {
+                            "MAJOR_WARNING": "Provider value `MAJOR_WARNING` for this coded alert field.",
+                            "WARNING": "Provider value `WARNING` for this coded alert field.",
+                            "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                            "FORECAST": "Provider value `FORECAST` for this coded alert field."
                           }
                         },
                         "expected_max_wave_height_m": {
@@ -720,7 +777,12 @@
                             "ESTIMATED",
                             "FIRST_WAVE_OBSERVED",
                             "MAX_WAVE_OBSERVED"
-                          ]
+                          ],
+                          "descriptions": {
+                            "ESTIMATED": "Provider value `ESTIMATED` for this coded alert field.",
+                            "FIRST_WAVE_OBSERVED": "Provider value `FIRST_WAVE_OBSERVED` for this coded alert field.",
+                            "MAX_WAVE_OBSERVED": "Provider value `MAX_WAVE_OBSERVED` for this coded alert field."
+                          }
                         }
                       },
                       "required": [
@@ -754,5 +816,10 @@
         }
       }
     }
+  },
+  "description": "JMA Bosai Warnings publishes weather warnings and advisories from the Japan Meteorological Agency for Japanese weather-warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for JMA Bosai Warnings, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

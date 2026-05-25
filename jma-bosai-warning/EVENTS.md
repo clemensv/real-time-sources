@@ -1,6 +1,6 @@
 # JMA Bosai Weather Warnings + Tsunami Alerts Events
 
-MQTT/5.0 transport variant for JMA Bosai weather warnings. Retained QoS-1 office reference records and non-retained QoS-1 warning events route by Romanized prefecture, severity, issuing office code, forecast area code, and fixed event name under alerts/jp/jma/jma-bosai-warning/... so wildcard subscribers can follow one prefecture, severity, office, or area without parsing Japanese administrative names.
+JMA Bosai Warnings publishes weather warnings and advisories from the Japan Meteorological Agency for Japanese weather-warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `JP.JMA.Warning.Office`
 
 #### What it tells you
 
-JMA Bosai warning office reference data from area.json offices. JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.
+JMA Bosai warning office reference data from area.json offices.
 
 #### Identity
 
@@ -80,19 +80,19 @@ Each event identifies the real-world resource with `jp.jma.warning/{office_code}
 - **`event`** (enum, required): Fixed MQTT topic event segment for retained office reference records.
 ##### `office_type` values
 
-- `PREFECTURE`
-- `SUBREGION`
-- `OFFICE`
+- `PREFECTURE`: Provider value `PREFECTURE` for this coded alert field.
+- `SUBREGION`: Provider value `SUBREGION` for this coded alert field.
+- `OFFICE`: Provider value `OFFICE` for this coded alert field.
 ##### `severity` values
 
-- `REFERENCE`
-- `NONE`
-- `ADVISORY`
-- `WARNING`
-- `EMERGENCY_WARNING`
+- `REFERENCE`: Provider value `REFERENCE` for this coded alert field.
+- `NONE`: Provider value `NONE` for this coded alert field.
+- `ADVISORY`: Provider value `ADVISORY` for this coded alert field.
+- `WARNING`: Provider value `WARNING` for this coded alert field.
+- `EMERGENCY_WARNING`: Provider value `EMERGENCY_WARNING` for this coded alert field.
 ##### `event` values
 
-- `office`
+- `office`: Provider value `office` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -121,7 +121,7 @@ CloudEvents type: `JP.JMA.Warning.WeatherWarning`
 
 #### What it tells you
 
-JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin. JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.
+JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.
 
 #### Identity
 
@@ -151,14 +151,14 @@ Each event identifies the real-world resource with `jp.jma.warning/{office_code}
 - **`time_defines`** (array of datetime, required): Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.
 ##### `severity` values
 
-- `REFERENCE`
-- `NONE`
-- `ADVISORY`
-- `WARNING`
-- `EMERGENCY_WARNING`
+- `REFERENCE`: Provider value `REFERENCE` for this coded alert field.
+- `NONE`: Provider value `NONE` for this coded alert field.
+- `ADVISORY`: Provider value `ADVISORY` for this coded alert field.
+- `WARNING`: Provider value `WARNING` for this coded alert field.
+- `EMERGENCY_WARNING`: Provider value `EMERGENCY_WARNING` for this coded alert field.
 ##### `event` values
 
-- `warning`
+- `warning`: Provider value `warning` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -199,7 +199,7 @@ CloudEvents type: `JP.JMA.Tsunami.TsunamiAlert`
 
 #### What it tells you
 
-JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts. Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.
+JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.
 
 #### Identity
 
@@ -228,9 +228,9 @@ Each event identifies the real-world resource with `jp.jma.tsunami/{event_id}/{s
 - **`observations`** (array of object, required): Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present.
 ##### `info_type` values
 
-- `ISSUED`
-- `CORRECTED`
-- `CANCELLED`
+- `ISSUED`: Provider value `ISSUED` for this coded alert field.
+- `CORRECTED`: Provider value `CORRECTED` for this coded alert field.
+- `CANCELLED`: Provider value `CANCELLED` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
