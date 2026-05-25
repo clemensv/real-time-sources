@@ -29,7 +29,7 @@ class Test_ZoneTypeenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(ZoneTypeenum.public.value, "public")
-        self.assertEqual(ZoneTypeenum.coastal.value, "coastal")
-        self.assertEqual(ZoneTypeenum.offshore.value, "offshore")
-        self.assertEqual(ZoneTypeenum.marine.value, "marine")
+        self.assertEqual(ZoneTypeenum.public.value, 'public')
+        self.assertEqual(ZoneTypeenum.coastal.value, 'coastal')
+        self.assertEqual(ZoneTypeenum.offshore.value, 'offshore')
+        self.assertEqual(ZoneTypeenum.marine.value, 'marine')

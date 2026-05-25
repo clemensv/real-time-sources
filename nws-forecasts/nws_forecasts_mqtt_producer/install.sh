@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./nws_forecasts_mqtt_producer_data
+pip install ./nws_forecasts_mqtt_producer_mqtt_client

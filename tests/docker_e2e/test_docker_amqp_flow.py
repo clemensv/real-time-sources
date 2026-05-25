@@ -267,3 +267,9 @@ class TestNoaaGoesAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux", "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert", "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"}
     expected_count = 6
 
+
+class TestNwsForecastsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nws-forecasts"
+    image = "nws-forecasts-amqp"
+    expected_types = {"Microsoft.OpenData.US.NOAA.NWS.ForecastZone", "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast", "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"}
+    expected_count = 3

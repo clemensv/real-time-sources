@@ -5008,3 +5008,10 @@ class TestNoaaGoesMqttDockerFlow(_B3SimpleMqttFlow):
     expected_count = 6
     expected_prefix = ['space-weather/us/noaa/noaa-goes/goes-18/xrs/', 'space-weather/us/noaa/noaa-goes/alerts/', 'space-weather/us/noaa/noaa-goes/flares/']
 
+
+class TestNwsForecastsMqttDockerFlow(_B3SimpleMqttFlow):
+    source_dir = 'nws-forecasts'
+    image = 'nws-forecasts-mqtt'
+    topic_filter = 'weather/us/noaa/nws-forecasts/#'
+    expected_count = 3
+    expected_prefix = ['weather/us/noaa/nws-forecasts/wa/public/WAZ315/', 'weather/us/noaa/nws-forecasts/pz/marine/PZZ135/']

@@ -57,3 +57,7 @@ docker run --rm \
   -e KAFKA_ENABLE_TLS=false \
   ghcr.io/clemensv/real-time-sources-nws-forecasts:latest
 ```
+
+## MQTT and AMQP images
+
+Build with Dockerfile.mqtt for MQTT 5 or Dockerfile.amqp for AMQP 1.0. MQTT uses MQTT_BROKER_URL; AMQP uses AMQP_HOST, AMQP_PORT, AMQP_ADDRESS, AMQP_USERNAME, AMQP_PASSWORD, and AMQP_AUTH_MODE (password, ntra, or sas). Service Bus deployment uses zure-template-with-servicebus.json and is mirrored at infra/azure-template-amqp.json.

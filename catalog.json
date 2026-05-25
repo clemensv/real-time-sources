@@ -356,7 +356,9 @@
     "key": false,
     "desc": "United States — configurable land and marine forecast zones",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "singapore-nea",

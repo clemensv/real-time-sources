@@ -630,6 +630,18 @@
       "image": "noaa-goes-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_goes_amqp"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nws_forecasts_mqtt"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nws_forecasts_amqp"
     }
   ],
   "flow": [
@@ -1275,6 +1287,20 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaGoesAmqpDockerFlow"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNwsForecastsMqttDockerFlow"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNwsForecastsAmqpDockerFlow"
     }
   ]
 }
