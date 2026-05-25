@@ -1,6 +1,6 @@
 # FMI Finland Air Quality Bridge Events
 
-This bridge polls the Finnish Meteorological Institute (FMI) open OGC WFS service for hourly air quality observations and republishes them as structured CloudEvents to Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+FMI Finland Weather publishes weather observations from the Finnish Meteorological Institute (FMI) for Finnish weather observation stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `fi.fmi.opendata.airquality.Station`
 
 #### What it tells you
 
-Reference data for a Finnish Meteorological Institute air quality monitoring station. Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid).
+Reference data for a Finnish Meteorological Institute air quality monitoring station.
 
 #### Identity
 
@@ -83,7 +83,7 @@ CloudEvents type: `fi.fmi.opendata.airquality.Observation`
 
 #### What it tells you
 
-Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results. Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.
+Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results.
 
 #### Identity
 
