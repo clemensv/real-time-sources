@@ -252,3 +252,67 @@ class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"METEOALARM_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {"Meteoalarm.WeatherWarning"}
     expected_count = 1
+
+
+class TestXceedAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "xceed"
+    image = "xceed-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestElexonBmrsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "elexon-bmrs"
+    image = "elexon-bmrs-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestEnergidataserviceDkAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "energidataservice-dk"
+    image = "energidataservice-dk-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestEnergyChartsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "energy-charts"
+    image = "energy-charts-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestBillettoAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "billetto"
+    image = "billetto-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestFientaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "fienta"
+    image = "fienta-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestTicketmasterAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "ticketmaster"
+    image = "ticketmaster-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestTepcoDenkiyohoAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "tepco-denkiyoho"
+    image = "tepco-denkiyoho-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1

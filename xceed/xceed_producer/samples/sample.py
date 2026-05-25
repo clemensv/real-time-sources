@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from xceed_producer_kafka_producer.producer import XceedEventProducer
 from xceed_producer_kafka_producer.producer import XceedAdmissionsEventProducer
+from xceed_producer_kafka_producer.producer import XceedMqttEventProducer
+from xceed_producer_kafka_producer.producer import XceedAmqpEventProducer
+from xceed_producer_kafka_producer.producer import XceedAdmissionsMqttEventProducer
+from xceed_producer_kafka_producer.producer import XceedAdmissionsAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -81,6 +85,70 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'xceed.EventAdmission' event to Kafka topic.
     await xceed_admissions_event_producer.send_xceed_event_admission(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _admission_id = 'TODO: replace me', data = _event_admission)
     print(f"Sent 'xceed.EventAdmission' event: {_event_admission.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        xceed_mqtt_event_producer = XceedMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        xceed_mqtt_event_producer = XceedMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- xceed.mqtt.Event ----
+    # TODO: Supply event data for the xceed.mqtt.Event event
+    _event = Event()
+
+    # sends the 'xceed.mqtt.Event' event to Kafka topic.
+    await xceed_mqtt_event_producer.send_xceed_mqtt_event(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', data = _event)
+    print(f"Sent 'xceed.mqtt.Event' event: {_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        xceed_amqp_event_producer = XceedAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        xceed_amqp_event_producer = XceedAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- xceed.amqp.Event ----
+    # TODO: Supply event data for the xceed.amqp.Event event
+    _event = Event()
+
+    # sends the 'xceed.amqp.Event' event to Kafka topic.
+    await xceed_amqp_event_producer.send_xceed_amqp_event(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', data = _event)
+    print(f"Sent 'xceed.amqp.Event' event: {_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        xceed_admissions_mqtt_event_producer = XceedAdmissionsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        xceed_admissions_mqtt_event_producer = XceedAdmissionsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- xceed.admissions.mqtt.EventAdmission ----
+    # TODO: Supply event data for the xceed.admissions.mqtt.EventAdmission event
+    _event_admission = EventAdmission()
+
+    # sends the 'xceed.admissions.mqtt.EventAdmission' event to Kafka topic.
+    await xceed_admissions_mqtt_event_producer.send_xceed_admissions_mqtt_event_admission(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _admission_id = 'TODO: replace me', data = _event_admission)
+    print(f"Sent 'xceed.admissions.mqtt.EventAdmission' event: {_event_admission.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        xceed_admissions_amqp_event_producer = XceedAdmissionsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        xceed_admissions_amqp_event_producer = XceedAdmissionsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- xceed.admissions.amqp.EventAdmission ----
+    # TODO: Supply event data for the xceed.admissions.amqp.EventAdmission event
+    _event_admission = EventAdmission()
+
+    # sends the 'xceed.admissions.amqp.EventAdmission' event to Kafka topic.
+    await xceed_admissions_amqp_event_producer.send_xceed_admissions_amqp_event_admission(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _admission_id = 'TODO: replace me', data = _event_admission)
+    print(f"Sent 'xceed.admissions.amqp.EventAdmission' event: {_event_admission.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
