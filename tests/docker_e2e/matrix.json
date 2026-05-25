@@ -612,6 +612,132 @@
       "image": "meteoalarm-amqp",
       "file": "Dockerfile.amqp",
       "module": "meteoalarm_amqp"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "autobahn_amqp"
+    },
+    {
+      "dir": "french-road-traffic",
+      "image": "french-road-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "french_road_traffic_mqtt"
+    },
+    {
+      "dir": "french-road-traffic",
+      "image": "french-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "french_road_traffic_amqp"
+    },
+    {
+      "dir": "gtfs",
+      "image": "gtfs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "gtfs_mqtt"
+    },
+    {
+      "dir": "gtfs",
+      "image": "gtfs-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gtfs_amqp"
+    },
+    {
+      "dir": "madrid-traffic",
+      "image": "madrid-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "madrid_traffic_mqtt"
+    },
+    {
+      "dir": "madrid-traffic",
+      "image": "madrid-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "madrid_traffic_amqp"
+    },
+    {
+      "dir": "ndl-netherlands",
+      "image": "ndl-netherlands-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "ndl_netherlands_mqtt"
+    },
+    {
+      "dir": "ndl-netherlands",
+      "image": "ndl-netherlands-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "ndl_netherlands_amqp"
+    },
+    {
+      "dir": "ndw-road-traffic",
+      "image": "ndw-road-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "ndw_road_traffic_mqtt"
+    },
+    {
+      "dir": "ndw-road-traffic",
+      "image": "ndw-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "ndw_road_traffic_amqp"
+    },
+    {
+      "dir": "nextbus",
+      "image": "nextbus-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nextbus_mqtt"
+    },
+    {
+      "dir": "nextbus",
+      "image": "nextbus-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nextbus_amqp"
+    },
+    {
+      "dir": "paris-bicycle-counters",
+      "image": "paris-bicycle-counters-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "paris_bicycle_counters_amqp"
+    },
+    {
+      "dir": "seattle-street-closures",
+      "image": "seattle-street-closures-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "seattle_street_closures_mqtt"
+    },
+    {
+      "dir": "seattle-street-closures",
+      "image": "seattle-street-closures-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "seattle_street_closures_amqp"
+    },
+    {
+      "dir": "tfl-road-traffic",
+      "image": "tfl-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "tfl_road_traffic_amqp"
+    },
+    {
+      "dir": "tokyo-docomo-bikeshare",
+      "image": "tokyo-docomo-bikeshare-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "tokyo_docomo_bikeshare_mqtt"
+    },
+    {
+      "dir": "tokyo-docomo-bikeshare",
+      "image": "tokyo-docomo-bikeshare-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "tokyo_docomo_bikeshare_amqp"
+    },
+    {
+      "dir": "wsdot",
+      "image": "wsdot-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "wsdot_mqtt"
+    },
+    {
+      "dir": "wsdot",
+      "image": "wsdot-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "wsdot_amqp"
     }
   ],
   "flow": [
@@ -1240,6 +1366,153 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMeteoalarmAmqpDockerFlow"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestAutobahnAmqpDockerFlow"
+    },
+    {
+      "dir": "french-road-traffic",
+      "image": "french-road-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestFrenchRoadTrafficMqttDockerFlow"
+    },
+    {
+      "dir": "french-road-traffic",
+      "image": "french-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestFrenchRoadTrafficAmqpDockerFlow"
+    },
+    {
+      "dir": "gtfs",
+      "image": "gtfs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGTFSMqttDockerFlow"
+    },
+    {
+      "dir": "gtfs",
+      "image": "gtfs-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGTFSAmqpDockerFlow"
+    },
+    {
+      "dir": "madrid-traffic",
+      "image": "madrid-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestMadridTrafficMqttDockerFlow"
+    },
+    {
+      "dir": "madrid-traffic",
+      "image": "madrid-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestMadridTrafficAmqpDockerFlow"
+    },
+    {
+      "dir": "ndl-netherlands",
+      "image": "ndl-netherlands-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNDLNetherlandsMqttDockerFlow"
+    },
+    {
+      "dir": "ndl-netherlands",
+      "image": "ndl-netherlands-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNDLNetherlandsAmqpDockerFlow"
+    },
+    {
+      "dir": "ndw-road-traffic",
+      "image": "ndw-road-traffic-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNDWRoadTrafficMqttDockerFlow"
+    },
+    {
+      "dir": "ndw-road-traffic",
+      "image": "ndw-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNDWRoadTrafficAmqpDockerFlow"
+    },
+    {
+      "dir": "nextbus",
+      "image": "nextbus-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNextbusMqttDockerFlow"
+    },
+    {
+      "dir": "nextbus",
+      "image": "nextbus-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNextbusAmqpDockerFlow"
+    },
+    {
+      "dir": "paris-bicycle-counters",
+      "image": "paris-bicycle-counters-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestParisBicycleCountersAmqpDockerFlow"
+    },
+    {
+      "dir": "seattle-street-closures",
+      "image": "seattle-street-closures-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSeattleStreetClosuresMqttDockerFlow"
+    },
+    {
+      "dir": "seattle-street-closures",
+      "image": "seattle-street-closures-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSeattleStreetClosuresAmqpDockerFlow"
+    },
+    {
+      "dir": "tfl-road-traffic",
+      "image": "tfl-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestTFLRoadTrafficAmqpDockerFlow"
+    },
+    {
+      "dir": "tokyo-docomo-bikeshare",
+      "image": "tokyo-docomo-bikeshare-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestTokyoDocomoBikeshareMqttDockerFlow"
+    },
+    {
+      "dir": "tokyo-docomo-bikeshare",
+      "image": "tokyo-docomo-bikeshare-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestTokyoDocomoBikeshareAmqpDockerFlow"
+    },
+    {
+      "dir": "wsdot",
+      "image": "wsdot-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWSDOTMqttDockerFlow"
+    },
+    {
+      "dir": "wsdot",
+      "image": "wsdot-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestWSDOTAmqpDockerFlow"
     }
   ]
 }

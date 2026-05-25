@@ -1,0 +1,215 @@
+""" VesselLocation dataclass. """
+
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
+import io
+import gzip
+import enum
+import typing
+import dataclasses
+from dataclasses import dataclass
+import dataclasses_json
+from dataclasses_json import Undefined, dataclass_json
+import json
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class VesselLocation:
+    """
+    Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes.
+    
+    Attributes:
+        vessel_id (str)
+        vessel_name (str)
+        mmsi (typing.Optional[int])
+        in_service (bool)
+        at_dock (bool)
+        latitude (float)
+        longitude (float)
+        speed (typing.Optional[float])
+        heading (typing.Optional[int])
+        departing_terminal_id (typing.Optional[int])
+        departing_terminal_name (typing.Optional[str])
+        departing_terminal_abbrev (typing.Optional[str])
+        arriving_terminal_id (typing.Optional[int])
+        arriving_terminal_name (typing.Optional[str])
+        arriving_terminal_abbrev (typing.Optional[str])
+        scheduled_departure (typing.Optional[str])
+        left_dock (typing.Optional[str])
+        eta (typing.Optional[str])
+        eta_basis (typing.Optional[str])
+        route_abbreviation (typing.Optional[str])
+        timestamp (str)
+    """
+    
+    
+    vessel_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vessel_id"))
+    vessel_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vessel_name"))
+    mmsi: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    in_service: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="in_service"))
+    at_dock: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="at_dock"))
+    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="speed"))
+    heading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="heading"))
+    departing_terminal_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departing_terminal_id"))
+    departing_terminal_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departing_terminal_name"))
+    departing_terminal_abbrev: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departing_terminal_abbrev"))
+    arriving_terminal_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arriving_terminal_id"))
+    arriving_terminal_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arriving_terminal_name"))
+    arriving_terminal_abbrev: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arriving_terminal_abbrev"))
+    scheduled_departure: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="scheduled_departure"))
+    left_dock: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="left_dock"))
+    eta: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta"))
+    eta_basis: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_basis"))
+    route_abbreviation: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_abbreviation"))
+    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+
+    @classmethod
+    def from_serializer_dict(cls, data: dict) -> 'VesselLocation':
+        """
+        Converts a dictionary to a dataclass instance.
+        
+        Args:
+            data: The dictionary to convert to a dataclass.
+        
+        Returns:
+            The dataclass representation of the dataclass.
+        """
+        return cls(**data)
+
+    def to_serializer_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary.
+
+        Returns:
+            The dictionary representation of the dataclass.
+        """
+        asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        return asdict_result
+
+    def _dict_resolver(self, data):
+        """
+        Helps resolving the Enum values to their actual values and fixes the key names.
+        """ 
+        def _resolve_enum(v):
+            if isinstance(v, enum.Enum):
+                return v.value
+            return v
+        def _fix_key(k):
+            return k[:-1] if k.endswith('_') else k
+        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+
+    def to_byte_array(self, content_type_string: str) -> bytes:
+        """
+        Converts the dataclass to a byte array based on the content type string.
+        
+        Args:
+            content_type_string: The content type string to convert the dataclass to.
+                Supported content types:
+                    'application/json': Encodes the data to JSON format.
+                Supported content type extensions:
+                    '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
+
+        Returns:
+            The byte array representation of the dataclass.        
+        """
+        content_type = content_type_string.split(';')[0].strip()
+        result = None
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            #pylint: disable=no-member
+            result = self.to_json()
+            #pylint: enable=no-member
+
+        if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            with io.BytesIO() as stream:
+                with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
+                    gzip_file.write(result)
+                result = stream.getvalue()
+
+        if result is None:
+            raise NotImplementedError(f"Unsupported media type {content_type}")
+
+        return result
+
+    @classmethod
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['VesselLocation']:
+        """
+        Converts the data to a dataclass based on the content type string.
+        
+        Args:
+            data: The data to convert to a dataclass.
+            content_type_string: The content type string to convert the data to. 
+                Supported content types:
+                    'application/json': Attempts to decode the data from JSON encoded format.
+                Supported content type extensions:
+                    '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
+        Returns:
+            The dataclass representation of the data.
+        """
+        if data is None:
+            return None
+        if isinstance(data, cls):
+            return data
+        if isinstance(data, dict):
+            return cls.from_serializer_dict(data)
+
+        content_type = (content_type_string or 'application/octet-stream').split(';')[0].strip()
+
+        if content_type.endswith('+gzip'):
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for gzip decompression')
+            with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
+                data = gzip_file.read()
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            if isinstance(data, (bytes, str)):
+                data_str = data.decode('utf-8') if isinstance(data, bytes) else data
+                _record = json.loads(data_str)
+                return VesselLocation.from_serializer_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+        raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'VesselLocation':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            vessel_id='usvlwzndfducpwikpskc',
+            vessel_name='irwirpmiribksbdvckid',
+            mmsi=int(97),
+            in_service=False,
+            at_dock=False,
+            latitude=float(38.888997357765156),
+            longitude=float(88.31123792011314),
+            speed=float(51.731239147942354),
+            heading=int(89),
+            departing_terminal_id=int(82),
+            departing_terminal_name='yctenwbcwkntxuehfjvd',
+            departing_terminal_abbrev='nqsubslhbcvdjwgzfdoz',
+            arriving_terminal_id=int(99),
+            arriving_terminal_name='cpucrueceolqeypfktkr',
+            arriving_terminal_abbrev='vbpdmueivtufvvunhobx',
+            scheduled_departure='wiktwyswuhsdqziuyzpg',
+            left_dock='dgulaufyuagzycemkppu',
+            eta='eghblefihkfnouvfabtn',
+            eta_basis='rcvakbuvoirhcevwmcah',
+            route_abbreviation='xwpguspzesnrqpojdaqe',
+            timestamp='yuiskoeotiehgxfdphhq'
+        )

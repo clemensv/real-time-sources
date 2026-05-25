@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wsdot-mqtt"
+version = "0.1.0"
+description = "MQTT companion feeder for WSDOT"
+requires-python = ">=3.10"
+dependencies = ["paho-mqtt>=2.1.0"]
+
+[project.scripts]
+wsdot-mqtt = "wsdot_mqtt.app:main"
+
+[tool.setuptools.packages.find]
+include = ["wsdot_mqtt*"]

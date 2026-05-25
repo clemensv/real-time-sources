@@ -175,6 +175,63 @@
         "#/messagegroups/us.wa.wsdot.ferries"
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{vessel_id}`."
+    },
+    "us.wa.wsdot.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.traffic.mqtt",
+        "#/messagegroups/us.wa.wsdot.traveltimes.mqtt",
+        "#/messagegroups/us.wa.wsdot.mountainpass.mqtt",
+        "#/messagegroups/us.wa.wsdot.weather.mqtt",
+        "#/messagegroups/us.wa.wsdot.tolls.mqtt",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.mqtt",
+        "#/messagegroups/us.wa.wsdot.border.mqtt",
+        "#/messagegroups/us.wa.wsdot.ferries.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "us.wa.wsdot.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "wsdot"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.traffic.amqp",
+        "#/messagegroups/us.wa.wsdot.traveltimes.amqp",
+        "#/messagegroups/us.wa.wsdot.mountainpass.amqp",
+        "#/messagegroups/us.wa.wsdot.weather.amqp",
+        "#/messagegroups/us.wa.wsdot.tolls.amqp",
+        "#/messagegroups/us.wa.wsdot.cvrestrictions.amqp",
+        "#/messagegroups/us.wa.wsdot.border.amqp",
+        "#/messagegroups/us.wa.wsdot.ferries.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -417,6 +474,396 @@
         }
       },
       "description": "Events from WSDOT covering Washington road, bridge, pass, ferry, and border resources. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "us.wa.wsdot.traffic.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation.mqtt": {
+          "name": "TrafficFlowStation",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/flow/{flow_data_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading.mqtt": {
+          "name": "TrafficFlowReading",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/flow/{flow_data_id}/reading",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt": {
+          "name": "TravelTimeRoute",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.traveltimes/messages/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/travel-times/{travel_time_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition.mqtt": {
+          "name": "MountainPassCondition",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.mountainpass/messages/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/mountain-passes/{mountain_pass_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.weather.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation.mqtt": {
+          "name": "WeatherStation",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/flow-stations/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "us.wa.wsdot.weather.WeatherReading.mqtt": {
+          "name": "WeatherReading",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/flow-stations/{station_id}/reading",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate.mqtt": {
+          "name": "TollRate",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.tolls/messages/us.wa.wsdot.tolls.TollRate",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/tolls/{trip_name}/rate",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt": {
+          "name": "CommercialVehicleRestriction",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.cvrestrictions/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/bridges/{state_route_id}/{bridge_number}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.border.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing.mqtt": {
+          "name": "BorderCrossing",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/border-crossings/{crossing_name}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation.mqtt": {
+          "name": "VesselLocation",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.ferries/messages/us.wa.wsdot.ferries.VesselLocation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/{region}/vessels/{vessel_id}/location",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation.amqp": {
+          "name": "TrafficFlowStation",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{flow_data_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{flow_data_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading.amqp": {
+          "name": "TrafficFlowReading",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.traffic/messages/us.wa.wsdot.traffic.TrafficFlowReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{flow_data_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{flow_data_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp": {
+          "name": "TravelTimeRoute",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.traveltimes/messages/us.wa.wsdot.traveltimes.TravelTimeRoute",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{travel_time_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{travel_time_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition.amqp": {
+          "name": "MountainPassCondition",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.mountainpass/messages/us.wa.wsdot.mountainpass.MountainPassCondition",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{mountain_pass_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{mountain_pass_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.weather.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation.amqp": {
+          "name": "WeatherStation",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.weather.WeatherReading.amqp": {
+          "name": "WeatherReading",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate.amqp": {
+          "name": "TollRate",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.tolls/messages/us.wa.wsdot.tolls.TollRate",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{trip_name}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{trip_name}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp": {
+          "name": "CommercialVehicleRestriction",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.cvrestrictions/messages/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{state_route_id}/{bridge_number}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{state_route_id}/{bridge_number}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.border.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing.amqp": {
+          "name": "BorderCrossing",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{crossing_name}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{crossing_name}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation.amqp": {
+          "name": "VesselLocation",
+          "basemessageurl": "/messagegroups/us.wa.wsdot.ferries/messages/us.wa.wsdot.ferries.VesselLocation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{vessel_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{vessel_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

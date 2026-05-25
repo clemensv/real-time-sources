@@ -113,3 +113,31 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / Unified Namespace
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
+docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
+| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+
+## AMQP 1.0
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
+docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=wsdot ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
+| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
+| `AMQP_ADDRESS` | No | `wsdot` | Queue/topic/address to send to. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |

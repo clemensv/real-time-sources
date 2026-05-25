@@ -4959,3 +4959,180 @@ class TestEntsoeMqttDockerFlow:
         observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
         assert 'eu.entsoe.transparency.DayAheadPrices' in observed
         assert 'eu.entsoe.transparency.CrossBorderPhysicalFlows' in observed
+
+
+# ---------------------------------------------------------------------------
+# B6 traffic/transit MQTT companion feeders
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def french_road_traffic_mqtt_image():
+    return build_image('french-road-traffic', dockerfile='Dockerfile.mqtt', tag='test-french-road-traffic-mqtt')
+
+@pytest.fixture()
+def mosquitto_french_road_traffic():
+    container, network, host_port = _generic_mosquitto('french-road-traffic-mqtt-e2e', 'french-road-traffic-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'french-road-traffic-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestFrenchRoadTrafficMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_french_road_traffic, french_road_traffic_mqtt_image):
+        _run_mqtt_contract_flow('french-road-traffic', french_road_traffic_mqtt_image, mosquitto_french_road_traffic, timeout=240)
+
+@pytest.fixture(scope='module')
+def gtfs_mqtt_image():
+    return build_image('gtfs', dockerfile='Dockerfile.mqtt', tag='test-gtfs-mqtt')
+
+@pytest.fixture()
+def mosquitto_gtfs():
+    container, network, host_port = _generic_mosquitto('gtfs-mqtt-e2e', 'gtfs-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'gtfs-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestGTFSMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_gtfs, gtfs_mqtt_image):
+        _run_mqtt_contract_flow('gtfs', gtfs_mqtt_image, mosquitto_gtfs, timeout=240)
+
+@pytest.fixture(scope='module')
+def madrid_traffic_mqtt_image():
+    return build_image('madrid-traffic', dockerfile='Dockerfile.mqtt', tag='test-madrid-traffic-mqtt')
+
+@pytest.fixture()
+def mosquitto_madrid_traffic():
+    container, network, host_port = _generic_mosquitto('madrid-traffic-mqtt-e2e', 'madrid-traffic-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'madrid-traffic-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestMadridTrafficMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_madrid_traffic, madrid_traffic_mqtt_image):
+        _run_mqtt_contract_flow('madrid-traffic', madrid_traffic_mqtt_image, mosquitto_madrid_traffic, timeout=240)
+
+@pytest.fixture(scope='module')
+def ndl_netherlands_mqtt_image():
+    return build_image('ndl-netherlands', dockerfile='Dockerfile.mqtt', tag='test-ndl-netherlands-mqtt')
+
+@pytest.fixture()
+def mosquitto_ndl_netherlands():
+    container, network, host_port = _generic_mosquitto('ndl-netherlands-mqtt-e2e', 'ndl-netherlands-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'ndl-netherlands-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNDLNetherlandsMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_ndl_netherlands, ndl_netherlands_mqtt_image):
+        _run_mqtt_contract_flow('ndl-netherlands', ndl_netherlands_mqtt_image, mosquitto_ndl_netherlands, timeout=240)
+
+@pytest.fixture(scope='module')
+def ndw_road_traffic_mqtt_image():
+    return build_image('ndw-road-traffic', dockerfile='Dockerfile.mqtt', tag='test-ndw-road-traffic-mqtt')
+
+@pytest.fixture()
+def mosquitto_ndw_road_traffic():
+    container, network, host_port = _generic_mosquitto('ndw-road-traffic-mqtt-e2e', 'ndw-road-traffic-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'ndw-road-traffic-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNDWRoadTrafficMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_ndw_road_traffic, ndw_road_traffic_mqtt_image):
+        _run_mqtt_contract_flow('ndw-road-traffic', ndw_road_traffic_mqtt_image, mosquitto_ndw_road_traffic, timeout=240)
+
+@pytest.fixture(scope='module')
+def nextbus_mqtt_image():
+    return build_image('nextbus', dockerfile='Dockerfile.mqtt', tag='test-nextbus-mqtt')
+
+@pytest.fixture()
+def mosquitto_nextbus():
+    container, network, host_port = _generic_mosquitto('nextbus-mqtt-e2e', 'nextbus-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'nextbus-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNextbusMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_nextbus, nextbus_mqtt_image):
+        _run_mqtt_contract_flow('nextbus', nextbus_mqtt_image, mosquitto_nextbus, timeout=240)
+
+@pytest.fixture(scope='module')
+def seattle_street_closures_mqtt_image():
+    return build_image('seattle-street-closures', dockerfile='Dockerfile.mqtt', tag='test-seattle-street-closures-mqtt')
+
+@pytest.fixture()
+def mosquitto_seattle_street_closures():
+    container, network, host_port = _generic_mosquitto('seattle-street-closures-mqtt-e2e', 'seattle-street-closures-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'seattle-street-closures-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestSeattleStreetClosuresMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_seattle_street_closures, seattle_street_closures_mqtt_image):
+        _run_mqtt_contract_flow('seattle-street-closures', seattle_street_closures_mqtt_image, mosquitto_seattle_street_closures, timeout=240)
+
+@pytest.fixture(scope='module')
+def tokyo_docomo_bikeshare_mqtt_image():
+    return build_image('tokyo-docomo-bikeshare', dockerfile='Dockerfile.mqtt', tag='test-tokyo-docomo-bikeshare-mqtt')
+
+@pytest.fixture()
+def mosquitto_tokyo_docomo_bikeshare():
+    container, network, host_port = _generic_mosquitto('tokyo-docomo-bikeshare-mqtt-e2e', 'tokyo-docomo-bikeshare-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'tokyo-docomo-bikeshare-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestTokyoDocomoBikeshareMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_tokyo_docomo_bikeshare, tokyo_docomo_bikeshare_mqtt_image):
+        _run_mqtt_contract_flow('tokyo-docomo-bikeshare', tokyo_docomo_bikeshare_mqtt_image, mosquitto_tokyo_docomo_bikeshare, timeout=240)
+
+@pytest.fixture(scope='module')
+def wsdot_mqtt_image():
+    return build_image('wsdot', dockerfile='Dockerfile.mqtt', tag='test-wsdot-mqtt')
+
+@pytest.fixture()
+def mosquitto_wsdot():
+    container, network, host_port = _generic_mosquitto('wsdot-mqtt-e2e', 'wsdot-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'wsdot-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestWSDOTMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_wsdot, wsdot_mqtt_image):
+        _run_mqtt_contract_flow('wsdot', wsdot_mqtt_image, mosquitto_wsdot, timeout=240)
+
