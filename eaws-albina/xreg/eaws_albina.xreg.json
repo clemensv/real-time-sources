@@ -41,6 +41,31 @@
         "#/messagegroups/org.EAWS.ALBINA.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for EAWS ALBINA CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "org.EAWS.ALBINA.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/eaws-albina"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "eaws-albina"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.EAWS.ALBINA.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -99,6 +124,45 @@
             "qos": 1,
             "retain": false
           }
+        }
+      }
+    },
+    "org.EAWS.ALBINA.amqp": {
+      "description": "AMQP 1.0 transport variants for eaws-albina. All CloudEvents are published to the eaws-albina address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "org.EAWS.ALBINA.amqp.AvalancheBulletin": {
+          "name": "AvalancheBulletin",
+          "basemessageurl": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "AMQP application property mirroring the country routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "danger_level": {
+                "type": "uritemplate",
+                "value": "{danger_level}",
+                "description": "AMQP application property mirroring the danger_level routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{region_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "org.EAWS.ALBINA.amqp.AvalancheBulletin"
         }
       }
     }

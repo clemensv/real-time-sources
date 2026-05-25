@@ -29,3 +29,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Generation complete. Output in $outputDir" -ForegroundColor Green
+
+& (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")

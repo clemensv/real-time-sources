@@ -614,6 +614,132 @@
       "module": "meteoalarm_amqp"
     },
     {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nws_alerts_amqp"
+    },
+    {
+      "dir": "ptwc-tsunami",
+      "image": "ptwc-tsunami-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "ptwc_tsunami_amqp"
+    },
+    {
+      "dir": "nina-bbk",
+      "image": "nina-bbk-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nina_bbk_amqp"
+    },
+    {
+      "dir": "gdacs",
+      "image": "gdacs-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gdacs_amqp"
+    },
+    {
+      "dir": "eaws-albina",
+      "image": "eaws-albina-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "eaws_albina_amqp"
+    },
+    {
+      "dir": "cbp-border-wait",
+      "image": "cbp-border-wait-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "cbp_border_wait_amqp"
+    },
+    {
+      "dir": "seattle-911",
+      "image": "seattle-911-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "seattle_911_amqp"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "autobahn_amqp"
+    },
+    {
+      "dir": "tfl-road-traffic",
+      "image": "tfl-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "tfl_road_traffic_amqp"
+    },
+    {
+      "dir": "entur-norway",
+      "image": "entur-norway-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "entur_norway_amqp"
+    },
+    {
+      "dir": "irail",
+      "image": "irail-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "irail_amqp"
+    },
+    {
+      "dir": "paris-bicycle-counters",
+      "image": "paris-bicycle-counters-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "paris_bicycle_counters_amqp"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "image": "usgs-earthquakes-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_earthquakes_amqp"
+    },
+    {
+      "dir": "usgs-geomag",
+      "image": "usgs-geomag-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_geomag_amqp"
+    },
+    {
+      "dir": "usgs-iv",
+      "image": "usgs-iv-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_iv_amqp"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_bosai_quake_amqp"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_bosai_warning_amqp"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "blitzortung_amqp"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bfs_odl_amqp"
+    },
+    {
+      "dir": "gracedb",
+      "image": "gracedb-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gracedb_amqp"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "image": "inpe-deter-brazil-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "inpe_deter_brazil_amqp"
+    },
+    {
       "dir": "canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-mqtt",
       "file": "Dockerfile.mqtt",
@@ -1396,6 +1522,153 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMeteoalarmAmqpDockerFlow"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNWSAlertsAmqpDockerFlow"
+    },
+    {
+      "dir": "ptwc-tsunami",
+      "image": "ptwc-tsunami-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestPtwcTsunamiAmqpDockerFlow"
+    },
+    {
+      "dir": "nina-bbk",
+      "image": "nina-bbk-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNinaBbkAmqpDockerFlow"
+    },
+    {
+      "dir": "gdacs",
+      "image": "gdacs-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGdacsAmqpDockerFlow"
+    },
+    {
+      "dir": "eaws-albina",
+      "image": "eaws-albina-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEawsAlbinaAmqpDockerFlow"
+    },
+    {
+      "dir": "cbp-border-wait",
+      "image": "cbp-border-wait-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestCbpBorderWaitAmqpDockerFlow"
+    },
+    {
+      "dir": "seattle-911",
+      "image": "seattle-911-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSeattle911AmqpDockerFlow"
+    },
+    {
+      "dir": "autobahn",
+      "image": "autobahn-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestAutobahnAmqpDockerFlow"
+    },
+    {
+      "dir": "tfl-road-traffic",
+      "image": "tfl-road-traffic-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestTflRoadTrafficAmqpDockerFlow"
+    },
+    {
+      "dir": "entur-norway",
+      "image": "entur-norway-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEnturNorwayAmqpDockerFlow"
+    },
+    {
+      "dir": "irail",
+      "image": "irail-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestIRailAmqpDockerFlow"
+    },
+    {
+      "dir": "paris-bicycle-counters",
+      "image": "paris-bicycle-counters-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestParisBicycleCountersAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-earthquakes",
+      "image": "usgs-earthquakes-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSEarthquakesAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-geomag",
+      "image": "usgs-geomag-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSGeomagAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-iv",
+      "image": "usgs-iv-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUSGSIVAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaBosaiQuakeAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaBosaiWarningAmqpDockerFlow"
+    },
+    {
+      "dir": "blitzortung",
+      "image": "blitzortung-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBlitzortungAmqpDockerFlow"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBfsOdlAmqpDockerFlow"
+    },
+    {
+      "dir": "gracedb",
+      "image": "gracedb-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGracedbAmqpDockerFlow"
+    },
+    {
+      "dir": "inpe-deter-brazil",
+      "image": "inpe-deter-brazil-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestInpeDeterBrazilAmqpDockerFlow"
     },
     {
       "dir": "canada-eccc-wateroffice",

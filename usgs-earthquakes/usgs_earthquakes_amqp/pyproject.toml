@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "usgs_earthquakes-amqp"
+version = "0.1.0"
+description = "AMQP 1.0 feeder for usgs-earthquakes"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "usgs_earthquakes_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+python-qpid-proton = ">=0.40.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+azure-identity = ">=1.17.0"
+azure-core = ">=1.30.0"
+usgs_earthquakes_amqp_producer_data = { path = "../usgs_earthquakes_amqp_producer/usgs_earthquakes_amqp_producer_data" }
+usgs_earthquakes_amqp_producer_amqp_producer = { path = "../usgs_earthquakes_amqp_producer/usgs_earthquakes_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+usgs-earthquakes-amqp = "usgs_earthquakes_amqp:main"

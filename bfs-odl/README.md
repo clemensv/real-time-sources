@@ -104,3 +104,14 @@ This bridge can also run as a scheduled Fabric notebook
 [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
 which builds a per-source Fabric Environment, binds Lakehouse + KQL +
 Event Stream, and schedules single-cycle runs of `bfs-odl feed --once`.
+
+## AMQP 1.0 companion feeder
+
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-bfs-odl-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `bfs-odl`).
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=bfs-odl   ghcr.io/clemensv/real-time-sources-bfs-odl-amqp:latest
+```
+
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbfs-odl%2Fazure-template-amqp.json)
+
