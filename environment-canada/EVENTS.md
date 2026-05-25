@@ -1,12 +1,12 @@
 # Environment Canada Weather Observation Bridge Events
 
-This bridge fetches real-time Surface Weather Observations (SWOB) from [Environment and Climate Change Canada (ECCC)](https://api.weather.gc.ca/) via the OGC API and emits them as CloudEvents into Apache Kafka or Azure Event Hubs.
+Environment Canada Weather publishes current weather observations from Environment and Climate Change Canada (ECCC) for Canadian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 2 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{msc_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,7 +38,7 @@ CloudEvents type: `CA.Gov.ECCC.Weather.Station`
 
 #### What it tells you
 
-Reference data for an Environment Canada SWOB weather station. Stations are identified by their MSC ID (Meteorological Service of Canada identifier) and include WMO synoptic IDs where available.
+A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -87,7 +87,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Weather Observation
 
@@ -95,7 +95,7 @@ CloudEvents type: `CA.Gov.ECCC.Weather.WeatherObservation`
 
 #### What it tells you
 
-Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.
+A current environmental measurement from Environment and Climate Change Canada (ECCC). It carries current weather observations when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
