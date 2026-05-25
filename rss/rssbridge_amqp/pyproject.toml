@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rss-amqp"
+version = "0.1.0"
+description = "AMQP 1.0 feeder for RSS/Atom feeds"
+requires-python = ">=3.10"
+dependencies = [
+    "python-qpid-proton>=0.40.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "avro>=1.11.3",
+    "azure-identity>=1.17.0",
+    "azure-core>=1.30.0",
+    "confluent-kafka>=2.5.3",
+    "requests>=2.32.3",
+    "feedparser>=6.0.11",
+    "listparser>=0.20",
+    "BeautifulSoup4>=4.12.3",
+]
+
+[project.scripts]
+rss-amqp = "rssbridge_amqp.app:main"
+
+[tool.setuptools.packages.find]
+include = ["rssbridge_amqp*"]
