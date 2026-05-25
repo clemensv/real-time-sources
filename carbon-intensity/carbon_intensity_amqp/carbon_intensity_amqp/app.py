@@ -1,6 +1,7 @@
 """AMQP feeder for Carbon Intensity UK."""
 from __future__ import annotations
 import argparse, asyncio, logging, os
+from urllib.parse import urlparse
 from carbon_intensity.carbon_intensity import CarbonIntensityPoller, POLL_INTERVAL_SECONDS
 from carbon_intensity_amqp_producer_amqp_producer.producer import UkOrgCarbonintensityAmqpProducer
 logger=logging.getLogger(__name__)
