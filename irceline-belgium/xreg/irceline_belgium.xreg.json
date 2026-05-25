@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/be.irceline.Stations"
-      ]
+      ],
+      "description": "Kafka producer endpoint for IRCELINE Belgium Air Quality CloudEvents on the `irceline-belgium` topic keyed by `{station_id}`."
     },
     "be.irceline.Timeseries.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/be.irceline.Timeseries"
-      ]
+      ],
+      "description": "Kafka producer endpoint for IRCELINE Belgium Air Quality CloudEvents on the `irceline-belgium` topic keyed by `{timeseries_id}`."
     }
   },
   "messagegroups": {
@@ -62,9 +64,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Station"
+          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Station",
+          "description": "A reference record published by Belgium's IRCELINE interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events."
         }
-      }
+      },
+      "description": "Events from IRCELINE Belgium Air Quality covering Belgian air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "be.irceline.Timeseries": {
       "messages": {
@@ -84,7 +88,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Timeseries"
+          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Timeseries",
+          "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value."
         },
         "be.irceline.Observation": {
           "name": "Observation",
@@ -102,9 +107,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Observation"
+          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Observation",
+          "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from IRCELINE Belgium Air Quality covering Belgian air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -124,7 +131,7 @@
                 "name": "Station",
                 "type": "object",
                 "additionalProperties": false,
-                "description": "Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.",
+                "description": "A reference record published by Belgium's IRCELINE interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events.",
                 "required": [
                   "station_id",
                   "label",
@@ -184,7 +191,7 @@
                 "name": "Timeseries",
                 "type": "object",
                 "additionalProperties": false,
-                "description": "Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.",
+                "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.",
                 "definitions": {
                   "StatusInterval": {
                     "name": "StatusInterval",
@@ -236,7 +243,8 @@
                     "items": {
                       "type": {
                         "$ref": "#/definitions/StatusInterval"
-                      }
+                      },
+                      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                     }
                   }
                 },
@@ -380,7 +388,7 @@
                 "name": "Observation",
                 "type": "object",
                 "additionalProperties": false,
-                "description": "Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.",
+                "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "timeseries_id",
                   "timestamp",
@@ -446,24 +454,29 @@
                   {
                     "name": "station_id",
                     "type": "string",
-                    "doc": "Stable numeric station identifier from properties.id."
+                    "doc": "Stable numeric station identifier from properties.id.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "label",
                     "type": "string",
-                    "doc": "Human-readable station label from properties.label."
+                    "doc": "Human-readable station label from properties.label.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "latitude",
                     "type": "double",
-                    "doc": "Latitude in decimal degrees north from GeoJSON coordinates[1]."
+                    "doc": "Latitude in decimal degrees north from GeoJSON coordinates[1].",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "longitude",
                     "type": "double",
-                    "doc": "Longitude in decimal degrees east from GeoJSON coordinates[0]."
+                    "doc": "Longitude in decimal degrees east from GeoJSON coordinates[0].",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   }
-                ]
+                ],
+                "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source."
               }
             }
           }
@@ -485,27 +498,32 @@
                   {
                     "name": "timeseries_id",
                     "type": "string",
-                    "doc": "Stable numeric timeseries identifier from id."
+                    "doc": "Stable numeric timeseries identifier from id.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "label",
                     "type": "string",
-                    "doc": "Descriptive upstream timeseries label."
+                    "doc": "Descriptive upstream timeseries label.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "uom",
                     "type": "string",
-                    "doc": "Published unit of measurement."
+                    "doc": "Published unit of measurement.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "station_id",
                     "type": "string",
-                    "doc": "Linked numeric station identifier from station.properties.id."
+                    "doc": "Linked numeric station identifier from station.properties.id.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "station_label",
                     "type": "string",
-                    "doc": "Linked station label from station.properties.label."
+                    "doc": "Linked station label from station.properties.label.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "latitude",
@@ -514,7 +532,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Linked station latitude from station.geometry.coordinates[1]."
+                    "doc": "Linked station latitude from station.geometry.coordinates[1].",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "longitude",
@@ -523,7 +542,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Linked station longitude from station.geometry.coordinates[0]."
+                    "doc": "Linked station longitude from station.geometry.coordinates[0].",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "phenomenon_id",
@@ -532,7 +552,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Measured phenomenon identifier from parameters.phenomenon.id."
+                    "doc": "Measured phenomenon identifier from parameters.phenomenon.id.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "phenomenon_label",
@@ -541,7 +562,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Measured phenomenon label from parameters.phenomenon.label."
+                    "doc": "Measured phenomenon label from parameters.phenomenon.label.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "category_id",
@@ -550,7 +572,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Category identifier from parameters.category.id."
+                    "doc": "Category identifier from parameters.category.id.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "category_label",
@@ -559,7 +582,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Category label from parameters.category.label."
+                    "doc": "Category label from parameters.category.label.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "status_intervals",
@@ -597,9 +621,11 @@
                       }
                     ],
                     "default": null,
-                    "doc": "Optional ordered array of status interval bands from the expanded timeseries metadata."
+                    "doc": "Optional ordered array of status interval bands from the expanded timeseries metadata.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
               }
             }
           }
@@ -621,12 +647,14 @@
                   {
                     "name": "timeseries_id",
                     "type": "string",
-                    "doc": "Stable numeric timeseries identifier."
+                    "doc": "Stable numeric timeseries identifier.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "timestamp",
                     "type": "string",
-                    "doc": "Observation timestamp in ISO 8601 UTC form."
+                    "doc": "Observation timestamp in ISO 8601 UTC form.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "value",
@@ -635,19 +663,27 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Measured value from the IRCELINE getData response."
+                    "doc": "Measured value from the IRCELINE getData response.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   },
                   {
                     "name": "uom",
                     "type": "string",
-                    "doc": "Published unit of measurement copied from the parent timeseries."
+                    "doc": "Published unit of measurement copied from the parent timeseries.",
+                    "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "IRCELINE Belgium Air Quality publishes pollutant concentration and air-quality measurements from Belgium's IRCELINE interregional environment agency for Belgian air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for IRCELINE Belgium Air Quality, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
