@@ -1,6 +1,6 @@
 # RWS Waterwebservices (Netherlands) Water Level Bridge Events
 
-MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to retained, QoS-1 Unified Namespace topics under hydro/nl/rws/rws-waterwebservices/{station_code}/... RWS Waterwebservices does not expose a stable shared water-body axis in the station catalog, so the MQTT tree intentionally uses the station code as the stable subscriber axis.
+RWS Waterwebservices publishes water level observations from Rijkswaterstaat for Dutch water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -52,11 +52,11 @@ CloudEvents type: `NL.RWS.Waterwebservices.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Dutch water monitoring location published by Rijkswaterstaat. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the RWS Waterwebservices source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_code}`. `{station_code}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_code}`. `{station_code}` is provider code identifying the station. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -69,11 +69,11 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 
 `Station` payloads are JSON object. Required fields: `station_code`, `name`, `latitude`, `longitude`.
 
-- **`station_code`** (string, required): No description provided.
-- **`name`** (string, required): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`longitude`** (double, required): No description provided.
-- **`coordinate_system`** (string, optional): No description provided.
+- **`station_code`** (string, required): Provider code identifying the station.
+- **`name`** (string, required): Human-readable name of the station, site, or location.
+- **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
+- **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
+- **`coordinate_system`** (string, optional): Provider-supplied coordinate system value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -98,11 +98,11 @@ CloudEvents type: `NL.RWS.Waterwebservices.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from Rijkswaterstaat for one monitoring site. It carries water level observations when the upstream feed reports a new or refreshed value. Measurement payload for water level observations in the RWS Waterwebservices source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_code}`. `{station_code}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_code}`. `{station_code}` is provider code identifying the station. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -115,15 +115,15 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_code`, `timestamp`, `value`.
 
-- **`station_code`** (string, required): No description provided.
-- **`location_name`** (string, optional): No description provided.
-- **`timestamp`** (datetime, required): No description provided.
-- **`value`** (double, required): No description provided.
-- **`unit`** (string, optional): No description provided.
-- **`quality_code`** (string, optional): No description provided.
-- **`status`** (string, optional): No description provided.
-- **`compartment`** (string, optional): No description provided.
-- **`parameter`** (string, optional): No description provided.
+- **`station_code`** (string, required): Provider code identifying the station.
+- **`location_name`** (string, optional): Human-readable name of the location.
+- **`timestamp`** (datetime, required): Time when the provider recorded or published the observation.
+- **`value`** (double, required): Measured value reported by the upstream provider.
+- **`unit`** (string, optional): Unit used for the measured value.
+- **`quality_code`** (string, optional): Provider code identifying the quality.
+- **`status`** (string, optional): Provider status value for the station, measurement, or alert.
+- **`compartment`** (string, optional): Provider-supplied compartment value for this record.
+- **`parameter`** (string, optional): Provider-supplied parameter value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

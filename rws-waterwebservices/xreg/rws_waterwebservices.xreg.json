@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NL.RWS.Waterwebservices"
-      ]
+      ],
+      "description": "Kafka producer endpoint for RWS Waterwebservices CloudEvents on the `rws-waterwebservices` topic keyed by `{station_code}`."
     },
     "NL.RWS.Waterwebservices.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NL.RWS.Waterwebservices.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for RWS Waterwebservices CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.Station"
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.Station",
+          "description": "A reference record for one Dutch water monitoring location published by Rijkswaterstaat. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "NL.RWS.Waterwebservices.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "description": "A current measurement from Rijkswaterstaat for one monitoring site. It carries water level observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from RWS Waterwebservices covering Dutch water monitoring locations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "NL.RWS.Waterwebservices.mqtt": {
-      "description": "MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to retained, QoS-1 Unified Namespace topics under hydro/nl/rws/rws-waterwebservices/{station_code}/... RWS Waterwebservices does not expose a stable shared water-body axis in the station catalog, so the MQTT tree intentionally uses the station code as the stable subscriber axis.",
+      "description": "MQTT 5 variant of the RWS Waterwebservices events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "NL.RWS.Waterwebservices.mqtt.Station": {
           "name": "Station",
@@ -133,29 +138,34 @@
                 "name": "Station",
                 "properties": {
                   "station_code": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider code identifying the station."
                   },
                   "name": {
                     "type": "string",
                     "altnames": {
                       "lang:nl": "Naam"
-                    }
+                    },
+                    "description": "Human-readable name of the station, site, or location."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "coordinate_system": {
                     "type": "string",
                     "altnames": {
                       "lang:nl": "Coordinatenstelsel"
-                    }
+                    },
+                    "description": "Provider-supplied coordinate system value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the RWS Waterwebservices source."
               }
             }
           }
@@ -178,50 +188,59 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_code": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider code identifying the station."
                   },
                   "location_name": {
                     "type": "string",
                     "altnames": {
                       "lang:nl": "Naam"
-                    }
+                    },
+                    "description": "Human-readable name of the location."
                   },
                   "timestamp": {
                     "type": "datetime",
                     "altnames": {
                       "lang:nl": "Tijdstip"
-                    }
+                    },
+                    "description": "Time when the provider recorded or published the observation."
                   },
                   "value": {
                     "type": "double",
                     "altnames": {
                       "lang:nl": "Waarde_Numeriek"
-                    }
+                    },
+                    "description": "Measured value reported by the upstream provider."
                   },
                   "unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the measured value."
                   },
                   "quality_code": {
                     "type": "string",
                     "altnames": {
                       "lang:nl": "Kwaliteitswaardecode"
-                    }
+                    },
+                    "description": "Provider code identifying the quality."
                   },
                   "status": {
                     "type": "string",
                     "altnames": {
                       "lang:nl": "Statuswaarde"
-                    }
+                    },
+                    "description": "Provider status value for the station, measurement, or alert."
                   },
                   "compartment": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied compartment value for this record."
                   },
                   "parameter": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied parameter value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level observations in the RWS Waterwebservices source."
               }
             }
           }
@@ -240,7 +259,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the RWS Waterwebservices source.",
                 "fields": [
                   {
                     "name": "station_code",
@@ -267,7 +286,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "NL.RWS.Waterwebservices"
+                "namespace": "NL.RWS.Waterwebservices",
+                "description": "Reference details for one monitoring station or site in the RWS Waterwebservices source."
               }
             }
           }
@@ -282,7 +302,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the RWS Waterwebservices source.",
                 "fields": [
                   {
                     "name": "station_code",
@@ -345,12 +365,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "NL.RWS.Waterwebservices"
+                "namespace": "NL.RWS.Waterwebservices",
+                "description": "Measurement payload for observations in the RWS Waterwebservices source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "RWS Waterwebservices publishes water level observations from Rijkswaterstaat for Dutch water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for RWS Waterwebservices, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
