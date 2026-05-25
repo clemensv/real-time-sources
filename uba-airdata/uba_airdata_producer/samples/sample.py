@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataEventProducer
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataComponentsEventProducer
+from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataMqttEventProducer
+from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataAmqpEventProducer
+from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataComponentsMqttEventProducer
+from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataComponentsAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -90,6 +94,86 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'de.uba.airdata.components.Component' event to Kafka topic.
     await de_uba_airdata_components_event_producer.send_de_uba_airdata_components_component(_feedurl = 'TODO: replace me', _component_id = 'TODO: replace me', data = _component)
     print(f"Sent 'de.uba.airdata.components.Component' event: {_component.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        de_uba_airdata_mqtt_event_producer = DeUbaAirdataMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        de_uba_airdata_mqtt_event_producer = DeUbaAirdataMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- de.uba.airdata.mqtt.Station ----
+    # TODO: Supply event data for the de.uba.airdata.mqtt.Station event
+    _station = Station()
+
+    # sends the 'de.uba.airdata.mqtt.Station' event to Kafka topic.
+    await de_uba_airdata_mqtt_event_producer.send_de_uba_airdata_mqtt_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'de.uba.airdata.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- de.uba.airdata.mqtt.Measure ----
+    # TODO: Supply event data for the de.uba.airdata.mqtt.Measure event
+    _measure = Measure()
+
+    # sends the 'de.uba.airdata.mqtt.Measure' event to Kafka topic.
+    await de_uba_airdata_mqtt_event_producer.send_de_uba_airdata_mqtt_measure(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _measure)
+    print(f"Sent 'de.uba.airdata.mqtt.Measure' event: {_measure.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        de_uba_airdata_amqp_event_producer = DeUbaAirdataAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        de_uba_airdata_amqp_event_producer = DeUbaAirdataAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- de.uba.airdata.amqp.Station ----
+    # TODO: Supply event data for the de.uba.airdata.amqp.Station event
+    _station = Station()
+
+    # sends the 'de.uba.airdata.amqp.Station' event to Kafka topic.
+    await de_uba_airdata_amqp_event_producer.send_de_uba_airdata_amqp_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'de.uba.airdata.amqp.Station' event: {_station.to_json()}")
+
+    # ---- de.uba.airdata.amqp.Measure ----
+    # TODO: Supply event data for the de.uba.airdata.amqp.Measure event
+    _measure = Measure()
+
+    # sends the 'de.uba.airdata.amqp.Measure' event to Kafka topic.
+    await de_uba_airdata_amqp_event_producer.send_de_uba_airdata_amqp_measure(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _measure)
+    print(f"Sent 'de.uba.airdata.amqp.Measure' event: {_measure.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        de_uba_airdata_components_mqtt_event_producer = DeUbaAirdataComponentsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        de_uba_airdata_components_mqtt_event_producer = DeUbaAirdataComponentsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- de.uba.airdata.components.mqtt.Component ----
+    # TODO: Supply event data for the de.uba.airdata.components.mqtt.Component event
+    _component = Component()
+
+    # sends the 'de.uba.airdata.components.mqtt.Component' event to Kafka topic.
+    await de_uba_airdata_components_mqtt_event_producer.send_de_uba_airdata_components_mqtt_component(_feedurl = 'TODO: replace me', _component_id = 'TODO: replace me', data = _component)
+    print(f"Sent 'de.uba.airdata.components.mqtt.Component' event: {_component.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        de_uba_airdata_components_amqp_event_producer = DeUbaAirdataComponentsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        de_uba_airdata_components_amqp_event_producer = DeUbaAirdataComponentsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- de.uba.airdata.components.amqp.Component ----
+    # TODO: Supply event data for the de.uba.airdata.components.amqp.Component event
+    _component = Component()
+
+    # sends the 'de.uba.airdata.components.amqp.Component' event to Kafka topic.
+    await de_uba_airdata_components_amqp_event_producer.send_de_uba_airdata_components_amqp_component(_feedurl = 'TODO: replace me', _component_id = 'TODO: replace me', data = _component)
+    print(f"Sent 'de.uba.airdata.components.amqp.Component' event: {_component.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

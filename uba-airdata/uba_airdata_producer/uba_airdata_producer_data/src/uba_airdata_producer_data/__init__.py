@@ -1,5 +1,3 @@
-from .station import Station
-from .measure import Measure
-from .component import Component
+from .de import Station, Measure, Component
 
 __all__ = ["Station", "Measure", "Component"]

@@ -4,8 +4,8 @@ UBA Airdata publishes pollutant concentration measurements from the Austrian Umw
 
 ## At a glance
 
-- **Event types:** 3 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 3 documented event types (9 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
 - **Identity:** `{station_id}`, `{component_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `air-quality/at/uba/uba-airdata/+/+/+/info`, `air-quality/at/uba/uba-airdata/+/+/+/measure`, `air-quality/at/uba/uba-airdata/+/+/+/component`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('air-quality/at/uba/uba-airdata/+/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `uba-airdata`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/uba-airdata')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `uba-airdata`, key `{station_id}` |
+| `MQTT/5.0` | topic `air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/uba-airdata`, message subject `{station_id}`; application properties bundesland `{bundesland}`, component_id `{component_id}` |
 
 #### Payload
 
@@ -101,7 +131,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Measure
 
@@ -120,6 +150,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `uba-airdata`, key `{station_id}` |
+| `MQTT/5.0` | topic `air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/measure`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/uba-airdata`, message subject `{station_id}`; application properties bundesland `{bundesland}`, component_id `{component_id}` |
 
 #### Payload
 
@@ -169,6 +201,8 @@ Each event identifies the real-world resource with `{component_id}`. `{component
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `uba-airdata`, key `{component_id}` |
+| `MQTT/5.0` | topic `air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/component`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/uba-airdata`, message subject `{component_id}`; application properties bundesland `{bundesland}`, station_id `{station_id}` |
 
 #### Payload
 
@@ -222,3 +256,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/uba_airdata.xreg.json`](xreg/uba_airdata.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- ![Deploy AMQP Service Bus: <https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>
