@@ -4960,3 +4960,41 @@ class TestEntsoeMqttDockerFlow:
         observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
         assert 'eu.entsoe.transparency.DayAheadPrices' in observed
         assert 'eu.entsoe.transparency.CrossBorderPhysicalFlows' in observed
+
+
+# ---- eurdep-radiation ---------------------------------------------------
+
+@pytest.fixture(scope='module')
+def eurdep_radiation_mqtt_image():
+    return build_image('eurdep-radiation', dockerfile='Dockerfile.mqtt', tag='test-eurdep-radiation-mqtt')
+
+@pytest.fixture()
+def mosquitto_eurdep_radiation():
+    container, network, host_port = _generic_mosquitto('eurdep-radiation-mqtt-e2e', 'eurdep-radiation-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'eurdep-radiation-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestEurdepRadiationMqttDockerFlow:
+    def test_emits_retained_uns_topics(self, mosquitto_eurdep_radiation, eurdep_radiation_mqtt_image):
+        client = docker.from_env(); broker_url = f"mqtt://{mosquitto_eurdep_radiation['internal_host']}:{mosquitto_eurdep_radiation['internal_port']}"
+        feeder = client.containers.run(eurdep_radiation_mqtt_image.id, detach=True, remove=False, network=mosquitto_eurdep_radiation['network'], environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', 'EURDEP_RADIATION_SAMPLE_MODE': 'true'})
+        try:
+            result = feeder.wait(timeout=300); logs = feeder.logs().decode('utf-8', errors='replace'); assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n{logs}"
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages = _collect_messages_topic('127.0.0.1', mosquitto_eurdep_radiation['host_port'], 'radiation/intl/eurdep/eurdep-radiation/#', timeout=20.0)
+        assert messages
+        info=[m for m in messages if m['topic'].endswith('/info')]; dose=[m for m in messages if m['topic'].endswith('/dose-rate')]
+        assert info and dose
+        assert {m['user_properties'].get('type') for m in info} == {'eu.jrc.eurdep.Station'}
+        assert {m['user_properties'].get('type') for m in dose} == {'eu.jrc.eurdep.DoseRateReading'}
+        for sample in (info[0], dose[0]):
+            assert sample['retain'] is True and sample['qos'] == 1
+            for required in ('id','source','type','subject','time','specversion'): assert required in sample['user_properties']
+            payload = _to_dict(sample['payload']); assert payload and 'station_id' in payload and 'country' in payload

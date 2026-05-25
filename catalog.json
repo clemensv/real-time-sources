@@ -588,7 +588,9 @@
     "key": false,
     "desc": "Europe — ~5,500 stations, 39 countries, gamma dose",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "usgs-geomag",

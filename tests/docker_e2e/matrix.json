@@ -618,6 +618,18 @@
       "image": "meteoalarm-amqp",
       "file": "Dockerfile.amqp",
       "module": "meteoalarm_amqp"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "eurdep_radiation_mqtt"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "eurdep_radiation_amqp"
     }
   ],
   "flow": [
@@ -1253,6 +1265,20 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMeteoalarmAmqpDockerFlow"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEurdepRadiationMqttDockerFlow"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEurdepRadiationAmqpDockerFlow"
     }
   ]
 }
