@@ -1,6 +1,6 @@
 # DWD Pollenflug (German Pollen Forecast) Bridge Events
 
-**DWD Pollenflug Bridge** polls the Deutscher Wetterdienst (DWD) pollen forecast API for the latest daily pollen forecasts across Germany and sends them to a Kafka topic as CloudEvents. The tool tracks the `last_update` timestamp from the API to avoid sending duplicate forecasts.
+DWD Pollenflug publishes pollen exposure forecasts by region and plant type from Germany's Deutscher Wetterdienst (DWD) for German pollen forecast regions. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `DE.DWD.Pollenflug.Region`
 
 #### What it tells you
 
-Reference data for a DWD pollen forecast region or sub-region. Germany is divided into 11 main regions, some of which are subdivided into 2–4 sub-regions for a total of 27 forecast areas. Emitted at bridge startup so downstream consumers can correlate forecast events with region metadata.
+A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -73,7 +73,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Pollen Forecast
 
@@ -81,7 +81,7 @@ CloudEvents type: `DE.DWD.Pollenflug.PollenForecast`
 
 #### What it tells you
 
-Daily pollen forecast for a single German region or sub-region, published by the Deutscher Wetterdienst (DWD). Contains intensity values for eight pollen types across three forecast days (today, tomorrow, day after tomorrow). Intensity is on a scale from 0 (no load) to 3 (high load) with intermediate half-step ranges such as '0-1', '1-2', '2-3'.
+A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source.
 
 #### Identity
 
