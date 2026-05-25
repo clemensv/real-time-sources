@@ -2,479 +2,269 @@
 
 The LAQN London Air Quality Network bridge polls the public LAQN API operated by King's College London and emits structured JSON CloudEvents to Kafka. It keeps the upstream split intact: site metadata, species metadata, hourly site measurements, and Daily Air Quality Index bulletin records.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 4 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
+- **Identity:** `{site_code}`, `{species_code}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `laqn-london`. The record key is `{site_code}`, `{species_code}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['laqn-london'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Site
+
+CloudEvents type: `uk.kcl.laqn.Site`
+
+#### What it tells you
+
+LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates. Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_code}`. `{site_code}` is stable LAQN site code that identifies the monitoring site, such as BX1. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `laqn-london`, key `{site_code}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `uk.kcl.laqn.Kafka`
+`Site` payloads are JSON object. Required fields: `site_code`, `site_name`, `site_type`, `local_authority_code`, `local_authority_name`, `latitude`, `longitude`, `date_opened`, `date_closed`, `data_owner`, `data_manager`.
 
-| Field | Value |
+- **`site_code`** (string, required): Stable LAQN site code that identifies the monitoring site, such as BX1.
+- **`site_name`** (string, required): Human-readable LAQN site name published for the monitoring site.
+- **`site_type`** (enum, required): Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.
+- **`local_authority_code`** (string, required): Stable local authority code associated with the site in the LAQN reference data.
+- **`local_authority_name`** (string, required): Human-readable local authority name associated with the site in the LAQN reference data.
+- **`latitude`** (double or null, required): WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.
+- **`longitude`** (double or null, required): WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.
+- **`date_opened`** (string, required): Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.
+- **`date_closed`** (string or null, required): Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.
+- **`data_owner`** (string, required): Organisation listed by LAQN as the owner of the site's data.
+- **`data_manager`** (string, required): Organisation listed by LAQN as the manager of the monitoring site data.
+##### `site_type` values
+
+- `Suburban`
+- `Kerbside`
+- `Roadside`
+- `Urban Background`
+- `Industrial`
+- `Rural`
+- `other`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_code": "string",
+  "site_name": "string",
+  "site_type": "Suburban",
+  "local_authority_code": "string",
+  "local_authority_name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "date_opened": "string",
+  "date_closed": "string",
+  "data_owner": "string",
+  "data_manager": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Measurement
+
+CloudEvents type: `uk.kcl.laqn.Measurement`
+
+#### What it tells you
+
+LAQN hourly pollutant measurement for a site and species at a GMT timestamp. Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_code}`. `{site_code}` is stable LAQN site code for the monitoring site that produced the measurement. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`uk.kcl.laqn`](#messagegroup-ukkcllaqn) |
+| `KAFKA` | topic `laqn-london`, key `{site_code}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Measurement` payloads are JSON object. Required fields: `site_code`, `species_code`, `measurement_date_gmt`, `value`.
+
+- **`site_code`** (string, required): Stable LAQN site code for the monitoring site that produced the measurement.
+- **`species_code`** (string, required): Stable LAQN pollutant code for the measured species.
+- **`measurement_date_gmt`** (string, required): Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.
+- **`value`** (double, required): Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_code": "string",
+  "species_code": "string",
+  "measurement_date_gmt": "string",
+  "value": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Daily Index
+
+CloudEvents type: `uk.kcl.laqn.DailyIndex`
+
+#### What it tells you
+
+LAQN Daily Air Quality Index (DAQI) for a site and pollutant, published as the latest London-wide bulletin. Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_code}`. `{site_code}` is stable LAQN site code for the monitoring site to which the daily index applies. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `laqn-london` |
-| Kafka key | `{site_code}` |
-| Deployed | False |
+| `KAFKA` | topic `laqn-london`, key `{site_code}` |
 
-### Endpoint `uk.kcl.laqn.species.Kafka`
+#### Payload
 
-| Field | Value |
+`Daily Index` payloads are JSON object. Required fields: `site_code`, `bulletin_date`, `species_code`, `air_quality_index`, `air_quality_band`, `index_source`.
+
+- **`site_code`** (string, required): Stable LAQN site code for the monitoring site to which the daily index applies.
+- **`bulletin_date`** (string, required): Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS.
+- **`species_code`** (string, required): Stable LAQN pollutant code for the species to which the daily index applies.
+- **`air_quality_index`** (integer, required): LAQN Daily Air Quality Index value from 1 to 10, where 1 to 3 is Low, 4 to 6 is Moderate, 7 to 9 is High, and 10 is Very High. Constraints: minimum `1`, maximum `10`.
+- **`air_quality_band`** (enum, required): Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High.
+- **`index_source`** (enum, required): Origin of the daily index published by LAQN, typically Measurement or Forecast.
+##### `air_quality_band` values
+
+- `Low`
+- `Moderate`
+- `High`
+- `Very High`
+##### `index_source` values
+
+- `Measurement`
+- `Forecast`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_code": "string",
+  "bulletin_date": "string",
+  "species_code": "string",
+  "air_quality_index": 0,
+  "air_quality_band": "Low",
+  "index_source": "Measurement"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Species
+
+CloudEvents type: `uk.kcl.laqn.Species`
+
+#### What it tells you
+
+LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code. Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.
+
+#### Identity
+
+Each event identifies the real-world resource with `{species_code}`. `{species_code}` is stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`uk.kcl.laqn.species`](#messagegroup-ukkcllaqnspecies) |
+| `KAFKA` | topic `laqn-london`, key `{species_code}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `laqn-london` |
-| Kafka key | `{species_code}` |
-| Deployed | False |
+`Species` payloads are JSON object. Required fields: `species_code`, `species_name`, `description`, `health_effect`, `link`.
 
-## Messagegroups
+- **`species_code`** (string, required): Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.
+- **`species_name`** (string, required): Human-readable pollutant name published by LAQN for the pollutant code.
+- **`description`** (string, required): LAQN explanatory description of the pollutant and how it is formed or encountered.
+- **`health_effect`** (string, required): LAQN health effect guidance describing the health impacts associated with exposure to the pollutant.
+- **`link`** (string, required): HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant.
+#### Example payload
 
-### Messagegroup `uk.kcl.laqn`
-<a id="messagegroup-ukkcllaqn"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `uk.kcl.laqn.Kafka` (KAFKA) |
-| Messages | 3 |
+```json
+{
+  "species_code": "string",
+  "species_name": "string",
+  "description": "string",
+  "health_effect": "string",
+  "link": "string"
+}
+```
 
-#### Message `uk.kcl.laqn.Site`
-<a id="message-ukkcllaqnsite"></a>
+#### Reference vs telemetry
 
-LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| Field | Value |
-| --- | --- |
-| Name | Site |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Site`](#schema-ukkcllaqnsite) |
-| Event role | Telemetry/event data |
+## Conventions
 
-##### CloudEvents metadata
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `uk.kcl.laqn.Site` |
-| `source` |  | `string` | `False` | `http://api.erg.ic.ac.uk/AirQuality/Information/MonitoringSites/GroupName=All/Json` |
-| `subject` |  | `uritemplate` | `False` | `{site_code}` |
+Transport bindings carry CloudEvents metadata differently:
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `uk.kcl.laqn.Kafka` | `KAFKA` | topic `laqn-london`; key `{site_code}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `uk.kcl.laqn.Measurement`
-<a id="message-ukkcllaqnmeasurement"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-LAQN hourly pollutant measurement for a site and species at a GMT timestamp.
+## Operational notes
 
-| Field | Value |
-| --- | --- |
-| Name | Measurement |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Measurement`](#schema-ukkcllaqnmeasurement) |
-| Event role | Telemetry/event data |
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-##### CloudEvents metadata
+## References
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `uk.kcl.laqn.Measurement` |
-| `source` |  | `string` | `False` | `http://api.erg.ic.ac.uk/AirQuality/Data/Site` |
-| `subject` |  | `uritemplate` | `False` | `{site_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `uk.kcl.laqn.Kafka` | `KAFKA` | topic `laqn-london`; key `{site_code}` |
-
-#### Message `uk.kcl.laqn.DailyIndex`
-<a id="message-ukkcllaqndailyindex"></a>
-
-LAQN Daily Air Quality Index (DAQI) for a site and pollutant, published as the latest London-wide bulletin.
-
-| Field | Value |
-| --- | --- |
-| Name | DailyIndex |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.DailyIndex`](#schema-ukkcllaqndailyindex) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `uk.kcl.laqn.DailyIndex` |
-| `source` |  | `string` | `False` | `http://api.erg.ic.ac.uk/AirQuality/Daily/MonitoringIndex/Latest/GroupName=London/Json` |
-| `subject` |  | `uritemplate` | `False` | `{site_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `uk.kcl.laqn.Kafka` | `KAFKA` | topic `laqn-london`; key `{site_code}` |
-
-### Messagegroup `uk.kcl.laqn.species`
-<a id="messagegroup-ukkcllaqnspecies"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `uk.kcl.laqn.species.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `uk.kcl.laqn.Species`
-<a id="message-ukkcllaqnspecies"></a>
-
-LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code.
-
-| Field | Value |
-| --- | --- |
-| Name | Species |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Species`](#schema-ukkcllaqnspecies) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `uk.kcl.laqn.Species` |
-| `source` |  | `string` | `False` | `http://api.erg.ic.ac.uk/AirQuality/Information/Species/Json` |
-| `subject` |  | `uritemplate` | `False` | `{species_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `uk.kcl.laqn.species.Kafka` | `KAFKA` | topic `laqn-london`; key `{species_code}` |
-
-## Schemagroups
-
-### Schemagroup `uk.kcl.laqn.jstruct`
-<a id="schemagroup-ukkcllaqnjstruct"></a>
-
-#### Schema `uk.kcl.laqn.Site`
-<a id="schema-ukkcllaqnsite"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Site |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Site` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/uk/kcl/laqn/Site` |
-| Type | `object` |
-
-###### Object `Site`
-<a id="schema-node-site"></a>
-
-Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `site_code` | `string` | `True` | Stable LAQN site code that identifies the monitoring site, such as BX1. | altnames=`["@SiteCode"]` | - | - |
-| `site_name` | `string` | `True` | Human-readable LAQN site name published for the monitoring site. | altnames=`["@SiteName"]` | - | - |
-| `site_type` | enum `['Suburban', 'Kerbside', 'Roadside', 'Urban Background', 'Industrial', 'Rural', 'other']` | `True` | Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other. | altnames=`["@SiteType"]` | - | - |
-| `local_authority_code` | `string` | `True` | Stable local authority code associated with the site in the LAQN reference data. | altnames=`["@LocalAuthorityCode"]` | - | - |
-| `local_authority_name` | `string` | `True` | Human-readable local authority name associated with the site in the LAQN reference data. | altnames=`["@LocalAuthorityName"]` | - | - |
-| `latitude` | `union` | `True` | WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank. | altnames=`["@Latitude"]` | - | - |
-| `longitude` | `union` | `True` | WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank. | altnames=`["@Longitude"]` | - | - |
-| `date_opened` | `string` | `True` | Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format. | altnames=`["@DateOpened"]` | - | - |
-| `date_closed` | `union` | `True` | Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published. | altnames=`["@DateClosed"]` | - | - |
-| `data_owner` | `string` | `True` | Organisation listed by LAQN as the owner of the site's data. | altnames=`["@DataOwner"]` | - | - |
-| `data_manager` | `string` | `True` | Organisation listed by LAQN as the manager of the monitoring site data. | altnames=`["@DataManager"]` | - | - |
-
-#### Schema `uk.kcl.laqn.Species`
-<a id="schema-ukkcllaqnspecies"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Species |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Species` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/uk/kcl/laqn/Species` |
-| Type | `object` |
-
-###### Object `Species`
-<a id="schema-node-species"></a>
-
-Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `species_code` | `string` | `True` | Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO. | altnames=`["@SpeciesCode"]` | - | - |
-| `species_name` | `string` | `True` | Human-readable pollutant name published by LAQN for the pollutant code. | altnames=`["@SpeciesName"]` | - | - |
-| `description` | `string` | `True` | LAQN explanatory description of the pollutant and how it is formed or encountered. | altnames=`["@Description"]` | - | - |
-| `health_effect` | `string` | `True` | LAQN health effect guidance describing the health impacts associated with exposure to the pollutant. | altnames=`["@HealthEffect"]` | - | - |
-| `link` | `string` | `True` | HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant. | altnames=`["@Link"]` | - | - |
-
-#### Schema `uk.kcl.laqn.Measurement`
-<a id="schema-ukkcllaqnmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Measurement |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Measurement` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/uk/kcl/laqn/Measurement` |
-| Type | `object` |
-
-###### Object `Measurement`
-<a id="schema-node-measurement"></a>
-
-Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `site_code` | `string` | `True` | Stable LAQN site code for the monitoring site that produced the measurement. | altnames=`["@SiteCode"]` | - | - |
-| `species_code` | `string` | `True` | Stable LAQN pollutant code for the measured species. | altnames=`["@SpeciesCode"]` | - | - |
-| `measurement_date_gmt` | `string` | `True` | Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS. | altnames=`["@MeasurementDateGMT"]` | - | - |
-| `value` | `double` | `True` | Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value. | altnames=`["@Value"]` | - | - |
-
-#### Schema `uk.kcl.laqn.DailyIndex`
-<a id="schema-ukkcllaqndailyindex"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DailyIndex |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/DailyIndex` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/uk/kcl/laqn/DailyIndex` |
-| Type | `object` |
-
-###### Object `DailyIndex`
-<a id="schema-node-dailyindex"></a>
-
-Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `site_code` | `string` | `True` | Stable LAQN site code for the monitoring site to which the daily index applies. | altnames=`["@SiteCode"]` | - | - |
-| `bulletin_date` | `string` | `True` | Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS. | altnames=`["@BulletinDate"]` | - | - |
-| `species_code` | `string` | `True` | Stable LAQN pollutant code for the species to which the daily index applies. | altnames=`["@SpeciesCode"]` | - | - |
-| `air_quality_index` | `integer` | `True` | LAQN Daily Air Quality Index value from 1 to 10, where 1 to 3 is Low, 4 to 6 is Moderate, 7 to 9 is High, and 10 is Very High. | altnames=`["@AirQualityIndex"]` | maximum=`10`<br>minimum=`1` | - |
-| `air_quality_band` | enum `['Low', 'Moderate', 'High', 'Very High']` | `True` | Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High. | altnames=`["@AirQualityBand"]` | - | - |
-| `index_source` | enum `['Measurement', 'Forecast']` | `True` | Origin of the daily index published by LAQN, typically Measurement or Forecast. | altnames=`["@IndexSource"]` | - | - |
-
-### Schemagroup `uk.kcl.laqn.avro`
-<a id="schemagroup-ukkcllaqnavro"></a>
-
-#### Schema `uk.kcl.laqn.Site`
-<a id="schema-ukkcllaqnsite"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Site |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Site |
-| Namespace | uk.kcl.laqn |
-| Type | `record` |
-| Doc | Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `site_code` | `string` | Stable LAQN site code that identifies the monitoring site, such as BX1. | `-` |
-| `site_name` | `string` | Human-readable LAQN site name published for the monitoring site. | `-` |
-| `site_type` | `string` | Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other. | `-` |
-| `local_authority_code` | `string` | Stable local authority code associated with the site in the LAQN reference data. | `-` |
-| `local_authority_name` | `string` | Human-readable local authority name associated with the site in the LAQN reference data. | `-` |
-| `latitude` | `null` \| `double` | WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank. | `-` |
-| `longitude` | `null` \| `double` | WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank. | `-` |
-| `date_opened` | `string` | Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format. | `-` |
-| `date_closed` | `null` \| `string` | Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published. | `-` |
-| `data_owner` | `string` | Organisation listed by LAQN as the owner of the site's data. | `-` |
-| `data_manager` | `string` | Organisation listed by LAQN as the manager of the monitoring site data. | `-` |
-
-#### Schema `uk.kcl.laqn.Species`
-<a id="schema-ukkcllaqnspecies"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Species |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Species |
-| Namespace | uk.kcl.laqn |
-| Type | `record` |
-| Doc | Reference description of a LAQN pollutant species, including explanatory text and health impact guidance. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `species_code` | `string` | Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO. | `-` |
-| `species_name` | `string` | Human-readable pollutant name published by LAQN for the pollutant code. | `-` |
-| `description` | `string` | LAQN explanatory description of the pollutant and how it is formed or encountered. | `-` |
-| `health_effect` | `string` | LAQN health effect guidance describing the health impacts associated with exposure to the pollutant. | `-` |
-| `link` | `string` | HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant. | `-` |
-
-#### Schema `uk.kcl.laqn.Measurement`
-<a id="schema-ukkcllaqnmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Measurement |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Measurement |
-| Namespace | uk.kcl.laqn |
-| Type | `record` |
-| Doc | Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `site_code` | `string` | Stable LAQN site code for the monitoring site that produced the measurement. | `-` |
-| `species_code` | `string` | Stable LAQN pollutant code for the measured species. | `-` |
-| `measurement_date_gmt` | `string` | Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS. | `-` |
-| `value` | `double` | Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value. | `-` |
-
-#### Schema `uk.kcl.laqn.DailyIndex`
-<a id="schema-ukkcllaqndailyindex"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DailyIndex |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | DailyIndex |
-| Namespace | uk.kcl.laqn |
-| Type | `record` |
-| Doc | Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `site_code` | `string` | Stable LAQN site code for the monitoring site to which the daily index applies. | `-` |
-| `bulletin_date` | `string` | Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS. | `-` |
-| `species_code` | `string` | Stable LAQN pollutant code for the species to which the daily index applies. | `-` |
-| `air_quality_index` | `int` | LAQN Daily Air Quality Index value from 1 to 10. | `-` |
-| `air_quality_band` | `string` | Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High. | `-` |
-| `index_source` | `string` | Origin of the daily index published by LAQN, typically Measurement or Forecast. | `-` |
+- xRegistry manifest: [`xreg/laqn_london.xreg.json`](xreg/laqn_london.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

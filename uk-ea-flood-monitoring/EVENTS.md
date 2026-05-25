@@ -2,259 +2,157 @@
 
 This project bridges the [UK Environment Agency Flood Monitoring API](https://environment.data.gov.uk/flood-monitoring/doc/reference) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams. It provides real-time water level and flow data from approximately 4,000 monitoring stations across England.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_reference}` identifies the resource each event is about.
+- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `uk-ea-flood-monitoring`. The record key is `{station_reference}`. In plain language, `{station_reference}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['uk-ea-flood-monitoring'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `UK.Gov.Environment.EA.FloodMonitoring.Station`
+
+#### What it tells you
+
+This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_reference}`. `{station_reference}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `uk-ea-flood-monitoring`, key `{station_reference}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `UK.Gov.Environment.EA.FloodMonitoring.Kafka`
+`Station` payloads are JSON object. Required fields: `station_reference`, `label`, `lat`, `long`, `notation`.
 
-| Field | Value |
+- **`station_reference`** (string, required): No description provided.
+- **`label`** (string, required): No description provided.
+- **`river_name`** (string or null, optional): No description provided.
+- **`catchment_name`** (string or null, optional): No description provided.
+- **`town`** (string or null, optional): No description provided.
+- **`lat`** (double, required): No description provided.
+- **`long`** (double, required): No description provided.
+- **`notation`** (string, required): No description provided.
+- **`status`** (string or null, optional): No description provided.
+- **`date_opened`** (string or null, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_reference": "string",
+  "label": "string",
+  "river_name": "string",
+  "catchment_name": "string",
+  "town": "string",
+  "lat": 0,
+  "long": 0,
+  "notation": "string",
+  "status": "string",
+  "date_opened": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Reading
+
+CloudEvents type: `UK.Gov.Environment.EA.FloodMonitoring.Reading`
+
+#### What it tells you
+
+This event carries reading data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_reference}`. `{station_reference}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`UK.Gov.Environment.EA.FloodMonitoring`](#messagegroup-ukgovenvironmenteafloodmonitoring) |
+| `KAFKA` | topic `uk-ea-flood-monitoring`, key `{station_reference}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `uk-ea-flood-monitoring` |
-| Kafka key | `{station_reference}` |
-| Deployed | False |
+`Reading` payloads are JSON object. Required fields: `station_reference`, `date_time`, `measure`, `value`.
 
-## Messagegroups
+- **`station_reference`** (string, required): No description provided.
+- **`date_time`** (datetime, required): No description provided.
+- **`measure`** (string, required): No description provided.
+- **`value`** (double, required): No description provided.
+#### Example payload
 
-### Messagegroup `UK.Gov.Environment.EA.FloodMonitoring`
-<a id="messagegroup-ukgovenvironmenteafloodmonitoring"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `UK.Gov.Environment.EA.FloodMonitoring.Kafka` (KAFKA) |
-| Messages | 2 |
+```json
+{
+  "station_reference": "string",
+  "date_time": "2024-01-01T00:00:00Z",
+  "measure": "string",
+  "value": 0
+}
+```
 
-#### Message `UK.Gov.Environment.EA.FloodMonitoring.Station`
-<a id="message-ukgovenvironmenteafloodmonitoringstation"></a>
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.jstruct/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station`](#schema-ukgovenvironmenteafloodmonitoringstation) |
-| Event role | Reference/status data |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-##### CloudEvents metadata
+## Conventions
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `UK.Gov.Environment.EA.FloodMonitoring.Station` |
-| `source` |  | `string` | `False` | `https://environment.data.gov.uk/flood-monitoring` |
-| `subject` |  | `uritemplate` | `False` | `{station_reference}` |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-##### Bound transports
+Transport bindings carry CloudEvents metadata differently:
 
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `UK.Gov.Environment.EA.FloodMonitoring.Kafka` | `KAFKA` | topic `uk-ea-flood-monitoring`; key `{station_reference}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `UK.Gov.Environment.EA.FloodMonitoring.Reading`
-<a id="message-ukgovenvironmenteafloodmonitoringreading"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Name | Reading |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring.jstruct/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading`](#schema-ukgovenvironmenteafloodmonitoringreading) |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `UK.Gov.Environment.EA.FloodMonitoring.Reading` |
-| `source` |  | `string` | `False` | `https://environment.data.gov.uk/flood-monitoring` |
-| `subject` |  | `uritemplate` | `False` | `{station_reference}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `UK.Gov.Environment.EA.FloodMonitoring.Kafka` | `KAFKA` | topic `uk-ea-flood-monitoring`; key `{station_reference}` |
-
-## Schemagroups
-
-### Schemagroup `UK.Gov.Environment.EA.FloodMonitoring.jstruct`
-<a id="schemagroup-ukgovenvironmenteafloodmonitoringjstruct"></a>
-
-#### Schema `UK.Gov.Environment.EA.FloodMonitoring.Station`
-<a id="schema-ukgovenvironmenteafloodmonitoringstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Station
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_reference` | `string` | `True` |  | - | - | - |
-| `label` | `string` | `True` |  | - | - | - |
-| `river_name` | `union` | `False` |  | - | - | - |
-| `catchment_name` | `union` | `False` |  | - | - | - |
-| `town` | `union` | `False` |  | - | - | - |
-| `lat` | `double` | `True` |  | - | - | - |
-| `long` | `double` | `True` |  | - | - | - |
-| `notation` | `string` | `True` |  | - | - | - |
-| `status` | `union` | `False` |  | - | - | - |
-| `date_opened` | `union` | `False` |  | - | - | - |
-
-#### Schema `UK.Gov.Environment.EA.FloodMonitoring.Reading`
-<a id="schema-ukgovenvironmenteafloodmonitoringreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Reading |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Reading` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Reading`
-<a id="schema-node-reading"></a>
-
-Reading
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Reading` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_reference` | `string` | `True` |  | - | - | - |
-| `date_time` | `datetime` | `True` |  | - | - | - |
-| `measure` | `string` | `True` |  | - | - | - |
-| `value` | `double` | `True` |  | - | - | - |
-
-### Schemagroup `UK.Gov.Environment.EA.FloodMonitoring.avro`
-<a id="schemagroup-ukgovenvironmenteafloodmonitoringavro"></a>
-
-#### Schema `UK.Gov.Environment.EA.FloodMonitoring.Station`
-<a id="schema-ukgovenvironmenteafloodmonitoringstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | UK.Gov.Environment.EA.FloodMonitoring |
-| Type | `record` |
-| Doc | Station |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_reference` | `string` |  | `-` |
-| `label` | `string` |  | `-` |
-| `river_name` | `null` \| `string` |  | `-` |
-| `catchment_name` | `null` \| `string` |  | `-` |
-| `town` | `null` \| `string` |  | `-` |
-| `lat` | `double` |  | `-` |
-| `long` | `double` |  | `-` |
-| `notation` | `string` |  | `-` |
-| `status` | `null` \| `string` |  | `-` |
-| `date_opened` | `null` \| `string` |  | `-` |
-
-#### Schema `UK.Gov.Environment.EA.FloodMonitoring.Reading`
-<a id="schema-ukgovenvironmenteafloodmonitoringreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Reading |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Reading |
-| Namespace | UK.Gov.Environment.EA.FloodMonitoring |
-| Type | `record` |
-| Doc | Reading |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_reference` | `string` |  | `-` |
-| `date_time` | `string` |  | `-` |
-| `measure` | `string` |  | `-` |
-| `value` | `double` |  | `-` |
+- xRegistry manifest: [`xreg/uk_ea_flood_monitoring.xreg.json`](xreg/uk_ea_flood_monitoring.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- UK Environment Agency Flood Monitoring
+API: <https://environment.data.gov.uk/flood-monitoring/doc/reference>

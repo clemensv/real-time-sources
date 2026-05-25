@@ -2,133 +2,129 @@
 
 **Seattle Street Closures Bridge** polls the City of Seattle Open Data street closures dataset and emits one event per permitted closed street segment occurrence window.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 1 documented event type.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{closure_id}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 1 |
+### Kafka
 
-## Endpoints
+Subscribe to `seattle-street-closures`. The record key is `{closure_id}`. In plain language, `{closure_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `US.WA.Seattle.StreetClosures.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['seattle-street-closures'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`US.WA.Seattle.StreetClosures`](#messagegroup-uswaseattlestreetclosures) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `seattle-street-closures` |
-| Kafka key | `{closure_id}` |
-| Deployed | False |
+### Street Closure
 
-## Messagegroups
+CloudEvents type: `US.WA.Seattle.StreetClosures.StreetClosure`
 
-### Messagegroup `US.WA.Seattle.StreetClosures`
-<a id="messagegroup-uswaseattlestreetclosures"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `US.WA.Seattle.StreetClosures.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `US.WA.Seattle.StreetClosures.StreetClosure`
-<a id="message-uswaseattlestreetclosuresstreetclosure"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StreetClosure |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.WA.Seattle.StreetClosures.jstruct/schemas/US.WA.Seattle.StreetClosures.StreetClosure`](#schema-uswaseattlestreetclosuresstreetclosure) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.WA.Seattle.StreetClosures.StreetClosure` |
-| `source` |  | `string` | `False` | `https://data.seattle.gov/Built-Environment/Street-Closures/ium9-iqtc` |
-| `subject` |  | `uritemplate` | `False` | `{closure_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.WA.Seattle.StreetClosures.Kafka` | `KAFKA` | topic `seattle-street-closures`; key `{closure_id}` |
-
-## Schemagroups
-
-### Schemagroup `US.WA.Seattle.StreetClosures.jstruct`
-<a id="schemagroup-uswaseattlestreetclosuresjstruct"></a>
-
-#### Schema `US.WA.Seattle.StreetClosures.StreetClosure`
-<a id="schema-uswaseattlestreetclosuresstreetclosure"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StreetClosure |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/seattle-street-closures/schemas/US.WA.Seattle.StreetClosures.StreetClosure.json` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `StreetClosure`
-<a id="schema-node-streetclosure"></a>
+#### What it tells you
 
 Street closure row from the Seattle Department of Transportation street closures dataset, describing one closed street segment and its active occurrence window.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/seattle-street-closures/schemas/US.WA.Seattle.StreetClosures.StreetClosure.json` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `closure_id` | `string` | `True` | Derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date. | - | - | - |
-| `permit_number` | `string` | `True` | Identifier for the permit record granting authorization to close the street. | alternates=`[{"description": "Original field name in the Seattle street closures dataset.", "name": "permit_number"}]` | - | - |
-| `permit_type` | `string` | `True` | Type of permit, such as Block Party, Play Street, Farmers Market, or Temporary Activation. | alternates=`[{"description": "Original field name in the Seattle street closures dataset.", "name": "permit_type"}]` | - | - |
-| `project_name` | `union` | `False` | Short title used by Seattle to quickly identify the closure permit. | alternates=`[{"description": "Original field name in the Seattle street closures dataset.", "name": "project_name"}]` | - | - |
-| `project_description` | `union` | `False` | Longer description of the permit, including issuance notes and closure details. | alternates=`[{"description": "Original field name in the Seattle street closures dataset.", "name": "project_description"}]` | - | - |
-| `start_date` | `string` | `True` | Date on which the closure event begins, normalized to YYYY-MM-DD. | alternates=`[{"description": "Original field name in the Seattle street closures dataset.", "name": "start_date"}]` | - | - |
-| `end_date` | `string` | `True` | Date on which the closure event ends, normalized to YYYY-MM-DD. | alternates=`[{"description": "Original field name in the Seattle street closures dataset.", "name": "end_date"}]` | - | - |
-| `sunday` | `union` | `False` | Time period, if any, during which the closure occurs on Sundays between the start and end dates. | - | - | - |
-| `monday` | `union` | `False` | Time period, if any, during which the closure occurs on Mondays between the start and end dates. | - | - | - |
-| `tuesday` | `union` | `False` | Time period, if any, during which the closure occurs on Tuesdays between the start and end dates. | - | - | - |
-| `wednesday` | `union` | `False` | Time period, if any, during which the closure occurs on Wednesdays between the start and end dates. | - | - | - |
-| `thursday` | `union` | `False` | Time period, if any, during which the closure occurs on Thursdays between the start and end dates. | - | - | - |
-| `friday` | `union` | `False` | Time period, if any, during which the closure occurs on Fridays between the start and end dates. | - | - | - |
-| `saturday` | `union` | `False` | Time period, if any, during which the closure occurs on Saturdays between the start and end dates. | - | - | - |
-| `street_on` | `union` | `False` | Street name of the closed street segment. | - | - | - |
-| `street_from` | `union` | `False` | Name of the intersecting street at the low end of the closed segment. | - | - | - |
-| `street_to` | `union` | `False` | Name of the intersecting street at the high end of the closed segment. | - | - | - |
-| `segkey` | `union` | `False` | Identifier for the street segment that is closed. | - | - | - |
-| `geometry_json` | `union` | `False` | Serialized GeoJSON LineString geometry for the closed street block. | alternates=`[{"description": "Original GeoJSON geometry object in the Seattle street closures dataset.", "name": "line_string"}]` | - | - |
+Each event identifies the real-world resource with `{closure_id}`. `{closure_id}` is derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `seattle-street-closures`, key `{closure_id}` |
+
+#### Payload
+
+`Street Closure` payloads are JSON object. Required fields: `closure_id`, `permit_number`, `permit_type`, `start_date`, `end_date`.
+
+- **`closure_id`** (string, required): Derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date.
+- **`permit_number`** (string, required): Identifier for the permit record granting authorization to close the street.
+- **`permit_type`** (string, required): Type of permit, such as Block Party, Play Street, Farmers Market, or Temporary Activation.
+- **`project_name`** (string or null, optional): Short title used by Seattle to quickly identify the closure permit.
+- **`project_description`** (string or null, optional): Longer description of the permit, including issuance notes and closure details.
+- **`start_date`** (string, required): Date on which the closure event begins, normalized to YYYY-MM-DD.
+- **`end_date`** (string, required): Date on which the closure event ends, normalized to YYYY-MM-DD.
+- **`sunday`** (string or null, optional): Time period, if any, during which the closure occurs on Sundays between the start and end dates.
+- **`monday`** (string or null, optional): Time period, if any, during which the closure occurs on Mondays between the start and end dates.
+- **`tuesday`** (string or null, optional): Time period, if any, during which the closure occurs on Tuesdays between the start and end dates.
+- **`wednesday`** (string or null, optional): Time period, if any, during which the closure occurs on Wednesdays between the start and end dates.
+- **`thursday`** (string or null, optional): Time period, if any, during which the closure occurs on Thursdays between the start and end dates.
+- **`friday`** (string or null, optional): Time period, if any, during which the closure occurs on Fridays between the start and end dates.
+- **`saturday`** (string or null, optional): Time period, if any, during which the closure occurs on Saturdays between the start and end dates.
+- **`street_on`** (string or null, optional): Street name of the closed street segment.
+- **`street_from`** (string or null, optional): Name of the intersecting street at the low end of the closed segment.
+- **`street_to`** (string or null, optional): Name of the intersecting street at the high end of the closed segment.
+- **`segkey`** (string or null, optional): Identifier for the street segment that is closed.
+- **`geometry_json`** (string or null, optional): Serialized GeoJSON LineString geometry for the closed street block.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "closure_id": "string",
+  "permit_number": "string",
+  "permit_type": "string",
+  "project_name": "string",
+  "project_description": "string",
+  "start_date": "string",
+  "end_date": "string",
+  "sunday": "string",
+  "monday": "string",
+  "tuesday": "string",
+  "wednesday": "string",
+  "thursday": "string",
+  "friday": "string",
+  "saturday": "string",
+  "street_on": "string",
+  "street_from": "string",
+  "street_to": "string",
+  "segkey": "string",
+  "geometry_json": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+
+## References
+
+- xRegistry manifest: [`xreg/seattle_street_closures.xreg.json`](xreg/seattle_street_closures.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

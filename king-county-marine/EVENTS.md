@@ -2,305 +2,211 @@
 
 MQTT/5.0 transport variants for King County marine station reference data and water-quality readings. The station-only UNS topic tree is maritime/us/wa/king-county/king-county-marine/{station_id}/{event}. Station info and latest water-quality readings are retained with QoS 1 so late subscribers can discover stations and their latest values.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types (4 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 1 |
+### Kafka
 
-## Endpoints
+Subscribe to `king-county-marine`. The record key is `{station_id}`. In plain language, `{station_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `US.WA.KingCounty.Marine.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['king-county-marine'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`US.WA.KingCounty.Marine`](#messagegroup-uswakingcountymarine) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
 
-#### Transport options
+Connect to `mqtt://localhost:1883` and subscribe to `maritime/us/wa/king-county/king-county-marine/+/info`, `maritime/us/wa/king-county/king-county-marine/+/water-quality`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `king-county-marine` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('maritime/us/wa/king-county/king-county-marine/+/info', 1))
+c.loop_forever()
+```
 
-### Endpoint `US.WA.KingCounty.Marine.Mqtt`
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 binary-mode CloudEvents producer for the King County Marine UNS topic tree. |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`US.WA.KingCounty.Marine.mqtt`](#messagegroup-uswakingcountymarinemqtt) |
+## Event catalog
 
-#### Transport options
+### Station
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+CloudEvents type: `US.WA.KingCounty.Marine.Station`
 
-## Messagegroups
-
-### Messagegroup `US.WA.KingCounty.Marine`
-<a id="messagegroup-uswakingcountymarine"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `US.WA.KingCounty.Marine.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `US.WA.KingCounty.Marine.Station`
-<a id="message-uswakingcountymarinestation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.Station`](#schema-uswakingcountymarinestation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.WA.KingCounty.Marine.Station` |
-| `source` |  | `string` | `False` | `https://data.kingcounty.gov/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.WA.KingCounty.Marine.Kafka` | `KAFKA` | topic `king-county-marine`; key `{station_id}` |
-
-#### Message `US.WA.KingCounty.Marine.WaterQualityReading`
-<a id="message-uswakingcountymarinewaterqualityreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterQualityReading |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.WaterQualityReading`](#schema-uswakingcountymarinewaterqualityreading) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.WA.KingCounty.Marine.WaterQualityReading` |
-| `source` |  | `string` | `False` | `https://data.kingcounty.gov/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.WA.KingCounty.Marine.Kafka` | `KAFKA` | topic `king-county-marine`; key `{station_id}` |
-
-### Messagegroup `US.WA.KingCounty.Marine.mqtt`
-<a id="messagegroup-uswakingcountymarinemqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variants for King County marine station reference data and water-quality readings. The station-only UNS topic tree is maritime/us/wa/king-county/king-county-marine/{station_id}/{event}. Station info and latest water-quality readings are retained with QoS 1 so late subscribers can discover stations and their latest values. |
-| Transport bindings | `US.WA.KingCounty.Marine.Mqtt` (MQTT/5.0) |
-| Messages | 2 |
-
-#### Message `US.WA.KingCounty.Marine.mqtt.Station`
-<a id="message-uswakingcountymarinemqttstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.Station`](#schema-uswakingcountymarinestation) |
-| Base message chain | `/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.WA.KingCounty.Marine.Station` |
-| `source` |  | `string` | `False` | `https://data.kingcounty.gov/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.WA.KingCounty.Marine.Mqtt` | `MQTT/5.0` | topic `maritime/us/wa/king-county/king-county-marine/{station_id}/info` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `maritime/us/wa/king-county/king-county-marine/{station_id}/info` |
-| QoS | 1 |
-| Retain | True |
-
-#### Message `US.WA.KingCounty.Marine.mqtt.WaterQualityReading`
-<a id="message-uswakingcountymarinemqttwaterqualityreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterQualityReading |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.WaterQualityReading`](#schema-uswakingcountymarinewaterqualityreading) |
-| Base message chain | `/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.WA.KingCounty.Marine.WaterQualityReading` |
-| `source` |  | `string` | `False` | `https://data.kingcounty.gov/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.WA.KingCounty.Marine.Mqtt` | `MQTT/5.0` | topic `maritime/us/wa/king-county/king-county-marine/{station_id}/water-quality` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `maritime/us/wa/king-county/king-county-marine/{station_id}/water-quality` |
-| QoS | 1 |
-| Retain | True |
-| Additional protocol metadata | `{"message_expiry_interval": 3600}` |
-
-## Schemagroups
-
-### Schemagroup `US.WA.KingCounty.Marine.jstruct`
-<a id="schemagroup-uswakingcountymarinejstruct"></a>
-
-#### Schema `US.WA.KingCounty.Marine.Station`
-<a id="schema-uswakingcountymarinestation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.Station.json` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
+#### What it tells you
 
 Reference metadata for one active King County buoy or mooring raw-data dataset.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable bridge identifier for the buoy or mooring dataset. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.Station.json` |
+| `KAFKA` | topic `king-county-marine`, key `{station_id}` |
+| `MQTT/5.0` | topic `maritime/us/wa/king-county/king-county-marine/{station_id}/info`, retain `true`, QoS `1` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | Stable bridge identifier for the buoy or mooring dataset. | - | - | - |
-| `station_name` | `string` | `True` | Human-readable station name derived from the dataset title. | - | - | - |
-| `dataset_id` | `string` | `True` | Socrata dataset identifier for the source dataset. | - | - | - |
-| `dataset_name` | `string` | `True` | Original King County dataset title. | - | - | - |
-| `dataset_url` | `string` | `True` | Dataset page URL on data.kingcounty.gov. | - | - | - |
-| `sensor_level` | `string` | `True` | Sensor position classification inferred from the dataset title, such as surface, bottom, or water-column. | - | - | - |
-| `latitude` | `union` | `False` | Station latitude in decimal degrees north, parsed from the dataset description. | - | - | - |
-| `longitude` | `union` | `False` | Station longitude in decimal degrees east of Greenwich; King County locations are negative because they lie west of Greenwich. | - | - | - |
+#### Payload
 
-#### Schema `US.WA.KingCounty.Marine.WaterQualityReading`
-<a id="schema-uswakingcountymarinewaterqualityreading"></a>
+`Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `dataset_id`, `dataset_name`, `dataset_url`, `sensor_level`.
 
-| Field | Value |
-| --- | --- |
-| Name | WaterQualityReading |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): Stable bridge identifier for the buoy or mooring dataset.
+- **`station_name`** (string, required): Human-readable station name derived from the dataset title.
+- **`dataset_id`** (string, required): Socrata dataset identifier for the source dataset.
+- **`dataset_name`** (string, required): Original King County dataset title.
+- **`dataset_url`** (string, required): Dataset page URL on data.kingcounty.gov.
+- **`sensor_level`** (string, required): Sensor position classification inferred from the dataset title, such as surface, bottom, or water-column.
+- **`latitude`** (double or null, optional): Station latitude in decimal degrees north, parsed from the dataset description.
+- **`longitude`** (double or null, optional): Station longitude in decimal degrees east of Greenwich; King County locations are negative because they lie west of Greenwich.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "station_name": "string",
+  "dataset_id": "string",
+  "dataset_name": "string",
+  "dataset_url": "string",
+  "sensor_level": "string",
+  "latitude": 0,
+  "longitude": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.WaterQualityReading.json` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
-###### Object `WaterQualityReading`
-<a id="schema-node-waterqualityreading"></a>
+### Water Quality Reading
+
+CloudEvents type: `US.WA.KingCounty.Marine.WaterQualityReading`
+
+#### What it tells you
 
 Normalized King County buoy or mooring reading carrying the documented water-quality and weather measurements published by the current raw-data datasets.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.WaterQualityReading.json` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | Stable bridge identifier for the buoy or mooring dataset. | - | - | - |
-| `station_name` | `string` | `True` | Human-readable station name derived from the dataset title. | - | - | - |
-| `observation_time` | `string` | `True` | Observation timestamp normalized to UTC ISO 8601 form. | - | - | - |
-| `water_temperature_c` | `union` | `False` | Water temperature in degrees Celsius. | unit=`Cel` symbol=`Â°C` | - | - |
-| `conductivity_s_m` | `union` | `False` | Electrical conductivity in siemens per meter. | unit=`S/m` symbol=`S/m` | - | - |
-| `pressure_dbar` | `union` | `False` | Water pressure in decibar as published by the raw datasets. | unit=`dbar` symbol=`dbar` | - | - |
-| `dissolved_oxygen_mg_l` | `union` | `False` | Dissolved oxygen concentration in milligrams per liter. | unit=`mg/L` symbol=`mg/L` | - | - |
-| `ph` | `union` | `False` | Measured pH value. | - | - | - |
-| `chlorophyll_ug_l` | `union` | `False` | Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter. | unit=`ug/L` symbol=`Âµg/L` | - | - |
-| `turbidity_ntu` | `union` | `False` | Turbidity in nephelometric turbidity units. | unit=`NTU` symbol=`NTU` | - | - |
-| `chlorophyll_stddev_ug_l` | `union` | `False` | Standard deviation of chlorophyll fluorescence in micrograms per liter. | unit=`ug/L` symbol=`Âµg/L` | - | - |
-| `turbidity_stddev_ntu` | `union` | `False` | Standard deviation of turbidity in nephelometric turbidity units. | unit=`NTU` symbol=`NTU` | - | - |
-| `salinity_psu` | `union` | `False` | Salinity in practical salinity units. | unit=`PSU` symbol=`PSU` | - | - |
-| `specific_conductivity_s_m` | `union` | `False` | Specific conductivity in siemens per meter. | unit=`S/m` symbol=`S/m` | - | - |
-| `dissolved_oxygen_saturation_pct` | `union` | `False` | Dissolved oxygen saturation as a percentage. | unit=`P1` symbol=`%` | - | - |
-| `nitrate_umol` | `union` | `False` | Nitrate or nitrate-plus-nitrite concentration in micromoles. | unit=`umol` symbol=`Âµmol` | - | - |
-| `nitrate_mg_l` | `union` | `False` | Nitrate or nitrate-plus-nitrite concentration in milligrams per liter. | unit=`mg/L` symbol=`mg/L` | - | - |
-| `wind_direction_deg` | `union` | `False` | Wind direction in degrees at the buoy surface. | unit=`deg` symbol=`Â°` | - | - |
-| `wind_speed_m_s` | `union` | `False` | Wind speed in meters per second at the buoy surface. | unit=`m/s` symbol=`m/s` | - | - |
-| `photosynthetically_active_radiation_umol_s_m2` | `union` | `False` | Photosynthetically active radiation in micromoles per second per square meter. | unit=`umol/s/m2` symbol=`Âµmol/s/mÂ²` | - | - |
-| `air_temperature_f` | `union` | `False` | Air temperature in degrees Fahrenheit. | unit=`[degF]` symbol=`Â°F` | - | - |
-| `air_humidity_pct` | `union` | `False` | Relative humidity percentage. | unit=`P1` symbol=`%` | - | - |
-| `air_pressure_in_hg` | `union` | `False` | Air pressure in inches of mercury. | unit=`[in_i'Hg]` symbol=`inHg` | - | - |
-| `system_battery_v` | `union` | `False` | System battery voltage in volts. | unit=`V` symbol=`V` | - | - |
-| `sensor_battery_v` | `union` | `False` | Sensor or sonde battery voltage in volts. | unit=`V` symbol=`V` | - | - |
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable bridge identifier for the buoy or mooring dataset. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `king-county-marine`, key `{station_id}` |
+| `MQTT/5.0` | topic `maritime/us/wa/king-county/king-county-marine/{station_id}/water-quality`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Water Quality Reading` payloads are JSON object. Required fields: `station_id`, `station_name`, `observation_time`.
+
+- **`station_id`** (string, required): Stable bridge identifier for the buoy or mooring dataset.
+- **`station_name`** (string, required): Human-readable station name derived from the dataset title.
+- **`observation_time`** (string, required): Observation timestamp normalized to UTC ISO 8601 form.
+- **`water_temperature_c`** (double or null, optional, Cel (Â°C)): Water temperature in degrees Celsius.
+- **`conductivity_s_m`** (double or null, optional, S/m): Electrical conductivity in siemens per meter.
+- **`pressure_dbar`** (double or null, optional, dbar): Water pressure in decibar as published by the raw datasets.
+- **`dissolved_oxygen_mg_l`** (double or null, optional, mg/L): Dissolved oxygen concentration in milligrams per liter.
+- **`ph`** (double or null, optional): Measured pH value.
+- **`chlorophyll_ug_l`** (double or null, optional, ug/L (Âµg/L)): Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.
+- **`turbidity_ntu`** (double or null, optional, NTU): Turbidity in nephelometric turbidity units.
+- **`chlorophyll_stddev_ug_l`** (double or null, optional, ug/L (Âµg/L)): Standard deviation of chlorophyll fluorescence in micrograms per liter.
+- **`turbidity_stddev_ntu`** (double or null, optional, NTU): Standard deviation of turbidity in nephelometric turbidity units.
+- **`salinity_psu`** (double or null, optional, PSU): Salinity in practical salinity units.
+- **`specific_conductivity_s_m`** (double or null, optional, S/m): Specific conductivity in siemens per meter.
+- **`dissolved_oxygen_saturation_pct`** (double or null, optional, P1 (%)): Dissolved oxygen saturation as a percentage.
+- **`nitrate_umol`** (double or null, optional, umol (Âµmol)): Nitrate or nitrate-plus-nitrite concentration in micromoles.
+- **`nitrate_mg_l`** (double or null, optional, mg/L): Nitrate or nitrate-plus-nitrite concentration in milligrams per liter.
+- **`wind_direction_deg`** (double or null, optional, deg (Â°)): Wind direction in degrees at the buoy surface.
+- **`wind_speed_m_s`** (double or null, optional, m/s): Wind speed in meters per second at the buoy surface.
+- **`photosynthetically_active_radiation_umol_s_m2`** (double or null, optional, umol/s/m2 (Âµmol/s/mÂ²)): Photosynthetically active radiation in micromoles per second per square meter.
+- **`air_temperature_f`** (double or null, optional, [degF] (Â°F)): Air temperature in degrees Fahrenheit.
+- **`air_humidity_pct`** (double or null, optional, P1 (%)): Relative humidity percentage.
+- **`air_pressure_in_hg`** (double or null, optional, [in_i'Hg] (inHg)): Air pressure in inches of mercury.
+- **`system_battery_v`** (double or null, optional, V): System battery voltage in volts.
+- **`sensor_battery_v`** (double or null, optional, V): Sensor or sonde battery voltage in volts.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "station_name": "string",
+  "observation_time": "string",
+  "water_temperature_c": 0,
+  "conductivity_s_m": 0,
+  "pressure_dbar": 0,
+  "dissolved_oxygen_mg_l": 0,
+  "ph": 0,
+  "chlorophyll_ug_l": 0,
+  "turbidity_ntu": 0,
+  "chlorophyll_stddev_ug_l": 0,
+  "turbidity_stddev_ntu": 0,
+  "salinity_psu": 0,
+  "specific_conductivity_s_m": 0,
+  "dissolved_oxygen_saturation_pct": 0,
+  "nitrate_umol": 0,
+  "nitrate_mg_l": 0,
+  "wind_direction_deg": 0,
+  "wind_speed_m_s": 0,
+  "photosynthetically_active_radiation_umol_s_m2": 0,
+  "air_temperature_f": 0,
+  "air_humidity_pct": 0,
+  "air_pressure_in_hg": 0,
+  "system_battery_v": 0,
+  "sensor_battery_v": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+
+## References
+
+- xRegistry manifest: [`xreg/king_county_marine.xreg.json`](xreg/king_county_marine.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

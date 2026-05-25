@@ -2,310 +2,255 @@
 
 Real-time weather observations from the [Australian Bureau of Meteorology](http://www.bom.gov.au/) (BOM).
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 3 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
+- **Identity:** `{station_wmo}`, `{warning_id}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+### Kafka
 
-## Endpoints
+Subscribe to `bom-australia`. The record key is `{station_wmo}`, `{warning_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `AU.Gov.BOM.Weather.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['bom-australia'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`AU.Gov.BOM.Weather`](#messagegroup-augovbomweather) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `bom-australia` |
-| Kafka key | `{station_wmo}` |
-| Deployed | False |
+### Station
 
-### Endpoint `AU.Gov.BOM.Warning.Kafka`
+CloudEvents type: `AU.Gov.BOM.Weather.Station`
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`AU.Gov.BOM.Warning`](#messagegroup-augovbomwarning) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Kafka topic | `bom-australia` |
-| Kafka key | `{warning_id}` |
-| Deployed | False |
-
-## Messagegroups
-
-### Messagegroup `AU.Gov.BOM.Weather`
-<a id="messagegroup-augovbomweather"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `AU.Gov.BOM.Weather.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `AU.Gov.BOM.Weather.Station`
-<a id="message-augovbomweatherstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/AU.Gov.BOM.Weather.jstruct/schemas/AU.Gov.BOM.Weather.Station`](#schema-augovbomweatherstation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `AU.Gov.BOM.Weather.Station` |
-| `source` |  | `string` | `False` | `http://reg.bom.gov.au/fwo` |
-| `subject` |  | `uritemplate` | `False` | `{station_wmo}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `AU.Gov.BOM.Weather.Kafka` | `KAFKA` | topic `bom-australia`; key `{station_wmo}` |
-
-#### Message `AU.Gov.BOM.Weather.WeatherObservation`
-<a id="message-augovbomweatherweatherobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/AU.Gov.BOM.Weather.jstruct/schemas/AU.Gov.BOM.Weather.WeatherObservation`](#schema-augovbomweatherweatherobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `AU.Gov.BOM.Weather.WeatherObservation` |
-| `source` |  | `string` | `False` | `http://reg.bom.gov.au/fwo` |
-| `subject` |  | `uritemplate` | `False` | `{station_wmo}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `AU.Gov.BOM.Weather.Kafka` | `KAFKA` | topic `bom-australia`; key `{station_wmo}` |
-
-### Messagegroup `AU.Gov.BOM.Warning`
-<a id="messagegroup-augovbomwarning"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `AU.Gov.BOM.Warning.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `AU.Gov.BOM.Warning.WarningBulletin`
-<a id="message-augovbomwarningwarningbulletin"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WarningBulletin |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/AU.Gov.BOM.Warning.jstruct/schemas/AU.Gov.BOM.Warning.WarningBulletin`](#schema-augovbomwarningwarningbulletin) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `AU.Gov.BOM.Warning.WarningBulletin` |
-| `source` |  | `string` | `False` | `https://www.bom.gov.au/rss/` |
-| `subject` |  | `uritemplate` | `False` | `{warning_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `AU.Gov.BOM.Warning.Kafka` | `KAFKA` | topic `bom-australia`; key `{warning_id}` |
-
-## Schemagroups
-
-### Schemagroup `AU.Gov.BOM.Weather.jstruct`
-<a id="schemagroup-augovbomweatherjstruct"></a>
-
-#### Schema `AU.Gov.BOM.Weather.Station`
-<a id="schema-augovbomweatherstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://bom.gov.au/schemas/AU/Gov/BOM/Weather/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
+#### What it tells you
 
 Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_wmo}`. `{station_wmo}` is WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://bom.gov.au/schemas/AU/Gov/BOM/Weather/Station` |
+| `KAFKA` | topic `bom-australia`, key `{station_wmo}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_wmo` | `int32` | `True` | WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products. | - | - | - |
-| `name` | `string` | `True` | Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'. | - | - | - |
-| `product_id` | `string` | `False` | BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations. | - | - | - |
-| `state` | `string` | `False` | Australian state or territory the station is located in, as reported by BOM, e.g. 'New South Wales', 'Victoria'. | - | - | - |
-| `time_zone` | `string` | `False` | Abbreviation of the local time zone for the station, e.g. 'EST' for Eastern Standard Time, 'CST' for Central Standard Time. | - | - | - |
-| `latitude` | `double` | `True` | Geographic latitude of the station in decimal degrees (negative for Southern Hemisphere). | unit=`degree` symbol=`°` | - | - |
-| `longitude` | `double` | `True` | Geographic longitude of the station in decimal degrees. | unit=`degree` symbol=`°` | - | - |
+#### Payload
 
-#### Schema `AU.Gov.BOM.Weather.WeatherObservation`
-<a id="schema-augovbomweatherweatherobservation"></a>
+`Station` payloads are JSON object. Required fields: `station_wmo`, `name`, `latitude`, `longitude`.
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_wmo`** (int32, required): WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products.
+- **`name`** (string, required): Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'.
+- **`product_id`** (string, optional): BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations.
+- **`state`** (string, optional): Australian state or territory the station is located in, as reported by BOM, e.g. 'New South Wales', 'Victoria'.
+- **`time_zone`** (string, optional): Abbreviation of the local time zone for the station, e.g. 'EST' for Eastern Standard Time, 'CST' for Central Standard Time.
+- **`latitude`** (double, required, degree (°)): Geographic latitude of the station in decimal degrees (negative for Southern Hemisphere).
+- **`longitude`** (double, required, degree (°)): Geographic longitude of the station in decimal degrees.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_wmo": 0,
+  "name": "string",
+  "product_id": "string",
+  "state": "string",
+  "time_zone": "string",
+  "latitude": 0,
+  "longitude": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://bom.gov.au/schemas/AU/Gov/BOM/Weather/WeatherObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
 
-###### Object `WeatherObservation`
-<a id="schema-node-weatherobservation"></a>
+### Weather Observation
+
+CloudEvents type: `AU.Gov.BOM.Weather.WeatherObservation`
+
+#### What it tells you
 
 Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_wmo}`. `{station_wmo}` is WMO station number identifying the reporting station. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://bom.gov.au/schemas/AU/Gov/BOM/Weather/WeatherObservation` |
+| `KAFKA` | topic `bom-australia`, key `{station_wmo}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_wmo` | `int32` | `True` | WMO station number identifying the reporting station. | - | - | - |
-| `station_name` | `string` | `True` | Human-readable name of the reporting station. | - | - | - |
-| `observation_time_utc` | `datetime` | `True` | Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format. | - | - | - |
-| `local_time` | `string` | `False` | Local date and time string as provided by BOM in 'local_date_time_full' format (YYYYMMDDHHmmss). | - | - | - |
-| `air_temp` | `union` | `False` | Air temperature measured at the station. | unit=`Cel` symbol=`°C` | - | - |
-| `apparent_temp` | `union` | `False` | Apparent (feels-like) temperature combining air temperature, humidity, and wind chill effects. | unit=`Cel` symbol=`°C` | - | - |
-| `dewpt` | `union` | `False` | Dew point temperature at the station. | unit=`Cel` symbol=`°C` | - | - |
-| `rel_hum` | `union` | `False` | Relative humidity as a percentage. | unit=`percent` symbol=`%` | - | - |
-| `delta_t` | `union` | `False` | Wet bulb depression (difference between dry and wet bulb temperatures), used for bushfire danger calculations. | unit=`Cel` symbol=`°C` | - | - |
-| `wind_dir` | `union` | `False` | Compass direction the wind is blowing from, e.g. 'N', 'NNE', 'SSW', 'CALM'. | - | - | - |
-| `wind_spd_kmh` | `union` | `False` | Sustained wind speed in kilometres per hour. | unit=`km/h` symbol=`km/h` | - | - |
-| `wind_spd_kt` | `union` | `False` | Sustained wind speed in knots (nautical miles per hour). | unit=`knot` symbol=`kt` | - | - |
-| `gust_kmh` | `union` | `False` | Maximum wind gust speed recorded in the observation period in kilometres per hour. | unit=`km/h` symbol=`km/h` | - | - |
-| `gust_kt` | `union` | `False` | Maximum wind gust speed recorded in the observation period in knots. | unit=`knot` symbol=`kt` | - | - |
-| `press` | `union` | `False` | Atmospheric pressure at station level. | unit=`hPa` symbol=`hPa` | - | - |
-| `press_qnh` | `union` | `False` | QNH pressure — atmospheric pressure adjusted to mean sea level using the International Standard Atmosphere, used in aviation altimetry. | unit=`hPa` symbol=`hPa` | - | - |
-| `press_msl` | `union` | `False` | Mean sea level pressure — station pressure reduced to sea level, used for synoptic weather analysis. | unit=`hPa` symbol=`hPa` | - | - |
-| `press_tend` | `union` | `False` | Pressure tendency description indicating whether pressure is rising, falling, or steady over the past 3 hours. May be a numeric code or textual description. | - | - | - |
-| `rain_trace` | `union` | `False` | Rainfall since 9am local time as reported by BOM. Value is a string that may be '0.0', a numeric amount in mm, or 'Trace' for very small amounts. | - | - | - |
-| `cloud` | `union` | `False` | Textual cloud cover description, e.g. 'Partly cloudy', 'Clear', 'Overcast'. | - | - | - |
-| `cloud_oktas` | `union` | `False` | Cloud cover in oktas (eighths of sky covered), ranging from 0 (clear) to 8 (overcast). | - | - | - |
-| `cloud_base_m` | `union` | `False` | Height of the lowest cloud base above ground level. | unit=`m` symbol=`m` | - | - |
-| `cloud_type` | `union` | `False` | Cloud type classification as reported by the station, e.g. 'Cu', 'Cb', 'St'. May be '-' when not reported. | - | - | - |
-| `vis_km` | `union` | `False` | Horizontal visibility in kilometres. Reported as a string as BOM may include qualifiers. | - | - | - |
-| `weather` | `union` | `False` | Present weather description, e.g. 'Rain', 'Fog', 'Thunderstorm'. May be '-' when no significant weather. | - | - | - |
-| `sea_state` | `union` | `False` | Sea state description for coastal stations, e.g. 'Smooth', 'Slight', 'Moderate'. | - | - | - |
-| `swell_dir_worded` | `union` | `False` | Dominant swell direction as a compass bearing word for coastal stations. | - | - | - |
-| `swell_height` | `union` | `False` | Dominant swell height for coastal stations. | unit=`m` symbol=`m` | - | - |
-| `swell_period` | `union` | `False` | Dominant swell period for coastal stations. | unit=`s` symbol=`s` | - | - |
-| `latitude` | `double` | `False` | Latitude of the station at observation time. | unit=`degree` symbol=`°` | - | - |
-| `longitude` | `double` | `False` | Longitude of the station at observation time. | unit=`degree` symbol=`°` | - | - |
+#### Payload
 
-### Schemagroup `AU.Gov.BOM.Warning.jstruct`
-<a id="schemagroup-augovbomwarningjstruct"></a>
+`Weather Observation` payloads are JSON object. Required fields: `station_wmo`, `station_name`, `observation_time_utc`.
 
-#### Schema `AU.Gov.BOM.Warning.WarningBulletin`
-<a id="schema-augovbomwarningwarningbulletin"></a>
+- **`station_wmo`** (int32, required): WMO station number identifying the reporting station.
+- **`station_name`** (string, required): Human-readable name of the reporting station.
+- **`observation_time_utc`** (datetime, required): Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format.
+- **`local_time`** (string, optional): Local date and time string as provided by BOM in 'local_date_time_full' format (YYYYMMDDHHmmss).
+- **`air_temp`** (double or null, optional, Cel (°C)): Air temperature measured at the station.
+- **`apparent_temp`** (double or null, optional, Cel (°C)): Apparent (feels-like) temperature combining air temperature, humidity, and wind chill effects.
+- **`dewpt`** (double or null, optional, Cel (°C)): Dew point temperature at the station.
+- **`rel_hum`** (int32 or null, optional, percent (%)): Relative humidity as a percentage.
+- **`delta_t`** (double or null, optional, Cel (°C)): Wet bulb depression (difference between dry and wet bulb temperatures), used for bushfire danger calculations.
+- **`wind_dir`** (string or null, optional): Compass direction the wind is blowing from, e.g. 'N', 'NNE', 'SSW', 'CALM'.
+- **`wind_spd_kmh`** (int32 or null, optional, km/h): Sustained wind speed in kilometres per hour.
+- **`wind_spd_kt`** (int32 or null, optional, knot (kt)): Sustained wind speed in knots (nautical miles per hour).
+- **`gust_kmh`** (int32 or null, optional, km/h): Maximum wind gust speed recorded in the observation period in kilometres per hour.
+- **`gust_kt`** (int32 or null, optional, knot (kt)): Maximum wind gust speed recorded in the observation period in knots.
+- **`press`** (double or null, optional, hPa): Atmospheric pressure at station level.
+- **`press_qnh`** (double or null, optional, hPa): QNH pressure — atmospheric pressure adjusted to mean sea level using the International Standard Atmosphere, used in aviation altimetry.
+- **`press_msl`** (double or null, optional, hPa): Mean sea level pressure — station pressure reduced to sea level, used for synoptic weather analysis.
+- **`press_tend`** (string or null, optional): Pressure tendency description indicating whether pressure is rising, falling, or steady over the past 3 hours. May be a numeric code or textual description.
+- **`rain_trace`** (string or null, optional): Rainfall since 9am local time as reported by BOM. Value is a string that may be '0.0', a numeric amount in mm, or 'Trace' for very small amounts.
+- **`cloud`** (string or null, optional): Textual cloud cover description, e.g. 'Partly cloudy', 'Clear', 'Overcast'.
+- **`cloud_oktas`** (int32 or null, optional): Cloud cover in oktas (eighths of sky covered), ranging from 0 (clear) to 8 (overcast).
+- **`cloud_base_m`** (int32 or null, optional, m): Height of the lowest cloud base above ground level.
+- **`cloud_type`** (string or null, optional): Cloud type classification as reported by the station, e.g. 'Cu', 'Cb', 'St'. May be '-' when not reported.
+- **`vis_km`** (string or null, optional): Horizontal visibility in kilometres. Reported as a string as BOM may include qualifiers.
+- **`weather`** (string or null, optional): Present weather description, e.g. 'Rain', 'Fog', 'Thunderstorm'. May be '-' when no significant weather.
+- **`sea_state`** (string or null, optional): Sea state description for coastal stations, e.g. 'Smooth', 'Slight', 'Moderate'.
+- **`swell_dir_worded`** (string or null, optional): Dominant swell direction as a compass bearing word for coastal stations.
+- **`swell_height`** (double or null, optional, m): Dominant swell height for coastal stations.
+- **`swell_period`** (double or null, optional, s): Dominant swell period for coastal stations.
+- **`latitude`** (double, optional, degree (°)): Latitude of the station at observation time.
+- **`longitude`** (double, optional, degree (°)): Longitude of the station at observation time.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Name | WarningBulletin |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Version `1`
+```json
+{
+  "station_wmo": 0,
+  "station_name": "string",
+  "observation_time_utc": "2024-01-01T00:00:00Z",
+  "local_time": "string",
+  "air_temp": 0,
+  "apparent_temp": 0,
+  "dewpt": 0,
+  "rel_hum": 0,
+  "delta_t": 0,
+  "wind_dir": "string",
+  "wind_spd_kmh": 0,
+  "wind_spd_kt": 0,
+  "gust_kmh": 0,
+  "gust_kt": 0,
+  "press": 0,
+  "press_qnh": 0,
+  "press_msl": 0,
+  "press_tend": "string",
+  "rain_trace": "string",
+  "cloud": "string",
+  "cloud_oktas": 0,
+  "cloud_base_m": 0,
+  "cloud_type": "string",
+  "vis_km": "string",
+  "weather": "string",
+  "sea_state": "string",
+  "swell_dir_worded": "string",
+  "swell_height": 0,
+  "swell_period": 0,
+  "latitude": 0,
+  "longitude": 0
+}
+```
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+#### Reference vs telemetry
 
-###### JsonStructure
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://bom.gov.au/schemas/AU/Gov/BOM/Warning/WarningBulletin` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+### Warning Bulletin
 
-###### Object `WarningBulletin`
-<a id="schema-node-warningbulletin"></a>
+CloudEvents type: `AU.Gov.BOM.Warning.WarningBulletin`
+
+#### What it tells you
 
 Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://bom.gov.au/schemas/AU/Gov/BOM/Warning/WarningBulletin` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `warning_id` | `string` | `True` | Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'. | - | - | - |
-| `warning_url` | `string` | `True` | Absolute BOM URL of the warning product page linked from the RSS item. | - | - | - |
-| `feed_url` | `string` | `True` | Absolute BOM RSS feed URL that published this warning item. | - | - | - |
-| `feed_title` | `string` | `True` | Title of the RSS feed channel publishing this warning bulletin. | - | - | - |
-| `title` | `string` | `True` | Normalized warning headline text from the RSS item title with line breaks collapsed to spaces. | - | - | - |
-| `published_at` | `datetime` | `True` | UTC timestamp when the RSS item was created or updated, taken from the item's pubDate field. | - | - | - |
-| `issued_local_time_text` | `union` | `False` | Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present. | - | - | - |
-| `warning_type` | `union` | `False` | Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'. | - | - | - |
-| `affected_area_text` | `union` | `False` | Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'. | - | - | - |
+Each event identifies the real-world resource with `{warning_id}`. `{warning_id}` is stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `bom-australia`, key `{warning_id}` |
+
+#### Payload
+
+`Warning Bulletin` payloads are JSON object. Required fields: `warning_id`, `warning_url`, `feed_url`, `feed_title`, `title`, `published_at`.
+
+- **`warning_id`** (string, required): Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'.
+- **`warning_url`** (string, required): Absolute BOM URL of the warning product page linked from the RSS item.
+- **`feed_url`** (string, required): Absolute BOM RSS feed URL that published this warning item.
+- **`feed_title`** (string, required): Title of the RSS feed channel publishing this warning bulletin.
+- **`title`** (string, required): Normalized warning headline text from the RSS item title with line breaks collapsed to spaces.
+- **`published_at`** (datetime, required): UTC timestamp when the RSS item was created or updated, taken from the item's pubDate field.
+- **`issued_local_time_text`** (string or null, optional): Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present.
+- **`warning_type`** (string or null, optional): Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'.
+- **`affected_area_text`** (string or null, optional): Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "warning_id": "string",
+  "warning_url": "string",
+  "feed_url": "string",
+  "feed_title": "string",
+  "title": "string",
+  "published_at": "2024-01-01T00:00:00Z",
+  "issued_local_time_text": "string",
+  "warning_type": "string",
+  "affected_area_text": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+
+## References
+
+- xRegistry manifest: [`xreg/bom_australia.xreg.json`](xreg/bom_australia.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

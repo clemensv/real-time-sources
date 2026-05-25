@@ -2,396 +2,210 @@
 
 This source bridges the IRCELINE Belgium 52°North SOS Timeseries API into Kafka as CloudEvents. It covers Belgium's interregional air-quality monitoring network and emits both reference data and hourly telemetry into a single topic.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 3 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
+- **Identity:** `{station_id}`, `{timeseries_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+### Kafka
 
-## Endpoints
+Subscribe to `irceline-belgium`. The record key is `{station_id}`, `{timeseries_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `be.irceline.Stations.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['irceline-belgium'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`be.irceline.Stations`](#messagegroup-beircelinestations) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `irceline-belgium` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
+### Station
 
-### Endpoint `be.irceline.Timeseries.Kafka`
+CloudEvents type: `be.irceline.Station`
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`be.irceline.Timeseries`](#messagegroup-beircelinetimeseries) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Kafka topic | `irceline-belgium` |
-| Kafka key | `{timeseries_id}` |
-| Deployed | False |
-
-## Messagegroups
-
-### Messagegroup `be.irceline.Stations`
-<a id="messagegroup-beircelinestations"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `be.irceline.Stations.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `be.irceline.Station`
-<a id="message-beircelinestation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Station`](#schema-beircelinestation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `be.irceline.Station` |
-| `source` |  | `string` | `False` | `https://geo.irceline.be/sos/api/v1/stations` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `be.irceline.Stations.Kafka` | `KAFKA` | topic `irceline-belgium`; key `{station_id}` |
-
-### Messagegroup `be.irceline.Timeseries`
-<a id="messagegroup-beircelinetimeseries"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `be.irceline.Timeseries.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `be.irceline.Timeseries`
-<a id="message-beircelinetimeseries"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Timeseries |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Timeseries`](#schema-beircelinetimeseries) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `be.irceline.Timeseries` |
-| `source` |  | `string` | `False` | `https://geo.irceline.be/sos/api/v1/timeseries` |
-| `subject` |  | `uritemplate` | `False` | `{timeseries_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `be.irceline.Timeseries.Kafka` | `KAFKA` | topic `irceline-belgium`; key `{timeseries_id}` |
-
-#### Message `be.irceline.Observation`
-<a id="message-beircelineobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Observation`](#schema-beircelineobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `be.irceline.Observation` |
-| `source` |  | `string` | `False` | `https://geo.irceline.be/sos/api/v1/timeseries` |
-| `subject` |  | `uritemplate` | `False` | `{timeseries_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `be.irceline.Timeseries.Kafka` | `KAFKA` | topic `irceline-belgium`; key `{timeseries_id}` |
-
-## Schemagroups
-
-### Schemagroup `be.irceline.jstruct`
-<a id="schemagroup-beircelinejstruct"></a>
-
-#### Schema `be.irceline.Station`
-<a id="schema-beircelinestation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-| Description | Reference event for an IRCELINE Belgium air-quality monitoring station from GET /stations. Each record represents one GeoJSON feature with a stable numeric station identifier, human-readable label, and WGS 84 point coordinates. |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://geo.irceline.be/schemas/be/irceline/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-| Additional properties | `False` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
+#### What it tells you
 
 Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://geo.irceline.be/schemas/be/irceline/Station` |
-| Additional properties | `False` |
+| `KAFKA` | topic `irceline-belgium`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key. | altnames=`{"irceline": "properties.id"}` | pattern=`^[0-9]+$` | - |
-| `label` | `string` | `True` | Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site. | altnames=`{"irceline": "properties.label"}` | - | - |
-| `latitude` | `double` | `True` | Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation]. | unit=`deg` symbol=`°`<br>altnames=`{"irceline": "geometry.coordinates[1]"}` | - | - |
-| `longitude` | `double` | `True` | Station longitude in decimal degrees east, derived from the first element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The third element is the literal string 'NaN' in live payloads and is ignored. | unit=`deg` symbol=`°`<br>altnames=`{"irceline": "geometry.coordinates[0]"}` | - | - |
+#### Payload
 
-#### Schema `be.irceline.Timeseries`
-<a id="schema-beircelinetimeseries"></a>
+`Station` payloads are JSON object. Required fields: `station_id`, `label`, `latitude`, `longitude`.
 
-| Field | Value |
-| --- | --- |
-| Name | Timeseries |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-| Description | Reference event for one IRCELINE station-timeseries combination from GET /timeseries?expanded=true. The record identifies the monitored phenomenon, unit of measurement, linked station metadata, and optional BelAQI-style status interval bands published by IRCELINE. |
+- **`station_id`** (string, required): Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key. Constraints: pattern `^[0-9]+$`.
+- **`label`** (string, required): Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site.
+- **`latitude`** (double, required, deg (°)): Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation].
+- **`longitude`** (double, required, deg (°)): Station longitude in decimal degrees east, derived from the first element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The third element is the literal string 'NaN' in live payloads and is ignored.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "label": "string",
+  "latitude": 0,
+  "longitude": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://geo.irceline.be/schemas/be/irceline/Timeseries` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-| Additional properties | `False` |
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
 
-###### Object `Timeseries`
-<a id="schema-node-timeseries"></a>
+### Timeseries
+
+CloudEvents type: `be.irceline.Timeseries`
+
+#### What it tells you
 
 Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{timeseries_id}`. `{timeseries_id}` is stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://geo.irceline.be/schemas/be/irceline/Timeseries` |
-| Additional properties | `False` |
+| `KAFKA` | topic `irceline-belgium`, key `{timeseries_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `timeseries_id` | `string` | `True` | Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events. | altnames=`{"irceline": "id"}` | pattern=`^[0-9]+$` | - |
-| `label` | `string` | `True` | Descriptive timeseries label from the upstream label property, combining phenomenon name, timeseries identifier, procedure label, and station label. Example: 'Particulate Matter < 10 µm 6152 - DAILY CORRECTION TEOM - procedure, 40AL01 - Linkeroever'. | altnames=`{"irceline": "label"}` | - | - |
-| `uom` | `string` | `True` | Published unit of measurement from the upstream uom property, such as 'µg/m³'. IRCELINE returns this literal display unit on both collection and expanded timeseries responses. | altnames=`{"irceline": "uom"}` | - | - |
-| `station_id` | `string` | `True` | Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries. | altnames=`{"irceline": "station.properties.id"}` | pattern=`^[0-9]+$` | - |
-| `station_label` | `string` | `True` | Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature. | altnames=`{"irceline": "station.properties.label"}` | - | - |
-| `latitude` | `union` | `False` | Station latitude in decimal degrees north, derived from station.geometry.coordinates[1] when the embedded station feature includes a GeoJSON Point geometry. | unit=`deg` symbol=`°`<br>altnames=`{"irceline": "station.geometry.coordinates[1]"}` | - | - |
-| `longitude` | `union` | `False` | Station longitude in decimal degrees east, derived from station.geometry.coordinates[0] when the embedded station feature includes a GeoJSON Point geometry. | unit=`deg` symbol=`°`<br>altnames=`{"irceline": "station.geometry.coordinates[0]"}` | - | - |
-| `phenomenon_id` | `union` | `False` | Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers. | altnames=`{"irceline": "parameters.phenomenon.id"}` | - | - |
-| `phenomenon_label` | `union` | `False` | Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'. | altnames=`{"irceline": "parameters.phenomenon.label"}` | - | - |
-| `category_id` | `union` | `False` | Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants. | altnames=`{"irceline": "parameters.category.id"}` | - | - |
-| `category_label` | `union` | `False` | Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants. | altnames=`{"irceline": "parameters.category.label"}` | - | - |
-| `status_intervals` | `union` | `False` | Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values. | altnames=`{"irceline": "statusIntervals"}` | - | - |
+#### Payload
 
-#### Schema `be.irceline.Observation`
-<a id="schema-beircelineobservation"></a>
+`Timeseries` payloads are JSON object. Required fields: `timeseries_id`, `label`, `uom`, `station_id`, `station_label`.
 
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-| Description | Telemetry event for one measurement value from GET /timeseries/{id}/getData. The bridge polls the last two hours of data per timeseries and emits only observations with timestamps newer than the persisted per-timeseries dedup state. |
+- **`timeseries_id`** (string, required): Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events. Constraints: pattern `^[0-9]+$`.
+- **`label`** (string, required): Descriptive timeseries label from the upstream label property, combining phenomenon name, timeseries identifier, procedure label, and station label. Example: 'Particulate Matter < 10 µm 6152 - DAILY CORRECTION TEOM - procedure, 40AL01 - Linkeroever'.
+- **`uom`** (string, required): Published unit of measurement from the upstream uom property, such as 'µg/m³'. IRCELINE returns this literal display unit on both collection and expanded timeseries responses.
+- **`station_id`** (string, required): Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries. Constraints: pattern `^[0-9]+$`.
+- **`station_label`** (string, required): Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature.
+- **`latitude`** (double or null, optional, deg (°)): Station latitude in decimal degrees north, derived from station.geometry.coordinates[1] when the embedded station feature includes a GeoJSON Point geometry.
+- **`longitude`** (double or null, optional, deg (°)): Station longitude in decimal degrees east, derived from station.geometry.coordinates[0] when the embedded station feature includes a GeoJSON Point geometry.
+- **`phenomenon_id`** (string or null, optional): Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers.
+- **`phenomenon_label`** (string or null, optional): Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'.
+- **`category_id`** (string or null, optional): Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants.
+- **`category_label`** (string or null, optional): Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants.
+- **`status_intervals`** (array of object, optional): Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "timeseries_id": "string",
+  "label": "string",
+  "uom": "string",
+  "station_id": "string",
+  "station_label": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "phenomenon_id": "string",
+  "phenomenon_label": "string",
+  "category_id": "string",
+  "category_label": "string",
+  "status_intervals": [
+    {
+      "lower": "string",
+      "upper": "string",
+      "name": "string",
+      "color": "string"
+    }
+  ]
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://geo.irceline.be/schemas/be/irceline/Observation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-| Additional properties | `False` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `Observation`
-<a id="schema-node-observation"></a>
+### Observation
+
+CloudEvents type: `be.irceline.Observation`
+
+#### What it tells you
 
 Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{timeseries_id}`. `{timeseries_id}` is stable numeric timeseries identifier of the measurement source. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://geo.irceline.be/schemas/be/irceline/Observation` |
-| Additional properties | `False` |
+| `KAFKA` | topic `irceline-belgium`, key `{timeseries_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `timeseries_id` | `string` | `True` | Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key. | altnames=`{"irceline": "id"}` | pattern=`^[0-9]+$` | - |
-| `timestamp` | `string` | `True` | Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'. | altnames=`{"irceline": "values.timestamp"}` | pattern=`^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3})?Z$` | - |
-| `value` | `union` | `False` | Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null. | altnames=`{"irceline": "values.value"}` | - | - |
-| `uom` | `string` | `True` | Unit of measurement carried over from the parent timeseries uom field, such as 'µg/m³'. This keeps each observation self-describing without requiring a separate metadata lookup. | altnames=`{"irceline": "uom"}` | - | - |
+#### Payload
 
-### Schemagroup `be.irceline.avro`
-<a id="schemagroup-beircelineavro"></a>
+`Observation` payloads are JSON object. Required fields: `timeseries_id`, `timestamp`, `uom`.
 
-#### Schema `be.irceline.Station`
-<a id="schema-beircelinestation"></a>
+- **`timeseries_id`** (string, required): Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key. Constraints: pattern `^[0-9]+$`.
+- **`timestamp`** (string, required): Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'. Constraints: pattern `^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3})?Z$`.
+- **`value`** (double or null, optional): Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null.
+- **`uom`** (string, required): Unit of measurement carried over from the parent timeseries uom field, such as 'µg/m³'. This keeps each observation self-describing without requiring a separate metadata lookup.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-| Description | Reference event for one IRCELINE monitoring station. |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Version `1`
+```json
+{
+  "timeseries_id": "string",
+  "timestamp": "string",
+  "value": 0,
+  "uom": "string"
+}
+```
 
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
+#### Reference vs telemetry
 
-###### Avro
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | be.irceline |
-| Type | `record` |
-| Doc | Reference event for one IRCELINE monitoring station. |
+## Conventions
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` | Stable numeric station identifier from properties.id. | `-` |
-| `label` | `string` | Human-readable station label from properties.label. | `-` |
-| `latitude` | `double` | Latitude in decimal degrees north from GeoJSON coordinates[1]. | `-` |
-| `longitude` | `double` | Longitude in decimal degrees east from GeoJSON coordinates[0]. | `-` |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-#### Schema `be.irceline.Timeseries`
-<a id="schema-beircelinetimeseries"></a>
+Transport bindings carry CloudEvents metadata differently:
 
-| Field | Value |
-| --- | --- |
-| Name | Timeseries |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-| Description | Reference event for one IRCELINE station-timeseries combination. |
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-##### Version `1`
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
+## Operational notes
 
-###### Avro
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-| Field | Value |
-| --- | --- |
-| Name | Timeseries |
-| Namespace | be.irceline |
-| Type | `record` |
-| Doc | Reference event for one IRCELINE station-timeseries combination. |
+## References
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `timeseries_id` | `string` | Stable numeric timeseries identifier from id. | `-` |
-| `label` | `string` | Descriptive upstream timeseries label. | `-` |
-| `uom` | `string` | Published unit of measurement. | `-` |
-| `station_id` | `string` | Linked numeric station identifier from station.properties.id. | `-` |
-| `station_label` | `string` | Linked station label from station.properties.label. | `-` |
-| `latitude` | `null` \| `double` | Linked station latitude from station.geometry.coordinates[1]. | `-` |
-| `longitude` | `null` \| `double` | Linked station longitude from station.geometry.coordinates[0]. | `-` |
-| `phenomenon_id` | `null` \| `string` | Measured phenomenon identifier from parameters.phenomenon.id. | `-` |
-| `phenomenon_label` | `null` \| `string` | Measured phenomenon label from parameters.phenomenon.label. | `-` |
-| `category_id` | `null` \| `string` | Category identifier from parameters.category.id. | `-` |
-| `category_label` | `null` \| `string` | Category label from parameters.category.label. | `-` |
-| `status_intervals` | `null` \| array of record `StatusInterval` | Optional ordered array of status interval bands from the expanded timeseries metadata. | `-` |
-
-#### Schema `be.irceline.Observation`
-<a id="schema-beircelineobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-| Description | Telemetry event for one IRCELINE measurement value. |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Namespace | be.irceline |
-| Type | `record` |
-| Doc | Telemetry event for one IRCELINE measurement value. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `timeseries_id` | `string` | Stable numeric timeseries identifier. | `-` |
-| `timestamp` | `string` | Observation timestamp in ISO 8601 UTC form. | `-` |
-| `value` | `null` \| `double` | Measured value from the IRCELINE getData response. | `-` |
-| `uom` | `string` | Published unit of measurement copied from the parent timeseries. | `-` |
+- xRegistry manifest: [`xreg/irceline_belgium.xreg.json`](xreg/irceline_belgium.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

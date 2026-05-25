@@ -2,259 +2,162 @@
 
 Bridge for the **EURDEP (European Radiological Data Exchange Platform)** pan-European ambient gamma dose rate monitoring network.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `eurdep-radiation`. The record key is `{station_id}`. In plain language, `{station_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['eurdep-radiation'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `eu.jrc.eurdep.Station`
+
+#### What it tells you
+
+Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP (European Radiological Data Exchange Platform) network. EURDEP aggregates data from approximately 5,500 stations across 39 European countries. Each station continuously measures ambient gamma dose rate and reports hourly averaged values.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is alphanumeric station identifier assigned within the EURDEP network. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `eurdep-radiation`, key `{station_id}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `eu.jrc.eurdep.Kafka`
+`Station` payloads are JSON object. Required fields: `station_id`, `name`, `country_code`, `latitude`, `longitude`, `height_above_sea`, `site_status`, `site_status_text`.
 
-| Field | Value |
+- **`station_id`** (string, required): Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing.
+- **`name`** (string, required): Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'.
+- **`country_code`** (string, required): ISO 3166-1 alpha-2 country code extracted from the first two characters of the station_id. Identifies the country operating the monitoring station. Example: 'AT' for Austria, 'DE' for Germany, 'CZ' for Czech Republic.
+- **`latitude`** (double, required, deg (°)): Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.
+- **`longitude`** (double, required, deg (°)): Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.
+- **`height_above_sea`** (double or null, required, m): Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network.
+- **`site_status`** (int32, required): Numeric operational status code of the station. 1 = active and reporting, other values indicate the station is inactive, under maintenance, or decommissioned.
+- **`site_status_text`** (string, required): Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation').
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "name": "string",
+  "country_code": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "height_above_sea": 0,
+  "site_status": 0,
+  "site_status_text": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Dose Rate Reading
+
+CloudEvents type: `eu.jrc.eurdep.DoseRateReading`
+
+#### What it tells you
+
+An ambient gamma dose rate reading from a EURDEP monitoring station. Each reading reports the gross gamma dose rate in microsieverts per hour (µSv/h) averaged over a one-hour measurement window. Readings include validation status, the nuclide type measured, measurement duration, and the analysis time range.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is alphanumeric station identifier from the EURDEP network. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`eu.jrc.eurdep`](#messagegroup-eujrceurdep) |
+| `KAFKA` | topic `eurdep-radiation`, key `{station_id}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `eurdep-radiation` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
+`Dose Rate Reading` payloads are JSON object. Required fields: `station_id`, `name`, `value`, `unit`, `start_measure`, `end_measure`, `nuclide`, `duration`, `validated`.
 
-## Messagegroups
+- **`station_id`** (string, required): Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'.
+- **`name`** (string, required): Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join.
+- **`value`** (double or null, required, uSv/h (µSv/h)): Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). Null if the station did not report a valid measurement for this interval.
+- **`unit`** (string, required): Unit of the dose rate value as reported by the upstream EURDEP system. Typically 'µSv/h' (microsieverts per hour), though encoding artifacts may appear in the raw API response.
+- **`start_measure`** (string, required): Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T19:00:00Z'.
+- **`end_measure`** (string, required): End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T20:00:00Z'.
+- **`nuclide`** (string, required): Nuclide identifier describing the type of radiation measured. For standard gamma dose rate probes this is 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).
+- **`duration`** (string, required): Measurement integration period as reported by the upstream system. Example: '1h' for one hour.
+- **`validated`** (int32, required): Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance.
+#### Example payload
 
-### Messagegroup `eu.jrc.eurdep`
-<a id="messagegroup-eujrceurdep"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `eu.jrc.eurdep.Kafka` (KAFKA) |
-| Messages | 2 |
+```json
+{
+  "station_id": "string",
+  "name": "string",
+  "value": 0,
+  "unit": "string",
+  "start_measure": "string",
+  "end_measure": "string",
+  "nuclide": "string",
+  "duration": "string",
+  "validated": 0
+}
+```
 
-#### Message `eu.jrc.eurdep.Station`
-<a id="message-eujrceurdepstation"></a>
+#### Reference vs telemetry
 
-Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP (European Radiological Data Exchange Platform) network. EURDEP aggregates data from approximately 5,500 stations across 39 European countries. Each station continuously measures ambient gamma dose rate and reports hourly averaged values. Station metadata includes the geographic position, elevation above sea level, country of origin, and operational status.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.jrc.eurdep.jstruct/schemas/eu.jrc.eurdep.Station`](#schema-eujrceurdepstation) |
-| Event role | Reference/status data |
+## Conventions
 
-##### CloudEvents metadata
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.jrc.eurdep.Station` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+Transport bindings carry CloudEvents metadata differently:
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `eu.jrc.eurdep.Kafka` | `KAFKA` | topic `eurdep-radiation`; key `{station_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `eu.jrc.eurdep.DoseRateReading`
-<a id="message-eujrceurdepdoseratereading"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-An ambient gamma dose rate reading from a EURDEP monitoring station. Each reading reports the gross gamma dose rate in microsieverts per hour (µSv/h) averaged over a one-hour measurement window. Readings include validation status, the nuclide type measured, measurement duration, and the analysis time range. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude.
+## Operational notes
 
-| Field | Value |
-| --- | --- |
-| Name | DoseRateReading |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.jrc.eurdep.jstruct/schemas/eu.jrc.eurdep.DoseRateReading`](#schema-eujrceurdepdoseratereading) |
-| Event role | Reference/status data |
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-##### CloudEvents metadata
+## References
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.jrc.eurdep.DoseRateReading` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.jrc.eurdep.Kafka` | `KAFKA` | topic `eurdep-radiation`; key `{station_id}` |
-
-## Schemagroups
-
-### Schemagroup `eu.jrc.eurdep.jstruct`
-<a id="schemagroup-eujrceurdepjstruct"></a>
-
-#### Schema `eu.jrc.eurdep.Station`
-<a id="schema-eujrceurdepstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://real-time-sources.2030.io/schemas/eu/jrc/eurdep/Station` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/jrc/eurdep/Station` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany).
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing. | - | - | - |
-| `name` | `string` | `True` | Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'. | - | - | - |
-| `country_code` | `string` | `True` | ISO 3166-1 alpha-2 country code extracted from the first two characters of the station_id. Identifies the country operating the monitoring station. Example: 'AT' for Austria, 'DE' for Germany, 'CZ' for Czech Republic. | - | - | - |
-| `latitude` | `double` | `True` | Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint. | unit=`deg` symbol=`°` | - | - |
-| `longitude` | `double` | `True` | Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint. | unit=`deg` symbol=`°` | - | - |
-| `height_above_sea` | `union` | `True` | Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network. | unit=`m` symbol=`m` | - | - |
-| `site_status` | `int32` | `True` | Numeric operational status code of the station. 1 = active and reporting, other values indicate the station is inactive, under maintenance, or decommissioned. | - | - | - |
-| `site_status_text` | `string` | `True` | Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation'). | - | - | - |
-
-#### Schema `eu.jrc.eurdep.DoseRateReading`
-<a id="schema-eujrceurdepdoseratereading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DoseRateReading |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://real-time-sources.2030.io/schemas/eu/jrc/eurdep/DoseRateReading` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/jrc/eurdep/DoseRateReading` |
-| Type | `object` |
-
-###### Object `DoseRateReading`
-<a id="schema-node-doseratereading"></a>
-
-An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (µSv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'. | - | - | - |
-| `name` | `string` | `True` | Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join. | - | - | - |
-| `value` | `union` | `True` | Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). Null if the station did not report a valid measurement for this interval. | unit=`uSv/h` symbol=`µSv/h` | - | - |
-| `unit` | `string` | `True` | Unit of the dose rate value as reported by the upstream EURDEP system. Typically 'µSv/h' (microsieverts per hour), though encoding artifacts may appear in the raw API response. | - | - | - |
-| `start_measure` | `string` | `True` | Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T19:00:00Z'. | - | - | - |
-| `end_measure` | `string` | `True` | End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T20:00:00Z'. | - | - | - |
-| `nuclide` | `string` | `True` | Nuclide identifier describing the type of radiation measured. For standard gamma dose rate probes this is 'Gamma-ODL-Brutto' (gross gamma ambient dose rate). | - | - | - |
-| `duration` | `string` | `True` | Measurement integration period as reported by the upstream system. Example: '1h' for one hour. | - | - | - |
-| `validated` | `int32` | `True` | Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance. | - | - | - |
-
-### Schemagroup `eu.jrc.eurdep.avro`
-<a id="schemagroup-eujrceurdepavro"></a>
-
-#### Schema `eu.jrc.eurdep.Station`
-<a id="schema-eujrceurdepstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | eu.jrc.eurdep |
-| Type | `record` |
-| Doc | Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` | Alphanumeric station identifier with country prefix (e.g. 'AT0001'). | `-` |
-| `name` | `string` | Human-readable station location name. | `-` |
-| `country_code` | `string` | ISO 3166-1 alpha-2 country code extracted from station_id. | `-` |
-| `latitude` | `double` | Latitude in WGS84 decimal degrees. | `-` |
-| `longitude` | `double` | Longitude in WGS84 decimal degrees. | `-` |
-| `height_above_sea` | `null` \| `double` | Elevation above sea level in meters. Null if unknown. | `-` |
-| `site_status` | `int` | Numeric operational status code. 1 = active. | `-` |
-| `site_status_text` | `string` | Human-readable operational status text. | `-` |
-
-#### Schema `eu.jrc.eurdep.DoseRateReading`
-<a id="schema-eujrceurdepdoseratereading"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | DoseRateReading |
-| Namespace | eu.jrc.eurdep |
-| Type | `record` |
-| Doc | An ambient gamma dose rate reading from a EURDEP monitoring station. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` | Alphanumeric station identifier from the EURDEP network. | `-` |
-| `name` | `string` | Human-readable station location name. | `-` |
-| `value` | `null` \| `double` | Gross ambient gamma dose rate in µSv/h. Null if not reported. | `-` |
-| `unit` | `string` | Unit of the dose rate value, typically 'µSv/h'. | `-` |
-| `start_measure` | `string` | Start of measurement period in ISO 8601 UTC. | `-` |
-| `end_measure` | `string` | End of measurement period in ISO 8601 UTC. | `-` |
-| `nuclide` | `string` | Nuclide identifier, typically 'Gamma-ODL-Brutto'. | `-` |
-| `duration` | `string` | Measurement integration period (e.g. '1h'). | `-` |
-| `validated` | `int` | Validation status flag. 0 = not validated, 1 = nationally validated, 2 = EURDEP validated. | `-` |
+- xRegistry manifest: [`xreg/eurdep_radiation.xreg.json`](xreg/eurdep_radiation.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

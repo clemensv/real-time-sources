@@ -2,2110 +2,1881 @@
 
 **AISstream.io Bridge** connects to the AISstream.io WebSocket API for real-time global AIS vessel tracking and forwards decoded messages to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
 
-## Table of Contents
+## At a glance
+
+- **Event types:** 26 documented event types.
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 1 reference/catalog event type and 25 telemetry event types.
+- **Identity:** `{mmsi}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
+
+## Quick start — how to consume
+
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
+
+### Kafka
+
+Subscribe to `aisstream`. The record key is `{mmsi}`. In plain language, `{mmsi}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['aisstream'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
----
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
 
-## Registry
+Connect to `mqtt://localhost:1883` and subscribe to `maritime/intl/aisstream/aisstream/+/+/+/+/position-report`, `maritime/intl/aisstream/aisstream/+/+/+/+/static`, `maritime/intl/aisstream/aisstream/+/+/+/+/aid-to-navigation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
-
-## Endpoints
-
-### Endpoint `IO.AISstream.Kafka`
-
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`IO.AISstream`](#messagegroup-ioaisstream) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Kafka topic | `aisstream` |
-| Kafka key | `{mmsi}` |
-| Deployed | False |
-
-### Endpoint `IO.AISstream.Mqtt`
-
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`IO.AISstream.mqtt`](#messagegroup-ioaisstreammqtt) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-
-## Messagegroups
-
-### Messagegroup `IO.AISstream`
-<a id="messagegroup-ioaisstream"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `IO.AISstream.Kafka` (KAFKA) |
-| Messages | 23 |
-
-#### Message `IO.AISstream.PositionReport`
-<a id="message-ioaisstreampositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | PositionReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.PositionReport`](#schema-ioaisstreampositionreport) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.PositionReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.ShipStaticData`
-<a id="message-ioaisstreamshipstaticdata"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ShipStaticData |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ShipStaticData`](#schema-ioaisstreamshipstaticdata) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.ShipStaticData` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.StandardClassBPositionReport`
-<a id="message-ioaisstreamstandardclassbpositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StandardClassBPositionReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardClassBPositionReport`](#schema-ioaisstreamstandardclassbpositionreport) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.StandardClassBPositionReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.ExtendedClassBPositionReport`
-<a id="message-ioaisstreamextendedclassbpositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ExtendedClassBPositionReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ExtendedClassBPositionReport`](#schema-ioaisstreamextendedclassbpositionreport) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.ExtendedClassBPositionReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.AidsToNavigationReport`
-<a id="message-ioaisstreamaidstonavigationreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AidsToNavigationReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AidsToNavigationReport`](#schema-ioaisstreamaidstonavigationreport) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.AidsToNavigationReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.StaticDataReport`
-<a id="message-ioaisstreamstaticdatareport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StaticDataReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StaticDataReport`](#schema-ioaisstreamstaticdatareport) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.StaticDataReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.BaseStationReport`
-<a id="message-ioaisstreambasestationreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BaseStationReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport`](#schema-ioaisstreambasestationreport) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.BaseStationReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.SafetyBroadcastMessage`
-<a id="message-ioaisstreamsafetybroadcastmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | SafetyBroadcastMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SafetyBroadcastMessage`](#schema-ioaisstreamsafetybroadcastmessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.SafetyBroadcastMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.StandardSearchAndRescueAircraftReport`
-<a id="message-ioaisstreamstandardsearchandrescueaircraftreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StandardSearchAndRescueAircraftReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardSearchAndRescueAircraftReport`](#schema-ioaisstreamstandardsearchandrescueaircraftreport) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.StandardSearchAndRescueAircraftReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.LongRangeAisBroadcastMessage`
-<a id="message-ioaisstreamlongrangeaisbroadcastmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | LongRangeAisBroadcastMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage`](#schema-ioaisstreamlongrangeaisbroadcastmessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.LongRangeAisBroadcastMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.AddressedSafetyMessage`
-<a id="message-ioaisstreamaddressedsafetymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AddressedSafetyMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedSafetyMessage`](#schema-ioaisstreamaddressedsafetymessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.AddressedSafetyMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.AddressedBinaryMessage`
-<a id="message-ioaisstreamaddressedbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AddressedBinaryMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedBinaryMessage`](#schema-ioaisstreamaddressedbinarymessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.AddressedBinaryMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.AssignedModeCommand`
-<a id="message-ioaisstreamassignedmodecommand"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AssignedModeCommand |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AssignedModeCommand`](#schema-ioaisstreamassignedmodecommand) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.AssignedModeCommand` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.BinaryAcknowledge`
-<a id="message-ioaisstreambinaryacknowledge"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BinaryAcknowledge |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryAcknowledge`](#schema-ioaisstreambinaryacknowledge) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.BinaryAcknowledge` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.BinaryBroadcastMessage`
-<a id="message-ioaisstreambinarybroadcastmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BinaryBroadcastMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryBroadcastMessage`](#schema-ioaisstreambinarybroadcastmessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.BinaryBroadcastMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.ChannelManagement`
-<a id="message-ioaisstreamchannelmanagement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ChannelManagement |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ChannelManagement`](#schema-ioaisstreamchannelmanagement) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.ChannelManagement` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.CoordinatedUTCInquiry`
-<a id="message-ioaisstreamcoordinatedutcinquiry"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | CoordinatedUTCInquiry |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.CoordinatedUTCInquiry`](#schema-ioaisstreamcoordinatedutcinquiry) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.CoordinatedUTCInquiry` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.DataLinkManagementMessage`
-<a id="message-ioaisstreamdatalinkmanagementmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DataLinkManagementMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.DataLinkManagementMessage`](#schema-ioaisstreamdatalinkmanagementmessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.DataLinkManagementMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.GnssBroadcastBinaryMessage`
-<a id="message-ioaisstreamgnssbroadcastbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | GnssBroadcastBinaryMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GnssBroadcastBinaryMessage`](#schema-ioaisstreamgnssbroadcastbinarymessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.GnssBroadcastBinaryMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('maritime/intl/aisstream/aisstream/+/+/+/+/position-report', 1))
+c.loop_forever()
+```
 
-#### Message `IO.AISstream.GroupAssignmentCommand`
-<a id="message-ioaisstreamgroupassignmentcommand"></a>
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 
-| Field | Value |
-| --- | --- |
-| Name | GroupAssignmentCommand |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GroupAssignmentCommand`](#schema-ioaisstreamgroupassignmentcommand) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.GroupAssignmentCommand` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.Interrogation`
-<a id="message-ioaisstreaminterrogation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Interrogation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.Interrogation`](#schema-ioaisstreaminterrogation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.Interrogation` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.MultiSlotBinaryMessage`
-<a id="message-ioaisstreammultislotbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | MultiSlotBinaryMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage`](#schema-ioaisstreammultislotbinarymessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.MultiSlotBinaryMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-#### Message `IO.AISstream.SingleSlotBinaryMessage`
-<a id="message-ioaisstreamsingleslotbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | SingleSlotBinaryMessage |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage`](#schema-ioaisstreamsingleslotbinarymessage) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.SingleSlotBinaryMessage` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Kafka` | `KAFKA` | topic `aisstream`; key `{mmsi}` |
-
-### Messagegroup `IO.AISstream.mqtt`
-<a id="messagegroup-ioaisstreammqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `IO.AISstream.Mqtt` (MQTT/5.0) |
-| Messages | 3 |
-
-#### Message `IO.AISstream.mqtt.PositionReport`
-<a id="message-ioaisstreammqttpositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | PositionReport |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.PositionReport`](#schema-ioaisstreammqttpositionreport) |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.mqtt.PositionReport` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Mqtt` | `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report` |
-
-##### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| MQTT topic | `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report` |
-| Retain | False |
-
-#### Message `IO.AISstream.mqtt.ShipStatic`
-<a id="message-ioaisstreammqttshipstatic"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ShipStatic |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.ShipStatic`](#schema-ioaisstreammqttshipstatic) |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.mqtt.ShipStatic` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Mqtt` | `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static` |
-
-##### Transport options
+### Position Report
 
-| Option | Value |
-| --- | --- |
-| MQTT topic | `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static` |
-| Retain | False |
-
-#### Message `IO.AISstream.mqtt.AidToNavigation`
-<a id="message-ioaisstreammqttaidtonavigation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AidToNavigation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.AidToNavigation`](#schema-ioaisstreammqttaidtonavigation) |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
+CloudEvents type: `IO.AISstream.PositionReport`
 
-##### CloudEvents metadata
+#### What it tells you
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `IO.AISstream.mqtt.AidToNavigation` |
-| `source` |  | `string` | `False` | `wss://stream.aisstream.io/v0/stream` |
-| `subject` |  | `uritemplate` | `False` | `{mmsi}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `IO.AISstream.Mqtt` | `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation` |
-| Retain | False |
+This event carries position report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-## Schemagroups
+#### Identity
 
-### Schemagroup `IO.AISstream.jstruct`
-<a id="schemagroup-ioaisstreamjstruct"></a>
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-#### Schema `IO.AISstream.PositionReport`
-<a id="schema-ioaisstreampositionreport"></a>
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| Name | PositionReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
+`Position Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/PositionReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`NavigationalStatus`** (int32, optional): No description provided.
+- **`RateOfTurn`** (int32, optional): No description provided.
+- **`Sog`** (double, optional): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`Cog`** (double, optional): No description provided.
+- **`TrueHeading`** (int32, optional): No description provided.
+- **`Timestamp`** (int32, optional): No description provided.
+- **`SpecialManoeuvreIndicator`** (int32, optional): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`CommunicationState`** (int32, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "NavigationalStatus": 0,
+  "RateOfTurn": 0,
+  "Sog": 0,
+  "PositionAccuracy": false,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Cog": 0,
+  "TrueHeading": 0,
+  "Timestamp": 0,
+  "SpecialManoeuvreIndicator": 0,
+  "Spare": 0,
+  "Raim": false,
+  "CommunicationState": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Ship Static Data
+
+CloudEvents type: `IO.AISstream.ShipStaticData`
+
+#### What it tells you
+
+This event carries ship static data data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-###### Object `PositionReport`
-<a id="schema-node-positionreport"></a>
+#### Where to find it
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/PositionReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `NavigationalStatus` | `int32` | `False` |  | - | - | - |
-| `RateOfTurn` | `int32` | `False` |  | - | - | - |
-| `Sog` | `double` | `False` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `Cog` | `double` | `False` |  | - | - | - |
-| `TrueHeading` | `int32` | `False` |  | - | - | - |
-| `Timestamp` | `int32` | `False` |  | - | - | - |
-| `SpecialManoeuvreIndicator` | `int32` | `False` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `CommunicationState` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.ShipStaticData`
-<a id="schema-ioaisstreamshipstaticdata"></a>
-
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| Name | ShipStaticData |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Ship Static Data` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-###### JsonStructure
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`AisVersion`** (int32, optional): No description provided.
+- **`ImoNumber`** (int32, optional): No description provided.
+- **`CallSign`** (string, optional): No description provided.
+- **`Name`** (string, optional): No description provided.
+- **`Type`** (int32, optional): No description provided.
+- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-shipstaticdata-dimension).
+- **`FixType`** (int32, optional): No description provided.
+- **`Eta`** (object, optional): No description provided. See [Eta](#payload-io-aisstream-shipstaticdata-eta).
+- **`MaximumStaticDraught`** (double, optional): No description provided.
+- **`Destination`** (string, optional): No description provided.
+- **`Dte`** (boolean, optional): No description provided.
+- **`Spare`** (boolean, optional): No description provided.
+##### Dimension
+<a id="payload-io-aisstream-shipstaticdata-dimension"></a>
+
+Nested record.
+
+- **`A`** (int32, required): No description provided.
+- **`B`** (int32, required): No description provided.
+- **`C`** (int32, required): No description provided.
+- **`D`** (int32, required): No description provided.
+##### Eta
+<a id="payload-io-aisstream-shipstaticdata-eta"></a>
+
+Nested record.
+
+- **`Month`** (int32, required): No description provided.
+- **`Day`** (int32, required): No description provided.
+- **`Hour`** (int32, required): No description provided.
+- **`Minute`** (int32, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "AisVersion": 0,
+  "ImoNumber": 0,
+  "CallSign": "string",
+  "Name": "string",
+  "Type": 0,
+  "Dimension": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0
+  },
+  "FixType": 0,
+  "Eta": {
+    "Month": 0,
+    "Day": 0,
+    "Hour": 0,
+    "Minute": 0
+  },
+  "MaximumStaticDraught": 0,
+  "Destination": "string",
+  "Dte": false,
+  "Spare": false
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Standard Class Bposition Report
+
+CloudEvents type: `IO.AISstream.StandardClassBPositionReport`
+
+#### What it tells you
+
+This event carries standard class bposition report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Standard Class Bposition Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`Sog`** (double, optional): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`Cog`** (double, optional): No description provided.
+- **`TrueHeading`** (int32, optional): No description provided.
+- **`Timestamp`** (int32, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`ClassBUnit`** (boolean, optional): No description provided.
+- **`ClassBDisplay`** (boolean, optional): No description provided.
+- **`ClassBDsc`** (boolean, optional): No description provided.
+- **`ClassBBand`** (boolean, optional): No description provided.
+- **`ClassBMsg22`** (boolean, optional): No description provided.
+- **`AssignedMode`** (boolean, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`CommunicationStateIsItdma`** (boolean, optional): No description provided.
+- **`CommunicationState`** (int32, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare1": 0,
+  "Sog": 0,
+  "PositionAccuracy": false,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Cog": 0,
+  "TrueHeading": 0,
+  "Timestamp": 0,
+  "Spare2": 0,
+  "ClassBUnit": false,
+  "ClassBDisplay": false,
+  "ClassBDsc": false,
+  "ClassBBand": false,
+  "ClassBMsg22": false,
+  "AssignedMode": false,
+  "Raim": false,
+  "CommunicationStateIsItdma": false,
+  "CommunicationState": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Extended Class Bposition Report
+
+CloudEvents type: `IO.AISstream.ExtendedClassBPositionReport`
+
+#### What it tells you
+
+This event carries extended class bposition report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Extended Class Bposition Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`Sog`** (double, optional): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`Cog`** (double, optional): No description provided.
+- **`TrueHeading`** (int32, optional): No description provided.
+- **`Timestamp`** (int32, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`Name`** (string, optional): No description provided.
+- **`Type`** (int32, optional): No description provided.
+- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-extendedclassbpositionreport-dimension).
+- **`FixType`** (int32, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`Dte`** (boolean, optional): No description provided.
+- **`AssignedMode`** (boolean, optional): No description provided.
+- **`Spare3`** (int32, optional): No description provided.
+##### Dimension
+<a id="payload-io-aisstream-extendedclassbpositionreport-dimension"></a>
+
+Nested record.
+
+- **`A`** (int32, required): No description provided.
+- **`B`** (int32, required): No description provided.
+- **`C`** (int32, required): No description provided.
+- **`D`** (int32, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare1": 0,
+  "Sog": 0,
+  "PositionAccuracy": false,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Cog": 0,
+  "TrueHeading": 0,
+  "Timestamp": 0,
+  "Spare2": 0,
+  "Name": "string",
+  "Type": 0,
+  "Dimension": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0
+  },
+  "FixType": 0,
+  "Raim": false,
+  "Dte": false,
+  "AssignedMode": false,
+  "Spare3": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Aids To Navigation Report
+
+CloudEvents type: `IO.AISstream.AidsToNavigationReport`
+
+#### What it tells you
+
+This event carries aids to navigation report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Aids To Navigation Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Type`** (int32, optional): No description provided.
+- **`Name`** (string, optional): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-aidstonavigationreport-dimension).
+- **`Fixtype`** (int32, optional): No description provided.
+- **`Timestamp`** (int32, optional): No description provided.
+- **`OffPosition`** (boolean, optional): No description provided.
+- **`AtoN`** (int32, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`VirtualAtoN`** (boolean, optional): No description provided.
+- **`AssignedMode`** (boolean, optional): No description provided.
+- **`Spare`** (boolean, optional): No description provided.
+- **`NameExtension`** (string, optional): No description provided.
+##### Dimension
+<a id="payload-io-aisstream-aidstonavigationreport-dimension"></a>
+
+Nested record.
+
+- **`A`** (int32, required): No description provided.
+- **`B`** (int32, required): No description provided.
+- **`C`** (int32, required): No description provided.
+- **`D`** (int32, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Type": 0,
+  "Name": "string",
+  "PositionAccuracy": false,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Dimension": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0
+  },
+  "Fixtype": 0,
+  "Timestamp": 0,
+  "OffPosition": false,
+  "AtoN": 0,
+  "Raim": false,
+  "VirtualAtoN": false,
+  "AssignedMode": false,
+  "Spare": false,
+  "NameExtension": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Static Data Report
+
+CloudEvents type: `IO.AISstream.StaticDataReport`
+
+#### What it tells you
+
+This event carries static data report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Static Data Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Reserved`** (int32, optional): No description provided.
+- **`PartNumber`** (boolean, optional): No description provided.
+- **`ReportA`** (object, optional): No description provided. See [ReportA](#payload-io-aisstream-staticdatareport-reporta).
+- **`ReportB`** (object, optional): No description provided. See [ReportB](#payload-io-aisstream-staticdatareport-reportb).
+##### ReportA
+<a id="payload-io-aisstream-staticdatareport-reporta"></a>
+
+Nested record.
+
+- **`Valid`** (boolean, required): No description provided.
+- **`Name`** (string, required): No description provided.
+##### ReportB
+<a id="payload-io-aisstream-staticdatareport-reportb"></a>
+
+Nested record.
+
+- **`Valid`** (boolean, required): No description provided.
+- **`ShipType`** (int32, optional): No description provided.
+- **`VendorIDName`** (string, optional): No description provided.
+- **`VenderIDModel`** (int32, optional): No description provided.
+- **`VenderIDSerial`** (int32, optional): No description provided.
+- **`CallSign`** (string, optional): No description provided.
+- **`Dimension`** (object, optional): No description provided. See [Dimension](#payload-io-aisstream-staticdatareport-reportb-dimension).
+- **`FixType`** (int32, optional): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+##### Dimension
+<a id="payload-io-aisstream-staticdatareport-dimension"></a>
+
+Nested record.
+
+- **`A`** (int32, required): No description provided.
+- **`B`** (int32, required): No description provided.
+- **`C`** (int32, required): No description provided.
+- **`D`** (int32, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Reserved": 0,
+  "PartNumber": false,
+  "ReportA": {
+    "Valid": false,
+    "Name": "string"
+  },
+  "ReportB": {
+    "Valid": false,
+    "ShipType": 0,
+    "VendorIDName": "string",
+    "VenderIDModel": 0,
+    "VenderIDSerial": 0,
+    "CallSign": "string",
+    "Dimension": {
+      "A": 0,
+      "B": 0,
+      "C": 0,
+      "D": 0
+    },
+    "FixType": 0,
+    "Spare": 0
+  }
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Base Station Report
+
+CloudEvents type: `IO.AISstream.BaseStationReport`
+
+#### What it tells you
+
+This event carries base station report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Base Station Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`UtcYear`** (int32, optional): No description provided.
+- **`UtcMonth`** (int32, optional): No description provided.
+- **`UtcDay`** (int32, optional): No description provided.
+- **`UtcHour`** (int32, optional): No description provided.
+- **`UtcMinute`** (int32, optional): No description provided.
+- **`UtcSecond`** (int32, optional): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`FixType`** (int32, optional): No description provided.
+- **`LongRangeEnable`** (boolean, optional): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`CommunicationState`** (int32, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "UtcYear": 0,
+  "UtcMonth": 0,
+  "UtcDay": 0,
+  "UtcHour": 0,
+  "UtcMinute": 0,
+  "UtcSecond": 0,
+  "PositionAccuracy": false,
+  "Longitude": 0,
+  "Latitude": 0,
+  "FixType": 0,
+  "LongRangeEnable": false,
+  "Spare": 0,
+  "Raim": false,
+  "CommunicationState": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Safety Broadcast Message
+
+CloudEvents type: `IO.AISstream.SafetyBroadcastMessage`
+
+#### What it tells you
+
+This event carries safety broadcast message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Safety Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Text`** (string, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare": 0,
+  "Text": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Standard Search And Rescue Aircraft Report
+
+CloudEvents type: `IO.AISstream.StandardSearchAndRescueAircraftReport`
+
+#### What it tells you
+
+This event carries standard search and rescue aircraft report data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Standard Search And Rescue Aircraft Report` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Altitude`** (int32, optional): No description provided.
+- **`Sog`** (double, optional): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`Cog`** (double, optional): No description provided.
+- **`Timestamp`** (int32, optional): No description provided.
+- **`AltFromBaro`** (boolean, optional): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`Dte`** (boolean, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`AssignedMode`** (boolean, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`CommunicationStateIsItdma`** (boolean, optional): No description provided.
+- **`CommunicationState`** (int32, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Altitude": 0,
+  "Sog": 0,
+  "PositionAccuracy": false,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Cog": 0,
+  "Timestamp": 0,
+  "AltFromBaro": false,
+  "Spare1": 0,
+  "Dte": false,
+  "Spare2": 0,
+  "AssignedMode": false,
+  "Raim": false,
+  "CommunicationStateIsItdma": false,
+  "CommunicationState": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Long Range Ais Broadcast Message
+
+CloudEvents type: `IO.AISstream.LongRangeAisBroadcastMessage`
+
+#### What it tells you
+
+This event carries long range ais broadcast message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Long Range Ais Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`, `Longitude`, `Latitude`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`PositionAccuracy`** (boolean, optional): No description provided.
+- **`Raim`** (boolean, optional): No description provided.
+- **`NavigationalStatus`** (int32, optional): No description provided.
+- **`Longitude`** (double, required): No description provided.
+- **`Latitude`** (double, required): No description provided.
+- **`Sog`** (double, optional): No description provided.
+- **`Cog`** (double, optional): No description provided.
+- **`PositionLatency`** (boolean, optional): No description provided.
+- **`Spare`** (boolean, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "PositionAccuracy": false,
+  "Raim": false,
+  "NavigationalStatus": 0,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Sog": 0,
+  "Cog": 0,
+  "PositionLatency": false,
+  "Spare": false
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Addressed Safety Message
+
+CloudEvents type: `IO.AISstream.AddressedSafetyMessage`
+
+#### What it tells you
+
+This event carries addressed safety message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Addressed Safety Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Sequenceinteger`** (int32, optional): No description provided.
+- **`DestinationID`** (int32, optional): No description provided.
+- **`Retransmission`** (boolean, optional): No description provided.
+- **`Spare`** (boolean, optional): No description provided.
+- **`Text`** (string, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Sequenceinteger": 0,
+  "DestinationID": 0,
+  "Retransmission": false,
+  "Spare": false,
+  "Text": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Addressed Binary Message
+
+CloudEvents type: `IO.AISstream.AddressedBinaryMessage`
+
+#### What it tells you
+
+This event carries addressed binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Addressed Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Sequenceinteger`** (int32, optional): No description provided.
+- **`DestinationID`** (int32, optional): No description provided.
+- **`Retransmission`** (boolean, optional): No description provided.
+- **`Spare`** (boolean, optional): No description provided.
+- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-addressedbinarymessage-applicationid).
+- **`BinaryData`** (string, optional): No description provided.
+##### ApplicationID
+<a id="payload-io-aisstream-addressedbinarymessage-applicationid"></a>
+
+Nested record.
+
+- **`Valid`** (boolean, required): No description provided.
+- **`DesignatedAreaCode`** (int32, required): No description provided.
+- **`FunctionIdentifier`** (int32, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Sequenceinteger": 0,
+  "DestinationID": 0,
+  "Retransmission": false,
+  "Spare": false,
+  "ApplicationID": {
+    "Valid": false,
+    "DesignatedAreaCode": 0,
+    "FunctionIdentifier": 0
+  },
+  "BinaryData": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Assigned Mode Command
+
+CloudEvents type: `IO.AISstream.AssignedModeCommand`
+
+#### What it tells you
+
+This event carries assigned mode command data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/ShipStaticData` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+#### Payload
+
+`Assigned Mode Command` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Commands`** (map, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare": 0,
+  "Commands": null
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Binary Acknowledge
+
+CloudEvents type: `IO.AISstream.BinaryAcknowledge`
+
+#### What it tells you
+
+This event carries binary acknowledge data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Binary Acknowledge` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-###### Object `ShipStaticData`
-<a id="schema-node-shipstaticdata"></a>
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Destinations`** (map, optional): No description provided.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/ShipStaticData` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `AisVersion` | `int32` | `False` |  | - | - | - |
-| `ImoNumber` | `int32` | `False` |  | - | - | - |
-| `CallSign` | `string` | `False` |  | - | - | - |
-| `Name` | `string` | `False` |  | - | - | - |
-| `Type` | `int32` | `False` |  | - | - | - |
-| `Dimension` | [object `Dimension`](#schema-node-dimension) | `False` |  | - | - | - |
-| `FixType` | `int32` | `False` |  | - | - | - |
-| `Eta` | [object `Eta`](#schema-node-eta) | `False` |  | - | - | - |
-| `MaximumStaticDraught` | `double` | `False` |  | - | - | - |
-| `Destination` | `string` | `False` |  | - | - | - |
-| `Dte` | `boolean` | `False` |  | - | - | - |
-| `Spare` | `boolean` | `False` |  | - | - | - |
-
-###### Object `Dimension`
-<a id="schema-node-dimension"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `A` | `int32` | `True` |  | - | - | - |
-| `B` | `int32` | `True` |  | - | - | - |
-| `C` | `int32` | `True` |  | - | - | - |
-| `D` | `int32` | `True` |  | - | - | - |
-
-###### Object `Eta`
-<a id="schema-node-eta"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Month` | `int32` | `True` |  | - | - | - |
-| `Day` | `int32` | `True` |  | - | - | - |
-| `Hour` | `int32` | `True` |  | - | - | - |
-| `Minute` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.StandardClassBPositionReport`
-<a id="schema-ioaisstreamstandardclassbpositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StandardClassBPositionReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Version `1`
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare": 0,
+  "Destinations": null
+}
+```
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Binary Broadcast Message
+
+CloudEvents type: `IO.AISstream.BinaryBroadcastMessage`
+
+#### What it tells you
+
+This event carries binary broadcast message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Binary Broadcast Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-binarybroadcastmessage-applicationid).
+- **`BinaryData`** (string, optional): No description provided.
+##### ApplicationID
+<a id="payload-io-aisstream-binarybroadcastmessage-applicationid"></a>
+
+Nested record.
+
+- **`Valid`** (boolean, required): No description provided.
+- **`DesignatedAreaCode`** (int32, required): No description provided.
+- **`FunctionIdentifier`** (int32, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare": 0,
+  "ApplicationID": {
+    "Valid": false,
+    "DesignatedAreaCode": 0,
+    "FunctionIdentifier": 0
+  },
+  "BinaryData": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Channel Management
+
+CloudEvents type: `IO.AISstream.ChannelManagement`
+
+#### What it tells you
+
+This event carries channel management data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+
+#### Payload
+
+`Channel Management` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
+
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`ChannelA`** (int32, optional): No description provided.
+- **`ChannelB`** (int32, optional): No description provided.
+- **`TxRxMode`** (int32, optional): No description provided.
+- **`LowPower`** (boolean, optional): No description provided.
+- **`Area`** (object, optional): No description provided. See [Area](#payload-io-aisstream-channelmanagement-area).
+- **`Unicast`** (object, optional): No description provided. See [Unicast](#payload-io-aisstream-channelmanagement-unicast).
+- **`IsAddressed`** (boolean, optional): No description provided.
+- **`BwA`** (boolean, optional): No description provided.
+- **`BwB`** (boolean, optional): No description provided.
+- **`TransitionalZoneSize`** (int32, optional): No description provided.
+- **`Spare4`** (int32, optional): No description provided.
+##### Area
+<a id="payload-io-aisstream-channelmanagement-area"></a>
+
+Nested record.
+
+- **`Longitude1`** (double, required): No description provided.
+- **`Latitude1`** (double, required): No description provided.
+- **`Longitude2`** (double, required): No description provided.
+- **`Latitude2`** (double, required): No description provided.
+##### Unicast
+<a id="payload-io-aisstream-channelmanagement-unicast"></a>
+
+Nested record.
+
+- **`AddressStation1`** (int32, required): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`AddressStation2`** (int32, required): No description provided.
+- **`Spare3`** (int32, optional): No description provided.
+#### Example payload
 
-###### JsonStructure
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/StandardClassBPositionReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare1": 0,
+  "ChannelA": 0,
+  "ChannelB": 0,
+  "TxRxMode": 0,
+  "LowPower": false,
+  "Area": {
+    "Longitude1": 0,
+    "Latitude1": 0,
+    "Longitude2": 0,
+    "Latitude2": 0
+  },
+  "Unicast": {
+    "AddressStation1": 0,
+    "Spare2": 0,
+    "AddressStation2": 0,
+    "Spare3": 0
+  },
+  "IsAddressed": false,
+  "BwA": false,
+  "BwB": false,
+  "TransitionalZoneSize": 0,
+  "Spare4": 0
+}
+```
 
-###### Object `StandardClassBPositionReport`
-<a id="schema-node-standardclassbpositionreport"></a>
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/StandardClassBPositionReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `Sog` | `double` | `False` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `Cog` | `double` | `False` |  | - | - | - |
-| `TrueHeading` | `int32` | `False` |  | - | - | - |
-| `Timestamp` | `int32` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `ClassBUnit` | `boolean` | `False` |  | - | - | - |
-| `ClassBDisplay` | `boolean` | `False` |  | - | - | - |
-| `ClassBDsc` | `boolean` | `False` |  | - | - | - |
-| `ClassBBand` | `boolean` | `False` |  | - | - | - |
-| `ClassBMsg22` | `boolean` | `False` |  | - | - | - |
-| `AssignedMode` | `boolean` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `CommunicationStateIsItdma` | `boolean` | `False` |  | - | - | - |
-| `CommunicationState` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.ExtendedClassBPositionReport`
-<a id="schema-ioaisstreamextendedclassbpositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ExtendedClassBPositionReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-##### Version `1`
+### Coordinated Utcinquiry
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+CloudEvents type: `IO.AISstream.CoordinatedUTCInquiry`
 
-###### JsonStructure
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/ExtendedClassBPositionReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This event carries coordinated utcinquiry data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-###### Object `ExtendedClassBPositionReport`
-<a id="schema-node-extendedclassbpositionreport"></a>
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/ExtendedClassBPositionReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `Sog` | `double` | `False` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `Cog` | `double` | `False` |  | - | - | - |
-| `TrueHeading` | `int32` | `False` |  | - | - | - |
-| `Timestamp` | `int32` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `Name` | `string` | `False` |  | - | - | - |
-| `Type` | `int32` | `False` |  | - | - | - |
-| `Dimension` | [object `Dimension`](#schema-node-dimension) | `False` |  | - | - | - |
-| `FixType` | `int32` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `Dte` | `boolean` | `False` |  | - | - | - |
-| `AssignedMode` | `boolean` | `False` |  | - | - | - |
-| `Spare3` | `int32` | `False` |  | - | - | - |
-
-###### Object `Dimension`
-<a id="schema-node-dimension"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `A` | `int32` | `True` |  | - | - | - |
-| `B` | `int32` | `True` |  | - | - | - |
-| `C` | `int32` | `True` |  | - | - | - |
-| `D` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.AidsToNavigationReport`
-<a id="schema-ioaisstreamaidstonavigationreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AidsToNavigationReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-##### Version `1`
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| Format | JsonStructure/draft-02 |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-###### JsonStructure
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AidsToNavigationReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+`Coordinated Utcinquiry` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-###### Object `AidsToNavigationReport`
-<a id="schema-node-aidstonavigationreport"></a>
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AidsToNavigationReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Type` | `int32` | `False` |  | - | - | - |
-| `Name` | `string` | `False` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `Dimension` | [object `Dimension`](#schema-node-dimension) | `False` |  | - | - | - |
-| `Fixtype` | `int32` | `False` |  | - | - | - |
-| `Timestamp` | `int32` | `False` |  | - | - | - |
-| `OffPosition` | `boolean` | `False` |  | - | - | - |
-| `AtoN` | `int32` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `VirtualAtoN` | `boolean` | `False` |  | - | - | - |
-| `AssignedMode` | `boolean` | `False` |  | - | - | - |
-| `Spare` | `boolean` | `False` |  | - | - | - |
-| `NameExtension` | `string` | `False` |  | - | - | - |
-
-###### Object `Dimension`
-<a id="schema-node-dimension"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `A` | `int32` | `True` |  | - | - | - |
-| `B` | `int32` | `True` |  | - | - | - |
-| `C` | `int32` | `True` |  | - | - | - |
-| `D` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.StaticDataReport`
-<a id="schema-ioaisstreamstaticdatareport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StaticDataReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`DestinationID`** (int32, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare1": 0,
+  "DestinationID": 0,
+  "Spare2": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/StaticDataReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `StaticDataReport`
-<a id="schema-node-staticdatareport"></a>
+### Data Link Management Message
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/StaticDataReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Reserved` | `int32` | `False` |  | - | - | - |
-| `PartNumber` | `boolean` | `False` |  | - | - | - |
-| `ReportA` | [object `ReportA`](#schema-node-reporta) | `False` |  | - | - | - |
-| `ReportB` | [object `ReportB`](#schema-node-reportb) | `False` |  | - | - | - |
-
-###### Object `ReportA`
-<a id="schema-node-reporta"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Name` | `string` | `True` |  | - | - | - |
-
-###### Object `ReportB`
-<a id="schema-node-reportb"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `ShipType` | `int32` | `False` |  | - | - | - |
-| `VendorIDName` | `string` | `False` |  | - | - | - |
-| `VenderIDModel` | `int32` | `False` |  | - | - | - |
-| `VenderIDSerial` | `int32` | `False` |  | - | - | - |
-| `CallSign` | `string` | `False` |  | - | - | - |
-| `Dimension` | [object `Dimension`](#schema-node-dimension) | `False` |  | - | - | - |
-| `FixType` | `int32` | `False` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-
-###### Object `Dimension`
-<a id="schema-node-dimension"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `A` | `int32` | `True` |  | - | - | - |
-| `B` | `int32` | `True` |  | - | - | - |
-| `C` | `int32` | `True` |  | - | - | - |
-| `D` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.BaseStationReport`
-<a id="schema-ioaisstreambasestationreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BaseStationReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+CloudEvents type: `IO.AISstream.DataLinkManagementMessage`
 
-##### Version `1`
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+This event carries data link management message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-###### JsonStructure
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/BaseStationReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-###### Object `BaseStationReport`
-<a id="schema-node-basestationreport"></a>
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/BaseStationReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `UtcYear` | `int32` | `False` |  | - | - | - |
-| `UtcMonth` | `int32` | `False` |  | - | - | - |
-| `UtcDay` | `int32` | `False` |  | - | - | - |
-| `UtcHour` | `int32` | `False` |  | - | - | - |
-| `UtcMinute` | `int32` | `False` |  | - | - | - |
-| `UtcSecond` | `int32` | `False` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `FixType` | `int32` | `False` |  | - | - | - |
-| `LongRangeEnable` | `boolean` | `False` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `CommunicationState` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.SafetyBroadcastMessage`
-<a id="schema-ioaisstreamsafetybroadcastmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | SafetyBroadcastMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+#### Payload
 
-###### JsonStructure
+`Data Link Management Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/SafetyBroadcastMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Data`** (map, optional): No description provided.
+#### Example payload
 
-###### Object `SafetyBroadcastMessage`
-<a id="schema-node-safetybroadcastmessage"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/SafetyBroadcastMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Text` | `string` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.StandardSearchAndRescueAircraftReport`
-<a id="schema-ioaisstreamstandardsearchandrescueaircraftreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | StandardSearchAndRescueAircraftReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare": 0,
+  "Data": null
+}
+```
 
-##### Version `1`
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### JsonStructure
+### Gnss Broadcast Binary Message
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/StandardSearchAndRescueAircraftReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+CloudEvents type: `IO.AISstream.GnssBroadcastBinaryMessage`
 
-###### Object `StandardSearchAndRescueAircraftReport`
-<a id="schema-node-standardsearchandrescueaircraftreport"></a>
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/StandardSearchAndRescueAircraftReport` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Altitude` | `int32` | `False` |  | - | - | - |
-| `Sog` | `double` | `False` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `Cog` | `double` | `False` |  | - | - | - |
-| `Timestamp` | `int32` | `False` |  | - | - | - |
-| `AltFromBaro` | `boolean` | `False` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `Dte` | `boolean` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `AssignedMode` | `boolean` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `CommunicationStateIsItdma` | `boolean` | `False` |  | - | - | - |
-| `CommunicationState` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.LongRangeAisBroadcastMessage`
-<a id="schema-ioaisstreamlongrangeaisbroadcastmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | LongRangeAisBroadcastMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+This event carries gnss broadcast binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-##### Version `1`
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-###### JsonStructure
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/LongRangeAisBroadcastMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-###### Object `LongRangeAisBroadcastMessage`
-<a id="schema-node-longrangeaisbroadcastmessage"></a>
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/LongRangeAisBroadcastMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `PositionAccuracy` | `boolean` | `False` |  | - | - | - |
-| `Raim` | `boolean` | `False` |  | - | - | - |
-| `NavigationalStatus` | `int32` | `False` |  | - | - | - |
-| `Longitude` | `double` | `True` |  | - | - | - |
-| `Latitude` | `double` | `True` |  | - | - | - |
-| `Sog` | `double` | `False` |  | - | - | - |
-| `Cog` | `double` | `False` |  | - | - | - |
-| `PositionLatency` | `boolean` | `False` |  | - | - | - |
-| `Spare` | `boolean` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.AddressedSafetyMessage`
-<a id="schema-ioaisstreamaddressedsafetymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AddressedSafetyMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+`Gnss Broadcast Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`Longitude`** (double, optional): No description provided.
+- **`Latitude`** (double, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`Data`** (string, optional): No description provided.
+#### Example payload
 
-###### JsonStructure
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AddressedSafetyMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare1": 0,
+  "Longitude": 0,
+  "Latitude": 0,
+  "Spare2": 0,
+  "Data": "string"
+}
+```
 
-###### Object `AddressedSafetyMessage`
-<a id="schema-node-addressedsafetymessage"></a>
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AddressedSafetyMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Sequenceinteger` | `int32` | `False` |  | - | - | - |
-| `DestinationID` | `int32` | `False` |  | - | - | - |
-| `Retransmission` | `boolean` | `False` |  | - | - | - |
-| `Spare` | `boolean` | `False` |  | - | - | - |
-| `Text` | `string` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.AddressedBinaryMessage`
-<a id="schema-ioaisstreamaddressedbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AddressedBinaryMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-##### Version `1`
+### Group Assignment Command
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+CloudEvents type: `IO.AISstream.GroupAssignmentCommand`
 
-###### JsonStructure
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AddressedBinaryMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This event carries group assignment command data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-###### Object `AddressedBinaryMessage`
-<a id="schema-node-addressedbinarymessage"></a>
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AddressedBinaryMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Sequenceinteger` | `int32` | `False` |  | - | - | - |
-| `DestinationID` | `int32` | `False` |  | - | - | - |
-| `Retransmission` | `boolean` | `False` |  | - | - | - |
-| `Spare` | `boolean` | `False` |  | - | - | - |
-| `ApplicationID` | [object `ApplicationID`](#schema-node-applicationid) | `False` |  | - | - | - |
-| `BinaryData` | `string` | `False` |  | - | - | - |
-
-###### Object `ApplicationID`
-<a id="schema-node-applicationid"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `DesignatedAreaCode` | `int32` | `True` |  | - | - | - |
-| `FunctionIdentifier` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.AssignedModeCommand`
-<a id="schema-ioaisstreamassignedmodecommand"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | AssignedModeCommand |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-##### Version `1`
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| Format | JsonStructure/draft-02 |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-###### JsonStructure
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AssignedModeCommand` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+`Group Assignment Command` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-###### Object `AssignedModeCommand`
-<a id="schema-node-assignedmodecommand"></a>
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/AssignedModeCommand` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Commands` | `map` | `False` |  | values=`{"type": "string"}` | - | - |
-
-#### Schema `IO.AISstream.BinaryAcknowledge`
-<a id="schema-ioaisstreambinaryacknowledge"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BinaryAcknowledge |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`Longitude1`** (double, optional): No description provided.
+- **`Latitude1`** (double, optional): No description provided.
+- **`Longitude2`** (double, optional): No description provided.
+- **`Latitude2`** (double, optional): No description provided.
+- **`StationType`** (int32, optional): No description provided.
+- **`ShipType`** (int32, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`TxRxMode`** (int32, optional): No description provided.
+- **`ReportingInterval`** (int32, optional): No description provided.
+- **`QuietTime`** (int32, optional): No description provided.
+- **`Spare3`** (int32, optional): No description provided.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare1": 0,
+  "Longitude1": 0,
+  "Latitude1": 0,
+  "Longitude2": 0,
+  "Latitude2": 0,
+  "StationType": 0,
+  "ShipType": 0,
+  "Spare2": 0,
+  "TxRxMode": 0,
+  "ReportingInterval": 0,
+  "QuietTime": 0,
+  "Spare3": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/BinaryAcknowledge` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `BinaryAcknowledge`
-<a id="schema-node-binaryacknowledge"></a>
+### Interrogation
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/BinaryAcknowledge` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Destinations` | `map` | `False` |  | values=`{"type": "string"}` | - | - |
-
-#### Schema `IO.AISstream.BinaryBroadcastMessage`
-<a id="schema-ioaisstreambinarybroadcastmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BinaryBroadcastMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+CloudEvents type: `IO.AISstream.Interrogation`
 
-##### Version `1`
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+This event carries interrogation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-###### JsonStructure
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/BinaryBroadcastMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-###### Object `BinaryBroadcastMessage`
-<a id="schema-node-binarybroadcastmessage"></a>
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/BinaryBroadcastMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `ApplicationID` | [object `ApplicationID`](#schema-node-applicationid) | `False` |  | - | - | - |
-| `BinaryData` | `string` | `False` |  | - | - | - |
-
-###### Object `ApplicationID`
-<a id="schema-node-applicationid"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `DesignatedAreaCode` | `int32` | `True` |  | - | - | - |
-| `FunctionIdentifier` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.ChannelManagement`
-<a id="schema-ioaisstreamchannelmanagement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ChannelManagement |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+#### Payload
 
-###### JsonStructure
+`Interrogation` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/ChannelManagement` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`Station1Msg1`** (object, optional): No description provided. See [Station1Msg1](#payload-io-aisstream-interrogation-station1msg1).
+- **`Station1Msg2`** (object, optional): No description provided. See [Station1Msg2](#payload-io-aisstream-interrogation-station1msg2).
+- **`Station2`** (object, optional): No description provided. See [Station2](#payload-io-aisstream-interrogation-station2).
+##### Station1Msg1
+<a id="payload-io-aisstream-interrogation-station1msg1"></a>
 
-###### Object `ChannelManagement`
-<a id="schema-node-channelmanagement"></a>
+Nested record.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/ChannelManagement` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `ChannelA` | `int32` | `False` |  | - | - | - |
-| `ChannelB` | `int32` | `False` |  | - | - | - |
-| `TxRxMode` | `int32` | `False` |  | - | - | - |
-| `LowPower` | `boolean` | `False` |  | - | - | - |
-| `Area` | [object `Area`](#schema-node-area) | `False` |  | - | - | - |
-| `Unicast` | [object `Unicast`](#schema-node-unicast) | `False` |  | - | - | - |
-| `IsAddressed` | `boolean` | `False` |  | - | - | - |
-| `BwA` | `boolean` | `False` |  | - | - | - |
-| `BwB` | `boolean` | `False` |  | - | - | - |
-| `TransitionalZoneSize` | `int32` | `False` |  | - | - | - |
-| `Spare4` | `int32` | `False` |  | - | - | - |
-
-###### Object `Area`
-<a id="schema-node-area"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Longitude1` | `double` | `True` |  | - | - | - |
-| `Latitude1` | `double` | `True` |  | - | - | - |
-| `Longitude2` | `double` | `True` |  | - | - | - |
-| `Latitude2` | `double` | `True` |  | - | - | - |
-
-###### Object `Unicast`
-<a id="schema-node-unicast"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `AddressStation1` | `int32` | `True` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `AddressStation2` | `int32` | `True` |  | - | - | - |
-| `Spare3` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.CoordinatedUTCInquiry`
-<a id="schema-ioaisstreamcoordinatedutcinquiry"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | CoordinatedUTCInquiry |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`Valid`** (boolean, required): No description provided.
+- **`StationID`** (int32, required): No description provided.
+- **`MessageID`** (int32, required): No description provided.
+- **`SlotOffset`** (int32, required): No description provided.
+##### Station1Msg2
+<a id="payload-io-aisstream-interrogation-station1msg2"></a>
 
-##### Version `1`
+Nested record.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`MessageID`** (int32, required): No description provided.
+- **`SlotOffset`** (int32, required): No description provided.
+##### Station2
+<a id="payload-io-aisstream-interrogation-station2"></a>
 
-###### JsonStructure
+Nested record.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/CoordinatedUTCInquiry` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+- **`Valid`** (boolean, required): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`StationID`** (int32, required): No description provided.
+- **`MessageID`** (int32, required): No description provided.
+- **`SlotOffset`** (int32, required): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+#### Example payload
 
-###### Object `CoordinatedUTCInquiry`
-<a id="schema-node-coordinatedutcinquiry"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/CoordinatedUTCInquiry` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `DestinationID` | `int32` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.DataLinkManagementMessage`
-<a id="schema-ioaisstreamdatalinkmanagementmessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DataLinkManagementMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "Spare": 0,
+  "Station1Msg1": {
+    "Valid": false,
+    "StationID": 0,
+    "MessageID": 0,
+    "SlotOffset": 0
+  },
+  "Station1Msg2": {
+    "Valid": false,
+    "Spare": 0,
+    "MessageID": 0,
+    "SlotOffset": 0
+  },
+  "Station2": {
+    "Valid": false,
+    "Spare1": 0,
+    "StationID": 0,
+    "MessageID": 0,
+    "SlotOffset": 0,
+    "Spare2": 0
+  }
+}
+```
 
-##### Version `1`
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### JsonStructure
+### Multi Slot Binary Message
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/DataLinkManagementMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+CloudEvents type: `IO.AISstream.MultiSlotBinaryMessage`
 
-###### Object `DataLinkManagementMessage`
-<a id="schema-node-datalinkmanagementmessage"></a>
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/DataLinkManagementMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Data` | `map` | `False` |  | values=`{"type": "string"}` | - | - |
-
-#### Schema `IO.AISstream.GnssBroadcastBinaryMessage`
-<a id="schema-ioaisstreamgnssbroadcastbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | GnssBroadcastBinaryMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+This event carries multi slot binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-##### Version `1`
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-###### JsonStructure
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/GnssBroadcastBinaryMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `GnssBroadcastBinaryMessage`
-<a id="schema-node-gnssbroadcastbinarymessage"></a>
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/GnssBroadcastBinaryMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `Longitude` | `double` | `False` |  | - | - | - |
-| `Latitude` | `double` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `Data` | `string` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.GroupAssignmentCommand`
-<a id="schema-ioaisstreamgroupassignmentcommand"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | GroupAssignmentCommand |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+#### Payload
 
-##### Version `1`
+`Multi Slot Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`DestinationIDValid`** (boolean, optional): No description provided.
+- **`ApplicationIDValid`** (boolean, optional): No description provided.
+- **`DestinationID`** (int32, optional): No description provided.
+- **`Spare1`** (int32, optional): No description provided.
+- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-multislotbinarymessage-applicationid).
+- **`Payload`** (string, optional): No description provided.
+- **`Spare2`** (int32, optional): No description provided.
+- **`CommunicationStateIsItdma`** (boolean, optional): No description provided.
+- **`CommunicationState`** (int32, optional): No description provided.
+##### ApplicationID
+<a id="payload-io-aisstream-multislotbinarymessage-applicationid"></a>
 
-###### JsonStructure
+Nested record.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/GroupAssignmentCommand` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+- **`Valid`** (boolean, required): No description provided.
+- **`DesignatedAreaCode`** (int32, required): No description provided.
+- **`FunctionIdentifier`** (int32, required): No description provided.
+#### Example payload
 
-###### Object `GroupAssignmentCommand`
-<a id="schema-node-groupassignmentcommand"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/GroupAssignmentCommand` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `Longitude1` | `double` | `False` |  | - | - | - |
-| `Latitude1` | `double` | `False` |  | - | - | - |
-| `Longitude2` | `double` | `False` |  | - | - | - |
-| `Latitude2` | `double` | `False` |  | - | - | - |
-| `StationType` | `int32` | `False` |  | - | - | - |
-| `ShipType` | `int32` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `TxRxMode` | `int32` | `False` |  | - | - | - |
-| `ReportingInterval` | `int32` | `False` |  | - | - | - |
-| `QuietTime` | `int32` | `False` |  | - | - | - |
-| `Spare3` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.Interrogation`
-<a id="schema-ioaisstreaminterrogation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Interrogation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "DestinationIDValid": false,
+  "ApplicationIDValid": false,
+  "DestinationID": 0,
+  "Spare1": 0,
+  "ApplicationID": {
+    "Valid": false,
+    "DesignatedAreaCode": 0,
+    "FunctionIdentifier": 0
+  },
+  "Payload": "string",
+  "Spare2": 0,
+  "CommunicationStateIsItdma": false,
+  "CommunicationState": 0
+}
+```
 
-##### Version `1`
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### JsonStructure
+### Single Slot Binary Message
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/Interrogation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+CloudEvents type: `IO.AISstream.SingleSlotBinaryMessage`
 
-###### Object `Interrogation`
-<a id="schema-node-interrogation"></a>
+#### What it tells you
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/Interrogation` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `Station1Msg1` | [object `Station1Msg1`](#schema-node-station1msg1) | `False` |  | - | - | - |
-| `Station1Msg2` | [object `Station1Msg2`](#schema-node-station1msg2) | `False` |  | - | - | - |
-| `Station2` | [object `Station2`](#schema-node-station2) | `False` |  | - | - | - |
-
-###### Object `Station1Msg1`
-<a id="schema-node-station1msg1"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `StationID` | `int32` | `True` |  | - | - | - |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `SlotOffset` | `int32` | `True` |  | - | - | - |
-
-###### Object `Station1Msg2`
-<a id="schema-node-station1msg2"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `SlotOffset` | `int32` | `True` |  | - | - | - |
-
-###### Object `Station2`
-<a id="schema-node-station2"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `StationID` | `int32` | `True` |  | - | - | - |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `SlotOffset` | `int32` | `True` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-
-#### Schema `IO.AISstream.MultiSlotBinaryMessage`
-<a id="schema-ioaisstreammultislotbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | MultiSlotBinaryMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+This event carries single slot binary message data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-##### Version `1`
+#### Identity
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-###### JsonStructure
+#### Where to find it
 
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/MultiSlotBinaryMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+| `KAFKA` | topic `aisstream`, key `{mmsi}` |
 
-###### Object `MultiSlotBinaryMessage`
-<a id="schema-node-multislotbinarymessage"></a>
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/MultiSlotBinaryMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `DestinationIDValid` | `boolean` | `False` |  | - | - | - |
-| `ApplicationIDValid` | `boolean` | `False` |  | - | - | - |
-| `DestinationID` | `int32` | `False` |  | - | - | - |
-| `Spare1` | `int32` | `False` |  | - | - | - |
-| `ApplicationID` | [object `ApplicationID`](#schema-node-applicationid) | `False` |  | - | - | - |
-| `Payload` | `string` | `False` |  | - | - | - |
-| `Spare2` | `int32` | `False` |  | - | - | - |
-| `CommunicationStateIsItdma` | `boolean` | `False` |  | - | - | - |
-| `CommunicationState` | `int32` | `False` |  | - | - | - |
-
-###### Object `ApplicationID`
-<a id="schema-node-applicationid"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `DesignatedAreaCode` | `int32` | `True` |  | - | - | - |
-| `FunctionIdentifier` | `int32` | `True` |  | - | - | - |
-
-#### Schema `IO.AISstream.SingleSlotBinaryMessage`
-<a id="schema-ioaisstreamsingleslotbinarymessage"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | SingleSlotBinaryMessage |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+`Single Slot Binary Message` payloads are JSON object. Required fields: `MessageID`, `UserID`, `Valid`.
 
-##### Version `1`
+- **`MessageID`** (int32, required): No description provided.
+- **`RepeatIndicator`** (int32, optional): No description provided.
+- **`UserID`** (int32, required): No description provided.
+- **`Valid`** (boolean, required): No description provided.
+- **`DestinationIDValid`** (boolean, optional): No description provided.
+- **`ApplicationIDValid`** (boolean, optional): No description provided.
+- **`DestinationID`** (int32, optional): No description provided.
+- **`Spare`** (int32, optional): No description provided.
+- **`ApplicationID`** (object, optional): No description provided. See [ApplicationID](#payload-io-aisstream-singleslotbinarymessage-applicationid).
+- **`Payload`** (string, optional): No description provided.
+##### ApplicationID
+<a id="payload-io-aisstream-singleslotbinarymessage-applicationid"></a>
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+Nested record.
 
-###### JsonStructure
+- **`Valid`** (boolean, required): No description provided.
+- **`DesignatedAreaCode`** (int32, required): No description provided.
+- **`FunctionIdentifier`** (int32, required): No description provided.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `SingleSlotBinaryMessage`
-<a id="schema-node-singleslotbinarymessage"></a>
+```json
+{
+  "MessageID": 0,
+  "RepeatIndicator": 0,
+  "UserID": 0,
+  "Valid": false,
+  "DestinationIDValid": false,
+  "ApplicationIDValid": false,
+  "DestinationID": 0,
+  "Spare": 0,
+  "ApplicationID": {
+    "Valid": false,
+    "DesignatedAreaCode": 0,
+    "FunctionIdentifier": 0
+  },
+  "Payload": "string"
+}
+```
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/IO/AISstream/SingleSlotBinaryMessage` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `MessageID` | `int32` | `True` |  | - | - | - |
-| `RepeatIndicator` | `int32` | `False` |  | - | - | - |
-| `UserID` | `int32` | `True` |  | - | - | - |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `DestinationIDValid` | `boolean` | `False` |  | - | - | - |
-| `ApplicationIDValid` | `boolean` | `False` |  | - | - | - |
-| `DestinationID` | `int32` | `False` |  | - | - | - |
-| `Spare` | `int32` | `False` |  | - | - | - |
-| `ApplicationID` | [object `ApplicationID`](#schema-node-applicationid) | `False` |  | - | - | - |
-| `Payload` | `string` | `False` |  | - | - | - |
-
-###### Object `ApplicationID`
-<a id="schema-node-applicationid"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `Valid` | `boolean` | `True` |  | - | - | - |
-| `DesignatedAreaCode` | `int32` | `True` |  | - | - | - |
-| `FunctionIdentifier` | `int32` | `True` |  | - | - | - |
-
-### Schemagroup `IO.AISstream.mqtt.jstruct`
-<a id="schemagroup-ioaisstreammqttjstruct"></a>
-
-#### Schema `IO.AISstream.mqtt.PositionReport`
-<a id="schema-ioaisstreammqttpositionreport"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | PositionReport |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+#### Reference vs telemetry
 
-##### Version `1`
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+### Position Report
 
-###### JsonStructure
+CloudEvents type: `IO.AISstream.mqtt.PositionReport`
 
-| Field | Value |
-| --- | --- |
-| $id | `https://schemas.real-time-sources.dev/aisstream/mqtt/PositionReport` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `PositionReport`
-<a id="schema-node-positionreport"></a>
+#### What it tells you
 
 Position report (Type 1/2/3/4/9/18/19/27) projected onto the UNS axes.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://schemas.real-time-sources.dev/aisstream/mqtt/PositionReport` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report`, retain `false`, QoS `0` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `mmsi` | `string` | `True` | Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. | - | pattern=`^[0-9]{9}$` | - |
-| `flag` | `string` | `True` | ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. | - | pattern=`^[a-z]{2}$\\|^xx$` | - |
-| `ship_type` | `string` | `True` | Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'. | - | - | - |
-| `geohash5` | `string` | `True` | 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. | - | pattern=`^[0-9b-hjkmnp-z]{5}$` | - |
-| `msg_type` | enum `['position-report', 'static', 'aid-to-navigation']` | `True` | Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template. | - | - | - |
-| `user_id` | `int32` | `True` | Source AIS UserID (numeric MMSI, 9-digit). | - | - | - |
-| `latitude` | `double` | `True` | Reported latitude in WGS-84 decimal degrees. | - | - | - |
-| `longitude` | `double` | `True` | Reported longitude in WGS-84 decimal degrees. | - | - | - |
-| `sog` | `double` | `False` | Speed over ground in knots (0..102.2). | - | - | - |
-| `cog` | `double` | `False` | Course over ground in degrees (0..359.9). | - | - | - |
-| `true_heading` | `int32` | `False` | True heading in degrees (0..359, 511 = not available). | - | - | - |
-| `navigational_status` | `int32` | `False` | ITU navigation status code (0..15). | - | - | - |
-| `rate_of_turn` | `int32` | `False` | Rate of turn in AIS-encoded units. | - | - | - |
-| `position_accuracy` | `boolean` | `False` | True if the reported position is high accuracy (DGPS). | - | - | - |
-| `timestamp` | `int32` | `False` | AIS report timestamp seconds-of-minute (0..59, 60..63 = special). | - | - | - |
-| `raim` | `boolean` | `False` | RAIM (Receiver Autonomous Integrity Monitoring) flag. | - | - | - |
-| `message_id` | `int32` | `True` | Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27). | - | - | - |
+#### Payload
 
-#### Schema `IO.AISstream.mqtt.ShipStatic`
-<a id="schema-ioaisstreammqttshipstatic"></a>
+`Position Report` payloads are JSON object. Required fields: `mmsi`, `flag`, `ship_type`, `geohash5`, `msg_type`, `user_id`, `latitude`, `longitude`, `message_id`.
 
-| Field | Value |
-| --- | --- |
-| Name | ShipStatic |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`mmsi`** (string, required): Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. Constraints: pattern `^[0-9]{9}$`.
+- **`flag`** (string, required): ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. Constraints: pattern `^[a-z]{2}$|^xx$`.
+- **`ship_type`** (string, required): Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.
+- **`geohash5`** (string, required): 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. Constraints: pattern `^[0-9b-hjkmnp-z]{5}$`.
+- **`msg_type`** (enum, required): Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
+- **`user_id`** (int32, required): Source AIS UserID (numeric MMSI, 9-digit).
+- **`latitude`** (double, required): Reported latitude in WGS-84 decimal degrees.
+- **`longitude`** (double, required): Reported longitude in WGS-84 decimal degrees.
+- **`sog`** (double, optional): Speed over ground in knots (0..102.2).
+- **`cog`** (double, optional): Course over ground in degrees (0..359.9).
+- **`true_heading`** (int32, optional): True heading in degrees (0..359, 511 = not available).
+- **`navigational_status`** (int32, optional): ITU navigation status code (0..15).
+- **`rate_of_turn`** (int32, optional): Rate of turn in AIS-encoded units.
+- **`position_accuracy`** (boolean, optional): True if the reported position is high accuracy (DGPS).
+- **`timestamp`** (int32, optional): AIS report timestamp seconds-of-minute (0..59, 60..63 = special).
+- **`raim`** (boolean, optional): RAIM (Receiver Autonomous Integrity Monitoring) flag.
+- **`message_id`** (int32, required): Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27).
+##### `msg_type` values
 
-##### Version `1`
+- `position-report`
+- `static`
+- `aid-to-navigation`
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### JsonStructure
+```json
+{
+  "mmsi": "string",
+  "flag": "string",
+  "ship_type": "string",
+  "geohash5": "string",
+  "msg_type": "position-report",
+  "user_id": 0,
+  "latitude": 0,
+  "longitude": 0,
+  "sog": 0,
+  "cog": 0,
+  "true_heading": 0,
+  "navigational_status": 0,
+  "rate_of_turn": 0,
+  "position_accuracy": false,
+  "timestamp": 0,
+  "raim": false,
+  "message_id": 0
+}
+```
 
-| Field | Value |
-| --- | --- |
-| $id | `https://schemas.real-time-sources.dev/aisstream/mqtt/ShipStatic` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+#### Reference vs telemetry
 
-###### Object `ShipStatic`
-<a id="schema-node-shipstatic"></a>
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Ship Static
+
+CloudEvents type: `IO.AISstream.mqtt.ShipStatic`
+
+#### What it tells you
 
 Static and voyage-related data (Type 5 ShipStaticData / Type 24 StaticDataReport).
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://schemas.real-time-sources.dev/aisstream/mqtt/ShipStatic` |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static`, retain `false`, QoS `0` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `mmsi` | `string` | `True` | Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. | - | pattern=`^[0-9]{9}$` | - |
-| `flag` | `string` | `True` | ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. | - | pattern=`^[a-z]{2}$\\|^xx$` | - |
-| `ship_type` | `string` | `True` | Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'. | - | - | - |
-| `geohash5` | `string` | `True` | 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. | - | pattern=`^[0-9b-hjkmnp-z]{5}$` | - |
-| `msg_type` | enum `['position-report', 'static', 'aid-to-navigation']` | `True` | Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template. | - | - | - |
-| `user_id` | `int32` | `True` | Source AIS UserID (numeric MMSI, 9-digit). | - | - | - |
-| `name` | `string` | `True` | Vessel name as broadcast (max 20 chars, trimmed of AIS '@' padding). | - | - | - |
-| `call_sign` | `string` | `False` | Radio call sign as broadcast (max 7 chars). | - | - | - |
-| `imo_number` | `int32` | `False` | IMO number (7-digit). 0 if not assigned. | - | - | - |
-| `ship_type_code` | `int32` | `True` | Raw ITU-R M.1371 ship type code (0..99). | - | - | - |
-| `destination` | `string` | `False` | Voyage destination string (max 20 chars). Empty for Type 24. | - | - | - |
-| `eta` | `string` | `False` | Voyage ETA as ISO-8601 string, derived from AIS month/day/hour/minute. Empty if absent. | - | - | - |
-| `draught` | `double` | `False` | Maximum present static draught in metres. 0.0 if not provided. | - | - | - |
-| `dim_to_bow` | `int32` | `False` | Distance from reference point to bow in metres. | - | - | - |
-| `dim_to_stern` | `int32` | `False` | Distance from reference point to stern in metres. | - | - | - |
-| `dim_to_port` | `int32` | `False` | Distance from reference point to port side in metres. | - | - | - |
-| `dim_to_starboard` | `int32` | `False` | Distance from reference point to starboard side in metres. | - | - | - |
-| `message_id` | `int32` | `True` | Original ITU-R M.1371 message ID (5 or 24). | - | - | - |
+#### Payload
 
-#### Schema `IO.AISstream.mqtt.AidToNavigation`
-<a id="schema-ioaisstreammqttaidtonavigation"></a>
+`Ship Static` payloads are JSON object. Required fields: `mmsi`, `flag`, `ship_type`, `geohash5`, `msg_type`, `user_id`, `name`, `ship_type_code`, `message_id`.
 
-| Field | Value |
-| --- | --- |
-| Name | AidToNavigation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`mmsi`** (string, required): Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. Constraints: pattern `^[0-9]{9}$`.
+- **`flag`** (string, required): ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. Constraints: pattern `^[a-z]{2}$|^xx$`.
+- **`ship_type`** (string, required): Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.
+- **`geohash5`** (string, required): 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. Constraints: pattern `^[0-9b-hjkmnp-z]{5}$`.
+- **`msg_type`** (enum, required): Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
+- **`user_id`** (int32, required): Source AIS UserID (numeric MMSI, 9-digit).
+- **`name`** (string, required): Vessel name as broadcast (max 20 chars, trimmed of AIS '@' padding).
+- **`call_sign`** (string, optional): Radio call sign as broadcast (max 7 chars).
+- **`imo_number`** (int32, optional): IMO number (7-digit). 0 if not assigned.
+- **`ship_type_code`** (int32, required): Raw ITU-R M.1371 ship type code (0..99).
+- **`destination`** (string, optional): Voyage destination string (max 20 chars). Empty for Type 24.
+- **`eta`** (string, optional): Voyage ETA as ISO-8601 string, derived from AIS month/day/hour/minute. Empty if absent.
+- **`draught`** (double, optional): Maximum present static draught in metres. 0.0 if not provided.
+- **`dim_to_bow`** (int32, optional): Distance from reference point to bow in metres.
+- **`dim_to_stern`** (int32, optional): Distance from reference point to stern in metres.
+- **`dim_to_port`** (int32, optional): Distance from reference point to port side in metres.
+- **`dim_to_starboard`** (int32, optional): Distance from reference point to starboard side in metres.
+- **`message_id`** (int32, required): Original ITU-R M.1371 message ID (5 or 24).
+##### `msg_type` values
 
-##### Version `1`
+- `position-report`
+- `static`
+- `aid-to-navigation`
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### JsonStructure
+```json
+{
+  "mmsi": "string",
+  "flag": "string",
+  "ship_type": "string",
+  "geohash5": "string",
+  "msg_type": "position-report",
+  "user_id": 0,
+  "name": "string",
+  "call_sign": "string",
+  "imo_number": 0,
+  "ship_type_code": 0,
+  "destination": "string",
+  "eta": "string",
+  "draught": 0,
+  "dim_to_bow": 0,
+  "dim_to_stern": 0,
+  "dim_to_port": 0,
+  "dim_to_starboard": 0,
+  "message_id": 0
+}
+```
 
-| Field | Value |
-| --- | --- |
-| $id | `https://schemas.real-time-sources.dev/aisstream/mqtt/AidToNavigation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+#### Reference vs telemetry
 
-###### Object `AidToNavigation`
-<a id="schema-node-aidtonavigation"></a>
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Aid To Navigation
+
+CloudEvents type: `IO.AISstream.mqtt.AidToNavigation`
+
+#### What it tells you
 
 Aid-to-Navigation report (Type 21).
 
-| Field | Value |
-| --- | --- |
-| $id | `https://schemas.real-time-sources.dev/aisstream/mqtt/AidToNavigation` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `mmsi` | `string` | `True` | Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. | - | pattern=`^[0-9]{9}$` | - |
-| `flag` | `string` | `True` | ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. | - | pattern=`^[a-z]{2}$\\|^xx$` | - |
-| `ship_type` | `string` | `True` | Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'. | - | - | - |
-| `geohash5` | `string` | `True` | 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. | - | pattern=`^[0-9b-hjkmnp-z]{5}$` | - |
-| `msg_type` | enum `['position-report', 'static', 'aid-to-navigation']` | `True` | Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template. | - | - | - |
-| `user_id` | `int32` | `True` | Source AIS UserID for the AtoN station (9-digit MMSI). | - | - | - |
-| `name` | `string` | `True` | AtoN name as broadcast. | - | - | - |
-| `type` | `int32` | `True` | AtoN type code (0..31) per ITU-R M.1371. | - | - | - |
-| `latitude` | `double` | `True` | Reported latitude in WGS-84 decimal degrees. | - | - | - |
-| `longitude` | `double` | `True` | Reported longitude in WGS-84 decimal degrees. | - | - | - |
-| `off_position` | `boolean` | `False` | True if the AtoN is reported off its assigned position. | - | - | - |
-| `virtual_atoN` | `boolean` | `False` | True if this is a virtual AtoN broadcast by a base station. | - | - | - |
-| `message_id` | `int32` | `True` | Original ITU-R M.1371 message ID (21). | - | - | - |
+Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation`, retain `false`, QoS `0` |
+
+#### Payload
+
+`Aid To Navigation` payloads are JSON object. Required fields: `mmsi`, `flag`, `ship_type`, `geohash5`, `msg_type`, `user_id`, `name`, `type`, `latitude`, `longitude`, `message_id`.
+
+- **`mmsi`** (string, required): Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject. Constraints: pattern `^[0-9]{9}$`.
+- **`flag`** (string, required): ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits. Constraints: pattern `^[a-z]{2}$|^xx$`.
+- **`ship_type`** (string, required): Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.
+- **`geohash5`** (string, required): 5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen. Constraints: pattern `^[0-9b-hjkmnp-z]{5}$`.
+- **`msg_type`** (enum, required): Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
+- **`user_id`** (int32, required): Source AIS UserID for the AtoN station (9-digit MMSI).
+- **`name`** (string, required): AtoN name as broadcast.
+- **`type`** (int32, required): AtoN type code (0..31) per ITU-R M.1371.
+- **`latitude`** (double, required): Reported latitude in WGS-84 decimal degrees.
+- **`longitude`** (double, required): Reported longitude in WGS-84 decimal degrees.
+- **`off_position`** (boolean, optional): True if the AtoN is reported off its assigned position.
+- **`virtual_atoN`** (boolean, optional): True if this is a virtual AtoN broadcast by a base station.
+- **`message_id`** (int32, required): Original ITU-R M.1371 message ID (21).
+##### `msg_type` values
+
+- `position-report`
+- `static`
+- `aid-to-navigation`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "mmsi": "string",
+  "flag": "string",
+  "ship_type": "string",
+  "geohash5": "string",
+  "msg_type": "position-report",
+  "user_id": 0,
+  "name": "string",
+  "type": 0,
+  "latitude": 0,
+  "longitude": 0,
+  "off_position": false,
+  "virtual_atoN": false,
+  "message_id": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+
+## References
+
+- xRegistry manifest: [`xreg/aisstream.xreg.json`](xreg/aisstream.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

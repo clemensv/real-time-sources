@@ -2,475 +2,291 @@
 
 This source polls Tokyo Electric Power Company (TEPCO) Electricity Forecast (でんき予報) open data and emits CloudEvents to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 4 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
+- **Identity:** `jp.tepco.denkiyoho/{date}/{time}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `tepco-denkiyoho`. The record key is `jp.tepco.denkiyoho/{date}/{time}`. In plain language, `jp.tepco.denkiyoho/{date}/{time}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['tepco-denkiyoho'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Supply Capacity
+
+CloudEvents type: `JP.TEPCO.Denkiyoho.SupplyCapacity`
+
+#### What it tells you
+
+Daily TEPCO Electricity Forecast supply capability reference record for the Tokyo service area. Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is stable subject and Kafka key time component. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `JP.TEPCO.Denkiyoho.Kafka`
+`Supply Capacity` payloads are JSON object. Required fields: `date`, `time`, `peak_supply_capacity_mw`, `peak_supply_capacity_jp_unit_value`, `peak_time_slot`, `peak_reserve_margin_pct`, `peak_usage_pct`, `daily_max_usage_pct`, `daily_max_usage_time_slot`, `update_datetime`, `update_datetime_local`, `area_code`, `area_name_jp`, `area_name_en`.
 
-| Field | Value |
+- **`date`** (date, required): Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day.
+- **`time`** (string, required): Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
+- **`peak_supply_capacity_mw`** (double, required, MW): Peak-time available supply capability for the Tokyo service area shown by TEPCO as ピーク時供給力(万kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10. Constraints: minimum `0`.
+- **`peak_supply_capacity_jp_unit_value`** (int32, required, 10MW (万kW)): Original integer value from TEPCO's ピーク時供給力(万kW) header field. TEPCO publishes demand and supply values in 万kW, where one unit is 10,000 kilowatts, equal to 10 megawatts. Constraints: minimum `0`.
+- **`peak_time_slot`** (string, required): Local Japan Standard Time hour range from TEPCO's section 1 時間帯 column indicating the peak supply-capability time slot, normalized to an ASCII hyphen such as 13:00-14:00. Constraints: pattern `^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$`.
+- **`peak_reserve_margin_pct`** (double, required, percent (%)): Peak-time reserve margin percentage from TEPCO's section 1 ピーク時予備率(%) column for the published peak supply-capability slot. Constraints: minimum `0`, maximum `100`.
+- **`peak_usage_pct`** (double, required, percent (%)): Peak-time usage percentage from TEPCO's section 1 ピーク時使用率(%) column for the published peak supply-capability slot. Constraints: minimum `0`, maximum `100`.
+- **`daily_max_usage_pct`** (double or null, required, percent (%)): Daily maximum usage percentage from TEPCO's section 4 最大使用率(%) summary row. The field is null when that section is absent or blank in the CSV. Constraints: minimum `0`, maximum `100`.
+- **`daily_max_usage_time_slot`** (string or null, required): Local Japan Standard Time hour range from TEPCO's section 4 時間帯 column for the daily maximum usage percentage, normalized to an ASCII hyphen such as 4:00-5:00. The field is null when that section is absent or blank. Constraints: pattern `^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$`.
+- **`update_datetime`** (datetime, required): Section 1 supply-capability information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 供給力情報更新日 and 供給力情報更新時刻.
+- **`update_datetime_local`** (datetime, required): Section 1 supply-capability information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 供給力情報更新日 and 供給力情報更新時刻 columns.
+- **`area_code`** (string, required): Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.
+- **`area_name_jp`** (string, required): Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River.
+- **`area_name_en`** (string, required): English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto).
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "date": null,
+  "time": "string",
+  "peak_supply_capacity_mw": 0,
+  "peak_supply_capacity_jp_unit_value": 0,
+  "peak_time_slot": "string",
+  "peak_reserve_margin_pct": 0,
+  "peak_usage_pct": 0,
+  "daily_max_usage_pct": 0,
+  "daily_max_usage_time_slot": "string",
+  "update_datetime": "2024-01-01T00:00:00Z",
+  "update_datetime_local": "2024-01-01T00:00:00Z",
+  "area_code": "string",
+  "area_name_jp": "string",
+  "area_name_en": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Peak Demand Forecast
+
+CloudEvents type: `JP.TEPCO.Denkiyoho.PeakDemandForecast`
+
+#### What it tells you
+
+Daily TEPCO Electricity Forecast maximum-demand forecast record for the Tokyo service area. Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is stable subject and Kafka key time component for the section 2 peak-demand forecast. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`JP.TEPCO.Denkiyoho`](#messagegroup-jptepcodenkiyoho) |
+| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Peak Demand Forecast` payloads are JSON object. Required fields: `date`, `time`, `peak_demand_forecast_mw`, `peak_demand_forecast_jp_unit_value`, `peak_time_slot`, `update_datetime`, `update_datetime_local`, `area_code`, `area_name_jp`, `area_name_en`.
+
+- **`date`** (date, required): Operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD). This is the stable date key component.
+- **`time`** (string, required): Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
+- **`peak_demand_forecast_mw`** (double, required, MW): Forecast maximum electricity demand for the Tokyo service area from TEPCO's section 2 予想最大電力(万kW) row, converted from 万kW to megawatts by multiplying by 10. Constraints: minimum `0`.
+- **`peak_demand_forecast_jp_unit_value`** (int32, required, 10MW (万kW)): Original integer peak-demand forecast value from TEPCO's section 2 予想最大電力(万kW) field. Constraints: minimum `0`.
+- **`peak_time_slot`** (string, required): Local Japan Standard Time hour range from TEPCO's section 2 時間帯 column indicating when the forecast maximum demand is expected, normalized to an ASCII hyphen such as 13:00-14:00. Constraints: pattern `^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$`.
+- **`update_datetime`** (datetime, required): Section 2 peak-demand forecast information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 予想最大電力情報更新日 and 予想最大電力情報更新時刻.
+- **`update_datetime_local`** (datetime, required): Section 2 peak-demand forecast information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 予想最大電力情報更新日 and 予想最大電力情報更新時刻 columns.
+- **`area_code`** (string, required): Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.
+- **`area_name_jp`** (string, required): Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River.
+- **`area_name_en`** (string, required): English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto).
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "date": null,
+  "time": "string",
+  "peak_demand_forecast_mw": 0,
+  "peak_demand_forecast_jp_unit_value": 0,
+  "peak_time_slot": "string",
+  "update_datetime": "2024-01-01T00:00:00Z",
+  "update_datetime_local": "2024-01-01T00:00:00Z",
+  "area_code": "string",
+  "area_name_jp": "string",
+  "area_name_en": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Demand Actual
+
+CloudEvents type: `JP.TEPCO.Denkiyoho.DemandActual`
+
+#### What it tells you
+
+Actual electricity demand record from TEPCO Electricity Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows with section 5 solar context. Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `tepco-denkiyoho` |
-| Kafka key | `jp.tepco.denkiyoho/{date}/{time}` |
-| Deployed | False |
+| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
 
-## Messagegroups
+#### Payload
 
-### Messagegroup `JP.TEPCO.Denkiyoho`
-<a id="messagegroup-jptepcodenkiyoho"></a>
+`Demand Actual` payloads are JSON object. Required fields: `date`, `time`, `datetime`, `datetime_local`, `actual_demand_mw`, `actual_demand_jp_unit_value`, `solar_generation_mw`, `solar_generation_jp_unit_value`, `solar_share_pct`, `usage_pct`, `supply_capacity_mw`, `supply_capacity_jp_unit_value`, `area_code`.
 
-| Field | Value |
+- **`date`** (date, required): Operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.
+- **`time`** (string, required): Local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. This is the second stable key component. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
+- **`datetime`** (datetime, required): Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.
+- **`datetime_local`** (datetime, required): Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row.
+- **`actual_demand_mw`** (double, required, MW): Actual electricity demand for the Tokyo service area, converted to megawatts from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column by multiplying by 10. Constraints: minimum `0`.
+- **`actual_demand_jp_unit_value`** (int32, required, 10MW (万kW)): Original integer value from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column. Rows with 0 or blank actual-demand values are future or unavailable measurements and are skipped by the bridge. Constraints: minimum `0`.
+- **`solar_generation_mw`** (double or null, required, MW): Solar generation actual value converted to megawatts from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell. Constraints: minimum `0`.
+- **`solar_generation_jp_unit_value`** (int32 or null, required, 10MW (万kW)): Original integer solar generation actual value from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell. Constraints: minimum `0`.
+- **`solar_share_pct`** (double or null, required, percent (%)): Solar generation percentage of electricity usage from TEPCO's section 5 太陽光発電量(電力使用量に対する割合)(%) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar-share cell. Constraints: minimum `0`, maximum `100`.
+- **`usage_pct`** (double or null, required, percent (%)): Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandActual rows derived from section 3; it is null for five-minute rows derived from section 5. TEPCO may leave future-hour usage blank until actual demand is available. Constraints: minimum `0`.
+- **`supply_capacity_mw`** (double or null, required, MW): Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5. Constraints: minimum `0`.
+- **`supply_capacity_jp_unit_value`** (int32 or null, required, 10MW (万kW)): Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5. Constraints: minimum `0`.
+- **`area_code`** (string, required): Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "date": null,
+  "time": "string",
+  "datetime": "2024-01-01T00:00:00Z",
+  "datetime_local": "2024-01-01T00:00:00Z",
+  "actual_demand_mw": 0,
+  "actual_demand_jp_unit_value": 0,
+  "solar_generation_mw": 0,
+  "solar_generation_jp_unit_value": 0,
+  "solar_share_pct": 0,
+  "usage_pct": 0,
+  "supply_capacity_mw": 0,
+  "supply_capacity_jp_unit_value": 0,
+  "area_code": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Demand Forecast
+
+CloudEvents type: `JP.TEPCO.Denkiyoho.DemandForecast`
+
+#### What it tells you
+
+Hourly electricity demand forecast record from TEPCO Electricity Forecast for the Tokyo service area. Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Transport bindings | `JP.TEPCO.Denkiyoho.Kafka` (KAFKA) |
-| Messages | 4 |
+| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
 
-#### Message `jp.tepco.denkiyoho.SupplyCapacity`
-<a id="message-jptepcodenkiyohosupplycapacity"></a>
+#### Payload
 
-Daily TEPCO Electricity Forecast supply capability reference record for the Tokyo service area.
+`Demand Forecast` payloads are JSON object. Required fields: `date`, `time`, `datetime`, `datetime_local`, `forecast_demand_mw`, `forecast_demand_jp_unit_value`, `usage_pct`, `supply_capacity_mw`, `supply_capacity_jp_unit_value`, `area_code`.
 
-| Field | Value |
-| --- | --- |
-| Name | SupplyCapacity |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.SupplyCapacity`](#schema-jptepcodenkiyohosupplycapacity) |
-| Event role | Telemetry/event data |
+- **`date`** (date, required): Operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.
+- **`time`** (string, required): Local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. This is the second stable key component. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
+- **`datetime`** (datetime, required): Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.
+- **`datetime_local`** (datetime, required): Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row.
+- **`forecast_demand_mw`** (double, required, MW): Hourly forecast electricity demand for the Tokyo service area, converted to megawatts from TEPCO's section 3 予測値(万kW) column by multiplying by 10. Constraints: minimum `0`.
+- **`forecast_demand_jp_unit_value`** (int32, required, 10MW (万kW)): Original integer value from TEPCO's section 3 予測値(万kW) hourly forecast column. The bridge uses this value in forecast de-duplication so revised forecasts for the same date and hour are emitted again. Constraints: minimum `0`.
+- **`usage_pct`** (double or null, required, percent (%)): Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3 and can be null when TEPCO leaves future-hour usage blank until actual demand is available. Constraints: minimum `0`.
+- **`supply_capacity_mw`** (double or null, required, MW): Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3. Constraints: minimum `0`.
+- **`supply_capacity_jp_unit_value`** (int32 or null, required, 10MW (万kW)): Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3. Constraints: minimum `0`.
+- **`area_code`** (string, required): Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.
+#### Example payload
 
-##### CloudEvents metadata
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.TEPCO.Denkiyoho.SupplyCapacity` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.tepco.denkiyoho/{date}/{time}` |
+```json
+{
+  "date": null,
+  "time": "string",
+  "datetime": "2024-01-01T00:00:00Z",
+  "datetime_local": "2024-01-01T00:00:00Z",
+  "forecast_demand_mw": 0,
+  "forecast_demand_jp_unit_value": 0,
+  "usage_pct": 0,
+  "supply_capacity_mw": 0,
+  "supply_capacity_jp_unit_value": 0,
+  "area_code": "string"
+}
+```
 
-##### Bound transports
+#### Reference vs telemetry
 
-| Endpoint | Protocol | Binding |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `JP.TEPCO.Denkiyoho.Kafka` | `KAFKA` | topic `tepco-denkiyoho`; key `jp.tepco.denkiyoho/{date}/{time}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `jp.tepco.denkiyoho.PeakDemandForecast`
-<a id="message-jptepcodenkiyohopeakdemandforecast"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-Daily TEPCO Electricity Forecast maximum-demand forecast record for the Tokyo service area.
+## Operational notes
 
-| Field | Value |
-| --- | --- |
-| Name | PeakDemandForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.PeakDemandForecast`](#schema-jptepcodenkiyohopeakdemandforecast) |
-| Event role | Telemetry/event data |
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
-##### CloudEvents metadata
+## References
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.TEPCO.Denkiyoho.PeakDemandForecast` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.tepco.denkiyoho/{date}/{time}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.TEPCO.Denkiyoho.Kafka` | `KAFKA` | topic `tepco-denkiyoho`; key `jp.tepco.denkiyoho/{date}/{time}` |
-
-#### Message `jp.tepco.denkiyoho.DemandActual`
-<a id="message-jptepcodenkiyohodemandactual"></a>
-
-Actual electricity demand record from TEPCO Electricity Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows with section 5 solar context.
-
-| Field | Value |
-| --- | --- |
-| Name | DemandActual |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.DemandActual`](#schema-jptepcodenkiyohodemandactual) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.TEPCO.Denkiyoho.DemandActual` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.tepco.denkiyoho/{date}/{time}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.TEPCO.Denkiyoho.Kafka` | `KAFKA` | topic `tepco-denkiyoho`; key `jp.tepco.denkiyoho/{date}/{time}` |
-
-#### Message `jp.tepco.denkiyoho.DemandForecast`
-<a id="message-jptepcodenkiyohodemandforecast"></a>
-
-Hourly electricity demand forecast record from TEPCO Electricity Forecast for the Tokyo service area.
-
-| Field | Value |
-| --- | --- |
-| Name | DemandForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.DemandForecast`](#schema-jptepcodenkiyohodemandforecast) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.TEPCO.Denkiyoho.DemandForecast` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.tepco.denkiyoho/{date}/{time}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.TEPCO.Denkiyoho.Kafka` | `KAFKA` | topic `tepco-denkiyoho`; key `jp.tepco.denkiyoho/{date}/{time}` |
-
-## Schemagroups
-
-### Schemagroup `jp.tepco.denkiyoho.jstruct`
-<a id="schemagroup-jptepcodenkiyohojstruct"></a>
-
-#### Schema `jp.tepco.denkiyoho.SupplyCapacity`
-<a id="schema-jptepcodenkiyohosupplycapacity"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | SupplyCapacity |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.tepco.co.jp/schemas/denkiyoho/SupplyCapacity` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/jp/tepco/denkiyoho/SupplyCapacity` |
-| Type | `object` |
-
-###### Object `SupplyCapacity`
-<a id="schema-node-supplycapacity"></a>
-
-Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `date` | `date` | `True` | Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day. | - | - | - |
-| `time` | `string` | `True` | Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events. | - | pattern=`^(([01][0-9]\\|2[0-3]):[0-5][0-9]\\|_supply_capacity_\\|_peak_forecast_)$` | - |
-| `peak_supply_capacity_mw` | `double` | `True` | Peak-time available supply capability for the Tokyo service area shown by TEPCO as ピーク時供給力(万kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `peak_supply_capacity_jp_unit_value` | `int32` | `True` | Original integer value from TEPCO's ピーク時供給力(万kW) header field. TEPCO publishes demand and supply values in 万kW, where one unit is 10,000 kilowatts, equal to 10 megawatts. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `peak_time_slot` | `string` | `True` | Local Japan Standard Time hour range from TEPCO's section 1 時間帯 column indicating the peak supply-capability time slot, normalized to an ASCII hyphen such as 13:00-14:00. | - | pattern=`^(([01]?[0-9]\\|2[0-3]):[0-5][0-9])-(([01]?[0-9]\\|2[0-3]):[0-5][0-9])$` | - |
-| `peak_reserve_margin_pct` | `double` | `True` | Peak-time reserve margin percentage from TEPCO's section 1 ピーク時予備率(%) column for the published peak supply-capability slot. | unit=`percent` symbol=`%` | maximum=`100`<br>minimum=`0` | - |
-| `peak_usage_pct` | `double` | `True` | Peak-time usage percentage from TEPCO's section 1 ピーク時使用率(%) column for the published peak supply-capability slot. | unit=`percent` symbol=`%` | maximum=`100`<br>minimum=`0` | - |
-| `daily_max_usage_pct` | `union` | `True` | Daily maximum usage percentage from TEPCO's section 4 最大使用率(%) summary row. The field is null when that section is absent or blank in the CSV. | unit=`percent` symbol=`%` | maximum=`100`<br>minimum=`0` | - |
-| `daily_max_usage_time_slot` | `union` | `True` | Local Japan Standard Time hour range from TEPCO's section 4 時間帯 column for the daily maximum usage percentage, normalized to an ASCII hyphen such as 4:00-5:00. The field is null when that section is absent or blank. | - | pattern=`^(([01]?[0-9]\\|2[0-3]):[0-5][0-9])-(([01]?[0-9]\\|2[0-3]):[0-5][0-9])$` | - |
-| `update_datetime` | `datetime` | `True` | Section 1 supply-capability information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 供給力情報更新日 and 供給力情報更新時刻. | - | - | - |
-| `update_datetime_local` | `datetime` | `True` | Section 1 supply-capability information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 供給力情報更新日 and 供給力情報更新時刻 columns. | - | - | - |
-| `area_code` | `string` | `True` | Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. | - | - | - |
-| `area_name_jp` | `string` | `True` | Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River. | - | - | - |
-| `area_name_en` | `string` | `True` | English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto). | - | - | - |
-
-#### Schema `jp.tepco.denkiyoho.PeakDemandForecast`
-<a id="schema-jptepcodenkiyohopeakdemandforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | PeakDemandForecast |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.tepco.co.jp/schemas/denkiyoho/PeakDemandForecast` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/jp/tepco/denkiyoho/PeakDemandForecast` |
-| Type | `object` |
-
-###### Object `PeakDemandForecast`
-<a id="schema-node-peakdemandforecast"></a>
-
-Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `date` | `date` | `True` | Operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD). This is the stable date key component. | - | - | - |
-| `time` | `string` | `True` | Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement. | - | pattern=`^(([01][0-9]\\|2[0-3]):[0-5][0-9]\\|_supply_capacity_\\|_peak_forecast_)$` | - |
-| `peak_demand_forecast_mw` | `double` | `True` | Forecast maximum electricity demand for the Tokyo service area from TEPCO's section 2 予想最大電力(万kW) row, converted from 万kW to megawatts by multiplying by 10. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `peak_demand_forecast_jp_unit_value` | `int32` | `True` | Original integer peak-demand forecast value from TEPCO's section 2 予想最大電力(万kW) field. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `peak_time_slot` | `string` | `True` | Local Japan Standard Time hour range from TEPCO's section 2 時間帯 column indicating when the forecast maximum demand is expected, normalized to an ASCII hyphen such as 13:00-14:00. | - | pattern=`^(([01]?[0-9]\\|2[0-3]):[0-5][0-9])-(([01]?[0-9]\\|2[0-3]):[0-5][0-9])$` | - |
-| `update_datetime` | `datetime` | `True` | Section 2 peak-demand forecast information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 予想最大電力情報更新日 and 予想最大電力情報更新時刻. | - | - | - |
-| `update_datetime_local` | `datetime` | `True` | Section 2 peak-demand forecast information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 予想最大電力情報更新日 and 予想最大電力情報更新時刻 columns. | - | - | - |
-| `area_code` | `string` | `True` | Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. | - | - | - |
-| `area_name_jp` | `string` | `True` | Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River. | - | - | - |
-| `area_name_en` | `string` | `True` | English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto). | - | - | - |
-
-#### Schema `jp.tepco.denkiyoho.DemandActual`
-<a id="schema-jptepcodenkiyohodemandactual"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DemandActual |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.tepco.co.jp/schemas/denkiyoho/DemandActual` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/jp/tepco/denkiyoho/DemandActual` |
-| Type | `object` |
-
-###### Object `DemandActual`
-<a id="schema-node-demandactual"></a>
-
-Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `date` | `date` | `True` | Operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component. | - | - | - |
-| `time` | `string` | `True` | Local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. This is the second stable key component. | - | pattern=`^(([01][0-9]\\|2[0-3]):[0-5][0-9]\\|_supply_capacity_\\|_peak_forecast_)$` | - |
-| `datetime` | `datetime` | `True` | Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics. | - | - | - |
-| `datetime_local` | `datetime` | `True` | Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row. | - | - | - |
-| `actual_demand_mw` | `double` | `True` | Actual electricity demand for the Tokyo service area, converted to megawatts from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column by multiplying by 10. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `actual_demand_jp_unit_value` | `int32` | `True` | Original integer value from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column. Rows with 0 or blank actual-demand values are future or unavailable measurements and are skipped by the bridge. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `solar_generation_mw` | `union` | `True` | Solar generation actual value converted to megawatts from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `solar_generation_jp_unit_value` | `union` | `True` | Original integer solar generation actual value from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `solar_share_pct` | `union` | `True` | Solar generation percentage of electricity usage from TEPCO's section 5 太陽光発電量(電力使用量に対する割合)(%) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar-share cell. | unit=`percent` symbol=`%` | maximum=`100`<br>minimum=`0` | - |
-| `usage_pct` | `union` | `True` | Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandActual rows derived from section 3; it is null for five-minute rows derived from section 5. TEPCO may leave future-hour usage blank until actual demand is available. | unit=`percent` symbol=`%` | minimum=`0` | - |
-| `supply_capacity_mw` | `union` | `True` | Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `supply_capacity_jp_unit_value` | `union` | `True` | Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `area_code` | `string` | `True` | Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. | - | - | - |
-
-#### Schema `jp.tepco.denkiyoho.DemandForecast`
-<a id="schema-jptepcodenkiyohodemandforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DemandForecast |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.tepco.co.jp/schemas/denkiyoho/DemandForecast` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/jp/tepco/denkiyoho/DemandForecast` |
-| Type | `object` |
-
-###### Object `DemandForecast`
-<a id="schema-node-demandforecast"></a>
-
-Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `date` | `date` | `True` | Operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component. | - | - | - |
-| `time` | `string` | `True` | Local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. This is the second stable key component. | - | pattern=`^(([01][0-9]\\|2[0-3]):[0-5][0-9]\\|_supply_capacity_\\|_peak_forecast_)$` | - |
-| `datetime` | `datetime` | `True` | Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics. | - | - | - |
-| `datetime_local` | `datetime` | `True` | Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row. | - | - | - |
-| `forecast_demand_mw` | `double` | `True` | Hourly forecast electricity demand for the Tokyo service area, converted to megawatts from TEPCO's section 3 予測値(万kW) column by multiplying by 10. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `forecast_demand_jp_unit_value` | `int32` | `True` | Original integer value from TEPCO's section 3 予測値(万kW) hourly forecast column. The bridge uses this value in forecast de-duplication so revised forecasts for the same date and hour are emitted again. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `usage_pct` | `union` | `True` | Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3 and can be null when TEPCO leaves future-hour usage blank until actual demand is available. | unit=`percent` symbol=`%` | minimum=`0` | - |
-| `supply_capacity_mw` | `union` | `True` | Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3. | unit=`MW` symbol=`MW` | minimum=`0` | - |
-| `supply_capacity_jp_unit_value` | `union` | `True` | Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3. | unit=`10MW` symbol=`万kW` | minimum=`0` | - |
-| `area_code` | `string` | `True` | Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. | - | - | - |
-
-### Schemagroup `jp.tepco.denkiyoho.avro`
-<a id="schemagroup-jptepcodenkiyohoavro"></a>
-
-#### Schema `jp.tepco.denkiyoho.SupplyCapacity`
-<a id="schema-jptepcodenkiyohosupplycapacity"></a>
-
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | SupplyCapacity |
-| Namespace | jp.tepco.denkiyoho |
-| Type | `record` |
-| Doc | Daily reference schema for TEPCO Electricity Forecast supply capability and maximum usage summary. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `date` | `string` | Service date in ISO 8601 calendar-date form. | `-` |
-| `time` | `string` | Stable key time component; supply capacity uses _supply_capacity_. | `-` |
-| `peak_supply_capacity_mw` | `double` | Peak-time available supply capability converted from 万kW to MW. | `-` |
-| `peak_supply_capacity_jp_unit_value` | `int` | Original peak supply capability value in 万kW. | `-` |
-| `peak_time_slot` | `string` | Peak supply-capability time slot. | `-` |
-| `peak_reserve_margin_pct` | `double` | Peak-time reserve margin percentage. | `-` |
-| `peak_usage_pct` | `double` | Peak-time usage percentage. | `-` |
-| `daily_max_usage_pct` | `null` \| `double` | Daily maximum usage percentage. | `-` |
-| `daily_max_usage_time_slot` | `null` \| `string` | Time slot for the daily maximum usage percentage. | `-` |
-| `update_datetime` | `string` | Supply-capability update timestamp converted to UTC RFC 3339. | `-` |
-| `update_datetime_local` | `string` | Supply-capability update timestamp in JST RFC 3339. | `-` |
-| `area_code` | `string` | Constant TEPCO area code. | `-` |
-| `area_name_jp` | `string` | Japanese TEPCO service area name. | `-` |
-| `area_name_en` | `string` | English TEPCO service area name. | `-` |
-
-#### Schema `jp.tepco.denkiyoho.PeakDemandForecast`
-<a id="schema-jptepcodenkiyohopeakdemandforecast"></a>
-
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | PeakDemandForecast |
-| Namespace | jp.tepco.denkiyoho |
-| Type | `record` |
-| Doc | Daily peak demand forecast record from TEPCO Electricity Forecast. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `date` | `string` | Operating date in ISO 8601 calendar-date form. | `-` |
-| `time` | `string` | Stable key time component; peak demand forecast uses _peak_forecast_. | `-` |
-| `peak_demand_forecast_mw` | `double` | Forecast maximum demand converted from 万kW to MW. | `-` |
-| `peak_demand_forecast_jp_unit_value` | `int` | Original forecast maximum demand value in 万kW. | `-` |
-| `peak_time_slot` | `string` | Forecast maximum-demand time slot. | `-` |
-| `update_datetime` | `string` | Peak-demand forecast update timestamp converted to UTC RFC 3339. | `-` |
-| `update_datetime_local` | `string` | Peak-demand forecast update timestamp in JST RFC 3339. | `-` |
-| `area_code` | `string` | Constant TEPCO area code. | `-` |
-| `area_name_jp` | `string` | Japanese TEPCO service area name. | `-` |
-| `area_name_en` | `string` | English TEPCO service area name. | `-` |
-
-#### Schema `jp.tepco.denkiyoho.DemandActual`
-<a id="schema-jptepcodenkiyohodemandactual"></a>
-
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | DemandActual |
-| Namespace | jp.tepco.denkiyoho |
-| Type | `record` |
-| Doc | Actual electricity demand record from TEPCO Electricity Forecast. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `date` | `string` | Operating date in ISO 8601 calendar-date form. | `-` |
-| `time` | `string` | JST HH:MM clock time and stable key component. | `-` |
-| `datetime` | `string` | Measurement timestamp converted to UTC RFC 3339. | `-` |
-| `datetime_local` | `string` | Measurement timestamp in JST RFC 3339. | `-` |
-| `actual_demand_mw` | `double` | Actual electricity demand converted from 万kW to MW. | `-` |
-| `actual_demand_jp_unit_value` | `int` | Original actual demand value in 万kW. | `-` |
-| `solar_generation_mw` | `null` \| `double` | Solar generation converted from 万kW to MW for five-minute rows. | `-` |
-| `solar_generation_jp_unit_value` | `null` \| `int` | Original solar generation value in 万kW for five-minute rows. | `-` |
-| `solar_share_pct` | `null` \| `double` | Solar generation percentage of electricity usage for five-minute rows. | `-` |
-| `usage_pct` | `null` \| `double` | Usage percentage for hourly rows. | `-` |
-| `supply_capacity_mw` | `null` \| `double` | Supply capacity converted from 万kW to MW for hourly rows. | `-` |
-| `supply_capacity_jp_unit_value` | `null` \| `int` | Original supply capacity value in 万kW for hourly rows. | `-` |
-| `area_code` | `string` | Constant TEPCO area code. | `-` |
-
-#### Schema `jp.tepco.denkiyoho.DemandForecast`
-<a id="schema-jptepcodenkiyohodemandforecast"></a>
-
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | DemandForecast |
-| Namespace | jp.tepco.denkiyoho |
-| Type | `record` |
-| Doc | Hourly forecast electricity demand record from TEPCO Electricity Forecast. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `date` | `string` | Operating date in ISO 8601 calendar-date form. | `-` |
-| `time` | `string` | JST HH:MM clock time and stable key component. | `-` |
-| `datetime` | `string` | Forecast timestamp converted to UTC RFC 3339. | `-` |
-| `datetime_local` | `string` | Forecast timestamp in JST RFC 3339. | `-` |
-| `forecast_demand_mw` | `double` | Forecast demand converted from 万kW to MW. | `-` |
-| `forecast_demand_jp_unit_value` | `int` | Original forecast demand value in 万kW. | `-` |
-| `usage_pct` | `null` \| `double` | Usage percentage for hourly rows. | `-` |
-| `supply_capacity_mw` | `null` \| `double` | Supply capacity converted from 万kW to MW for hourly rows. | `-` |
-| `supply_capacity_jp_unit_value` | `null` \| `int` | Original supply capacity value in 万kW for hourly rows. | `-` |
-| `area_code` | `string` | Constant TEPCO area code. | `-` |
+- xRegistry manifest: [`xreg/tepco-denkiyoho.xreg.json`](xreg/tepco-denkiyoho.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

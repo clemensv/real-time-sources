@@ -2,289 +2,253 @@
 
 MQTT/5.0 transport variant for RSS/Atom feed items. Non-retained QoS-1 item events are routed by feed_slug and topic-safe item token; source category remains in the payload and is intentionally not a topic axis.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 1 documented event type (2 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{item_id}` identifies the resource each event is about.
+- **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `rss-feeds`. The record key is `{item_id}`. In plain language, `{item_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['rss-feeds'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `news/intl/rss/rss/+/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('news/intl/rss/rss/+/+', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Feed Item
+
+CloudEvents type: `Microsoft.OpenData.RssFeeds.FeedItem`
+
+#### What it tells you
+
+A new item has been added to the RSS feed. Represents an item in an RSS feed, containing metadata such as the author, title, and content.
+
+#### Identity
+
+Each event identifies the real-world resource with `{item_id}`. `{item_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `rss-feeds`, key `{item_id}` |
+| `MQTT/5.0` | topic `news/intl/rss/rss/{feed_slug}/{item}`, retain `false`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `Microsoft.OpenData.RssFeeds.Kafka`
+`Feed Item` payloads are JSON object. Required fields: `feed_slug`, `item`.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`Microsoft.OpenData.RssFeeds`](#messagegroup-microsoftopendatarssfeeds) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Kafka topic | `rss-feeds` |
-| Kafka key | `{item_id}` |
-| Deployed | False |
-
-### Endpoint `Microsoft.OpenData.RssFeeds.Mqtt`
-
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`Microsoft.OpenData.RssFeeds.mqtt`](#messagegroup-microsoftopendatarssfeedsmqtt) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
-
-## Messagegroups
-
-### Messagegroup `Microsoft.OpenData.RssFeeds`
-<a id="messagegroup-microsoftopendatarssfeeds"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `Microsoft.OpenData.RssFeeds.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `Microsoft.OpenData.RssFeeds.FeedItem`
-<a id="message-microsoftopendatarssfeedsfeeditem"></a>
-
-A new item has been added to the RSS feed.
-
-| Field | Value |
-| --- | --- |
-| Name | FeedItem |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.RssFeeds.jstruct/schemas/Microsoft.OpenData.RssFeeds.FeedItem`](#schema-microsoftopendatarssfeedsfeeditem) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.RssFeeds.FeedItem` |
-| `source` |  | `uritemplate` | `False` | `{sourceurl}` |
-| `subject` |  | `uritemplate` | `False` | `{item_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.RssFeeds.Kafka` | `KAFKA` | topic `rss-feeds`; key `{item_id}` |
-
-### Messagegroup `Microsoft.OpenData.RssFeeds.mqtt`
-<a id="messagegroup-microsoftopendatarssfeedsmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variant for RSS/Atom feed items. Non-retained QoS-1 item events are routed by feed_slug and topic-safe item token; source category remains in the payload and is intentionally not a topic axis. |
-| Transport bindings | `Microsoft.OpenData.RssFeeds.Mqtt` (MQTT/5.0) |
-| Messages | 1 |
-
-#### Message `Microsoft.OpenData.RssFeeds.mqtt.FeedItem`
-<a id="message-microsoftopendatarssfeedsmqttfeeditem"></a>
-
-A new item has been added to the RSS feed.
-
-| Field | Value |
-| --- | --- |
-| Name | FeedItem |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.RssFeeds.jstruct/schemas/Microsoft.OpenData.RssFeeds.FeedItem`](#schema-microsoftopendatarssfeedsfeeditem) |
-| Base message chain | `/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.RssFeeds.FeedItem` |
-| `source` |  | `uritemplate` | `False` | `{sourceurl}` |
-| `subject` |  | `uritemplate` | `False` | `{item_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.RssFeeds.Mqtt` | `MQTT/5.0` | topic `news/intl/rss/rss/{feed_slug}/{item}` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `news/intl/rss/rss/{feed_slug}/{item}` |
-| QoS | 1 |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `Microsoft.OpenData.RssFeeds.jstruct`
-<a id="schemagroup-microsoftopendatarssfeedsjstruct"></a>
-
-#### Schema `Microsoft.OpenData.RssFeeds.FeedItem`
-<a id="schema-microsoftopendatarssfeedsfeeditem"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | FeedItem |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Microsoft/OpenData/RssFeeds/FeedItem` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Microsoft/OpenData/RssFeeds/FeedItem` |
-| Type | `object` |
-
-###### Object `FeedItem`
-<a id="schema-node-feeditem"></a>
-
-Represents an item in an RSS feed, containing metadata such as the author, title, and content.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `feed_slug` | `string` | `True` | Topic-safe stable slug derived from the configured feed URL. | - | minLength=`1`<br>pattern=`^[A-Za-z0-9._-]+$` | - |
-| `item` | `string` | `True` | Topic-safe stable item token derived from the feed entry id/link/title and used for MQTT routing. | - | minLength=`1`<br>pattern=`^[A-Za-z0-9._-]+$` | - |
-| `author` | `schema` | `False` | Information about the feed item's author. | - | default=`-` | default=`-` |
-| `publisher` | `schema` | `False` | Information about the feed item's publisher. | - | default=`-` | default=`-` |
-| `summary` | `schema` | `False` | A short summary of the feed item. | - | default=`-` | default=`-` |
-| `title` | `schema` | `False` | The feed item's title. | - | default=`-` | default=`-` |
-| `source` | `schema` | `False` | Information about the source feed of the item. | - | default=`-` | default=`-` |
-| `content` | array of [`FeedItemContent`](#schema-node-feeditemcontent) | `False` | The content of the feed item, potentially including multiple formats. | - | default=`-` | default=`-` |
-| `enclosures` | array of [`FeedItemEnclosure`](#schema-node-feeditemenclosure) | `False` | Media attachments associated with the feed item. | - | default=`-` | default=`-` |
-| `published` | `int64` | `False` | The publication date and time of the feed item. | - | default=`-` | default=`-` |
-| `updated` | `int64` | `False` | The last updated date and time of the feed item. | - | default=`-` | default=`-` |
-| `created` | `int64` | `False` | The creation date and time of the feed item. | - | default=`-` | default=`-` |
-| `expired` | `int64` | `False` | The expiration date and time of the feed item. | - | default=`-` | default=`-` |
-| `id` | `string` | `False` | A unique identifier for the feed item. | - | default=`-` | default=`-` |
-| `license` | `string` | `False` | License information for the feed item. | - | default=`-` | default=`-` |
-| `comments` | `string` | `False` | A link to comments or feedback related to the feed item. | - | default=`-` | default=`-` |
-| `contributors` | array of [`FeedItemAuthor`](#schema-node-feeditemauthor) | `False` | A list of individuals who contributed to the feed item. | - | default=`-` | default=`-` |
-| `links` | array of [`Link`](#schema-node-link) | `False` | A collection of links related to the feed item. | - | default=`-` | default=`-` |
-
-###### Object `FeedItemContent`
-<a id="schema-node-feeditemcontent"></a>
-
-Represents the main content of the feed item.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `value` | `string` | `False` | The actual content of the feed item. | - | default=`-` | default=`-` |
-| `type` | `string` | `False` | The content type, such as 'text/html' or 'text/plain'. | - | default=`-` | default=`-` |
-| `language` | `string` | `False` | The language of the content. | - | default=`-` | default=`-` |
-| `base` | `string` | `False` | The base URI for resolving relative URIs within the content. | - | default=`-` | default=`-` |
-
-###### Object `FeedItemEnclosure`
-<a id="schema-node-feeditemenclosure"></a>
-
-Represents media content attached to the feed item, such as audio or video files.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `href` | `string` | `False` | The URL of the enclosure. | - | default=`-` | default=`-` |
-| `length` | `int64` | `False` | The size of the enclosure in bytes. | - | default=`-` | default=`-` |
-| `type` | `string` | `False` | The MIME type of the enclosure content. | - | default=`-` | default=`-` |
-
-###### Object `FeedItemAuthor`
-<a id="schema-node-feeditemauthor"></a>
+- **`feed_slug`** (string, required): Topic-safe stable slug derived from the configured feed URL. Constraints: minLength `1`, pattern `^[A-Za-z0-9._-]+$`.
+- **`item`** (string, required): Topic-safe stable item token derived from the feed entry id/link/title and used for MQTT routing. Constraints: minLength `1`, pattern `^[A-Za-z0-9._-]+$`.
+- **`author`** (object, optional): Information about the feed item's author. See [FeedItemAuthor](#payload-microsoft-opendata-rssfeeds-feeditem-feeditemauthor).
+- **`publisher`** (object, optional): Information about the feed item's publisher. See [FeedItemPublisher](#payload-microsoft-opendata-rssfeeds-feeditem-feeditempublisher).
+- **`summary`** (object, optional): A short summary of the feed item. See [FeedItemSummary](#payload-microsoft-opendata-rssfeeds-feeditem-feeditemsummary).
+- **`title`** (object, optional): The feed item's title. See [FeedItemTitle](#payload-microsoft-opendata-rssfeeds-feeditem-feeditemtitle).
+- **`source`** (object, optional): Information about the source feed of the item. See [FeedItemSource](#payload-microsoft-opendata-rssfeeds-feeditem-feeditemsource).
+- **`content`** (array of object, optional): The content of the feed item, potentially including multiple formats.
+- **`enclosures`** (array of object, optional): Media attachments associated with the feed item.
+- **`published`** (int64, optional): The publication date and time of the feed item.
+- **`updated`** (int64, optional): The last updated date and time of the feed item.
+- **`created`** (int64, optional): The creation date and time of the feed item.
+- **`expired`** (int64, optional): The expiration date and time of the feed item.
+- **`id`** (string, optional): A unique identifier for the feed item.
+- **`license`** (string, optional): License information for the feed item.
+- **`comments`** (string, optional): A link to comments or feedback related to the feed item.
+- **`contributors`** (array of object, optional): A list of individuals who contributed to the feed item.
+- **`links`** (array of object, optional): A collection of links related to the feed item.
+##### FeedItemAuthor
+<a id="payload-microsoft-opendata-rssfeeds-feeditem-feeditemauthor"></a>
 
 Contains information about the author of the feed item.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `name` | `string` | `False` | The full name of the author. | - | default=`-` | default=`-` |
-| `href` | `string` | `False` | A URL associated with the author, such as a personal website or profile. | - | default=`-` | default=`-` |
-| `email` | `string` | `False` | The author's email address. | - | default=`-` | default=`-` |
+- **`name`** (string, optional): The full name of the author.
+- **`href`** (string, optional): A URL associated with the author, such as a personal website or profile.
+- **`email`** (string, optional): The author's email address.
+##### FeedItemPublisher
+<a id="payload-microsoft-opendata-rssfeeds-feeditem-feeditempublisher"></a>
 
-###### Object `Link`
-<a id="schema-node-link"></a>
+Contains information about the publisher of the feed item.
 
-Represents a hyperlink associated with the feed or feed item.
+- **`name`** (string, optional): The name of the publisher.
+- **`href`** (string, optional): A URL associated with the publisher.
+- **`email`** (string, optional): The publisher's email address.
+##### FeedItemSummary
+<a id="payload-microsoft-opendata-rssfeeds-feeditem-feeditemsummary"></a>
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `rel` | `string` | `False` | The relationship type of the link, such as 'alternate' or 'self'. | - | default=`-` | default=`-` |
-| `href` | `string` | `False` | The URL of the link. | - | default=`-` | default=`-` |
-| `type` | `string` | `False` | The MIME type of the linked resource. | - | default=`-` | default=`-` |
-| `title` | `string` | `False` | The title or description of the link. | - | default=`-` | default=`-` |
+A brief summary or abstract of the feed item.
 
-### Schemagroup `Microsoft.OpenData.RssFeeds.avro`
-<a id="schemagroup-microsoftopendatarssfeedsavro"></a>
+- **`value`** (string, optional): The text content of the summary.
+- **`type`** (string, optional): The content type of the summary, such as 'text/plain' or 'text/html'.
+- **`language`** (string, optional): The language of the summary content.
+- **`base`** (string, optional): The base URI for resolving relative URIs within the summary.
+##### FeedItemTitle
+<a id="payload-microsoft-opendata-rssfeeds-feeditem-feeditemtitle"></a>
 
-#### Schema `Microsoft.OpenData.RssFeeds.FeedItem`
-<a id="schema-microsoftopendatarssfeedsfeeditem"></a>
+The title of the feed item.
 
-| Field | Value |
-| --- | --- |
-| Name | FeedItem |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-| Description | Schema for the FeedItem event in the RssFeeds message group. |
+- **`value`** (string, optional): The text content of the title.
+- **`type`** (string, optional): The content type of the title.
+- **`language`** (string, optional): The language of the title.
+- **`base`** (string, optional): The base URI for resolving relative URIs within the title.
+##### FeedItemSource
+<a id="payload-microsoft-opendata-rssfeeds-feeditem-feeditemsource"></a>
 
-##### Version `1`
+Metadata about the original source feed, useful if the item was republished from another feed.
 
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
+- **`author`** (string, optional): The name of the original author.
+- **`author_detail`** (object, optional): Detailed information about the original author. See [FeedItemAuthor](#payload-microsoft-opendata-rssfeeds-feeditem-feeditemsource-feeditemauthor).
+- **`contributors`** (array of object, optional): A list of contributors to the source feed.
+- **`icon`** (string, optional): An icon image associated with the source feed.
+- **`id`** (string, optional): A unique identifier for the source feed.
+- **`link`** (string, optional): A link to the source feed.
+- **`links`** (array of object, optional): A collection of links related to the source feed.
+- **`logo`** (string, optional): A logo image associated with the source feed.
+- **`rights`** (string, optional): Rights information for the source feed, such as copyright notices.
+- **`subtitle`** (string, optional): A secondary title or tagline for the source feed.
+- **`title`** (string, optional): The title of the source feed.
+- **`updated`** (int64, optional): The last updated timestamp of the source feed.
+#### Example payload
 
-###### Avro
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Name | FeedItem |
-| Namespace | Microsoft.OpenData.RssFeeds |
-| Type | `record` |
-| Doc | Represents an item in an RSS feed, containing metadata such as the author, title, and content. |
+```json
+{
+  "feed_slug": "string",
+  "item": "string",
+  "author": {
+    "name": "string",
+    "href": "string",
+    "email": "string"
+  },
+  "publisher": {
+    "name": "string",
+    "href": "string",
+    "email": "string"
+  },
+  "summary": {
+    "value": "string",
+    "type": "string",
+    "language": "string",
+    "base": "string"
+  },
+  "title": {
+    "value": "string",
+    "type": "string",
+    "language": "string",
+    "base": "string"
+  },
+  "source": {
+    "author": "string",
+    "author_detail": {},
+    "contributors": [
+      {}
+    ],
+    "icon": "string",
+    "id": "string",
+    "link": "string",
+    "links": [
+      {
+        "rel": "string",
+        "href": "string",
+        "type": "string",
+        "title": "string"
+      }
+    ],
+    "logo": "string",
+    "rights": "string",
+    "subtitle": "string",
+    "title": "string",
+    "updated": 0
+  },
+  "content": [
+    {
+      "value": "string",
+      "type": "string",
+      "language": "string",
+      "base": "string"
+    }
+  ],
+  "enclosures": [
+    {
+      "href": "string",
+      "length": 0,
+      "type": "string"
+    }
+  ],
+  "published": 0,
+  "updated": 0,
+  "created": 0,
+  "expired": 0,
+  "id": "string",
+  "license": "string",
+  "comments": "string",
+  "contributors": [
+    {}
+  ],
+  "links": [
+    {}
+  ]
+}
+```
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `feed_slug` | `string` | Topic-safe stable slug derived from the configured feed URL. | `-` |
-| `item` | `string` | Topic-safe stable item token derived from the feed entry id/link/title and used for MQTT routing. | `-` |
-| `author` | `null` \| record `FeedItemAuthor` | Information about the feed item's author. | `-` |
-| `publisher` | `null` \| record `FeedItemPublisher` | Information about the feed item's publisher. | `-` |
-| `summary` | `null` \| record `FeedItemSummary` | A short summary of the feed item. | `-` |
-| `title` | `null` \| record `FeedItemTitle` | The feed item's title. | `-` |
-| `source` | `null` \| record `FeedItemSource` | Information about the source feed of the item. | `-` |
-| `content` | `null` \| array of record `FeedItemContent` | The content of the feed item, potentially including multiple formats. | `-` |
-| `enclosures` | `null` \| array of record `FeedItemEnclosure` | Media attachments associated with the feed item. | `-` |
-| `published` | `null` \| `long` | The publication date and time of the feed item. | `-` |
-| `updated` | `null` \| `long` | The last updated date and time of the feed item. | `-` |
-| `created` | `null` \| `long` | The creation date and time of the feed item. | `-` |
-| `expired` | `null` \| `long` | The expiration date and time of the feed item. | `-` |
-| `id` | `null` \| `string` | A unique identifier for the feed item. | `-` |
-| `license` | `null` \| `string` | License information for the feed item. | `-` |
-| `comments` | `null` \| `string` | A link to comments or feedback related to the feed item. | `-` |
-| `contributors` | `null` \| array of `Microsoft.OpenData.RssFeeds.FeedItemAuthor` | A list of individuals who contributed to the feed item. | `-` |
-| `links` | `null` \| array of `Microsoft.OpenData.RssFeeds.Link` | A collection of links related to the feed item. | `-` |
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+
+## References
+
+- xRegistry manifest: [`xreg/feeds.xreg.json`](xreg/feeds.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

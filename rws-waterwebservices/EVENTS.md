@@ -2,356 +2,173 @@
 
 MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to retained, QoS-1 Unified Namespace topics under hydro/nl/rws/rws-waterwebservices/{station_code}/... RWS Waterwebservices does not expose a stable shared water-body axis in the station catalog, so the MQTT tree intentionally uses the station code as the stable subscriber axis.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types (4 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_code}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `rws-waterwebservices`. The record key is `{station_code}`. In plain language, `{station_code}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['rws-waterwebservices'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `hydro/nl/rws/rws-waterwebservices/+/info`, `hydro/nl/rws/rws-waterwebservices/+/water-level`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('hydro/nl/rws/rws-waterwebservices/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `NL.RWS.Waterwebservices.Station`
+
+#### What it tells you
+
+This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_code}`. `{station_code}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `rws-waterwebservices`, key `{station_code}` |
+| `MQTT/5.0` | topic `hydro/nl/rws/rws-waterwebservices/{station_code}/info`, retain `true`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `NL.RWS.Waterwebservices.Kafka`
+`Station` payloads are JSON object. Required fields: `station_code`, `name`, `latitude`, `longitude`.
 
-| Field | Value |
+- **`station_code`** (string, required): No description provided.
+- **`name`** (string, required): No description provided.
+- **`latitude`** (double, required): No description provided.
+- **`longitude`** (double, required): No description provided.
+- **`coordinate_system`** (string, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_code": "string",
+  "name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "coordinate_system": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Water Level Observation
+
+CloudEvents type: `NL.RWS.Waterwebservices.WaterLevelObservation`
+
+#### What it tells you
+
+This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_code}`. `{station_code}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`NL.RWS.Waterwebservices`](#messagegroup-nlrwswaterwebservices) |
+| `KAFKA` | topic `rws-waterwebservices`, key `{station_code}` |
+| `MQTT/5.0` | topic `hydro/nl/rws/rws-waterwebservices/{station_code}/water-level`, retain `true`, QoS `1` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `rws-waterwebservices` |
-| Kafka key | `{station_code}` |
-| Deployed | False |
+`Water Level Observation` payloads are JSON object. Required fields: `station_code`, `timestamp`, `value`.
 
-### Endpoint `NL.RWS.Waterwebservices.Mqtt`
+- **`station_code`** (string, required): No description provided.
+- **`location_name`** (string, optional): No description provided.
+- **`timestamp`** (datetime, required): No description provided.
+- **`value`** (double, required): No description provided.
+- **`unit`** (string, optional): No description provided.
+- **`quality_code`** (string, optional): No description provided.
+- **`status`** (string, optional): No description provided.
+- **`compartment`** (string, optional): No description provided.
+- **`parameter`** (string, optional): No description provided.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`NL.RWS.Waterwebservices.mqtt`](#messagegroup-nlrwswaterwebservicesmqtt) |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### Transport options
+```json
+{
+  "station_code": "string",
+  "location_name": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "value": 0,
+  "unit": "string",
+  "quality_code": "string",
+  "status": "string",
+  "compartment": "string",
+  "parameter": "string"
+}
+```
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+#### Reference vs telemetry
 
-## Messagegroups
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-### Messagegroup `NL.RWS.Waterwebservices`
-<a id="messagegroup-nlrwswaterwebservices"></a>
+## Conventions
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `NL.RWS.Waterwebservices.Kafka` (KAFKA) |
-| Messages | 2 |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-#### Message `NL.RWS.Waterwebservices.Station`
-<a id="message-nlrwswaterwebservicesstation"></a>
+Transport bindings carry CloudEvents metadata differently:
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.Station`](#schema-nlrwswaterwebservicesstation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.RWS.Waterwebservices.Station` |
-| `source` |  | `string` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
-| `subject` |  | `uritemplate` | `False` | `{station_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `NL.RWS.Waterwebservices.Kafka` | `KAFKA` | topic `rws-waterwebservices`; key `{station_code}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `NL.RWS.Waterwebservices.WaterLevelObservation`
-<a id="message-nlrwswaterwebserviceswaterlevelobservation"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation`](#schema-nlrwswaterwebserviceswaterlevelobservation) |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.RWS.Waterwebservices.WaterLevelObservation` |
-| `source` |  | `string` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
-| `subject` |  | `uritemplate` | `False` | `{station_code}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `NL.RWS.Waterwebservices.Kafka` | `KAFKA` | topic `rws-waterwebservices`; key `{station_code}` |
-
-### Messagegroup `NL.RWS.Waterwebservices.mqtt`
-<a id="messagegroup-nlrwswaterwebservicesmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variants of the RWS Waterwebservices CloudEvents, mapping each message to retained, QoS-1 Unified Namespace topics under hydro/nl/rws/rws-waterwebservices/{station_code}/... RWS Waterwebservices does not expose a stable shared water-body axis in the station catalog, so the MQTT tree intentionally uses the station code as the stable subscriber axis. |
-| Transport bindings | `NL.RWS.Waterwebservices.Mqtt` (MQTT/5.0) |
-| Messages | 2 |
-
-#### Message `NL.RWS.Waterwebservices.mqtt.Station`
-<a id="message-nlrwswaterwebservicesmqttstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.Station`](#schema-nlrwswaterwebservicesstation) |
-| Base message chain | `/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.RWS.Waterwebservices.Station` |
-| `source` |  | `string` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
-| `subject` |  | `uritemplate` | `False` | `{station_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `NL.RWS.Waterwebservices.Mqtt` | `MQTT/5.0` | topic `hydro/nl/rws/rws-waterwebservices/{station_code}/info` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `hydro/nl/rws/rws-waterwebservices/{station_code}/info` |
-| QoS | 1 |
-| Retain | True |
-
-#### Message `NL.RWS.Waterwebservices.mqtt.WaterLevelObservation`
-<a id="message-nlrwswaterwebservicesmqttwaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation`](#schema-nlrwswaterwebserviceswaterlevelobservation) |
-| Base message chain | `/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.RWS.Waterwebservices.WaterLevelObservation` |
-| `source` |  | `string` | `False` | `https://waterwebservices.rijkswaterstaat.nl` |
-| `subject` |  | `uritemplate` | `False` | `{station_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `NL.RWS.Waterwebservices.Mqtt` | `MQTT/5.0` | topic `hydro/nl/rws/rws-waterwebservices/{station_code}/water-level` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `hydro/nl/rws/rws-waterwebservices/{station_code}/water-level` |
-| QoS | 1 |
-| Retain | True |
-| Additional protocol metadata | `{"message_expiry_interval": 3600}` |
-
-## Schemagroups
-
-### Schemagroup `NL.RWS.Waterwebservices.jstruct`
-<a id="schemagroup-nlrwswaterwebservicesjstruct"></a>
-
-#### Schema `NL.RWS.Waterwebservices.Station`
-<a id="schema-nlrwswaterwebservicesstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/NL/RWS/Waterwebservices/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Station
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/NL/RWS/Waterwebservices/Station` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_code` | `string` | `True` |  | - | - | - |
-| `name` | `string` | `True` |  | altnames=`{"lang:nl": "Naam"}` | - | - |
-| `latitude` | `double` | `True` |  | - | - | - |
-| `longitude` | `double` | `True` |  | - | - | - |
-| `coordinate_system` | `string` | `False` |  | altnames=`{"lang:nl": "Coordinatenstelsel"}` | - | - |
-
-#### Schema `NL.RWS.Waterwebservices.WaterLevelObservation`
-<a id="schema-nlrwswaterwebserviceswaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/NL/RWS/Waterwebservices/WaterLevelObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `WaterLevelObservation`
-<a id="schema-node-waterlevelobservation"></a>
-
-WaterLevelObservation
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/NL/RWS/Waterwebservices/WaterLevelObservation` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_code` | `string` | `True` |  | - | - | - |
-| `location_name` | `string` | `False` |  | altnames=`{"lang:nl": "Naam"}` | - | - |
-| `timestamp` | `datetime` | `True` |  | altnames=`{"lang:nl": "Tijdstip"}` | - | - |
-| `value` | `double` | `True` |  | altnames=`{"lang:nl": "Waarde_Numeriek"}` | - | - |
-| `unit` | `string` | `False` |  | - | - | - |
-| `quality_code` | `string` | `False` |  | altnames=`{"lang:nl": "Kwaliteitswaardecode"}` | - | - |
-| `status` | `string` | `False` |  | altnames=`{"lang:nl": "Statuswaarde"}` | - | - |
-| `compartment` | `string` | `False` |  | - | - | - |
-| `parameter` | `string` | `False` |  | - | - | - |
-
-### Schemagroup `NL.RWS.Waterwebservices.avro`
-<a id="schemagroup-nlrwswaterwebservicesavro"></a>
-
-#### Schema `NL.RWS.Waterwebservices.Station`
-<a id="schema-nlrwswaterwebservicesstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | NL.RWS.Waterwebservices |
-| Type | `record` |
-| Doc | Station |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_code` | `string` |  | `-` |
-| `name` | `string` |  | `-` |
-| `latitude` | `double` |  | `-` |
-| `longitude` | `double` |  | `-` |
-| `coordinate_system` | `null` \| `string` |  | `-` |
-
-#### Schema `NL.RWS.Waterwebservices.WaterLevelObservation`
-<a id="schema-nlrwswaterwebserviceswaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Namespace | NL.RWS.Waterwebservices |
-| Type | `record` |
-| Doc | WaterLevelObservation |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_code` | `string` |  | `-` |
-| `location_name` | `null` \| `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `value` | `double` |  | `-` |
-| `unit` | `null` \| `string` |  | `-` |
-| `quality_code` | `null` \| `string` |  | `-` |
-| `status` | `null` \| `string` |  | `-` |
-| `compartment` | `null` \| `string` |  | `-` |
-| `parameter` | `null` \| `string` |  | `-` |
+- xRegistry manifest: [`xreg/rws_waterwebservices.xreg.json`](xreg/rws_waterwebservices.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Rijkswaterstaat Waterwebservices: <https://waterwebservices.rijkswaterstaat.nl/>

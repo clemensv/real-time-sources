@@ -2,1141 +2,573 @@
 
 The **ENTSO-E Transparency Platform Bridge** polls the [ENTSO-E Transparency Platform REST API](https://transparency.entsoe.eu/) for European electricity market data and emits it as [CloudEvents](https://cloudevents.io/) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 11 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 11 telemetry event types.
+- **Identity:** `{inDomain}`, `{inDomain}/{psrType}`, `{inDomain}/{outDomain}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `entsoe-transparency`. The record key is `{inDomain}`, `{inDomain}/{psrType}`, `{inDomain}/{outDomain}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['entsoe-transparency'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Day Ahead Prices
+
+CloudEvents type: `eu.entsoe.transparency.DayAheadPrices`
+
+#### What it tells you
+
+This event carries day ahead prices data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is EIC code of the bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 3 |
-| Messagegroups | 3 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `eu.entsoe.transparency.ByDomain.Kafka`
+`Day Ahead Prices` payloads are JSON object. Required fields: `inDomain`, `price`, `currency`, `unitName`, `resolution`, `documentType`.
 
-| Field | Value |
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`price`** (double, required): Day-ahead price
+- **`currency`** (string, required): Currency code (EUR)
+- **`unitName`** (string, required): Price unit (MWH)
+- **`resolution`** (string, required): ISO 8601 duration
+- **`documentType`** (string, required): ENTSO-E document type code (A44)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "price": 0,
+  "currency": "string",
+  "unitName": "string",
+  "resolution": "string",
+  "documentType": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Actual Total Load
+
+CloudEvents type: `eu.entsoe.transparency.ActualTotalLoad`
+
+#### What it tells you
+
+This event carries actual total load data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is EIC code of the bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`eu.entsoe.transparency.ByDomain`](#messagegroup-euentsoetransparencybydomain) |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Actual Total Load` payloads are JSON object. Required fields: `inDomain`, `quantity`, `resolution`, `documentType`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`quantity`** (double, required): Total load in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`outDomain`** (string, optional): EIC code of the out domain, if applicable
+- **`documentType`** (string, required): ENTSO-E document type code (A65)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "outDomain": "string",
+  "documentType": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Load Forecast Margin
+
+CloudEvents type: `eu.entsoe.transparency.LoadForecastMargin`
+
+#### What it tells you
+
+This event carries load forecast margin data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is EIC code of the bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `entsoe-transparency` |
-| Kafka key | `{inDomain}` |
-| Deployed | False |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
 
-### Endpoint `eu.entsoe.transparency.ByDomainPsrType.Kafka`
+#### Payload
 
-| Field | Value |
+`Load Forecast Margin` payloads are JSON object. Required fields: `inDomain`, `quantity`, `resolution`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`quantity`** (double, required): Forecast margin in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`documentType`** (string, required): ENTSO-E document type code (A70)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Generation Forecast
+
+CloudEvents type: `eu.entsoe.transparency.GenerationForecast`
+
+#### What it tells you
+
+This event carries generation forecast data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is EIC code of the bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`eu.entsoe.transparency.ByDomainPsrType`](#messagegroup-euentsoetransparencybydomainpsrtype) |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Generation Forecast` payloads are JSON object. Required fields: `inDomain`, `quantity`, `resolution`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`quantity`** (double, required): Forecast total generation in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`documentType`** (string, required): ENTSO-E document type code (A71)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Reservoir Filling Information
+
+CloudEvents type: `eu.entsoe.transparency.ReservoirFillingInformation`
+
+#### What it tells you
+
+This event carries reservoir filling information data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is EIC code of the bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `entsoe-transparency` |
-| Kafka key | `{inDomain}/{psrType}` |
-| Deployed | False |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
 
-### Endpoint `eu.entsoe.transparency.CrossBorder.Kafka`
+#### Payload
 
-| Field | Value |
+`Reservoir Filling Information` payloads are JSON object. Required fields: `inDomain`, `quantity`, `resolution`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`quantity`** (double, required): Stored energy in MWh
+- **`resolution`** (string, required): ISO 8601 duration
+- **`documentType`** (string, required): ENTSO-E document type code (A72)
+- **`unitName`** (string, required): Unit of measurement
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Actual Generation
+
+CloudEvents type: `eu.entsoe.transparency.ActualGeneration`
+
+#### What it tells you
+
+This event carries actual generation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is EIC code of the bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`eu.entsoe.transparency.CrossBorder`](#messagegroup-euentsoetransparencycrossborder) |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Actual Generation` payloads are JSON object. Required fields: `inDomain`, `quantity`, `resolution`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`quantity`** (double, required): Total actual generation in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`documentType`** (string, required): ENTSO-E document type code (A73)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Actual Generation Per Type
+
+CloudEvents type: `eu.entsoe.transparency.ActualGenerationPerType`
+
+#### What it tells you
+
+This event carries actual generation per type data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inDomain}` is EIC code of the bidding zone; `{psrType}` is production type code (B01=Biomass, B02=Lignite, ...). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `entsoe-transparency` |
-| Kafka key | `{inDomain}/{outDomain}` |
-| Deployed | False |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
 
-## Messagegroups
+#### Payload
 
-### Messagegroup `eu.entsoe.transparency.ByDomain`
-<a id="messagegroup-euentsoetransparencybydomain"></a>
+`Actual Generation Per Type` payloads are JSON object. Required fields: `inDomain`, `psrType`, `quantity`, `resolution`, `businessType`, `documentType`, `unitName`.
 
-| Field | Value |
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`psrType`** (string, required): Production type code (B01=Biomass, B02=Lignite, ...)
+- **`quantity`** (double, required): Generated power in MW
+- **`resolution`** (string, required): ISO 8601 duration (PT15M, PT60M)
+- **`businessType`** (string, required): Business type code
+- **`documentType`** (string, required): ENTSO-E document type code (A75)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "psrType": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "businessType": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Wind Solar Forecast
+
+CloudEvents type: `eu.entsoe.transparency.WindSolarForecast`
+
+#### What it tells you
+
+This event carries wind solar forecast data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inDomain}` is EIC code of the bidding zone; `{psrType}` is production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Transport bindings | `eu.entsoe.transparency.ByDomain.Kafka` (KAFKA) |
-| Messages | 6 |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
 
-#### Message `eu.entsoe.transparency.DayAheadPrices`
-<a id="message-euentsoetransparencydayaheadprices"></a>
+#### Payload
 
-| Field | Value |
+`Wind Solar Forecast` payloads are JSON object. Required fields: `inDomain`, `psrType`, `quantity`, `resolution`, `businessType`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`psrType`** (string, required): Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)
+- **`quantity`** (double, required): Forecast power in MW
+- **`resolution`** (string, required): ISO 8601 duration (PT15M, PT60M)
+- **`businessType`** (string, required): Business type code
+- **`documentType`** (string, required): ENTSO-E document type code (A69)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "psrType": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "businessType": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Wind Solar Generation
+
+CloudEvents type: `eu.entsoe.transparency.WindSolarGeneration`
+
+#### What it tells you
+
+This event carries wind solar generation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inDomain}` is EIC code of the bidding zone; `{psrType}` is production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | DayAheadPrices |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.DayAheadPrices`](#schema-euentsoetransparencydayaheadprices) |
-| Event role | Telemetry/event data |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
 
-##### CloudEvents metadata
+#### Payload
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.DayAheadPrices` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}` |
+`Wind Solar Generation` payloads are JSON object. Required fields: `inDomain`, `psrType`, `quantity`, `resolution`, `businessType`, `documentType`, `unitName`.
 
-##### Bound transports
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`psrType`** (string, required): Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)
+- **`quantity`** (double, required): Actual wind/solar generation in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`businessType`** (string, required): Business type code
+- **`documentType`** (string, required): ENTSO-E document type code (A74)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
 
-| Endpoint | Protocol | Binding |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "psrType": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "businessType": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Installed Generation Capacity Per Type
+
+CloudEvents type: `eu.entsoe.transparency.InstalledGenerationCapacityPerType`
+
+#### What it tells you
+
+This event carries installed generation capacity per type data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}/{psrType}`. `{inDomain}` is EIC code of the bidding zone; `{psrType}` is production type code (B01=Biomass, B02=Lignite, ...). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{psrType}` |
+
+#### Payload
+
+`Installed Generation Capacity Per Type` payloads are JSON object. Required fields: `inDomain`, `psrType`, `quantity`, `resolution`, `businessType`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the bidding zone
+- **`psrType`** (string, required): Production type code (B01=Biomass, B02=Lignite, ...)
+- **`quantity`** (double, required): Installed capacity in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`businessType`** (string, required): Business type code
+- **`documentType`** (string, required): ENTSO-E document type code (A68)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "psrType": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "businessType": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Cross Border Physical Flows
+
+CloudEvents type: `eu.entsoe.transparency.CrossBorderPhysicalFlows`
+
+#### What it tells you
+
+This event carries cross border physical flows data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{inDomain}/{outDomain}`. `{inDomain}` is EIC code of the importing bidding zone; `{outDomain}` is EIC code of the exporting bidding zone. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `entsoe-transparency`, key `{inDomain}/{outDomain}` |
+
+#### Payload
+
+`Cross Border Physical Flows` payloads are JSON object. Required fields: `inDomain`, `outDomain`, `quantity`, `resolution`, `documentType`, `unitName`.
+
+- **`inDomain`** (string, required): EIC code of the importing bidding zone
+- **`outDomain`** (string, required): EIC code of the exporting bidding zone
+- **`quantity`** (double, required): Physical flow in MW
+- **`resolution`** (string, required): ISO 8601 duration
+- **`documentType`** (string, required): ENTSO-E document type code (A11)
+- **`unitName`** (string, required): Unit of measurement (MAW)
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "inDomain": "string",
+  "outDomain": "string",
+  "quantity": 0,
+  "resolution": "string",
+  "documentType": "string",
+  "unitName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `eu.entsoe.transparency.ByDomain.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `eu.entsoe.transparency.ActualTotalLoad`
-<a id="message-euentsoetransparencyactualtotalload"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Name | ActualTotalLoad |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualTotalLoad`](#schema-euentsoetransparencyactualtotalload) |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.ActualTotalLoad` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomain.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}` |
-
-#### Message `eu.entsoe.transparency.LoadForecastMargin`
-<a id="message-euentsoetransparencyloadforecastmargin"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | LoadForecastMargin |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.LoadForecastMargin`](#schema-euentsoetransparencyloadforecastmargin) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.LoadForecastMargin` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomain.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}` |
-
-#### Message `eu.entsoe.transparency.GenerationForecast`
-<a id="message-euentsoetransparencygenerationforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | GenerationForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.GenerationForecast`](#schema-euentsoetransparencygenerationforecast) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.GenerationForecast` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomain.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}` |
-
-#### Message `eu.entsoe.transparency.ReservoirFillingInformation`
-<a id="message-euentsoetransparencyreservoirfillinginformation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ReservoirFillingInformation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ReservoirFillingInformation`](#schema-euentsoetransparencyreservoirfillinginformation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.ReservoirFillingInformation` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomain.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}` |
-
-#### Message `eu.entsoe.transparency.ActualGeneration`
-<a id="message-euentsoetransparencyactualgeneration"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGeneration |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualGeneration`](#schema-euentsoetransparencyactualgeneration) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.ActualGeneration` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomain.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}` |
-
-### Messagegroup `eu.entsoe.transparency.ByDomainPsrType`
-<a id="messagegroup-euentsoetransparencybydomainpsrtype"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `eu.entsoe.transparency.ByDomainPsrType.Kafka` (KAFKA) |
-| Messages | 4 |
-
-#### Message `eu.entsoe.transparency.ActualGenerationPerType`
-<a id="message-euentsoetransparencyactualgenerationpertype"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGenerationPerType |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualGenerationPerType`](#schema-euentsoetransparencyactualgenerationpertype) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.ActualGenerationPerType` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}/{psrType}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomainPsrType.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}/{psrType}` |
-
-#### Message `eu.entsoe.transparency.WindSolarForecast`
-<a id="message-euentsoetransparencywindsolarforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarForecast`](#schema-euentsoetransparencywindsolarforecast) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.WindSolarForecast` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}/{psrType}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomainPsrType.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}/{psrType}` |
-
-#### Message `eu.entsoe.transparency.WindSolarGeneration`
-<a id="message-euentsoetransparencywindsolargeneration"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarGeneration |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarGeneration`](#schema-euentsoetransparencywindsolargeneration) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.WindSolarGeneration` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}/{psrType}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomainPsrType.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}/{psrType}` |
-
-#### Message `eu.entsoe.transparency.InstalledGenerationCapacityPerType`
-<a id="message-euentsoetransparencyinstalledgenerationcapacitypertype"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | InstalledGenerationCapacityPerType |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType`](#schema-euentsoetransparencyinstalledgenerationcapacitypertype) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.InstalledGenerationCapacityPerType` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}/{psrType}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.ByDomainPsrType.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}/{psrType}` |
-
-### Messagegroup `eu.entsoe.transparency.CrossBorder`
-<a id="messagegroup-euentsoetransparencycrossborder"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `eu.entsoe.transparency.CrossBorder.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `eu.entsoe.transparency.CrossBorderPhysicalFlows`
-<a id="message-euentsoetransparencycrossborderphysicalflows"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | CrossBorderPhysicalFlows |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows`](#schema-euentsoetransparencycrossborderphysicalflows) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `eu.entsoe.transparency.CrossBorderPhysicalFlows` |
-| `source` |  | `string` | `False` | `https://transparency.entsoe.eu/api` |
-| `subject` |  | `uritemplate` | `False` | `{inDomain}/{outDomain}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `eu.entsoe.transparency.CrossBorder.Kafka` | `KAFKA` | topic `entsoe-transparency`; key `{inDomain}/{outDomain}` |
-
-## Schemagroups
-
-### Schemagroup `eu.entsoe.transparency.jstruct`
-<a id="schemagroup-euentsoetransparencyjstruct"></a>
-
-#### Schema `eu.entsoe.transparency.ActualGenerationPerType`
-<a id="schema-euentsoetransparencyactualgenerationpertype"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGenerationPerType |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/ActualGenerationPerType` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/ActualGenerationPerType` |
-| Type | `object` |
-
-###### Object `ActualGenerationPerType`
-<a id="schema-node-actualgenerationpertype"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `psrType` | `string` | `True` | Production type code (B01=Biomass, B02=Lignite, ...) | - | - | - |
-| `quantity` | `double` | `True` | Generated power in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration (PT15M, PT60M) | - | - | - |
-| `businessType` | `string` | `True` | Business type code | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A75) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.DayAheadPrices`
-<a id="schema-euentsoetransparencydayaheadprices"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DayAheadPrices |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/DayAheadPrices` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/DayAheadPrices` |
-| Type | `object` |
-
-###### Object `DayAheadPrices`
-<a id="schema-node-dayaheadprices"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `price` | `double` | `True` | Day-ahead price | - | - | - |
-| `currency` | `string` | `True` | Currency code (EUR) | - | - | - |
-| `unitName` | `string` | `True` | Price unit (MWH) | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A44) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.ActualTotalLoad`
-<a id="schema-euentsoetransparencyactualtotalload"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualTotalLoad |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/ActualTotalLoad` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/ActualTotalLoad` |
-| Type | `object` |
-
-###### Object `ActualTotalLoad`
-<a id="schema-node-actualtotalload"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `quantity` | `double` | `True` | Total load in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `outDomain` | `string` | `False` | EIC code of the out domain, if applicable | - | default=`-` | default=`-` |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A65) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.WindSolarForecast`
-<a id="schema-euentsoetransparencywindsolarforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarForecast |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/WindSolarForecast` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/WindSolarForecast` |
-| Type | `object` |
-
-###### Object `WindSolarForecast`
-<a id="schema-node-windsolarforecast"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `psrType` | `string` | `True` | Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore) | - | - | - |
-| `quantity` | `double` | `True` | Forecast power in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration (PT15M, PT60M) | - | - | - |
-| `businessType` | `string` | `True` | Business type code | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A69) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.LoadForecastMargin`
-<a id="schema-euentsoetransparencyloadforecastmargin"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | LoadForecastMargin |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/LoadForecastMargin` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/LoadForecastMargin` |
-| Type | `object` |
-
-###### Object `LoadForecastMargin`
-<a id="schema-node-loadforecastmargin"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `quantity` | `double` | `True` | Forecast margin in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A70) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.GenerationForecast`
-<a id="schema-euentsoetransparencygenerationforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | GenerationForecast |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/GenerationForecast` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/GenerationForecast` |
-| Type | `object` |
-
-###### Object `GenerationForecast`
-<a id="schema-node-generationforecast"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `quantity` | `double` | `True` | Forecast total generation in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A71) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.ReservoirFillingInformation`
-<a id="schema-euentsoetransparencyreservoirfillinginformation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ReservoirFillingInformation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/ReservoirFillingInformation` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/ReservoirFillingInformation` |
-| Type | `object` |
-
-###### Object `ReservoirFillingInformation`
-<a id="schema-node-reservoirfillinginformation"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `quantity` | `double` | `True` | Stored energy in MWh | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A72) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement | - | - | - |
-
-#### Schema `eu.entsoe.transparency.ActualGeneration`
-<a id="schema-euentsoetransparencyactualgeneration"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGeneration |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/ActualGeneration` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/ActualGeneration` |
-| Type | `object` |
-
-###### Object `ActualGeneration`
-<a id="schema-node-actualgeneration"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `quantity` | `double` | `True` | Total actual generation in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A73) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.WindSolarGeneration`
-<a id="schema-euentsoetransparencywindsolargeneration"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarGeneration |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/WindSolarGeneration` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/WindSolarGeneration` |
-| Type | `object` |
-
-###### Object `WindSolarGeneration`
-<a id="schema-node-windsolargeneration"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `psrType` | `string` | `True` | Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore) | - | - | - |
-| `quantity` | `double` | `True` | Actual wind/solar generation in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `businessType` | `string` | `True` | Business type code | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A74) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.InstalledGenerationCapacityPerType`
-<a id="schema-euentsoetransparencyinstalledgenerationcapacitypertype"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | InstalledGenerationCapacityPerType |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/InstalledGenerationCapacityPerType` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/InstalledGenerationCapacityPerType` |
-| Type | `object` |
-
-###### Object `InstalledGenerationCapacityPerType`
-<a id="schema-node-installedgenerationcapacitypertype"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the bidding zone | - | - | - |
-| `psrType` | `string` | `True` | Production type code (B01=Biomass, B02=Lignite, ...) | - | - | - |
-| `quantity` | `double` | `True` | Installed capacity in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `businessType` | `string` | `True` | Business type code | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A68) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-#### Schema `eu.entsoe.transparency.CrossBorderPhysicalFlows`
-<a id="schema-euentsoetransparencycrossborderphysicalflows"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | CrossBorderPhysicalFlows |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/eu/entsoe/transparency/CrossBorderPhysicalFlows` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/eu/entsoe/transparency/CrossBorderPhysicalFlows` |
-| Type | `object` |
-
-###### Object `CrossBorderPhysicalFlows`
-<a id="schema-node-crossborderphysicalflows"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `inDomain` | `string` | `True` | EIC code of the importing bidding zone | - | - | - |
-| `outDomain` | `string` | `True` | EIC code of the exporting bidding zone | - | - | - |
-| `quantity` | `double` | `True` | Physical flow in MW | - | - | - |
-| `resolution` | `string` | `True` | ISO 8601 duration | - | - | - |
-| `documentType` | `string` | `True` | ENTSO-E document type code (A11) | - | - | - |
-| `unitName` | `string` | `True` | Unit of measurement (MAW) | - | - | - |
-
-### Schemagroup `eu.entsoe.transparency.avro`
-<a id="schemagroup-euentsoetransparencyavro"></a>
-
-#### Schema `eu.entsoe.transparency.ActualGenerationPerType`
-<a id="schema-euentsoetransparencyactualgenerationpertype"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGenerationPerType |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGenerationPerType |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `psrType` | `string` | Production type code (B01=Biomass, B02=Lignite, ...) | `-` |
-| `quantity` | `double` | Generated power in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration (PT15M, PT60M) | `-` |
-| `businessType` | `string` | Business type code | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A75) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.DayAheadPrices`
-<a id="schema-euentsoetransparencydayaheadprices"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DayAheadPrices |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | DayAheadPrices |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `price` | `double` | Day-ahead price | `-` |
-| `currency` | `string` | Currency code (EUR) | `-` |
-| `unitName` | `string` | Price unit (MWH) | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A44) | `-` |
-
-#### Schema `eu.entsoe.transparency.ActualTotalLoad`
-<a id="schema-euentsoetransparencyactualtotalload"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualTotalLoad |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | ActualTotalLoad |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `quantity` | `double` | Total load in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `outDomain` | `null` \| `string` | EIC code of the out domain, if applicable | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A65) | `-` |
-
-#### Schema `eu.entsoe.transparency.WindSolarForecast`
-<a id="schema-euentsoetransparencywindsolarforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarForecast |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarForecast |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `psrType` | `string` | Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore) | `-` |
-| `quantity` | `double` | Forecast power in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration (PT15M, PT60M) | `-` |
-| `businessType` | `string` | Business type code | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A69) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.LoadForecastMargin`
-<a id="schema-euentsoetransparencyloadforecastmargin"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | LoadForecastMargin |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | LoadForecastMargin |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `quantity` | `double` | Forecast margin in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A70) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.GenerationForecast`
-<a id="schema-euentsoetransparencygenerationforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | GenerationForecast |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | GenerationForecast |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `quantity` | `double` | Forecast total generation in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A71) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.ReservoirFillingInformation`
-<a id="schema-euentsoetransparencyreservoirfillinginformation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ReservoirFillingInformation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | ReservoirFillingInformation |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `quantity` | `double` | Stored energy in MWh | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A72) | `-` |
-| `unitName` | `string` | Unit of measurement | `-` |
-
-#### Schema `eu.entsoe.transparency.ActualGeneration`
-<a id="schema-euentsoetransparencyactualgeneration"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGeneration |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | ActualGeneration |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `quantity` | `double` | Total actual generation in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A73) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.WindSolarGeneration`
-<a id="schema-euentsoetransparencywindsolargeneration"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarGeneration |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | WindSolarGeneration |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `psrType` | `string` | Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore) | `-` |
-| `quantity` | `double` | Actual wind/solar generation in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `businessType` | `string` | Business type code | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A74) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.InstalledGenerationCapacityPerType`
-<a id="schema-euentsoetransparencyinstalledgenerationcapacitypertype"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | InstalledGenerationCapacityPerType |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | InstalledGenerationCapacityPerType |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the bidding zone | `-` |
-| `psrType` | `string` | Production type code (B01=Biomass, B02=Lignite, ...) | `-` |
-| `quantity` | `double` | Installed capacity in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `businessType` | `string` | Business type code | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A68) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
-
-#### Schema `eu.entsoe.transparency.CrossBorderPhysicalFlows`
-<a id="schema-euentsoetransparencycrossborderphysicalflows"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | CrossBorderPhysicalFlows |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | CrossBorderPhysicalFlows |
-| Namespace | eu.entsoe.transparency |
-| Type | `record` |
-| Doc |  |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `inDomain` | `string` | EIC code of the importing bidding zone | `-` |
-| `outDomain` | `string` | EIC code of the exporting bidding zone | `-` |
-| `quantity` | `double` | Physical flow in MW | `-` |
-| `resolution` | `string` | ISO 8601 duration | `-` |
-| `documentType` | `string` | ENTSO-E document type code (A11) | `-` |
-| `unitName` | `string` | Unit of measurement (MAW) | `-` |
+- xRegistry manifest: [`xreg/entsoe.xreg.json`](xreg/entsoe.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- ENTSO-E Transparency Platform REST API: <https://transparency.entsoe.eu/>
+- Transparency Platform RESTful API Guide: <https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html>

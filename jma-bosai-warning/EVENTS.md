@@ -2,442 +2,299 @@
 
 MQTT/5.0 transport variant for JMA Bosai weather warnings. Retained QoS-1 office reference records and non-retained QoS-1 warning events route by Romanized prefecture, severity, issuing office code, forecast area code, and fixed event name under alerts/jp/jma/jma-bosai-warning/... so wildcard subscribers can follow one prefecture, severity, office, or area without parsing Japanese administrative names.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 3 documented event types (5 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
+- **Identity:** `jp.jma.warning/{office_code}/{area_code}`, `jp.jma.tsunami/{event_id}/{serial}` identifies the resource each event is about.
+- **Operations:** The checked-in guide documents a default polling interval of 60 seconds.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `jma-bosai-warning`, `jma-bosai-tsunami`. The record key is `jp.jma.warning/{office_code}/{area_code}`, `jp.jma.tsunami/{event_id}/{serial}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['jma-bosai-warning', 'jma-bosai-tsunami'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/jp/jma/jma-bosai-warning/+/+/+/+/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('alerts/jp/jma/jma-bosai-warning/+/+/+/+/+', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Office
+
+CloudEvents type: `JP.JMA.Warning.Office`
+
+#### What it tells you
+
+JMA Bosai warning office reference data from area.json offices. JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.jma.warning/{office_code}/{area_code}`. `{office_code}` is six-digit JMA Bosai office code from area.json offices; `{area_code}` is six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 3 |
-| Messagegroups | 3 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `jma-bosai-warning`, key `jp.jma.warning/{office_code}/{area_code}` |
+| `MQTT/5.0` | topic `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}`, retain `true`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `JP.JMA.Warning.Kafka`
+`Office` payloads are JSON object. Required fields: `office_code`, `area_code`, `name_jp`, `name_en`, `parent_office_code`, `office_type`, `prefecture`, `severity`, `event`.
 
-| Field | Value |
+- **`office_code`** (string, required): Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events. Constraints: pattern `^[0-9]{6}$`.
+- **`area_code`** (string, required): Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry. Constraints: pattern `^[0-9]{6,7}$`.
+- **`name_jp`** (string, required): Japanese office or warning-region name from area.json offices[].name, such as 東京都 or 宗谷地方.
+- **`name_en`** (string, required): English office or warning-region name from area.json offices[].enName, such as Tokyo or Soya.
+- **`parent_office_code`** (string or null, required): Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent. Constraints: pattern `^[0-9]{6}$`.
+- **`office_type`** (enum, required): Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries.
+- **`prefecture`** (string, required): ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`severity`** (enum, required): MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity.
+- **`event`** (enum, required): Fixed MQTT topic event segment for retained office reference records.
+##### `office_type` values
+
+- `PREFECTURE`
+- `SUBREGION`
+- `OFFICE`
+##### `severity` values
+
+- `REFERENCE`
+- `NONE`
+- `ADVISORY`
+- `WARNING`
+- `EMERGENCY_WARNING`
+##### `event` values
+
+- `office`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "office_code": "string",
+  "area_code": "string",
+  "name_jp": "string",
+  "name_en": "string",
+  "parent_office_code": "string",
+  "office_type": "PREFECTURE",
+  "prefecture": "string",
+  "severity": "REFERENCE",
+  "event": "office"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Weather Warning
+
+CloudEvents type: `JP.JMA.Warning.WeatherWarning`
+
+#### What it tells you
+
+JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin. JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.jma.warning/{office_code}/{area_code}`. `{office_code}` is six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint; `{area_code}` is JMA inner forecast-area code from timeSeries areas[].code. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`JP.JMA.Warning`](#messagegroup-jpjmawarning) |
+| `KAFKA` | topic `jma-bosai-warning`, key `jp.jma.warning/{office_code}/{area_code}` |
+| `MQTT/5.0` | topic `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}`, retain `false`, QoS `1` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Weather Warning` payloads are JSON object. Required fields: `prefecture`, `severity`, `office_code`, `area_code`, `event`, `area_name`, `report_datetime`, `report_datetime_local`, `headline_text`, `warnings`, `time_defines`.
+
+- **`prefecture`** (string, required): ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`severity`** (enum, required): MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis.
+- **`office_code`** (string, required): Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component. Constraints: pattern `^[0-9]{6}$`.
+- **`area_code`** (string, required): JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry. Constraints: pattern `^[0-9]{6,7}$`.
+- **`event`** (enum, required): Fixed MQTT topic event segment for JMA Bosai weather warning state records.
+- **`area_name`** (string, required): Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code.
+- **`report_datetime`** (datetime, required): JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset.
+- **`report_datetime_local`** (datetime, required): Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00).
+- **`headline_text`** (string or null, required): Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline.
+- **`warnings`** (array of object, required): All JMA warning/advisory items published for the inner area in this bulletin. WarningItem is intentionally defined inline to avoid duplicate schema definitions during Avro and producer generation.
+- **`time_defines`** (array of datetime, required): Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.
+##### `severity` values
+
+- `REFERENCE`
+- `NONE`
+- `ADVISORY`
+- `WARNING`
+- `EMERGENCY_WARNING`
+##### `event` values
+
+- `warning`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "prefecture": "string",
+  "severity": "REFERENCE",
+  "office_code": "string",
+  "area_code": "string",
+  "event": "warning",
+  "area_name": "string",
+  "report_datetime": "2024-01-01T00:00:00Z",
+  "report_datetime_local": "2024-01-01T00:00:00Z",
+  "headline_text": "string",
+  "warnings": [
+    {
+      "code": "string",
+      "code_description_jp": "string",
+      "code_description_en": "string",
+      "status": "ISSUED",
+      "severity": "NONE"
+    }
+  ],
+  "time_defines": [
+    "2024-01-01T00:00:00Z"
+  ]
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Tsunami Alert
+
+CloudEvents type: `JP.JMA.Tsunami.TsunamiAlert`
+
+#### What it tells you
+
+JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts. Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.
+
+#### Identity
+
+Each event identifies the real-world resource with `jp.jma.tsunami/{event_id}/{serial}`. `{event_id}` is stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID; `{serial}` is JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `jma-bosai-warning` |
-| Kafka key | `jp.jma.warning/{office_code}/{area_code}` |
-| Deployed | False |
+| `KAFKA` | topic `jma-bosai-tsunami`, key `jp.jma.tsunami/{event_id}/{serial}` |
 
-### Endpoint `JP.JMA.Tsunami.Kafka`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`JP.JMA.Tsunami`](#messagegroup-jpjmatsunami) |
+`Tsunami Alert` payloads are JSON object. Required fields: `event_id`, `serial`, `info_type`, `report_datetime`, `report_datetime_local`, `title_jp`, `title_en`, `bulletin_type`, `detail_url`, `affected_coastal_regions`, `observations`.
 
-#### Transport options
+- **`event_id`** (string, required): Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component. Constraints: pattern `^[0-9]{14}$`.
+- **`serial`** (integer, required): JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component. Constraints: minimum `0`.
+- **`info_type`** (enum, required): Normalized information type derived from JMA ift text: ISSUED for 発表, CORRECTED for 訂正, and CANCELLED for 取消.
+- **`report_datetime`** (datetime, required): JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.
+- **`report_datetime_local`** (datetime, required): Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.
+- **`title_jp`** (string, required): Japanese JMA tsunami bulletin title copied from list.json ttl.
+- **`title_en`** (string, required): English tsunami title generated from the known JMA title class when no English list title is present.
+- **`bulletin_type`** (string, required): JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52.
+- **`detail_url`** (uri, required): Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.
+- **`affected_coastal_regions`** (array of object, required): Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation.
+- **`observations`** (array of object, required): Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present.
+##### `info_type` values
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `jma-bosai-tsunami` |
-| Kafka key | `jp.jma.tsunami/{event_id}/{serial}` |
-| Deployed | False |
+- `ISSUED`
+- `CORRECTED`
+- `CANCELLED`
+#### Example payload
 
-### Endpoint `JP.JMA.Warning.Mqtt`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`JP.JMA.Warning.mqtt`](#messagegroup-jpjmawarningmqtt) |
+```json
+{
+  "event_id": "string",
+  "serial": 0,
+  "info_type": "ISSUED",
+  "report_datetime": "2024-01-01T00:00:00Z",
+  "report_datetime_local": "2024-01-01T00:00:00Z",
+  "title_jp": "string",
+  "title_en": "string",
+  "bulletin_type": "string",
+  "detail_url": "string",
+  "affected_coastal_regions": [
+    {
+      "code": "string",
+      "name": "string",
+      "category": "MAJOR_WARNING",
+      "expected_max_wave_height_m": 0,
+      "expected_arrival_datetime": "2024-01-01T00:00:00Z",
+      "expected_arrival_datetime_local": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "observations": [
+    {
+      "station_code": "string",
+      "station_name_jp": "string",
+      "station_name_en": "string",
+      "observed_max_wave_height_m": 0,
+      "observed_at": "2024-01-01T00:00:00Z",
+      "observed_at_local": "2024-01-01T00:00:00Z",
+      "arrival_status": "ESTIMATED"
+    }
+  ]
+}
+```
 
-#### Transport options
+#### Reference vs telemetry
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-## Messagegroups
+## Conventions
 
-### Messagegroup `JP.JMA.Warning`
-<a id="messagegroup-jpjmawarning"></a>
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `JP.JMA.Warning.Kafka` (KAFKA) |
-| Messages | 2 |
+Transport bindings carry CloudEvents metadata differently:
 
-#### Message `JP.JMA.Warning.Office`
-<a id="message-jpjmawarningoffice"></a>
-
-JMA Bosai warning office reference data from area.json offices.
-
-| Field | Value |
-| --- | --- |
-| Name | Office |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.Office`](#schema-jpjmawarningoffice) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.JMA.Warning.Office` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.jma.warning/{office_code}/{area_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `JP.JMA.Warning.Kafka` | `KAFKA` | topic `jma-bosai-warning`; key `jp.jma.warning/{office_code}/{area_code}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `JP.JMA.Warning.WeatherWarning`
-<a id="message-jpjmawarningweatherwarning"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.
+## Operational notes
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherWarning |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.WeatherWarning`](#schema-jpjmawarningweatherwarning) |
-| Event role | Telemetry/event data |
+- The checked-in guide documents a default polling interval of 60 seconds.
 
-##### CloudEvents metadata
+## References
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.JMA.Warning.WeatherWarning` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.jma.warning/{office_code}/{area_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.JMA.Warning.Kafka` | `KAFKA` | topic `jma-bosai-warning`; key `jp.jma.warning/{office_code}/{area_code}` |
-
-### Messagegroup `JP.JMA.Tsunami`
-<a id="messagegroup-jpjmatsunami"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `JP.JMA.Tsunami.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `JP.JMA.Tsunami.TsunamiAlert`
-<a id="message-jpjmatsunamitsunamialert"></a>
-
-JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.
-
-| Field | Value |
-| --- | --- |
-| Name | TsunamiAlert |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/JP.JMA.Tsunami.jstruct/schemas/JP.JMA.Tsunami.TsunamiAlert`](#schema-jpjmatsunamitsunamialert) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.JMA.Tsunami.TsunamiAlert` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.jma.tsunami/{event_id}/{serial}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.JMA.Tsunami.Kafka` | `KAFKA` | topic `jma-bosai-tsunami`; key `jp.jma.tsunami/{event_id}/{serial}` |
-
-### Messagegroup `JP.JMA.Warning.mqtt`
-<a id="messagegroup-jpjmawarningmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variant for JMA Bosai weather warnings. Retained QoS-1 office reference records and non-retained QoS-1 warning events route by Romanized prefecture, severity, issuing office code, forecast area code, and fixed event name under alerts/jp/jma/jma-bosai-warning/... so wildcard subscribers can follow one prefecture, severity, office, or area without parsing Japanese administrative names. |
-| Transport bindings | `JP.JMA.Warning.Mqtt` (MQTT/5.0) |
-| Messages | 2 |
-
-#### Message `JP.JMA.Warning.mqtt.Office`
-<a id="message-jpjmawarningmqttoffice"></a>
-
-JMA Bosai warning office reference data from area.json offices.
-
-| Field | Value |
-| --- | --- |
-| Name | Office |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.Office`](#schema-jpjmawarningoffice) |
-| Base message chain | `/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.JMA.Warning.Office` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.jma.warning/{office_code}/{area_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.JMA.Warning.Mqtt` | `MQTT/5.0` | topic `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}` |
-| QoS | 1 |
-| Retain | True |
-
-#### Message `JP.JMA.Warning.mqtt.WeatherWarning`
-<a id="message-jpjmawarningmqttweatherwarning"></a>
-
-JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherWarning |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.WeatherWarning`](#schema-jpjmawarningweatherwarning) |
-| Base message chain | `/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `JP.JMA.Warning.WeatherWarning` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `jp.jma.warning/{office_code}/{area_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `JP.JMA.Warning.Mqtt` | `MQTT/5.0` | topic `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}` |
-| QoS | 1 |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `JP.JMA.Warning.jstruct`
-<a id="schemagroup-jpjmawarningjstruct"></a>
-
-#### Schema `JP.JMA.Warning.Office`
-<a id="schema-jpjmawarningoffice"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Office |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.jma.go.jp/schemas/bosai/warning/Office` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| Type | `object` |
-
-###### Object `Office`
-<a id="schema-node-office"></a>
-
-JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.jma.go.jp/schemas/bosai/warning/Office` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `office_code` | `string` | `True` | Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events. | altnames=`{"jma-bosai": "offices key"}` | pattern=`^[0-9]{6}$` | - |
-| `area_code` | `string` | `True` | Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry. | - | pattern=`^[0-9]{6,7}$` | - |
-| `name_jp` | `string` | `True` | Japanese office or warning-region name from area.json offices[].name, such as 東京都 or 宗谷地方. | - | - | - |
-| `name_en` | `string` | `True` | English office or warning-region name from area.json offices[].enName, such as Tokyo or Soya. | - | - | - |
-| `parent_office_code` | `union` | `True` | Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent. | - | pattern=`^[0-9]{6}$` | - |
-| `office_type` | enum `['PREFECTURE', 'SUBREGION', 'OFFICE']` | `True` | Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries. | - | - | - |
-| `prefecture` | `string` | `True` | ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name. | - | pattern=`^[a-z0-9][a-z0-9-]*$` | - |
-| `severity` | enum `['REFERENCE', 'NONE', 'ADVISORY', 'WARNING', 'EMERGENCY_WARNING']` | `True` | MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity. | - | - | - |
-| `event` | enum `['office']` | `True` | Fixed MQTT topic event segment for retained office reference records. | - | - | - |
-
-#### Schema `JP.JMA.Warning.WeatherWarning`
-<a id="schema-jpjmawarningweatherwarning"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherWarning |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.jma.go.jp/schemas/bosai/warning/WeatherWarning` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| Type | `object` |
-
-###### Object `WeatherWarning`
-<a id="schema-node-weatherwarning"></a>
-
-JMA Bosai weather warning/advisory state for one office targetArea and one inner forecast area. The bridge emits one record per (office_code, area_code, report_datetime) change and includes all warning items currently published for that area.
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.jma.go.jp/schemas/bosai/warning/WeatherWarning` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `prefecture` | `string` | `True` | ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name. | - | pattern=`^[a-z0-9][a-z0-9-]*$` | - |
-| `severity` | enum `['REFERENCE', 'NONE', 'ADVISORY', 'WARNING', 'EMERGENCY_WARNING']` | `True` | MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis. | - | - | - |
-| `office_code` | `string` | `True` | Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component. | altnames=`{"jma-bosai": "targetArea"}` | pattern=`^[0-9]{6}$` | - |
-| `area_code` | `string` | `True` | JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry. | altnames=`{"jma-bosai": "timeSeries[].areas[].code"}` | pattern=`^[0-9]{6,7}$` | - |
-| `event` | enum `['warning']` | `True` | Fixed MQTT topic event segment for JMA Bosai weather warning state records. | - | - | - |
-| `area_name` | `string` | `True` | Japanese inner forecast-area name from the warning payload when present or from area.json class catalogs when the payload only carries a code. | - | - | - |
-| `report_datetime` | `datetime` | `True` | JMA report publication time converted to an RFC3339 UTC timestamp. JMA publishes reportDatetime with a local Japan time offset. | altnames=`{"jma-bosai": "reportDatetime"}` | - | - |
-| `report_datetime_local` | `datetime` | `True` | Original JMA reportDatetime timestamp preserving the upstream local offset, normally Japan Standard Time (+09:00). | altnames=`{"jma-bosai": "reportDatetime"}` | - | - |
-| `headline_text` | `union` | `True` | Japanese free-text headline from headlineText summarizing areas and hazards requiring attention. Null is emitted when JMA omits the headline. | altnames=`{"jma-bosai": "headlineText"}` | - | - |
-| `warnings` | array of [object `WarningItem`](#schema-node-warningitem) | `True` | All JMA warning/advisory items published for the inner area in this bulletin. WarningItem is intentionally defined inline to avoid duplicate schema definitions during Avro and producer generation. | altnames=`{"jma-bosai": "warnings"}` | - | - |
-| `time_defines` | array of `datetime` | `True` | Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block. | altnames=`{"jma-bosai": "timeSeries[].timeDefines"}` | - | - |
-
-###### Object `WarningItem`
-<a id="schema-node-warningitem"></a>
-
-Single JMA warning/advisory item for an inner forecast area. JMA warning area entries may either carry a hazard code plus status, or carry only the status 発表警報・注意報はなし when no warnings or advisories are in effect.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `code` | `union` | `False` | JMA weather warning category code from warnings[].code when a hazard is present. Null is emitted for JMA no-warning items such as {status: 発表警報・注意報はなし} that intentionally omit a code. | altnames=`{"jma-bosai": "warnings[].code"}`<br>altenums=`{"english_label": {"03": "Heavy rain", "04": "Flood", "05": "Storm", "06": "Snow storm", "07": "Heavy snow", "08": "High waves", "10": "Thunderstorm", "12": "Strong wind", "13": "Snow and wind", "14": "Dense fog", "15": "Dry air", "16": "Avalanche", "17": "Ice accretion", "18": "Snow accretion", "19": "Snow melt", "20": "Storm surge", "21": "Low temperature", "22": "Frost", "23": "Ice and snow accretion", "24": "Heavy rain and flood", "25": "Heavy rain and strong wind", "32": "Emergency heavy rain warning", "33": "Emergency heavy snow warning", "35": "Emergency storm warning", "36": "Emergency snow storm warning", "37": "Emergency high wave warning", "38": "Emergency storm surge warning", "W": "Advisory or warning aggregate"}, "jma_label": {"03": "大雨", "04": "洪水", "05": "暴風", "06": "暴風雪", "07": "大雪", "08": "波浪", "10": "雷", "12": "強風", "13": "風雪", "14": "濃霧", "15": "乾燥", "16": "なだれ", "17": "着氷", "18": "着雪", "19": "融雪", "20": "高潮", "21": "低温", "22": "霜", "23": "着氷・着雪", "24": "大雨・洪水", "25": "大雨・強風", "32": "大雨特別警報", "33": "大雪特別警報", "35": "暴風特別警報", "36": "暴風雪特別警報", "37": "波浪特別警報", "38": "高潮特別警報", "W": "注意報・警報"}}` | pattern=`^(03\\|04\\|05\\|06\\|07\\|08\\|10\\|12\\|13\\|14\\|15\\|16\\|17\\|18\\|19\\|20\\|21\\|22\\|23\\|24\\|25\\|32\\|33\\|35\\|36\\|37\\|38\\|W)$` | - |
-| `code_description_jp` | `string` | `True` | Japanese hazard name corresponding to the JMA warning code, or 発表警報・注意報はなし for the upstream no-warning status item. | - | - | - |
-| `code_description_en` | `string` | `True` | English hazard name corresponding to the JMA warning code, or No warnings or advisories for the upstream no-warning status item. | - | - | - |
-| `status` | enum `['ISSUED', 'CONTINUED', 'CANCELLED', 'NO_WARNINGS_OR_ADVISORIES', 'WARNING', 'ADVISORY', 'EMERGENCY_WARNING']` | `True` | Normalized status or alert class for the JMA warning item. Values preserve the documented JMA status set using Python/Avro-safe symbols; lang:ja altenums carries the original JMA labels including 発表警報・注意報はなし. | altenums=`{"lang:en": {"ADVISORY": "Advisory", "CANCELLED": "Cancelled", "CONTINUED": "Continued", "EMERGENCY_WARNING": "Emergency Warning", "ISSUED": "Issued", "NO_WARNINGS_OR_ADVISORIES": "No warnings or advisories", "WARNING": "Warning"}, "lang:ja": {"ADVISORY": "注意報", "CANCELLED": "解除", "CONTINUED": "継続", "EMERGENCY_WARNING": "特別警報", "ISSUED": "発表", "NO_WARNINGS_OR_ADVISORIES": "発表警報・注意報はなし", "WARNING": "警報"}}` | - | - |
-| `severity` | enum `['NONE', 'ADVISORY', 'WARNING', 'EMERGENCY_WARNING']` | `True` | Normalized severity derived from the JMA status text and special-warning codes. NONE represents 発表警報・注意報はなし, ADVISORY represents 注意報-level notices, WARNING represents 警報/発表/継続 items, and EMERGENCY_WARNING represents 特別警報 or special-warning category codes 32-38. | - | - | - |
-
-### Schemagroup `JP.JMA.Tsunami.jstruct`
-<a id="schemagroup-jpjmatsunamijstruct"></a>
-
-#### Schema `JP.JMA.Tsunami.TsunamiAlert`
-<a id="schema-jpjmatsunamitsunamialert"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TsunamiAlert |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.jma.go.jp/schemas/bosai/warning/TsunamiAlert` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| Type | `object` |
-
-###### Object `TsunamiAlert`
-<a id="schema-node-tsunamialert"></a>
-
-Active JMA Bosai tsunami alert list entry enriched with detail bulletin data when available. The record is keyed by JMA event id and bulletin serial so issued, corrected, and cancelled alert revisions remain distinct stream events; VTSE51/VTSE52 observation station data is embedded as observations on the same alert revision for a cleaner generated top-level dataclass model.
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.jma.go.jp/schemas/bosai/warning/TsunamiAlert` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `event_id` | `string` | `True` | Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component. | altnames=`{"jma-bosai": "eid"}` | pattern=`^[0-9]{14}$` | - |
-| `serial` | `integer` | `True` | JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component. | altnames=`{"jma-bosai": "ser"}` | minimum=`0` | - |
-| `info_type` | enum `['ISSUED', 'CORRECTED', 'CANCELLED']` | `True` | Normalized information type derived from JMA ift text: ISSUED for 発表, CORRECTED for 訂正, and CANCELLED for 取消. | altnames=`{"jma-bosai": "ift"}`<br>altenums=`{"jma_label": {"CANCELLED": "取消", "CORRECTED": "訂正", "ISSUED": "発表"}}` | - | - |
-| `report_datetime` | `datetime` | `True` | JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC. | altnames=`{"jma-bosai": "rdt"}` | - | - |
-| `report_datetime_local` | `datetime` | `True` | Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset. | altnames=`{"jma-bosai": "rdt"}` | - | - |
-| `title_jp` | `string` | `True` | Japanese JMA tsunami bulletin title copied from list.json ttl. | - | - | - |
-| `title_en` | `string` | `True` | English tsunami title generated from the known JMA title class when no English list title is present. | - | - | - |
-| `bulletin_type` | `string` | `True` | JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52. | altnames=`{"jma-bosai": "json"}` | - | - |
-| `detail_url` | `uri` | `True` | Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json. | altnames=`{"jma-bosai": "json"}` | - | - |
-| `affected_coastal_regions` | array of [object `AffectedCoastalRegion`](#schema-node-affectedcoastalregion) | `True` | Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation. | - | - | - |
-| `observations` | array of [object `TsunamiObservation`](#schema-node-tsunamiobservation) | `True` | Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present. | - | - | - |
-
-###### Object `AffectedCoastalRegion`
-<a id="schema-node-affectedcoastalregion"></a>
-
-Coastal forecast region item parsed from a JMA tsunami detail bulletin when active tsunami information is available. It preserves region identity, per-region tsunami category, expected first-arrival time, and expected maximum wave height when those fields appear in VTSE detail JSON.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `code` | `string` | `True` | JMA tsunami coastal forecast region code from detail bulletin area entries. | - | pattern=`^[0-9]{3,7}$` | - |
-| `name` | `string` | `True` | Japanese coastal forecast region name from the tsunami detail bulletin. | - | - | - |
-| `category` | enum `['MAJOR_WARNING', 'WARNING', 'ADVISORY', 'FORECAST']` | `True` | Per-region tsunami forecast category from VTSE41 detail bulletins, normalized from JMA 大津波警報, 津波警報, 津波注意報, or 津波予報 text. | altenums=`{"lang:ja": {"ADVISORY": "津波注意報", "FORECAST": "津波予報", "MAJOR_WARNING": "大津波警報", "WARNING": "津波警報"}}` | - | - |
-| `expected_max_wave_height_m` | `union` | `True` | Expected maximum tsunami wave height in meters parsed from JMA detail values. Null is emitted when the bulletin describes the height textually or omits it. | unit=`meter` symbol=`m` | minimum=`0` | - |
-| `expected_arrival_datetime` | `union` | `True` | Expected first tsunami arrival time converted to RFC3339 UTC when available in the detail bulletin. | - | - | - |
-| `expected_arrival_datetime_local` | `union` | `True` | Original expected first tsunami arrival time from the JMA detail bulletin preserving its local offset when available. | - | - | - |
-
-###### Object `TsunamiObservation`
-<a id="schema-node-tsunamiobservation"></a>
-
-Observed tsunami station measurement parsed from JMA VTSE51/VTSE52 observed-wave bulletins and embedded in the alert revision that carries the same event id and serial. Keeping observations inside TsunamiAlert preserves one generated top-level dataclass and one {event_id}/{serial} Kafka identity for all tsunami bulletin revisions.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_code` | `union` | `True` | JMA observation station code from the observed tsunami bulletin when the station entry exposes a code; null is emitted for text-only station entries. | - | - | - |
-| `station_name_jp` | `string` | `True` | Japanese tsunami observation station name from the observed-wave bulletin. | - | - | - |
-| `station_name_en` | `union` | `True` | English observation station name when supplied by JMA or mapped by the bridge; null when the upstream bulletin only contains Japanese station text. | - | - | - |
-| `observed_max_wave_height_m` | `union` | `True` | Observed maximum tsunami wave height at the station in meters. Null is emitted for qualitative or not-yet-available observed-wave entries. | unit=`meter` symbol=`m` | minimum=`0` | - |
-| `observed_at` | `union` | `True` | Observed wave time converted to RFC3339 UTC when the station entry includes an observation time. | - | - | - |
-| `observed_at_local` | `union` | `True` | Original observed wave time preserving the local offset when available in the station entry. | - | - | - |
-| `arrival_status` | enum `['ESTIMATED', 'FIRST_WAVE_OBSERVED', 'MAX_WAVE_OBSERVED']` | `True` | Normalized observation lifecycle for station wave entries: ESTIMATED for expected or pending arrivals, FIRST_WAVE_OBSERVED when the first wave has arrived, and MAX_WAVE_OBSERVED when a maximum wave height is reported. | - | - | - |
+- xRegistry manifest: [`xreg/jma-bosai-warning.xreg.json`](xreg/jma-bosai-warning.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

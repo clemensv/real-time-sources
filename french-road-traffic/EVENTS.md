@@ -2,301 +2,176 @@
 
 Real-time traffic data from the French national non-conceded road network, published by [Bison Futé](https://www.bison-fute.gouv.fr/) via the [transport.data.gouv.fr](https://transport.data.gouv.fr/) open data portal.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
+- **Identity:** `{site_id}`, `{situation_id}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `french-road-traffic-flow`, `french-road-traffic-events`. The record key is `{site_id}`, `{situation_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['french-road-traffic-flow', 'french-road-traffic-events'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Traffic Flow Measurement
+
+CloudEvents type: `fr.gouv.transport.bison_fute.TrafficFlowMeasurement`
+
+#### What it tells you
+
+Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes. Each record corresponds to one siteMeasurements element in the Bison Futé MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_id}`. `{site_id}` is unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `french-road-traffic-flow`, key `{site_id}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `fr.gouv.transport.bison_fute.traffic_flow.Kafka`
+`Traffic Flow Measurement` payloads are JSON object. Required fields: `site_id`, `measurement_time`.
 
-| Field | Value |
+- **`site_id`** (string, required): Unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). Stable across publication snapshots.
+- **`measurement_time`** (string, required): ISO 8601 timestamp of the measurement, taken from the measurementTimeDefault element in the DATEX II siteMeasurements block. Represents the end of the aggregation interval.
+- **`vehicle_flow_rate`** (int32 or null, optional): Number of vehicles per hour passing the measurement site during the aggregation interval, from the DATEX II TrafficFlow/vehicleFlowRate element. Null when flow data is not available for this site in the current snapshot.
+- **`average_speed`** (double or null, optional): Average speed of vehicles in kilometres per hour at the measurement site during the aggregation interval, from the DATEX II TrafficSpeed/averageVehicleSpeed/speed element. Null when speed data is not available for this site in the current snapshot.
+- **`input_values_flow`** (int32 or null, optional): Number of individual vehicle observations used to compute the vehicle flow rate, from the numberOfInputValuesUsed attribute on the vehicleFlow element. Null when flow data is not present.
+- **`input_values_speed`** (int32 or null, optional): Number of individual vehicle observations used to compute the average speed, from the numberOfInputValuesUsed attribute on the averageVehicleSpeed element. Null when speed data is not present.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_id": "string",
+  "measurement_time": "string",
+  "vehicle_flow_rate": 0,
+  "average_speed": 0,
+  "input_values_flow": 0,
+  "input_values_speed": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Road Event
+
+CloudEvents type: `fr.gouv.transport.bison_fute.RoadEvent`
+
+#### What it tells you
+
+Real-time road situation record from the French national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a traffic incident, construction works, lane management, obstruction, or other event affecting road conditions.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`fr.gouv.transport.bison_fute.traffic_flow`](#messagegroup-frgouvtransportbisonfutetrafficflow) |
+| `KAFKA` | topic `french-road-traffic-events`, key `{situation_id}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `french-road-traffic-flow` |
-| Kafka key | `{site_id}` |
-| Deployed | False |
+`Road Event` payloads are JSON object. Required fields: `situation_id`, `record_id`, `version`, `record_type`, `creation_time`.
 
-### Endpoint `fr.gouv.transport.bison_fute.road_event.Kafka`
+- **`situation_id`** (string, required): Unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). Stable across version updates of the same situation.
+- **`record_id`** (string, required): Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records.
+- **`version`** (string, required): Version number of the parent situation, incremented each time the situation is updated by the publisher.
+- **`severity`** (string or null, optional): Overall severity of the parent situation as published in the overallSeverity element. Possible values include 'low', 'medium', 'high', 'highest'. Null when severity is not provided.
+- **`record_type`** (string, required): DATEX II xsi:type of the situation record, indicating the category of road event. Known values: Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, RoadsideServiceDisruption.
+- **`probability`** (string or null, optional): Probability of occurrence of the event from the probabilityOfOccurrence element. Possible values: 'certain', 'probable', 'riskOf'. Null when not specified.
+- **`latitude`** (double or null, optional): WGS84 latitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record.
+- **`longitude`** (double or null, optional): WGS84 longitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record.
+- **`road_number`** (string or null, optional): Road identifier (e.g. 'N20', 'A10', 'D906') from the linearElement/roadNumber or tpegOtherPointDescriptor linkName element. Null when no road number is available.
+- **`town_name`** (string or null, optional): Name of the nearest town from the tpegOtherPointDescriptor townName element. Null when no town name is provided.
+- **`direction`** (string or null, optional): Direction of traffic affected by the event from the tpegDirection element. Possible values: 'bothWays', 'positive', 'negative'. Null when direction is not specified.
+- **`description`** (string or null, optional): Human-readable description of the event from the generalPublicComment element with commentType 'description'. Null when no description comment is provided.
+- **`location_description`** (string or null, optional): Human-readable description of the event location from the generalPublicComment element with commentType 'locationDescriptor'. When multiple location descriptors exist, they are concatenated with ' | '. Null when no location comment is provided.
+- **`source_name`** (string or null, optional): Name of the organization or directorate that published this situation record, from the source/sourceIdentification element. Null when not specified.
+- **`validity_status`** (string or null, optional): Validity status of the situation record from the validity/validityStatus element (e.g. 'definedByValidityTimeSpec', 'active'). Null when not provided.
+- **`overall_start_time`** (string or null, optional): ISO 8601 start time of the event validity period from the overallStartTime element. Null when the validity period is not defined.
+- **`overall_end_time`** (string or null, optional): ISO 8601 end time of the event validity period from the overallEndTime element. Null when the event has no defined end time (open-ended).
+- **`creation_time`** (string, required): ISO 8601 timestamp when the situation record was first created, from the situationRecordCreationTime element.
+- **`observation_time`** (string or null, optional): ISO 8601 timestamp of the most recent observation of this situation, from the situationRecordObservationTime element. Null when not provided.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`fr.gouv.transport.bison_fute.road_event`](#messagegroup-frgouvtransportbisonfuteroadevent) |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### Transport options
+```json
+{
+  "situation_id": "string",
+  "record_id": "string",
+  "version": "string",
+  "severity": "string",
+  "record_type": "string",
+  "probability": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "road_number": "string",
+  "town_name": "string",
+  "direction": "string",
+  "description": "string",
+  "location_description": "string",
+  "source_name": "string",
+  "validity_status": "string",
+  "overall_start_time": "string",
+  "overall_end_time": "string",
+  "creation_time": "string",
+  "observation_time": "string"
+}
+```
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `french-road-traffic-events` |
-| Kafka key | `{situation_id}` |
-| Deployed | False |
+#### Reference vs telemetry
 
-## Messagegroups
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-### Messagegroup `fr.gouv.transport.bison_fute.traffic_flow`
-<a id="messagegroup-frgouvtransportbisonfutetrafficflow"></a>
+## Conventions
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `fr.gouv.transport.bison_fute.traffic_flow.Kafka` (KAFKA) |
-| Messages | 1 |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-#### Message `fr.gouv.transport.bison_fute.TrafficFlowMeasurement`
-<a id="message-frgouvtransportbisonfutetrafficflowmeasurement"></a>
+Transport bindings carry CloudEvents metadata differently:
 
-Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes.
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficFlowMeasurement |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.TrafficFlowMeasurement`](#schema-frgouvtransportbisonfutetrafficflowmeasurement) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `fr.gouv.transport.bison_fute.TrafficFlowMeasurement` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `{site_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `fr.gouv.transport.bison_fute.traffic_flow.Kafka` | `KAFKA` | topic `french-road-traffic-flow`; key `{site_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-### Messagegroup `fr.gouv.transport.bison_fute.road_event`
-<a id="messagegroup-frgouvtransportbisonfuteroadevent"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `fr.gouv.transport.bison_fute.road_event.Kafka` (KAFKA) |
-| Messages | 1 |
+## Operational notes
 
-#### Message `fr.gouv.transport.bison_fute.RoadEvent`
-<a id="message-frgouvtransportbisonfuteroadevent"></a>
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
-Real-time road situation record from the French national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a traffic incident, construction works, lane management, obstruction, or other event affecting road conditions. Record types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, AbnormalTraffic, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and RoadsideServiceDisruption.
+## References
 
-| Field | Value |
-| --- | --- |
-| Name | RoadEvent |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.RoadEvent`](#schema-frgouvtransportbisonfuteroadevent) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `fr.gouv.transport.bison_fute.RoadEvent` |
-| `source` |  | `uritemplate` | `False` | `{feedurl}` |
-| `subject` |  | `uritemplate` | `False` | `{situation_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `fr.gouv.transport.bison_fute.road_event.Kafka` | `KAFKA` | topic `french-road-traffic-events`; key `{situation_id}` |
-
-## Schemagroups
-
-### Schemagroup `fr.gouv.transport.bison_fute.jstruct`
-<a id="schemagroup-frgouvtransportbisonfutejstruct"></a>
-
-#### Schema `fr.gouv.transport.bison_fute.TrafficFlowMeasurement`
-<a id="schema-frgouvtransportbisonfutetrafficflowmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficFlowMeasurement |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/fr/gouv/transport/bison_fute/TrafficFlowMeasurement` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/fr/gouv/transport/bison_fute/TrafficFlowMeasurement` |
-| Type | `object` |
-
-###### Object `TrafficFlowMeasurement`
-<a id="schema-node-trafficflowmeasurement"></a>
-
-Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Each record corresponds to one siteMeasurements element in the Bison Futé MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `site_id` | `string` | `True` | Unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). Stable across publication snapshots. | - | - | - |
-| `measurement_time` | `string` | `True` | ISO 8601 timestamp of the measurement, taken from the measurementTimeDefault element in the DATEX II siteMeasurements block. Represents the end of the aggregation interval. | - | - | - |
-| `vehicle_flow_rate` | `union` | `False` | Number of vehicles per hour passing the measurement site during the aggregation interval, from the DATEX II TrafficFlow/vehicleFlowRate element. Null when flow data is not available for this site in the current snapshot. | - | - | - |
-| `average_speed` | `union` | `False` | Average speed of vehicles in kilometres per hour at the measurement site during the aggregation interval, from the DATEX II TrafficSpeed/averageVehicleSpeed/speed element. Null when speed data is not available for this site in the current snapshot. | - | - | - |
-| `input_values_flow` | `union` | `False` | Number of individual vehicle observations used to compute the vehicle flow rate, from the numberOfInputValuesUsed attribute on the vehicleFlow element. Null when flow data is not present. | - | - | - |
-| `input_values_speed` | `union` | `False` | Number of individual vehicle observations used to compute the average speed, from the numberOfInputValuesUsed attribute on the averageVehicleSpeed element. Null when speed data is not present. | - | - | - |
-
-#### Schema `fr.gouv.transport.bison_fute.RoadEvent`
-<a id="schema-frgouvtransportbisonfuteroadevent"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | RoadEvent |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/fr/gouv/transport/bison_fute/RoadEvent` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/fr/gouv/transport/bison_fute/RoadEvent` |
-| Type | `object` |
-
-###### Object `RoadEvent`
-<a id="schema-node-roadevent"></a>
-
-Real-time road situation record from the French national non-conceded road network DATEX II SituationPublication feed. Each record represents one situationRecord element within a situation, describing a traffic incident, construction works, lane management, environmental obstruction, or other event affecting road conditions. Location is provided as WGS84 coordinates and road identifiers.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `situation_id` | `string` | `True` | Unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). Stable across version updates of the same situation. | - | - | - |
-| `record_id` | `string` | `True` | Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records. | - | - | - |
-| `version` | `string` | `True` | Version number of the parent situation, incremented each time the situation is updated by the publisher. | - | - | - |
-| `severity` | `union` | `False` | Overall severity of the parent situation as published in the overallSeverity element. Possible values include 'low', 'medium', 'high', 'highest'. Null when severity is not provided. | - | - | - |
-| `record_type` | `string` | `True` | DATEX II xsi:type of the situation record, indicating the category of road event. Known values: Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, RoadsideServiceDisruption. | - | - | - |
-| `probability` | `union` | `False` | Probability of occurrence of the event from the probabilityOfOccurrence element. Possible values: 'certain', 'probable', 'riskOf'. Null when not specified. | - | - | - |
-| `latitude` | `union` | `False` | WGS84 latitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record. | - | - | - |
-| `longitude` | `union` | `False` | WGS84 longitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record. | - | - | - |
-| `road_number` | `union` | `False` | Road identifier (e.g. 'N20', 'A10', 'D906') from the linearElement/roadNumber or tpegOtherPointDescriptor linkName element. Null when no road number is available. | - | - | - |
-| `town_name` | `union` | `False` | Name of the nearest town from the tpegOtherPointDescriptor townName element. Null when no town name is provided. | - | - | - |
-| `direction` | `union` | `False` | Direction of traffic affected by the event from the tpegDirection element. Possible values: 'bothWays', 'positive', 'negative'. Null when direction is not specified. | - | - | - |
-| `description` | `union` | `False` | Human-readable description of the event from the generalPublicComment element with commentType 'description'. Null when no description comment is provided. | - | - | - |
-| `location_description` | `union` | `False` | Human-readable description of the event location from the generalPublicComment element with commentType 'locationDescriptor'. When multiple location descriptors exist, they are concatenated with ' \\| '. Null when no location comment is provided. | - | - | - |
-| `source_name` | `union` | `False` | Name of the organization or directorate that published this situation record, from the source/sourceIdentification element. Null when not specified. | - | - | - |
-| `validity_status` | `union` | `False` | Validity status of the situation record from the validity/validityStatus element (e.g. 'definedByValidityTimeSpec', 'active'). Null when not provided. | - | - | - |
-| `overall_start_time` | `union` | `False` | ISO 8601 start time of the event validity period from the overallStartTime element. Null when the validity period is not defined. | - | - | - |
-| `overall_end_time` | `union` | `False` | ISO 8601 end time of the event validity period from the overallEndTime element. Null when the event has no defined end time (open-ended). | - | - | - |
-| `creation_time` | `string` | `True` | ISO 8601 timestamp when the situation record was first created, from the situationRecordCreationTime element. | - | - | - |
-| `observation_time` | `union` | `False` | ISO 8601 timestamp of the most recent observation of this situation, from the situationRecordObservationTime element. Null when not provided. | - | - | - |
-
-### Schemagroup `fr.gouv.transport.bison_fute.avro`
-<a id="schemagroup-frgouvtransportbisonfuteavro"></a>
-
-#### Schema `fr.gouv.transport.bison_fute.TrafficFlowMeasurement`
-<a id="schema-frgouvtransportbisonfutetrafficflowmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficFlowMeasurement |
-| Namespace | fr.gouv.transport.bison_fute |
-| Type | `record` |
-| Doc | Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `site_id` | `string` | Unique identifier of the DATEX II measurement site record. | `-` |
-| `measurement_time` | `string` | ISO 8601 timestamp of the measurement. | `-` |
-| `vehicle_flow_rate` | `null` \| `int` | Number of vehicles per hour passing the measurement site. | `-` |
-| `average_speed` | `null` \| `double` | Average speed of vehicles in km/h at the measurement site. | `-` |
-| `input_values_flow` | `null` \| `int` | Number of vehicle observations used to compute the flow rate. | `-` |
-| `input_values_speed` | `null` \| `int` | Number of vehicle observations used to compute the average speed. | `-` |
-
-#### Schema `fr.gouv.transport.bison_fute.RoadEvent`
-<a id="schema-frgouvtransportbisonfuteroadevent"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | RoadEvent |
-| Namespace | fr.gouv.transport.bison_fute |
-| Type | `record` |
-| Doc | Real-time road situation record from the French national non-conceded road network. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `situation_id` | `string` | Unique identifier of the parent DATEX II situation. | `-` |
-| `record_id` | `string` | Unique identifier of this situation record within the parent situation. | `-` |
-| `version` | `string` | Version number of the parent situation. | `-` |
-| `severity` | `null` \| `string` | Overall severity of the parent situation. | `-` |
-| `record_type` | `string` | DATEX II xsi:type of the situation record. | `-` |
-| `probability` | `null` \| `string` | Probability of occurrence of the event. | `-` |
-| `latitude` | `null` \| `double` | WGS84 latitude of the event location. | `-` |
-| `longitude` | `null` \| `double` | WGS84 longitude of the event location. | `-` |
-| `road_number` | `null` \| `string` | Road identifier (e.g. N20, A10). | `-` |
-| `town_name` | `null` \| `string` | Name of the nearest town. | `-` |
-| `direction` | `null` \| `string` | Direction of traffic affected. | `-` |
-| `description` | `null` \| `string` | Human-readable description of the event. | `-` |
-| `location_description` | `null` \| `string` | Human-readable description of the event location. | `-` |
-| `source_name` | `null` \| `string` | Name of the publishing organization. | `-` |
-| `validity_status` | `null` \| `string` | Validity status of the situation record. | `-` |
-| `overall_start_time` | `null` \| `string` | ISO 8601 start time of the event validity period. | `-` |
-| `overall_end_time` | `null` \| `string` | ISO 8601 end time of the event validity period. | `-` |
-| `creation_time` | `string` | ISO 8601 timestamp when the situation record was first created. | `-` |
-| `observation_time` | `null` \| `string` | ISO 8601 timestamp of the most recent observation. | `-` |
+- xRegistry manifest: [`xreg/french_road_traffic.xreg.json`](xreg/french_road_traffic.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

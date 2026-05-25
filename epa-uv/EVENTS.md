@@ -2,286 +2,172 @@
 
 MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-1 UV forecast leaves under uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/..., where {state} is lowercase US state, {city_slug} is lowercase kebab-case city, and {location_id} preserves the existing Kafka/CloudEvents entity id intentionally for subject/key compatibility even though it is derivable from state+city. Hourly slots use topic-safe {forecast_hour}=YYYYMMDDTHH; daily slots use {forecast_date}=YYYY-MM-DD. Message expiry bounds retained forecast slots so stale forecasts age out.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types (4 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
+- **Identity:** `{location_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 1 |
+### Kafka
 
-## Endpoints
+Subscribe to `epa-uv`. The record key is `{location_id}`. In plain language, `{location_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `US.EPA.UVIndex.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['epa-uv'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`US.EPA.UVIndex`](#messagegroup-usepauvindex) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
 
-#### Transport options
+Connect to `mqtt://localhost:1883` and subscribe to `uv/us/epa/epa-uv/+/+/+/hourly/+`, `uv/us/epa/epa-uv/+/+/+/daily/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `epa-uv` |
-| Kafka key | `{location_id}` |
-| Deployed | False |
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('uv/us/epa/epa-uv/+/+/+/hourly/+', 1))
+c.loop_forever()
+```
 
-### Endpoint `US.EPA.UVIndex.Mqtt`
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`US.EPA.UVIndex.mqtt`](#messagegroup-usepauvindexmqtt) |
+## Event catalog
 
-#### Transport options
+### Hourly Forecast
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+CloudEvents type: `US.EPA.UVIndex.HourlyForecast`
 
-## Messagegroups
-
-### Messagegroup `US.EPA.UVIndex`
-<a id="messagegroup-usepauvindex"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `US.EPA.UVIndex.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `US.EPA.UVIndex.HourlyForecast`
-<a id="message-usepauvindexhourlyforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | HourlyForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast`](#schema-usepauvindexhourlyforecast) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.EPA.UVIndex.HourlyForecast` |
-| `source` |  | `string` | `False` | `https://www.epa.gov/enviro/web-services` |
-| `subject` |  | `uritemplate` | `False` | `{location_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.EPA.UVIndex.Kafka` | `KAFKA` | topic `epa-uv`; key `{location_id}` |
-
-#### Message `US.EPA.UVIndex.DailyForecast`
-<a id="message-usepauvindexdailyforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DailyForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast`](#schema-usepauvindexdailyforecast) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.EPA.UVIndex.DailyForecast` |
-| `source` |  | `string` | `False` | `https://www.epa.gov/enviro/web-services` |
-| `subject` |  | `uritemplate` | `False` | `{location_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.EPA.UVIndex.Kafka` | `KAFKA` | topic `epa-uv`; key `{location_id}` |
-
-### Messagegroup `US.EPA.UVIndex.mqtt`
-<a id="messagegroup-usepauvindexmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-1 UV forecast leaves under uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/..., where {state} is lowercase US state, {city_slug} is lowercase kebab-case city, and {location_id} preserves the existing Kafka/CloudEvents entity id intentionally for subject/key compatibility even though it is derivable from state+city. Hourly slots use topic-safe {forecast_hour}=YYYYMMDDTHH; daily slots use {forecast_date}=YYYY-MM-DD. Message expiry bounds retained forecast slots so stale forecasts age out. |
-| Transport bindings | `US.EPA.UVIndex.Mqtt` (MQTT/5.0) |
-| Messages | 2 |
-
-#### Message `US.EPA.UVIndex.mqtt.HourlyForecast`
-<a id="message-usepauvindexmqtthourlyforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | HourlyForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast`](#schema-usepauvindexhourlyforecast) |
-| Base message chain | `/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.EPA.UVIndex.HourlyForecast` |
-| `source` |  | `string` | `False` | `https://www.epa.gov/enviro/web-services` |
-| `subject` |  | `uritemplate` | `False` | `{location_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.EPA.UVIndex.Mqtt` | `MQTT/5.0` | topic `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}` |
-| QoS | 1 |
-| Retain | True |
-| Additional protocol metadata | `{"message_expiry_interval": 172800}` |
-
-#### Message `US.EPA.UVIndex.mqtt.DailyForecast`
-<a id="message-usepauvindexmqttdailyforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DailyForecast |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast`](#schema-usepauvindexdailyforecast) |
-| Base message chain | `/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `US.EPA.UVIndex.DailyForecast` |
-| `source` |  | `string` | `False` | `https://www.epa.gov/enviro/web-services` |
-| `subject` |  | `uritemplate` | `False` | `{location_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `US.EPA.UVIndex.Mqtt` | `MQTT/5.0` | topic `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}` |
-| QoS | 1 |
-| Retain | True |
-| Additional protocol metadata | `{"message_expiry_interval": 1209600}` |
-
-## Schemagroups
-
-### Schemagroup `US.EPA.UVIndex.jstruct`
-<a id="schemagroup-usepauvindexjstruct"></a>
-
-#### Schema `US.EPA.UVIndex.HourlyForecast`
-<a id="schema-usepauvindexhourlyforecast"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | HourlyForecast |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.HourlyForecast.json` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `HourlyForecast`
-<a id="schema-node-hourlyforecast"></a>
+#### What it tells you
 
 Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{location_id}`. `{location_id}` is stable slug derived from the configured city and state. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.HourlyForecast.json` |
+| `KAFKA` | topic `epa-uv`, key `{location_id}` |
+| `MQTT/5.0` | topic `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}`, retain `true`, QoS `1` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `location_id` | `string` | `True` | Stable slug derived from the configured city and state. | - | - | - |
-| `city` | `string` | `True` | City for which the hourly UV forecast was requested. | - | - | - |
-| `state` | `string` | `True` | Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge. | - | - | - |
-| `forecast_datetime` | `string` | `True` | Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset. Used as the retained MQTT hourly slot with message expiry. | - | - | - |
-| `uv_index` | `integer` | `True` | Hourly UV Index forecast value. | - | - | - |
-| `city_slug` | `string` | `True` | Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix. | - | - | - |
-| `forecast_hour` | `string` | `True` | Topic-safe retained forecast slot in YYYYMMDDTHH form, derived from forecast_datetime with zero padding and no offset, colon, slash, plus, or hash characters. | - | - | - |
+#### Payload
 
-#### Schema `US.EPA.UVIndex.DailyForecast`
-<a id="schema-usepauvindexdailyforecast"></a>
+`Hourly Forecast` payloads are JSON object. Required fields: `location_id`, `city`, `state`, `forecast_datetime`, `uv_index`, `city_slug`, `forecast_hour`.
 
-| Field | Value |
-| --- | --- |
-| Name | DailyForecast |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`location_id`** (string, required): Stable slug derived from the configured city and state.
+- **`city`** (string, required): City for which the hourly UV forecast was requested.
+- **`state`** (string, required): Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge.
+- **`forecast_datetime`** (string, required): Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset. Used as the retained MQTT hourly slot with message expiry.
+- **`uv_index`** (integer, required): Hourly UV Index forecast value.
+- **`city_slug`** (string, required): Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix.
+- **`forecast_hour`** (string, required): Topic-safe retained forecast slot in YYYYMMDDTHH form, derived from forecast_datetime with zero padding and no offset, colon, slash, plus, or hash characters.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "location_id": "string",
+  "city": "string",
+  "state": "string",
+  "forecast_datetime": "string",
+  "uv_index": 0,
+  "city_slug": "string",
+  "forecast_hour": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.DailyForecast.json` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `DailyForecast`
-<a id="schema-node-dailyforecast"></a>
+### Daily Forecast
+
+CloudEvents type: `US.EPA.UVIndex.DailyForecast`
+
+#### What it tells you
 
 Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.DailyForecast.json` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `location_id` | `string` | `True` | Stable slug derived from the configured city and state. | - | - | - |
-| `city` | `string` | `True` | City for which the daily UV forecast was requested. | - | - | - |
-| `state` | `string` | `True` | Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge. | - | - | - |
-| `forecast_date` | `string` | `True` | Topic-safe forecast date normalized to YYYY-MM-DD. Used as the retained MQTT daily slot with message expiry. | - | - | - |
-| `uv_index` | `integer` | `True` | Daily UV Index forecast value. | - | - | - |
-| `uv_alert` | `string` | `True` | Character flag indicating whether a UV alert is issued for the forecast day. | - | - | - |
-| `city_slug` | `string` | `True` | Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix. | - | - | - |
+Each event identifies the real-world resource with `{location_id}`. `{location_id}` is stable slug derived from the configured city and state. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `epa-uv`, key `{location_id}` |
+| `MQTT/5.0` | topic `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Daily Forecast` payloads are JSON object. Required fields: `location_id`, `city`, `state`, `forecast_date`, `uv_index`, `uv_alert`, `city_slug`.
+
+- **`location_id`** (string, required): Stable slug derived from the configured city and state.
+- **`city`** (string, required): City for which the daily UV forecast was requested.
+- **`state`** (string, required): Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge.
+- **`forecast_date`** (string, required): Topic-safe forecast date normalized to YYYY-MM-DD. Used as the retained MQTT daily slot with message expiry.
+- **`uv_index`** (integer, required): Daily UV Index forecast value.
+- **`uv_alert`** (string, required): Character flag indicating whether a UV alert is issued for the forecast day.
+- **`city_slug`** (string, required): Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "location_id": "string",
+  "city": "string",
+  "state": "string",
+  "forecast_date": "string",
+  "uv_index": 0,
+  "uv_alert": "string",
+  "city_slug": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+
+## References
+
+- xRegistry manifest: [`xreg/epa_uv.xreg.json`](xreg/epa_uv.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

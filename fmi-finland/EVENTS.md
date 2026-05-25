@@ -2,259 +2,157 @@
 
 This bridge polls the Finnish Meteorological Institute (FMI) open OGC WFS service for hourly air quality observations and republishes them as structured CloudEvents to Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{fmisid}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `fmi-finland-airquality`. The record key is `{fmisid}`. In plain language, `{fmisid}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['fmi-finland-airquality'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `fi.fmi.opendata.airquality.Station`
+
+#### What it tells you
+
+Reference data for a Finnish Meteorological Institute air quality monitoring station. Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid).
+
+#### Identity
+
+Each event identifies the real-world resource with `{fmisid}`. `{fmisid}` is stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `fmi-finland-airquality`, key `{fmisid}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `fi.fmi.opendata.airquality.Kafka`
+`Station` payloads are JSON object. Required fields: `fmisid`, `station_name`, `latitude`, `longitude`, `municipality`.
 
-| Field | Value |
+- **`fmisid`** (string, required): Stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject. Constraints: pattern `^[0-9]+$`.
+- **`station_name`** (string, required): Air quality station name from the FMI station metadata, for example 'Helsinki Kallio 2'.
+- **`latitude`** (double, required, degree (°)): WGS84 latitude of the station representative point in decimal degrees.
+- **`longitude`** (double, required, degree (°)): WGS84 longitude of the station representative point in decimal degrees.
+- **`municipality`** (string or null, required): Municipality or region name from the station metadata if FMI publishes it. Null when it is not available in the station record.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "fmisid": "string",
+  "station_name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "municipality": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Observation
+
+CloudEvents type: `fi.fmi.opendata.airquality.Observation`
+
+#### What it tells you
+
+Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results. Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.
+
+#### Identity
+
+Each event identifies the real-world resource with `{fmisid}`. `{fmisid}` is stable FMI station identifier (fmisid) for the observing station. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`fi.fmi.opendata.airquality`](#messagegroup-fifmiopendataairquality) |
+| `KAFKA` | topic `fmi-finland-airquality`, key `{fmisid}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `fmi-finland-airquality` |
-| Kafka key | `{fmisid}` |
-| Deployed | False |
+`Observation` payloads are JSON object. Required fields: `fmisid`, `station_name`, `observation_time`, `aqindex`, `pm10_ug_m3`, `pm2_5_ug_m3`, `no2_ug_m3`, `o3_ug_m3`, `so2_ug_m3`, `co_mg_m3`.
 
-## Messagegroups
+- **`fmisid`** (string, required): Stable FMI station identifier (fmisid) for the observing station. Constraints: pattern `^[0-9]+$`.
+- **`station_name`** (string, required): Station name resolved from station metadata or, if metadata lookup fails, the station identifier string.
+- **`observation_time`** (string, required): Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z. Constraints: pattern `^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$`.
+- **`aqindex`** (double or null, required): Finnish Air Quality Index 1-hour average from the AQINDEX_PT1H_avg parameter. Null when FMI reports the parameter as missing or not available.
+- **`pm10_ug_m3`** (double or null, required, µg/m³): PM10 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM10_PT1H_avg parameter. Null when the value is missing.
+- **`pm2_5_ug_m3`** (double or null, required, µg/m³): PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM25_PT1H_avg parameter. Null when the value is missing.
+- **`no2_ug_m3`** (double or null, required, µg/m³): Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter from the NO2_PT1H_avg parameter. Null when the value is missing.
+- **`o3_ug_m3`** (double or null, required, µg/m³): Ozone concentration 1-hour average in micrograms per cubic meter from the O3_PT1H_avg parameter. Null when the value is missing.
+- **`so2_ug_m3`** (double or null, required, µg/m³): Sulfur dioxide concentration 1-hour average in micrograms per cubic meter from the SO2_PT1H_avg parameter. Null when the value is missing.
+- **`co_mg_m3`** (double or null, required, mg/m³): Carbon monoxide concentration 1-hour average in milligrams per cubic meter from the CO_PT1H_avg parameter. Null when the value is missing.
+#### Example payload
 
-### Messagegroup `fi.fmi.opendata.airquality`
-<a id="messagegroup-fifmiopendataairquality"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `fi.fmi.opendata.airquality.Kafka` (KAFKA) |
-| Messages | 2 |
+```json
+{
+  "fmisid": "string",
+  "station_name": "string",
+  "observation_time": "string",
+  "aqindex": 0,
+  "pm10_ug_m3": 0,
+  "pm2_5_ug_m3": 0,
+  "no2_ug_m3": 0,
+  "o3_ug_m3": 0,
+  "so2_ug_m3": 0,
+  "co_mg_m3": 0
+}
+```
 
-#### Message `fi.fmi.opendata.airquality.Station`
-<a id="message-fifmiopendataairqualitystation"></a>
+#### Reference vs telemetry
 
-Reference data for a Finnish Meteorological Institute air quality monitoring station.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/fi.fmi.opendata.airquality.jstruct/schemas/fi.fmi.opendata.airquality.Station`](#schema-fifmiopendataairqualitystation) |
-| Event role | Reference/status data |
+## Conventions
 
-##### CloudEvents metadata
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `fi.fmi.opendata.airquality.Station` |
-| `source` |  | `uritemplate` | `False` | `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::ef::stations` |
-| `subject` |  | `uritemplate` | `False` | `{fmisid}` |
+Transport bindings carry CloudEvents metadata differently:
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `fi.fmi.opendata.airquality.Kafka` | `KAFKA` | topic `fmi-finland-airquality`; key `{fmisid}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `fi.fmi.opendata.airquality.Observation`
-<a id="message-fifmiopendataairqualityobservation"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results.
+## Operational notes
 
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/fi.fmi.opendata.airquality.jstruct/schemas/fi.fmi.opendata.airquality.Observation`](#schema-fifmiopendataairqualityobservation) |
-| Event role | Reference/status data |
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
-##### CloudEvents metadata
+## References
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `fi.fmi.opendata.airquality.Observation` |
-| `source` |  | `uritemplate` | `False` | `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=urban::observations::airquality::hourly::simple` |
-| `subject` |  | `uritemplate` | `False` | `{fmisid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `fi.fmi.opendata.airquality.Kafka` | `KAFKA` | topic `fmi-finland-airquality`; key `{fmisid}` |
-
-## Schemagroups
-
-### Schemagroup `fi.fmi.opendata.airquality.jstruct`
-<a id="schemagroup-fifmiopendataairqualityjstruct"></a>
-
-#### Schema `fi.fmi.opendata.airquality.Station`
-<a id="schema-fifmiopendataairqualitystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://opendata.fmi.fi/schemas/fi/fmi/opendata/airquality/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| $root | `#/definitions/fi/fmi/opendata/airquality/Station` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid). Municipality is taken from the WFS station metadata region name, and coordinates are the representative point published by FMI.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fmisid` | `string` | `True` | Stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject. | - | pattern=`^[0-9]+$` | - |
-| `station_name` | `string` | `True` | Air quality station name from the FMI station metadata, for example 'Helsinki Kallio 2'. | - | - | - |
-| `latitude` | `double` | `True` | WGS84 latitude of the station representative point in decimal degrees. | unit=`degree` symbol=`°` | - | - |
-| `longitude` | `double` | `True` | WGS84 longitude of the station representative point in decimal degrees. | unit=`degree` symbol=`°` | - | - |
-| `municipality` | `union` | `True` | Municipality or region name from the station metadata if FMI publishes it. Null when it is not available in the station record. | - | - | - |
-
-#### Schema `fi.fmi.opendata.airquality.Observation`
-<a id="schema-fifmiopendataairqualityobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://opendata.fmi.fi/schemas/fi/fmi/opendata/airquality/Observation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| $root | `#/definitions/fi/fmi/opendata/airquality/Observation` |
-| Type | `object` |
-
-###### Object `Observation`
-<a id="schema-node-observation"></a>
-
-Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fmisid` | `string` | `True` | Stable FMI station identifier (fmisid) for the observing station. | - | pattern=`^[0-9]+$` | - |
-| `station_name` | `string` | `True` | Station name resolved from station metadata or, if metadata lookup fails, the station identifier string. | - | - | - |
-| `observation_time` | `string` | `True` | Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z. | - | pattern=`^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$` | - |
-| `aqindex` | `union` | `True` | Finnish Air Quality Index 1-hour average from the AQINDEX_PT1H_avg parameter. Null when FMI reports the parameter as missing or not available. | altnames=`{"json": "AQINDEX_PT1H_avg"}` | - | - |
-| `pm10_ug_m3` | `union` | `True` | PM10 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM10_PT1H_avg parameter. Null when the value is missing. | unit=`µg/m³`<br>altnames=`{"json": "PM10_PT1H_avg"}` | - | - |
-| `pm2_5_ug_m3` | `union` | `True` | PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter from the PM25_PT1H_avg parameter. Null when the value is missing. | unit=`µg/m³`<br>altnames=`{"json": "PM25_PT1H_avg"}` | - | - |
-| `no2_ug_m3` | `union` | `True` | Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter from the NO2_PT1H_avg parameter. Null when the value is missing. | unit=`µg/m³`<br>altnames=`{"json": "NO2_PT1H_avg"}` | - | - |
-| `o3_ug_m3` | `union` | `True` | Ozone concentration 1-hour average in micrograms per cubic meter from the O3_PT1H_avg parameter. Null when the value is missing. | unit=`µg/m³`<br>altnames=`{"json": "O3_PT1H_avg"}` | - | - |
-| `so2_ug_m3` | `union` | `True` | Sulfur dioxide concentration 1-hour average in micrograms per cubic meter from the SO2_PT1H_avg parameter. Null when the value is missing. | unit=`µg/m³`<br>altnames=`{"json": "SO2_PT1H_avg"}` | - | - |
-| `co_mg_m3` | `union` | `True` | Carbon monoxide concentration 1-hour average in milligrams per cubic meter from the CO_PT1H_avg parameter. Null when the value is missing. | unit=`mg/m³`<br>altnames=`{"json": "CO_PT1H_avg"}` | - | - |
-
-### Schemagroup `fi.fmi.opendata.airquality.avro`
-<a id="schemagroup-fifmiopendataairqualityavro"></a>
-
-#### Schema `fi.fmi.opendata.airquality.Station`
-<a id="schema-fifmiopendataairqualitystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | fi.fmi.opendata.airquality |
-| Type | `record` |
-| Doc | Reference data for an FMI air quality monitoring station. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fmisid` | `string` | Stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject. | `-` |
-| `station_name` | `string` | Air quality station name from the FMI station metadata. | `-` |
-| `latitude` | `double` | WGS84 latitude of the station representative point in decimal degrees. | `-` |
-| `longitude` | `double` | WGS84 longitude of the station representative point in decimal degrees. | `-` |
-| `municipality` | `null` \| `string` | Municipality or region name from the station metadata if available. | `-` |
-
-#### Schema `fi.fmi.opendata.airquality.Observation`
-<a id="schema-fifmiopendataairqualityobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Observation |
-| Namespace | fi.fmi.opendata.airquality |
-| Type | `record` |
-| Doc | Hourly FMI air quality observation aggregated per station and timestamp. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fmisid` | `string` | Stable FMI station identifier (fmisid) for the observing station. | `-` |
-| `station_name` | `string` | Station name resolved from station metadata or, if metadata lookup fails, the station identifier string. | `-` |
-| `observation_time` | `string` | Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z. | `-` |
-| `aqindex` | `null` \| `double` | Finnish Air Quality Index 1-hour average. | `-` |
-| `pm10_ug_m3` | `null` \| `double` | PM10 particulate matter concentration 1-hour average in micrograms per cubic meter. | `-` |
-| `pm2_5_ug_m3` | `null` \| `double` | PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter. | `-` |
-| `no2_ug_m3` | `null` \| `double` | Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter. | `-` |
-| `o3_ug_m3` | `null` \| `double` | Ozone concentration 1-hour average in micrograms per cubic meter. | `-` |
-| `so2_ug_m3` | `null` \| `double` | Sulfur dioxide concentration 1-hour average in micrograms per cubic meter. | `-` |
-| `co_mg_m3` | `null` \| `double` | Carbon monoxide concentration 1-hour average in milligrams per cubic meter. | `-` |
+- xRegistry manifest: [`xreg/fmi-finland.xreg.json`](xreg/fmi-finland.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

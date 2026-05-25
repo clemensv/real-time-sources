@@ -2,196 +2,173 @@
 
 This bridge fetches real-time automatic weather station observations from the [Royal Meteorological Institute of Belgium (KMI/RMI)](https://opendata.meteo.be/) and emits them as CloudEvents into Apache Kafka or Azure Event Hubs.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_code}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 1 |
+### Kafka
 
-## Endpoints
+Subscribe to `kmi-belgium`. The record key is `{station_code}`. In plain language, `{station_code}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `BE.Gov.KMI.Weather.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['kmi-belgium'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`BE.Gov.KMI.Weather`](#messagegroup-begovkmiweather) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `kmi-belgium` |
-| Kafka key | `{station_code}` |
-| Deployed | False |
+### Station
 
-## Messagegroups
+CloudEvents type: `BE.Gov.KMI.Weather.Station`
 
-### Messagegroup `BE.Gov.KMI.Weather`
-<a id="messagegroup-begovkmiweather"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `BE.Gov.KMI.Weather.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `BE.Gov.KMI.Weather.Station`
-<a id="message-begovkmiweatherstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.Station`](#schema-begovkmiweatherstation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `BE.Gov.KMI.Weather.Station` |
-| `source` |  | `string` | `False` | `https://opendata.meteo.be` |
-| `subject` |  | `uritemplate` | `False` | `{station_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BE.Gov.KMI.Weather.Kafka` | `KAFKA` | topic `kmi-belgium`; key `{station_code}` |
-
-#### Message `BE.Gov.KMI.Weather.WeatherObservation`
-<a id="message-begovkmiweatherweatherobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.WeatherObservation`](#schema-begovkmiweatherweatherobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `BE.Gov.KMI.Weather.WeatherObservation` |
-| `source` |  | `string` | `False` | `https://opendata.meteo.be` |
-| `subject` |  | `uritemplate` | `False` | `{station_code}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BE.Gov.KMI.Weather.Kafka` | `KAFKA` | topic `kmi-belgium`; key `{station_code}` |
-
-## Schemagroups
-
-### Schemagroup `BE.Gov.KMI.Weather.jstruct`
-<a id="schemagroup-begovkmiweatherjstruct"></a>
-
-#### Schema `BE.Gov.KMI.Weather.Station`
-<a id="schema-begovkmiweatherstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
+#### What it tells you
 
 Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_code}`. `{station_code}` is KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/Station` |
+| `KAFKA` | topic `kmi-belgium`, key `{station_code}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_code` | `string` | `True` | KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network. | - | - | - |
-| `latitude` | `double` | `True` | Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array. | unit=`degree` symbol=`°` | - | - |
-| `longitude` | `double` | `True` | Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array. | unit=`degree` symbol=`°` | - | - |
+#### Payload
 
-#### Schema `BE.Gov.KMI.Weather.WeatherObservation`
-<a id="schema-begovkmiweatherweatherobservation"></a>
+`Station` payloads are JSON object. Required fields: `station_code`, `latitude`, `longitude`.
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_code`** (string, required): KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network.
+- **`latitude`** (double, required, degree (°)): Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.
+- **`longitude`** (double, required, degree (°)): Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_code": "string",
+  "latitude": 0,
+  "longitude": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/WeatherObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
 
-###### Object `WeatherObservation`
-<a id="schema-node-weatherobservation"></a>
+### Weather Observation
+
+CloudEvents type: `BE.Gov.KMI.Weather.WeatherObservation`
+
+#### What it tells you
 
 Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/WeatherObservation` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_code` | `string` | `True` | KMI/RMI automatic weather station code from the `code` property of the reporting observation feature. | - | - | - |
-| `observation_time` | `datetime` | `True` | Observation timestamp in UTC from the feature property `timestamp`. | - | - | - |
-| `precip_quantity` | `union` | `False` | Precipitation quantity reported for the 10-minute observation period. | unit=`mm` symbol=`mm` | - | - |
-| `temp_dry_shelter_avg` | `union` | `False` | Average air temperature measured in the 2 m dry shelter during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `temp_grass_pt100_avg` | `union` | `False` | Average grass-level temperature measured by the Pt100 sensor during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `temp_soil_avg` | `union` | `False` | Average soil surface temperature during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `temp_soil_avg_5cm` | `union` | `False` | Average soil temperature measured at 5 cm depth during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `temp_soil_avg_10cm` | `union` | `False` | Average soil temperature measured at 10 cm depth during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `temp_soil_avg_20cm` | `union` | `False` | Average soil temperature measured at 20 cm depth during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `temp_soil_avg_50cm` | `union` | `False` | Average soil temperature measured at 50 cm depth during the observation period. | unit=`Cel` symbol=`°C` | - | - |
-| `wind_speed_10m` | `union` | `False` | Wind speed measured at 10 m above ground level. | unit=`m/s` symbol=`m/s` | - | - |
-| `wind_speed_avg_30m` | `union` | `False` | Average wind speed measured at 30 m above ground level. | unit=`m/s` symbol=`m/s` | - | - |
-| `wind_direction` | `union` | `False` | Wind direction in degrees from which the wind is blowing. | unit=`degree` symbol=`°` | - | - |
-| `wind_gusts_speed` | `union` | `False` | Maximum wind gust speed observed during the 10-minute period. | unit=`m/s` symbol=`m/s` | - | - |
-| `humidity_rel_shelter_avg` | `union` | `False` | Average relative humidity measured in the shelter during the observation period. | unit=`percent` symbol=`%` | - | - |
-| `pressure` | `union` | `False` | Station-level atmospheric pressure reported by the automatic weather station. | unit=`hPa` symbol=`hPa` | - | - |
-| `sun_duration` | `union` | `False` | Sunshine duration accumulated during the 10-minute observation period. | unit=`min` symbol=`min` | - | - |
-| `short_wave_from_sky_avg` | `union` | `False` | Average downward shortwave radiation from the sky during the observation period. | unit=`W/m2` symbol=`W/m²` | - | - |
-| `sun_int_avg` | `union` | `False` | Average direct sunshine intensity during the observation period. | unit=`W/m2` symbol=`W/m²` | - | - |
+Each event identifies the real-world resource with `{station_code}`. `{station_code}` is KMI/RMI automatic weather station code from the `code` property of the reporting observation feature. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `kmi-belgium`, key `{station_code}` |
+
+#### Payload
+
+`Weather Observation` payloads are JSON object. Required fields: `station_code`, `observation_time`.
+
+- **`station_code`** (string, required): KMI/RMI automatic weather station code from the `code` property of the reporting observation feature.
+- **`observation_time`** (datetime, required): Observation timestamp in UTC from the feature property `timestamp`.
+- **`precip_quantity`** (double or null, optional, mm): Precipitation quantity reported for the 10-minute observation period.
+- **`temp_dry_shelter_avg`** (double or null, optional, Cel (°C)): Average air temperature measured in the 2 m dry shelter during the observation period.
+- **`temp_grass_pt100_avg`** (double or null, optional, Cel (°C)): Average grass-level temperature measured by the Pt100 sensor during the observation period.
+- **`temp_soil_avg`** (double or null, optional, Cel (°C)): Average soil surface temperature during the observation period.
+- **`temp_soil_avg_5cm`** (double or null, optional, Cel (°C)): Average soil temperature measured at 5 cm depth during the observation period.
+- **`temp_soil_avg_10cm`** (double or null, optional, Cel (°C)): Average soil temperature measured at 10 cm depth during the observation period.
+- **`temp_soil_avg_20cm`** (double or null, optional, Cel (°C)): Average soil temperature measured at 20 cm depth during the observation period.
+- **`temp_soil_avg_50cm`** (double or null, optional, Cel (°C)): Average soil temperature measured at 50 cm depth during the observation period.
+- **`wind_speed_10m`** (double or null, optional, m/s): Wind speed measured at 10 m above ground level.
+- **`wind_speed_avg_30m`** (double or null, optional, m/s): Average wind speed measured at 30 m above ground level.
+- **`wind_direction`** (double or null, optional, degree (°)): Wind direction in degrees from which the wind is blowing.
+- **`wind_gusts_speed`** (double or null, optional, m/s): Maximum wind gust speed observed during the 10-minute period.
+- **`humidity_rel_shelter_avg`** (double or null, optional, percent (%)): Average relative humidity measured in the shelter during the observation period.
+- **`pressure`** (double or null, optional, hPa): Station-level atmospheric pressure reported by the automatic weather station.
+- **`sun_duration`** (double or null, optional, min): Sunshine duration accumulated during the 10-minute observation period.
+- **`short_wave_from_sky_avg`** (double or null, optional, W/m2 (W/m²)): Average downward shortwave radiation from the sky during the observation period.
+- **`sun_int_avg`** (double or null, optional, W/m2 (W/m²)): Average direct sunshine intensity during the observation period.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_code": "string",
+  "observation_time": "2024-01-01T00:00:00Z",
+  "precip_quantity": 0,
+  "temp_dry_shelter_avg": 0,
+  "temp_grass_pt100_avg": 0,
+  "temp_soil_avg": 0,
+  "temp_soil_avg_5cm": 0,
+  "temp_soil_avg_10cm": 0,
+  "temp_soil_avg_20cm": 0,
+  "temp_soil_avg_50cm": 0,
+  "wind_speed_10m": 0,
+  "wind_speed_avg_30m": 0,
+  "wind_direction": 0,
+  "wind_gusts_speed": 0,
+  "humidity_rel_shelter_avg": 0,
+  "pressure": 0,
+  "sun_duration": 0,
+  "short_wave_from_sky_avg": 0,
+  "sun_int_avg": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+
+## References
+
+- xRegistry manifest: [`xreg/kmi_belgium.xreg.json`](xreg/kmi_belgium.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- KMI/RMI open data AWS service: <https://opendata.meteo.be/service/aws/ows>

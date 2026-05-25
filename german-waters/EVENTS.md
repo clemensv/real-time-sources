@@ -2,379 +2,198 @@
 
 MQTT/5.0 transport variants of the German Waters Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/german-waters/{water_body}/{station_id}/... The {water_body} placeholder is sourced from the per-provider station catalog (Station.water_body field, e.g. 'Rhein', 'Donau', 'Elbe') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/de/wsv/german-waters/rhein/+/water-level).
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types (4 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_id}` identifies the resource each event is about.
+- **Operations:** The checked-in guide documents a default polling interval of 900 seconds.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `german-waters`. The record key is `{station_id}`. In plain language, `{station_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['german-waters'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `hydro/de/wsv/german-waters/+/+/info`, `hydro/de/wsv/german-waters/+/+/water-level`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('hydro/de/wsv/german-waters/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `DE.Waters.Hydrology.Station`
+
+#### What it tells you
+
+This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `german-waters`, key `{station_id}` |
+| `MQTT/5.0` | topic `hydro/de/wsv/german-waters/{water_body}/{station_id}/info`, retain `true`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `DE.Waters.Hydrology.Kafka`
+`Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `water_body`, `provider`.
 
-| Field | Value |
+- **`station_id`** (string, required): No description provided.
+- **`station_name`** (string, required): No description provided.
+- **`water_body`** (string, required): No description provided.
+- **`state`** (string, optional): No description provided.
+- **`region`** (string, optional): No description provided.
+- **`provider`** (string, required): No description provided.
+- **`latitude`** (double, optional): No description provided.
+- **`longitude`** (double, optional): No description provided.
+- **`river_km`** (double, optional): No description provided.
+- **`altitude`** (double, optional): No description provided.
+- **`station_type`** (string, optional): No description provided.
+- **`warn_level_cm`** (double, optional): No description provided.
+- **`alarm_level_cm`** (double, optional): No description provided.
+- **`warn_level_m3s`** (double, optional): No description provided.
+- **`alarm_level_m3s`** (double, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "station_name": "string",
+  "water_body": "string",
+  "state": "string",
+  "region": "string",
+  "provider": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "river_km": 0,
+  "altitude": 0,
+  "station_type": "string",
+  "warn_level_cm": 0,
+  "alarm_level_cm": 0,
+  "warn_level_m3s": 0,
+  "alarm_level_m3s": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Water Level Observation
+
+CloudEvents type: `DE.Waters.Hydrology.WaterLevelObservation`
+
+#### What it tells you
+
+This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`DE.Waters.Hydrology`](#messagegroup-dewatershydrology) |
+| `KAFKA` | topic `german-waters`, key `{station_id}` |
+| `MQTT/5.0` | topic `hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level`, retain `true`, QoS `1` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `german-waters` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
+`Water Level Observation` payloads are JSON object. Required fields: `station_id`, `provider`, `water_body`.
 
-### Endpoint `DE.Waters.Hydrology.Mqtt`
+- **`station_id`** (string, required): No description provided.
+- **`provider`** (string, required): No description provided.
+- **`water_body`** (string, required): Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Sourced by the bridge from the per-provider station catalog (Station.water_body field) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
+- **`water_level`** (double, optional): No description provided.
+- **`water_level_unit`** (string, optional): No description provided.
+- **`water_level_timestamp`** (datetime, optional): No description provided.
+- **`discharge`** (double, optional): No description provided.
+- **`discharge_unit`** (string, optional): No description provided.
+- **`discharge_timestamp`** (datetime, optional): No description provided.
+- **`trend`** (int32, optional): No description provided.
+- **`situation`** (int32, optional): No description provided.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`DE.Waters.Hydrology.mqtt`](#messagegroup-dewatershydrologymqtt) |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### Transport options
+```json
+{
+  "station_id": "string",
+  "provider": "string",
+  "water_body": "string",
+  "water_level": 0,
+  "water_level_unit": "string",
+  "water_level_timestamp": "2024-01-01T00:00:00Z",
+  "discharge": 0,
+  "discharge_unit": "string",
+  "discharge_timestamp": "2024-01-01T00:00:00Z",
+  "trend": 0,
+  "situation": 0
+}
+```
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+#### Reference vs telemetry
 
-## Messagegroups
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-### Messagegroup `DE.Waters.Hydrology`
-<a id="messagegroup-dewatershydrology"></a>
+## Conventions
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `DE.Waters.Hydrology.Kafka` (KAFKA) |
-| Messages | 2 |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-#### Message `DE.Waters.Hydrology.Station`
-<a id="message-dewatershydrologystation"></a>
+Transport bindings carry CloudEvents metadata differently:
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.Station`](#schema-dewatershydrologystation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `DE.Waters.Hydrology.Station` |
-| `source` |  | `string` | `False` | `https://github.com/clemensv/real-time-sources/german-waters` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `DE.Waters.Hydrology.Kafka` | `KAFKA` | topic `german-waters`; key `{station_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `DE.Waters.Hydrology.WaterLevelObservation`
-<a id="message-dewatershydrologywaterlevelobservation"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation`](#schema-dewatershydrologywaterlevelobservation) |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+- The checked-in guide documents a default polling interval of 900 seconds.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `DE.Waters.Hydrology.WaterLevelObservation` |
-| `source` |  | `string` | `False` | `https://github.com/clemensv/real-time-sources/german-waters` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `DE.Waters.Hydrology.Kafka` | `KAFKA` | topic `german-waters`; key `{station_id}` |
-
-### Messagegroup `DE.Waters.Hydrology.mqtt`
-<a id="messagegroup-dewatershydrologymqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variants of the German Waters Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/german-waters/{water_body}/{station_id}/... The {water_body} placeholder is sourced from the per-provider station catalog (Station.water_body field, e.g. 'Rhein', 'Donau', 'Elbe') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/de/wsv/german-waters/rhein/+/water-level). |
-| Transport bindings | `DE.Waters.Hydrology.Mqtt` (MQTT/5.0) |
-| Messages | 2 |
-
-#### Message `DE.Waters.Hydrology.mqtt.Station`
-<a id="message-dewatershydrologymqttstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.Station`](#schema-dewatershydrologystation) |
-| Base message chain | `/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.Station` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `DE.Waters.Hydrology.Station` |
-| `source` |  | `string` | `False` | `https://github.com/clemensv/real-time-sources/german-waters` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `DE.Waters.Hydrology.Mqtt` | `MQTT/5.0` | topic `hydro/de/wsv/german-waters/{water_body}/{station_id}/info` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `hydro/de/wsv/german-waters/{water_body}/{station_id}/info` |
-| QoS | 1 |
-| Retain | True |
-
-#### Message `DE.Waters.Hydrology.mqtt.WaterLevelObservation`
-<a id="message-dewatershydrologymqttwaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation`](#schema-dewatershydrologywaterlevelobservation) |
-| Base message chain | `/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation` |
-| Transport override | `MQTT/5.0` |
-| Event role | Reference data (retained transport message) |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `DE.Waters.Hydrology.WaterLevelObservation` |
-| `source` |  | `string` | `False` | `https://github.com/clemensv/real-time-sources/german-waters` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `DE.Waters.Hydrology.Mqtt` | `MQTT/5.0` | topic `hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level` |
-| QoS | 1 |
-| Retain | True |
-
-## Schemagroups
-
-### Schemagroup `DE.Waters.Hydrology.jstruct`
-<a id="schemagroup-dewatershydrologyjstruct"></a>
-
-#### Schema `DE.Waters.Hydrology.Station`
-<a id="schema-dewatershydrologystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/DE/Waters/Hydrology/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Station
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/DE/Waters/Hydrology/Station` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` |  | - | - | - |
-| `station_name` | `string` | `True` |  | - | - | - |
-| `water_body` | `string` | `True` |  | altnames=`{"lang:de": "Gewaesser"}` | - | - |
-| `state` | `string` | `False` |  | - | - | - |
-| `region` | `string` | `False` |  | - | - | - |
-| `provider` | `string` | `True` |  | - | - | - |
-| `latitude` | `double` | `False` |  | - | - | - |
-| `longitude` | `double` | `False` |  | - | - | - |
-| `river_km` | `double` | `False` |  | - | - | - |
-| `altitude` | `double` | `False` |  | altnames=`{"lang:de": "Hoehe"}` | - | - |
-| `station_type` | `string` | `False` |  | - | - | - |
-| `warn_level_cm` | `double` | `False` |  | - | - | - |
-| `alarm_level_cm` | `double` | `False` |  | - | - | - |
-| `warn_level_m3s` | `double` | `False` |  | - | - | - |
-| `alarm_level_m3s` | `double` | `False` |  | - | - | - |
-
-#### Schema `DE.Waters.Hydrology.WaterLevelObservation`
-<a id="schema-dewatershydrologywaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/DE/Waters/Hydrology/WaterLevelObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `WaterLevelObservation`
-<a id="schema-node-waterlevelobservation"></a>
-
-WaterLevelObservation
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/DE/Waters/Hydrology/WaterLevelObservation` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` |  | - | - | - |
-| `provider` | `string` | `True` |  | - | - | - |
-| `water_body` | `string` | `True` | Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Sourced by the bridge from the per-provider station catalog (Station.water_body field) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing. | - | - | - |
-| `water_level` | `double` | `False` |  | - | - | - |
-| `water_level_unit` | `string` | `False` |  | - | - | - |
-| `water_level_timestamp` | `datetime` | `False` |  | - | - | - |
-| `discharge` | `double` | `False` |  | - | - | - |
-| `discharge_unit` | `string` | `False` |  | - | - | - |
-| `discharge_timestamp` | `datetime` | `False` |  | - | - | - |
-| `trend` | `int32` | `False` |  | - | - | - |
-| `situation` | `int32` | `False` |  | - | - | - |
-
-### Schemagroup `DE.Waters.Hydrology.avro`
-<a id="schemagroup-dewatershydrologyavro"></a>
-
-#### Schema `DE.Waters.Hydrology.Station`
-<a id="schema-dewatershydrologystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | DE.Waters.Hydrology |
-| Type | `record` |
-| Doc | Station |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `station_name` | `string` |  | `-` |
-| `water_body` | `string` |  | `-` |
-| `state` | `null` \| `string` |  | `-` |
-| `region` | `null` \| `string` |  | `-` |
-| `provider` | `string` |  | `-` |
-| `latitude` | `null` \| `double` |  | `-` |
-| `longitude` | `null` \| `double` |  | `-` |
-| `river_km` | `null` \| `double` |  | `-` |
-| `altitude` | `null` \| `double` |  | `-` |
-| `station_type` | `null` \| `string` |  | `-` |
-| `warn_level_cm` | `null` \| `double` |  | `-` |
-| `alarm_level_cm` | `null` \| `double` |  | `-` |
-| `warn_level_m3s` | `null` \| `double` |  | `-` |
-| `alarm_level_m3s` | `null` \| `double` |  | `-` |
-
-#### Schema `DE.Waters.Hydrology.WaterLevelObservation`
-<a id="schema-dewatershydrologywaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Namespace | DE.Waters.Hydrology |
-| Type | `record` |
-| Doc | WaterLevelObservation |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `provider` | `string` |  | `-` |
-| `water_body` | `string` | Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string. | `-` |
-| `water_level` | `null` \| `double` |  | `-` |
-| `water_level_unit` | `null` \| `string` |  | `-` |
-| `water_level_timestamp` | `null` \| `string` |  | `-` |
-| `discharge` | `null` \| `double` |  | `-` |
-| `discharge_unit` | `null` \| `string` |  | `-` |
-| `discharge_timestamp` | `null` \| `string` |  | `-` |
-| `trend` | `null` \| `int` |  | `-` |
-| `situation` | `null` \| `int` |  | `-` |
+- xRegistry manifest: [`xreg/german_waters.xreg.json`](xreg/german_waters.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

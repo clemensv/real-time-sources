@@ -2,210 +2,186 @@
 
 MQTT/5.0 transport variant for GDACS disaster alerts. Non-retained QoS-1 alert events route by disaster event type, event-level GDACS alert color, affected country, and event id under alerts/intl/gdacs/gdacs/... GDACS is both provider and source in this single-feed namespace branch; subscribe with wildcards across the color axis to follow episode-level alert transitions.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 1 documented event type (2 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{event_type}/{event_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `gdacs`. The record key is `{event_type}/{event_id}`. In plain language, `{event_type}/{event_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['gdacs'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/intl/gdacs/gdacs/+/+/+/+/alert`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('alerts/intl/gdacs/gdacs/+/+/+/+/alert', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Disaster Alert
+
+CloudEvents type: `GDACS.DisasterAlert`
+
+#### What it tells you
+
+A disaster alert from the Global Disaster Alert and Coordination System (GDACS), covering earthquakes, tropical cyclones, floods, volcanoes, forest fires, and droughts worldwide. A disaster alert from the Global Disaster Alert and Coordination System (GDACS), representing a single episode of a natural disaster event such as an earthquake, tropical cyclone, flood, volcano eruption, forest fire, or drought.
+
+#### Identity
+
+Each event identifies the real-world resource with `{event_type}/{event_id}`. `{event_type}` is the type of natural disaster reported by GDACS; `{event_id}` is the unique numeric identifier assigned to the disaster event by GDACS, stable across all episodes and updates for the same event. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 1 |
+| `KAFKA` | topic `gdacs`, key `{event_type}/{event_id}` |
+| `MQTT/5.0` | topic `alerts/intl/gdacs/gdacs/{event_type}/{alert_color}/{country}/{event_id}/alert`, retain `false`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `GDACS.Alerts.Kafka`
+`Disaster Alert` payloads are JSON object. Required fields: `event_type`, `event_id`, `alert_level`, `severity_value`, `severity_unit`, `country`, `latitude`, `longitude`, `from_date`, `alert_color`.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`GDACS.Alerts`](#messagegroup-gdacsalerts) |
+- **`event_type`** (enum, required): The type of natural disaster reported by GDACS. EQ = Earthquake, TC = Tropical Cyclone, FL = Flood, VO = Volcano, FF = Forest Fire, DR = Drought.
+- **`event_id`** (string, required): The unique numeric identifier assigned to the disaster event by GDACS, stable across all episodes and updates for the same event.
+- **`episode_id`** (string, optional): The unique numeric identifier for a specific episode within an event. Events such as tropical cyclones may have multiple episodes as they evolve over time.
+- **`alert_level`** (enum, required): The overall GDACS alert level for the event, indicating the expected humanitarian impact. Green = low impact, Orange = moderate impact, Red = high impact requiring international response.
+- **`alert_score`** (double, optional): A numeric score (0.0–3.0) representing the overall alert severity. Higher values indicate greater expected impact. Derived from severity, population exposure, and vulnerability.
+- **`episode_alert_level`** (string, optional): The GDACS alert level specific to this episode, which may differ from the overall event alert level as conditions evolve.
+- **`episode_alert_score`** (double, optional): A numeric score (0.0–3.0) representing the alert severity for this specific episode.
+- **`event_name`** (string, optional): The human-readable name assigned to the event by GDACS, such as a cyclone name or descriptive location label.
+- **`severity_value`** (double, required): The numeric severity measure for the event. The meaning depends on the event type: magnitude for earthquakes, wind speed for cyclones, water level for floods, VEI for volcanoes.
+- **`severity_unit`** (string, required): The unit of measurement for the severity value. Examples: 'M' (Richter magnitude), 'km/h' (wind speed), 'm' (water level), 'VEI' (Volcanic Explosivity Index).
+- **`severity_text`** (string, optional): A human-readable text description of the severity, as provided in the GDACS RSS feed severity element text content.
+- **`country`** (string, required): Affected country name or normalized unknown sentinel when GDACS omits the country. Matches the {country} MQTT topic axis.
+- **`iso3`** (string, optional): The ISO 3166-1 alpha-3 country code(s) for the affected country or countries.
+- **`latitude`** (double, required): The latitude of the disaster event epicenter or centroid in decimal degrees (WGS84).
+- **`longitude`** (double, required): The longitude of the disaster event epicenter or centroid in decimal degrees (WGS84).
+- **`from_date`** (datetime, required): The date and time when the disaster event was first detected or began, in ISO-8601 format.
+- **`to_date`** (datetime, optional): The date and time when the disaster event ended or was last observed, in ISO-8601 format. May be absent for ongoing events.
+- **`population_value`** (double, optional): The estimated number of people exposed to or affected by the disaster event, as calculated by GDACS impact models.
+- **`population_unit`** (string, optional): The unit for the population value, typically 'Pop' (population count) or a radius-based exposure descriptor.
+- **`vulnerability`** (double, optional): A GDACS-calculated vulnerability score (0.0–3.0) that reflects the affected region's capacity to cope with the disaster, factoring in infrastructure, governance, and socioeconomic conditions.
+- **`bbox_min_lon`** (double, optional): The minimum longitude of the bounding box that encloses the affected area, in decimal degrees.
+- **`bbox_max_lon`** (double, optional): The maximum longitude of the bounding box that encloses the affected area, in decimal degrees.
+- **`bbox_min_lat`** (double, optional): The minimum latitude of the bounding box that encloses the affected area, in decimal degrees.
+- **`bbox_max_lat`** (double, optional): The maximum latitude of the bounding box that encloses the affected area, in decimal degrees.
+- **`is_current`** (boolean, optional): Whether this disaster event is currently ongoing according to GDACS. True if the event is still active, false if it has concluded.
+- **`version`** (int32, optional): The version number of this event record in GDACS. Incremented each time the event data is updated or revised.
+- **`description`** (string, optional): The RSS item description text, typically a brief HTML or plain-text summary of the disaster event with key impact details.
+- **`link`** (string, optional): The URL linking to the full GDACS event report page for this disaster event.
+- **`pub_date`** (datetime, optional): The date and time when this RSS item was published or last updated, in ISO-8601 format.
+- **`alert_color`** (enum, required): Lowercase GDACS alert color derived from alert_level (green, orange, or red). Matches the {alert_color} MQTT topic axis.
+##### `event_type` values
 
-#### Transport options
+- `EQ`
+- `TC`
+- `FL`
+- `VO`
+- `FF`
+- `DR`
+##### `alert_level` values
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `gdacs` |
-| Kafka key | `{event_type}/{event_id}` |
-| Deployed | False |
+- `Green`
+- `Orange`
+- `Red`
+##### `alert_color` values
 
-### Endpoint `GDACS.Alerts.Mqtt`
+- `green`
+- `orange`
+- `red`
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`GDACS.Alerts.mqtt`](#messagegroup-gdacsalertsmqtt) |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### Transport options
+```json
+{
+  "event_type": "EQ",
+  "event_id": "string",
+  "episode_id": "string",
+  "alert_level": "Green",
+  "alert_score": 0,
+  "episode_alert_level": "string",
+  "episode_alert_score": 0,
+  "event_name": "string",
+  "severity_value": 0,
+  "severity_unit": "string",
+  "severity_text": "string",
+  "country": "string",
+  "iso3": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "from_date": "2024-01-01T00:00:00Z",
+  "to_date": "2024-01-01T00:00:00Z",
+  "population_value": 0,
+  "population_unit": "string",
+  "vulnerability": 0,
+  "bbox_min_lon": 0,
+  "bbox_max_lon": 0,
+  "bbox_min_lat": 0,
+  "bbox_max_lat": 0,
+  "is_current": false,
+  "version": 0,
+  "description": "string",
+  "link": "string",
+  "pub_date": "2024-01-01T00:00:00Z",
+  "alert_color": "green"
+}
+```
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+#### Reference vs telemetry
 
-## Messagegroups
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-### Messagegroup `GDACS.Alerts`
-<a id="messagegroup-gdacsalerts"></a>
+## Conventions
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `GDACS.Alerts.Kafka` (KAFKA) |
-| Messages | 1 |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-#### Message `GDACS.DisasterAlert`
-<a id="message-gdacsdisasteralert"></a>
+Transport bindings carry CloudEvents metadata differently:
 
-A disaster alert from the Global Disaster Alert and Coordination System (GDACS), covering earthquakes, tropical cyclones, floods, volcanoes, forest fires, and droughts worldwide.
-
-| Field | Value |
-| --- | --- |
-| Name | DisasterAlert |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert`](#schema-gdacsdisasteralert) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `GDACS.DisasterAlert` |
-| `source` |  | `string` | `False` | `https://www.gdacs.org` |
-| `subject` |  | `uritemplate` | `False` | `{event_type}/{event_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `GDACS.Alerts.Kafka` | `KAFKA` | topic `gdacs`; key `{event_type}/{event_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-### Messagegroup `GDACS.Alerts.mqtt`
-<a id="messagegroup-gdacsalertsmqtt"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variant for GDACS disaster alerts. Non-retained QoS-1 alert events route by disaster event type, event-level GDACS alert color, affected country, and event id under alerts/intl/gdacs/gdacs/... GDACS is both provider and source in this single-feed namespace branch; subscribe with wildcards across the color axis to follow episode-level alert transitions. |
-| Transport bindings | `GDACS.Alerts.Mqtt` (MQTT/5.0) |
-| Messages | 1 |
+## Operational notes
 
-#### Message `GDACS.Alerts.mqtt.DisasterAlert`
-<a id="message-gdacsalertsmqttdisasteralert"></a>
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
-A disaster alert from the Global Disaster Alert and Coordination System (GDACS), covering earthquakes, tropical cyclones, floods, volcanoes, forest fires, and droughts worldwide.
+## References
 
-| Field | Value |
-| --- | --- |
-| Name | DisasterAlert |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert`](#schema-gdacsdisasteralert) |
-| Base message chain | `/messagegroups/GDACS.Alerts/messages/GDACS.DisasterAlert` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `GDACS.DisasterAlert` |
-| `source` |  | `string` | `False` | `https://www.gdacs.org` |
-| `subject` |  | `uritemplate` | `False` | `{event_type}/{event_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GDACS.Alerts.Mqtt` | `MQTT/5.0` | topic `alerts/intl/gdacs/gdacs/{event_type}/{alert_color}/{country}/{event_id}/alert` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `alerts/intl/gdacs/gdacs/{event_type}/{alert_color}/{country}/{event_id}/alert` |
-| QoS | 1 |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `GDACS.jstruct`
-<a id="schemagroup-gdacsjstruct"></a>
-
-#### Schema `GDACS.DisasterAlert`
-<a id="schema-gdacsdisasteralert"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | DisasterAlert |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-| Description | A disaster alert from the Global Disaster Alert and Coordination System (GDACS), representing a single episode of a natural disaster event such as an earthquake, tropical cyclone, flood, volcano eruption, forest fire, or drought. |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://gdacs.org/schemas/GDACS/DisasterAlert` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `DisasterAlert`
-<a id="schema-node-disasteralert"></a>
-
-A disaster alert from the Global Disaster Alert and Coordination System (GDACS), representing a single episode of a natural disaster event such as an earthquake, tropical cyclone, flood, volcano eruption, forest fire, or drought.
-
-| Field | Value |
-| --- | --- |
-| $id | `https://gdacs.org/schemas/GDACS/DisasterAlert` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `event_type` | enum `['EQ', 'TC', 'FL', 'VO', 'FF', 'DR']` | `True` | The type of natural disaster reported by GDACS. EQ = Earthquake, TC = Tropical Cyclone, FL = Flood, VO = Volcano, FF = Forest Fire, DR = Drought. | altnames=`{"xml": "gdacs:eventtype"}` | - | - |
-| `event_id` | `string` | `True` | The unique numeric identifier assigned to the disaster event by GDACS, stable across all episodes and updates for the same event. | altnames=`{"xml": "gdacs:eventid"}` | - | - |
-| `episode_id` | `string` | `False` | The unique numeric identifier for a specific episode within an event. Events such as tropical cyclones may have multiple episodes as they evolve over time. | altnames=`{"xml": "gdacs:episodeid"}` | - | - |
-| `alert_level` | enum `['Green', 'Orange', 'Red']` | `True` | The overall GDACS alert level for the event, indicating the expected humanitarian impact. Green = low impact, Orange = moderate impact, Red = high impact requiring international response. | altnames=`{"xml": "gdacs:alertlevel"}` | - | - |
-| `alert_score` | `double` | `False` | A numeric score (0.0–3.0) representing the overall alert severity. Higher values indicate greater expected impact. Derived from severity, population exposure, and vulnerability. | altnames=`{"xml": "gdacs:alertscore"}` | - | - |
-| `episode_alert_level` | `string` | `False` | The GDACS alert level specific to this episode, which may differ from the overall event alert level as conditions evolve. | altnames=`{"xml": "gdacs:episodealertlevel"}` | - | - |
-| `episode_alert_score` | `double` | `False` | A numeric score (0.0–3.0) representing the alert severity for this specific episode. | altnames=`{"xml": "gdacs:episodealertscore"}` | - | - |
-| `event_name` | `string` | `False` | The human-readable name assigned to the event by GDACS, such as a cyclone name or descriptive location label. | altnames=`{"xml": "gdacs:eventname"}` | - | - |
-| `severity_value` | `double` | `True` | The numeric severity measure for the event. The meaning depends on the event type: magnitude for earthquakes, wind speed for cyclones, water level for floods, VEI for volcanoes. | - | - | - |
-| `severity_unit` | `string` | `True` | The unit of measurement for the severity value. Examples: 'M' (Richter magnitude), 'km/h' (wind speed), 'm' (water level), 'VEI' (Volcanic Explosivity Index). | - | - | - |
-| `severity_text` | `string` | `False` | A human-readable text description of the severity, as provided in the GDACS RSS feed severity element text content. | - | - | - |
-| `country` | `string` | `True` | Affected country name or normalized unknown sentinel when GDACS omits the country. Matches the {country} MQTT topic axis. | altnames=`{"xml": "gdacs:country"}` | - | - |
-| `iso3` | `string` | `False` | The ISO 3166-1 alpha-3 country code(s) for the affected country or countries. | altnames=`{"xml": "gdacs:iso3"}` | - | - |
-| `latitude` | `double` | `True` | The latitude of the disaster event epicenter or centroid in decimal degrees (WGS84). | altnames=`{"xml": "geo:lat"}` | - | - |
-| `longitude` | `double` | `True` | The longitude of the disaster event epicenter or centroid in decimal degrees (WGS84). | altnames=`{"xml": "geo:long"}` | - | - |
-| `from_date` | `datetime` | `True` | The date and time when the disaster event was first detected or began, in ISO-8601 format. | altnames=`{"xml": "gdacs:fromdate"}` | - | - |
-| `to_date` | `datetime` | `False` | The date and time when the disaster event ended or was last observed, in ISO-8601 format. May be absent for ongoing events. | altnames=`{"xml": "gdacs:todate"}` | - | - |
-| `population_value` | `double` | `False` | The estimated number of people exposed to or affected by the disaster event, as calculated by GDACS impact models. | - | - | - |
-| `population_unit` | `string` | `False` | The unit for the population value, typically 'Pop' (population count) or a radius-based exposure descriptor. | - | - | - |
-| `vulnerability` | `double` | `False` | A GDACS-calculated vulnerability score (0.0–3.0) that reflects the affected region's capacity to cope with the disaster, factoring in infrastructure, governance, and socioeconomic conditions. | altnames=`{"xml": "gdacs:vulnerability"}` | - | - |
-| `bbox_min_lon` | `double` | `False` | The minimum longitude of the bounding box that encloses the affected area, in decimal degrees. | - | - | - |
-| `bbox_max_lon` | `double` | `False` | The maximum longitude of the bounding box that encloses the affected area, in decimal degrees. | - | - | - |
-| `bbox_min_lat` | `double` | `False` | The minimum latitude of the bounding box that encloses the affected area, in decimal degrees. | - | - | - |
-| `bbox_max_lat` | `double` | `False` | The maximum latitude of the bounding box that encloses the affected area, in decimal degrees. | - | - | - |
-| `is_current` | `boolean` | `False` | Whether this disaster event is currently ongoing according to GDACS. True if the event is still active, false if it has concluded. | altnames=`{"xml": "gdacs:iscurrent"}` | - | - |
-| `version` | `int32` | `False` | The version number of this event record in GDACS. Incremented each time the event data is updated or revised. | altnames=`{"xml": "gdacs:version"}` | - | - |
-| `description` | `string` | `False` | The RSS item description text, typically a brief HTML or plain-text summary of the disaster event with key impact details. | - | - | - |
-| `link` | `string` | `False` | The URL linking to the full GDACS event report page for this disaster event. | - | - | - |
-| `pub_date` | `datetime` | `False` | The date and time when this RSS item was published or last updated, in ISO-8601 format. | - | - | - |
-| `alert_color` | enum `['green', 'orange', 'red']` | `True` | Lowercase GDACS alert color derived from alert_level (green, orange, or red). Matches the {alert_color} MQTT topic axis. | - | - | - |
+- xRegistry manifest: [`xreg/gdacs.xreg.json`](xreg/gdacs.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
