@@ -17,7 +17,7 @@ import json
 @dataclass
 class SafetyRelatedMessage:
     """
-    Safety-related traffic information message from the NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.
+    Safety-related traffic information message from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.
     
     Attributes:
         situation_record_id (str)
@@ -167,13 +167,13 @@ class SafetyRelatedMessage:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='ybcvrfmlijyoiwriiqqn',
-            version_time='vmntgwfcrqwdhxcucwvb',
-            validity_status='lfszkbzropwcnhwyuptd',
-            start_time='mjdcdzcguzuksxpycreg',
-            end_time='bmbeptgndxxlhrbphjdw',
-            road_name='bfeskluhaxozvvuggcqq',
-            message_type='fmjfyaztbntuwhkhczmv',
-            description='fmuhzvlupglhrfbxdyst',
-            urgency='kysvzsfoajyfgheenfgz'
+            situation_record_id='gqnubsqukgiloxkeofgp',
+            version_time='bruihdoxfowfqdpqnudg',
+            validity_status='pdotgkypdmlybvbajuii',
+            start_time='qyowkmtslttnoscukduj',
+            end_time='xbktzvxunvseppeqyldl',
+            road_name='pmtgoubkuajgjrveorzw',
+            message_type='iverezqehdtevhxmpivv',
+            description='kknlueovggcfjzqjvdsh',
+            urgency='sfxjrysunirtnfyzhqvt'
         )

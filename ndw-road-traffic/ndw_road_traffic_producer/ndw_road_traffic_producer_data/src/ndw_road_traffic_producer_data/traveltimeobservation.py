@@ -17,7 +17,7 @@ import json
 @dataclass
 class TravelTimeObservation:
     """
-    Travel time observation for a road segment from the NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.
+    Travel time observation for a road segment from the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.
     
     Attributes:
         measurement_site_id (str)
@@ -163,11 +163,11 @@ class TravelTimeObservation:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='nfntmagwgyzqupaewvjx',
-            measurement_time='hnxkasfythhdzownuuft',
-            duration=float(34.45310929605798),
-            reference_duration=float(48.47279619047028),
-            accuracy=float(18.99503806857844),
-            data_quality=float(39.91682306127504),
-            number_of_input_values=int(5)
+            measurement_site_id='zexhzqdlhdknubvrlhmr',
+            measurement_time='xlndksorlhqfubkhqflj',
+            duration=float(76.27368014915646),
+            reference_duration=float(18.997587750680843),
+            accuracy=float(8.087380825204793),
+            data_quality=float(3.3868221703492685),
+            number_of_input_values=int(78)
         )

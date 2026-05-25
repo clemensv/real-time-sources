@@ -17,7 +17,7 @@ import json
 @dataclass
 class MsiDisplayState:
     """
-    Current display state of a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown.
+    Current display state of a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown.
     
     Attributes:
         sign_id (str)
@@ -159,9 +159,9 @@ class MsiDisplayState:
             An instance of the dataclass.
         """
         return cls(
-            sign_id='ynxbhynrvxooulrritxw',
-            publication_time='jrczgnvozgedxckqfwey',
-            image_code='voeeirsblmurlqybiibx',
-            state='gulsqyquxgbesviykieo',
-            speed_limit=int(38)
+            sign_id='kmnvupnlrghetjhdnynx',
+            publication_time='ceopflpezelqariumsdb',
+            image_code='zprqqapfqdusyuvujuft',
+            state='rcehhtkffuxwchhirdfa',
+            speed_limit=int(84)
         )

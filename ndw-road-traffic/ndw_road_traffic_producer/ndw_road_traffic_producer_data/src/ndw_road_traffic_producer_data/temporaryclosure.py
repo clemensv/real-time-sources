@@ -17,7 +17,7 @@ import json
 @dataclass
 class TemporaryClosure:
     """
-    Temporary road closure from the NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or individual lanes on the Dutch national road network.
+    Temporary road closure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch national road network.
     
     Attributes:
         situation_record_id (str)
@@ -167,13 +167,13 @@ class TemporaryClosure:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='rhajcljiiejrjaqfqsde',
-            version_time='rhnqphjnjfbywajwdocq',
-            validity_status='rkmwlznjvbdieybyhuun',
-            start_time='rwwodozbeckhvplpsbxv',
-            end_time='ihjcdxklmxqyikbpnaht',
-            road_name='vmypubqxmmjhlgwljbuz',
-            description='xuzmszaajpsaggtddqbe',
-            location_description='fikykiwzjrcgoccozfpj',
-            severity='jetbnkswcltcruqqfoho'
+            situation_record_id='jteteveitxbnolkglcco',
+            version_time='ggwzsgbdjabuxkdtstvc',
+            validity_status='mtydwndyifjcwxgjrgwi',
+            start_time='uxgjbsrqkeqvcaqemtci',
+            end_time='pquayilyymoglvkgytti',
+            road_name='wkcydywwccirncwrfael',
+            description='fpqiaowxrcrhtnxlbexx',
+            location_description='tyfmorgtapyzkhizostt',
+            severity='qlulzovdhldjesgscwhc'
         )

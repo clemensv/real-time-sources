@@ -17,7 +17,7 @@ import json
 @dataclass
 class TemporarySpeedLimit:
     """
-    Temporary speed limit measure from the NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in the maximum allowed speed on a section of the national road network.
+    Temporary speed limit measure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a section of the national road network.
     
     Attributes:
         situation_record_id (str)
@@ -167,13 +167,13 @@ class TemporarySpeedLimit:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='rfigrjigtoljzsgqnajg',
-            version_time='yhmetnscnpwbxhqpfatg',
-            validity_status='yqmgcimfvuabdrfqdgyx',
-            start_time='scupwhvfgdpwqzsxvbzo',
-            end_time='mfkwppkpjsgykmlydaok',
-            road_name='tyvngmxphbryiabftyzz',
-            speed_limit_kmh=int(81),
-            description='kdvsbjhizzceovbavkub',
-            location_description='cvefifckmuwgstlcaehl'
+            situation_record_id='sfrxduvtahitqxyateov',
+            version_time='eccgdayhooeoshdtmhol',
+            validity_status='haxkbwibvmiywvdisrdm',
+            start_time='hlgcpofrogbadidozcut',
+            end_time='dhasvrrscgciqswurfml',
+            road_name='wyrnwopitgwdekrihcjw',
+            speed_limit_kmh=int(63),
+            description='voxpvynvjwmumgbwismk',
+            location_description='sbtrmqpuddelsninvqsy'
         )

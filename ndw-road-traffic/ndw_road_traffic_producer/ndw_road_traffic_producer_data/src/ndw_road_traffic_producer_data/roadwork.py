@@ -17,7 +17,7 @@ import json
 @dataclass
 class Roadwork:
     """
-    Road construction or maintenance work event from the NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.
+    Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.
     
     Attributes:
         situation_record_id (str)
@@ -171,15 +171,15 @@ class Roadwork:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='xvxvnodkjghnjcpkmyza',
-            version_time='uqsckcsybzqdhmllbbxd',
-            validity_status='rjrkyvxspakqjblqjxlh',
-            start_time='iqyjogfkzgojnnmhkeom',
-            end_time='xkawdyeyfvavwrluwpnq',
-            road_name='jmithrffnnlfbiqyfjbh',
-            description='pokswuxzjzdsqestokml',
-            location_description='njlqnbilovkactuomvak',
-            probability='otlfquauvmtbnhgbmkra',
-            severity='ecbbuwshpiuthkrfravw',
-            management_type='qtrdlpncbelfzbczrmjr'
+            situation_record_id='myqjtzzboymmmupvebqe',
+            version_time='syjcbjwusvtnsipujbtb',
+            validity_status='nqrdhwuwqxklhwibsqni',
+            start_time='ocftehmsbdaatsptywyp',
+            end_time='lfedokrzstitvawzaiiu',
+            road_name='xskzhtyxuzedkpagpveo',
+            description='teitmhsdwqpxrnlxsflq',
+            location_description='btbqgtubpvoeweaigzwt',
+            probability='zipwyzzjfzrnyeokxrke',
+            severity='eazeklibihdialurqgsk',
+            management_type='iuodesfgzbilydpvthxa'
         )

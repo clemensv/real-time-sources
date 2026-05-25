@@ -17,7 +17,7 @@ import json
 @dataclass
 class TrafficObservation:
     """
-    Aggregated traffic speed and flow observation per road segment from the NDW DATEX II trafficspeed feed. Speed is averaged and flow summed across all reporting lanes at the measurement site.
+    Aggregated traffic speed and flow observation from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.
     
     Attributes:
         measurement_site_id (str)
@@ -159,9 +159,9 @@ class TrafficObservation:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='izsvuhsejbqporacbdae',
-            measurement_time='erpirsuymwafajesfwwr',
-            average_speed=float(82.6103800793874),
-            vehicle_flow_rate=int(61),
-            number_of_lanes_with_data=int(64)
+            measurement_site_id='pbmvjklvmwkrjfsvuhtk',
+            measurement_time='grbvttoqydgxfctkwsym',
+            average_speed=float(10.378219631991447),
+            vehicle_flow_rate=int(11),
+            number_of_lanes_with_data=int(50)
         )

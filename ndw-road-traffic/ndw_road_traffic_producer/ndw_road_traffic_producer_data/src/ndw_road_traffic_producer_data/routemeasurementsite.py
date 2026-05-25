@@ -17,7 +17,7 @@ import json
 @dataclass
 class RouteMeasurementSite:
     """
-    Reference data for a route (section) measurement site from the NDW DATEX II measurement_current feed. A route site covers a road segment between two geographic endpoints used for travel time computation.
+    Reference record for a route (section) measurement site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time computation.
     
     Attributes:
         measurement_site_id (str)
@@ -169,14 +169,14 @@ class RouteMeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='gcamrmzwecprfbniuslo',
-            name='wlrburnxakfxzymroato',
-            measurement_site_type='isqeqmigaszcxtwdjrai',
-            period=int(72),
-            start_latitude=float(88.81775604682855),
-            start_longitude=float(37.09901687899057),
-            end_latitude=float(42.96856222365177),
-            end_longitude=float(20.589110340256422),
-            road_name='aqhnlikwwtkggcjgdile',
-            length_metres=float(29.564250822180416)
+            measurement_site_id='wmhzvmcrlzismwyjavqo',
+            name='qrtzfhgizvlyzmjrxcrn',
+            measurement_site_type='rbylppheuwyrnlksffec',
+            period=int(44),
+            start_latitude=float(64.1840892834113),
+            start_longitude=float(7.897879712828337),
+            end_latitude=float(78.48399963750028),
+            end_longitude=float(78.86003108242966),
+            road_name='aonfzpwrdpquirnzmjaa',
+            length_metres=float(12.11014970022818)
         )
