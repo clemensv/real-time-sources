@@ -709,3 +709,8 @@ API requires no authentication.
 Racing game telemetry bridge (separate repository). Captures UDP telemetry from
 Forza Motorsport games and forwards to Event Hubs or Fabric Event Streams.
 Binary release available.
+
+
+## AMQP companion feeders for maritime and tracking sources
+
+AMQP 1.0 companion images and Service Bus deployment templates are available for `kystverket-ais`, `king-county-marine`, `vatsim`, `mode-s`, and `aisstream` via each source's `Dockerfile.amqp`, `azure-template-with-servicebus.json`, and container documentation.

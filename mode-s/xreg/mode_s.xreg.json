@@ -40,6 +40,28 @@
       "messagegroups": [
         "#/messagegroups/Mode_S.mqtt"
       ]
+    },
+    "Mode_S.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/mode-s"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Mode_S.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for mode-s CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -248,6 +270,137 @@
               "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
               "qos": 0,
               "retain": false
+            }
+          }
+        }
+      }
+    },
+    "Mode_S.amqp": {
+      "description": "AMQP 1.0 variant of the mode-s events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "Mode_S.amqp.ADSB": {
+          "name": "ADSB",
+          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao24}/{receiver_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "msg_type": {
+                "type": "uritemplate",
+                "value": "{msg_type}",
+                "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
+              }
+            }
+          }
+        },
+        "Mode_S.amqp.AltitudeReply": {
+          "name": "AltitudeReply",
+          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao24}/{receiver_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "msg_type": {
+                "type": "uritemplate",
+                "value": "{msg_type}",
+                "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
+              }
+            }
+          }
+        },
+        "Mode_S.amqp.IdentityReply": {
+          "name": "IdentityReply",
+          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao24}/{receiver_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "msg_type": {
+                "type": "uritemplate",
+                "value": "{msg_type}",
+                "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
+              }
+            }
+          }
+        },
+        "Mode_S.amqp.AcquisitionReply": {
+          "name": "AcquisitionReply",
+          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao24}/{receiver_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "msg_type": {
+                "type": "uritemplate",
+                "value": "{msg_type}",
+                "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
+              }
+            }
+          }
+        },
+        "Mode_S.amqp.CommBAltitude": {
+          "name": "CommBAltitude",
+          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao24}/{receiver_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "msg_type": {
+                "type": "uritemplate",
+                "value": "{msg_type}",
+                "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
+              }
+            }
+          }
+        },
+        "Mode_S.amqp.CommBIdentity": {
+          "name": "CommBIdentity",
+          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{icao24}/{receiver_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "msg_type": {
+                "type": "uritemplate",
+                "value": "{msg_type}",
+                "description": "Downlink-format family routing axis for AMQP filters without decoding the payload."
+              }
             }
           }
         }

@@ -149,3 +149,38 @@ Deploy the MQTT container against an existing MQTT 5 broker:
 Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fvatsim%2Fazure-template-with-eventgrid-mqtt.json)
+
+
+## AMQP 1.0 companion feeder
+
+Pull and run the AMQP image:
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-vatsim-amqp:latest
+docker run --rm \
+  -e AMQP_HOST=broker \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=vatsim \
+  -e AMQP_USERNAME=user \
+  -e AMQP_PASSWORD=secret \
+  -e AMQP_AUTH_MODE=password \
+  -e VATSIM_SAMPLE_MODE=true \
+  ghcr.io/clemensv/real-time-sources-vatsim-amqp:latest
+```
+
+For Azure Service Bus, set `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_PORT=5671`, `AMQP_TLS=true`, and optionally `AMQP_ENTRA_CLIENT_ID` for a user-assigned managed identity. For the Service Bus emulator or SAS-only namespaces, use `AMQP_AUTH_MODE=sas` with `AMQP_SAS_KEY_NAME` and `AMQP_SAS_KEY`.
+
+| Variable | Description | Default |
+|---|---|---|
+| `AMQP_BROKER_URL` | Optional full AMQP URL; path overrides `AMQP_ADDRESS`. | empty |
+| `AMQP_HOST` / `AMQP_PORT` | Broker host and port. | localhost / 5672 |
+| `AMQP_ADDRESS` | Queue/topic/event-hub name. | `vatsim` |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
+| `AMQP_TLS` | Enable TLS for AMQP. | false (`entra` implies TLS) |
+| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS. | `https://servicebus.azure.net/.default` |
+| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | empty |
+
+Deploy a new Service Bus queue plus managed identity with [`azure-template-with-servicebus.json`](azure-template-with-servicebus.json) or [`infra/azure-template-amqp.json`](infra/azure-template-amqp.json).

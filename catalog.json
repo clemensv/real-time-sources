@@ -82,7 +82,9 @@
     "key": false,
     "desc": "Washington State / Puget Sound \u2014 buoy and mooring telemetry",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "nepal-bipad-hydrology",
@@ -595,8 +597,10 @@
     "name": "AISStream",
     "cat": "Maritime",
     "key": true,
-    "desc": "Global \u2014 AIS via WebSocket, ~200 km from shore",
-    "kql": true
+    "desc": "Global — AIS via WebSocket, ~200 km from shore",
+    "kql": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "digitraffic-maritime",
@@ -611,16 +615,20 @@
     "name": "Kystverket AIS",
     "cat": "Maritime",
     "key": false,
-    "desc": "Norway / Svalbard \u2014 raw TCP AIS, ~34 msg/s",
-    "kql": true
+    "desc": "Norway / Svalbard — raw TCP AIS, ~34 msg/s",
+    "kql": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "mode-s",
     "name": "Mode-S",
     "cat": "Aviation",
     "key": false,
-    "desc": "Local \u2014 ADS-B via dump1090 receivers",
-    "kql": true
+    "desc": "Local — ADS-B via dump1090 receivers",
+    "kql": true,
+    "amqp": true,
+    "mqtt": true
   },
   {
     "id": "vatsim",
@@ -630,7 +638,8 @@
     "desc": "Global \u2014 virtual aviation network, pilots & controllers",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "autobahn",

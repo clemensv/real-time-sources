@@ -137,3 +137,10 @@ configured.
 ## MQTT 5.0 / UNS feeder
 
 A sibling container (`Dockerfile.mqtt`) publishes each decoded Mode-S record into an MQTT 5.0 broker on a Unified-Namespace topic tree: `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}` with one of 6 DF-family literals (`df17-adsb`, `df4-altitude`, `df5-identity`, `df11-acquisition`, `df20-comm-b`, `df21-comm-b`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).
+
+
+## AMQP 1.0 companion feeder
+
+This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-mode-s-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=mode-s` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
+
+Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.

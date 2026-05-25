@@ -43,6 +43,28 @@
         "#/messagegroups/US.WA.KingCounty.Marine.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for King County Marine CloudEvents using the topic hierarchy and retain settings declared in this manifest."
+    },
+    "US.WA.KingCounty.Marine.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/king-county-marine"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/US.WA.KingCounty.Marine.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for king-county-marine CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -111,6 +133,41 @@
             "qos": 1,
             "retain": true,
             "message_expiry_interval": 3600
+          }
+        }
+      }
+    },
+    "US.WA.KingCounty.Marine.amqp": {
+      "description": "AMQP 1.0 variant of the king-county-marine events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "US.WA.KingCounty.Marine.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "US.WA.KingCounty.Marine.amqp.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "basemessageurl": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {}
           }
         }
       }

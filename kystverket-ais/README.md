@@ -165,3 +165,10 @@ ride as MQTT 5 user properties; `subject` equals the MMSI.
 
 See `CONTAINER.md` for the container image, environment variables, and
 wildcard subscription patterns.
+
+
+## AMQP 1.0 companion feeder
+
+This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=kystverket-ais` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
+
+Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.

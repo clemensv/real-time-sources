@@ -81,6 +81,28 @@
       "messagegroups": [
         "#/messagegroups/net.vatsim.mqtt"
       ]
+    },
+    "net.vatsim.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/vatsim"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/net.vatsim.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for vatsim CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -187,6 +209,62 @@
           }
         }
       }
+    },
+    "net.vatsim.amqp": {
+      "description": "AMQP 1.0 variant of the vatsim events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "net.vatsim.amqp.PilotPosition": {
+          "name": "PilotPosition",
+          "basemessageurl": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{callsign}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "net.vatsim.amqp.ControllerPosition": {
+          "name": "ControllerPosition",
+          "basemessageurl": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{callsign}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "net.vatsim.amqp.FacilityStatus": {
+          "name": "FacilityStatus",
+          "basemessageurl": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{callsign}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "facility": {
+                "type": "uritemplate",
+                "value": "{facility}",
+                "description": "Routing axis 'facility' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -214,7 +292,7 @@
                         "properties": {
                           "cid": {
                             "type": "int32",
-                            "description": "VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID."
+                            "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
                           },
                           "callsign": {
                             "type": "string",
@@ -224,13 +302,13 @@
                             "type": "double",
                             "description": "Aircraft latitude in decimal degrees (WGS-84). Positive is north.",
                             "unit": "degree",
-                            "symbol": "\u00b0"
+                            "symbol": "°"
                           },
                           "longitude": {
                             "type": "double",
                             "description": "Aircraft longitude in decimal degrees (WGS-84). Positive is east.",
                             "unit": "degree",
-                            "symbol": "\u00b0"
+                            "symbol": "°"
                           },
                           "altitude": {
                             "type": "int32",
@@ -248,7 +326,7 @@
                             "type": "int32",
                             "description": "Magnetic heading of the aircraft in degrees (0-359).",
                             "unit": "degree",
-                            "symbol": "\u00b0"
+                            "symbol": "°"
                           },
                           "transponder": {
                             "type": "string",
@@ -354,7 +432,7 @@
                         "properties": {
                           "cid": {
                             "type": "int32",
-                            "description": "VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID."
+                            "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
                           },
                           "callsign": {
                             "type": "string",
@@ -483,7 +561,7 @@
                   {
                     "name": "cid",
                     "type": "int",
-                    "doc": "VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID."
+                    "doc": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
                   },
                   {
                     "name": "callsign",

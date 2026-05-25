@@ -528,6 +528,36 @@
       "image": "wallonia-issep-amqp",
       "file": "Dockerfile.amqp",
       "module": "wallonia_issep_amqp"
+    },
+    {
+      "dir": "kystverket-ais",
+      "image": "kystverket-ais-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "kystverket_ais_amqp"
+    },
+    {
+      "dir": "king-county-marine",
+      "image": "king-county-marine-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "king_county_marine_amqp"
+    },
+    {
+      "dir": "vatsim",
+      "image": "vatsim-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "vatsim_amqp"
+    },
+    {
+      "dir": "mode-s",
+      "image": "mode-s-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "mode_s_amqp"
+    },
+    {
+      "dir": "aisstream",
+      "image": "aisstream-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "aisstream_amqp"
     }
   ],
   "flow": [
@@ -1058,6 +1088,41 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestWalloniaIssepAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "kystverket-ais",
+      "image": "kystverket-ais-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestKystverketAisAmqpDockerFlow"
+    },
+    {
+      "dir": "king-county-marine",
+      "image": "king-county-marine-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestKingCountyMarineAmqpDockerFlow"
+    },
+    {
+      "dir": "vatsim",
+      "image": "vatsim-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestVatsimAmqpDockerFlow"
+    },
+    {
+      "dir": "mode-s",
+      "image": "mode-s-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestModeSAmqpDockerFlow"
+    },
+    {
+      "dir": "aisstream",
+      "image": "aisstream-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestAisstreamAmqpDockerFlow"
     }
   ]
 }
