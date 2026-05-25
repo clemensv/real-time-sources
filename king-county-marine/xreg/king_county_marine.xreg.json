@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/US.WA.KingCounty.Marine"
-      ]
+      ],
+      "description": "Kafka producer endpoint for King County Marine CloudEvents on the `king-county-marine` topic keyed by `{station_id}`."
     },
     "US.WA.KingCounty.Marine.Mqtt": {
       "usage": [
@@ -41,7 +42,7 @@
       "messagegroups": [
         "#/messagegroups/US.WA.KingCounty.Marine.mqtt"
       ],
-      "description": "MQTT/5.0 binary-mode CloudEvents producer for the King County Marine UNS topic tree."
+      "description": "MQTT 5 producer endpoint for King County Marine CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -63,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.Station"
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.Station",
+          "description": "A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
         },
         "US.WA.KingCounty.Marine.WaterQualityReading": {
           "name": "WaterQualityReading",
@@ -81,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.WaterQualityReading"
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.WaterQualityReading",
+          "description": "A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King County water-taxi routes and sailings."
         }
-      }
+      },
+      "description": "Events from King County Marine covering King County water-taxi routes and sailings. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
     },
     "US.WA.KingCounty.Marine.mqtt": {
-      "description": "MQTT/5.0 transport variants for King County marine station reference data and water-quality readings. The station-only UNS topic tree is maritime/us/wa/king-county/king-county-marine/{station_id}/{event}. Station info and latest water-quality readings are retained with QoS 1 so late subscribers can discover stations and their latest values.",
+      "description": "MQTT 5 variant of the King County Marine events. It carries the same transport semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "US.WA.KingCounty.Marine.mqtt.Station": {
           "name": "Station",
@@ -135,7 +139,7 @@
                   "sensor_level"
                 ],
                 "name": "Station",
-                "description": "Reference metadata for one active King County buoy or mooring raw-data dataset.",
+                "description": "A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -197,7 +201,7 @@
                   "observation_time"
                 ],
                 "name": "WaterQualityReading",
-                "description": "Normalized King County buoy or mooring reading carrying the documented water-quality and weather measurements published by the current raw-data datasets.",
+                "description": "A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King County water-taxi routes and sailings.",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -414,5 +418,10 @@
         }
       }
     }
+  },
+  "description": "King County Marine publishes marine transit schedule and status updates from King County Metro marine feeds for King County water-taxi routes and sailings. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for King County Marine, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

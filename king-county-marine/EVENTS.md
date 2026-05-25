@@ -1,6 +1,6 @@
 # King County Marine Bridge Events
 
-MQTT/5.0 transport variants for King County marine station reference data and water-quality readings. The station-only UNS topic tree is maritime/us/wa/king-county/king-county-marine/{station_id}/{event}. Station info and latest water-quality readings are retained with QoS 1 so late subscribers can discover stations and their latest values.
+King County Marine publishes marine transit schedule and status updates from King County Metro marine feeds for King County water-taxi routes and sailings. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `US.WA.KingCounty.Marine.Station`
 
 #### What it tells you
 
-Reference metadata for one active King County buoy or mooring raw-data dataset.
+A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -104,7 +104,7 @@ CloudEvents type: `US.WA.KingCounty.Marine.WaterQualityReading`
 
 #### What it tells you
 
-Normalized King County buoy or mooring reading carrying the documented water-quality and weather measurements published by the current raw-data datasets.
+A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King County water-taxi routes and sailings.
 
 #### Identity
 
