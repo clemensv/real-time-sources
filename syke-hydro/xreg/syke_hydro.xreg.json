@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/FI.SYKE.Hydrology"
-      ]
+      ],
+      "description": "Kafka producer endpoint for SYKE Hydrology CloudEvents on the `syke-hydro` topic keyed by `{station_id}`."
     }
   },
   "messagegroups": {
@@ -41,7 +42,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station"
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station",
+          "description": "A reference record for one Finnish hydrological monitoring station published by the Finnish Environment Institute (SYKE). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "FI.SYKE.Hydrology.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -59,9 +61,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.WaterLevelObservation",
+          "description": "A current measurement from the Finnish Environment Institute (SYKE) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from SYKE Hydrology covering Finnish hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -89,41 +93,48 @@
                     "type": "string",
                     "altnames": {
                       "lang:fi": "Paikka_Id"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "name": {
                     "type": "string",
                     "altnames": {
                       "lang:fi": "Nimi"
-                    }
+                    },
+                    "description": "Human-readable name of the station, site, or location."
                   },
                   "river_name": {
                     "type": "string",
                     "altnames": {
                       "lang:fi": "PaaVesalNimi"
-                    }
+                    },
+                    "description": "Name of the river or watercourse observed at the station."
                   },
                   "water_area_name": {
                     "type": "string",
                     "altnames": {
                       "lang:fi": "VesalNimi"
-                    }
+                    },
+                    "description": "Human-readable name of the water area."
                   },
                   "municipality": {
                     "type": "string",
                     "altnames": {
                       "lang:fi": "KuntaNimi"
-                    }
+                    },
+                    "description": "Provider-supplied municipality value for this record."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the SYKE Hydrology source."
               }
             }
           }
@@ -147,39 +158,58 @@
                     "type": "string",
                     "altnames": {
                       "lang:fi": "Paikka_Id"
-                    }
+                    },
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "water_level": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.",
                     "altnames": {
                       "lang:fi": "Arvo"
                     }
                   },
                   "water_level_unit": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null."
                   },
                   "water_level_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.",
                     "altnames": {
                       "lang:fi": "Aika"
                     }
                   },
                   "discharge": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.",
                     "altnames": {
                       "lang:fi": "Arvo"
                     }
                   },
                   "discharge_unit": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null."
                   },
                   "discharge_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.",
                     "altnames": {
                       "lang:fi": "Aika"
@@ -187,7 +217,7 @@
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level and discharge observations in the SYKE Hydrology source."
               }
             }
           }
@@ -206,7 +236,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the SYKE Hydrology source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -249,7 +279,8 @@
                     "type": "double"
                   }
                 ],
-                "namespace": "FI.SYKE.Hydrology"
+                "namespace": "FI.SYKE.Hydrology",
+                "description": "Reference details for one monitoring station or site in the SYKE Hydrology source."
               }
             }
           }
@@ -264,7 +295,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the SYKE Hydrology source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -325,12 +356,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "FI.SYKE.Hydrology"
+                "namespace": "FI.SYKE.Hydrology",
+                "description": "Measurement payload for observations in the SYKE Hydrology source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "SYKE Hydrology publishes water level and discharge observations from the Finnish Environment Institute (SYKE) for Finnish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for SYKE Hydrology, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
