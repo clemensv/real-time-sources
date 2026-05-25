@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/org.EAWS.ALBINA.Bulletins"
-      ]
+      ],
+      "description": "Kafka producer endpoint for EAWS ALBINA CloudEvents on the `eaws-albina` topic keyed by `{region_id}`."
     },
     "org.EAWS.ALBINA.Mqtt": {
       "usage": [
@@ -38,7 +39,8 @@
       ],
       "messagegroups": [
         "#/messagegroups/org.EAWS.ALBINA.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for EAWS ALBINA CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -79,12 +81,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheBulletin"
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheBulletin",
+          "description": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source."
         }
-      }
+      },
+      "description": "Events from EAWS ALBINA covering Alpine avalanche forecast regions. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "org.EAWS.ALBINA.mqtt": {
-      "description": "MQTT/5.0 transport variant for EAWS ALBINA avalanche bulletins. Non-retained QoS-1 bulletin events route by country, region, and danger level under alerts/at/eaws/eaws-albina/...",
+      "description": "MQTT 5 variant of the EAWS ALBINA events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "org.EAWS.ALBINA.mqtt.AvalancheBulletin": {
           "name": "AvalancheBulletin",
@@ -167,7 +171,14 @@
                       "considerable",
                       "high",
                       "very_high"
-                    ]
+                    ],
+                    "descriptions": {
+                      "low": "Provider value `low` for this coded alert field.",
+                      "moderate": "Provider value `moderate` for this coded alert field.",
+                      "considerable": "Provider value `considerable` for this coded alert field.",
+                      "high": "Provider value `high` for this coded alert field.",
+                      "very_high": "Provider value `very_high` for this coded alert field."
+                    }
                   },
                   "max_danger_rating_value": {
                     "type": [
@@ -220,7 +231,8 @@
                     "type": "string",
                     "description": "Topic-safe EAWS danger level derived from the highest danger rating, or 'unknown' when no rating is present."
                   }
-                }
+                },
+                "description": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source."
               }
             }
           }
@@ -236,7 +248,7 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "name": "AvalancheRegion",
-                "description": "Reference record describing an EAWS region (or super-region) the bridge is configured to observe. Emitted at startup so that downstream consumers know the regional context even in summer months when no daily bulletins are published.",
+                "description": "Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published.",
                 "required": [
                   "region_id",
                   "lang",
@@ -269,5 +281,10 @@
         }
       }
     }
+  },
+  "description": "EAWS ALBINA publishes avalanche bulletins and danger ratings from the European Avalanche Warning Services ALBINA feed for Alpine avalanche forecast regions. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for EAWS ALBINA, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

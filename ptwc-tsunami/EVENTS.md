@@ -1,6 +1,6 @@
 # PTWC/NTWC Tsunami Bulletins Bridge Events
 
-MQTT/5.0 transport variant for tsunami.gov PTWC/NTWC tsunami bulletins. Non-retained QoS-1 bulletin events route by basin, tsunami bulletin level, and bulletin id under alerts/intl/ptwc/ptwc-tsunami/... Basin is derived from the NOAA feed (PHEB=pacific, PAAQ=alaska); ptwc_level is the native bulletin category normalized to lowercase.
+PTWC Tsunami publishes tsunami bulletins from the Pacific Tsunami Warning Center for ocean basins and tsunami bulletin areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `PTWC.TsunamiBulletin`
 
 #### What it tells you
 
-A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov. Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.
+A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.
 
 #### Identity
 
@@ -86,26 +86,26 @@ Each event identifies the real-world resource with `{bulletin_id}`. `{bulletin_i
 - **`ptwc_level`** (enum, required): Native tsunami bulletin category normalized to lowercase for MQTT routing. Matches the {ptwc_level} MQTT topic axis.
 ##### `feed` values
 
-- `PAAQ`
-- `PHEB`
+- `PAAQ`: Provider value `PAAQ` for this coded alert field.
+- `PHEB`: Provider value `PHEB` for this coded alert field.
 ##### `category` values
 
-- `Warning`
-- `Advisory`
-- `Watch`
-- `Information`
+- `Warning`: Provider value `Warning` for this coded alert field.
+- `Advisory`: Provider value `Advisory` for this coded alert field.
+- `Watch`: Provider value `Watch` for this coded alert field.
+- `Information`: Provider value `Information` for this coded alert field.
 ##### `basin` values
 
-- `pacific`
-- `alaska`
-- `unknown`
+- `pacific`: Provider value `pacific` for this coded alert field.
+- `alaska`: Provider value `alaska` for this coded alert field.
+- `unknown`: Provider value `unknown` for this coded alert field.
 ##### `ptwc_level` values
 
-- `warning`
-- `advisory`
-- `watch`
-- `information`
-- `unknown`
+- `warning`: Provider value `warning` for this coded alert field.
+- `advisory`: Provider value `advisory` for this coded alert field.
+- `watch`: Provider value `watch` for this coded alert field.
+- `information`: Provider value `information` for this coded alert field.
+- `unknown`: Provider value `unknown` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

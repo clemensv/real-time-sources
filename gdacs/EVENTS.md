@@ -1,6 +1,6 @@
 # GDACS — Global Disaster Alert and Coordination System Events
 
-MQTT/5.0 transport variant for GDACS disaster alerts. Non-retained QoS-1 alert events route by disaster event type, event-level GDACS alert color, affected country, and event id under alerts/intl/gdacs/gdacs/... GDACS is both provider and source in this single-feed namespace branch; subscribe with wildcards across the color axis to follow episode-level alert transitions.
+GDACS publishes disaster alerts and impact updates from the Global Disaster Alert and Coordination System for global natural-hazard events. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `GDACS.DisasterAlert`
 
 #### What it tells you
 
-A disaster alert from the Global Disaster Alert and Coordination System (GDACS), covering earthquakes, tropical cyclones, floods, volcanoes, forest fires, and droughts worldwide. A disaster alert from the Global Disaster Alert and Coordination System (GDACS), representing a single episode of a natural disaster event such as an earthquake, tropical cyclone, flood, volcano eruption, forest fire, or drought.
+A disaster alert from the Global Disaster Alert and Coordination System (GDACS), covering earthquakes, tropical cyclones, floods, volcanoes, forest fires, and droughts worldwide.
 
 #### Identity
 
@@ -101,22 +101,22 @@ Each event identifies the real-world resource with `{event_type}/{event_id}`. `{
 - **`alert_color`** (enum, required): Lowercase GDACS alert color derived from alert_level (green, orange, or red). Matches the {alert_color} MQTT topic axis.
 ##### `event_type` values
 
-- `EQ`
-- `TC`
-- `FL`
-- `VO`
-- `FF`
-- `DR`
+- `EQ`: Provider value `EQ` for this coded alert field.
+- `TC`: Provider value `TC` for this coded alert field.
+- `FL`: Provider value `FL` for this coded alert field.
+- `VO`: Provider value `VO` for this coded alert field.
+- `FF`: Provider value `FF` for this coded alert field.
+- `DR`: Provider value `DR` for this coded alert field.
 ##### `alert_level` values
 
-- `Green`
-- `Orange`
-- `Red`
+- `Green`: Provider value `Green` for this coded alert field.
+- `Orange`: Provider value `Orange` for this coded alert field.
+- `Red`: Provider value `Red` for this coded alert field.
 ##### `alert_color` values
 
-- `green`
-- `orange`
-- `red`
+- `green`: Provider value `green` for this coded alert field.
+- `orange`: Provider value `orange` for this coded alert field.
+- `red`: Provider value `red` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

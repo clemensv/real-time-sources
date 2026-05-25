@@ -1,6 +1,6 @@
 # JMA Japan Weather Bulletins Poller Events
 
-**JMA Japan Weather Bulletins Poller** polls the Japan Meteorological Agency (JMA) Atom XML feeds for weather bulletins—forecasts, warnings, advisories, and risk notifications—and sends them to a Kafka topic as CloudEvents. The tool tracks previously seen bulletin IDs to avoid sending duplicates.
+JMA Japan Bulletins publishes official bulletin messages from the Japan Meteorological Agency for Japanese bulletin feeds. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `jp.go.jma.WeatherBulletin`
 
 #### What it tells you
 
-Weather bulletin entry from the JMA XML Atom feed. Covers forecasts, warnings, advisories, and risk notifications published by the Japan Meteorological Agency and its regional observatories.
+An official alert or bulletin from the Japan Meteorological Agency. It carries official bulletin messages for the affected area and validity period published by the upstream source.
 
 #### Identity
 
@@ -63,8 +63,8 @@ Each event identifies the real-world resource with `{bulletin_id}`. `{bulletin_i
 - **`feed_type`** (enum, optional): Which JMA Atom feed this bulletin originated from.
 ##### `feed_type` values
 
-- `regular`
-- `extra`
+- `regular`: Provider value `regular` for this coded alert field.
+- `extra`: Provider value `extra` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

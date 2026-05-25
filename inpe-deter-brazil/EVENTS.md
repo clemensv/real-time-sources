@@ -1,6 +1,6 @@
 # INPE DETER Brazil - Deforestation Alerts Events
 
-MQTT/5.0 transport variants for INPE DETER Brazil deforestation and related land-disturbance alerts. The UNS topic tree is deforestation/br/inpe/inpe-deter-brazil/{biome}/{state_slug}/{class_slug}/{alert_id}/alert. Payloads are JSON binary-mode CloudEvents. QoS 1 is used for at-least-once alert delivery; consumers MUST deduplicate by alert_id. retain=false is used because DETER alerts are immutable historical events and retaining each alert_id topic would create an unbounded retained-message graveyard. A Message Expiry Interval of 604800 seconds bounds queued delivery for offline durable subscribers. The state_slug axis is a lowercased Brazilian UF code or unknown when INPE omits or publishes an unsupported UF; class_slug is a supported topic-safe lowercase-kebab DETER class or unknown.
+INPE DETER Brazil publishes DETER deforestation alerts from Brazil's National Institute for Space Research (INPE) for Brazilian deforestation alert areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 

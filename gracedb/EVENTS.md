@@ -1,6 +1,6 @@
 # GraceDB Gravitational Wave Candidate Alerts Events
 
-MQTT/5.0 transport variant for GraceDB superevents. Non-retained QoS-1 event stream routed by category, physics group, and superevent id under seismic/intl/ligo/gracedb/...
+GraceDB publishes superevent alerts and classifications from the LIGO/Virgo/KAGRA GraceDB service for gravitational-wave candidate events. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 

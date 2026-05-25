@@ -1,6 +1,6 @@
 # Australian State Wildfires Bridge Events
 
-MQTT/5.0 transport variant for Australian bushfire incidents. The UNS topic tree is wildfire/au/{state}/{status}/{incident_id}/incident. QoS 1 and retain=false are used because incident updates are time-varying event updates rather than static reference data; consumers deduplicate by {state}/{incident_id} and CloudEvents id.
+Australia Wildfires publishes bushfire incident status updates from Australian emergency-services incident feeds for Australian wildfire incidents. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `AU.Gov.Emergency.Wildfires.FireIncident`
 
 #### What it tells you
 
-Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services: NSW Rural Fire Service (GeoJSON major-incidents feed), VicEmergency (GeoJSON all-hazards feed filtered to fire events), and Queensland Fire Department (GeoJSON bushfire-alert feed). Each record represents a single active fire incident with its alert level, location, size, and responsible agency.
+An incident update from Australian emergency-services incident feeds. It reports the current status, location, and classification for a wildfire or emergency incident.
 
 #### Identity
 
@@ -106,7 +106,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ## Conventions
 

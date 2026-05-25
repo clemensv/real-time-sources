@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/JP.JMA.Volcano"
-      ]
+      ],
+      "description": "Kafka producer endpoint for JMA Bosai Volcano CloudEvents on the `jma-bosai-volcano` topic keyed by `jp.jma.volcano/{volcano_code}`."
     }
   },
   "messagegroups": {
@@ -85,7 +86,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/jp.jma.volcano.jstruct/schemas/jp.jma.volcano.VolcanicEruption"
         }
-      }
+      },
+      "description": "Events from JMA Bosai Volcano covering Japanese volcano warning areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     }
   },
   "schemagroups": {
@@ -103,7 +105,7 @@
                 "$id": "https://www.jma.go.jp/schemas/bosai/volcano/Volcano",
                 "name": "Volcano",
                 "type": "object",
-                "description": "Reference record for one volcano in the JMA Bosai volcano catalog. JMA publishes the catalog to provide volcano names, coordinates, and whether the five-level eruption alert system operates for that volcano.",
+                "description": "JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh.",
                 "properties": {
                   "volcano_code": {
                     "type": "string",
@@ -174,7 +176,7 @@
                 "$id": "https://www.jma.go.jp/schemas/bosai/volcano/VolcanicWarning",
                 "name": "VolcanicWarning",
                 "type": "object",
-                "description": "Active JMA Bosai volcanic warning or forecast for the target volcano. JMA eruption alert levels express the volcanic activity state, area needing caution, and expected disaster-prevention actions.",
+                "description": "JMA Bosai active volcanic warning or forecast for a target volcano.",
                 "properties": {
                   "volcano_code": {
                     "type": "string",
@@ -266,6 +268,21 @@
                     ],
                     "altnames": {
                       "json": "code"
+                    },
+                    "descriptions": {
+                      "CODE_02": "Provider value `CODE_02` for this coded alert field.",
+                      "CODE_03": "Provider value `CODE_03` for this coded alert field.",
+                      "CODE_04": "Provider value `CODE_04` for this coded alert field.",
+                      "CODE_11": "Provider value `CODE_11` for this coded alert field.",
+                      "CODE_12": "Provider value `CODE_12` for this coded alert field.",
+                      "CODE_13": "Provider value `CODE_13` for this coded alert field.",
+                      "CODE_22": "Provider value `CODE_22` for this coded alert field.",
+                      "CODE_23": "Provider value `CODE_23` for this coded alert field.",
+                      "CODE_36": "Provider value `CODE_36` for this coded alert field.",
+                      "CODE_43": "Provider value `CODE_43` for this coded alert field.",
+                      "CODE_44": "Provider value `CODE_44` for this coded alert field.",
+                      "CODE_45": "Provider value `CODE_45` for this coded alert field.",
+                      "CODE_49": "Provider value `CODE_49` for this coded alert field."
                     }
                   },
                   "alert_level_name": {
@@ -308,6 +325,14 @@
                     },
                     "altnames": {
                       "json": "condition"
+                    },
+                    "descriptions": {
+                      "ISSUED": "Provider value `ISSUED` for this coded alert field.",
+                      "RAISED": "Provider value `RAISED` for this coded alert field.",
+                      "LOWERED": "Provider value `LOWERED` for this coded alert field.",
+                      "CONTINUED": "Provider value `CONTINUED` for this coded alert field.",
+                      "SWITCHED": "Provider value `SWITCHED` for this coded alert field.",
+                      "CANCELLED": "Provider value `CANCELLED` for this coded alert field."
                     }
                   },
                   "info_type_jp": {
@@ -321,7 +346,8 @@
                     "type": "array",
                     "description": "List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Payload for a reference record for an alerting area or region published by the Japan Meteorological Agency. It gives consumers names and identifiers needed to interpret related warnings."
                     }
                   }
                 },
@@ -352,7 +378,7 @@
                 "$id": "https://www.jma.go.jp/schemas/bosai/volcano/VolcanicEruption",
                 "name": "VolcanicEruption",
                 "type": "object",
-                "description": "Discrete JMA Bosai volcanic eruption observation report for a target volcano. The live eruption.json endpoint was empty when reviewed, so structured eruption observation fields are based on JMA documentation for 噴火に関する火山観測報, which states that reports include eruption occurrence time, plume height, plume direction, and volcanic phenomena observed with the eruption; field names also align with observed JMA HTML bulletin examples.",
+                "description": "JMA Bosai volcanic eruption observation report for a target volcano.",
                 "properties": {
                   "volcano_code": {
                     "type": "string",
@@ -412,6 +438,13 @@
                         "CONTINUOUS_ERUPTION_STOPPED": "連続噴火停止",
                         "UNKNOWN": "不明"
                       }
+                    },
+                    "descriptions": {
+                      "ERUPTION": "Provider value `ERUPTION` for this coded alert field.",
+                      "EXPLOSION": "Provider value `EXPLOSION` for this coded alert field.",
+                      "CONTINUOUS_ERUPTION_CONTINUING": "Provider value `CONTINUOUS_ERUPTION_CONTINUING` for this coded alert field.",
+                      "CONTINUOUS_ERUPTION_STOPPED": "Provider value `CONTINUOUS_ERUPTION_STOPPED` for this coded alert field.",
+                      "UNKNOWN": "Provider value `UNKNOWN` for this coded alert field."
                     }
                   },
                   "crater_name": {
@@ -494,7 +527,8 @@
                     "type": "array",
                     "description": "List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Payload for a reference record for an alerting area or region published by the Japan Meteorological Agency. It gives consumers names and identifiers needed to interpret related warnings."
                     }
                   }
                 },
@@ -512,5 +546,10 @@
         }
       }
     }
+  },
+  "description": "JMA Bosai Volcano publishes volcano warnings and eruption notices from the Japan Meteorological Agency for Japanese volcano warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for JMA Bosai Volcano, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

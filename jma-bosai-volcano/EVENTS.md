@@ -1,6 +1,6 @@
 # JMA Bosai Volcanic Warnings and Eruptions Events
 
-This source bridges the Japan Meteorological Agency (JMA) Bosai volcano feeds to Kafka-compatible endpoints as structured CloudEvents. It polls public, unauthenticated JMA endpoints for active volcanic warnings, eruption observations, and the volcano reference catalog.
+JMA Bosai Volcano publishes volcano warnings and eruption notices from the Japan Meteorological Agency for Japanese volcano warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `JP.JMA.Volcano.Volcano`
 
 #### What it tells you
 
-JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh. Reference record for one volcano in the JMA Bosai volcano catalog. JMA publishes the catalog to provide volcano names, coordinates, and whether the five-level eruption alert system operates for that volcano.
+JMA Bosai volcano catalog reference data emitted at startup and on monthly refresh.
 
 #### Identity
 
@@ -87,7 +87,7 @@ CloudEvents type: `JP.JMA.Volcano.VolcanicWarning`
 
 #### What it tells you
 
-JMA Bosai active volcanic warning or forecast for a target volcano. Active JMA Bosai volcanic warning or forecast for the target volcano. JMA eruption alert levels express the volcanic activity state, area needing caution, and expected disaster-prevention actions.
+JMA Bosai active volcanic warning or forecast for a target volcano.
 
 #### Identity
 
@@ -115,27 +115,27 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`area_codes`** (array of string, required): List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.
 ##### `alert_level_code` values
 
-- `CODE_02` — Crater-area warning
-- `CODE_03` — Eruption warning for surrounding sea area
-- `CODE_04` — Eruption forecast: warning lifted
-- `CODE_11` — Active volcano; pay attention
-- `CODE_12` — Crater area restriction
-- `CODE_13` — Mountain access restriction
-- `CODE_22` — Crater vicinity danger
-- `CODE_23` — Mountain access danger
-- `CODE_36` — Surrounding waters warning for submarine or island volcanoes
-- `CODE_43` — Crater-area warning: entry restrictions and similar measures
-- `CODE_44` — Eruption warning for surrounding sea area: surrounding sea area warning
-- `CODE_45` — Active volcano; pay attention
-- `CODE_49` — Crater-area warning: caution around the crater
+- `CODE_02` — Crater-area warning: Provider value `CODE_02` for this coded alert field.
+- `CODE_03` — Eruption warning for surrounding sea area: Provider value `CODE_03` for this coded alert field.
+- `CODE_04` — Eruption forecast: warning lifted: Provider value `CODE_04` for this coded alert field.
+- `CODE_11` — Active volcano; pay attention: Provider value `CODE_11` for this coded alert field.
+- `CODE_12` — Crater area restriction: Provider value `CODE_12` for this coded alert field.
+- `CODE_13` — Mountain access restriction: Provider value `CODE_13` for this coded alert field.
+- `CODE_22` — Crater vicinity danger: Provider value `CODE_22` for this coded alert field.
+- `CODE_23` — Mountain access danger: Provider value `CODE_23` for this coded alert field.
+- `CODE_36` — Surrounding waters warning for submarine or island volcanoes: Provider value `CODE_36` for this coded alert field.
+- `CODE_43` — Crater-area warning: entry restrictions and similar measures: Provider value `CODE_43` for this coded alert field.
+- `CODE_44` — Eruption warning for surrounding sea area: surrounding sea area warning: Provider value `CODE_44` for this coded alert field.
+- `CODE_45` — Active volcano; pay attention: Provider value `CODE_45` for this coded alert field.
+- `CODE_49` — Crater-area warning: caution around the crater: Provider value `CODE_49` for this coded alert field.
 ##### `condition` values
 
-- `ISSUED`
-- `RAISED`
-- `LOWERED`
-- `CONTINUED`
-- `SWITCHED`
-- `CANCELLED`
+- `ISSUED`: Provider value `ISSUED` for this coded alert field.
+- `RAISED`: Provider value `RAISED` for this coded alert field.
+- `LOWERED`: Provider value `LOWERED` for this coded alert field.
+- `CONTINUED`: Provider value `CONTINUED` for this coded alert field.
+- `SWITCHED`: Provider value `SWITCHED` for this coded alert field.
+- `CANCELLED`: Provider value `CANCELLED` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -167,7 +167,7 @@ CloudEvents type: `JP.JMA.Volcano.VolcanicEruption`
 
 #### What it tells you
 
-JMA Bosai volcanic eruption observation report for a target volcano. Discrete JMA Bosai volcanic eruption observation report for a target volcano. The live eruption.json endpoint was empty when reviewed, so structured eruption observation fields are based on JMA documentation for 噴火に関する火山観測報, which states that reports include eruption occurrence time, plume height, plume direction, and volcanic phenomena observed with the eruption; field names also align with observed JMA HTML bulletin examples.
+JMA Bosai volcanic eruption observation report for a target volcano.
 
 #### Identity
 
@@ -203,11 +203,11 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`area_codes`** (array of string, required): List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.
 ##### `eruption_type` values
 
-- `ERUPTION`
-- `EXPLOSION`
-- `CONTINUOUS_ERUPTION_CONTINUING`
-- `CONTINUOUS_ERUPTION_STOPPED`
-- `UNKNOWN`
+- `ERUPTION`: Provider value `ERUPTION` for this coded alert field.
+- `EXPLOSION`: Provider value `EXPLOSION` for this coded alert field.
+- `CONTINUOUS_ERUPTION_CONTINUING`: Provider value `CONTINUOUS_ERUPTION_CONTINUING` for this coded alert field.
+- `CONTINUOUS_ERUPTION_STOPPED`: Provider value `CONTINUOUS_ERUPTION_STOPPED` for this coded alert field.
+- `UNKNOWN`: Provider value `UNKNOWN` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

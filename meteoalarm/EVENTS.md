@@ -1,6 +1,6 @@
 # Meteoalarm European Weather Warnings Bridge Events
 
-MQTT/5.0 transport variant for Meteoalarm CAP weather warnings. Non-retained QoS-1 warning events route by country feed slug, native CAP severity, normalized Meteoalarm awareness type, and CAP identifier under alerts/intl/meteoalarm/meteoalarm/... The awareness_type axis is derived from the Meteoalarm awareness_type parameter label and normalized for MQTT topic safety.
+Meteoalarm publishes official weather warnings from the European Meteoalarm network for European warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `Meteoalarm.WeatherWarning`
 
 #### What it tells you
 
-A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types. A severe weather warning from the EUMETNET Meteoalarm system.
+A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.
 
 #### Identity
 
@@ -97,58 +97,58 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`awareness_type_raw`** (string, optional): Raw Meteoalarm awareness_type parameter value as provided by CAP, for example "2; Snow/Ice".
 ##### `status` values
 
-- `Actual`
-- `Exercise`
-- `System`
-- `Test`
-- `Draft`
+- `Actual`: Provider value `Actual` for this coded alert field.
+- `Exercise`: Provider value `Exercise` for this coded alert field.
+- `System`: Provider value `System` for this coded alert field.
+- `Test`: Provider value `Test` for this coded alert field.
+- `Draft`: Provider value `Draft` for this coded alert field.
 ##### `msg_type` values
 
-- `Alert`
-- `Update`
-- `Cancel`
-- `Ack`
-- `Error`
+- `Alert`: Provider value `Alert` for this coded alert field.
+- `Update`: Provider value `Update` for this coded alert field.
+- `Cancel`: Provider value `Cancel` for this coded alert field.
+- `Ack`: Provider value `Ack` for this coded alert field.
+- `Error`: Provider value `Error` for this coded alert field.
 ##### `scope` values
 
-- `Public`
-- `Restricted`
-- `Private`
+- `Public`: Provider value `Public` for this coded alert field.
+- `Restricted`: Provider value `Restricted` for this coded alert field.
+- `Private`: Provider value `Private` for this coded alert field.
 ##### `category` values
 
-- `Met`
-- `Geo`
-- `Safety`
-- `Security`
-- `Rescue`
-- `Fire`
-- `Health`
-- `Env`
-- `Transport`
-- `Infra`
-- `CBRNE`
-- `Other`
+- `Met`: Provider value `Met` for this coded alert field.
+- `Geo`: Provider value `Geo` for this coded alert field.
+- `Safety`: Provider value `Safety` for this coded alert field.
+- `Security`: Provider value `Security` for this coded alert field.
+- `Rescue`: Provider value `Rescue` for this coded alert field.
+- `Fire`: Provider value `Fire` for this coded alert field.
+- `Health`: Provider value `Health` for this coded alert field.
+- `Env`: Provider value `Env` for this coded alert field.
+- `Transport`: Provider value `Transport` for this coded alert field.
+- `Infra`: Provider value `Infra` for this coded alert field.
+- `CBRNE`: Provider value `CBRNE` for this coded alert field.
+- `Other`: Provider value `Other` for this coded alert field.
 ##### `severity` values
 
-- `Extreme`
-- `Severe`
-- `Moderate`
-- `Minor`
-- `Unknown`
+- `Extreme`: Provider value `Extreme` for this coded alert field.
+- `Severe`: Provider value `Severe` for this coded alert field.
+- `Moderate`: Provider value `Moderate` for this coded alert field.
+- `Minor`: Provider value `Minor` for this coded alert field.
+- `Unknown`: Provider value `Unknown` for this coded alert field.
 ##### `urgency` values
 
-- `Immediate`
-- `Expected`
-- `Future`
-- `Past`
-- `Unknown`
+- `Immediate`: Provider value `Immediate` for this coded alert field.
+- `Expected`: Provider value `Expected` for this coded alert field.
+- `Future`: Provider value `Future` for this coded alert field.
+- `Past`: Provider value `Past` for this coded alert field.
+- `Unknown`: Provider value `Unknown` for this coded alert field.
 ##### `certainty` values
 
-- `Observed`
-- `Likely`
-- `Possible`
-- `Unlikely`
-- `Unknown`
+- `Observed`: Provider value `Observed` for this coded alert field.
+- `Likely`: Provider value `Likely` for this coded alert field.
+- `Possible`: Provider value `Possible` for this coded alert field.
+- `Unlikely`: Provider value `Unlikely` for this coded alert field.
+- `Unknown`: Provider value `Unknown` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

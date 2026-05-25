@@ -1,6 +1,6 @@
 # NIFC USA Wildfires - Active Wildfire Incident Feed Events
 
-**NIFC-USA-Wildfires** is a tool designed to interact with the [National Interagency Fire Center (NIFC)](https://www.nifc.gov/) ArcGIS Feature Service to fetch active wildfire incident data from the USA. The tool can list recent incidents or continuously poll the API to send wildfire events to a Kafka topic.
+NIFC USA Wildfires publishes wildfire incident status records from the U.S. National Interagency Fire Center for U.S. wildfire incidents. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 

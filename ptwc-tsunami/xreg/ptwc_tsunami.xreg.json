@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/PTWC.Bulletins"
-      ]
+      ],
+      "description": "Kafka producer endpoint for PTWC Tsunami CloudEvents on the `ptwc-tsunami` topic keyed by `{bulletin_id}`."
     },
     "PTWC.Bulletins.Mqtt": {
       "usage": [
@@ -38,7 +39,8 @@
         {
           "uri": "mqtt://localhost:1883"
         }
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for PTWC Tsunami CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -63,10 +65,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/PTWC.jstruct/schemas/PTWC.TsunamiBulletin"
         }
-      }
+      },
+      "description": "Events from PTWC Tsunami covering ocean basins and tsunami bulletin areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "PTWC.Bulletins.mqtt": {
-      "description": "MQTT/5.0 transport variant for tsunami.gov PTWC/NTWC tsunami bulletins. Non-retained QoS-1 bulletin events route by basin, tsunami bulletin level, and bulletin id under alerts/intl/ptwc/ptwc-tsunami/... Basin is derived from the NOAA feed (PHEB=pacific, PAAQ=alaska); ptwc_level is the native bulletin category normalized to lowercase.",
+      "description": "MQTT 5 variant of the PTWC Tsunami events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "PTWC.Bulletins.mqtt.TsunamiBulletin": {
           "name": "TsunamiBulletin",
@@ -97,7 +100,7 @@
                 "$id": "https://www.tsunami.gov/schemas/PTWC/TsunamiBulletin",
                 "name": "TsunamiBulletin",
                 "type": "object",
-                "description": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.",
+                "description": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.",
                 "required": [
                   "bulletin_id",
                   "title",
@@ -117,7 +120,11 @@
                     "enum": [
                       "PAAQ",
                       "PHEB"
-                    ]
+                    ],
+                    "descriptions": {
+                      "PAAQ": "Provider value `PAAQ` for this coded alert field.",
+                      "PHEB": "Provider value `PHEB` for this coded alert field."
+                    }
                   },
                   "center": {
                     "type": "string",
@@ -147,7 +154,13 @@
                       "Advisory",
                       "Watch",
                       "Information"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Warning": "Provider value `Warning` for this coded alert field.",
+                      "Advisory": "Provider value `Advisory` for this coded alert field.",
+                      "Watch": "Provider value `Watch` for this coded alert field.",
+                      "Information": "Provider value `Information` for this coded alert field."
+                    }
                   },
                   "magnitude": {
                     "type": "string",
@@ -176,7 +189,12 @@
                       "pacific",
                       "alaska",
                       "unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "pacific": "Provider value `pacific` for this coded alert field.",
+                      "alaska": "Provider value `alaska` for this coded alert field.",
+                      "unknown": "Provider value `unknown` for this coded alert field."
+                    }
                   },
                   "ptwc_level": {
                     "type": "string",
@@ -187,7 +205,14 @@
                       "watch",
                       "information",
                       "unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "warning": "Provider value `warning` for this coded alert field.",
+                      "advisory": "Provider value `advisory` for this coded alert field.",
+                      "watch": "Provider value `watch` for this coded alert field.",
+                      "information": "Provider value `information` for this coded alert field.",
+                      "unknown": "Provider value `unknown` for this coded alert field."
+                    }
                   }
                 }
               }
@@ -196,5 +221,10 @@
         }
       }
     }
+  },
+  "description": "PTWC Tsunami publishes tsunami bulletins from the Pacific Tsunami Warning Center for ocean basins and tsunami bulletin areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for PTWC Tsunami, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
