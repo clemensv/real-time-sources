@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - UkGovDefraAurnStationsEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    UkGovDefraAurnTimeseriesEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    UkGovDefraAurnTimeseriesEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkGovDefraAurnStationsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkGovDefraAurnStationsAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkGovDefraAurnTimeseriesMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkGovDefraAurnTimeseriesAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - UkGovDefraAurnTimeseriesProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkGovDefraAurnStationsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkGovDefraAurnStationsAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkGovDefraAurnTimeseriesMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkGovDefraAurnTimeseriesAmqpProducersolution for event-driven applications.
 
 
 
@@ -229,6 +253,154 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_station_async = uk_gov_defra_aurn_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_station_async = uk_gov_defra_aurn_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_station_async = uk_gov_defra_aurn_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_station_async = uk_gov_defra_aurn_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_station_async = uk_gov_defra_aurn_station_event
 
 **Parameters:**```
 
@@ -532,6 +704,154 @@ uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_timeseries_async = uk_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_async = uk_gov_defra_aurn_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_timeseries_async = uk_gov_defra_aurn_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_async = uk_gov_defra_aurn_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_timeseries_async = uk_gov_defra_aurn_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -629,6 +949,158 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_observation_async = uk_gov_defra_aurn_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
+None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_observation_async = uk_gov_defra_aurn_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
+None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_observation_async = uk_gov_defra_aurn_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
+None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_observation_async = uk_gov_defra_aurn_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
+None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_observation_async = uk_gov_defra_aurn_observation_event
 
 **Parameters:**```
 
@@ -833,6 +1305,2568 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_uk_gov_defra_aurn_observation_batch(```
+
+    messages=[
+
+        Observation(...),Initializes the runner with a Kafka consumer.
+
+        Observation(...),
+
+        Observation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkGovDefraAurnStationsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkGovDefraAurnStationsMqttEventDispatcher` handles events for the uk.gov.defra.aurn.Stations.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from defra_aurn_producer import UkGovDefraAurnStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_gov_defra_aurn_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkGovDefraAurnStationsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_defra_aurn_stations_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_defra_aurn_stations_mqtt_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.gov.defra.aurn.Stations.mqtt.Station`: Reference metadata for a Defra AURN monitoring
+station entry as published by the 52°North SOS Timeseries API stations collection.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_dispatcher.uk_gov_defra_aurn_stations_mqtt_station_async =
+uk_gov_defra_aurn_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_stations_mqtt_station_async =
+uk_gov_defra_aurn_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_stations_mqtt_station_async =
+uk_gov_defra_aurn_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_stations_mqtt_station_async =
+uk_gov_defra_aurn_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_stations_mqtt_station_async =
+uk_gov_defra_aurn_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_stations_mqtt_station_async =
+uk_gov_defra_aurn_stations_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_gov_defra_aurn_stations_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_defra_aurn_stations_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.gov.defra.aurn.Stations.mqtt.Station` message. Reference metadata for a Defra AURN monitoring station
+entry as published by the 52°North SOS Timeseries API stations collection.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_defra_aurn_stations_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.gov.defra.aurn.Stations.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_defra_aurn_stations_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkGovDefraAurnStationsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkGovDefraAurnStationsAmqpEventDispatcher` handles events for the uk.gov.defra.aurn.Stations.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from defra_aurn_producer import UkGovDefraAurnStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_gov_defra_aurn_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkGovDefraAurnStationsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_defra_aurn_stations_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_defra_aurn_stations_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.gov.defra.aurn.Stations.amqp.Station`: Reference metadata for a Defra AURN monitoring
+station entry as published by the 52°North SOS Timeseries API stations collection.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_dispatcher.uk_gov_defra_aurn_stations_amqp_station_async =
+uk_gov_defra_aurn_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_stations_amqp_station_async =
+uk_gov_defra_aurn_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_stations_amqp_station_async =
+uk_gov_defra_aurn_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_stations_amqp_station_async =
+uk_gov_defra_aurn_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_stations_amqp_station_async =
+uk_gov_defra_aurn_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Station`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_stations_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station)
+-> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_stations_amqp_station_async =
+uk_gov_defra_aurn_stations_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_gov_defra_aurn_stations_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_defra_aurn_stations_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.gov.defra.aurn.Stations.amqp.Station` message. Reference metadata for a Defra AURN monitoring station
+entry as published by the 52°North SOS Timeseries API stations collection.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_defra_aurn_stations_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.gov.defra.aurn.Stations.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_defra_aurn_stations_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkGovDefraAurnTimeseriesMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkGovDefraAurnTimeseriesMqttEventDispatcher` handles events for the uk.gov.defra.aurn.Timeseries.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from defra_aurn_producer import UkGovDefraAurnStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_gov_defra_aurn_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkGovDefraAurnTimeseriesMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_defra_aurn_timeseries_mqtt_timeseries_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_defra_aurn_timeseries_mqtt_timeseries_async:  Callable[[ConsumerRecord,
+CloudEvent, Timeseries], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.gov.defra.aurn.Timeseries.mqtt.Timeseries`: Reference metadata for a Defra AURN
+station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_timeseries_async =
+uk_gov_defra_aurn_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_timeseries_async =
+uk_gov_defra_aurn_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_timeseries_async =
+uk_gov_defra_aurn_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_timeseries_async =
+uk_gov_defra_aurn_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_timeseries_async =
+uk_gov_defra_aurn_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_timeseries_async =
+uk_gov_defra_aurn_timeseries_mqtt_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_defra_aurn_timeseries_mqtt_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_defra_aurn_timeseries_mqtt_observation_async:  Callable[[ConsumerRecord,
+CloudEvent, Observation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.gov.defra.aurn.Timeseries.mqtt.Observation`: Hourly or near-hourly Defra AURN
+observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling
+window.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_observation_async =
+uk_gov_defra_aurn_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_observation_async =
+uk_gov_defra_aurn_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_observation_async =
+uk_gov_defra_aurn_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_observation_async =
+uk_gov_defra_aurn_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_observation_async =
+uk_gov_defra_aurn_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_timeseries_mqtt_observation_async =
+uk_gov_defra_aurn_timeseries_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_gov_defra_aurn_timeseries_mqtt_timeseries`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_defra_aurn_timeseries_mqtt_timeseries(
+
+    self,##### `_process_event`
+
+    data: Timeseries,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.gov.defra.aurn.Timeseries.mqtt.Timeseries` message. Reference metadata for a Defra AURN station and
+pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Timeseries`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_defra_aurn_timeseries_mqtt_timeseries(
+
+    data=Timeseries(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.gov.defra.aurn.Timeseries.mqtt.Timeseries` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_defra_aurn_timeseries_mqtt_timeseries_batch(```
+
+    messages=[
+
+        Timeseries(...),Initializes the runner with a Kafka consumer.
+
+        Timeseries(...),
+
+        Timeseries(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_gov_defra_aurn_timeseries_mqtt_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_defra_aurn_timeseries_mqtt_observation(
+
+    self,##### `_process_event`
+
+    data: Observation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.gov.defra.aurn.Timeseries.mqtt.Observation` message. Hourly or near-hourly Defra AURN observation
+value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Observation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_defra_aurn_timeseries_mqtt_observation(
+
+    data=Observation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.gov.defra.aurn.Timeseries.mqtt.Observation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_defra_aurn_timeseries_mqtt_observation_batch(```
+
+    messages=[
+
+        Observation(...),Initializes the runner with a Kafka consumer.
+
+        Observation(...),
+
+        Observation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkGovDefraAurnTimeseriesAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkGovDefraAurnTimeseriesAmqpEventDispatcher` handles events for the uk.gov.defra.aurn.Timeseries.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from defra_aurn_producer import UkGovDefraAurnStationsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_gov_defra_aurn_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkGovDefraAurnTimeseriesAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkGovDefraAurnStationsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_defra_aurn_timeseries_amqp_timeseries_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_defra_aurn_timeseries_amqp_timeseries_async:  Callable[[ConsumerRecord,
+CloudEvent, Timeseries], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.gov.defra.aurn.Timeseries.amqp.Timeseries`: Reference metadata for a Defra AURN
+station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_dispatcher.uk_gov_defra_aurn_timeseries_amqp_timeseries_async =
+uk_gov_defra_aurn_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_timeseries_amqp_timeseries_async =
+uk_gov_defra_aurn_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_amqp_timeseries_async =
+uk_gov_defra_aurn_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_timeseries_amqp_timeseries_async =
+uk_gov_defra_aurn_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_amqp_timeseries_async =
+uk_gov_defra_aurn_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Timeseries`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Timeseries) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_timeseries_amqp_timeseries_async =
+uk_gov_defra_aurn_timeseries_amqp_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_defra_aurn_timeseries_amqp_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_defra_aurn_timeseries_amqp_observation_async:  Callable[[ConsumerRecord,
+CloudEvent, Observation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.gov.defra.aurn.Timeseries.amqp.Observation`: Hourly or near-hourly Defra AURN
+observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling
+window.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_dispatcher.uk_gov_defra_aurn_timeseries_amqp_observation_async =
+uk_gov_defra_aurn_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_dispatcher.uk_gov_defra_aurn_timeseries_amqp_observation_async =
+uk_gov_defra_aurn_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_amqp_observation_async =
+uk_gov_defra_aurn_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnStationsAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_stations_amqp_dispatcher.uk_gov_defra_aurn_timeseries_amqp_observation_async =
+uk_gov_defra_aurn_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesMqttProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_mqtt_dispatcher.uk_gov_defra_aurn_timeseries_amqp_observation_async =
+uk_gov_defra_aurn_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkGovDefraAurnTimeseriesAmqpProducer- `data`: The event data of type `defra_aurn_producer_data.Observation`.
+
+
+
+Producer for `uk.gov.defra.aurn.Timeseries.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_defra_aurn_timeseries_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Observation) -> None:
+
+```python    # Process the event data
+
+UkGovDefraAurnTimeseriesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_defra_aurn_timeseries_amqp_dispatcher.uk_gov_defra_aurn_timeseries_amqp_observation_async =
+uk_gov_defra_aurn_timeseries_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_gov_defra_aurn_timeseries_amqp_timeseries`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_defra_aurn_timeseries_amqp_timeseries(
+
+    self,##### `_process_event`
+
+    data: Timeseries,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.gov.defra.aurn.Timeseries.amqp.Timeseries` message. Reference metadata for a Defra AURN station and
+pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Timeseries`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_defra_aurn_timeseries_amqp_timeseries(
+
+    data=Timeseries(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.gov.defra.aurn.Timeseries.amqp.Timeseries` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_defra_aurn_timeseries_amqp_timeseries_batch(```
+
+    messages=[
+
+        Timeseries(...),Initializes the runner with a Kafka consumer.
+
+        Timeseries(...),
+
+        Timeseries(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_gov_defra_aurn_timeseries_amqp_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_defra_aurn_timeseries_amqp_observation(
+
+    self,##### `_process_event`
+
+    data: Observation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.gov.defra.aurn.Timeseries.amqp.Observation` message. Hourly or near-hourly Defra AURN observation
+value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Observation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_defra_aurn_timeseries_amqp_observation(
+
+    data=Observation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.gov.defra.aurn.Timeseries.amqp.Observation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_defra_aurn_timeseries_amqp_observation_batch(```
 
     messages=[
 

@@ -1,3 +1,3 @@
-from .defra import Station, Timeseries, Observation
+from .defra import Observation, Timeseries, Station
 
-__all__ = ["Station", "Timeseries", "Observation"]
+__all__ = ["Observation", "Timeseries", "Station"]

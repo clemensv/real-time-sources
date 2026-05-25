@@ -110,3 +110,38 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventhub.json)
+
+
+## MQTT 5.0 / Unified Namespace feeder
+
+Image: `real-time-sources-defra-aurn-mqtt`. Publishes binary-mode CloudEvents to `air-quality/gb/defra/defra-aurn/...`.
+
+| Variable | Purpose |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, for example `mqtt://host:1883`. |
+| `MQTT_HOST`, `MQTT_PORT`, `MQTT_TLS` | Host/port/TLS alternatives to `MQTT_BROKER_URL`. |
+| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional username/password authentication. |
+| `MQTT_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
+| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+
+[![Deploy MQTT BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20MQTT)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-mqtt.json)
+[![Deploy MQTT Event Grid](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Grid%20MQTT-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventgrid-mqtt.json)
+
+## AMQP 1.0 feeder
+
+Image: `real-time-sources-defra-aurn-amqp`. Publishes binary-mode CloudEvents to a configurable AMQP 1.0 address.
+
+| Variable | Purpose |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL, for example `amqp://user:pass@host:5672/defra-aurn`. |
+| `AMQP_HOST`, `AMQP_PORT`, `AMQP_TLS` | Host/port/TLS alternatives to `AMQP_BROKER_URL`. |
+| `AMQP_ADDRESS` | Queue/topic/address; default `defra-aurn`. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials. |
+| `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | Entra CBS authentication settings. |
+| `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | SAS CBS authentication settings. |
+| `AMQP_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
+| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+
+[![Deploy AMQP BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20AMQP)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-amqp.json)
+[![Deploy AMQP Service Bus](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-servicebus.json)

@@ -43,6 +43,52 @@
         "#/messagegroups/uk.gov.defra.aurn.Timeseries"
       ],
       "description": "Kafka producer endpoint for DEFRA AURN CloudEvents on the `defra-aurn` topic keyed by `{timeseries_id}`."
+    },
+    "uk.gov.defra.aurn.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.gov.defra.aurn.Stations.mqtt",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for defra-aurn CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "uk.gov.defra.aurn.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/defra-aurn"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.gov.defra.aurn.Stations.amqp",
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for defra-aurn CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -112,6 +158,144 @@
         }
       },
       "description": "Events from DEFRA AURN covering UK air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "uk.gov.defra.aurn.Stations.mqtt": {
+      "description": "MQTT 5 variant of uk.gov.defra.aurn.Stations events with subscriber-friendly UNS topics.",
+      "messages": {
+        "uk.gov.defra.aurn.Stations.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/defra/defra-aurn/{region}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Stations.amqp": {
+      "description": "AMQP 1.0 variant of uk.gov.defra.aurn.Stations events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "uk.gov.defra.aurn.Stations.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.mqtt": {
+      "description": "MQTT 5 variant of uk.gov.defra.aurn.Timeseries events with subscriber-friendly UNS topics.",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries": {
+          "name": "Timeseries",
+          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/defra/defra-aurn/{region}/{station_id}/{pollutant}/timeseries",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "uk.gov.defra.aurn.Timeseries.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/defra/defra-aurn/{region}/{station_id}/{pollutant}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries.amqp": {
+      "description": "AMQP 1.0 variant of uk.gov.defra.aurn.Timeseries events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries.amqp.Timeseries": {
+          "name": "Timeseries",
+          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{timeseries_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Timeseries.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{timeseries_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
