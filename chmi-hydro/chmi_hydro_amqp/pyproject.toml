@@ -17,7 +17,7 @@ dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
 azure-identity = ">=1.17.0"
 azure-core = ">=1.30.0"
-chmi_hydro = { path = "../chmi_hydro" }
+chmi_hydro = { path = ".." }
 chmi_hydro_amqp_producer_data = { path = "../chmi_hydro_amqp_producer/chmi_hydro_amqp_producer_data" }
 chmi_hydro_amqp_producer_amqp_producer = { path = "../chmi_hydro_amqp_producer/chmi_hydro_amqp_producer_amqp_producer" }
 

@@ -17,7 +17,7 @@ dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
 azure-identity = ">=1.17.0"
 azure-core = ">=1.30.0"
-german_waters = { path = "../german_waters" }
+german_waters = { path = ".." }
 german_waters_amqp_producer_data = { path = "../german_waters_amqp_producer/german_waters_amqp_producer_data" }
 german_waters_amqp_producer_amqp_producer = { path = "../german_waters_amqp_producer/german_waters_amqp_producer_amqp_producer" }
 

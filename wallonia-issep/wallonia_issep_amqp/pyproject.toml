@@ -17,7 +17,7 @@ dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
 azure-identity = ">=1.17.0"
 azure-core = ">=1.30.0"
-wallonia_issep = { path = "../wallonia_issep" }
+wallonia_issep = { path = ".." }
 wallonia_issep_amqp_producer_data = { path = "../wallonia_issep_amqp_producer/wallonia_issep_amqp_producer_data" }
 wallonia_issep_amqp_producer_amqp_producer = { path = "../wallonia_issep_amqp_producer/wallonia_issep_amqp_producer_amqp_producer" }
 
