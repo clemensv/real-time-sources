@@ -17,6 +17,7 @@ import time
 import logging
 import os
 import sys
+from urllib.parse import urlparse
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 
