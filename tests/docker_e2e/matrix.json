@@ -702,6 +702,18 @@
       "image": "hko-hong-kong-amqp",
       "file": "Dockerfile.amqp",
       "module": "hko_hong_kong_amqp"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "jma_japan_mqtt"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_japan_amqp"
     }
   ],
   "flow": [
@@ -1426,6 +1438,18 @@
       "image": "hko-hong-kong-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestHkoHongKongAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestJmaJapanMqttDockerFlow"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaJapanAmqpDockerFlow"
     }
   ]
 }

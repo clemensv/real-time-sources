@@ -314,7 +314,9 @@
     "key": false,
     "desc": "Japan — weather bulletins, warnings, forecasts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "kmi-belgium",

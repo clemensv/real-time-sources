@@ -725,3 +725,4 @@ AMQP 1.0 companion images and Service Bus deployment templates are available for
 - `environment-canada`: MQTT + AMQP companion feeders (`environment-canada-mqtt`, `environment-canada-amqp`).
 - `geosphere-austria`: MQTT + AMQP companion feeders (`geosphere-austria-mqtt`, `geosphere-austria-amqp`).
 - `hko-hong-kong`: MQTT + AMQP companion feeders (`hko-hong-kong-mqtt`, `hko-hong-kong-amqp`).
+- `jma-japan`: MQTT + AMQP companion feeders (`jma-japan-mqtt`, `jma-japan-amqp`).

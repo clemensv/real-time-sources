@@ -316,3 +316,11 @@ class TestHkoHongKongAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"HKO_HONG_KONG_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'HK.Gov.HKO.Weather.WeatherObservation', 'HK.Gov.HKO.Weather.Station'}
     expected_count = 2
+
+
+class TestJmaJapanAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-japan"
+    image = "jma-japan-amqp"
+    env = {"JMA_JAPAN_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'jp.go.jma.WeatherBulletin'}
+    expected_count = 1
