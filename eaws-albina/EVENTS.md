@@ -1,6 +1,6 @@
 # EAWS ALBINA Avalanche Bulletin Bridge Events
 
-MQTT/5.0 transport variant for EAWS ALBINA avalanche bulletins. Non-retained QoS-1 bulletin events route by country, region, and danger level under alerts/at/eaws/eaws-albina/...
+EAWS ALBINA publishes avalanche bulletins and danger ratings from the European Avalanche Warning Services ALBINA feed for Alpine avalanche forecast regions. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -95,7 +95,7 @@ CloudEvents type: `org.EAWS.ALBINA.AvalancheBulletin`
 
 #### What it tells you
 
-This event carries avalanche bulletin data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source.
 
 #### Identity
 
@@ -131,11 +131,11 @@ Each event identifies the real-world resource with `{region_id}`. `{region_id}` 
 - **`danger_level`** (string, required): Topic-safe EAWS danger level derived from the highest danger rating, or 'unknown' when no rating is present.
 ##### `max_danger_rating` values
 
-- `low`
-- `moderate`
-- `considerable`
-- `high`
-- `very_high`
+- `low`: Provider value `low` for this coded alert field.
+- `moderate`: Provider value `moderate` for this coded alert field.
+- `considerable`: Provider value `considerable` for this coded alert field.
+- `high`: Provider value `high` for this coded alert field.
+- `very_high`: Provider value `very_high` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
