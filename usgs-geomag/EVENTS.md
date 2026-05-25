@@ -1,80 +1,288 @@
 # USGS Geomagnetism Program Bridge Events
 
-This document describes the events emitted by the USGS Geomagnetism Program Bridge.
-
-- [gov.usgs.geomag](#message-group-govusgsgeomag)
-  - [gov.usgs.geomag.Observatory](#message-govusgsgeomagobservatory)
-  - [gov.usgs.geomag.MagneticFieldReading](#message-govusgsgeomagmagneticfieldreading)
-
----
-
-## Message Group: gov.usgs.geomag
-
----
-
-### Message: gov.usgs.geomag.Observatory
-
-Reference data for a USGS Geomagnetism Program observatory.
-
-#### CloudEvents Attributes:
-
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` | CloudEvent type | `string` | `True` | `gov.usgs.geomag.Observatory` |
-| `source` | CloudEvent source | `string` | `True` | `https://geomag.usgs.gov` |
-| `subject` | Observatory IAGA code | `uritemplate` | `True` | `{iaga_code}` |
-
-#### Schema: Observatory
-
-| **Field Name** | **Type** | **Unit** | **Description** |
-|----------------|----------|----------|-----------------|
-| `iaga_code` | *string* | — | IAGA observatory code (e.g. BOU, BRW, FRN) |
-| `name` | *string* | — | Human-readable observatory name |
-| `agency` | *string* | — | Operating agency short identifier |
-| `agency_name` | *string* | — | Full operating agency name |
-| `latitude` | *number* | degrees | Geodetic latitude |
-| `longitude` | *number* | degrees | Geodetic longitude (degrees east) |
-| `elevation` | *number* | meters | Elevation above mean sea level |
-| `sensor_orientation` | *string* | — | Magnetometer sensor orientation (e.g. HDZ) |
-| `sensor_sampling_rate` | *number* | Hz | Native sensor sampling rate |
-| `declination_base` | *number* | — | Declination baseline in minutes of arc |
-
----
-
-### Message: gov.usgs.geomag.MagneticFieldReading
-
-One-minute resolution geomagnetic field variation reading.
-
-#### CloudEvents Attributes:
-
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` | CloudEvent type | `string` | `True` | `gov.usgs.geomag.MagneticFieldReading` |
-| `source` | CloudEvent source | `string` | `True` | `https://geomag.usgs.gov` |
-| `subject` | Observatory IAGA code | `uritemplate` | `True` | `{iaga_code}` |
-
-#### Schema: MagneticFieldReading
-
-| **Field Name** | **Type** | **Unit** | **Description** |
-|----------------|----------|----------|-----------------|
-| `iaga_code` | *string* | — | IAGA observatory code |
-| `timestamp` | *string (date-time)* | — | UTC timestamp of the 1-minute sample |
-| `h` | *number* | nT | Horizontal intensity component |
-| `d` | *number* | minutes of arc | Declination angle |
-| `z` | *number* | nT | Vertical intensity component |
-| `f` | *number* | nT | Total field intensity |
-
----
-
-## Message Group: gov.usgs.geomag.mqtt
-
 MQTT/5.0 transport variants for USGS geomagnetic observatory reference data and one-minute readings. Topics are retained QoS-1 leaves under space-weather/us/usgs/usgs-geomag/{iaga_code}/..., where {iaga_code} in the topic is the lowercased IAGA observatory code; the payload field may carry the canonical upstream code. Producers MUST lowercase {iaga_code} for the topic and consumers MUST treat topic filters as case-sensitive. The info leaf is retained reference metadata with no expiry. The reading leaf is a latched current 1-minute observation with Message Expiry Interval 7200 seconds; if the retained value expires, interpret the empty topic as observatory or bridge silence for at least two hours, not a zero magnetic-field reading. The iaga_code is the join key between retained info and readings.
 
-The MQTT transport uses MQTT 5.0 binary-mode CloudEvents: the payload is the JSON body for the referenced message schema, and CloudEvents metadata is carried as MQTT user properties. The MQTT messagegroup references the transport-neutral Kafka/CloudEvents message definitions through `basemessageurl`, so the schemas above remain authoritative.
+## Table of Contents
 
-### MQTT topics
+- [Registry](#registry)
+- [Endpoints](#endpoints)
+- [Messagegroups](#messagegroups)
+- [Schemagroups](#schemagroups)
 
-| Topic pattern | Bound message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `space-weather/us/usgs/usgs-geomag/{iaga_code}/info` | `gov.usgs.geomag.Observatory` | `true` | `1` | `` |
-| `space-weather/us/usgs/usgs-geomag/{iaga_code}/reading` | `gov.usgs.geomag.MagneticFieldReading` | `true` | `1` | `7200` |
+---
+
+## Registry
+
+| Field | Value |
+| --- | --- |
+| Endpoints | 2 |
+| Messagegroups | 2 |
+| Schemagroups | 1 |
+
+## Endpoints
+
+### Endpoint `gov.usgs.geomag.Kafka`
+
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `KAFKA` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
+| Messagegroups | [`gov.usgs.geomag`](#messagegroup-govusgsgeomag) |
+
+#### Transport options
+
+| Option | Value |
+| --- | --- |
+| Kafka topic | `usgs-geomag` |
+| Kafka key | `{iaga_code}` |
+| Deployed | False |
+
+### Endpoint `gov.usgs.geomag.Mqtt`
+
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `MQTT/5.0` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"mode": "binary"}` |
+| Messagegroups | [`gov.usgs.geomag.mqtt`](#messagegroup-govusgsgeomagmqtt) |
+
+#### Transport options
+
+| Option | Value |
+| --- | --- |
+| Deployed | False |
+| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+
+## Messagegroups
+
+### Messagegroup `gov.usgs.geomag`
+<a id="messagegroup-govusgsgeomag"></a>
+
+| Field | Value |
+| --- | --- |
+| Transport bindings | `gov.usgs.geomag.Kafka` (KAFKA) |
+| Messages | 2 |
+
+#### Message `gov.usgs.geomag.Observatory`
+<a id="message-govusgsgeomagobservatory"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | Observatory |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.Observatory`](#schema-govusgsgeomagobservatory) |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `gov.usgs.geomag.Observatory` |
+| `source` |  | `string` | `False` | `https://geomag.usgs.gov` |
+| `subject` |  | `uritemplate` | `False` | `{iaga_code}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `gov.usgs.geomag.Kafka` | `KAFKA` | topic `usgs-geomag`; key `{iaga_code}` |
+
+#### Message `gov.usgs.geomag.MagneticFieldReading`
+<a id="message-govusgsgeomagmagneticfieldreading"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | MagneticFieldReading |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.MagneticFieldReading`](#schema-govusgsgeomagmagneticfieldreading) |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `gov.usgs.geomag.MagneticFieldReading` |
+| `source` |  | `string` | `False` | `https://geomag.usgs.gov` |
+| `subject` |  | `uritemplate` | `False` | `{iaga_code}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `gov.usgs.geomag.Kafka` | `KAFKA` | topic `usgs-geomag`; key `{iaga_code}` |
+
+### Messagegroup `gov.usgs.geomag.mqtt`
+<a id="messagegroup-govusgsgeomagmqtt"></a>
+
+| Field | Value |
+| --- | --- |
+| Description | MQTT/5.0 transport variants for USGS geomagnetic observatory reference data and one-minute readings. Topics are retained QoS-1 leaves under space-weather/us/usgs/usgs-geomag/{iaga_code}/..., where {iaga_code} in the topic is the lowercased IAGA observatory code; the payload field may carry the canonical upstream code. Producers MUST lowercase {iaga_code} for the topic and consumers MUST treat topic filters as case-sensitive. The info leaf is retained reference metadata with no expiry. The reading leaf is a latched current 1-minute observation with Message Expiry Interval 7200 seconds; if the retained value expires, interpret the empty topic as observatory or bridge silence for at least two hours, not a zero magnetic-field reading. The iaga_code is the join key between retained info and readings. |
+| Transport bindings | `gov.usgs.geomag.Mqtt` (MQTT/5.0) |
+| Messages | 2 |
+
+#### Message `gov.usgs.geomag.mqtt.Observatory`
+<a id="message-govusgsgeomagmqttobservatory"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | Observatory |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.Observatory`](#schema-govusgsgeomagobservatory) |
+| Base message chain | `/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory` |
+| Transport override | `MQTT/5.0` |
+| Event role | Reference data (retained transport message) |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `gov.usgs.geomag.Observatory` |
+| `source` |  | `string` | `False` | `https://geomag.usgs.gov` |
+| `subject` |  | `uritemplate` | `False` | `{iaga_code}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `gov.usgs.geomag.Mqtt` | `MQTT/5.0` | topic `space-weather/us/usgs/usgs-geomag/{iaga_code}/info` |
+
+##### Transport options
+
+| Option | Value |
+| --- | --- |
+| MQTT topic | `space-weather/us/usgs/usgs-geomag/{iaga_code}/info` |
+| QoS | 1 |
+| Retain | True |
+
+#### Message `gov.usgs.geomag.mqtt.MagneticFieldReading`
+<a id="message-govusgsgeomagmqttmagneticfieldreading"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | MagneticFieldReading |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.MagneticFieldReading`](#schema-govusgsgeomagmagneticfieldreading) |
+| Base message chain | `/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.MagneticFieldReading` |
+| Transport override | `MQTT/5.0` |
+| Event role | Reference data (retained transport message) |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `gov.usgs.geomag.MagneticFieldReading` |
+| `source` |  | `string` | `False` | `https://geomag.usgs.gov` |
+| `subject` |  | `uritemplate` | `False` | `{iaga_code}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `gov.usgs.geomag.Mqtt` | `MQTT/5.0` | topic `space-weather/us/usgs/usgs-geomag/{iaga_code}/reading` |
+
+##### Transport options
+
+| Option | Value |
+| --- | --- |
+| MQTT topic | `space-weather/us/usgs/usgs-geomag/{iaga_code}/reading` |
+| QoS | 1 |
+| Retain | True |
+| Additional protocol metadata | `{"message_expiry_interval": 7200}` |
+
+## Schemagroups
+
+### Schemagroup `gov.usgs.geomag.jstruct`
+<a id="schemagroup-govusgsgeomagjstruct"></a>
+
+#### Schema `gov.usgs.geomag.Observatory`
+<a id="schema-govusgsgeomagobservatory"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | Observatory |
+| Format | JsonStructure/draft-02 |
+| Default version | 1 |
+
+##### Version `1`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### JsonStructure
+
+| Field | Value |
+| --- | --- |
+| $id | `https://geomag.usgs.gov/schemas/gov/usgs/geomag/Observatory` |
+| $schema | `https://json-structure.org/meta/extended/v0/#` |
+| Type | `object` |
+
+###### Object `Observatory`
+<a id="schema-node-observatory"></a>
+
+Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations.
+
+| Field | Value |
+| --- | --- |
+| $id | `https://geomag.usgs.gov/schemas/gov/usgs/geomag/Observatory` |
+
+| Field | Type | Required | Description | Extensions | Validation | Default/const |
+| --- | --- | --- | --- | --- | --- | --- |
+| `iaga_code` | `string` | `True` | IAGA (International Association of Geomagnetism and Aeronomy) three- or four-character observatory code, e.g. BOU for Boulder, BRW for Barrow. This is the primary stable identifier for an observatory. | - | - | - |
+| `name` | `string` | `True` | Human-readable name of the observatory, e.g. 'Boulder', 'Barrow', 'College'. | - | - | - |
+| `agency` | `union` | `False` | Short identifier of the operating agency, e.g. 'USGS' for United States Geological Survey. | - | - | - |
+| `agency_name` | `union` | `False` | Full name of the operating agency, e.g. 'United States Geological Survey (USGS)'. | - | - | - |
+| `latitude` | `union` | `False` | Geodetic latitude of the observatory in decimal degrees. Positive values indicate north of the equator. | unit=`deg` symbol=`°` | - | - |
+| `longitude` | `union` | `False` | Geodetic longitude of the observatory in decimal degrees east. Values above 180 represent west longitudes expressed as 360 minus the west longitude (e.g. 254.763 = -105.237 W). | unit=`deg` symbol=`°` | - | - |
+| `elevation` | `union` | `False` | Elevation of the observatory above mean sea level in meters. | unit=`m` symbol=`m` | - | - |
+| `sensor_orientation` | `union` | `False` | Orientation of the magnetometer sensor, e.g. 'HDZ' indicating sensors measure horizontal intensity (H), declination (D), and vertical intensity (Z). | - | - | - |
+| `sensor_sampling_rate` | `union` | `False` | Native sampling rate of the magnetometer sensor in hertz. | unit=`Hz` symbol=`Hz` | - | - |
+| `declination_base` | `union` | `False` | Declination baseline value in minutes of arc. Used as a reference for variation measurements of the D element. | - | - | - |
+
+#### Schema `gov.usgs.geomag.MagneticFieldReading`
+<a id="schema-govusgsgeomagmagneticfieldreading"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | MagneticFieldReading |
+| Format | JsonStructure/draft-02 |
+| Default version | 1 |
+
+##### Version `1`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### JsonStructure
+
+| Field | Value |
+| --- | --- |
+| $id | `https://geomag.usgs.gov/schemas/gov/usgs/geomag/MagneticFieldReading` |
+| $schema | `https://json-structure.org/meta/extended/v0/#` |
+| Type | `object` |
+
+###### Object `MagneticFieldReading`
+<a id="schema-node-magneticfieldreading"></a>
+
+One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events.
+
+| Field | Value |
+| --- | --- |
+| $id | `https://geomag.usgs.gov/schemas/gov/usgs/geomag/MagneticFieldReading` |
+
+| Field | Type | Required | Description | Extensions | Validation | Default/const |
+| --- | --- | --- | --- | --- | --- | --- |
+| `iaga_code` | `string` | `True` | IAGA observatory code identifying the station that produced this reading, e.g. BOU, BRW, FRN. | - | - | - |
+| `timestamp` | `datetime` | `True` | UTC timestamp of the 1-minute magnetic field sample, in ISO 8601 format. Derived from the 'times' array in the USGS Geomagnetism web-service timeseries response. | - | - | - |
+| `h` | `union` | `False` | Horizontal intensity component of the geomagnetic field vector. Represents the magnitude of the horizontal projection of the total field vector. Null when the observatory does not report this element or the value is missing for this minute. | unit=`nT` symbol=`nT` | - | - |
+| `d` | `union` | `False` | Declination angle — the angular difference between magnetic north and geographic north. Positive values indicate east declination. Null when the observatory does not report this element or the value is missing for this minute. | unit=`'` symbol=`′` | - | - |
+| `z` | `union` | `False` | Vertical intensity component of the geomagnetic field vector. Positive values indicate downward (into the Earth in the northern hemisphere). Null when the observatory does not report this element or the value is missing for this minute. | unit=`nT` symbol=`nT` | - | - |
+| `f` | `union` | `False` | Total field intensity — the scalar magnitude of the full geomagnetic field vector. Measured by an independent proton or Overhauser magnetometer. Null when the observatory does not report this element or the value is missing for this minute. | unit=`nT` symbol=`nT` | - | - |

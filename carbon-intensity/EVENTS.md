@@ -1,136 +1,438 @@
-# Carbon Intensity UK Bridge Events
+# Carbon Intensity UK Events
 
-This document describes the events emitted by the Carbon Intensity UK Bridge.
+MQTT/5.0 transport variants for National Grid Carbon Intensity events. Non-retained QoS-1 event topics route by GB national/regional area under energy/gb/national-grid/carbon-intensity/{region}/..., where national records use region=national and DNO region records use stable, version-pinned region slugs keyed by region_id such as north-scotland.
 
-## MQTT/UNS topics
+## Table of Contents
 
-The MQTT feeder publishes non-retained QoS 1 binary-mode CloudEvents under:
-
-- `energy/gb/national-grid/carbon-intensity/{region}/intensity`
-- `energy/gb/national-grid/carbon-intensity/{region}/generation-mix`
-- `energy/gb/national-grid/carbon-intensity/{region}/regional-intensity`
-
-National GB-wide records use `{region}` = `national`. Regional records use stable, version-pinned DNO slugs keyed by the API `region_id`; unknown future ids fall back to `region-{region_id}`. The `RegionalIntensity` CloudEvents `subject` remains the numeric `{region_id}` while the MQTT topic uses the slug for wildcard readability. These half-hourly events are intentionally non-retained; late subscribers should read the next settlement-period update or consume a historical store. Example subscriptions: all Carbon Intensity events: `energy/gb/national-grid/carbon-intensity/#`; one region: `energy/gb/national-grid/carbon-intensity/north-scotland/#`; national records only: `energy/gb/national-grid/carbon-intensity/national/+`; all regional intensity events: `energy/gb/national-grid/carbon-intensity/+/regional-intensity`.
-
-| `region_id` | MQTT `{region}` slug |
-|---:|---|
-| 1 | `north-scotland` |
-| 2 | `south-scotland` |
-| 3 | `north-west-england` |
-| 4 | `north-east-england` |
-| 5 | `yorkshire` |
-| 6 | `north-wales-merseyside-and-cheshire` |
-| 7 | `south-wales` |
-| 8 | `west-midlands` |
-| 9 | `east-midlands` |
-| 10 | `east-england` |
-| 11 | `south-west-england` |
-| 12 | `south-england` |
-| 13 | `london` |
-| 14 | `south-east-england` |
-| 15 | `england` |
-| 16 | `scotland` |
-| 17 | `wales` |
-
-
-- [uk.org.carbonintensity](#message-group-ukorgcarbonintensity)
-  - [uk.org.carbonintensity.Intensity](#message-ukorgcarbonintensityintensity)
-  - [uk.org.carbonintensity.GenerationMix](#message-ukorgcarbonintensitygenerationmix)
-- [uk.org.carbonintensity.Regional](#message-group-ukorgcarbonintensityregional)
-  - [uk.org.carbonintensity.RegionalIntensity](#message-ukorgcarbonintensityregionalintensity)
+- [Registry](#registry)
+- [Endpoints](#endpoints)
+- [Messagegroups](#messagegroups)
+- [Schemagroups](#schemagroups)
 
 ---
 
-## Message Group: uk.org.carbonintensity
+## Registry
 
----
+| Field | Value |
+| --- | --- |
+| Endpoints | 3 |
+| Messagegroups | 3 |
+| Schemagroups | 1 |
 
-### Message: uk.org.carbonintensity.Intensity
+## Endpoints
 
-#### CloudEvents Attributes:
+### Endpoint `uk.org.carbonintensity.Kafka`
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` | CloudEvent type | `string` | `True` | `uk.org.carbonintensity.Intensity` |
-| `source` | CloudEvent source | `string` | `True` | `https://api.carbonintensity.org.uk` |
-| `subject` | Settlement period start | `uritemplate` | `True` | `{period_from}` |
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `KAFKA` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
+| Messagegroups | [`uk.org.carbonintensity`](#messagegroup-ukorgcarbonintensity) |
 
-#### Schema: Intensity
+#### Transport options
 
-| **Field Name** | **Type** | **Unit** | **Description** |
-|----------------|----------|----------|-----------------|
-| `period_from` | *datetime* | — | ISO 8601 UTC timestamp marking the start of the half-hour settlement period |
-| `period_to` | *datetime* | — | ISO 8601 UTC timestamp marking the end of the half-hour settlement period |
-| `region` | *string* | — | Topic-safe MQTT/UNS region segment; national records use the closed literal `national` |
-| `forecast` | *int32 (nullable)* | gCO2/kWh | Forecast carbon intensity for this settlement period |
-| `actual` | *int32 (nullable)* | gCO2/kWh | Actual (metered) carbon intensity. Null when the period has not yet completed |
-| `index` | *string (nullable)* | — | Qualitative index band: very low, low, moderate, high, or very high |
+| Option | Value |
+| --- | --- |
+| Kafka topic | `carbon-intensity` |
+| Kafka key | `{period_from}` |
+| Deployed | False |
 
----
+### Endpoint `uk.org.carbonintensity.Regional.Kafka`
 
-### Message: uk.org.carbonintensity.GenerationMix
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `KAFKA` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
+| Messagegroups | [`uk.org.carbonintensity.Regional`](#messagegroup-ukorgcarbonintensityregional) |
 
-#### CloudEvents Attributes:
+#### Transport options
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` | CloudEvent type | `string` | `True` | `uk.org.carbonintensity.GenerationMix` |
-| `source` | CloudEvent source | `string` | `True` | `https://api.carbonintensity.org.uk` |
-| `subject` | Settlement period start | `uritemplate` | `True` | `{period_from}` |
+| Option | Value |
+| --- | --- |
+| Kafka topic | `carbon-intensity` |
+| Kafka key | `{region_id}` |
+| Deployed | False |
 
-#### Schema: GenerationMix
+### Endpoint `uk.org.carbonintensity.Mqtt`
 
-| **Field Name** | **Type** | **Unit** | **Description** |
-|----------------|----------|----------|-----------------|
-| `period_from` | *datetime* | — | ISO 8601 UTC timestamp marking the start of the half-hour settlement period |
-| `period_to` | *datetime* | — | ISO 8601 UTC timestamp marking the end of the half-hour settlement period |
-| `region` | *string* | — | Topic-safe MQTT/UNS region segment; national records use the closed literal `national` |
-| `biomass_pct` | *double (nullable)* | % | Percentage from biomass |
-| `coal_pct` | *double (nullable)* | % | Percentage from coal |
-| `gas_pct` | *double (nullable)* | % | Percentage from natural gas |
-| `hydro_pct` | *double (nullable)* | % | Percentage from hydroelectric |
-| `imports_pct` | *double (nullable)* | % | Percentage from interconnector imports |
-| `nuclear_pct` | *double (nullable)* | % | Percentage from nuclear |
-| `oil_pct` | *double (nullable)* | % | Percentage from oil |
-| `other_pct` | *double (nullable)* | % | Percentage from other sources |
-| `solar_pct` | *double (nullable)* | % | Percentage from solar |
-| `wind_pct` | *double (nullable)* | % | Percentage from wind |
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `MQTT/5.0` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"mode": "binary"}` |
+| Messagegroups | [`uk.org.carbonintensity.mqtt`](#messagegroup-ukorgcarbonintensitymqtt) |
 
----
+#### Transport options
 
-## Message Group: uk.org.carbonintensity.Regional
+| Option | Value |
+| --- | --- |
+| Deployed | False |
+| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
 
----
+## Messagegroups
 
-### Message: uk.org.carbonintensity.RegionalIntensity
+### Messagegroup `uk.org.carbonintensity`
+<a id="messagegroup-ukorgcarbonintensity"></a>
 
-#### CloudEvents Attributes:
+| Field | Value |
+| --- | --- |
+| Transport bindings | `uk.org.carbonintensity.Kafka` (KAFKA) |
+| Messages | 2 |
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` | CloudEvent type | `string` | `True` | `uk.org.carbonintensity.RegionalIntensity` |
-| `source` | CloudEvent source | `string` | `True` | `https://api.carbonintensity.org.uk` |
-| `subject` | DNO region identifier | `uritemplate` | `True` | `{region_id}` |
+#### Message `uk.org.carbonintensity.Intensity`
+<a id="message-ukorgcarbonintensityintensity"></a>
 
-#### Schema: RegionalIntensity
+| Field | Value |
+| --- | --- |
+| Name | Intensity |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.Intensity`](#schema-ukorgcarbonintensityintensity) |
+| Event role | Telemetry/event data |
 
-| **Field Name** | **Type** | **Unit** | **Description** |
-|----------------|----------|----------|-----------------|
-| `region_id` | *int32* | — | Numeric DNO region identifier (1–17) |
-| `dnoregion` | *string* | — | Full DNO region name |
-| `shortname` | *string* | — | Short display name for the region |
-| `region` | *string* | — | Stable topic-safe MQTT/UNS region slug from the version-pinned `region_id` lookup table; unknown future ids use `region-{region_id}` |
-| `period_from` | *datetime* | — | ISO 8601 UTC timestamp of the settlement period start |
-| `period_to` | *datetime* | — | ISO 8601 UTC timestamp of the settlement period end |
-| `forecast` | *int32 (nullable)* | gCO2/kWh | Forecast carbon intensity for this region |
-| `index` | *string (nullable)* | — | Qualitative index band |
-| `biomass_pct` | *double (nullable)* | % | Percentage from biomass |
-| `coal_pct` | *double (nullable)* | % | Percentage from coal |
-| `gas_pct` | *double (nullable)* | % | Percentage from natural gas |
-| `hydro_pct` | *double (nullable)* | % | Percentage from hydroelectric |
-| `imports_pct` | *double (nullable)* | % | Percentage from interconnector imports |
-| `nuclear_pct` | *double (nullable)* | % | Percentage from nuclear |
-| `oil_pct` | *double (nullable)* | % | Percentage from oil |
-| `other_pct` | *double (nullable)* | % | Percentage from other sources |
-| `solar_pct` | *double (nullable)* | % | Percentage from solar |
-| `wind_pct` | *double (nullable)* | % | Percentage from wind |
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `uk.org.carbonintensity.Intensity` |
+| `source` |  | `string` | `False` | `https://api.carbonintensity.org.uk` |
+| `subject` |  | `uritemplate` | `False` | `{period_from}` |
+| `id` |  | `uritemplate` | `False` | `{ce_id}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `uk.org.carbonintensity.Kafka` | `KAFKA` | topic `carbon-intensity`; key `{period_from}` |
+
+#### Message `uk.org.carbonintensity.GenerationMix`
+<a id="message-ukorgcarbonintensitygenerationmix"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | GenerationMix |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.GenerationMix`](#schema-ukorgcarbonintensitygenerationmix) |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `uk.org.carbonintensity.GenerationMix` |
+| `source` |  | `string` | `False` | `https://api.carbonintensity.org.uk` |
+| `subject` |  | `uritemplate` | `False` | `{period_from}` |
+| `id` |  | `uritemplate` | `False` | `{ce_id}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `uk.org.carbonintensity.Kafka` | `KAFKA` | topic `carbon-intensity`; key `{period_from}` |
+
+### Messagegroup `uk.org.carbonintensity.Regional`
+<a id="messagegroup-ukorgcarbonintensityregional"></a>
+
+| Field | Value |
+| --- | --- |
+| Transport bindings | `uk.org.carbonintensity.Regional.Kafka` (KAFKA) |
+| Messages | 1 |
+
+#### Message `uk.org.carbonintensity.RegionalIntensity`
+<a id="message-ukorgcarbonintensityregionalintensity"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | RegionalIntensity |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.RegionalIntensity`](#schema-ukorgcarbonintensityregionalintensity) |
+| Event role | Reference/status data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `uk.org.carbonintensity.RegionalIntensity` |
+| `source` |  | `string` | `False` | `https://api.carbonintensity.org.uk` |
+| `subject` |  | `uritemplate` | `False` | `{region_id}` |
+| `id` |  | `uritemplate` | `False` | `{ce_id}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `uk.org.carbonintensity.Regional.Kafka` | `KAFKA` | topic `carbon-intensity`; key `{region_id}` |
+
+### Messagegroup `uk.org.carbonintensity.mqtt`
+<a id="messagegroup-ukorgcarbonintensitymqtt"></a>
+
+| Field | Value |
+| --- | --- |
+| Description | MQTT/5.0 transport variants for National Grid Carbon Intensity events. Non-retained QoS-1 event topics route by GB national/regional area under energy/gb/national-grid/carbon-intensity/{region}/..., where national records use region=national and DNO region records use stable, version-pinned region slugs keyed by region_id such as north-scotland. |
+| Transport bindings | `uk.org.carbonintensity.Mqtt` (MQTT/5.0) |
+| Messages | 3 |
+
+#### Message `uk.org.carbonintensity.mqtt.Intensity`
+<a id="message-ukorgcarbonintensitymqttintensity"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | Intensity |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.Intensity`](#schema-ukorgcarbonintensityintensity) |
+| Base message chain | `/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity` |
+| Transport override | `MQTT/5.0` |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `uk.org.carbonintensity.Intensity` |
+| `source` |  | `string` | `False` | `https://api.carbonintensity.org.uk` |
+| `subject` |  | `uritemplate` | `False` | `{period_from}` |
+| `id` |  | `uritemplate` | `False` | `{ce_id}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `uk.org.carbonintensity.Mqtt` | `MQTT/5.0` | topic `energy/gb/national-grid/carbon-intensity/{region}/intensity` |
+
+##### Transport options
+
+| Option | Value |
+| --- | --- |
+| MQTT topic | `energy/gb/national-grid/carbon-intensity/{region}/intensity` |
+| QoS | 1 |
+| Retain | False |
+
+#### Message `uk.org.carbonintensity.mqtt.GenerationMix`
+<a id="message-ukorgcarbonintensitymqttgenerationmix"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | GenerationMix |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.GenerationMix`](#schema-ukorgcarbonintensitygenerationmix) |
+| Base message chain | `/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix` |
+| Transport override | `MQTT/5.0` |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `uk.org.carbonintensity.GenerationMix` |
+| `source` |  | `string` | `False` | `https://api.carbonintensity.org.uk` |
+| `subject` |  | `uritemplate` | `False` | `{period_from}` |
+| `id` |  | `uritemplate` | `False` | `{ce_id}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `uk.org.carbonintensity.Mqtt` | `MQTT/5.0` | topic `energy/gb/national-grid/carbon-intensity/{region}/generation-mix` |
+
+##### Transport options
+
+| Option | Value |
+| --- | --- |
+| MQTT topic | `energy/gb/national-grid/carbon-intensity/{region}/generation-mix` |
+| QoS | 1 |
+| Retain | False |
+
+#### Message `uk.org.carbonintensity.mqtt.RegionalIntensity`
+<a id="message-ukorgcarbonintensitymqttregionalintensity"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | RegionalIntensity |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.RegionalIntensity`](#schema-ukorgcarbonintensityregionalintensity) |
+| Base message chain | `/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity` |
+| Transport override | `MQTT/5.0` |
+| Event role | Reference/status data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `uk.org.carbonintensity.RegionalIntensity` |
+| `source` |  | `string` | `False` | `https://api.carbonintensity.org.uk` |
+| `subject` |  | `uritemplate` | `False` | `{region_id}` |
+| `id` |  | `uritemplate` | `False` | `{ce_id}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `uk.org.carbonintensity.Mqtt` | `MQTT/5.0` | topic `energy/gb/national-grid/carbon-intensity/{region}/regional-intensity` |
+
+##### Transport options
+
+| Option | Value |
+| --- | --- |
+| MQTT topic | `energy/gb/national-grid/carbon-intensity/{region}/regional-intensity` |
+| QoS | 1 |
+| Retain | False |
+
+## Schemagroups
+
+### Schemagroup `uk.org.carbonintensity.jstruct`
+<a id="schemagroup-ukorgcarbonintensityjstruct"></a>
+
+#### Schema `uk.org.carbonintensity.Intensity`
+<a id="schema-ukorgcarbonintensityintensity"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | Intensity |
+| Format | JsonStructure/draft-02 |
+| Default version | 1 |
+
+##### Version `1`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### JsonStructure
+
+| Field | Value |
+| --- | --- |
+| $id | `uk.org.carbonintensity.Intensity` |
+| $schema | `https://json-structure.org/meta/extended/v0/#` |
+| Type | `object` |
+
+###### Object `Intensity`
+<a id="schema-node-intensity"></a>
+
+National half-hourly carbon intensity for the Great Britain electricity grid, published by National Grid ESO. Contains the forecast and actual carbon dioxide emission intensity in grams of CO2 per kilowatt-hour, along with a qualitative index band.
+
+| Field | Value |
+| --- | --- |
+| $id | `uk.org.carbonintensity.Intensity` |
+
+| Field | Type | Required | Description | Extensions | Validation | Default/const |
+| --- | --- | --- | --- | --- | --- | --- |
+| `period_from` | `datetime` | `True` | ISO 8601 UTC timestamp marking the start of the half-hour settlement period (e.g. 2026-04-06T09:30Z). | - | - | - |
+| `period_to` | `datetime` | `True` | ISO 8601 UTC timestamp marking the end of the half-hour settlement period (e.g. 2026-04-06T10:00Z). | - | - | - |
+| `forecast` | `union` | `False` | Forecast carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh), computed ahead of real-time by National Grid ESO. | unit=`gCO2/kWh` | - | - |
+| `actual` | `union` | `False` | Actual (metered) carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh). May be null when the period has not yet completed. | unit=`gCO2/kWh` | - | - |
+| `index` | `union` | `False` | Qualitative index band for the carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'. | - | - | - |
+| `region` | `string` | `True` | Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national. | - | - | - |
+| `ce_id` | `string` | `True` | Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf. | - | - | - |
+
+#### Schema `uk.org.carbonintensity.GenerationMix`
+<a id="schema-ukorgcarbonintensitygenerationmix"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | GenerationMix |
+| Format | JsonStructure/draft-02 |
+| Default version | 1 |
+
+##### Version `1`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### JsonStructure
+
+| Field | Value |
+| --- | --- |
+| $id | `uk.org.carbonintensity.GenerationMix` |
+| $schema | `https://json-structure.org/meta/extended/v0/#` |
+| Type | `object` |
+
+###### Object `GenerationMix`
+<a id="schema-node-generationmix"></a>
+
+National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period.
+
+| Field | Value |
+| --- | --- |
+| $id | `uk.org.carbonintensity.GenerationMix` |
+
+| Field | Type | Required | Description | Extensions | Validation | Default/const |
+| --- | --- | --- | --- | --- | --- | --- |
+| `period_from` | `datetime` | `True` | ISO 8601 UTC timestamp marking the start of the half-hour settlement period. | - | - | - |
+| `period_to` | `datetime` | `True` | ISO 8601 UTC timestamp marking the end of the half-hour settlement period. | - | - | - |
+| `biomass_pct` | `union` | `False` | Percentage of electricity generated from biomass (wood pellets, energy crops, and other organic matter) during this settlement period. | unit=`%` | - | - |
+| `coal_pct` | `union` | `False` | Percentage of electricity generated from coal-fired power stations during this settlement period. | unit=`%` | - | - |
+| `gas_pct` | `union` | `False` | Percentage of electricity generated from natural gas (CCGT and OCGT) during this settlement period. | unit=`%` | - | - |
+| `hydro_pct` | `union` | `False` | Percentage of electricity generated from hydroelectric power stations during this settlement period. | unit=`%` | - | - |
+| `imports_pct` | `union` | `False` | Percentage of electricity supplied via interconnector imports from continental Europe and Ireland during this settlement period. | unit=`%` | - | - |
+| `nuclear_pct` | `union` | `False` | Percentage of electricity generated from nuclear power stations during this settlement period. | unit=`%` | - | - |
+| `oil_pct` | `union` | `False` | Percentage of electricity generated from oil-fired power stations during this settlement period. | unit=`%` | - | - |
+| `other_pct` | `union` | `False` | Percentage of electricity generated from other or unclassified fuel sources during this settlement period. | unit=`%` | - | - |
+| `solar_pct` | `union` | `False` | Percentage of electricity generated from solar photovoltaic installations during this settlement period. | unit=`%` | - | - |
+| `wind_pct` | `union` | `False` | Percentage of electricity generated from onshore and offshore wind turbines during this settlement period. | unit=`%` | - | - |
+| `region` | `string` | `True` | Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national. | - | - | - |
+| `ce_id` | `string` | `True` | Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf. | - | - | - |
+
+#### Schema `uk.org.carbonintensity.RegionalIntensity`
+<a id="schema-ukorgcarbonintensityregionalintensity"></a>
+
+| Field | Value |
+| --- | --- |
+| Name | RegionalIntensity |
+| Format | JsonStructure/draft-02 |
+| Default version | 1 |
+
+##### Version `1`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### JsonStructure
+
+| Field | Value |
+| --- | --- |
+| $id | `uk.org.carbonintensity.RegionalIntensity` |
+| $schema | `https://json-structure.org/meta/extended/v0/#` |
+| Type | `object` |
+
+###### Object `RegionalIntensity`
+<a id="schema-node-regionalintensity"></a>
+
+Half-hourly carbon intensity and generation mix for one of the 17 GB Distribution Network Operator (DNO) regions, published by National Grid ESO. Each record covers a specific DNO region identified by its numeric region ID.
+
+| Field | Value |
+| --- | --- |
+| $id | `uk.org.carbonintensity.RegionalIntensity` |
+
+| Field | Type | Required | Description | Extensions | Validation | Default/const |
+| --- | --- | --- | --- | --- | --- | --- |
+| `region_id` | `int32` | `True` | Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1-17). | - | - | - |
+| `dnoregion` | `string` | `True` | Full name of the Distribution Network Operator region (e.g. 'Scottish Hydro Electric Power Distribution'). | - | - | - |
+| `shortname` | `string` | `True` | Short display name for the DNO region (e.g. 'North Scotland'). | - | - | - |
+| `period_from` | `datetime` | `True` | ISO 8601 UTC timestamp marking the start of the half-hour settlement period. | - | - | - |
+| `period_to` | `datetime` | `True` | ISO 8601 UTC timestamp marking the end of the half-hour settlement period. | - | - | - |
+| `forecast` | `union` | `False` | Forecast carbon intensity for this region and settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh). | unit=`gCO2/kWh` | - | - |
+| `index` | `union` | `False` | Qualitative index band for the regional carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'. | - | - | - |
+| `biomass_pct` | `union` | `False` | Percentage of electricity generated from biomass in this region during this settlement period. | unit=`%` | - | - |
+| `coal_pct` | `union` | `False` | Percentage of electricity generated from coal in this region during this settlement period. | unit=`%` | - | - |
+| `gas_pct` | `union` | `False` | Percentage of electricity generated from natural gas in this region during this settlement period. | unit=`%` | - | - |
+| `hydro_pct` | `union` | `False` | Percentage of electricity generated from hydroelectric power in this region during this settlement period. | unit=`%` | - | - |
+| `imports_pct` | `union` | `False` | Percentage of electricity supplied via interconnector imports in this region during this settlement period. | unit=`%` | - | - |
+| `nuclear_pct` | `union` | `False` | Percentage of electricity generated from nuclear power in this region during this settlement period. | unit=`%` | - | - |
+| `oil_pct` | `union` | `False` | Percentage of electricity generated from oil in this region during this settlement period. | unit=`%` | - | - |
+| `other_pct` | `union` | `False` | Percentage of electricity generated from other or unclassified fuel sources in this region during this settlement period. | unit=`%` | - | - |
+| `solar_pct` | `union` | `False` | Percentage of electricity generated from solar photovoltaic installations in this region during this settlement period. | unit=`%` | - | - |
+| `wind_pct` | `union` | `False` | Percentage of electricity generated from wind turbines in this region during this settlement period. | unit=`%` | - | - |
+| `region` | `string` | `True` | Stable topic-safe MQTT/UNS region segment from the version-pinned DNO region_id lookup table, for example north-scotland for region_id 1. Falls back to region-{region_id} if an unknown future id appears. | - | - | - |
+| `ce_id` | `string` | `True` | Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, DNO region_id, and regional-intensity leaf. | - | - | - |

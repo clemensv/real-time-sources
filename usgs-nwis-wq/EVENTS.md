@@ -1,71 +1,207 @@
-# USGS NWIS Water Quality Bridge Events
+# USGS NWIS Water Quality - Continuous Water Quality Sensor Data Events
 
-This document describes the events emitted by the USGS NWIS Water Quality bridge.
+**usgs-nwis-wq** is a bridge that polls the [USGS Water Services](https://waterservices.usgs.gov/) Instantaneous Values Service API for continuous water quality sensor readings from over 3,000 monitoring sites across the United States. The bridge focuses specifically on water quality parameters: dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate.
 
-- [USGS.WaterQuality.Sites](#message-group-usgswaterqualitysites)
-  - [USGS.WaterQuality.Sites.MonitoringSite](#message-usgswaterqualitysitesmonitoringsite)
-- [USGS.WaterQuality.Readings](#message-group-usgswaterqualityreadings)
-  - [USGS.WaterQuality.Readings.WaterQualityReading](#message-usgswaterqualityreadingswaterqualityreading)
+## Table of Contents
 
----
-
-## Message Group: USGS.WaterQuality.Sites
+- [Registry](#registry)
+- [Endpoints](#endpoints)
+- [Messagegroups](#messagegroups)
+- [Schemagroups](#schemagroups)
 
 ---
 
-### Message: USGS.WaterQuality.Sites.MonitoringSite
+## Registry
 
-*USGS water quality monitoring site reference data. Describes a physical monitoring location equipped with continuous water quality sensors.*
+| Field | Value |
+| --- | --- |
+| Endpoints | 2 |
+| Messagegroups | 2 |
+| Schemagroups | 2 |
 
-#### CloudEvents Attributes:
+## Endpoints
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `True` | `USGS.WaterQuality.Sites.MonitoringSite` |
-| `source` |  | `uritemplate` | `True` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `True` | `{site_number}` |
+### Endpoint `USGS.WaterQuality.Sites.Kafka`
 
-#### Schema: MonitoringSite
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `KAFKA` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
+| Messagegroups | [`USGS.WaterQuality.Sites`](#messagegroup-usgswaterqualitysites) |
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_number` | *string* | USGS site identification number (8-to-15-digit). |
-| `site_name` | *string* | Official USGS station name. |
-| `agency_code` | *string* | Agency code (typically 'USGS'). |
-| `latitude` | *double* (nullable) | Decimal latitude (WGS84). |
-| `longitude` | *double* (nullable) | Decimal longitude (WGS84). |
-| `site_type` | *string* (nullable) | Site type code (ST=stream, LK=lake, GW=groundwater, ES=estuary). |
-| `state_code` | *string* (nullable) | Two-digit FIPS state code. |
-| `county_code` | *string* (nullable) | Five-digit FIPS county code. |
-| `huc_code` | *string* (nullable) | Hydrologic Unit Code (watershed identifier). |
+#### Transport options
 
----
+| Option | Value |
+| --- | --- |
+| Kafka topic | `usgs-nwis-wq` |
+| Kafka key | `{site_number}` |
+| Deployed | False |
 
-## Message Group: USGS.WaterQuality.Readings
+### Endpoint `USGS.WaterQuality.Readings.Kafka`
 
----
+| Field | Value |
+| --- | --- |
+| Usage | producer |
+| Protocol | `KAFKA` |
+| Envelope | CloudEvents/1.0 |
+| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
+| Messagegroups | [`USGS.WaterQuality.Readings`](#messagegroup-usgswaterqualityreadings) |
 
-### Message: USGS.WaterQuality.Readings.WaterQualityReading
+#### Transport options
 
-*A single water quality observation from a USGS continuous monitoring sensor.*
+| Option | Value |
+| --- | --- |
+| Kafka topic | `usgs-nwis-wq` |
+| Kafka key | `{site_number}/{parameter_code}` |
+| Deployed | False |
 
-#### CloudEvents Attributes:
+## Messagegroups
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `True` | `USGS.WaterQuality.Readings.WaterQualityReading` |
-| `source` |  | `uritemplate` | `True` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `True` | `{site_number}/{parameter_code}` |
+### Messagegroup `USGS.WaterQuality.Sites`
+<a id="messagegroup-usgswaterqualitysites"></a>
 
-#### Schema: WaterQualityReading
+| Field | Value |
+| --- | --- |
+| Transport bindings | `USGS.WaterQuality.Sites.Kafka` (KAFKA) |
+| Messages | 1 |
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_number` | *string* | USGS site identification number. |
-| `site_name` | *string* | Official USGS station name. |
-| `parameter_code` | *string* | Five-digit USGS parameter code (00010=water temp, 00300=DO, 00400=pH, 00095=conductance, 63680=turbidity, 99133=nitrate). |
-| `parameter_name` | *string* | Human-readable parameter description. |
-| `value` | *double* (nullable) | Numeric sensor reading. Null when no valid value. |
-| `unit` | *string* | Unit of measurement (e.g. 'deg C', 'mg/l', 'uS/cm @25C', 'FNU'). |
-| `qualifier` | *string* (nullable) | Data qualifier code ('P'=provisional, 'A'=approved, 'e'=estimated). |
-| `date_time` | *string* | ISO 8601 UTC date-time of the observation. |
+#### Message `USGS.WaterQuality.Sites.MonitoringSite`
+<a id="message-usgswaterqualitysitesmonitoringsite"></a>
+
+USGS water quality monitoring site reference data. Describes a physical monitoring location equipped with continuous water quality sensors.
+
+| Field | Value |
+| --- | --- |
+| Name | MonitoringSite |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/USGS.WaterQuality.Sites.jstruct/schemas/USGS.WaterQuality.Sites.MonitoringSite`](#schema-usgswaterqualitysitesmonitoringsite) |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `USGS.WaterQuality.Sites.MonitoringSite` |
+| `source` |  | `uritemplate` | `False` | `{source_uri}` |
+| `subject` |  | `uritemplate` | `False` | `{site_number}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `USGS.WaterQuality.Sites.Kafka` | `KAFKA` | topic `usgs-nwis-wq`; key `{site_number}` |
+
+### Messagegroup `USGS.WaterQuality.Readings`
+<a id="messagegroup-usgswaterqualityreadings"></a>
+
+| Field | Value |
+| --- | --- |
+| Transport bindings | `USGS.WaterQuality.Readings.Kafka` (KAFKA) |
+| Messages | 1 |
+
+#### Message `USGS.WaterQuality.Readings.WaterQualityReading`
+<a id="message-usgswaterqualityreadingswaterqualityreading"></a>
+
+A single water quality observation from a USGS continuous monitoring sensor, including dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate readings.
+
+| Field | Value |
+| --- | --- |
+| Name | WaterQualityReading |
+| Envelope | CloudEvents/1.0 |
+| Schema format | JsonStructure/draft-02 |
+| Data schema | [`#/schemagroups/USGS.WaterQuality.Readings.jstruct/schemas/USGS.WaterQuality.Readings.WaterQualityReading`](#schema-usgswaterqualityreadingswaterqualityreading) |
+| Event role | Telemetry/event data |
+
+##### CloudEvents metadata
+
+| Attribute | Description | Type | Required | Value/template |
+| --- | --- | --- | --- | --- |
+| `type` |  | `string` | `False` | `USGS.WaterQuality.Readings.WaterQualityReading` |
+| `source` |  | `uritemplate` | `False` | `{source_uri}` |
+| `subject` |  | `uritemplate` | `False` | `{site_number}/{parameter_code}` |
+
+##### Bound transports
+
+| Endpoint | Protocol | Binding |
+| --- | --- | --- |
+| `USGS.WaterQuality.Readings.Kafka` | `KAFKA` | topic `usgs-nwis-wq`; key `{site_number}/{parameter_code}` |
+
+## Schemagroups
+
+### Schemagroup `USGS.WaterQuality.Sites.jstruct`
+<a id="schemagroup-usgswaterqualitysitesjstruct"></a>
+
+#### Schema `USGS.WaterQuality.Sites.MonitoringSite`
+<a id="schema-usgswaterqualitysitesmonitoringsite"></a>
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+| Default version | 1.0 |
+
+##### Version `1.0`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### Avro
+
+| Field | Value |
+| --- | --- |
+| Name | MonitoringSite |
+| Namespace | - |
+| Type | `record` |
+| Doc |  |
+
+| Field | Type | Description | Default |
+| --- | --- | --- | --- |
+| `site_number` | `string` |  | `-` |
+| `site_name` | `string` |  | `-` |
+| `agency_code` | `string` |  | `-` |
+| `latitude` | `double` \| `null` |  | `-` |
+| `longitude` | `double` \| `null` |  | `-` |
+| `site_type` | `string` \| `null` |  | `-` |
+| `state_code` | `string` \| `null` |  | `-` |
+| `county_code` | `string` \| `null` |  | `-` |
+| `huc_code` | `string` \| `null` |  | `-` |
+
+### Schemagroup `USGS.WaterQuality.Readings.jstruct`
+<a id="schemagroup-usgswaterqualityreadingsjstruct"></a>
+
+#### Schema `USGS.WaterQuality.Readings.WaterQualityReading`
+<a id="schema-usgswaterqualityreadingswaterqualityreading"></a>
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+| Default version | 1.0 |
+
+##### Version `1.0`
+
+| Field | Value |
+| --- | --- |
+| Format | JsonStructure/draft-02 |
+
+###### Avro
+
+| Field | Value |
+| --- | --- |
+| Name | WaterQualityReading |
+| Namespace | - |
+| Type | `record` |
+| Doc |  |
+
+| Field | Type | Description | Default |
+| --- | --- | --- | --- |
+| `site_number` | `string` |  | `-` |
+| `site_name` | `string` |  | `-` |
+| `parameter_code` | `string` |  | `-` |
+| `parameter_name` | `string` |  | `-` |
+| `value` | `double` \| `null` |  | `-` |
+| `unit` | `string` |  | `-` |
+| `qualifier` | `string` \| `null` |  | `-` |
+| `date_time` | `string` |  | `-` |
