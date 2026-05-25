@@ -1,0 +1,2 @@
+pip install .\laqn_london_mqtt_producer_data
+pip install .\laqn_london_mqtt_producer_mqtt_client

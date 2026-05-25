@@ -1,0 +1,14 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/laqn-london"
+LABEL org.opencontainers.image.title="Laqn London → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Publishes Laqn London CloudEvents to MQTT 5.0 binary mode topics under air-quality/gb/london/laqn-london/..."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/laqn-london/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./laqn_london_mqtt_producer/laqn_london_mqtt_producer_data  && pip install --no-cache-dir ./laqn_london_mqtt_producer/laqn_london_mqtt_producer_mqtt_client  && pip install --no-cache-dir ./laqn_london_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "laqn_london_mqtt", "feed"]

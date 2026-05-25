@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - UkKclLaqnEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    UkKclLaqnSpeciesEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    UkKclLaqnSpeciesEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkKclLaqnMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkKclLaqnAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkKclLaqnSpeciesMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UkKclLaqnSpeciesAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - UkKclLaqnSpeciesProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkKclLaqnMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkKclLaqnAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkKclLaqnSpeciesMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UkKclLaqnSpeciesAmqpProducersolution for event-driven applications.
 
 
 
@@ -233,6 +257,154 @@ uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_site_async = uk_kcl_laqn_site_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_site_async = uk_kcl_laqn_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_site_async = uk_kcl_laqn_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_site_async = uk_kcl_laqn_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_site_async = uk_kcl_laqn_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -333,6 +505,154 @@ uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_measurement_async = uk_kcl_laqn_measu
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_measurement_async = uk_kcl_laqn_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_measurement_async = uk_kcl_laqn_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_measurement_async = uk_kcl_laqn_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_measurement_async = uk_kcl_laqn_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -428,6 +748,154 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_daily_index_async = uk_kcl_laqn_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_daily_index_async = uk_kcl_laqn_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_daily_index_async = uk_kcl_laqn_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_daily_index_async = uk_kcl_laqn_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_daily_index_async = uk_kcl_laqn_daily_index_event
 
 **Parameters:**```
 
@@ -939,6 +1407,154 @@ uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_species_async = uk_kcl_laqn_species_e
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_species_async = uk_kcl_laqn_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_species_async = uk_kcl_laqn_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_species_async = uk_kcl_laqn_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_species_async = uk_kcl_laqn_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1034,6 +1650,3222 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_uk_kcl_laqn_species_batch(```
+
+    messages=[
+
+        Species(...),Initializes the runner with a Kafka consumer.
+
+        Species(...),
+
+        Species(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkKclLaqnMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkKclLaqnMqttEventDispatcher` handles events for the uk.kcl.laqn.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from laqn_london_producer import UkKclLaqnProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_kcl_laqn_site(```python
+
+    data=Site(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkKclLaqnMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_mqtt_site_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_mqtt_site_async:  Callable[[ConsumerRecord, CloudEvent, Site],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.mqtt.Site`: LAQN monitoring site reference data, including stable site
+identity, operator information, and WGS84 coordinates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_mqtt_site_async = uk_kcl_laqn_mqtt_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_mqtt_site_async = uk_kcl_laqn_mqtt_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_mqtt_site_async = uk_kcl_laqn_mqtt_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_mqtt_site_async = uk_kcl_laqn_mqtt_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_mqtt_site_async = uk_kcl_laqn_mqtt_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_mqtt_site_async = uk_kcl_laqn_mqtt_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_mqtt_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_mqtt_measurement_async:  Callable[[ConsumerRecord, CloudEvent,
+Measurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.mqtt.Measurement`: LAQN hourly pollutant measurement for a site and species
+at a GMT timestamp.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_mqtt_measurement_async = uk_kcl_laqn_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_mqtt_measurement_async = uk_kcl_laqn_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_mqtt_measurement_async = uk_kcl_laqn_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_mqtt_measurement_async = uk_kcl_laqn_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_mqtt_measurement_async = uk_kcl_laqn_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_mqtt_measurement_async = uk_kcl_laqn_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_mqtt_daily_index_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_mqtt_daily_index_async:  Callable[[ConsumerRecord, CloudEvent, DailyIndex],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.mqtt.DailyIndex`: LAQN Daily Air Quality Index (DAQI) for a site and
+pollutant, published as the latest London-wide bulletin.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_mqtt_daily_index_async = uk_kcl_laqn_mqtt_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_mqtt_daily_index_async = uk_kcl_laqn_mqtt_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_mqtt_daily_index_async = uk_kcl_laqn_mqtt_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_mqtt_daily_index_async = uk_kcl_laqn_mqtt_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_mqtt_daily_index_async = uk_kcl_laqn_mqtt_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_mqtt_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_mqtt_daily_index_async = uk_kcl_laqn_mqtt_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_mqtt_site`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_mqtt_site(
+
+    self,##### `_process_event`
+
+    data: Site,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.mqtt.Site` message. LAQN monitoring site reference data, including stable site identity,
+operator information, and WGS84 coordinates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Site`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_mqtt_site(
+
+    data=Site(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.mqtt.Site` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_mqtt_site_batch(```
+
+    messages=[
+
+        Site(...),Initializes the runner with a Kafka consumer.
+
+        Site(...),
+
+        Site(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_mqtt_measurement`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_mqtt_measurement(
+
+    self,##### `_process_event`
+
+    data: Measurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.mqtt.Measurement` message. LAQN hourly pollutant measurement for a site and species at a GMT
+timestamp.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Measurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_mqtt_measurement(
+
+    data=Measurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.mqtt.Measurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_mqtt_measurement_batch(```
+
+    messages=[
+
+        Measurement(...),Initializes the runner with a Kafka consumer.
+
+        Measurement(...),
+
+        Measurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_mqtt_daily_index`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_mqtt_daily_index(
+
+    self,##### `_process_event`
+
+    data: DailyIndex,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.mqtt.DailyIndex` message. LAQN Daily Air Quality Index (DAQI) for a site and pollutant,
+published as the latest London-wide bulletin.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DailyIndex`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_mqtt_daily_index(
+
+    data=DailyIndex(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.mqtt.DailyIndex` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_mqtt_daily_index_batch(```
+
+    messages=[
+
+        DailyIndex(...),Initializes the runner with a Kafka consumer.
+
+        DailyIndex(...),
+
+        DailyIndex(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkKclLaqnAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkKclLaqnAmqpEventDispatcher` handles events for the uk.kcl.laqn.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from laqn_london_producer import UkKclLaqnProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_kcl_laqn_site(```python
+
+    data=Site(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkKclLaqnAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_amqp_site_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_amqp_site_async:  Callable[[ConsumerRecord, CloudEvent, Site],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.amqp.Site`: LAQN monitoring site reference data, including stable site
+identity, operator information, and WGS84 coordinates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_amqp_site_async = uk_kcl_laqn_amqp_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_amqp_site_async = uk_kcl_laqn_amqp_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_amqp_site_async = uk_kcl_laqn_amqp_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_amqp_site_async = uk_kcl_laqn_amqp_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_amqp_site_async = uk_kcl_laqn_amqp_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Site`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_amqp_site_async = uk_kcl_laqn_amqp_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_amqp_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_amqp_measurement_async:  Callable[[ConsumerRecord, CloudEvent,
+Measurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.amqp.Measurement`: LAQN hourly pollutant measurement for a site and species
+at a GMT timestamp.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_amqp_measurement_async = uk_kcl_laqn_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_amqp_measurement_async = uk_kcl_laqn_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_amqp_measurement_async = uk_kcl_laqn_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_amqp_measurement_async = uk_kcl_laqn_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_amqp_measurement_async = uk_kcl_laqn_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Measurement`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_amqp_measurement_async = uk_kcl_laqn_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_amqp_daily_index_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_amqp_daily_index_async:  Callable[[ConsumerRecord, CloudEvent, DailyIndex],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.amqp.DailyIndex`: LAQN Daily Air Quality Index (DAQI) for a site and
+pollutant, published as the latest London-wide bulletin.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_amqp_daily_index_async = uk_kcl_laqn_amqp_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_amqp_daily_index_async = uk_kcl_laqn_amqp_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_amqp_daily_index_async = uk_kcl_laqn_amqp_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_amqp_daily_index_async = uk_kcl_laqn_amqp_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_amqp_daily_index_async = uk_kcl_laqn_amqp_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.DailyIndex`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_amqp_daily_index_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DailyIndex) -> None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_amqp_daily_index_async = uk_kcl_laqn_amqp_daily_index_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_amqp_site`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_amqp_site(
+
+    self,##### `_process_event`
+
+    data: Site,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.amqp.Site` message. LAQN monitoring site reference data, including stable site identity,
+operator information, and WGS84 coordinates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Site`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_amqp_site(
+
+    data=Site(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.amqp.Site` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_amqp_site_batch(```
+
+    messages=[
+
+        Site(...),Initializes the runner with a Kafka consumer.
+
+        Site(...),
+
+        Site(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_amqp_measurement`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_amqp_measurement(
+
+    self,##### `_process_event`
+
+    data: Measurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.amqp.Measurement` message. LAQN hourly pollutant measurement for a site and species at a GMT
+timestamp.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Measurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_amqp_measurement(
+
+    data=Measurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.amqp.Measurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_amqp_measurement_batch(```
+
+    messages=[
+
+        Measurement(...),Initializes the runner with a Kafka consumer.
+
+        Measurement(...),
+
+        Measurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_amqp_daily_index`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_amqp_daily_index(
+
+    self,##### `_process_event`
+
+    data: DailyIndex,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.amqp.DailyIndex` message. LAQN Daily Air Quality Index (DAQI) for a site and pollutant,
+published as the latest London-wide bulletin.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DailyIndex`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_amqp_daily_index(
+
+    data=DailyIndex(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.amqp.DailyIndex` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_amqp_daily_index_batch(```
+
+    messages=[
+
+        DailyIndex(...),Initializes the runner with a Kafka consumer.
+
+        DailyIndex(...),
+
+        DailyIndex(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkKclLaqnSpeciesMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkKclLaqnSpeciesMqttEventDispatcher` handles events for the uk.kcl.laqn.species.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from laqn_london_producer import UkKclLaqnProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_kcl_laqn_site(```python
+
+    data=Site(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkKclLaqnSpeciesMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_species_mqtt_species_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_species_mqtt_species_async:  Callable[[ConsumerRecord, CloudEvent,
+Species], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.species.mqtt.Species`: LAQN pollutant reference data, including descriptive
+text and health guidance for a pollutant code.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_mqtt_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_species_mqtt_species_async = uk_kcl_laqn_species_mqtt_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_mqtt_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_species_mqtt_species_async = uk_kcl_laqn_species_mqtt_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_mqtt_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_species_mqtt_species_async = uk_kcl_laqn_species_mqtt_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_mqtt_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_species_mqtt_species_async = uk_kcl_laqn_species_mqtt_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_mqtt_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_species_mqtt_species_async = uk_kcl_laqn_species_mqtt_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_mqtt_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_species_mqtt_species_async = uk_kcl_laqn_species_mqtt_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_species_mqtt_species`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_species_mqtt_species(
+
+    self,##### `_process_event`
+
+    data: Species,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.species.mqtt.Species` message. LAQN pollutant reference data, including descriptive text and
+health guidance for a pollutant code.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Species`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_species_mqtt_species(
+
+    data=Species(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.species.mqtt.Species` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_species_mqtt_species_batch(```
+
+    messages=[
+
+        Species(...),Initializes the runner with a Kafka consumer.
+
+        Species(...),
+
+        Species(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UkKclLaqnSpeciesAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UkKclLaqnSpeciesAmqpEventDispatcher` handles events for the uk.kcl.laqn.species.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from laqn_london_producer import UkKclLaqnProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_kcl_laqn_site(```python
+
+    data=Site(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UkKclLaqnSpeciesAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UkKclLaqnProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_kcl_laqn_species_amqp_species_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_kcl_laqn_species_amqp_species_async:  Callable[[ConsumerRecord, CloudEvent,
+Species], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `uk.kcl.laqn.species.amqp.Species`: LAQN pollutant reference data, including descriptive
+text and health guidance for a pollutant code.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_amqp_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_dispatcher.uk_kcl_laqn_species_amqp_species_async = uk_kcl_laqn_species_amqp_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_amqp_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_dispatcher.uk_kcl_laqn_species_amqp_species_async = uk_kcl_laqn_species_amqp_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnMqttProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_amqp_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_mqtt_dispatcher.uk_kcl_laqn_species_amqp_species_async = uk_kcl_laqn_species_amqp_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_amqp_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_amqp_dispatcher.uk_kcl_laqn_species_amqp_species_async = uk_kcl_laqn_species_amqp_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesMqttProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_amqp_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_mqtt_dispatcher.uk_kcl_laqn_species_amqp_species_async = uk_kcl_laqn_species_amqp_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UkKclLaqnSpeciesAmqpProducer- `data`: The event data of type `laqn_london_producer_data.Species`.
+
+
+
+Producer for `uk.kcl.laqn.species.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_kcl_laqn_species_amqp_species_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Species) ->
+None:
+
+```python    # Process the event data
+
+UkKclLaqnSpeciesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_kcl_laqn_species_amqp_dispatcher.uk_kcl_laqn_species_amqp_species_async = uk_kcl_laqn_species_amqp_species_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_kcl_laqn_species_amqp_species`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_kcl_laqn_species_amqp_species(
+
+    self,##### `_process_event`
+
+    data: Species,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `uk.kcl.laqn.species.amqp.Species` message. LAQN pollutant reference data, including descriptive text and
+health guidance for a pollutant code.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Species`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_kcl_laqn_species_amqp_species(
+
+    data=Species(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `uk.kcl.laqn.species.amqp.Species` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_kcl_laqn_species_amqp_species_batch(```
 
     messages=[
 
