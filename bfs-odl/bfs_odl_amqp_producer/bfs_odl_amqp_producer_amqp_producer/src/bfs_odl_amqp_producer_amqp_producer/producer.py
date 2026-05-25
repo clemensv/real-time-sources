@@ -602,7 +602,6 @@ class DeBfsOdlAmqpProducer:
         data: Station,
         _feedurl: str,
         _station_id: str,
-        _canton: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.bfs.odl.amqp.Station` message
@@ -611,7 +610,6 @@ class DeBfsOdlAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
-            _canton (str): Value for AMQP protocol option placeholder canton
             data (Station): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -657,7 +655,6 @@ class DeBfsOdlAmqpProducer:
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
         app_properties = {}
-        app_properties["canton"] = "{canton}".format(canton=_canton)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -673,7 +670,6 @@ class DeBfsOdlAmqpProducer:
         data_array: typing.List[Station],
         _feedurl: str,
         _station_id: str,
-        _canton: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `de.bfs.odl.amqp.Station` messages
@@ -682,7 +678,6 @@ class DeBfsOdlAmqpProducer:
             data_array (typing.List[Station]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
-            _canton (str): Value for AMQP protocol option placeholder canton
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -690,7 +685,6 @@ class DeBfsOdlAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _station_id=_station_id,
-                _canton=_canton,
                 content_type=content_type)
     
     
@@ -698,7 +692,6 @@ class DeBfsOdlAmqpProducer:
         data: DoseRateMeasurement,
         _feedurl: str,
         _station_id: str,
-        _canton: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.bfs.odl.amqp.DoseRateMeasurement` message
@@ -707,7 +700,6 @@ class DeBfsOdlAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
-            _canton (str): Value for AMQP protocol option placeholder canton
             data (DoseRateMeasurement): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -753,7 +745,6 @@ class DeBfsOdlAmqpProducer:
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
         app_properties = {}
-        app_properties["canton"] = "{canton}".format(canton=_canton)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -769,7 +760,6 @@ class DeBfsOdlAmqpProducer:
         data_array: typing.List[DoseRateMeasurement],
         _feedurl: str,
         _station_id: str,
-        _canton: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `de.bfs.odl.amqp.DoseRateMeasurement` messages
@@ -778,7 +768,6 @@ class DeBfsOdlAmqpProducer:
             data_array (typing.List[DoseRateMeasurement]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
-            _canton (str): Value for AMQP protocol option placeholder canton
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -786,7 +775,6 @@ class DeBfsOdlAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _station_id=_station_id,
-                _canton=_canton,
                 content_type=content_type)
     
     

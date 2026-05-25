@@ -2,8 +2,8 @@
 FROM python:3.10-slim
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/bfs-odl"
-LABEL org.opencontainers.image.title="BfS ODL -> AMQP 1.0 bridge"
-LABEL org.opencontainers.image.description="Publishes BfS ODL radiation dose-rate CloudEvents over AMQP 1.0 to generic brokers and Azure Service Bus using CBS authentication."
+LABEL org.opencontainers.image.title="Bfs Odl → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Publishes Bfs Odl CloudEvents over AMQP 1.0 to generic brokers and Azure Service Bus using SASL PLAIN, SAS CBS, or Entra ID CBS authentication."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/bfs-odl/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 LABEL source.transport="amqp"
@@ -11,17 +11,25 @@ LABEL source.transport="amqp"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
+        libsasl2-2 libsasl2-modules \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY . /app
-RUN pip install --no-cache-dir ./bfs_odl_producer/bfs_odl_producer_data \
- && pip install --no-cache-dir ./bfs_odl_producer/bfs_odl_producer_kafka_producer \
- && pip install --no-cache-dir ./bfs_odl_amqp_producer/bfs_odl_amqp_producer_data \
+
+RUN pip install --no-cache-dir ./bfs_odl_amqp_producer/bfs_odl_amqp_producer_data \
  && pip install --no-cache-dir ./bfs_odl_amqp_producer/bfs_odl_amqp_producer_amqp_producer \
  && pip install --no-cache-dir . \
  && pip install --no-cache-dir ./bfs_odl_amqp \
- && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && apt-get purge -y --auto-remove \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
  && rm -rf /root/.cache /var/lib/apt/lists/*
 
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="bfs-odl"
+
 CMD ["python", "-m", "bfs_odl_amqp", "feed"]

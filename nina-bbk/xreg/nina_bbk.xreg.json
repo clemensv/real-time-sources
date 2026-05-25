@@ -41,6 +41,31 @@
         }
       ],
       "description": "MQTT 5 producer endpoint for NINA BBK CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "NINA.Warnings.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/nina-bbk"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "nina-bbk"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NINA.Warnings.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -80,6 +105,45 @@
             "qos": 1,
             "retain": false
           }
+        }
+      }
+    },
+    "NINA.Warnings.amqp": {
+      "description": "AMQP 1.0 transport variants for nina-bbk. All CloudEvents are published to the nina-bbk address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "NINA.Warnings.amqp.CivilWarning": {
+          "name": "CivilWarning",
+          "basemessageurl": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{warning_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "AMQP application property mirroring the state routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{warning_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "NINA.Warnings.amqp.CivilWarning"
         }
       }
     }

@@ -105,9 +105,13 @@ This bridge can also run as a scheduled Fabric notebook
 which builds a per-source Fabric Environment, binds Lakehouse + KQL +
 Event Stream, and schedules single-cycle runs of `bfs-odl feed --once`.
 
+## AMQP 1.0 companion feeder
 
-## MQTT and AMQP companion feeders
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-bfs-odl-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `bfs-odl`).
 
-This source now ships separate Kafka, MQTT, and AMQP containers. The MQTT companion publishes binary-mode CloudEvents to `radiation/ch/bfs/bfs-odl/{canton}/{station_id}/{event}` (`info`, `dose-rate`) with retained QoS 1 messages for last-known-value consumers. The AMQP companion publishes the same CloudEvents to AMQP 1.0 brokers or Azure Service Bus using the station subject and a `canton` application property for filtering.
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=bfs-odl   ghcr.io/clemensv/real-time-sources-bfs-odl-amqp:latest
+```
 
-Images: `ghcr.io/clemensv/real-time-sources-bfs-odl-mqtt:latest`, `ghcr.io/clemensv/real-time-sources-bfs-odl-amqp:latest`. Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`, and `infra/azure-template-amqp.json`.
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbfs-odl%2Fazure-template-amqp.json)
+

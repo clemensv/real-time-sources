@@ -1,0 +1,217 @@
+"""AMQP feeder application for JMA Bosai warnings → Unified Namespace."""
+
+from __future__ import annotations
+
+import argparse
+import asyncio
+import logging
+import os
+import time
+from datetime import datetime, timezone
+from typing import Optional
+from urllib.parse import urlparse
+
+
+from jma_bosai_warning.jma_bosai_warning import (
+    AREA_CATALOG_URL,
+    WARNING_OFFICE_CODES,
+    WARNING_URL_TEMPLATE,
+    BridgeState,
+    JmaBosaiWarningAPI,
+    _cap_list,
+    _load_state,
+    _save_state,
+    parse_weather_warning_payload,
+)
+from jma_bosai_warning_amqp_producer_data import Office, WeatherWarning
+from jma_bosai_warning_amqp_producer_amqp_producer.producer import JPJMAWarningAmqpProducer
+
+logger = logging.getLogger(__name__)
+
+
+
+DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
+
+
+class _AmqpPublishFacade:
+    def __init__(self, producers):
+        self._producers = list(producers)
+
+    def close(self):
+        for producer in self._producers:
+            close = getattr(producer, "close", None)
+            if close is not None:
+                close()
+
+    def __getattr__(self, name: str):
+        if not name.startswith("publish_"):
+            raise AttributeError(name)
+        suffix = name.split("_mqtt_", 1)[1] if "_mqtt_" in name else name[len("publish_"):]
+        target = None
+        for producer in self._producers:
+            target = getattr(producer, f"send_{suffix}", None)
+            if target is not None:
+                break
+        if target is None:
+            raise AttributeError(f"send_{suffix}")
+
+        async def _publish(**kwargs):
+            accepted = set(target.__code__.co_varnames[:target.__code__.co_argcount])
+            call = {}
+            for key, value in kwargs.items():
+                if key in ("data", "content_type"):
+                    call[key] = value
+                elif key in ("flush_producer", "qos", "retain"):
+                    continue
+                else:
+                    candidate = "_" + key.lstrip("_")
+                    if candidate in accepted:
+                        call[candidate] = value
+            target(**call)
+
+        return _publish
+
+
+def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, content_mode: str, auth_mode: str, username, password, entra_audience: str, entra_client_id, sas_key_name, sas_key):
+    producers = []
+    for cls in (JPJMAWarningAmqpProducer,):
+        if auth_mode == "entra":
+            from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+            credential = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
+            producer = cls(host=host, address=address, port=port, content_mode=content_mode, credential=credential, entra_audience=entra_audience, use_tls=use_tls)
+        elif auth_mode == "sas":
+            if not sas_key_name or not sas_key:
+                raise RuntimeError("AMQP_AUTH_MODE=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
+            producer = cls(host=host, address=address, port=port, content_mode=content_mode, sas_key_name=sas_key_name, sas_key=sas_key, use_tls=use_tls)
+        else:
+            producer = cls(host=host, address=address, port=port, username=username, password=password, content_mode=content_mode, use_tls=use_tls)
+        producers.append(producer)
+    return _AmqpPublishFacade(producers)
+
+
+async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient) -> int:
+    count = 0
+    for record in api.office_records():
+        await mqtt_client.publish_jp_jma_warning_mqtt_office(
+            feedurl=AREA_CATALOG_URL,
+            prefecture=record["prefecture"],
+            severity=record["severity"],
+            office_code=record["office_code"],
+            area_code=record["area_code"],
+            event=record["event"],
+            data=Office(**record),
+        )
+        count += 1
+    return count
+
+
+async def _publish_warning_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient, state: BridgeState, office_codes: list[str]) -> int:
+    pending: list[str] = []
+    emitted = 0
+    seen = set(state.seen_weather)
+    for office_code in office_codes:
+        try:
+            records = parse_weather_warning_payload(office_code, api.fetch_warning_payload(office_code), api.area_names)
+        except Exception as exc:
+            logger.warning("Skipping warning office %s after fetch/parse failure: %s", office_code, exc)
+            continue
+        for record in records:
+            dedupe_key = f"{record['office_code']}|{record['area_code']}|{record['report_datetime']}"
+            if dedupe_key in seen:
+                continue
+            await mqtt_client.publish_jp_jma_warning_mqtt_weather_warning(
+                feedurl=WARNING_URL_TEMPLATE.format(office_code=office_code),
+                prefecture=record["prefecture"],
+                severity=record["severity"],
+                office_code=record["office_code"],
+                area_code=record["area_code"],
+                event=record["event"],
+                data=WeatherWarning(**record),
+            )
+            pending.append(dedupe_key)
+            emitted += 1
+    state.seen_weather = _cap_list(state.seen_weather + pending)
+    return emitted
+
+
+async def feed(
+    api: JmaBosaiWarningAPI,
+    broker_host: str,
+    broker_port: int,
+    *,
+    state_file: str,
+    polling_interval_warning: int,
+    office_metadata_refresh_hours: int,
+    office_codes: list[str],
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    tls: bool = False,
+    client_id: Optional[str] = None,
+    content_mode: str = "binary",
+    once: bool = False,
+) -> None:
+    mqtt_client = _build_publisher(
+        host=broker_host, port=broker_port, address=os.getenv("AMQP_ADDRESS", "jma-bosai-warning"),
+        use_tls=tls, content_mode=content_mode, auth_mode=os.getenv("AMQP_AUTH_MODE", "password"),
+        username=username, password=password,
+        entra_audience=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS),
+        entra_client_id=os.getenv("AMQP_ENTRA_CLIENT_ID"),
+        sas_key_name=os.getenv("AMQP_SAS_KEY_NAME"), sas_key=os.getenv("AMQP_SAS_KEY"),
+    )
+    state = BridgeState.from_dict(_load_state(state_file))
+    metadata_interval = max(1, office_metadata_refresh_hours) * 3600
+    try:
+        while True:
+            started = time.monotonic()
+            now_utc = datetime.now(timezone.utc)
+            should_refresh = not state.last_metadata_refresh
+            if state.last_metadata_refresh:
+                try:
+                    should_refresh = (now_utc - datetime.fromisoformat(state.last_metadata_refresh.replace("Z", "+00:00"))).total_seconds() >= metadata_interval
+                except ValueError:
+                    should_refresh = True
+            if should_refresh:
+                api.refresh_area_catalog()
+                office_count = await _publish_offices(api, mqtt_client)
+                state.last_metadata_refresh = now_utc.isoformat().replace("+00:00", "Z")
+                _save_state(state_file, state.as_dict())
+                logger.info("Published %d retained JMA office reference record(s)", office_count)
+            emitted = await _publish_warning_cycle(api, mqtt_client, state, office_codes)
+            _save_state(state_file, state.as_dict())
+            logger.info("Published %d JMA weather warning record(s)", emitted)
+            if once:
+                break
+            await asyncio.sleep(max(0, polling_interval_warning - (time.monotonic() - started)))
+    finally:
+        mqtt_client.close()
+
+
+def _parse_broker_url(url: str) -> tuple[str, int, bool]:
+    parsed = urlparse(url if "://" in url else f"amqp://{url}")
+    scheme = (parsed.scheme or "mqtt").lower()
+    tls = scheme in ("amqps", "ssl", "tls")
+    return parsed.hostname or "localhost", parsed.port or (5671 if tls else 5672), tls
+
+
+def main() -> None:
+    logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper(), format="%(asctime)s %(levelname)s %(message)s")
+    parser = argparse.ArgumentParser(description="JMA Bosai warning AMQP 1.0 bridge")
+    parser.add_argument("feed_command", nargs="?", default="feed")
+    parser.add_argument("--broker-url", default=os.getenv("AMQP_BROKER_URL", "amqp://localhost:5672"))
+    parser.add_argument("--state-file", default=os.getenv("JMA_BOSAI_WARNING_AMQP_STATE_FILE", os.path.expanduser("~/.jma_bosai_warning_mqtt_state.json")))
+    parser.add_argument("--polling-interval-warning", type=int, default=int(os.getenv("POLLING_INTERVAL_WARNING", "60")))
+    parser.add_argument("--office-metadata-refresh-hours", type=int, default=int(os.getenv("OFFICE_METADATA_REFRESH_HOURS", "720")))
+    parser.add_argument("--office-codes", default=os.getenv("JMA_WARNING_OFFICE_CODES", ",".join(WARNING_OFFICE_CODES)))
+    parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
+    parser.add_argument("--username", default=os.getenv("AMQP_USERNAME", ""))
+    parser.add_argument("--password", default=os.getenv("AMQP_PASSWORD", ""))
+    parser.add_argument("--client-id", default=os.getenv("AMQP_CLIENT_ID", ""))
+    parser.add_argument("--content-mode", choices=("binary", "structured"), default=os.getenv("AMQP_CONTENT_MODE", "binary"))
+    args = parser.parse_args()
+    if args.feed_command != "feed":
+        parser.error("only the 'feed' command is supported")
+    office_codes = [part.strip() for part in args.office_codes.split(",") if part.strip()]
+    host, port, tls = _parse_broker_url(args.broker_url)
+    api = JmaBosaiWarningAPI()
+    logger.info("Polling JMA Bosai warning feeds and publishing to AMQP %s:%d", host, port)
+    asyncio.run(feed(api, host, port, state_file=args.state_file, polling_interval_warning=args.polling_interval_warning, office_metadata_refresh_hours=args.office_metadata_refresh_hours, office_codes=office_codes, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))

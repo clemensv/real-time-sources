@@ -39,6 +39,28 @@
       "messagegroups": [
         "#/messagegroups/USGS.Earthquakes.mqtt"
       ]
+    },
+    "USGS.Earthquakes.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/usgs-earthquakes"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.Earthquakes.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for usgs-earthquakes CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -84,6 +106,25 @@
           }
         }
       }
+    },
+    "USGS.Earthquakes.amqp": {
+      "description": "AMQP 1.0 transport variant for usgs-earthquakes events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "USGS.Earthquakes.amqp.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{net}/{code}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -113,15 +154,24 @@
                             "description": "Unique identifier for the earthquake event."
                           },
                           "magnitude": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Magnitude of the earthquake."
                           },
                           "mag_type": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww)."
                           },
                           "place": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Textual description of the named geographic region near the event."
                           },
                           "event_time": {
@@ -133,11 +183,17 @@
                             "description": "Time when the event was most recently updated in ISO-8601 format."
                           },
                           "url": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Link to USGS Event Page for this event."
                           },
                           "detail_url": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Link to GeoJSON detail feed for this event."
                           },
                           "felt": {
@@ -177,7 +233,10 @@
                             "description": "Flag indicating whether the event has a tsunami advisory (1=yes, 0=no)."
                           },
                           "sig": {
-                            "type": "int32",
+                            "type": [
+                              "int32",
+                              "null"
+                            ],
                             "description": "Significance of the event, a number describing how significant the event is (0-1000)."
                           },
                           "net": {
@@ -189,27 +248,45 @@
                             "description": "Identifying code assigned by the corresponding source for the event."
                           },
                           "sources": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Comma-separated list of network contributors."
                           },
                           "nst": {
-                            "type": "int32",
+                            "type": [
+                              "int32",
+                              "null"
+                            ],
                             "description": "Number of seismic stations used to determine earthquake location."
                           },
                           "dmin": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Horizontal distance from the epicenter to the nearest station (degrees)."
                           },
                           "rms": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Root-mean-square travel time residual (seconds)."
                           },
                           "gap": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Largest azimuthal gap between azimuthally adjacent stations (degrees)."
                           },
                           "event_type": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "description": "Type of seismic event (earthquake, quarry blast, etc.)."
                           },
                           "latitude": {
@@ -221,7 +298,10 @@
                             "description": "Longitude of the earthquake epicenter in decimal degrees."
                           },
                           "depth": {
-                            "type": "double",
+                            "type": [
+                              "double",
+                              "null"
+                            ],
                             "description": "Depth of the earthquake in kilometers."
                           },
                           "magnitude_bucket": {

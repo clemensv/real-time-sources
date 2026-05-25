@@ -21,6 +21,7 @@ class Station:
     
     Attributes:
         station_id (str)
+        state (str)
         station_code (str)
         name (str)
         postal_code (str)
@@ -30,11 +31,11 @@ class Station:
         height_above_sea (typing.Optional[float])
         longitude (float)
         latitude (float)
-        canton (str)
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     postal_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="postal_code"))
@@ -44,7 +45,6 @@ class Station:
     height_above_sea: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="height_above_sea"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    canton: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="canton"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -171,15 +171,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='pjyfosnpxrpqlbwmkfqb',
-            station_code='hdfjharnubninftfdcer',
-            name='bjoqlxvjjagmizfkoqnh',
-            postal_code='yqcxdhbwscgllhqrkjwh',
-            site_status=int(22),
-            site_status_text='ijdzgbpbgsrjfhmoxguw',
-            kid=int(86),
-            height_above_sea=float(94.21122751041217),
-            longitude=float(41.531903614429076),
-            latitude=float(92.57912888798383),
-            canton='zavgvyesfekuadlhklim'
+            station_id='wfuucvgaqpgvpmvbshxx',
+            state='uufiqvfyokzqftxithzn',
+            station_code='ewolkxczsmtezskuvkxi',
+            name='ubtwngnponlrnpsksiec',
+            postal_code='cslptvtovestcqlsbaow',
+            site_status=int(65),
+            site_status_text='nijwpuoijtytnawfixtf',
+            kid=int(48),
+            height_above_sea=float(89.19329084306783),
+            longitude=float(89.89010419169757),
+            latitude=float(71.54006778896422)
         )

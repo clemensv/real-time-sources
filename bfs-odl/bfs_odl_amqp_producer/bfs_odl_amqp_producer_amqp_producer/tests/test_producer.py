@@ -260,7 +260,6 @@ class TestDeBfsOdlAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _station_id="value",
-                    _canton="value",
                     content_type="application/json"
                 )
 
@@ -289,7 +288,6 @@ class TestDeBfsOdlAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
-                assert properties.get('canton') == "{canton}".format(canton="value")
         finally:
             producer.close()
     
@@ -319,7 +317,6 @@ class TestDeBfsOdlAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _station_id="value",
-                    _canton="value",
                     content_type="application/json"
                 )
 
@@ -348,7 +345,6 @@ class TestDeBfsOdlAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
-                assert properties.get('canton') == "{canton}".format(canton="value")
         finally:
             producer.close()
 

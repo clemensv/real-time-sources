@@ -104,3 +104,14 @@ ride as MQTT 5 user properties; `subject` is
 
 See `CONTAINER.md` for the container image, environment variables, and
 wildcard subscription patterns.
+
+## AMQP 1.0 companion feeder
+
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-blitzortung-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `blitzortung`).
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=blitzortung   ghcr.io/clemensv/real-time-sources-blitzortung-amqp:latest
+```
+
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fblitzortung%2Fazure-template-amqp.json)
+

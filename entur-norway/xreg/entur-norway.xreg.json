@@ -63,6 +63,31 @@
         "#/messagegroups/no.entur.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for Entur Norway CloudEvents using the topic hierarchy and retain settings declared in this manifest."
+    },
+    "no.entur.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/entur-norway"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "entur-norway"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/no.entur.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -192,6 +217,133 @@
             "qos": 1,
             "retain": false
           }
+        }
+      }
+    },
+    "no.entur.amqp": {
+      "description": "AMQP 1.0 transport variants for entur-norway. All CloudEvents are published to the entur-norway address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "no.entur.amqp.EstimatedVehicleJourney": {
+          "name": "EstimatedVehicleJourney",
+          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "journeys/{operating_day}/{service_journey_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "operating_day": {
+                "type": "uritemplate",
+                "value": "{operating_day}",
+                "description": "AMQP application property mirroring the operating_day routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "service_journey_id": {
+                "type": "uritemplate",
+                "value": "{service_journey_id}",
+                "description": "AMQP application property mirroring the service_journey_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "operator_ref": {
+                "type": "uritemplate",
+                "value": "{operator_ref}",
+                "description": "AMQP application property mirroring the operator_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "line_ref": {
+                "type": "uritemplate",
+                "value": "{line_ref}",
+                "description": "AMQP application property mirroring the line_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "journeys/{operating_day}/{service_journey_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "no.entur.amqp.EstimatedVehicleJourney"
+        },
+        "no.entur.amqp.MonitoredVehicleJourney": {
+          "name": "MonitoredVehicleJourney",
+          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "journeys/{operating_day}/{service_journey_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "operating_day": {
+                "type": "uritemplate",
+                "value": "{operating_day}",
+                "description": "AMQP application property mirroring the operating_day routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "service_journey_id": {
+                "type": "uritemplate",
+                "value": "{service_journey_id}",
+                "description": "AMQP application property mirroring the service_journey_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "operator_ref": {
+                "type": "uritemplate",
+                "value": "{operator_ref}",
+                "description": "AMQP application property mirroring the operator_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "line_ref": {
+                "type": "uritemplate",
+                "value": "{line_ref}",
+                "description": "AMQP application property mirroring the line_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "journeys/{operating_day}/{service_journey_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "no.entur.amqp.MonitoredVehicleJourney"
+        },
+        "no.entur.amqp.PtSituationElement": {
+          "name": "PtSituationElement",
+          "basemessageurl": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "situations/{situation_number}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "situation_number": {
+                "type": "uritemplate",
+                "value": "{situation_number}",
+                "description": "AMQP application property mirroring the situation_number routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "situations/{situation_number}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "no.entur.amqp.PtSituationElement"
         }
       }
     }

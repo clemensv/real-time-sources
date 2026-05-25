@@ -43,6 +43,31 @@
         "#/messagegroups/be.irail.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for iRail CloudEvents using the topic hierarchy and retain settings declared in this manifest."
+    },
+    "be.irail.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/irail"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "irail"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irail.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -142,6 +167,80 @@
             "retain": true,
             "message_expiry_interval": 900
           }
+        }
+      }
+    },
+    "be.irail.amqp": {
+      "description": "AMQP 1.0 transport variants for irail. All CloudEvents are published to the irail address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "be.irail.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {},
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "be.irail.amqp.Station"
+        },
+        "be.irail.amqp.StationBoard": {
+          "name": "StationBoard",
+          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.StationBoard",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {},
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "be.irail.amqp.StationBoard"
+        },
+        "be.irail.amqp.ArrivalBoard": {
+          "name": "ArrivalBoard",
+          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {},
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "be.irail.amqp.ArrivalBoard"
         }
       }
     }

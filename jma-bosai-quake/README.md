@@ -57,3 +57,14 @@ Configuration can also be supplied via environment variables: `CONNECTION_STRING
 ## State
 
 The bridge persists a FIFO set of the latest 1000 `(eid, ser)` tuples in `./state/jma-bosai-quake.json` by default. State advances only after Kafka flush succeeds, so failed deliveries are retried on the next poll.
+
+## AMQP 1.0 companion feeder
+
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `jma-bosai-quake`).
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=jma-bosai-quake   ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest
+```
+
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-amqp.json)
+

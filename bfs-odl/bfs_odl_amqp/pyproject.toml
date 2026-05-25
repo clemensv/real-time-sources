@@ -1,24 +1,21 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "bfs-odl-amqp"
-version = "0.1.0"
-description = "AMQP 1.0 feeder for BfS ODL radiation dose-rate events"
-requires-python = ">=3.10"
-dependencies = [
-    "python-qpid-proton>=0.40.0",
-    "cloudevents>=1.11.0,<2.0.0",
-    "dataclasses_json>=0.6.7",
-    "avro>=1.11.3",
-    "azure-identity>=1.17.0",
-    "azure-core>=1.30.0",
-    "requests>=2.32.3",
-]
-
-[project.scripts]
-bfs-odl-amqp = "bfs_odl_amqp.app:main"
-
-[tool.setuptools.packages.find]
-include = ["bfs_odl_amqp*"]
+requires=["poetry-core>=1.1.0"]
+build-backend="poetry.core.masonry.api"
+[tool.poetry]
+name="bfs_odl-amqp"
+version="0.1.0"
+description="AMQP 1.0 feeder for bfs-odl"
+authors=["Clemens Vasters <clemensv@microsoft.com>"]
+packages=[{ include="bfs_odl_amqp" }]
+[tool.poetry.dependencies]
+python=">=3.10,<4.0"
+python-qpid-proton=">=0.40.0"
+cloudevents=">=1.11.0,<2.0.0"
+dataclasses_json=">=0.6.7"
+avro=">=1.11.3"
+azure-identity=">=1.17.0"
+azure-core=">=1.30.0"
+bfs_odl_amqp_producer_data={ path="../bfs_odl_amqp_producer/bfs_odl_amqp_producer_data" }
+bfs_odl_amqp_producer_amqp_producer={ path="../bfs_odl_amqp_producer/bfs_odl_amqp_producer_amqp_producer" }
+[tool.poetry.scripts]
+bfs-odl-amqp="bfs_odl_amqp:main"

@@ -28,3 +28,5 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
     exit 1
 }
+
+& (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")
