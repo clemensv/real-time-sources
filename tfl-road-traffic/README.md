@@ -29,3 +29,13 @@ See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
 ## Event Schemas
 
 See [EVENTS.md](EVENTS.md) for full event schema documentation.
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `tfl-road-traffic` by default.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-tfl-road-traffic-mqtt:latest`
+- AMQP image: `ghcr.io/clemensv/real-time-sources-tfl-road-traffic-amqp:latest`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`

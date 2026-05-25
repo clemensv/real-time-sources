@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class RoadCorridor:
     """
-    Reference record for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road endpoint at bridge startup and refreshed periodically. Each corridor is a named road segment under TfL operational control, such as the A2, A12, or M25, with its current aggregate traffic status.
+    Reference record for a TfL managed road corridor fetched from GET /Road.
     
     Attributes:
         road_id (str)
@@ -169,13 +169,13 @@ class RoadCorridor:
             An instance of the dataclass.
         """
         return cls(
-            road_id='prlyeyftidnlgqbrbvtj',
-            display_name='cqsnkhejkjpqexdirylb',
-            status_severity='kkdeueghhnqadzktexno',
-            status_severity_description='zuzrdzdkvryvaeuitalr',
-            bounds='jtmclfvphdhimbuxyios',
-            envelope='antfuvhsuvikecogiqfz',
-            url='fexbkvewtpycgujzlrff',
+            road_id='deqczikbakxhqsrbncxa',
+            display_name='tltngyyklrvbxoyhvpsv',
+            status_severity='dvesirupzqypldjicxeb',
+            status_severity_description='bovorxaruacpvxgrjsuv',
+            bounds='vpxzudwpgiagtjxuehvi',
+            envelope='cwwwwngmugkbjypxtozi',
+            url='rhcubgpmjlxuimmlxybj',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

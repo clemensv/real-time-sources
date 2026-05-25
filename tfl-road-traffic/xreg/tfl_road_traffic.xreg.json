@@ -65,6 +65,27 @@
         "#/messagegroups/uk.gov.tfl.road.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for TfL Road Traffic CloudEvents using the topic hierarchy and retain settings declared in this manifest."
+    },
+    "uk.gov.tfl.road.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "tfl-road-traffic"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.gov.tfl.road.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -216,6 +237,179 @@
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}",
             "qos": 1,
             "retain": false
+          }
+        }
+      }
+    },
+    "uk.gov.tfl.road.amqp": {
+      "description": "AMQP 1.0 bindings for tfl-road-traffic.",
+      "messages": {
+        "uk.gov.tfl.road.amqp.RoadCorridor": {
+          "name": "RoadCorridor",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "roads/{road_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "roads/{road_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadStatus": {
+          "name": "RoadStatus",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "roads/{road_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "roads/{road_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionSerious": {
+          "name": "RoadDisruptionSerious",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionSevere": {
+          "name": "RoadDisruptionSevere",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionModerate": {
+          "name": "RoadDisruptionModerate",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionMinor": {
+          "name": "RoadDisruptionMinor",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionInformation": {
+          "name": "RoadDisruptionInformation",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "uk.gov.tfl.road.amqp.RoadDisruptionClosure": {
+          "name": "RoadDisruptionClosure",
+          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "disruptions/{road_id}/{severity}/{disruption_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
           }
         }
       }

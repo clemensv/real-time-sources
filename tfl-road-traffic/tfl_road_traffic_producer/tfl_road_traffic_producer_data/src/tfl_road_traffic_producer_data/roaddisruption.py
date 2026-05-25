@@ -20,7 +20,7 @@ import datetime
 @dataclass
 class RoadDisruption:
     """
-    Real-time road disruption event on the Transport for London (TfL) road network. Fetched from the GET /Road/all/Disruption endpoint. Each disruption represents an active incident, planned works, or road closure affecting one or more roads in London. Disruption records are deduped by ID and lastModifiedTime so only changed records are re-emitted.
+    Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.
     
     Attributes:
         road_id (str)
@@ -200,28 +200,28 @@ class RoadDisruption:
             An instance of the dataclass.
         """
         return cls(
-            road_id='yzmokwzlmbicyzqzrygr',
-            disruption_id='cexdppnnwekzffwynspx',
-            category='xcaksgetzegymhtzxipt',
-            sub_category='mogekauiiyekakuupses',
-            severity='sskwaeqkdyclyblyejeu',
-            ordinal=int(35),
-            url='fxqyukrgrpwtophzascr',
-            point='erdsfnptzmaeeumrvudi',
-            comments='omkhufoqovcdjniwbtgc',
-            current_update='fpktwxwkemlxjorjyxep',
+            road_id='vwgbmzfqfdwxlhgurmdh',
+            disruption_id='mzgpehmkqylhkvhqbgbz',
+            category='tnjwtdnphiwjucytwxpd',
+            sub_category='sruqdnnrsrdbouyilnio',
+            severity='jtsdipidluzfhlwqovzo',
+            ordinal=int(99),
+            url='ezvpgcratxwtqihcdamq',
+            point='dnywxoleehzelolodajo',
+            comments='zgcdmzdyggfwicheffyv',
+            current_update='byzyvwmvatesqbnexuox',
             current_update_datetime=datetime.datetime.now(datetime.timezone.utc),
             corridor_ids=None,
             start_datetime=datetime.datetime.now(datetime.timezone.utc),
             end_datetime=datetime.datetime.now(datetime.timezone.utc),
             last_modified_time=datetime.datetime.now(datetime.timezone.utc),
-            level_of_interest='xmtnyggzslsusmjupqpn',
-            location='bbfldeuronazswtjcksx',
+            level_of_interest='vvizyjfvbveircymduzq',
+            location='gbrjtnvjropepjjsnciz',
             is_provisional=True,
-            has_closures=True,
+            has_closures=False,
             streets=None,
-            geography='oumtdwczhupprcfjxohv',
-            geometry='ewlvyxqqiiwndanbhnfa',
-            status='jtebikstnaykbtjwmgrx',
+            geography='roiosksyjrlgxnbfswyn',
+            geometry='fxnpsxkgkchzpndosxhc',
+            status='sypyegdcmpyorkpznbaa',
             is_active=False
         )

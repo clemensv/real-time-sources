@@ -130,3 +130,31 @@ Data is sourced from the [TfL Unified API](https://api.tfl.gov.uk/). The API is 
 - `/Road` — Road corridor catalog
 - `/Road/all/Status` — Current status for all corridors
 - `/Road/all/Disruption` — Active disruptions on the road network
+
+
+## MQTT 5.0 / Unified Namespace
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-tfl-road-traffic-mqtt:latest
+docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-tfl-road-traffic-mqtt:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
+| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+
+## AMQP 1.0
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-tfl-road-traffic-amqp:latest
+docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=tfl-road-traffic ghcr.io/clemensv/real-time-sources-tfl-road-traffic-amqp:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
+| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
+| `AMQP_ADDRESS` | No | `tfl-road-traffic` | Queue/topic/address to send to. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |
