@@ -146,3 +146,16 @@ configured.
 ## MQTT 5.0 / UNS feeder
 
 A sibling container (`Dockerfile.mqtt`) republishes the EventStreams `recentchange` feed into an MQTT 5.0 broker on a Unified-Namespace topic tree: `social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change`. The MediaWiki numeric namespace is mapped to a stable kebab-case bucket (`main`, `talk`, `file`, `category`, …; unknown values → `ns-<n>`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).
+
+
+## AMQP 1.0 feeder
+
+This source also ships an AMQP 1.0 companion container (`Dockerfile.amqp`, image `ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest`). It publishes the same CloudEvents contract documented in [EVENTS.md](EVENTS.md) to a single AMQP address named `wikimedia-eventstreams` by default. Use it for enterprise queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, or Azure Service Bus.
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/wikimedia-eventstreams   -e WIKIMEDIA_EVENTSTREAMS_MOCK=true   ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest
+```
+
+Azure Service Bus deployment (new namespace, queue, managed identity, and ACI):
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Finfra%2Fazure-template-amqp.json)
