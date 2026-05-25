@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NINA.Warnings"
-      ]
+      ],
+      "description": "Kafka producer endpoint for NINA BBK CloudEvents on the `nina-bbk` topic keyed by `{warning_id}`."
     },
     "NINA.Warnings.Mqtt": {
       "usage": [
@@ -38,7 +39,8 @@
         {
           "uri": "mqtt://localhost:1883"
         }
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for NINA BBK CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -63,10 +65,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/NINA.jstruct/schemas/NINA.CivilWarning"
         }
-      }
+      },
+      "description": "Events from NINA BBK covering German warning areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "NINA.Warnings.mqtt": {
-      "description": "MQTT/5.0 transport variant for Germany NINA/BBK CAP warnings. Non-retained QoS-1 warning events route by German federal state, native CAP severity, and warning id under alerts/de/nina/nina-bbk/... The state axis is derived from CAP area administrative codes (warnVerwaltungsbereiche) with sender-code fallback.",
+      "description": "MQTT 5 variant of the NINA BBK events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "NINA.Warnings.mqtt.CivilWarning": {
           "name": "CivilWarning",
@@ -97,7 +100,7 @@
                 "$id": "https://warnung.bund.de/schemas/NINA/CivilWarning",
                 "name": "CivilWarning",
                 "type": "object",
-                "description": "A civil protection warning from Germany's NINA/BBK system. Contains CAP-structured alert data with multi-language info blocks, BBK event codes, and German administrative area geocodes (Verwaltungsbereiche).",
+                "description": "A civil protection warning from Germany's NINA/BBK warning system. Aggregates warnings from MOWAS (federal), KATWARN (municipal), BIWAPP (municipal), DWD (weather service), LHP (flood centers), and police services. Each warning follows the CAP (Common Alerting Protocol) structure with multi-language support.",
                 "required": [
                   "warning_id",
                   "provider",
@@ -127,7 +130,15 @@
                       "dwd",
                       "lhp",
                       "police"
-                    ]
+                    ],
+                    "descriptions": {
+                      "mowas": "Provider value `mowas` for this coded alert field.",
+                      "katwarn": "Provider value `katwarn` for this coded alert field.",
+                      "biwapp": "Provider value `biwapp` for this coded alert field.",
+                      "dwd": "Provider value `dwd` for this coded alert field.",
+                      "lhp": "Provider value `lhp` for this coded alert field.",
+                      "police": "Provider value `police` for this coded alert field."
+                    }
                   },
                   "version": {
                     "type": "integer",
@@ -154,7 +165,14 @@
                       "System",
                       "Test",
                       "Draft"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Actual": "Provider value `Actual` for this coded alert field.",
+                      "Exercise": "Provider value `Exercise` for this coded alert field.",
+                      "System": "Provider value `System` for this coded alert field.",
+                      "Test": "Provider value `Test` for this coded alert field.",
+                      "Draft": "Provider value `Draft` for this coded alert field."
+                    }
                   },
                   "msg_type": {
                     "type": "string",
@@ -168,6 +186,13 @@
                     ],
                     "altnames": {
                       "json": "msgType"
+                    },
+                    "descriptions": {
+                      "Alert": "Provider value `Alert` for this coded alert field.",
+                      "Update": "Provider value `Update` for this coded alert field.",
+                      "Cancel": "Provider value `Cancel` for this coded alert field.",
+                      "Ack": "Provider value `Ack` for this coded alert field.",
+                      "Error": "Provider value `Error` for this coded alert field."
                     }
                   },
                   "scope": {
@@ -177,7 +202,12 @@
                       "Public",
                       "Restricted",
                       "Private"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Public": "Provider value `Public` for this coded alert field.",
+                      "Restricted": "Provider value `Restricted` for this coded alert field.",
+                      "Private": "Provider value `Private` for this coded alert field."
+                    }
                   },
                   "references": {
                     "type": "string",
@@ -207,7 +237,21 @@
                       "Infra",
                       "CBRNE",
                       "Other"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Met": "Provider value `Met` for this coded alert field.",
+                      "Geo": "Provider value `Geo` for this coded alert field.",
+                      "Safety": "Provider value `Safety` for this coded alert field.",
+                      "Security": "Provider value `Security` for this coded alert field.",
+                      "Rescue": "Provider value `Rescue` for this coded alert field.",
+                      "Fire": "Provider value `Fire` for this coded alert field.",
+                      "Health": "Provider value `Health` for this coded alert field.",
+                      "Env": "Provider value `Env` for this coded alert field.",
+                      "Transport": "Provider value `Transport` for this coded alert field.",
+                      "Infra": "Provider value `Infra` for this coded alert field.",
+                      "CBRNE": "Provider value `CBRNE` for this coded alert field.",
+                      "Other": "Provider value `Other` for this coded alert field."
+                    }
                   },
                   "severity": {
                     "type": "string",
@@ -218,7 +262,14 @@
                       "Moderate",
                       "Minor",
                       "Unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Extreme": "Provider value `Extreme` for this coded alert field.",
+                      "Severe": "Provider value `Severe` for this coded alert field.",
+                      "Moderate": "Provider value `Moderate` for this coded alert field.",
+                      "Minor": "Provider value `Minor` for this coded alert field.",
+                      "Unknown": "Provider value `Unknown` for this coded alert field."
+                    }
                   },
                   "urgency": {
                     "type": "string",
@@ -229,7 +280,14 @@
                       "Future",
                       "Past",
                       "Unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Immediate": "Provider value `Immediate` for this coded alert field.",
+                      "Expected": "Provider value `Expected` for this coded alert field.",
+                      "Future": "Provider value `Future` for this coded alert field.",
+                      "Past": "Provider value `Past` for this coded alert field.",
+                      "Unknown": "Provider value `Unknown` for this coded alert field."
+                    }
                   },
                   "certainty": {
                     "type": "string",
@@ -240,7 +298,14 @@
                       "Possible",
                       "Unlikely",
                       "Unknown"
-                    ]
+                    ],
+                    "descriptions": {
+                      "Observed": "Provider value `Observed` for this coded alert field.",
+                      "Likely": "Provider value `Likely` for this coded alert field.",
+                      "Possible": "Provider value `Possible` for this coded alert field.",
+                      "Unlikely": "Provider value `Unlikely` for this coded alert field.",
+                      "Unknown": "Provider value `Unknown` for this coded alert field."
+                    }
                   },
                   "headline": {
                     "type": "string",
@@ -285,5 +350,10 @@
         }
       }
     }
+  },
+  "description": "NINA BBK publishes civil-protection warnings from Germany's Federal Office of Civil Protection and Disaster Assistance (BBK) for German warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for NINA BBK, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
