@@ -289,6 +289,7 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "roads/{road_id}".format(road_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
         finally:
             producer.close()
     
@@ -345,6 +346,7 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "roads/{road_id}".format(road_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
         finally:
             producer.close()
     
@@ -403,6 +405,9 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert properties.get('severity') == "{severity}".format(severity="value")
+                assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
         finally:
             producer.close()
     
@@ -461,6 +466,9 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert properties.get('severity') == "{severity}".format(severity="value")
+                assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
         finally:
             producer.close()
     
@@ -519,6 +527,9 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert properties.get('severity') == "{severity}".format(severity="value")
+                assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
         finally:
             producer.close()
     
@@ -577,6 +588,9 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert properties.get('severity') == "{severity}".format(severity="value")
+                assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
         finally:
             producer.close()
     
@@ -635,6 +649,9 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert properties.get('severity') == "{severity}".format(severity="value")
+                assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
         finally:
             producer.close()
     
@@ -693,6 +710,9 @@ class TestUkGovTflRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+                assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert properties.get('severity') == "{severity}".format(severity="value")
+                assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
         finally:
             producer.close()
 

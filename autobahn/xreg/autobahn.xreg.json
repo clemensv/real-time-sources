@@ -44,7 +44,7 @@
       ],
       "description": "MQTT 5 producer endpoint for Autobahn CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
-    "DE.Amqp": {
+    "DE.Autobahn.Amqp": {
       "usage": [
         "producer"
       ],
@@ -55,6 +55,11 @@
       },
       "protocoloptions": {
         "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/autobahn"
+          }
+        ],
         "options": {
           "content_mode": "binary",
           "address": "autobahn"
@@ -62,8 +67,7 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.Autobahn.amqp"
-      ],
-      "description": "AMQP/1.0 companion producer endpoint."
+      ]
     }
   },
   "messagegroups": {
@@ -1099,9 +1103,9 @@
       }
     },
     "DE.Autobahn.amqp": {
-      "description": "AMQP 1.0 bindings for autobahn.",
+      "description": "AMQP 1.0 transport variants for autobahn. All CloudEvents are published to the autobahn address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
       "messages": {
-        "DE.Autobahn.RoadworkAppeared.amqp": {
+        "DE.Autobahn.amqp.RoadworkAppeared": {
           "name": "RoadworkAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
           "protocol": "AMQP/1.0",
@@ -1110,19 +1114,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.RoadworkAppeared"
         },
-        "DE.Autobahn.RoadworkUpdated.amqp": {
+        "DE.Autobahn.amqp.RoadworkUpdated": {
           "name": "RoadworkUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
           "protocol": "AMQP/1.0",
@@ -1131,19 +1143,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.RoadworkUpdated"
         },
-        "DE.Autobahn.RoadworkResolved.amqp": {
+        "DE.Autobahn.amqp.RoadworkResolved": {
           "name": "RoadworkResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
           "protocol": "AMQP/1.0",
@@ -1152,19 +1172,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.RoadworkResolved"
         },
-        "DE.Autobahn.ShortTermRoadworkAppeared.amqp": {
+        "DE.Autobahn.amqp.ShortTermRoadworkAppeared": {
           "name": "ShortTermRoadworkAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
           "protocol": "AMQP/1.0",
@@ -1173,19 +1201,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkAppeared"
         },
-        "DE.Autobahn.ShortTermRoadworkUpdated.amqp": {
+        "DE.Autobahn.amqp.ShortTermRoadworkUpdated": {
           "name": "ShortTermRoadworkUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
           "protocol": "AMQP/1.0",
@@ -1194,19 +1230,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkUpdated"
         },
-        "DE.Autobahn.ShortTermRoadworkResolved.amqp": {
+        "DE.Autobahn.amqp.ShortTermRoadworkResolved": {
           "name": "ShortTermRoadworkResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
           "protocol": "AMQP/1.0",
@@ -1215,19 +1259,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ShortTermRoadworkResolved"
         },
-        "DE.Autobahn.ClosureAppeared.amqp": {
+        "DE.Autobahn.amqp.ClosureAppeared": {
           "name": "ClosureAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
           "protocol": "AMQP/1.0",
@@ -1236,19 +1288,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ClosureAppeared"
         },
-        "DE.Autobahn.ClosureUpdated.amqp": {
+        "DE.Autobahn.amqp.ClosureUpdated": {
           "name": "ClosureUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
           "protocol": "AMQP/1.0",
@@ -1257,19 +1317,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ClosureUpdated"
         },
-        "DE.Autobahn.ClosureResolved.amqp": {
+        "DE.Autobahn.amqp.ClosureResolved": {
           "name": "ClosureResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
           "protocol": "AMQP/1.0",
@@ -1278,19 +1346,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ClosureResolved"
         },
-        "DE.Autobahn.EntryExitClosureAppeared.amqp": {
+        "DE.Autobahn.amqp.EntryExitClosureAppeared": {
           "name": "EntryExitClosureAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
           "protocol": "AMQP/1.0",
@@ -1299,19 +1375,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureAppeared"
         },
-        "DE.Autobahn.EntryExitClosureUpdated.amqp": {
+        "DE.Autobahn.amqp.EntryExitClosureUpdated": {
           "name": "EntryExitClosureUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
           "protocol": "AMQP/1.0",
@@ -1320,19 +1404,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureUpdated"
         },
-        "DE.Autobahn.EntryExitClosureResolved.amqp": {
+        "DE.Autobahn.amqp.EntryExitClosureResolved": {
           "name": "EntryExitClosureResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
           "protocol": "AMQP/1.0",
@@ -1341,19 +1433,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.EntryExitClosureResolved"
         },
-        "DE.Autobahn.WarningAppeared.amqp": {
+        "DE.Autobahn.amqp.WarningAppeared": {
           "name": "WarningAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
           "protocol": "AMQP/1.0",
@@ -1362,19 +1462,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WarningAppeared"
         },
-        "DE.Autobahn.WarningUpdated.amqp": {
+        "DE.Autobahn.amqp.WarningUpdated": {
           "name": "WarningUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
           "protocol": "AMQP/1.0",
@@ -1383,19 +1491,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WarningUpdated"
         },
-        "DE.Autobahn.WarningResolved.amqp": {
+        "DE.Autobahn.amqp.WarningResolved": {
           "name": "WarningResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
           "protocol": "AMQP/1.0",
@@ -1404,19 +1520,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WarningResolved"
         },
-        "DE.Autobahn.WeightLimit35RestrictionAppeared.amqp": {
+        "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared": {
           "name": "WeightLimit35RestrictionAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
           "protocol": "AMQP/1.0",
@@ -1425,19 +1549,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared"
         },
-        "DE.Autobahn.WeightLimit35RestrictionUpdated.amqp": {
+        "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated": {
           "name": "WeightLimit35RestrictionUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
           "protocol": "AMQP/1.0",
@@ -1446,19 +1578,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated"
         },
-        "DE.Autobahn.WeightLimit35RestrictionResolved.amqp": {
+        "DE.Autobahn.amqp.WeightLimit35RestrictionResolved": {
           "name": "WeightLimit35RestrictionResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
           "protocol": "AMQP/1.0",
@@ -1467,19 +1607,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WeightLimit35RestrictionResolved"
         },
-        "DE.Autobahn.WebcamAppeared.amqp": {
+        "DE.Autobahn.amqp.WebcamAppeared": {
           "name": "WebcamAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
           "protocol": "AMQP/1.0",
@@ -1488,19 +1636,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WebcamAppeared"
         },
-        "DE.Autobahn.WebcamUpdated.amqp": {
+        "DE.Autobahn.amqp.WebcamUpdated": {
           "name": "WebcamUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
           "protocol": "AMQP/1.0",
@@ -1509,19 +1665,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WebcamUpdated"
         },
-        "DE.Autobahn.WebcamResolved.amqp": {
+        "DE.Autobahn.amqp.WebcamResolved": {
           "name": "WebcamResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
           "protocol": "AMQP/1.0",
@@ -1530,19 +1694,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.WebcamResolved"
         },
-        "DE.Autobahn.ParkingLorryAppeared.amqp": {
+        "DE.Autobahn.amqp.ParkingLorryAppeared": {
           "name": "ParkingLorryAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
           "protocol": "AMQP/1.0",
@@ -1551,19 +1723,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ParkingLorryAppeared"
         },
-        "DE.Autobahn.ParkingLorryUpdated.amqp": {
+        "DE.Autobahn.amqp.ParkingLorryUpdated": {
           "name": "ParkingLorryUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
           "protocol": "AMQP/1.0",
@@ -1572,19 +1752,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ParkingLorryUpdated"
         },
-        "DE.Autobahn.ParkingLorryResolved.amqp": {
+        "DE.Autobahn.amqp.ParkingLorryResolved": {
           "name": "ParkingLorryResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
           "protocol": "AMQP/1.0",
@@ -1593,19 +1781,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ParkingLorryResolved"
         },
-        "DE.Autobahn.ElectricChargingStationAppeared.amqp": {
+        "DE.Autobahn.amqp.ElectricChargingStationAppeared": {
           "name": "ElectricChargingStationAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
           "protocol": "AMQP/1.0",
@@ -1614,19 +1810,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationAppeared"
         },
-        "DE.Autobahn.ElectricChargingStationUpdated.amqp": {
+        "DE.Autobahn.amqp.ElectricChargingStationUpdated": {
           "name": "ElectricChargingStationUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
           "protocol": "AMQP/1.0",
@@ -1635,19 +1839,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationUpdated"
         },
-        "DE.Autobahn.ElectricChargingStationResolved.amqp": {
+        "DE.Autobahn.amqp.ElectricChargingStationResolved": {
           "name": "ElectricChargingStationResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
           "protocol": "AMQP/1.0",
@@ -1656,19 +1868,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.ElectricChargingStationResolved"
         },
-        "DE.Autobahn.StrongElectricChargingStationAppeared.amqp": {
+        "DE.Autobahn.amqp.StrongElectricChargingStationAppeared": {
           "name": "StrongElectricChargingStationAppeared",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
           "protocol": "AMQP/1.0",
@@ -1677,19 +1897,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationAppeared"
         },
-        "DE.Autobahn.StrongElectricChargingStationUpdated.amqp": {
+        "DE.Autobahn.amqp.StrongElectricChargingStationUpdated": {
           "name": "StrongElectricChargingStationUpdated",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
           "protocol": "AMQP/1.0",
@@ -1698,19 +1926,27 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationUpdated"
         },
-        "DE.Autobahn.StrongElectricChargingStationResolved.amqp": {
+        "DE.Autobahn.amqp.StrongElectricChargingStationResolved": {
           "name": "StrongElectricChargingStationResolved",
           "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
           "protocol": "AMQP/1.0",
@@ -1719,17 +1955,25 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road": {
+                "type": "uritemplate",
+                "value": "{road}",
+                "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "DE.Autobahn.amqp.StrongElectricChargingStationResolved"
         }
       }
     }
@@ -1833,10 +2077,10 @@
                   },
                   "description_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -1969,10 +2213,10 @@
                   },
                   "impact_symbols": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Impact symbols from the Autobahn API impact.symbols array.",
                     "altnames": {
@@ -1991,10 +2235,10 @@
                   },
                   "footer_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -2095,10 +2339,10 @@
                   },
                   "description_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -2231,10 +2475,10 @@
                   },
                   "impact_symbols": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Impact symbols from the Autobahn API impact.symbols array.",
                     "altnames": {
@@ -2253,10 +2497,10 @@
                   },
                   "footer_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -2401,10 +2645,10 @@
                   },
                   "description_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -2507,10 +2751,10 @@
                   },
                   "footer_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -2519,10 +2763,10 @@
                   },
                   "amenity_descriptions": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities.",
                     "altnames": {
@@ -2641,10 +2885,10 @@
                   },
                   "description_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -2759,10 +3003,10 @@
                   },
                   "footer_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {
@@ -2863,10 +3107,10 @@
                   },
                   "description_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Description lines from the Autobahn API description array.",
                     "altnames": {
@@ -2959,10 +3203,10 @@
                   },
                   "footer_lines": {
                     "type": [
-                      "null",
                       {
                         "$ref": "#/definitions/StringList"
-                      }
+                      },
+                      "null"
                     ],
                     "description": "Footer lines from the Autobahn API footer array.",
                     "altnames": {

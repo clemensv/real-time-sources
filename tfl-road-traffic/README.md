@@ -30,12 +30,6 @@ See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
 
 See [EVENTS.md](EVENTS.md) for full event schema documentation.
 
+## AMQP 1.0 companion
 
-## MQTT and AMQP companion feeders
-
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `tfl-road-traffic` by default.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources-tfl-road-traffic-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-tfl-road-traffic-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.

@@ -44,7 +44,7 @@
       ],
       "description": "MQTT 5 producer endpoint for Paris Bicycle Counters CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     },
-    "FR.Paris.OpenData.Amqp": {
+    "FR.Paris.OpenData.Velo.Amqp": {
       "usage": [
         "producer"
       ],
@@ -55,6 +55,11 @@
       },
       "protocoloptions": {
         "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/paris-bicycle-counters"
+          }
+        ],
         "options": {
           "content_mode": "binary",
           "address": "paris-bicycle-counters"
@@ -62,8 +67,7 @@
       },
       "messagegroups": [
         "#/messagegroups/FR.Paris.OpenData.Velo.amqp"
-      ],
-      "description": "AMQP/1.0 companion producer endpoint."
+      ]
     }
   },
   "messagegroups": {
@@ -148,7 +152,7 @@
       }
     },
     "FR.Paris.OpenData.Velo.amqp": {
-      "description": "AMQP 1.0 bindings for paris-bicycle-counters.",
+      "description": "AMQP 1.0 transport variants for paris-bicycle-counters. All CloudEvents are published to the paris-bicycle-counters address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
       "messages": {
         "FR.Paris.OpenData.Velo.amqp.Counter": {
           "name": "Counter",
@@ -159,17 +163,19 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{counter_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
+            "application_properties": {},
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{counter_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "FR.Paris.OpenData.Velo.amqp.Counter"
         },
         "FR.Paris.OpenData.Velo.amqp.BicycleCount": {
           "name": "BicycleCount",
@@ -180,17 +186,19 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "{counter_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
+            "application_properties": {},
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{counter_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "FR.Paris.OpenData.Velo.amqp.BicycleCount"
         }
       }
     }

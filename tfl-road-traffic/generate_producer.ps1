@@ -1,11 +1,33 @@
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
+
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path $scriptDir 'xreg\tfl_road_traffic.xreg.json'
+$xregFile = Join-Path (Join-Path $scriptDir "xreg") "tfl_road_traffic.xreg.json"
+$outputDir = Join-Path $scriptDir "tfl_road_traffic_producer"
 
-xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'uk.gov.tfl.road.corridors.Kafka' --projectname tfl_road_traffic_producer --output (Join-Path $scriptDir 'tfl_road_traffic_producer')
+Write-Host "Generating TfL Road Traffic producer from $xregFile"
 
-xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'uk.gov.tfl.road.Mqtt' --projectname tfl_road_traffic_mqtt_producer --output (Join-Path $scriptDir 'tfl_road_traffic_mqtt_producer')
+if (-not (Test-Path $xregFile)) {
+    throw "xRegistry file not found: $xregFile"
+}
 
-xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'uk.gov.tfl.road.Amqp' --projectname tfl_road_traffic_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'tfl_road_traffic_amqp_producer')
+if (Test-Path $outputDir) {
+    Remove-Item -Path $outputDir -Recurse -Force
+}
+
+xrcg generate `
+    --style kafkaproducer `
+    --language py `
+    --projectname tfl-road-traffic-producer `
+    --definitions $xregFile `
+    --output $outputDir
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Producer generation failed"
+}
+
+Write-Host "Producer generated successfully in $outputDir"
+
+& (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")

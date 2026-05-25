@@ -169,13 +169,13 @@ class RoadStatus:
             An instance of the dataclass.
         """
         return cls(
-            road_id='wdgssorbsfnhczwibytd',
-            display_name='jsjmzknpnvllmikeqcmp',
-            status_severity='tkdlrfvxffnhxbddybdp',
-            status_severity_description='nizltcpcryddtptqmlbb',
-            bounds='jejzvftkautfdgvhjfzg',
-            envelope='ebfalllwscgffkglhfvt',
-            url='wtxzcefiudjipxzkwlyz',
+            road_id='bqowwakvwpgeqpbstmng',
+            display_name='nearfwpubahgxvaijbka',
+            status_severity='sfvguxdjxugddbojnyfk',
+            status_severity_description='fdizlxxbkehjghfbikrn',
+            bounds='toukbyecynlhzojisbnd',
+            envelope='cuangynckltluwdysxxe',
+            url='pladvjuwgihelezncjov',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

@@ -26,363 +26,363 @@ def main():
     try:
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send RoadworkAppeared message
+        print("Sending RoadworkAppeared message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_roadwork_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("RoadworkAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send RoadworkUpdated message
+        print("Sending RoadworkUpdated message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_roadwork_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("RoadworkUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send RoadworkResolved message
+        print("Sending RoadworkResolved message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_roadwork_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("RoadworkResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ShortTermRoadworkAppeared message
+        print("Sending ShortTermRoadworkAppeared message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_short_term_roadwork_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ShortTermRoadworkAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ShortTermRoadworkUpdated message
+        print("Sending ShortTermRoadworkUpdated message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_short_term_roadwork_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ShortTermRoadworkUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ShortTermRoadworkResolved message
+        print("Sending ShortTermRoadworkResolved message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_short_term_roadwork_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ShortTermRoadworkResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ClosureAppeared message
+        print("Sending ClosureAppeared message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_closure_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ClosureAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ClosureUpdated message
+        print("Sending ClosureUpdated message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_closure_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ClosureUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ClosureResolved message
+        print("Sending ClosureResolved message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_closure_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ClosureResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send EntryExitClosureAppeared message
+        print("Sending EntryExitClosureAppeared message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_entry_exit_closure_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("EntryExitClosureAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send EntryExitClosureUpdated message
+        print("Sending EntryExitClosureUpdated message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_entry_exit_closure_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("EntryExitClosureUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send EntryExitClosureResolved message
+        print("Sending EntryExitClosureResolved message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_entry_exit_closure_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("EntryExitClosureResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WarningAppeared message
+        print("Sending WarningAppeared message...")
         # TODO: Create a WarningEvent instance with actual data
         # data = WarningEvent(...)
-        # producer.send_amqp(
+        # producer.send_warning_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WarningAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WarningUpdated message
+        print("Sending WarningUpdated message...")
         # TODO: Create a WarningEvent instance with actual data
         # data = WarningEvent(...)
-        # producer.send_amqp(
+        # producer.send_warning_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WarningUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WarningResolved message
+        print("Sending WarningResolved message...")
         # TODO: Create a WarningEvent instance with actual data
         # data = WarningEvent(...)
-        # producer.send_amqp(
+        # producer.send_warning_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WarningResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WeightLimit35RestrictionAppeared message
+        print("Sending WeightLimit35RestrictionAppeared message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_weight_limit35_restriction_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WeightLimit35RestrictionAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WeightLimit35RestrictionUpdated message
+        print("Sending WeightLimit35RestrictionUpdated message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_weight_limit35_restriction_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WeightLimit35RestrictionUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WeightLimit35RestrictionResolved message
+        print("Sending WeightLimit35RestrictionResolved message...")
         # TODO: Create a RoadEvent instance with actual data
         # data = RoadEvent(...)
-        # producer.send_amqp(
+        # producer.send_weight_limit35_restriction_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WeightLimit35RestrictionResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WebcamAppeared message
+        print("Sending WebcamAppeared message...")
         # TODO: Create a Webcam instance with actual data
         # data = Webcam(...)
-        # producer.send_amqp(
+        # producer.send_webcam_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WebcamAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WebcamUpdated message
+        print("Sending WebcamUpdated message...")
         # TODO: Create a Webcam instance with actual data
         # data = Webcam(...)
-        # producer.send_amqp(
+        # producer.send_webcam_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WebcamUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send WebcamResolved message
+        print("Sending WebcamResolved message...")
         # TODO: Create a Webcam instance with actual data
         # data = Webcam(...)
-        # producer.send_amqp(
+        # producer.send_webcam_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("WebcamResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ParkingLorryAppeared message
+        print("Sending ParkingLorryAppeared message...")
         # TODO: Create a ParkingLorry instance with actual data
         # data = ParkingLorry(...)
-        # producer.send_amqp(
+        # producer.send_parking_lorry_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ParkingLorryAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ParkingLorryUpdated message
+        print("Sending ParkingLorryUpdated message...")
         # TODO: Create a ParkingLorry instance with actual data
         # data = ParkingLorry(...)
-        # producer.send_amqp(
+        # producer.send_parking_lorry_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ParkingLorryUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ParkingLorryResolved message
+        print("Sending ParkingLorryResolved message...")
         # TODO: Create a ParkingLorry instance with actual data
         # data = ParkingLorry(...)
-        # producer.send_amqp(
+        # producer.send_parking_lorry_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ParkingLorryResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ElectricChargingStationAppeared message
+        print("Sending ElectricChargingStationAppeared message...")
         # TODO: Create a ChargingStation instance with actual data
         # data = ChargingStation(...)
-        # producer.send_amqp(
+        # producer.send_electric_charging_station_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ElectricChargingStationAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ElectricChargingStationUpdated message
+        print("Sending ElectricChargingStationUpdated message...")
         # TODO: Create a ChargingStation instance with actual data
         # data = ChargingStation(...)
-        # producer.send_amqp(
+        # producer.send_electric_charging_station_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ElectricChargingStationUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send ElectricChargingStationResolved message
+        print("Sending ElectricChargingStationResolved message...")
         # TODO: Create a ChargingStation instance with actual data
         # data = ChargingStation(...)
-        # producer.send_amqp(
+        # producer.send_electric_charging_station_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("ElectricChargingStationResolved message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send StrongElectricChargingStationAppeared message
+        print("Sending StrongElectricChargingStationAppeared message...")
         # TODO: Create a ChargingStation instance with actual data
         # data = ChargingStation(...)
-        # producer.send_amqp(
+        # producer.send_strong_electric_charging_station_appeared(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("StrongElectricChargingStationAppeared message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send StrongElectricChargingStationUpdated message
+        print("Sending StrongElectricChargingStationUpdated message...")
         # TODO: Create a ChargingStation instance with actual data
         # data = ChargingStation(...)
-        # producer.send_amqp(
+        # producer.send_strong_electric_charging_station_updated(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("StrongElectricChargingStationUpdated message sent successfully!")
         
         
         
-        # Send Amqp message
-        print("Sending Amqp message...")
+        # Send StrongElectricChargingStationResolved message
+        print("Sending StrongElectricChargingStationResolved message...")
         # TODO: Create a ChargingStation instance with actual data
         # data = ChargingStation(...)
-        # producer.send_amqp(
+        # producer.send_strong_electric_charging_station_resolved(
         #     data=data,
         #     content_type="application/json"
         # )
-        # print("Amqp message sent successfully!")
+        # print("StrongElectricChargingStationResolved message sent successfully!")
         
         
         print("\nAll messages sent successfully!")

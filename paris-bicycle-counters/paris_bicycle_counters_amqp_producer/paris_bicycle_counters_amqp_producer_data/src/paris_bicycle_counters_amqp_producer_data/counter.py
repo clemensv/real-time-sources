@@ -163,11 +163,11 @@ class Counter:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='lxzjyungwwqscszwfsny',
-            counter_name='ahzbrqcszyncrdxzbisf',
-            channel_name='oolipruhypljkdfdjdbc',
-            installation_date='tmoxeffgxnnpzdcsrfwq',
-            longitude=float(60.29176915988443),
-            latitude=float(13.822545475476256),
-            ce_id='vggncaxilmekeaawcsoj'
+            counter_id='kdexdlujtykfdldmesrz',
+            counter_name='qfmasmyuctmtztkwrhqd',
+            channel_name='bjaxezdcjbvcphbhcivx',
+            installation_date='lvditalfvqgncokvkgoi',
+            longitude=float(9.107627190857848),
+            latitude=float(85.94706737935458),
+            ce_id='fbrsqquqtiycvlqvetrn'
         )

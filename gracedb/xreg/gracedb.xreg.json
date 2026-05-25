@@ -41,6 +41,28 @@
         "#/messagegroups/org.ligo.gracedb.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for GraceDB CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "org.ligo.gracedb.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/gracedb"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.ligo.gracedb.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for gracedb CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -84,6 +106,25 @@
             "topic_name": "seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent",
             "qos": 1,
             "retain": false
+          }
+        }
+      }
+    },
+    "org.ligo.gracedb.amqp": {
+      "description": "AMQP 1.0 transport variant for gracedb events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "org.ligo.gracedb.amqp.Superevent": {
+          "name": "Superevent",
+          "basemessageurl": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{superevent_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
           }
         }
       }

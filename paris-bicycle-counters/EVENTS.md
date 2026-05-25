@@ -45,13 +45,13 @@ c.loop_forever()
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 ### AMQP 1.0
 
-Attach a link with `role=receiver` whose **source** is `broker-configured address`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+Attach a link with `role=receiver` whose **source** is `paris-bicycle-counters`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
 
 ```python
 from proton.handlers import MessagingHandler
 from proton.reactor import Container
 class H(MessagingHandler):
-    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/events')
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/paris-bicycle-counters')
     def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
 Container(H()).run()
 ```
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{counter_id}`. `{counter_id}
 | --- | --- |
 | `KAFKA` | topic `paris-bicycle-counters`, key `{counter_id}` |
 | `MQTT/5.0` | topic `traffic/fr/paris/paris-bicycle-counters/{counter_id}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `broker-configured node`, message subject `{counter_id}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/paris-bicycle-counters`, message subject `{counter_id}` |
 
 #### Payload
 
@@ -129,7 +129,7 @@ Each event identifies the real-world resource with `{counter_id}`. `{counter_id}
 | --- | --- |
 | `KAFKA` | topic `paris-bicycle-counters`, key `{counter_id}` |
 | `MQTT/5.0` | topic `traffic/fr/paris/paris-bicycle-counters/{counter_id}/count`, retain `false`, QoS `1` |
-| `AMQP/1.0` | source address `broker-configured node`, message subject `{counter_id}` |
+| `AMQP/1.0` | source address `amqp://localhost:5672/paris-bicycle-counters`, message subject `{counter_id}` |
 
 #### Payload
 

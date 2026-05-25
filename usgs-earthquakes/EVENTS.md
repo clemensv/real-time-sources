@@ -4,8 +4,8 @@ MQTT/5.0 transport variant for USGS earthquake events. Non-retained QoS-1 event 
 
 ## At a glance
 
-- **Event types:** 1 documented event type (2 transport bindings in the manifest).
-- **Transports:** KAFKA, MQTT/5.0
+- **Event types:** 1 documented event type (3 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{net}/{code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -43,6 +43,20 @@ c.loop_forever()
 ```
 
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `usgs-earthquakes`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/usgs-earthquakes')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -64,37 +78,38 @@ Each event identifies the real-world resource with `{net}/{code}`. `{net}` is ID
 | --- | --- |
 | `KAFKA` | topic `usgs-earthquakes`, key `{net}/{code}` |
 | `MQTT/5.0` | topic `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/usgs-earthquakes`, message subject `{net}/{code}` |
 
 #### Payload
 
 `Event` payloads are JSON object. Required fields: `id`, `event_time`, `updated`, `status`, `tsunami`, `net`, `code`, `latitude`, `longitude`, `magnitude_bucket`.
 
 - **`id`** (string, required): Unique identifier for the earthquake event.
-- **`magnitude`** (double, optional): Magnitude of the earthquake.
-- **`mag_type`** (string, optional): Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww).
-- **`place`** (string, optional): Textual description of the named geographic region near the event.
+- **`magnitude`** (double or null, optional): Magnitude of the earthquake.
+- **`mag_type`** (string or null, optional): Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww).
+- **`place`** (string or null, optional): Textual description of the named geographic region near the event.
 - **`event_time`** (string, required): Time of the earthquake event in ISO-8601 format.
 - **`updated`** (string, required): Time when the event was most recently updated in ISO-8601 format.
-- **`url`** (string, optional): Link to USGS Event Page for this event.
-- **`detail_url`** (string, optional): Link to GeoJSON detail feed for this event.
+- **`url`** (string or null, optional): Link to USGS Event Page for this event.
+- **`detail_url`** (string or null, optional): Link to GeoJSON detail feed for this event.
 - **`felt`** (int32 or null, optional): Number of felt reports submitted to the DYFI system.
 - **`cdi`** (double or null, optional): Maximum reported community determined intensity (DYFI).
 - **`mmi`** (double or null, optional): Maximum estimated instrumental intensity (ShakeMap).
 - **`alert`** (string or null, optional): PAGER alert level (green, yellow, orange, red).
 - **`status`** (string, required): Review status of the event (automatic, reviewed, deleted).
 - **`tsunami`** (int32, required): Flag indicating whether the event has a tsunami advisory (1=yes, 0=no).
-- **`sig`** (int32, optional): Significance of the event, a number describing how significant the event is (0-1000).
+- **`sig`** (int32 or null, optional): Significance of the event, a number describing how significant the event is (0-1000).
 - **`net`** (string, required): ID of the data contributor network.
 - **`code`** (string, required): Identifying code assigned by the corresponding source for the event.
-- **`sources`** (string, optional): Comma-separated list of network contributors.
-- **`nst`** (int32, optional): Number of seismic stations used to determine earthquake location.
-- **`dmin`** (double, optional): Horizontal distance from the epicenter to the nearest station (degrees).
-- **`rms`** (double, optional): Root-mean-square travel time residual (seconds).
-- **`gap`** (double, optional): Largest azimuthal gap between azimuthally adjacent stations (degrees).
-- **`event_type`** (string, optional): Type of seismic event (earthquake, quarry blast, etc.).
+- **`sources`** (string or null, optional): Comma-separated list of network contributors.
+- **`nst`** (int32 or null, optional): Number of seismic stations used to determine earthquake location.
+- **`dmin`** (double or null, optional): Horizontal distance from the epicenter to the nearest station (degrees).
+- **`rms`** (double or null, optional): Root-mean-square travel time residual (seconds).
+- **`gap`** (double or null, optional): Largest azimuthal gap between azimuthally adjacent stations (degrees).
+- **`event_type`** (string or null, optional): Type of seismic event (earthquake, quarry blast, etc.).
 - **`latitude`** (double, required): Latitude of the earthquake epicenter in decimal degrees.
 - **`longitude`** (double, required): Longitude of the earthquake epicenter in decimal degrees.
-- **`depth`** (double, optional): Depth of the earthquake in kilometers.
+- **`depth`** (double or null, optional): Depth of the earthquake in kilometers.
 - **`magnitude_bucket`** (string, required): Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7.
 #### Example payload
 
@@ -161,3 +176,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/usgs_earthquakes.xreg.json`](xreg/usgs_earthquakes.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>

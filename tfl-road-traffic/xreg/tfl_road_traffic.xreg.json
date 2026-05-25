@@ -77,6 +77,11 @@
       },
       "protocoloptions": {
         "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/tfl-road-traffic"
+          }
+        ],
         "options": {
           "content_mode": "binary",
           "address": "tfl-road-traffic"
@@ -84,8 +89,7 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.gov.tfl.road.amqp"
-      ],
-      "description": "AMQP/1.0 companion producer endpoint."
+      ]
     }
   },
   "messagegroups": {
@@ -242,7 +246,7 @@
       }
     },
     "uk.gov.tfl.road.amqp": {
-      "description": "AMQP 1.0 bindings for tfl-road-traffic.",
+      "description": "AMQP 1.0 transport variants for tfl-road-traffic. All CloudEvents are published to the tfl-road-traffic address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
       "messages": {
         "uk.gov.tfl.road.amqp.RoadCorridor": {
           "name": "RoadCorridor",
@@ -253,17 +257,25 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "roads/{road_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "roads/{road_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadCorridor"
         },
         "uk.gov.tfl.road.amqp.RoadStatus": {
           "name": "RoadStatus",
@@ -274,17 +286,25 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "roads/{road_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "roads/{road_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadStatus"
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionSerious": {
           "name": "RoadDisruptionSerious",
@@ -295,17 +315,35 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "disruption_id": {
+                "type": "uritemplate",
+                "value": "{disruption_id}",
+                "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSerious"
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionSevere": {
           "name": "RoadDisruptionSevere",
@@ -316,17 +354,35 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "disruption_id": {
+                "type": "uritemplate",
+                "value": "{disruption_id}",
+                "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSevere"
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionModerate": {
           "name": "RoadDisruptionModerate",
@@ -337,17 +393,35 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "disruption_id": {
+                "type": "uritemplate",
+                "value": "{disruption_id}",
+                "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionModerate"
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionMinor": {
           "name": "RoadDisruptionMinor",
@@ -358,17 +432,35 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "disruption_id": {
+                "type": "uritemplate",
+                "value": "{disruption_id}",
+                "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionMinor"
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionInformation": {
           "name": "RoadDisruptionInformation",
@@ -379,17 +471,35 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "disruption_id": {
+                "type": "uritemplate",
+                "value": "{disruption_id}",
+                "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionInformation"
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionClosure": {
           "name": "RoadDisruptionClosure",
@@ -400,17 +510,35 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "AMQP subject mirrors the CloudEvents subject."
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "road_id": {
+                "type": "uritemplate",
+                "value": "{road_id}",
+                "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "severity": {
+                "type": "uritemplate",
+                "value": "{severity}",
+                "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "disruption_id": {
+                "type": "uritemplate",
+                "value": "{disruption_id}",
+                "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
             "message_annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
-                "description": "Partition key mirrors the CloudEvents subject."
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
               }
             }
-          }
+          },
+          "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionClosure"
         }
       }
     }

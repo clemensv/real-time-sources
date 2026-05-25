@@ -601,18 +601,20 @@ class DEAutobahnAmqpProducer:
 
     
     
-    def send_amqp(self,
+    def send_roadwork_appeared(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.RoadworkAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.RoadworkAppeared` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -660,6 +662,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -671,40 +674,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_roadwork_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.RoadworkAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.RoadworkAppeared` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_roadwork_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_roadwork_updated(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.RoadworkUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.RoadworkUpdated` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -752,6 +760,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -763,40 +772,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_roadwork_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.RoadworkUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.RoadworkUpdated` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_roadwork_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_roadwork_resolved(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.RoadworkResolved.amqp` message
+        Send the `DE.Autobahn.amqp.RoadworkResolved` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -844,6 +858,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -855,40 +870,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_roadwork_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.RoadworkResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.RoadworkResolved` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_roadwork_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_short_term_roadwork_appeared(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ShortTermRoadworkAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.ShortTermRoadworkAppeared` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -936,6 +956,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -947,40 +968,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_short_term_roadwork_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ShortTermRoadworkAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ShortTermRoadworkAppeared` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_short_term_roadwork_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_short_term_roadwork_updated(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ShortTermRoadworkUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.ShortTermRoadworkUpdated` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1028,6 +1054,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1039,40 +1066,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_short_term_roadwork_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ShortTermRoadworkUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ShortTermRoadworkUpdated` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_short_term_roadwork_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_short_term_roadwork_resolved(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ShortTermRoadworkResolved.amqp` message
+        Send the `DE.Autobahn.amqp.ShortTermRoadworkResolved` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1120,6 +1152,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1131,40 +1164,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_short_term_roadwork_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ShortTermRoadworkResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ShortTermRoadworkResolved` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_short_term_roadwork_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_closure_appeared(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ClosureAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.ClosureAppeared` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1212,6 +1250,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1223,40 +1262,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_closure_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ClosureAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ClosureAppeared` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_closure_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_closure_updated(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ClosureUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.ClosureUpdated` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1304,6 +1348,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1315,40 +1360,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_closure_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ClosureUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ClosureUpdated` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_closure_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_closure_resolved(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ClosureResolved.amqp` message
+        Send the `DE.Autobahn.amqp.ClosureResolved` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1396,6 +1446,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1407,40 +1458,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_closure_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ClosureResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ClosureResolved` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_closure_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_entry_exit_closure_appeared(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.EntryExitClosureAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.EntryExitClosureAppeared` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1488,6 +1544,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1499,40 +1556,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_entry_exit_closure_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.EntryExitClosureAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.EntryExitClosureAppeared` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_entry_exit_closure_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_entry_exit_closure_updated(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.EntryExitClosureUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.EntryExitClosureUpdated` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1580,6 +1642,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1591,40 +1654,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_entry_exit_closure_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.EntryExitClosureUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.EntryExitClosureUpdated` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_entry_exit_closure_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_entry_exit_closure_resolved(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.EntryExitClosureResolved.amqp` message
+        Send the `DE.Autobahn.amqp.EntryExitClosureResolved` message
         A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1672,6 +1740,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1683,40 +1752,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_entry_exit_closure_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.EntryExitClosureResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.EntryExitClosureResolved` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_entry_exit_closure_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_warning_appeared(self,
         data: WarningEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WarningAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.WarningAppeared` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (WarningEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1764,6 +1838,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1775,40 +1850,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_warning_appeared_batch(self,
         data_array: typing.List[WarningEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WarningAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WarningAppeared` messages
         
         Args:
             data_array (typing.List[WarningEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_warning_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_warning_updated(self,
         data: WarningEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WarningUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.WarningUpdated` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (WarningEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1856,6 +1936,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1867,40 +1948,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_warning_updated_batch(self,
         data_array: typing.List[WarningEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WarningUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WarningUpdated` messages
         
         Args:
             data_array (typing.List[WarningEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_warning_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_warning_resolved(self,
         data: WarningEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WarningResolved.amqp` message
+        Send the `DE.Autobahn.amqp.WarningResolved` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (WarningEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1948,6 +2034,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1959,40 +2046,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_warning_resolved_batch(self,
         data_array: typing.List[WarningEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WarningResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WarningResolved` messages
         
         Args:
             data_array (typing.List[WarningEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_warning_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_weight_limit35_restriction_appeared(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WeightLimit35RestrictionAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2040,6 +2132,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2051,40 +2144,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_weight_limit35_restriction_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WeightLimit35RestrictionAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_weight_limit35_restriction_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_weight_limit35_restriction_updated(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WeightLimit35RestrictionUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2132,6 +2230,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2143,40 +2242,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_weight_limit35_restriction_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WeightLimit35RestrictionUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_weight_limit35_restriction_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_weight_limit35_restriction_resolved(self,
         data: RoadEvent,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WeightLimit35RestrictionResolved.amqp` message
+        Send the `DE.Autobahn.amqp.WeightLimit35RestrictionResolved` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2224,6 +2328,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2235,40 +2340,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_weight_limit35_restriction_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WeightLimit35RestrictionResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionResolved` messages
         
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_weight_limit35_restriction_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_webcam_appeared(self,
         data: Webcam,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WebcamAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.WebcamAppeared` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (Webcam): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2316,6 +2426,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2327,40 +2438,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_webcam_appeared_batch(self,
         data_array: typing.List[Webcam],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WebcamAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WebcamAppeared` messages
         
         Args:
             data_array (typing.List[Webcam]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_webcam_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_webcam_updated(self,
         data: Webcam,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WebcamUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.WebcamUpdated` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (Webcam): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2408,6 +2524,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2419,40 +2536,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_webcam_updated_batch(self,
         data_array: typing.List[Webcam],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WebcamUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WebcamUpdated` messages
         
         Args:
             data_array (typing.List[Webcam]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_webcam_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_webcam_resolved(self,
         data: Webcam,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.WebcamResolved.amqp` message
+        Send the `DE.Autobahn.amqp.WebcamResolved` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (Webcam): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2500,6 +2622,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2511,40 +2634,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_webcam_resolved_batch(self,
         data_array: typing.List[Webcam],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.WebcamResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.WebcamResolved` messages
         
         Args:
             data_array (typing.List[Webcam]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_webcam_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_parking_lorry_appeared(self,
         data: ParkingLorry,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ParkingLorryAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.ParkingLorryAppeared` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ParkingLorry): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2592,6 +2720,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2603,40 +2732,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_parking_lorry_appeared_batch(self,
         data_array: typing.List[ParkingLorry],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ParkingLorryAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ParkingLorryAppeared` messages
         
         Args:
             data_array (typing.List[ParkingLorry]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_parking_lorry_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_parking_lorry_updated(self,
         data: ParkingLorry,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ParkingLorryUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.ParkingLorryUpdated` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ParkingLorry): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2684,6 +2818,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2695,40 +2830,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_parking_lorry_updated_batch(self,
         data_array: typing.List[ParkingLorry],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ParkingLorryUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ParkingLorryUpdated` messages
         
         Args:
             data_array (typing.List[ParkingLorry]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_parking_lorry_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_parking_lorry_resolved(self,
         data: ParkingLorry,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ParkingLorryResolved.amqp` message
+        Send the `DE.Autobahn.amqp.ParkingLorryResolved` message
         A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ParkingLorry): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2776,6 +2916,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2787,40 +2928,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_parking_lorry_resolved_batch(self,
         data_array: typing.List[ParkingLorry],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ParkingLorryResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ParkingLorryResolved` messages
         
         Args:
             data_array (typing.List[ParkingLorry]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_parking_lorry_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_electric_charging_station_appeared(self,
         data: ChargingStation,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ElectricChargingStationAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.ElectricChargingStationAppeared` message
         A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2868,6 +3014,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2879,40 +3026,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_electric_charging_station_appeared_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ElectricChargingStationAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ElectricChargingStationAppeared` messages
         
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_electric_charging_station_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_electric_charging_station_updated(self,
         data: ChargingStation,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ElectricChargingStationUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.ElectricChargingStationUpdated` message
         A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2960,6 +3112,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -2971,40 +3124,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_electric_charging_station_updated_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ElectricChargingStationUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ElectricChargingStationUpdated` messages
         
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_electric_charging_station_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_electric_charging_station_resolved(self,
         data: ChargingStation,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.ElectricChargingStationResolved.amqp` message
+        Send the `DE.Autobahn.amqp.ElectricChargingStationResolved` message
         A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3052,6 +3210,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -3063,40 +3222,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_electric_charging_station_resolved_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.ElectricChargingStationResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.ElectricChargingStationResolved` messages
         
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_electric_charging_station_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_strong_electric_charging_station_appeared(self,
         data: ChargingStation,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.StrongElectricChargingStationAppeared.amqp` message
+        Send the `DE.Autobahn.amqp.StrongElectricChargingStationAppeared` message
         A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3144,6 +3308,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -3155,40 +3320,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_strong_electric_charging_station_appeared_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.StrongElectricChargingStationAppeared.amqp` messages
+        Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationAppeared` messages
         
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_strong_electric_charging_station_appeared(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_strong_electric_charging_station_updated(self,
         data: ChargingStation,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.StrongElectricChargingStationUpdated.amqp` message
+        Send the `DE.Autobahn.amqp.StrongElectricChargingStationUpdated` message
         A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3236,6 +3406,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -3247,40 +3418,45 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_strong_electric_charging_station_updated_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.StrongElectricChargingStationUpdated.amqp` messages
+        Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationUpdated` messages
         
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_strong_electric_charging_station_updated(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     
-    def send_amqp(self,
+    def send_strong_electric_charging_station_resolved(self,
         data: ChargingStation,
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send the `DE.Autobahn.StrongElectricChargingStationResolved.amqp` message
+        Send the `DE.Autobahn.amqp.StrongElectricChargingStationResolved` message
         A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3328,6 +3504,7 @@ class DEAutobahnAmqpProducer:
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
         app_properties = {}
+        app_properties["road"] = "{road}".format(road=_road)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -3339,25 +3516,28 @@ class DEAutobahnAmqpProducer:
         else:
             self._sender.send(amqp_msg)
     
-    def send_amqp_batch(self,
+    def send_strong_electric_charging_station_resolved_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
         _event_time: str,
+        _road: str,
         content_type: str = 'application/json') -> None:
         """
-        Send multiple `DE.Autobahn.StrongElectricChargingStationResolved.amqp` messages
+        Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationResolved` messages
         
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
+            _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
         for data in data_array:
-            self.send_amqp(
+            self.send_strong_electric_charging_station_resolved(
                 data=data,
                 _identifier=_identifier,
                 _event_time=_event_time,
+                _road=_road,
                 content_type=content_type)
     
     

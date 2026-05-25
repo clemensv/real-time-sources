@@ -130,152 +130,152 @@ producer = DEAutobahnAmqpProducer(
 
 # Send a message
 
-producer.send_amqp(
+producer.send_roadwork_appeared(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_roadwork_updated(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_roadwork_resolved(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_short_term_roadwork_appeared(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_short_term_roadwork_updated(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_short_term_roadwork_resolved(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_closure_appeared(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_closure_updated(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_closure_resolved(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_entry_exit_closure_appeared(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_entry_exit_closure_updated(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_entry_exit_closure_resolved(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_warning_appeared(
     data=WarningEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_warning_updated(
     data=WarningEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_warning_resolved(
     data=WarningEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_weight_limit35_restriction_appeared(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_weight_limit35_restriction_updated(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_weight_limit35_restriction_resolved(
     data=RoadEvent(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_webcam_appeared(
     data=Webcam(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_webcam_updated(
     data=Webcam(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_webcam_resolved(
     data=Webcam(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_parking_lorry_appeared(
     data=ParkingLorry(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_parking_lorry_updated(
     data=ParkingLorry(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_parking_lorry_resolved(
     data=ParkingLorry(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_electric_charging_station_appeared(
     data=ChargingStation(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_electric_charging_station_updated(
     data=ChargingStation(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_electric_charging_station_resolved(
     data=ChargingStation(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_strong_electric_charging_station_appeared(
     data=ChargingStation(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_strong_electric_charging_station_updated(
     data=ChargingStation(...),
     content_type="application/json"
 )
 
-producer.send_amqp(
+producer.send_strong_electric_charging_station_resolved(
     data=ChargingStation(...),
     content_type="application/json"
 )
@@ -303,7 +303,7 @@ The producer constructor accepts:
 
 
 
-##### `send_amqp()`
+##### `send_roadwork_appeared()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -313,9 +313,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_roadwork_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple RoadworkAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -325,7 +325,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_roadwork_updated()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -335,9 +335,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_roadwork_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple RoadworkUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -347,7 +347,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_roadwork_resolved()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -357,9 +357,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_roadwork_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple RoadworkResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -369,7 +369,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_short_term_roadwork_appeared()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -379,9 +379,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_short_term_roadwork_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ShortTermRoadworkAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -391,7 +391,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_short_term_roadwork_updated()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -401,9 +401,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_short_term_roadwork_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ShortTermRoadworkUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -413,7 +413,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_short_term_roadwork_resolved()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -423,9 +423,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_short_term_roadwork_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ShortTermRoadworkResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -435,7 +435,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_closure_appeared()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -445,9 +445,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_closure_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ClosureAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -457,7 +457,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_closure_updated()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -467,9 +467,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_closure_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ClosureUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -479,7 +479,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_closure_resolved()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -489,9 +489,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_closure_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ClosureResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -501,7 +501,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_entry_exit_closure_appeared()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -511,9 +511,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_entry_exit_closure_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple EntryExitClosureAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -523,7 +523,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_entry_exit_closure_updated()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -533,9 +533,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_entry_exit_closure_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple EntryExitClosureUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -545,7 +545,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_entry_exit_closure_resolved()`
 A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident,
 closure, roadwork, or service alert affecting the covered network.
 
@@ -555,9 +555,9 @@ closure, roadwork, or service alert affecting the covered network.
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_entry_exit_closure_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple EntryExitClosureResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -567,7 +567,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_warning_appeared()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -577,9 +577,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_warning_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WarningAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[WarningEvent]): Array of message data objects
@@ -589,7 +589,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_warning_updated()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -599,9 +599,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_warning_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WarningUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[WarningEvent]): Array of message data objects
@@ -611,7 +611,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_warning_resolved()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -621,9 +621,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_warning_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WarningResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[WarningEvent]): Array of message data objects
@@ -633,7 +633,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_weight_limit35_restriction_appeared()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -643,9 +643,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_weight_limit35_restriction_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WeightLimit35RestrictionAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -655,7 +655,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_weight_limit35_restriction_updated()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -665,9 +665,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_weight_limit35_restriction_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WeightLimit35RestrictionUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -677,7 +677,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_weight_limit35_restriction_resolved()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -687,9 +687,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_weight_limit35_restriction_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WeightLimit35RestrictionResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
@@ -699,7 +699,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_webcam_appeared()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -709,9 +709,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_webcam_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WebcamAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[Webcam]): Array of message data objects
@@ -721,7 +721,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_webcam_updated()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -731,9 +731,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_webcam_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WebcamUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[Webcam]): Array of message data objects
@@ -743,7 +743,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_webcam_resolved()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -753,9 +753,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_webcam_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple WebcamResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[Webcam]): Array of message data objects
@@ -765,7 +765,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_parking_lorry_appeared()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -775,9 +775,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_parking_lorry_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ParkingLorryAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ParkingLorry]): Array of message data objects
@@ -787,7 +787,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_parking_lorry_updated()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -797,9 +797,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_parking_lorry_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ParkingLorryUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ParkingLorry]): Array of message data objects
@@ -809,7 +809,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_parking_lorry_resolved()`
 A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and
 travel information for German motorway segments, roadworks, closures, and traffic messages.
 
@@ -819,9 +819,9 @@ travel information for German motorway segments, roadworks, closures, and traffi
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_parking_lorry_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ParkingLorryResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ParkingLorry]): Array of message data objects
@@ -831,7 +831,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_electric_charging_station_appeared()`
 A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport
 resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
@@ -841,9 +841,9 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_electric_charging_station_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ElectricChargingStationAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
@@ -853,7 +853,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_electric_charging_station_updated()`
 A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport
 resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
@@ -863,9 +863,9 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_electric_charging_station_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ElectricChargingStationUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
@@ -875,7 +875,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_electric_charging_station_resolved()`
 A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport
 resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
@@ -885,9 +885,9 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_electric_charging_station_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple ElectricChargingStationResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
@@ -897,7 +897,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_strong_electric_charging_station_appeared()`
 A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport
 resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
@@ -907,9 +907,9 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_strong_electric_charging_station_appeared_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple StrongElectricChargingStationAppeared messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
@@ -919,7 +919,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_strong_electric_charging_station_updated()`
 A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport
 resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
@@ -929,9 +929,9 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_strong_electric_charging_station_updated_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple StrongElectricChargingStationUpdated messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
@@ -941,7 +941,7 @@ Send multiple Amqp messages in sequence.
 
 
 
-##### `send_amqp()`
+##### `send_strong_electric_charging_station_resolved()`
 A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport
 resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
@@ -951,9 +951,9 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
-##### `send_amqp_batch()`
+##### `send_strong_electric_charging_station_resolved_batch()`
 
-Send multiple Amqp messages in sequence.
+Send multiple StrongElectricChargingStationResolved messages in sequence.
 
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
@@ -999,7 +999,7 @@ class BatchProducer:
         async def send_one(data):
             async with self.semaphore:
                 await asyncio.to_thread(
-                    self.producer.send_amqp,
+                    self.producer.send_roadwork_appeared,
                     data
                 )
 
@@ -1088,7 +1088,7 @@ class ResilientProducer:
         """Send message with automatic retry on connection failure."""
         for attempt in range(max_retries):
             try:
-                self.producer.send_amqp(data)
+                self.producer.send_roadwork_appeared(data)
                 return
             except Exception as e:
                 if attempt < max_retries - 1:
@@ -1113,7 +1113,7 @@ Add extension attributes to CloudEvents:
 producer = DEAutobahnAmqpProducer(host="localhost", address="my-queue")
 
 # CloudEvents extension attributes can be added via metadata
-producer.send_amqp(
+producer.send_roadwork_appeared(
     data=data,
     _tenant="contoso",           # Custom extension attribute
     _deviceid="device-001",      # Custom extension attribute
@@ -1170,7 +1170,7 @@ def send_with_retry(
     """
     for attempt in range(max_retries):
         try:
-            producer.send_amqp(data)
+            producer.send_roadwork_appeared(data)
             return  # Success
         except errors.AMQPConnectionError as e:
             if attempt < max_retries - 1:
@@ -1211,7 +1211,7 @@ class CircuitBreakerProducer:
                 self.failure_count = 0
 
         try:
-            self.producer.send_amqp(data)
+            self.producer.send_roadwork_appeared(data)
             self.failure_count = 0  # Reset on success
         except Exception as e:
             self.failure_count += 1

@@ -240,8 +240,8 @@ class TestDEAutobahnAmqpProducer:
         assert producer.username == artemis_container["username"]
         producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_roadwork_appeared(self, artemis_container):
+        """Send and receive a RoadworkAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -262,10 +262,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_roadwork_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -287,18 +288,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.RoadworkAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.RoadworkAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_roadwork_updated(self, artemis_container):
+        """Send and receive a RoadworkUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -319,10 +321,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_roadwork_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -344,18 +347,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.RoadworkUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.RoadworkUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_roadwork_resolved(self, artemis_container):
+        """Send and receive a RoadworkResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -376,10 +380,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_roadwork_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -401,18 +406,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.RoadworkResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.RoadworkResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_short_term_roadwork_appeared(self, artemis_container):
+        """Send and receive a ShortTermRoadworkAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -433,10 +439,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_short_term_roadwork_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -458,18 +465,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ShortTermRoadworkAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ShortTermRoadworkAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_short_term_roadwork_updated(self, artemis_container):
+        """Send and receive a ShortTermRoadworkUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -490,10 +498,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_short_term_roadwork_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -515,18 +524,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ShortTermRoadworkUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ShortTermRoadworkUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_short_term_roadwork_resolved(self, artemis_container):
+        """Send and receive a ShortTermRoadworkResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -547,10 +557,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_short_term_roadwork_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -572,18 +583,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ShortTermRoadworkResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ShortTermRoadworkResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_closure_appeared(self, artemis_container):
+        """Send and receive a ClosureAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -604,10 +616,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_closure_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -629,18 +642,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ClosureAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ClosureAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_closure_updated(self, artemis_container):
+        """Send and receive a ClosureUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -661,10 +675,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_closure_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -686,18 +701,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ClosureUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ClosureUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_closure_resolved(self, artemis_container):
+        """Send and receive a ClosureResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -718,10 +734,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_closure_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -743,18 +760,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ClosureResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ClosureResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_entry_exit_closure_appeared(self, artemis_container):
+        """Send and receive a EntryExitClosureAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -775,10 +793,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_entry_exit_closure_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -800,18 +819,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.EntryExitClosureAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.EntryExitClosureAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_entry_exit_closure_updated(self, artemis_container):
+        """Send and receive a EntryExitClosureUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -832,10 +852,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_entry_exit_closure_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -857,18 +878,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.EntryExitClosureUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.EntryExitClosureUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_entry_exit_closure_resolved(self, artemis_container):
+        """Send and receive a EntryExitClosureResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -889,10 +911,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_entry_exit_closure_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -914,18 +937,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.EntryExitClosureResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.EntryExitClosureResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_warning_appeared(self, artemis_container):
+        """Send and receive a WarningAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_WarningEvent.create_instance()
 
@@ -946,10 +970,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_warning_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -971,18 +996,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WarningAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WarningAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_warning_updated(self, artemis_container):
+        """Send and receive a WarningUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_WarningEvent.create_instance()
 
@@ -1003,10 +1029,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_warning_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1028,18 +1055,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WarningUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WarningUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_warning_resolved(self, artemis_container):
+        """Send and receive a WarningResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_WarningEvent.create_instance()
 
@@ -1060,10 +1088,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_warning_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1085,18 +1114,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WarningResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WarningResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_weight_limit35_restriction_appeared(self, artemis_container):
+        """Send and receive a WeightLimit35RestrictionAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -1117,10 +1147,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_weight_limit35_restriction_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1142,18 +1173,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WeightLimit35RestrictionAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_weight_limit35_restriction_updated(self, artemis_container):
+        """Send and receive a WeightLimit35RestrictionUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -1174,10 +1206,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_weight_limit35_restriction_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1199,18 +1232,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WeightLimit35RestrictionUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_weight_limit35_restriction_resolved(self, artemis_container):
+        """Send and receive a WeightLimit35RestrictionResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_RoadEvent.create_instance()
 
@@ -1231,10 +1265,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_weight_limit35_restriction_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1256,18 +1291,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WeightLimit35RestrictionResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WeightLimit35RestrictionResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_webcam_appeared(self, artemis_container):
+        """Send and receive a WebcamAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_Webcam.create_instance()
 
@@ -1288,10 +1324,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_webcam_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1313,18 +1350,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WebcamAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WebcamAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_webcam_updated(self, artemis_container):
+        """Send and receive a WebcamUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_Webcam.create_instance()
 
@@ -1345,10 +1383,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_webcam_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1370,18 +1409,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WebcamUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WebcamUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_webcam_resolved(self, artemis_container):
+        """Send and receive a WebcamResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_Webcam.create_instance()
 
@@ -1402,10 +1442,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_webcam_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1427,18 +1468,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.WebcamResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WebcamResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_parking_lorry_appeared(self, artemis_container):
+        """Send and receive a ParkingLorryAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ParkingLorry.create_instance()
 
@@ -1459,10 +1501,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_parking_lorry_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1484,18 +1527,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ParkingLorryAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ParkingLorryAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_parking_lorry_updated(self, artemis_container):
+        """Send and receive a ParkingLorryUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ParkingLorry.create_instance()
 
@@ -1516,10 +1560,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_parking_lorry_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1541,18 +1586,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ParkingLorryUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ParkingLorryUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_parking_lorry_resolved(self, artemis_container):
+        """Send and receive a ParkingLorryResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ParkingLorry.create_instance()
 
@@ -1573,10 +1619,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_parking_lorry_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1598,18 +1645,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ParkingLorryResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ParkingLorryResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_electric_charging_station_appeared(self, artemis_container):
+        """Send and receive a ElectricChargingStationAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ChargingStation.create_instance()
 
@@ -1630,10 +1678,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_electric_charging_station_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1655,18 +1704,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ElectricChargingStationAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ElectricChargingStationAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_electric_charging_station_updated(self, artemis_container):
+        """Send and receive a ElectricChargingStationUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ChargingStation.create_instance()
 
@@ -1687,10 +1737,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_electric_charging_station_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1712,18 +1763,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ElectricChargingStationUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ElectricChargingStationUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_electric_charging_station_resolved(self, artemis_container):
+        """Send and receive a ElectricChargingStationResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ChargingStation.create_instance()
 
@@ -1744,10 +1796,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_electric_charging_station_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1769,18 +1822,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.ElectricChargingStationResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ElectricChargingStationResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_strong_electric_charging_station_appeared(self, artemis_container):
+        """Send and receive a StrongElectricChargingStationAppeared message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ChargingStation.create_instance()
 
@@ -1801,10 +1855,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_strong_electric_charging_station_appeared(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1826,18 +1881,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.StrongElectricChargingStationAppeared.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.StrongElectricChargingStationAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_strong_electric_charging_station_updated(self, artemis_container):
+        """Send and receive a StrongElectricChargingStationUpdated message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ChargingStation.create_instance()
 
@@ -1858,10 +1914,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_strong_electric_charging_station_updated(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1883,18 +1940,19 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.StrongElectricChargingStationUpdated.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.StrongElectricChargingStationUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
     
-    def test_send_amqp(self, artemis_container):
-        """Send and receive a Amqp message via ActiveMQ Artemis."""
+    def test_send_strong_electric_charging_station_resolved(self, artemis_container):
+        """Send and receive a StrongElectricChargingStationResolved message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_ChargingStation.create_instance()
 
@@ -1915,10 +1973,11 @@ class TestDEAutobahnAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_amqp(
+                producer.send_strong_electric_charging_station_resolved(
                     data=payload,
                     _identifier="value",
                     _event_time="value",
+                    _road="value",
                     content_type="application/json"
                 )
 
@@ -1940,13 +1999,14 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.StrongElectricChargingStationResolved.amqp"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.StrongElectricChargingStationResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{identifier}".format(identifier="value")
+                assert properties.get('road') == "{road}".format(road="value")
         finally:
             producer.close()
 

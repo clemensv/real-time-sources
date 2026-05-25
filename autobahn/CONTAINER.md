@@ -141,29 +141,6 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-eventhub.json)
 
-## MQTT 5.0 / Unified Namespace
+## AMQP 1.0 companion
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
-docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
-| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
-
-## AMQP 1.0
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
-docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=autobahn ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
-| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
-| `AMQP_ADDRESS` | No | `autobahn` | Queue/topic/address to send to. |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |
+This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.

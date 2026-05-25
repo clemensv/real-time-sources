@@ -654,6 +654,7 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "roads/{road_id}".format(road_id=_road_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -739,6 +740,7 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "roads/{road_id}".format(road_id=_road_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -828,6 +830,9 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
+        app_properties["severity"] = "{severity}".format(severity=_severity)
+        app_properties["disruption_id"] = "{disruption_id}".format(disruption_id=_disruption_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -923,6 +928,9 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
+        app_properties["severity"] = "{severity}".format(severity=_severity)
+        app_properties["disruption_id"] = "{disruption_id}".format(disruption_id=_disruption_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1018,6 +1026,9 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
+        app_properties["severity"] = "{severity}".format(severity=_severity)
+        app_properties["disruption_id"] = "{disruption_id}".format(disruption_id=_disruption_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1113,6 +1124,9 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
+        app_properties["severity"] = "{severity}".format(severity=_severity)
+        app_properties["disruption_id"] = "{disruption_id}".format(disruption_id=_disruption_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1208,6 +1222,9 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
+        app_properties["severity"] = "{severity}".format(severity=_severity)
+        app_properties["disruption_id"] = "{disruption_id}".format(disruption_id=_disruption_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -1303,6 +1320,9 @@ class UkGovTflRoadAmqpProducer:
         amqp_msg.subject = "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id=_road_id, severity=_severity, disruption_id=_disruption_id)
 
         app_properties = {}
+        app_properties["road_id"] = "{road_id}".format(road_id=_road_id)
+        app_properties["severity"] = "{severity}".format(severity=_severity)
+        app_properties["disruption_id"] = "{disruption_id}".format(disruption_id=_disruption_id)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}

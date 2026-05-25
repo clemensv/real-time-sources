@@ -41,6 +41,31 @@
         }
       ],
       "description": "MQTT 5 producer endpoint for PTWC Tsunami CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "PTWC.Bulletins.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/ptwc-tsunami"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "ptwc-tsunami"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/PTWC.Bulletins.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -80,6 +105,45 @@
             "qos": 1,
             "retain": false
           }
+        }
+      }
+    },
+    "PTWC.Bulletins.amqp": {
+      "description": "AMQP 1.0 transport variants for ptwc-tsunami. All CloudEvents are published to the ptwc-tsunami address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "PTWC.Bulletins.amqp.TsunamiBulletin": {
+          "name": "TsunamiBulletin",
+          "basemessageurl": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{bulletin_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "AMQP application property mirroring the basin routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "ptwc_level": {
+                "type": "uritemplate",
+                "value": "{ptwc_level}",
+                "description": "AMQP application property mirroring the ptwc_level routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{bulletin_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "PTWC.Bulletins.amqp.TsunamiBulletin"
         }
       }
     }
