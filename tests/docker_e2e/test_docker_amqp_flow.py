@@ -261,6 +261,100 @@ class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"Meteoalarm.WeatherWarning"}
     expected_count = 1
 
+class TestNWSAlertsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nws-alerts"
+    image = "nws-alerts-amqp"
+    env = {'NWS_ALERTS_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'NWS.WeatherAlert'}
+    expected_count = 5
+
+
+class TestPtwcTsunamiAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "ptwc-tsunami"
+    image = "ptwc-tsunami-amqp"
+    env = {'PTWC_TSUNAMI_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'PTWC.TsunamiBulletin'}
+    expected_count = 1
+
+
+class TestNinaBbkAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nina-bbk"
+    image = "nina-bbk-amqp"
+    env = {'NINA_BBK_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'NINA.CivilWarning'}
+    expected_count = 1
+
+
+class TestGdacsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "gdacs"
+    image = "gdacs-amqp"
+    env = {'GDACS_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'GDACS.DisasterAlert'}
+    expected_count = 1
+
+
+class TestEawsAlbinaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "eaws-albina"
+    image = "eaws-albina-amqp"
+    env = {'EAWS_ALBINA_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'org.EAWS.ALBINA.AvalancheBulletin'}
+    expected_count = 1
+
+
+class TestCbpBorderWaitAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "cbp-border-wait"
+    image = "cbp-border-wait-amqp"
+    env = {'CBP_BORDER_WAIT_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'gov.cbp.borderwait.Port', 'gov.cbp.borderwait.WaitTime'}
+    expected_count = 2
+
+
+class TestSeattle911AmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "seattle-911"
+    image = "seattle-911-amqp"
+    env = {'SEATTLE_911_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'US.WA.Seattle.Fire911.Incident'}
+    expected_count = 1
+
+
+class TestAutobahnAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "autobahn"
+    image = "autobahn-amqp"
+    env = {'AUTOBAHN_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'DE.Autobahn.StrongElectricChargingStationUpdated', 'DE.Autobahn.EntryExitClosureResolved', 'DE.Autobahn.ElectricChargingStationResolved', 'DE.Autobahn.ClosureResolved', 'DE.Autobahn.ClosureAppeared', 'DE.Autobahn.ParkingLorryResolved', 'DE.Autobahn.WeightLimit35RestrictionUpdated', 'DE.Autobahn.WebcamUpdated', 'DE.Autobahn.WeightLimit35RestrictionResolved', 'DE.Autobahn.RoadworkAppeared', 'DE.Autobahn.StrongElectricChargingStationResolved', 'DE.Autobahn.WarningUpdated', 'DE.Autobahn.WeightLimit35RestrictionAppeared', 'DE.Autobahn.ClosureUpdated', 'DE.Autobahn.WarningResolved', 'DE.Autobahn.WebcamResolved', 'DE.Autobahn.StrongElectricChargingStationAppeared', 'DE.Autobahn.EntryExitClosureUpdated', 'DE.Autobahn.ElectricChargingStationUpdated', 'DE.Autobahn.WebcamAppeared', 'DE.Autobahn.ShortTermRoadworkResolved', 'DE.Autobahn.EntryExitClosureAppeared', 'DE.Autobahn.ShortTermRoadworkUpdated', 'DE.Autobahn.RoadworkResolved', 'DE.Autobahn.ShortTermRoadworkAppeared', 'DE.Autobahn.WarningAppeared', 'DE.Autobahn.ElectricChargingStationAppeared', 'DE.Autobahn.RoadworkUpdated', 'DE.Autobahn.ParkingLorryAppeared', 'DE.Autobahn.ParkingLorryUpdated'}
+    expected_count = 30
+
+
+class TestTflRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "tfl-road-traffic"
+    image = "tfl-road-traffic-amqp"
+    env = {'TFL_ROAD_TRAFFIC_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'uk.gov.tfl.road.RoadStatus', 'uk.gov.tfl.road.RoadCorridor', 'uk.gov.tfl.road.RoadDisruption'}
+    expected_count = 8
+
+
+class TestEnturNorwayAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "entur-norway"
+    image = "entur-norway-amqp"
+    env = {'ENTUR_NORWAY_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'no.entur.MonitoredVehicleJourney', 'no.entur.EstimatedVehicleJourney', 'no.entur.PtSituationElement'}
+    expected_count = 3
+
+
+class TestIRailAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "irail"
+    image = "irail-amqp"
+    env = {'IRAIL_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'be.irail.StationBoard', 'be.irail.Station', 'be.irail.ArrivalBoard'}
+    expected_count = 3
+
+
+class TestParisBicycleCountersAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "paris-bicycle-counters"
+    image = "paris-bicycle-counters-amqp"
+    env = {'PARIS_BICYCLE_COUNTERS_MOCK': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'FR.Paris.OpenData.Velo.BicycleCount', 'FR.Paris.OpenData.Velo.Counter'}
+    expected_count = 2
 
 
 class TestUSGSEarthquakesAmqpDockerFlow(AmqpDockerFlowBase):

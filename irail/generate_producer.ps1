@@ -3,3 +3,5 @@
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 xrcg generate --style kafkaproducer --language py --definitions xreg\irail.xreg.json --projectname irail_producer --output irail_producer
+
+& (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")
