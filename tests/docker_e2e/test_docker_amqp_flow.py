@@ -268,3 +268,11 @@ class TestBlitzortungAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"BLITZORTUNG_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'Blitzortung.Lightning.LightningStroke'}
     expected_count = 1
+
+
+class TestBomAustraliaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bom-australia"
+    image = "bom-australia-amqp"
+    env = {"BOM_AUSTRALIA_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'AU.Gov.BOM.Weather.Station', 'AU.Gov.BOM.Warning.WarningBulletin', 'AU.Gov.BOM.Weather.WeatherObservation'}
+    expected_count = 3

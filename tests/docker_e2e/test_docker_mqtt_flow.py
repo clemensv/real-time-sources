@@ -4979,3 +4979,23 @@ def mosquitto_aviationweather():
 class TestAviationweatherMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_aviationweather, aviationweather_mqtt_image):
         _run_mqtt_contract_flow('aviationweather', aviationweather_mqtt_image, mosquitto_aviationweather, extra_env={'AVIATIONWEATHER_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def bom_australia_mqtt_image():
+    return build_image('bom-australia', dockerfile='Dockerfile.mqtt', tag='test-bom-australia-mqtt')
+
+@pytest.fixture()
+def mosquitto_bom_australia():
+    container, network, host_port = _generic_mosquitto('bom-australia-mqtt-e2e', 'bom-australia-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'bom-australia-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestBomAustraliaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_bom_australia, bom_australia_mqtt_image):
+        _run_mqtt_contract_flow('bom-australia', bom_australia_mqtt_image, mosquitto_bom_australia, extra_env={'BOM_AUSTRALIA_MOCK': 'true'}, timeout=300)

@@ -630,6 +630,18 @@
       "image": "blitzortung-amqp",
       "file": "Dockerfile.amqp",
       "module": "blitzortung_amqp"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "bom_australia_mqtt"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bom_australia_amqp"
     }
   ],
   "flow": [
@@ -1282,6 +1294,18 @@
       "image": "blitzortung-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBlitzortungAmqpDockerFlow"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBomAustraliaMqttDockerFlow"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBomAustraliaAmqpDockerFlow"
     }
   ]
 }

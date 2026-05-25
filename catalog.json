@@ -239,7 +239,9 @@
     "key": false,
     "desc": "Australia — ~8 capital city airports, half-hourly obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "dwd",
