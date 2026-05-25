@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for observations in the German Waters source.
     Attributes:
         station_id (str): 
         provider (str): 
@@ -48,7 +48,7 @@ class WaterLevelObservation:
     situation: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="situation"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"trend\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"situation\", \"type\": [\"null\", \"int\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"Measurement payload for observations in the German Waters source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"trend\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"situation\", \"type\": [\"null\", \"int\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\", \"description\": \"Measurement payload for observations in the German Waters source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

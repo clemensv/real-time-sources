@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for water level and discharge observations in the German Waters source.
     
     Attributes:
         station_id (str)
@@ -173,15 +173,15 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xrbynfabfhkrlxzizzvu',
-            provider='xzflntaveopiqmfkqytm',
-            water_body='msqjyoucxkiiehegfjmj',
-            water_level=float(12.579754363907746),
-            water_level_unit='cquplimhzbxdaizmikzs',
+            station_id='orlqlvcacszlmaytngfy',
+            provider='nnvttibgmwvyzrsxfzac',
+            water_body='qyuepjxmaoyvpgfladyu',
+            water_level=float(60.05806067216497),
+            water_level_unit='tlrrqmqoewfeqwmsbiiv',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(60.42593850990453),
-            discharge_unit='jhbppwqojjfcczmucyva',
+            discharge=float(72.50091673650371),
+            discharge_unit='bpdvwhsyklotcxpkxizo',
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            trend=int(29),
-            situation=int(11)
+            trend=int(35),
+            situation=int(59)
         )

@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the German Waters source.
     Attributes:
         station_id (str): 
         station_name (str): 
@@ -54,7 +54,7 @@ class Station:
     alarm_level_m3s: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alarm_level_m3s"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\"}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"river_km\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"altitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"station_type\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"warn_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"warn_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the German Waters source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\"}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"river_km\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"altitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"station_type\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"warn_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"warn_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\", \"description\": \"Reference details for one monitoring station or site in the German Waters source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

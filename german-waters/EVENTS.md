@@ -160,8 +160,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`discharge`** (double, optional): Current streamflow or discharge reported for the station.
 - **`discharge_unit`** (string, optional): Unit used for the discharge value.
 - **`discharge_timestamp`** (datetime, optional): Time associated with the discharge measurement.
-- **`trend`** (int32, optional): Provider-supplied trend value for this record.
-- **`situation`** (int32, optional): Provider-supplied situation value for this record.
+- **`trend`** (int32 or null, optional): Provider-supplied trend value for this record.
+- **`situation`** (int32 or null, optional): Provider-supplied situation value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

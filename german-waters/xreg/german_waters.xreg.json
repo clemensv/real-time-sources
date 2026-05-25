@@ -332,11 +332,11 @@
                     "description": "Time associated with the discharge measurement."
                   },
                   "trend": {
-                    "type": "int32",
+                    "type": ["int32", "null"],
                     "description": "Provider-supplied trend value for this record."
                   },
                   "situation": {
-                    "type": "int32",
+                    "type": ["int32", "null"],
                     "description": "Provider-supplied situation value for this record."
                   }
                 },
