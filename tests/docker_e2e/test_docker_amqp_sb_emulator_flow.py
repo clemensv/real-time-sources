@@ -409,6 +409,7 @@ def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str
                 "AMQP_SAS_KEY_NAME": SAS_KEY_NAME,
                 "AMQP_SAS_KEY": SAS_KEY_VALUE,
                 "MOCK_MODE": "true",
+                "NVE_API_KEY": "mock",
                 "ONCE_MODE": "true",
                 "PYTHONUNBUFFERED": "1",
             },

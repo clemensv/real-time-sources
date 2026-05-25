@@ -124,10 +124,10 @@ def _publish_observations(
 
 
 def _publish_mock(producer: BeIssepAirqualitySensorsAmqpProducer) -> None:
-    config = SensorConfiguration(configuration_id="mock-config", province="mock-province")
-    observation = Observation(configuration_id="mock-config", province="mock-province", moment=datetime.now(timezone.utc).isoformat(), co=1, no=1, no2=1, o3no2=1, ppbno=1.0, ppbno_statut=0, ppbno2=1.0, ppbno2_statut=0, ppbo3=1.0, ppbo3_statut=0, ugpcmno=1.0, ugpcmno_statut=0, ugpcmno2=1.0, ugpcmno2_statut=0, ugpcmo3=1.0, ugpcmo3_statut=0, bme_t=20.0, bme_t_statut=0, bme_pres=1013, bme_pres_statut=0, bme_rh=50.0, bme_rh_statut=0, pm1=1.0, pm1_statut=0, pm25=1.0, pm25_statut=0, pm4=1.0, pm4_statut=0, pm10=1.0, pm10_statut=0, vbat=4.0, vbat_statut=0, mwh_bat=0.0, mwh_pv=0.0, co_rf=1.0, no_rf=1.0, no2_rf=1.0, o3no2_rf=1.0, o3_rf=1.0, pm10_rf=1.0)
-    producer.send_sensor_configuration(data=config, _configuration_id="mock-config", _province="mock-province")
-    producer.send_observation(data=observation, _configuration_id="mock-config", _province="mock-province")
+    config = SensorConfiguration(configuration_id="12345", province="mock-province")
+    observation = Observation(configuration_id="12345", province="mock-province", moment=datetime.now(timezone.utc).isoformat(), co=1, no=1, no2=1, o3no2=1, ppbno=1.0, ppbno_statut=0, ppbno2=1.0, ppbno2_statut=0, ppbo3=1.0, ppbo3_statut=0, ugpcmno=1.0, ugpcmno_statut=0, ugpcmno2=1.0, ugpcmno2_statut=0, ugpcmo3=1.0, ugpcmo3_statut=0, bme_t=20.0, bme_t_statut=0, bme_pres=1013, bme_pres_statut=0, bme_rh=50.0, bme_rh_statut=0, pm1=1.0, pm1_statut=0, pm25=1.0, pm25_statut=0, pm4=1.0, pm4_statut=0, pm10=1.0, pm10_statut=0, vbat=4.0, vbat_statut=0, mwh_bat=0.0, mwh_pv=0.0, co_rf=1.0, no_rf=1.0, no2_rf=1.0, o3no2_rf=1.0, o3_rf=1.0, pm10_rf=1.0)
+    producer.send_sensor_configuration(data=config, _configuration_id="12345", _province="mock-province")
+    producer.send_observation(data=observation, _configuration_id="12345", _province="mock-province")
 
 
 def feed(

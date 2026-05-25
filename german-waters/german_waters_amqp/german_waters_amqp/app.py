@@ -327,9 +327,8 @@ def main(argv: Optional[list] = None) -> None:
         port = args.broker_port or (5671 if tls else 5672)
         username = args.username
         password = args.password
-
-    providers = _resolve_providers(args.providers, args.exclude_providers)
-    feed(
+        address = args.address
+    providers = _resolve_providers(args.providers, args.exclude_providers)    feed(
             providers, host, port, args.polling_interval,
             username=username, password=password, tls=tls,
             client_id=args.client_id, state_file=args.state_file,

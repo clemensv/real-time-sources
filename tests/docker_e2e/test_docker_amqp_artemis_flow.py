@@ -447,6 +447,7 @@ def _run_generic_amqp_artemis_flow(source_dir: str, image_tag: str, station_type
                 "AMQP_PASSWORD": ARTEMIS_PASSWORD,
                 "AMQP_AUTH_MODE": "password",
                 "MOCK_MODE": "true",
+                "NVE_API_KEY": "mock",
                 "ONCE_MODE": "true",
                 "PYTHONUNBUFFERED": "1",
             },
