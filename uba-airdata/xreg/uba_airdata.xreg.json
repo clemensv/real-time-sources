@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/de.uba.airdata"
-      ]
+      ],
+      "description": "Kafka producer endpoint for UBA Airdata CloudEvents on the `uba-airdata` topic keyed by `{station_id}`."
     },
     "de.uba.airdata.components.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/de.uba.airdata.components"
-      ]
+      ],
+      "description": "Kafka producer endpoint for UBA Airdata CloudEvents on the `uba-airdata` topic keyed by `{component_id}`."
     }
   },
   "messagegroups": {
@@ -86,7 +88,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/de.uba.airdata.jstruct/schemas/de.uba.airdata.Measure"
         }
-      }
+      },
+      "description": "Events from UBA Airdata covering Austrian air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "de.uba.airdata.components": {
       "messages": {
@@ -110,7 +113,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/de.uba.airdata.jstruct/schemas/de.uba.airdata.components.Component"
         }
-      }
+      },
+      "description": "Events from UBA Airdata covering Austrian air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -135,7 +139,7 @@
                         "Station": {
                           "name": "Station",
                           "type": "object",
-                          "description": "Reference data for a station in the Umweltbundesamt air_data/v3 station catalog. The station payload describes the UBA station identifier, official station code, station naming, active period, WGS84 coordinates, the denormalized federal state monitoring network, and the station environment classification.",
+                          "description": "Reference data for a UBA air quality monitoring station, including geographic position, station environment, and the denormalized monitoring network metadata published by the UBA air_data/v3 station catalog.",
                           "properties": {
                             "station_id": {
                               "type": "int32",
@@ -273,7 +277,7 @@
                         "Measure": {
                           "name": "Measure",
                           "type": "object",
-                          "description": "Hourly air quality measurement record from the UBA air_data/v3 measures endpoint. The upstream API returns measurements grouped by station and measurement start time for a requested component and averaging scope.",
+                          "description": "Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.",
                           "properties": {
                             "station_id": {
                               "type": "int32",
@@ -345,7 +349,7 @@
                           "Component": {
                             "name": "Component",
                             "type": "object",
-                            "description": "Reference data for a pollutant component from the UBA air_data/v3 components catalog. Each component defines the stable numeric component identifier, short code, published symbol, published unit string, and English display name.",
+                            "description": "Reference data for an air pollutant component published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol, unit, and English display name.",
                             "properties": {
                               "component_id": {
                                 "type": "int32",
@@ -387,5 +391,10 @@
         }
       }
     }
+  },
+  "description": "UBA Airdata publishes pollutant concentration measurements from the Austrian Umweltbundesamt air-quality data service for Austrian air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for UBA Airdata, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
