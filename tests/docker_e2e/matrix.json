@@ -488,6 +488,48 @@
       "module": "entsoe_amqp"
     },
     {
+      "dir": "bafu-hydro",
+      "image": "bafu-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bafu_hydro_amqp"
+    },
+    {
+      "dir": "chmi-hydro",
+      "image": "chmi-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "chmi_hydro_amqp"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "german_waters_amqp"
+    },
+    {
+      "dir": "nve-hydro",
+      "image": "nve-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nve_hydro_amqp"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "image": "rws-waterwebservices-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "rws_waterwebservices_amqp"
+    },
+    {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "smhi_hydro_amqp"
+    },
+    {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "wallonia_issep_amqp"
+    },
+    {
       "dir": "kystverket-ais",
       "image": "kystverket-ais-amqp",
       "file": "Dockerfile.amqp",
@@ -966,6 +1008,104 @@
       "image": "entsoe-kafka",
       "file": "Dockerfile.kafka",
       "test_class": "TestEntsoeKafkaDockerFlow"
+    },
+    {
+      "dir": "bafu-hydro",
+      "image": "bafu-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestBafuHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "bafu-hydro",
+      "image": "bafu-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestBafuHydroAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "chmi-hydro",
+      "image": "chmi-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestChmiHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "chmi-hydro",
+      "image": "chmi-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestChmiHydroAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestGermanWatersAmqpArtemisFlow"
+    },
+    {
+      "dir": "german-waters",
+      "image": "german-waters-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestGermanWatersAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "nve-hydro",
+      "image": "nve-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestNveHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "nve-hydro",
+      "image": "nve-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestNveHydroAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "image": "rws-waterwebservices-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestRwsWaterwebservicesAmqpArtemisFlow"
+    },
+    {
+      "dir": "rws-waterwebservices",
+      "image": "rws-waterwebservices-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestRwsWaterwebservicesAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestSmhiHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "smhi-hydro",
+      "image": "smhi-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestSmhiHydroAmqpSbEmulatorFlow"
+    },
+    {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestWalloniaIssepAmqpArtemisFlow"
+    },
+    {
+      "dir": "wallonia-issep",
+      "image": "wallonia-issep-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_sb_emulator_flow.py",
+      "test_class": "TestWalloniaIssepAmqpSbEmulatorFlow"
     },
     {
       "dir": "kystverket-ais",

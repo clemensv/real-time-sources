@@ -4,16 +4,18 @@
     "name": "BAFU Hydro",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Switzerland — ~300 stations, FOEN",
+    "desc": "Switzerland \u2014 ~300 stations, FOEN",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "canada-eccc-wateroffice",
     "name": "Canada ECCC Water Office",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Canada — ~2,100 hydrometric stations, ECCC/WSC",
+    "desc": "Canada \u2014 ~2,100 hydrometric stations, ECCC/WSC",
     "kql": true
   },
   {
@@ -21,7 +23,7 @@
     "name": "CDEC Reservoirs",
     "cat": "Hydrology",
     "key": false,
-    "desc": "California — ~2,600 stations, DWR",
+    "desc": "California \u2014 ~2,600 stations, DWR",
     "kql": true,
     "notebook": true
   },
@@ -30,24 +32,28 @@
     "name": "CHMI Hydro",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Czech Republic — CHMU",
+    "desc": "Czech Republic \u2014 CHMU",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "german-waters",
     "name": "German Waters",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Germany — 12 state portals, ~2,724 stations",
-    "kql": true
+    "desc": "Germany \u2014 12 state portals, ~2,724 stations",
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "hubeau-hydrometrie",
     "name": "Hub'Eau Hydrometrie",
     "cat": "Hydrology",
     "key": false,
-    "desc": "France — ~6,300 stations",
+    "desc": "France \u2014 ~6,300 stations",
     "kql": true,
     "notebook": true
   },
@@ -56,7 +62,7 @@
     "name": "IMGW Hydro",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Poland — IMGW-PIB",
+    "desc": "Poland \u2014 IMGW-PIB",
     "kql": true,
     "notebook": true
   },
@@ -65,7 +71,7 @@
     "name": "Ireland OPW Water Level",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Ireland — ~500 OPW hydrometric stations",
+    "desc": "Ireland \u2014 ~500 OPW hydrometric stations",
     "kql": true,
     "notebook": true
   },
@@ -74,7 +80,7 @@
     "name": "King County Marine",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Washington State / Puget Sound — buoy and mooring telemetry",
+    "desc": "Washington State / Puget Sound \u2014 buoy and mooring telemetry",
     "kql": true,
     "notebook": true,
     "amqp": true,
@@ -85,7 +91,7 @@
     "name": "Nepal BIPAD Hydrology",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Nepal — Himalayan river basins, BIPAD",
+    "desc": "Nepal \u2014 Himalayan river basins, BIPAD",
     "kql": true,
     "notebook": true
   },
@@ -94,7 +100,7 @@
     "name": "NOAA NDBC",
     "cat": "Hydrology",
     "key": false,
-    "desc": "United States — buoy observations",
+    "desc": "United States \u2014 buoy observations",
     "kql": true,
     "notebook": true
   },
@@ -103,7 +109,7 @@
     "name": "NOAA Tides & Currents",
     "cat": "Hydrology",
     "key": false,
-    "desc": "United States — ~3,000 stations",
+    "desc": "United States \u2014 ~3,000 stations",
     "kql": true
   },
   {
@@ -111,16 +117,18 @@
     "name": "NVE Hydro",
     "cat": "Hydrology",
     "key": true,
-    "desc": "Norway — NVE (requires free API key)",
+    "desc": "Norway \u2014 NVE (requires free API key)",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "pegelonline",
     "name": "Pegelonline",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Germany — federal waterways, ~3,000 stations",
+    "desc": "Germany \u2014 federal waterways, ~3,000 stations",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -131,25 +139,29 @@
     "name": "RWS Waterwebservices",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Netherlands — ~785 stations",
+    "desc": "Netherlands \u2014 ~785 stations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "smhi-hydro",
     "name": "SMHI Hydro",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Sweden — SMHI",
+    "desc": "Sweden \u2014 SMHI",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "snotel",
     "name": "SNOTEL Snow",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Western US & Alaska — ~900 snowpack stations, NRCS",
+    "desc": "Western US & Alaska \u2014 ~900 snowpack stations, NRCS",
     "kql": true,
     "notebook": true
   },
@@ -158,7 +170,7 @@
     "name": "SYKE Hydro",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Finland — SYKE",
+    "desc": "Finland \u2014 SYKE",
     "kql": true,
     "notebook": true
   },
@@ -167,7 +179,7 @@
     "name": "UK EA Flood Monitoring",
     "cat": "Hydrology",
     "key": false,
-    "desc": "England — ~4,000 stations",
+    "desc": "England \u2014 ~4,000 stations",
     "kql": true,
     "notebook": true
   },
@@ -176,7 +188,7 @@
     "name": "USGS Instantaneous Values",
     "cat": "Hydrology",
     "key": false,
-    "desc": "United States — ~1.5M stations",
+    "desc": "United States \u2014 ~1.5M stations",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -186,7 +198,7 @@
     "name": "USGS NWIS Water Quality",
     "cat": "Hydrology",
     "key": false,
-    "desc": "United States — ~3,000 continuous WQ sites",
+    "desc": "United States \u2014 ~3,000 continuous WQ sites",
     "kql": true,
     "notebook": true
   },
@@ -195,7 +207,7 @@
     "name": "Waterinfo VMM",
     "cat": "Hydrology",
     "key": false,
-    "desc": "Belgium / Flanders — ~1,785 stations",
+    "desc": "Belgium / Flanders \u2014 ~1,785 stations",
     "kql": true,
     "notebook": true
   },
@@ -204,7 +216,7 @@
     "name": "AviationWeather.gov",
     "cat": "Weather",
     "key": false,
-    "desc": "Global — METAR, SIGMET advisories",
+    "desc": "Global \u2014 METAR, SIGMET advisories",
     "kql": true,
     "notebook": true
   },
@@ -213,7 +225,7 @@
     "name": "Blitzortung",
     "cat": "Weather",
     "key": false,
-    "desc": "Global — community lightning strokes, seconds latency",
+    "desc": "Global \u2014 community lightning strokes, seconds latency",
     "kql": true
   },
   {
@@ -221,7 +233,7 @@
     "name": "BOM Australia",
     "cat": "Weather",
     "key": false,
-    "desc": "Australia — ~8 capital city airports, half-hourly obs",
+    "desc": "Australia \u2014 ~8 capital city airports, half-hourly obs",
     "kql": true,
     "notebook": true
   },
@@ -230,7 +242,7 @@
     "name": "DWD",
     "cat": "Weather",
     "key": false,
-    "desc": "Germany — ~1,450 stations, observations and CAP alerts",
+    "desc": "Germany \u2014 ~1,450 stations, observations and CAP alerts",
     "kql": true
   },
   {
@@ -238,7 +250,7 @@
     "name": "DWD Pollenflug",
     "cat": "Weather",
     "key": false,
-    "desc": "Germany — daily pollen forecasts, 27 regions",
+    "desc": "Germany \u2014 daily pollen forecasts, 27 regions",
     "kql": true,
     "notebook": true
   },
@@ -247,7 +259,7 @@
     "name": "DMI",
     "cat": "Weather",
     "key": true,
-    "desc": "Denmark — meteorological observations, sea level, lightning strikes",
+    "desc": "Denmark \u2014 meteorological observations, sea level, lightning strikes",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -257,7 +269,7 @@
     "name": "Environment Canada",
     "cat": "Weather",
     "key": false,
-    "desc": "Canada — ~963 SWOB stations, hourly obs",
+    "desc": "Canada \u2014 ~963 SWOB stations, hourly obs",
     "kql": true,
     "notebook": true
   },
@@ -266,7 +278,7 @@
     "name": "GeoSphere Austria",
     "cat": "Weather",
     "key": false,
-    "desc": "Austria — ~280 TAWES stations, 10-min obs",
+    "desc": "Austria \u2014 ~280 TAWES stations, 10-min obs",
     "kql": true,
     "notebook": true
   },
@@ -275,7 +287,7 @@
     "name": "HKO Hong Kong",
     "cat": "Weather",
     "key": false,
-    "desc": "Hong Kong — 27 temp stations, 18 rainfall districts",
+    "desc": "Hong Kong \u2014 27 temp stations, 18 rainfall districts",
     "kql": true,
     "notebook": true
   },
@@ -284,7 +296,7 @@
     "name": "JMA Japan",
     "cat": "Weather",
     "key": false,
-    "desc": "Japan — weather bulletins, warnings, forecasts",
+    "desc": "Japan \u2014 weather bulletins, warnings, forecasts",
     "kql": true,
     "notebook": true
   },
@@ -293,7 +305,7 @@
     "name": "KMI Belgium",
     "cat": "Weather",
     "key": false,
-    "desc": "Belgium — ~14 AWS stations, 10-min observations",
+    "desc": "Belgium \u2014 ~14 AWS stations, 10-min observations",
     "kql": true,
     "notebook": true
   },
@@ -302,7 +314,7 @@
     "name": "Meteoalarm",
     "cat": "Weather",
     "key": false,
-    "desc": "Europe — 37 countries, severe weather warnings",
+    "desc": "Europe \u2014 37 countries, severe weather warnings",
     "kql": true,
     "mqtt": true,
     "amqp": true
@@ -312,7 +324,7 @@
     "name": "NOAA GOES / SWPC",
     "cat": "Weather",
     "key": false,
-    "desc": "Global — space weather, solar wind, K-index",
+    "desc": "Global \u2014 space weather, solar wind, K-index",
     "kql": true,
     "notebook": true
   },
@@ -321,7 +333,7 @@
     "name": "NOAA NWS",
     "cat": "Weather",
     "key": false,
-    "desc": "United States — weather alerts, CAP",
+    "desc": "United States \u2014 weather alerts, CAP",
     "kql": true,
     "notebook": true
   },
@@ -330,7 +342,7 @@
     "name": "NWS CAP Alerts",
     "cat": "Weather",
     "key": false,
-    "desc": "United States — active alerts via api.weather.gov",
+    "desc": "United States \u2014 active alerts via api.weather.gov",
     "kql": true
   },
   {
@@ -338,7 +350,7 @@
     "name": "NWS Forecast Zones",
     "cat": "Weather",
     "key": false,
-    "desc": "United States — configurable land and marine forecast zones",
+    "desc": "United States \u2014 configurable land and marine forecast zones",
     "kql": true,
     "notebook": true
   },
@@ -347,7 +359,7 @@
     "name": "Singapore NEA",
     "cat": "Weather",
     "key": false,
-    "desc": "Singapore — 62 weather stations + 5 air-quality regions",
+    "desc": "Singapore \u2014 62 weather stations + 5 air-quality regions",
     "kql": true,
     "notebook": true
   },
@@ -356,7 +368,7 @@
     "name": "SMHI Weather",
     "cat": "Weather",
     "key": false,
-    "desc": "Sweden — ~232 stations, hourly obs",
+    "desc": "Sweden \u2014 ~232 stations, hourly obs",
     "kql": true,
     "notebook": true
   },
@@ -365,7 +377,7 @@
     "name": "Canada AQHI",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Canada — community AQHI observations and forecasts",
+    "desc": "Canada \u2014 community AQHI observations and forecasts",
     "kql": true,
     "notebook": true
   },
@@ -374,7 +386,7 @@
     "name": "Defra AURN",
     "cat": "Air Quality",
     "key": false,
-    "desc": "United Kingdom — 300+ monitoring locations, hourly pollutants",
+    "desc": "United Kingdom \u2014 300+ monitoring locations, hourly pollutants",
     "kql": true,
     "notebook": true
   },
@@ -383,7 +395,7 @@
     "name": "EPA UV Index",
     "cat": "Air Quality",
     "key": false,
-    "desc": "United States — city-scoped hourly and daily UV forecasts",
+    "desc": "United States \u2014 city-scoped hourly and daily UV forecasts",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -394,16 +406,16 @@
     "name": "FMI Finland",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Finland — hourly air quality observations via FMI WFS",
+    "desc": "Finland \u2014 hourly air quality observations via FMI WFS",
     "kql": true,
     "notebook": true
   },
   {
     "id": "gios-poland",
-    "name": "GIOŚ Poland",
+    "name": "GIO\u015a Poland",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Poland — ~250 stations, hourly pollutants + AQI",
+    "desc": "Poland \u2014 ~250 stations, hourly pollutants + AQI",
     "kql": true,
     "notebook": true
   },
@@ -412,7 +424,7 @@
     "name": "Hong Kong EPD AQHI",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Hong Kong — 18 AQHI stations, hourly health index",
+    "desc": "Hong Kong \u2014 18 AQHI stations, hourly health index",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -423,7 +435,7 @@
     "name": "IRCELINE Belgium",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Belgium — station, timeseries, and hourly observations",
+    "desc": "Belgium \u2014 station, timeseries, and hourly observations",
     "kql": true,
     "notebook": true
   },
@@ -432,7 +444,7 @@
     "name": "LAQN London",
     "cat": "Air Quality",
     "key": false,
-    "desc": "London, UK — site metadata, species, hourly measurements",
+    "desc": "London, UK \u2014 site metadata, species, hourly measurements",
     "kql": true,
     "notebook": true
   },
@@ -441,7 +453,7 @@
     "name": "Luchtmeetnet Netherlands",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Netherlands — station measurements, components, LKI index",
+    "desc": "Netherlands \u2014 station measurements, components, LKI index",
     "kql": true,
     "notebook": true
   },
@@ -450,7 +462,7 @@
     "name": "Sensor.Community",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Global — citizen air sensors, PM and climate readings",
+    "desc": "Global \u2014 citizen air sensors, PM and climate readings",
     "kql": true,
     "notebook": true
   },
@@ -459,7 +471,7 @@
     "name": "UBA AirData",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Germany — stations, pollutant components, hourly measures",
+    "desc": "Germany \u2014 stations, pollutant components, hourly measures",
     "kql": true,
     "notebook": true
   },
@@ -468,15 +480,17 @@
     "name": "Wallonia ISSeP",
     "cat": "Air Quality",
     "key": false,
-    "desc": "Belgium / Wallonia — low-cost air quality sensors",
-    "kql": true
+    "desc": "Belgium / Wallonia \u2014 low-cost air quality sensors",
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "australia-wildfires",
     "name": "Australian Wildfires",
     "cat": "Disasters",
     "key": false,
-    "desc": "Australia — NSW, QLD, VIC bushfire incidents",
+    "desc": "Australia \u2014 NSW, QLD, VIC bushfire incidents",
     "kql": true,
     "notebook": true
   },
@@ -485,7 +499,7 @@
     "name": "EAWS ALBINA Avalanche",
     "cat": "Disasters",
     "key": false,
-    "desc": "European Alps — daily avalanche bulletins, CAAMLv6",
+    "desc": "European Alps \u2014 daily avalanche bulletins, CAAMLv6",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -495,7 +509,7 @@
     "name": "GDACS",
     "cat": "Disasters",
     "key": false,
-    "desc": "Global — earthquakes, floods, cyclones, volcanoes, droughts",
+    "desc": "Global \u2014 earthquakes, floods, cyclones, volcanoes, droughts",
     "kql": true,
     "mqtt": true
   },
@@ -504,7 +518,7 @@
     "name": "INPE DETER Brazil",
     "cat": "Disasters",
     "key": false,
-    "desc": "Brazil — Amazon & Cerrado deforestation alerts",
+    "desc": "Brazil \u2014 Amazon & Cerrado deforestation alerts",
     "kql": true,
     "mqtt": true
   },
@@ -513,7 +527,7 @@
     "name": "NIFC USA Wildfires",
     "cat": "Disasters",
     "key": false,
-    "desc": "United States — active wildfire incidents, NIFC",
+    "desc": "United States \u2014 active wildfire incidents, NIFC",
     "kql": true
   },
   {
@@ -521,7 +535,7 @@
     "name": "NINA/BBK",
     "cat": "Disasters",
     "key": false,
-    "desc": "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police",
+    "desc": "Germany \u2014 MOWAS, KATWARN, BIWAPP, DWD, LHP, Police",
     "kql": true,
     "mqtt": true
   },
@@ -530,7 +544,7 @@
     "name": "PTWC Tsunami",
     "cat": "Disasters",
     "key": false,
-    "desc": "Pacific and Atlantic — NOAA tsunami bulletins",
+    "desc": "Pacific and Atlantic \u2014 NOAA tsunami bulletins",
     "kql": true,
     "mqtt": true
   },
@@ -539,7 +553,7 @@
     "name": "Seattle Fire 911",
     "cat": "Disasters",
     "key": false,
-    "desc": "Seattle, WA — real-time fire dispatch incidents",
+    "desc": "Seattle, WA \u2014 real-time fire dispatch incidents",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -549,7 +563,7 @@
     "name": "USGS Earthquakes",
     "cat": "Disasters",
     "key": false,
-    "desc": "Global — seismic events",
+    "desc": "Global \u2014 seismic events",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -559,7 +573,7 @@
     "name": "BfS ODL",
     "cat": "Radiation",
     "key": false,
-    "desc": "Germany — ~1,700 stations, hourly gamma dose rate",
+    "desc": "Germany \u2014 ~1,700 stations, hourly gamma dose rate",
     "kql": true,
     "notebook": true
   },
@@ -568,7 +582,7 @@
     "name": "EURDEP Radiation",
     "cat": "Radiation",
     "key": false,
-    "desc": "Europe — ~5,500 stations, 39 countries, gamma dose",
+    "desc": "Europe \u2014 ~5,500 stations, 39 countries, gamma dose",
     "kql": true,
     "notebook": true
   },
@@ -577,7 +591,7 @@
     "name": "USGS Geomagnetism",
     "cat": "Radiation",
     "key": false,
-    "desc": "United States — 14 observatories, 1-min geomagnetic field",
+    "desc": "United States \u2014 14 observatories, 1-min geomagnetic field",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -597,7 +611,7 @@
     "name": "Digitraffic Maritime",
     "cat": "Maritime",
     "key": false,
-    "desc": "Finland / Baltic Sea — AIS via MQTT",
+    "desc": "Finland / Baltic Sea \u2014 AIS via MQTT",
     "kql": true
   },
   {
@@ -625,7 +639,7 @@
     "name": "VATSIM",
     "cat": "Aviation",
     "key": false,
-    "desc": "Global — virtual aviation network, pilots & controllers",
+    "desc": "Global \u2014 virtual aviation network, pilots & controllers",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -636,7 +650,7 @@
     "name": "Autobahn",
     "cat": "Transport",
     "key": false,
-    "desc": "Germany — roadworks, warnings, closures, webcams",
+    "desc": "Germany \u2014 roadworks, warnings, closures, webcams",
     "kql": true,
     "notebook": true
   },
@@ -645,7 +659,7 @@
     "name": "Digitraffic Road",
     "cat": "Transport",
     "key": false,
-    "desc": "Finland — TMS sensors, road weather, traffic messages",
+    "desc": "Finland \u2014 TMS sensors, road weather, traffic messages",
     "kql": true
   },
   {
@@ -653,7 +667,7 @@
     "name": "French Road Traffic",
     "cat": "Transport",
     "key": false,
-    "desc": "France — national road network, DATEX II",
+    "desc": "France \u2014 national road network, DATEX II",
     "kql": true,
     "notebook": true
   },
@@ -662,7 +676,7 @@
     "name": "GTFS Realtime",
     "cat": "Transport",
     "key": false,
-    "desc": "Global — 1,000+ transit agencies, vehicles, trips, alerts",
+    "desc": "Global \u2014 1,000+ transit agencies, vehicles, trips, alerts",
     "kql": true
   },
   {
@@ -670,7 +684,7 @@
     "name": "Madrid Traffic",
     "cat": "Transport",
     "key": false,
-    "desc": "Madrid, Spain — ~4,000 sensors, Informo",
+    "desc": "Madrid, Spain \u2014 ~4,000 sensors, Informo",
     "kql": true,
     "notebook": true
   },
@@ -679,7 +693,7 @@
     "name": "NDW Netherlands Traffic",
     "cat": "Transport",
     "key": false,
-    "desc": "Netherlands — national road traffic, DATEX II",
+    "desc": "Netherlands \u2014 national road traffic, DATEX II",
     "kql": true,
     "notebook": true
   },
@@ -688,7 +702,7 @@
     "name": "NDW Road Traffic",
     "cat": "Transport",
     "key": false,
-    "desc": "Netherlands — national road traffic, DATEX II XML",
+    "desc": "Netherlands \u2014 national road traffic, DATEX II XML",
     "kql": true
   },
   {
@@ -696,14 +710,14 @@
     "name": "Nextbus",
     "cat": "Transport",
     "key": true,
-    "desc": "North America — public transit arrivals"
+    "desc": "North America \u2014 public transit arrivals"
   },
   {
     "id": "paris-bicycle-counters",
     "name": "Paris Bicycle Counters",
     "cat": "Transport",
     "key": false,
-    "desc": "Paris — ~141 counting stations, hourly counts",
+    "desc": "Paris \u2014 ~141 counting stations, hourly counts",
     "kql": true,
     "notebook": true
   },
@@ -712,7 +726,7 @@
     "name": "Seattle Street Closures",
     "cat": "Transport",
     "key": false,
-    "desc": "Seattle, WA — permit-driven street closure windows",
+    "desc": "Seattle, WA \u2014 permit-driven street closure windows",
     "kql": true,
     "notebook": true
   },
@@ -721,21 +735,21 @@
     "name": "TfL Road Traffic",
     "cat": "Transport",
     "key": false,
-    "desc": "London, UK — road corridor status and disruptions"
+    "desc": "London, UK \u2014 road corridor status and disruptions"
   },
   {
     "id": "tokyo-docomo-bikeshare",
     "name": "Tokyo Docomo Bikeshare",
     "cat": "Transport",
     "key": false,
-    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT"
+    "desc": "Tokyo, Japan \u2014 1,794 stations, GBFS 2.3 via ODPT"
   },
   {
     "id": "cbp-border-wait",
     "name": "US CBP Border Wait",
     "cat": "Transport",
     "key": false,
-    "desc": "US borders — ~81 ports of entry",
+    "desc": "US borders \u2014 ~81 ports of entry",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -745,7 +759,7 @@
     "name": "WSDOT",
     "cat": "Transport",
     "key": true,
-    "desc": "Washington State — ~1,000 traffic flow sensors (requires free key)",
+    "desc": "Washington State \u2014 ~1,000 traffic flow sensors (requires free key)",
     "kql": true,
     "notebook": true
   },
@@ -754,7 +768,7 @@
     "name": "Entur Norway",
     "cat": "Railway",
     "key": false,
-    "desc": "Norway — national real-time transit, SIRI ET/VM/SX",
+    "desc": "Norway \u2014 national real-time transit, SIRI ET/VM/SX",
     "kql": true,
     "mqtt": true
   },
@@ -763,7 +777,7 @@
     "name": "iRail",
     "cat": "Railway",
     "key": false,
-    "desc": "Belgium — ~600 NMBS/SNCB stations, departures, delays",
+    "desc": "Belgium \u2014 ~600 NMBS/SNCB stations, departures, delays",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -773,7 +787,7 @@
     "name": "Xceed",
     "cat": "Nightlife",
     "key": false,
-    "desc": "Europe — clubs, bars, parties, festivals — event schedules",
+    "desc": "Europe \u2014 clubs, bars, parties, festivals \u2014 event schedules",
     "kql": true
   },
   {
@@ -781,7 +795,7 @@
     "name": "Carbon Intensity UK",
     "cat": "Energy",
     "key": false,
-    "desc": "United Kingdom — national grid carbon intensity",
+    "desc": "United Kingdom \u2014 national grid carbon intensity",
     "kql": true,
     "notebook": true
   },
@@ -790,7 +804,7 @@
     "name": "Elexon BMRS",
     "cat": "Energy",
     "key": false,
-    "desc": "Great Britain — electricity market, generation, demand",
+    "desc": "Great Britain \u2014 electricity market, generation, demand",
     "kql": true,
     "notebook": true
   },
@@ -799,7 +813,7 @@
     "name": "Energi Data Service",
     "cat": "Energy",
     "key": false,
-    "desc": "Denmark — power system, spot prices, CO₂",
+    "desc": "Denmark \u2014 power system, spot prices, CO\u2082",
     "kql": true,
     "notebook": true
   },
@@ -808,7 +822,7 @@
     "name": "Energy-Charts",
     "cat": "Energy",
     "key": false,
-    "desc": "Europe — 40+ countries, electricity generation & prices",
+    "desc": "Europe \u2014 40+ countries, electricity generation & prices",
     "kql": true,
     "notebook": true
   },
@@ -817,7 +831,7 @@
     "name": "ENTSO-E",
     "cat": "Energy",
     "key": true,
-    "desc": "Europe — electricity generation, prices, load, flows (requires token)",
+    "desc": "Europe \u2014 electricity generation, prices, load, flows (requires token)",
     "kql": true,
     "mqtt": true,
     "amqp": true
@@ -827,7 +841,7 @@
     "name": "Bluesky Firehose",
     "cat": "Social",
     "key": false,
-    "desc": "Global — posts, likes, reposts, follows",
+    "desc": "Global \u2014 posts, likes, reposts, follows",
     "kql": true
   },
   {
@@ -835,7 +849,7 @@
     "name": "OpenStreetMap Diffs",
     "cat": "Social",
     "key": false,
-    "desc": "Global — OSM minutely replication diffs",
+    "desc": "Global \u2014 OSM minutely replication diffs",
     "kql": true,
     "notebook": true
   },
@@ -844,7 +858,7 @@
     "name": "RSS Feeds",
     "cat": "Social",
     "key": false,
-    "desc": "Any — configurable RSS/Atom feed URLs or OPML files",
+    "desc": "Any \u2014 configurable RSS/Atom feed URLs or OPML files",
     "kql": true,
     "mqtt": true
   },
@@ -853,7 +867,7 @@
     "name": "Wikimedia EventStreams",
     "cat": "Social",
     "key": false,
-    "desc": "Global — Wikipedia, Wikidata, Commons recent changes",
+    "desc": "Global \u2014 Wikipedia, Wikidata, Commons recent changes",
     "kql": true
   },
   {
@@ -861,14 +875,14 @@
     "name": "Billetto",
     "cat": "Public Events",
     "key": false,
-    "desc": "Europe — pan-European ticketed public events"
+    "desc": "Europe \u2014 pan-European ticketed public events"
   },
   {
     "id": "fienta",
     "name": "Fienta",
     "cat": "Public Events",
     "key": false,
-    "desc": "Europe — ticketed public events with sale-status signals",
+    "desc": "Europe \u2014 ticketed public events with sale-status signals",
     "kql": true
   },
   {
@@ -876,14 +890,14 @@
     "name": "Ticketmaster",
     "cat": "Public Events",
     "key": true,
-    "desc": "Global — concerts, sports, theater, arts via Discovery API"
+    "desc": "Global \u2014 concerts, sports, theater, arts via Discovery API"
   },
   {
     "id": "gracedb",
     "name": "GraceDB",
     "cat": "Science",
     "key": false,
-    "desc": "Global — LIGO/Virgo/KAGRA gravitational wave candidates",
+    "desc": "Global \u2014 LIGO/Virgo/KAGRA gravitational wave candidates",
     "kql": true,
     "notebook": true,
     "mqtt": true
@@ -893,7 +907,7 @@
     "name": "JMA Bosai AMeDAS",
     "cat": "Weather",
     "key": false,
-    "desc": "Japan — ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API",
+    "desc": "Japan \u2014 ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API",
     "kql": true,
     "notebook": true
   },
@@ -902,7 +916,7 @@
     "name": "JMA Bosai Quake",
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
-    "desc": "Japan — JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)",
+    "desc": "Japan \u2014 JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)",
     "kql": true,
     "notebook": true
   },
@@ -911,7 +925,7 @@
     "name": "JMA Bosai Volcano",
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
-    "desc": "Japan — 111 volcanoes, alert levels, eruption observations",
+    "desc": "Japan \u2014 111 volcanoes, alert levels, eruption observations",
     "kql": true,
     "notebook": true
   },
@@ -920,7 +934,7 @@
     "name": "JMA Bosai Warning & Tsunami",
     "cat": "Disaster Alerts and Civil Protection",
     "key": false,
-    "desc": "Japan — per-prefecture weather warnings + tsunami alerts",
+    "desc": "Japan \u2014 per-prefecture weather warnings + tsunami alerts",
     "kql": true,
     "notebook": true
   },
@@ -929,7 +943,7 @@
     "name": "TEPCO Denkiyoho",
     "cat": "Energy and Infrastructure",
     "key": false,
-    "desc": "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar",
+    "desc": "Japan / Kanto \u2014 TEPCO electricity supply, hourly forecast, 5-min actuals + solar",
     "kql": true,
     "notebook": true
   }

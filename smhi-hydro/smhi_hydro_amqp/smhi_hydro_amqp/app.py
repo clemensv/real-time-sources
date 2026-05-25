@@ -1,0 +1,322 @@
+"""AMQP feeder application for SMHI Hydrology → Unified Namespace.
+
+Reuses the upstream HTTP client and station catalog logic from the existing
+``smhi_hydro`` Kafka bridge (imported as the transport-agnostic "core"
+package) and pushes CloudEvents into AMQP 1.0 using the xrcg-generated
+:class:`SEGovSMHIHydroAmqpProducer`.
+
+Topic tree: ``hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/{info|discharge}``.
+``{catchment_name}`` is sourced from the SMHI station catalog
+(field ``catchmentName``) and normalized to lowercase kebab-case by
+:func:`_uns_slug` so umlauts, spaces and slashes never reach the broker.
+"""
+
+from __future__ import annotations
+
+import argparse
+import time
+import logging
+import os
+import sys
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, Optional
+from urllib.parse import urlparse
+
+from smhi_hydro.smhi_hydro import SMHIHydroAPI, _load_state, _save_state
+from smhi_hydro_amqp_producer_data import Station, DischargeObservation
+from smhi_hydro_amqp_producer_amqp_producer.producer import SEGovSMHIHydroAmqpProducer
+
+logger = logging.getLogger(__name__)
+
+_UNS_REPLACEMENTS = str.maketrans({
+    "ä": "a", "ö": "o", "ü": "u", "Ä": "a", "Ö": "o", "Ü": "u", "ß": "ss",
+    "à": "a", "á": "a", "â": "a", "è": "e", "é": "e", "ê": "e",
+    "ì": "i", "í": "i", "î": "i", "ò": "o", "ó": "o", "ô": "o",
+    "ù": "u", "ú": "u", "û": "u", "ç": "c", "ñ": "n",
+    "å": "a",
+})
+
+
+def _uns_slug(value: str) -> str:
+    """Normalize an arbitrary upstream label to a UNS-safe lowercase kebab segment."""
+    if not value:
+        return "unknown"
+    raw = value.translate(_UNS_REPLACEMENTS).lower().strip()
+    out = []
+    for ch in raw:
+        if ch.isalnum():
+            out.append(ch)
+        elif ch in ("-", "_"):
+            out.append(ch)
+        else:
+            out.append("-")
+    slug = "".join(out).strip("-")
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    return slug or "unknown"
+
+
+_CATCHMENT_UNKNOWN = "unknown"
+
+
+def _catchment_value(station_data: dict) -> str:
+    """Return the raw catchmentName, substituting the lowercase 'unknown'
+    sentinel when the SMHI catalog has no value for the station. The sentinel
+    is applied BEFORE the record is handed to the generated AMQP producer so
+    the on-wire payload, schema-required field, and {catchment_name} topic
+    segment all stay populated and non-null."""
+    value = station_data.get("catchmentName")
+    if value is None:
+        return _CATCHMENT_UNKNOWN
+    value = str(value).strip()
+    return value or _CATCHMENT_UNKNOWN
+
+
+def _build_station(station_data: dict) -> Station:
+    """Build an AMQP-producer Station from raw SMHI bulk API station dict."""
+    return Station(
+        station_id=str(station_data["key"]),
+        name=station_data.get("name", "") or "",
+        owner=station_data.get("owner", "") or "",
+        measuring_stations=station_data.get("measuringStations", "") or "",
+        region=int(station_data.get("region", 0) or 0),
+        catchment_name=_catchment_value(station_data),
+        catchment_number=int(station_data.get("catchmentNumber", 0) or 0),
+        catchment_size=float(station_data.get("catchmentSize", 0.0) or 0.0),
+        latitude=float(station_data["latitude"]),
+        longitude=float(station_data["longitude"]),
+    )
+
+
+def _build_observation(station_data: dict, catchment_name: str) -> Optional[DischargeObservation]:
+    """Build a DischargeObservation from raw SMHI station entry, or None."""
+    values = station_data.get("value", [])
+    if not values:
+        return None
+    latest = values[-1]
+    value = latest.get("value")
+    if value is None:
+        return None
+    epoch_ms = latest["date"]
+    ts = datetime.fromtimestamp(epoch_ms / 1000.0, tz=timezone.utc)
+    return DischargeObservation(
+        station_id=str(station_data["key"]),
+        station_name=station_data.get("name", "") or "",
+        catchment_name=catchment_name or _CATCHMENT_UNKNOWN,
+        timestamp=ts,
+        discharge=float(value),
+        quality=latest.get("quality", "") or "",
+    )
+
+
+def _publish_stations(
+    producer: SEGovSMHIHydroAmqpProducer,
+    stations: list,
+) -> None:
+    for station_data in stations:
+        catchment_value = _catchment_value(station_data)
+        catchment_slug = _uns_slug(catchment_value)
+        station_id = str(station_data["key"])
+        producer.send_station(
+            _station_id=station_id,
+            _catchment_name=catchment_slug,
+            data=_build_station(station_data),
+        )
+
+
+def _publish_observations(
+    producer: SEGovSMHIHydroAmqpProducer,
+    stations: list,
+    previous_readings: Dict[str, Any],
+) -> int:
+    sent = 0
+    for station_data in stations:
+        catchment_raw = _catchment_value(station_data)
+        catchment_slug = _uns_slug(catchment_raw)
+        obs = _build_observation(station_data, catchment_raw)
+        if obs is None:
+            continue
+        reading_key = f"{obs.station_id}:{obs.timestamp.isoformat()}"
+        if reading_key in previous_readings:
+            continue
+        try:
+            producer.send_discharge_observation(
+                _station_id=obs.station_id,
+                _catchment_name=catchment_slug,
+                data=obs,
+            )
+            sent += 1
+            previous_readings[reading_key] = obs.timestamp.isoformat()
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.error("Error publishing observation for %s: %s", obs.station_id, exc)
+    return sent
+
+
+def _publish_mock(producer: SEGovSMHIHydroAmqpProducer) -> None:
+    station = Station(station_id="mock-station", name="Mock Station", owner="SMHI", measuring_stations="mock", region=1, catchment_name="Mock Catchment", catchment_number=1, catchment_size=10.0, latitude=59.0, longitude=18.0)
+    observation = DischargeObservation(station_id="mock-station", station_name="Mock Station", catchment_name="Mock Catchment", timestamp=datetime.now(timezone.utc), discharge=12.3, quality="G")
+    producer.send_station(data=station, _station_id="mock-station", _catchment_name="mock-catchment")
+    producer.send_discharge_observation(data=observation, _station_id="mock-station", _catchment_name="mock-catchment")
+
+
+def feed(
+    api: SMHIHydroAPI,
+    broker_host: str,
+    broker_port: int,
+    polling_interval: int,
+    *,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    tls: bool = False,
+    client_id: Optional[str] = None,
+    state_file: str = "",
+    once: bool = False,
+    content_mode: str = "binary",
+    address: str = "smhi-hydro",
+    auth_mode: str = "password",
+    entra_audience: str = "https://servicebus.azure.net/.default",
+    entra_client_id: Optional[str] = None,
+    sas_key_name: Optional[str] = None,
+    sas_key: Optional[str] = None,
+) -> None:
+    previous_readings = _load_state(state_file)
+    producer = _build_producer(host=broker_host, port=broker_port, address=address, use_tls=tls, content_mode=content_mode, auth_mode=auth_mode, username=username, password=password, entra_audience=entra_audience, entra_client_id=entra_client_id, sas_key_name=sas_key_name, sas_key=sas_key)
+    if os.getenv("MOCK_MODE", "").lower() in ("1", "true", "yes"):
+        _publish_mock(producer)
+        producer.close()
+        return
+
+
+    bulk_data = api.get_bulk_discharge_data()
+    stations = bulk_data.get("station", [])
+    logger.info("Publishing %d station info events under hydro/se/smhi/smhi-hydro/...", len(stations))
+    _publish_stations(producer, stations)
+    logger.info("Finished publishing station catalog")
+
+    try:
+        while True:
+            try:
+                start_time = datetime.now(timezone.utc)
+                bulk_data = api.get_bulk_discharge_data()
+                stations = bulk_data.get("station", [])
+                count = _publish_observations(producer, stations, previous_readings)
+                end_time = datetime.now(timezone.utc)
+                effective = max(0, polling_interval - (end_time - start_time).total_seconds())
+                logger.info(
+                    "Published %s observations in %.1fs. Sleeping until %s.",
+                    count,
+                    (end_time - start_time).total_seconds(),
+                    (datetime.now(timezone.utc) + timedelta(seconds=effective)).isoformat(),
+                )
+                _save_state(state_file, previous_readings)
+                if once:
+                    logger.info("--once mode: exiting after first polling cycle")
+                    break
+                if effective > 0:
+                    time.sleep(effective)
+            except KeyboardInterrupt:
+                logger.info("Exiting...")
+                break
+            except Exception as exc:  # pylint: disable=broad-except
+                logger.error("Error during polling cycle: %s", exc)
+                time.sleep(polling_interval)
+    finally:
+        producer.close()
+
+
+
+DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
+DEFAULT_ENTRA_AUDIENCE_EVENTHUBS = "https://eventhubs.azure.net/.default"
+
+
+def _build_producer(*, host: str, port: int, address: str, use_tls: bool, content_mode: str, auth_mode: str, username: Optional[str], password: Optional[str], entra_audience: str, entra_client_id: Optional[str], sas_key_name: Optional[str], sas_key: Optional[str]) -> SEGovSMHIHydroAmqpProducer:
+    if auth_mode == "entra":
+        from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+        credential = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
+        return SEGovSMHIHydroAmqpProducer(host=host, address=address, port=port, content_mode=content_mode, credential=credential, entra_audience=entra_audience, use_tls=use_tls)  # type: ignore[arg-type]
+    if auth_mode == "sas":
+        if not sas_key_name or not sas_key:
+            raise RuntimeError("auth-mode=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
+        return SEGovSMHIHydroAmqpProducer(host=host, address=address, port=port, content_mode=content_mode, sas_key_name=sas_key_name, sas_key=sas_key, use_tls=use_tls)  # type: ignore[arg-type]
+    return SEGovSMHIHydroAmqpProducer(host=host, address=address, port=port, username=username, password=password, content_mode=content_mode, use_tls=use_tls)  # type: ignore[arg-type]
+
+def _parse_broker_url(url: str) -> tuple:
+    parsed = urlparse(url if "://" in url else f"amqp://{url}")
+    scheme = (parsed.scheme or "amqp").lower()
+    tls = scheme in ("amqps", "ssl", "tls")
+    port = parsed.port or (5671 if tls else 5672)
+    host = parsed.hostname or "localhost"
+    user = parsed.username or None
+    pwd = parsed.password or None
+    path = (parsed.path or "").lstrip("/") or None
+    return host, port, tls, user, pwd, path
+
+
+def _build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="SMHI Hydrology → AMQP 1.0 bridge.")
+    subparsers = parser.add_subparsers(dest="command")
+    feed_parser = subparsers.add_parser("feed", help="Feed stations and observations as CloudEvents to AMQP")
+    feed_parser.add_argument("--broker-url", type=str, default=os.getenv("AMQP_BROKER_URL"))
+    feed_parser.add_argument("--broker-host", type=str, default=os.getenv("AMQP_HOST"))
+    feed_parser.add_argument("--broker-port", type=int,
+                             default=int(os.getenv("AMQP_PORT", "0")) or None)
+    feed_parser.add_argument("--username", type=str, default=os.getenv("AMQP_USERNAME"))
+    feed_parser.add_argument("--password", type=str, default=os.getenv("AMQP_PASSWORD"))
+    feed_parser.add_argument("--tls", action="store_true",
+                             default=os.getenv("AMQP_TLS", "").lower() in ("1", "true", "yes"))
+    feed_parser.add_argument("--client-id", type=str, default=os.getenv("AMQP_CLIENT_ID"))
+    feed_parser.add_argument("--content-mode", type=str, default=os.getenv("AMQP_CONTENT_MODE", "binary"),
+                             choices=["binary", "structured"])
+    feed_parser.add_argument("--address", type=str, default=os.getenv("AMQP_ADDRESS", "smhi-hydro"))
+    feed_parser.add_argument("--auth-mode", type=str, default=os.getenv("AMQP_AUTH_MODE", "password"), choices=["password", "entra", "sas"])
+    feed_parser.add_argument("--entra-audience", type=str, default=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS))
+    feed_parser.add_argument("--entra-client-id", type=str, default=os.getenv("AMQP_ENTRA_CLIENT_ID"))
+    feed_parser.add_argument("--sas-key-name", type=str, default=os.getenv("AMQP_SAS_KEY_NAME"))
+    feed_parser.add_argument("--sas-key", type=str, default=os.getenv("AMQP_SAS_KEY"))
+    feed_parser.add_argument("-i", "--polling-interval", type=int,
+                             default=int(os.getenv("POLLING_INTERVAL", "900")))
+    feed_parser.add_argument("--state-file", type=str,
+                             default=os.getenv("STATE_FILE", os.path.expanduser("~/.smhi_hydro_amqp_state.json")))
+    feed_parser.add_argument("--once", action="store_true",
+                             default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
+    return parser
+
+
+def main(argv: Optional[list] = None) -> None:
+    logging.basicConfig(level=logging.DEBUG if sys.gettrace() else logging.INFO)
+    parser = _build_arg_parser()
+    args = parser.parse_args(argv)
+    if args.command != "feed":
+        parser.print_help()
+        return
+
+    if args.broker_url:
+        host, port, tls, user, pwd, path = _parse_broker_url(args.broker_url)
+        username = args.username or user
+        password = args.password or pwd
+        if args.broker_port:
+            port = args.broker_port
+        address = path or args.address
+        if args.tls:
+            tls = True
+    else:
+        host = args.broker_host or "localhost"
+        tls = bool(args.tls)
+        port = args.broker_port or (5671 if tls else 5672)
+        username = args.username
+        password = args.password
+        address = args.address
+
+    api = SMHIHydroAPI(polling_interval=args.polling_interval)
+    feed(
+            api, host, port, args.polling_interval,
+            username=username, password=password, tls=tls,
+            client_id=args.client_id, state_file=args.state_file,
+            once=args.once, content_mode=args.content_mode,
+            address=address, auth_mode=args.auth_mode, entra_audience=args.entra_audience,
+            entra_client_id=args.entra_client_id, sas_key_name=args.sas_key_name, sas_key=args.sas_key,
+        )
+
+
+if __name__ == "__main__":
+    main()

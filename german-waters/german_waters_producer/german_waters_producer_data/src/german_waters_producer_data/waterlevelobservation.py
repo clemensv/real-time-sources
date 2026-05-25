@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for water level and discharge observations in the German Waters source.
     
     Attributes:
         station_id (str)
@@ -38,7 +38,7 @@ class WaterLevelObservation:
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Sourced by the bridge from the per-provider station catalog (Station.water_body field) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"trend\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"situation\", \"type\": [\"null\", \"int\"], \"default\": null}]}"
+        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"Measurement payload for water level and discharge observations in the German Waters source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Stable identifier assigned by the upstream provider for the monitoring station or site.\"}, {\"name\": \"provider\", \"type\": \"string\", \"doc\": \"Provider-supplied provider value for this record.\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Sourced by the bridge from the per-provider station catalog (Station.water_body field) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"doc\": \"Current water level reported for the station.\", \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"doc\": \"Unit used for the water-level value.\", \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"doc\": \"Time associated with the water-level measurement.\", \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"doc\": \"Current streamflow or discharge reported for the station.\", \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"doc\": \"Unit used for the discharge value.\", \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"doc\": \"Time associated with the discharge measurement.\", \"default\": null}, {\"name\": \"trend\", \"type\": [\"int\", \"null\"], \"doc\": \"Provider-supplied trend value for this record.\", \"default\": null}, {\"name\": \"situation\", \"type\": [\"int\", \"null\"], \"doc\": \"Provider-supplied situation value for this record.\", \"default\": null}]}"
     )
     
     
@@ -267,15 +267,15 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='zourvmtveducfevobfef',
-            provider='ymjzldtgkkxuxycqgmgt',
-            water_body='pdsjibeqnremcdmhilmq',
-            water_level=float(99.00542845404094),
-            water_level_unit='kvisyvyapwtktrvinjzr',
+            station_id='tnaigwnemeacuxzgazlb',
+            provider='bnmaelpdhqmyscmwocgo',
+            water_body='avngjnkxyysxdzvyakgz',
+            water_level=float(2.343477059856236),
+            water_level_unit='vfrarwhjaauevoezqpum',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(67.95379608627704),
-            discharge_unit='bdmxicirozvagiteabaq',
+            discharge=float(35.01468959640434),
+            discharge_unit='rhyxmzzhgiecdyaswlwf',
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            trend=int(16),
-            situation=int(44)
+            trend=int(56),
+            situation=int(59)
         )

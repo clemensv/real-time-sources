@@ -163,3 +163,20 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgerman-waters%2Fazure-template-with-eventhub.json)
+
+## AMQP 1.0 companion feeder
+
+This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `german_waters_amqp/`, uses the generated `german_waters_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `german-waters`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
+
+Build and run locally:
+
+```bash
+docker build -f Dockerfile.amqp -t german-waters-amqp .
+docker run --rm \
+  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/german-waters \
+  -e ONCE_MODE=true \
+  german-waters-amqp
+```
+
+For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=german-waters`.
+

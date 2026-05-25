@@ -323,3 +323,174 @@ class TestPegelonlineAmqpSbEmulatorFlow:
             )
             errors = InstanceValidator(schema, extended=True).validate_instance(data)
             assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+# ---------------------------------------------------------------------------
+# AMQP companion backfill feeders (mock-mode, Service Bus emulator)
+# ---------------------------------------------------------------------------
+
+HYDRO_AMQP_SOURCES = [
+    ("bafu-hydro", "test-bafu-hydro-amqp", "CH.BAFU.Hydrology.Station", "CH.BAFU.Hydrology.WaterLevelObservation"),
+    ("chmi-hydro", "test-chmi-hydro-amqp", "CZ.Gov.CHMI.Hydro.Station", "CZ.Gov.CHMI.Hydro.WaterLevelObservation"),
+    ("german-waters", "test-german-waters-amqp", "DE.Waters.Hydrology.Station", "DE.Waters.Hydrology.WaterLevelObservation"),
+    ("nve-hydro", "test-nve-hydro-amqp", "NO.NVE.Hydrology.Station", "NO.NVE.Hydrology.WaterLevelObservation"),
+    ("rws-waterwebservices", "test-rws-waterwebservices-amqp", "NL.RWS.Waterwebservices.Station", "NL.RWS.Waterwebservices.WaterLevelObservation"),
+    ("smhi-hydro", "test-smhi-hydro-amqp", "SE.Gov.SMHI.Hydro.Station", "SE.Gov.SMHI.Hydro.DischargeObservation"),
+    ("wallonia-issep", "test-wallonia-issep-amqp", "be.issep.airquality.SensorConfiguration", "be.issep.airquality.Observation"),
+]
+
+
+def _load_source_schemas_sb(source_dir: str) -> Dict[str, Dict[str, Any]]:
+    xreg_dir = os.path.join(REPO_ROOT, source_dir, "xreg")
+    xreg_name = next(n for n in os.listdir(xreg_dir) if n.endswith(".xreg.json"))
+    with open(os.path.join(xreg_dir, xreg_name), "r", encoding="utf-8") as fh:
+        manifest = json.load(fh)
+    schemagroup = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
+    return {name: schema["versions"]["1"]["schema"] for name, schema in schemagroup["schemas"].items()}
+
+
+def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str, telemetry_type: str) -> None:
+    queue = source_dir
+    client = docker.from_env()
+    image = build_image(source_dir, dockerfile="Dockerfile.amqp", tag=image_tag)
+    network = client.networks.create(f"{source_dir}-sbemu-e2e", driver="bridge")
+    host_port = _find_free_port()
+    mssql_container = None
+    emu_container = None
+    config_dir = tempfile.mkdtemp(prefix=f"{source_dir}-sbemu-config-")
+    config_path = os.path.join(config_dir, "Config.json")
+    config = {"UserConfig": {"Namespaces": [{"Name": NAMESPACE_NAME, "Queues": [{"Name": queue, "Properties": {"DeadLetteringOnMessageExpiration": False, "DefaultMessageTimeToLive": "PT1H", "DuplicateDetectionHistoryTimeWindow": "PT20S", "EnableBatchedOperations": True, "EnableExpress": False, "EnablePartitioning": False, "ForwardDeadLetteredMessagesTo": "", "ForwardTo": "", "LockDuration": "PT1M", "MaxDeliveryCount": 10, "MaxMessageSizeInKilobytes": 256, "MaxSizeInMegabytes": 1024, "RequiresDuplicateDetection": False, "RequiresSession": False}}], "Topics": []}], "Logging": {"Type": "File"}}}
+    with open(config_path, "w", encoding="utf-8") as fh:
+        json.dump(config, fh, indent=2)
+    try:
+        mssql_container = client.containers.run(
+            MSSQL_IMAGE,
+            name=f"{source_dir}-sbemu-e2e-mssql",
+            detach=True,
+            remove=True,
+            network=network.name,
+            environment={"ACCEPT_EULA": "Y", "MSSQL_SA_PASSWORD": SA_PASSWORD},
+        )
+        deadline = time.time() + 120
+        while time.time() < deadline:
+            if "SQL Server is now ready for client connections" in mssql_container.logs().decode("utf-8", errors="replace"):
+                break
+            time.sleep(2)
+        else:
+            pytest.skip("MSSQL container did not become ready in 120s")
+        emu_container = client.containers.run(
+            SBEMU_IMAGE,
+            name=f"{source_dir}-sbemu-e2e-emu",
+            detach=True,
+            remove=True,
+            network=network.name,
+            ports={"5672/tcp": host_port},
+            environment={"ACCEPT_EULA": "Y", "SQL_SERVER": f"{source_dir}-sbemu-e2e-mssql", "MSSQL_SA_PASSWORD": SA_PASSWORD},
+            volumes={config_path: {"bind": "/ServiceBus_Emulator/ConfigFiles/Config.json", "mode": "ro"}},
+        )
+        deadline = time.time() + 180
+        while time.time() < deadline:
+            if "Emulator Service is Successfully Up" in emu_container.logs().decode("utf-8", errors="replace"):
+                break
+            time.sleep(2)
+        else:
+            pytest.skip(f"SB emulator not ready. Tail:\n{emu_container.logs().decode('utf-8', errors='replace')[-2000:]}")
+        time.sleep(5)
+        feeder = client.containers.run(
+            image.id,
+            detach=True,
+            remove=False,
+            network=network.name,
+            environment={
+                "AMQP_HOST": f"{source_dir}-sbemu-e2e-emu",
+                "AMQP_PORT": "5672",
+                "AMQP_ADDRESS": queue,
+                "AMQP_AUTH_MODE": "sas",
+                "AMQP_SAS_KEY_NAME": SAS_KEY_NAME,
+                "AMQP_SAS_KEY": SAS_KEY_VALUE,
+                "MOCK_MODE": "true",
+                "NVE_API_KEY": "mock",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
+        finally:
+            feeder.remove(force=True)
+        messages = _receive_via_sdk(host_port, queue, SAS_KEY_NAME, SAS_KEY_VALUE, expected=2, timeout=30)
+        assert messages, "No AMQP messages received from SB emulator"
+        by_type: Dict[str, List[Any]] = {}
+        for message in messages:
+            app_props = dict(message.application_properties or {})
+            event_type = app_props.get(b"cloudEvents:type") or app_props.get("cloudEvents:type")
+            if isinstance(event_type, bytes):
+                event_type = event_type.decode("utf-8", errors="replace")
+            by_type.setdefault(event_type, []).append(message)
+        assert station_type in by_type, sorted(by_type)
+        assert telemetry_type in by_type, sorted(by_type)
+        schemas = _load_source_schemas_sb(source_dir)
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        for ce_type in (station_type, telemetry_type):
+            sample_msg = by_type[ce_type][0]
+            body_bytes = b"".join(sample_msg.body) if hasattr(sample_msg.body, "__iter__") else sample_msg.body
+            data = json.loads(body_bytes.decode("utf-8") if isinstance(body_bytes, (bytes, bytearray)) else body_bytes)
+            schema = schemas[ce_type]
+            assert not validator_factory.validate(schema)
+            errors = InstanceValidator(schema, extended=True).validate_instance(data)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+    finally:
+        for container in (emu_container, mssql_container):
+            if container is not None:
+                try:
+                    container.kill()
+                except docker.errors.APIError:
+                    pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+        try:
+            os.remove(config_path)
+            os.rmdir(config_dir)
+        except OSError:
+            pass
+
+
+@pytest.mark.docker_e2e
+class TestBafuHydroAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[0])
+
+@pytest.mark.docker_e2e
+class TestChmiHydroAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[1])
+
+@pytest.mark.docker_e2e
+class TestGermanWatersAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[2])
+
+@pytest.mark.docker_e2e
+class TestNveHydroAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[3])
+
+@pytest.mark.docker_e2e
+class TestRwsWaterwebservicesAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[4])
+
+@pytest.mark.docker_e2e
+class TestSmhiHydroAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[5])
+
+@pytest.mark.docker_e2e
+class TestWalloniaIssepAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[6])

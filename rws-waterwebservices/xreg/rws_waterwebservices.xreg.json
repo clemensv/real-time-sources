@@ -43,6 +43,28 @@
         "#/messagegroups/NL.RWS.Waterwebservices.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for RWS Waterwebservices CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "NL.RWS.Waterwebservices.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/rws-waterwebservices"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.RWS.Waterwebservices.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for rws-waterwebservices CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -111,6 +133,39 @@
             "qos": 1,
             "retain": true,
             "message_expiry_interval": 3600
+          }
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.amqp": {
+      "description": "AMQP 1.0 variant of the rws-waterwebservices events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "NL.RWS.Waterwebservices.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_code}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "NL.RWS.Waterwebservices.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_code}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
           }
         }
       }
