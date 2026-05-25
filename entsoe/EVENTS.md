@@ -136,7 +136,7 @@ Each event identifies the real-world resource with `{inDomain}`. `{inDomain}` is
 - **`inDomain`** (string, required): EIC code of the bidding zone
 - **`quantity`** (double, required): Total load in MW
 - **`resolution`** (string, required): ISO 8601 duration
-- **`outDomain`** (string or null, optional): EIC code of the out domain, if applicable
+- **`outDomain`** (string, optional): EIC code of the out domain, if applicable
 - **`documentType`** (string, required): ENTSO-E document type code (A65)
 #### Example payload
 

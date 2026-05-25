@@ -122,7 +122,8 @@
                 { "name": "MQTT_USERNAME", "value": "[parameters('brokerUsername')]" },
                 { "name": "MQTT_PASSWORD", "secureValue": "[parameters('brokerPassword')]" },
                 { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                { "name": "PYTHONUNBUFFERED", "value": "1" },
+                { "name": "STATE_FILE", "value": "/mnt/bridge-state/entsoe_state.json" }
               ],
               "volumeMounts": [
                 { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }

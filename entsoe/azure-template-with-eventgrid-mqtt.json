@@ -40,9 +40,9 @@
     },
     "topicRoot": {
       "type": "string",
-      "defaultValue": "hydro/#",
+      "defaultValue": "energy/#",
       "metadata": {
-        "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to hydro/# which covers all entsoe output (hydro/de/wsv/entsoe/...)."
+        "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to energy/# which covers all ENTSO-E output (energy/eu/entsoe/transparency/...)."
       }
     },
     "imageName": {
@@ -213,7 +213,8 @@
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
                 { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                { "name": "PYTHONUNBUFFERED", "value": "1" },
+                { "name": "STATE_FILE", "value": "/mnt/bridge-state/entsoe_state.json" }
               ],
               "volumeMounts": [
                 { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
