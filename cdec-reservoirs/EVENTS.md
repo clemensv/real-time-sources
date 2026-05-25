@@ -1,6 +1,6 @@
 # CDEC California Reservoirs Bridge Events
 
-This source bridges real-time reservoir data from the California Data Exchange Center (CDEC) to Apache Kafka, Azure Event Hubs, or Fabric Event Streams.
+CDEC California Reservoirs publishes reservoir storage and elevation observations from the California Data Exchange Center (CDEC) for California reservoirs. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -37,7 +37,7 @@ CloudEvents type: `gov.ca.water.cdec.ReservoirReading`
 
 #### What it tells you
 
-A single sensor reading from a CDEC reservoir station, representing an hourly (or sub-hourly) observation of storage, elevation, inflow, outflow, or river stage. Each reading corresponds to one station/sensor/timestamp combination as reported by the California Data Exchange Center JSON Data Servlet. A single sensor reading from a CDEC reservoir station.
+A current reservoir record from the California Data Exchange Center (CDEC). It reports the latest storage, elevation, capacity, or related reservoir status available for one reservoir. A single sensor reading from a CDEC reservoir station.
 
 #### Identity
 

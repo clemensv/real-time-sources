@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/gov.ca.water.cdec"
-      ]
+      ],
+      "description": "Kafka producer endpoint for CDEC California Reservoirs CloudEvents on the `cdec-reservoirs` topic keyed by `{station_id}/{sensor_num}`."
     }
   },
   "messagegroups": {
@@ -28,7 +29,7 @@
         "gov.ca.water.cdec.ReservoirReading": {
           "name": "ReservoirReading",
           "envelope": "CloudEvents/1.0",
-          "description": "A single sensor reading from a CDEC reservoir station, representing an hourly (or sub-hourly) observation of storage, elevation, inflow, outflow, or river stage. Each reading corresponds to one station/sensor/timestamp combination as reported by the California Data Exchange Center JSON Data Servlet.",
+          "description": "A current reservoir record from the California Data Exchange Center (CDEC). It reports the latest storage, elevation, capacity, or related reservoir status available for one reservoir.",
           "envelopemetadata": {
             "type": {
               "value": "gov.ca.water.cdec.ReservoirReading"
@@ -45,7 +46,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/gov.ca.water.cdec.jstruct/schemas/gov.ca.water.cdec.ReservoirReading"
         }
-      }
+      },
+      "description": "Events from CDEC California Reservoirs covering California reservoirs and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -124,7 +126,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reservoir status record from the CDEC California Reservoirs source."
               }
             }
           }
@@ -186,7 +189,8 @@
                     "type": "string",
                     "doc": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
                   }
-                ]
+                ],
+                "description": "Reservoir status record from the CDEC California Reservoirs source."
               }
             }
           },
@@ -194,5 +198,10 @@
         }
       }
     }
+  },
+  "description": "CDEC California Reservoirs publishes reservoir storage and elevation observations from the California Data Exchange Center (CDEC) for California reservoirs. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for CDEC California Reservoirs, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
