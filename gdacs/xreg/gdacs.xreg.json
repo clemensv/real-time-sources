@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/GDACS.Alerts"
-      ]
+      ],
+      "description": "Kafka producer endpoint for GDACS CloudEvents on the `gdacs` topic keyed by `{event_type}/{event_id}`."
     },
     "GDACS.Alerts.Mqtt": {
       "usage": [
@@ -38,7 +39,8 @@
         {
           "uri": "mqtt://localhost:1883"
         }
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for GDACS CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -63,10 +65,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert"
         }
-      }
+      },
+      "description": "Events from GDACS covering global natural-hazard events. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "GDACS.Alerts.mqtt": {
-      "description": "MQTT/5.0 transport variant for GDACS disaster alerts. Non-retained QoS-1 alert events route by disaster event type, event-level GDACS alert color, affected country, and event id under alerts/intl/gdacs/gdacs/... GDACS is both provider and source in this single-feed namespace branch; subscribe with wildcards across the color axis to follow episode-level alert transitions.",
+      "description": "MQTT 5 variant of the GDACS events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "GDACS.Alerts.mqtt.DisasterAlert": {
           "name": "DisasterAlert",
@@ -97,7 +100,7 @@
                 "$id": "https://gdacs.org/schemas/GDACS/DisasterAlert",
                 "name": "DisasterAlert",
                 "type": "object",
-                "description": "A disaster alert from the Global Disaster Alert and Coordination System (GDACS), representing a single episode of a natural disaster event such as an earthquake, tropical cyclone, flood, volcano eruption, forest fire, or drought.",
+                "description": "A disaster alert from the Global Disaster Alert and Coordination System (GDACS), covering earthquakes, tropical cyclones, floods, volcanoes, forest fires, and droughts worldwide.",
                 "required": [
                   "event_type",
                   "event_id",
@@ -124,6 +127,14 @@
                     ],
                     "altnames": {
                       "xml": "gdacs:eventtype"
+                    },
+                    "descriptions": {
+                      "EQ": "Provider value `EQ` for this coded alert field.",
+                      "TC": "Provider value `TC` for this coded alert field.",
+                      "FL": "Provider value `FL` for this coded alert field.",
+                      "VO": "Provider value `VO` for this coded alert field.",
+                      "FF": "Provider value `FF` for this coded alert field.",
+                      "DR": "Provider value `DR` for this coded alert field."
                     }
                   },
                   "event_id": {
@@ -150,6 +161,11 @@
                     ],
                     "altnames": {
                       "xml": "gdacs:alertlevel"
+                    },
+                    "descriptions": {
+                      "Green": "Provider value `Green` for this coded alert field.",
+                      "Orange": "Provider value `Orange` for this coded alert field.",
+                      "Red": "Provider value `Red` for this coded alert field."
                     }
                   },
                   "alert_score": {
@@ -298,7 +314,12 @@
                       "green",
                       "orange",
                       "red"
-                    ]
+                    ],
+                    "descriptions": {
+                      "green": "Provider value `green` for this coded alert field.",
+                      "orange": "Provider value `orange` for this coded alert field.",
+                      "red": "Provider value `red` for this coded alert field."
+                    }
                   }
                 }
               }
@@ -307,5 +328,10 @@
         }
       }
     }
+  },
+  "description": "GDACS publishes disaster alerts and impact updates from the Global Disaster Alert and Coordination System for global natural-hazard events. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for GDACS, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
