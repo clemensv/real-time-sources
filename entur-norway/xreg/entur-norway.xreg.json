@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/no.entur.journeys"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Entur Norway CloudEvents on the `entur-norway` topic keyed by `journeys/{operating_day}/{service_journey_id}`."
     },
     "no.entur.situations.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/no.entur.situations"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Entur Norway CloudEvents on the `entur-norway` topic keyed by `situations/{situation_number}`."
     },
     "no.entur.Mqtt": {
       "usage": [
@@ -59,14 +61,15 @@
       ],
       "messagegroups": [
         "#/messagegroups/no.entur.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for Entur Norway CloudEvents using the topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
     "no.entur.journeys": {
       "id": "no.entur.journeys",
       "name": "Entur Journey Events",
-      "description": "Message group for dated service journey reference data and real-time journey telemetry (ET and VM). All messages in this group share the journeys/{operating_day}/{service_journey_id} Kafka key.",
+      "description": "Events from Entur Norway covering Norwegian public-transport stops, lines, and journeys. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update.",
       "messages": {
         "no.entur.DatedServiceJourney": {
           "id": "no.entur.DatedServiceJourney",
@@ -133,7 +136,7 @@
     "no.entur.situations": {
       "id": "no.entur.situations",
       "name": "Entur Situation Events",
-      "description": "Message group for SIRI-SX transit disruption and service alert events. All messages in this group share the situations/{situation_number} Kafka key.",
+      "description": "Events from Entur Norway covering Norwegian public-transport stops, lines, and journeys. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update.",
       "messages": {
         "no.entur.PtSituationElement": {
           "id": "no.entur.PtSituationElement",
@@ -158,7 +161,7 @@
       }
     },
     "no.entur.mqtt": {
-      "description": "MQTT/5.0 transport variant for Entur Norway SIRI real-time feeds. Non-retained QoS-1 streams route Estimated Timetable, Vehicle Monitoring, and Situation Exchange payloads by raw SIRI identifiers under transit/no/entur/entur-norway/... Missing routing fields are emitted as the literal unknown by the bridge.",
+      "description": "MQTT 5 variant of the Entur Norway events. It carries the same transport semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "no.entur.mqtt.EstimatedVehicleJourney": {
           "name": "EstimatedVehicleJourney",
@@ -217,7 +220,7 @@
                       "DatedServiceJourney": {
                         "name": "DatedServiceJourney",
                         "type": "object",
-                        "description": "Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference (DatedVehicleJourneyRef) and operating day (DataFrameRef). This reference record is extracted from the SIRI-ET feed and published at startup and refresh intervals.",
+                        "description": "Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference and operating day. This reference event is emitted at bridge startup from the SIRI-ET feed and refreshed periodically to provide downstream consumers with the timetable context for subsequent telemetry events.",
                         "properties": {
                           "service_journey_id": {
                             "type": "string",
@@ -544,7 +547,7 @@
                       "EstimatedVehicleJourney": {
                         "name": "EstimatedVehicleJourney",
                         "type": "object",
-                        "description": "Real-time estimated timetable update for a vehicle journey from the Entur SIRI-ET feed. Contains per-stop arrival and departure predictions, journey-level cancellation and extra-journey flags, and monitoring status. Sourced from GET /realtime/v1/rest/et using incremental requestorId polling.",
+                        "description": "Real-time estimated timetable update for a vehicle journey from the Entur SIRI-ET feed (GET /realtime/v1/rest/et). Contains updated arrival and departure times for each stop along the journey, cancellation flags, and extra journey markers. Uses incremental requestorId polling to receive only changed journeys since the last poll.",
                         "properties": {
                           "service_journey_id": {
                             "type": "string",
@@ -746,7 +749,7 @@
                       "MonitoredVehicleJourney": {
                         "name": "MonitoredVehicleJourney",
                         "type": "object",
-                        "description": "Real-time vehicle monitoring update from the Entur SIRI-VM feed. Contains the current geographic position, bearing, delay, and occupancy of a vehicle operating a specific dated service journey. Sourced from GET /realtime/v1/rest/vm using incremental requestorId polling.",
+                        "description": "Real-time vehicle monitoring update from the Entur SIRI-VM feed (GET /realtime/v1/rest/vm). Contains the current geographic position of a vehicle, its bearing, delay, occupancy status, and the next monitored call. Uses incremental requestorId polling for efficient change delivery.",
                         "properties": {
                           "service_journey_id": {
                             "type": "string",
@@ -1008,7 +1011,7 @@
                       "PtSituationElement": {
                         "name": "PtSituationElement",
                         "type": "object",
-                        "description": "Real-time transit disruption or service alert from the Entur SIRI-SX feed. Describes a published situation element such as a service disruption, delay cause, planned engineering work, or passenger information notice. Includes affected network elements, severity, textual descriptions, and validity periods. Sourced from GET /realtime/v1/rest/sx.",
+                        "description": "Real-time transit disruption or service alert from the Entur SIRI-SX feed (GET /realtime/v1/rest/sx). Represents a published situation element describing a service disruption, delay cause, or passenger information notice. Includes affected lines, stops, severity level, and validity periods.",
                         "properties": {
                           "situation_number": {
                             "type": "string",
@@ -1273,7 +1276,8 @@
                     "default": null,
                     "doc": "Operator codespace originating this data record."
                   }
-                ]
+                ],
+                "description": "A transport update from Entur public transport feeds. It carries transit realtime updates for Norwegian public-transport stops, lines, and journeys."
               }
             }
           }
@@ -1547,7 +1551,8 @@
                     },
                     "doc": "Ordered list of estimated arrival and departure times for each stop."
                   }
-                ]
+                ],
+                "description": "A vehicle or vessel update from Entur public transport feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
               }
             }
           }
@@ -1702,7 +1707,8 @@
                     "type": "boolean",
                     "doc": "True if this journey is actively monitored by an AVL system."
                   }
-                ]
+                ],
+                "description": "A vehicle or vessel update from Entur public transport feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed."
               }
             }
           }
@@ -1842,12 +1848,18 @@
                     },
                     "doc": "StopPointRef values from AffectedStopPoint elements."
                   }
-                ]
+                ],
+                "description": "A traffic or service situation update from Entur public transport feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "Entur Norway publishes transit realtime updates from Entur public transport feeds for Norwegian public-transport stops, lines, and journeys. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for Entur Norway, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
