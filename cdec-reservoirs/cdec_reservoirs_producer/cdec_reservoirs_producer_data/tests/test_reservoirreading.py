@@ -28,14 +28,15 @@ class Test_ReservoirReading(unittest.TestCase):
         Create instance of ReservoirReading for testing
         """
         instance = ReservoirReading(
-            station_id='tfvpcgenefysjypjnlps',
-            sensor_num=int(50),
-            sensor_type='jokqyogdgoeurqrmbmsi',
-            value=float(64.00656395994882),
-            units='wjkpfccmigpbhdtvzbbc',
-            date='sblmdmvribbycabmliof',
-            dur_code='gjeqhtcrkciwlhcyiias',
-            data_flag='wqztakzquczpncqzwupy'
+            station_id='uobrlwuwwsmwlqawhtjg',
+            sensor_num=int(38),
+            sensor_type='zhcuwbksffsnpvkejfyt',
+            value=float(73.85395222586617),
+            units='hdytjbfvdallqfxbqmvl',
+            date='ngegpsishkqrewletyml',
+            dur_code='nzqcogdrhrjiwgejembz',
+            data_flag='lvbbubhnlaywiodicxaz',
+            basin='yktybdhecamqoarnciha'
         )
         return instance
 
@@ -44,7 +45,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'tfvpcgenefysjypjnlps'
+        test_value = 'uobrlwuwwsmwlqawhtjg'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +53,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test sensor_num property
         """
-        test_value = int(50)
+        test_value = int(38)
         self.instance.sensor_num = test_value
         self.assertEqual(self.instance.sensor_num, test_value)
     
@@ -60,7 +61,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test sensor_type property
         """
-        test_value = 'jokqyogdgoeurqrmbmsi'
+        test_value = 'zhcuwbksffsnpvkejfyt'
         self.instance.sensor_type = test_value
         self.assertEqual(self.instance.sensor_type, test_value)
     
@@ -68,7 +69,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(64.00656395994882)
+        test_value = float(73.85395222586617)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -76,7 +77,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test units property
         """
-        test_value = 'wjkpfccmigpbhdtvzbbc'
+        test_value = 'hdytjbfvdallqfxbqmvl'
         self.instance.units = test_value
         self.assertEqual(self.instance.units, test_value)
     
@@ -84,7 +85,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'sblmdmvribbycabmliof'
+        test_value = 'ngegpsishkqrewletyml'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     
@@ -92,7 +93,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test dur_code property
         """
-        test_value = 'gjeqhtcrkciwlhcyiias'
+        test_value = 'nzqcogdrhrjiwgejembz'
         self.instance.dur_code = test_value
         self.assertEqual(self.instance.dur_code, test_value)
     
@@ -100,9 +101,17 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test data_flag property
         """
-        test_value = 'wqztakzquczpncqzwupy'
+        test_value = 'lvbbubhnlaywiodicxaz'
         self.instance.data_flag = test_value
         self.assertEqual(self.instance.data_flag, test_value)
+    
+    def test_basin_property(self):
+        """
+        Test basin property
+        """
+        test_value = 'yktybdhecamqoarnciha'
+        self.instance.basin = test_value
+        self.assertEqual(self.instance.basin, test_value)
     
     def test_to_byte_array_avro(self):
         """
@@ -113,3 +122,22 @@ class Test_ReservoirReading(unittest.TestCase):
         new_instance = ReservoirReading.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = ReservoirReading.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = ReservoirReading.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

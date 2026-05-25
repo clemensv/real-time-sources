@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from cdec_reservoirs_producer_data.gov.ca.water.cdec.reservoirreading import ReservoirReading
+from cdec_reservoirs_amqp_producer_data.gov.ca.water.cdec.reservoirreading import ReservoirReading
 
 
 class Test_ReservoirReading(unittest.TestCase):
@@ -28,14 +28,15 @@ class Test_ReservoirReading(unittest.TestCase):
         Create instance of ReservoirReading for testing
         """
         instance = ReservoirReading(
-            station_id='tfvpcgenefysjypjnlps',
-            sensor_num=int(50),
-            sensor_type='jokqyogdgoeurqrmbmsi',
-            value=float(64.00656395994882),
-            units='wjkpfccmigpbhdtvzbbc',
-            date='sblmdmvribbycabmliof',
-            dur_code='gjeqhtcrkciwlhcyiias',
-            data_flag='wqztakzquczpncqzwupy'
+            station_id='qirzoeghwvonlnhopbai',
+            sensor_num=int(43),
+            sensor_type='pqebfqojgjrvjmbrgbsm',
+            value=float(61.70002121070297),
+            units='ixteihtcvcilcnoflhvp',
+            date='xfcmlsfnourmoprrbkwn',
+            dur_code='cpehpakmugsftknlvddi',
+            data_flag='kuqwackbpswxhrlcqxww',
+            basin='awhhgohukgdatiseijtg'
         )
         return instance
 
@@ -44,7 +45,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'tfvpcgenefysjypjnlps'
+        test_value = 'qirzoeghwvonlnhopbai'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +53,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test sensor_num property
         """
-        test_value = int(50)
+        test_value = int(43)
         self.instance.sensor_num = test_value
         self.assertEqual(self.instance.sensor_num, test_value)
     
@@ -60,7 +61,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test sensor_type property
         """
-        test_value = 'jokqyogdgoeurqrmbmsi'
+        test_value = 'pqebfqojgjrvjmbrgbsm'
         self.instance.sensor_type = test_value
         self.assertEqual(self.instance.sensor_type, test_value)
     
@@ -68,7 +69,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(64.00656395994882)
+        test_value = float(61.70002121070297)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -76,7 +77,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test units property
         """
-        test_value = 'wjkpfccmigpbhdtvzbbc'
+        test_value = 'ixteihtcvcilcnoflhvp'
         self.instance.units = test_value
         self.assertEqual(self.instance.units, test_value)
     
@@ -84,7 +85,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'sblmdmvribbycabmliof'
+        test_value = 'xfcmlsfnourmoprrbkwn'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     
@@ -92,7 +93,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test dur_code property
         """
-        test_value = 'gjeqhtcrkciwlhcyiias'
+        test_value = 'cpehpakmugsftknlvddi'
         self.instance.dur_code = test_value
         self.assertEqual(self.instance.dur_code, test_value)
     
@@ -100,16 +101,34 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test data_flag property
         """
-        test_value = 'wqztakzquczpncqzwupy'
+        test_value = 'kuqwackbpswxhrlcqxww'
         self.instance.data_flag = test_value
         self.assertEqual(self.instance.data_flag, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_basin_property(self):
         """
-        Test to_byte_array method with avro media type
+        Test basin property
         """
-        media_type = "application/vnd.apache.avro+avro"
+        test_value = 'awhhgohukgdatiseijtg'
+        self.instance.basin = test_value
+        self.assertEqual(self.instance.basin, test_value)
+    
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = ReservoirReading.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = ReservoirReading.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+
