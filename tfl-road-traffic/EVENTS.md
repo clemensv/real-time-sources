@@ -1,6 +1,6 @@
 # TfL Road Traffic Events
 
-MQTT/5.0 binary CloudEvents for the TfL Road Traffic Unified Namespace. Roads are retained last-known-value topics; disruption severities are literal topic partitions.
+TfL Road Traffic publishes road disruption and traffic status updates from Transport for London for London roads and disruption areas. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `uk.gov.tfl.road.RoadCorridor`
 
 #### What it tells you
 
-Reference record for a TfL managed road corridor fetched from GET /Road. Reference record for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road endpoint at bridge startup and refreshed periodically.
+Reference record for a TfL managed road corridor fetched from GET /Road.
 
 #### Identity
 
@@ -106,7 +106,7 @@ CloudEvents type: `uk.gov.tfl.road.RoadStatus`
 
 #### What it tells you
 
-Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status. Real-time status snapshot for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road/all/Status endpoint on each polling cycle.
+Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status.
 
 #### Identity
 
@@ -160,7 +160,7 @@ CloudEvents type: `uk.gov.tfl.road.RoadDisruption`
 
 #### What it tells you
 
-Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption. Real-time road disruption event on the Transport for London (TfL) road network. Fetched from the GET /Road/all/Disruption endpoint.
+Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.
 
 #### Identity
 
