@@ -5159,3 +5159,23 @@ def mosquitto_noaa_nws():
 class TestNoaaNwsMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_noaa_nws, noaa_nws_mqtt_image):
         _run_mqtt_contract_flow('noaa-nws', noaa_nws_mqtt_image, mosquitto_noaa_nws, extra_env={'NOAA_NWS_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def smhi_weather_mqtt_image():
+    return build_image('smhi-weather', dockerfile='Dockerfile.mqtt', tag='test-smhi-weather-mqtt')
+
+@pytest.fixture()
+def mosquitto_smhi_weather():
+    container, network, host_port = _generic_mosquitto('smhi-weather-mqtt-e2e', 'smhi-weather-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'smhi-weather-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestSmhiWeatherMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_smhi_weather, smhi_weather_mqtt_image):
+        _run_mqtt_contract_flow('smhi-weather', smhi_weather_mqtt_image, mosquitto_smhi_weather, extra_env={'SMHI_WEATHER_MOCK': 'true'}, timeout=300)

@@ -738,6 +738,18 @@
       "image": "noaa-nws-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_nws_amqp"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "smhi_weather_mqtt"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "smhi_weather_amqp"
     }
   ],
   "flow": [
@@ -1498,6 +1510,18 @@
       "image": "noaa-nws-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaNwsAmqpDockerFlow"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSmhiWeatherMqttDockerFlow"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSmhiWeatherAmqpDockerFlow"
     }
   ]
 }

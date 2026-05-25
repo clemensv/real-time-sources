@@ -340,3 +340,11 @@ class TestNoaaNwsAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"NOAA_NWS_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'Microsoft.OpenData.US.NOAA.NWS.ObservationStation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherObservation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert'}
     expected_count = 3
+
+
+class TestSmhiWeatherAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "smhi-weather"
+    image = "smhi-weather-amqp"
+    env = {"SMHI_WEATHER_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'SE.Gov.SMHI.Weather.WeatherObservation', 'SE.Gov.SMHI.Weather.Station'}
+    expected_count = 2

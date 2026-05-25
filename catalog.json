@@ -392,7 +392,9 @@
     "key": false,
     "desc": "Sweden — ~232 stations, hourly obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "canada-aqhi",
