@@ -1,3 +1,3 @@
-from .aqhi import Observation, Forecast, Community
+from .aqhi import Community, Observation, Forecast
 
-__all__ = ["Observation", "Forecast", "Community"]
+__all__ = ["Community", "Observation", "Forecast"]

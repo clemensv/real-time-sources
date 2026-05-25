@@ -28,12 +28,12 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            province='mlxnzivetubbxresykph',
-            community_name='lzllhxgdegxvrjimxbyi',
-            cgndb_code='lvvaozzkuuvycyihudax',
-            observation_datetime='klxyuqkxgtdauwnlvadx',
-            aqhi=float(68.20060478337365),
-            aqhi_category='ivembgabaamjfmbuxjey'
+            province='vhuyuqamdkxymjgielru',
+            community_name='cloeyhggqkjvwmvvhpnv',
+            cgndb_code='clsvasljtazajbdplfni',
+            observation_datetime='mzjofwndierzpgoevxhb',
+            aqhi=float(20.78794513189679),
+            aqhi_category='zylwwurpicarjntyegzw'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'mlxnzivetubbxresykph'
+        test_value = 'vhuyuqamdkxymjgielru'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -50,7 +50,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test community_name property
         """
-        test_value = 'lzllhxgdegxvrjimxbyi'
+        test_value = 'cloeyhggqkjvwmvvhpnv'
         self.instance.community_name = test_value
         self.assertEqual(self.instance.community_name, test_value)
     
@@ -58,7 +58,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test cgndb_code property
         """
-        test_value = 'lvvaozzkuuvycyihudax'
+        test_value = 'clsvasljtazajbdplfni'
         self.instance.cgndb_code = test_value
         self.assertEqual(self.instance.cgndb_code, test_value)
     
@@ -66,7 +66,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test observation_datetime property
         """
-        test_value = 'klxyuqkxgtdauwnlvadx'
+        test_value = 'mzjofwndierzpgoevxhb'
         self.instance.observation_datetime = test_value
         self.assertEqual(self.instance.observation_datetime, test_value)
     
@@ -74,7 +74,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test aqhi property
         """
-        test_value = float(68.20060478337365)
+        test_value = float(20.78794513189679)
         self.instance.aqhi = test_value
         self.assertEqual(self.instance.aqhi, test_value)
     
@@ -82,7 +82,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test aqhi_category property
         """
-        test_value = 'ivembgabaamjfmbuxjey'
+        test_value = 'zylwwurpicarjntyegzw'
         self.instance.aqhi_category = test_value
         self.assertEqual(self.instance.aqhi_category, test_value)
     

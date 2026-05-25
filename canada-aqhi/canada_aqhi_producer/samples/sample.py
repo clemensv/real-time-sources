@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from canada_aqhi_producer_kafka_producer.producer import CaGcWeatherAqhiEventProducer
+from canada_aqhi_producer_kafka_producer.producer import CaGcWeatherAqhiMqttEventProducer
+from canada_aqhi_producer_kafka_producer.producer import CaGcWeatherAqhiAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -81,6 +83,70 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'ca.gc.weather.aqhi.Forecast' event to Kafka topic.
     await ca_gc_weather_aqhi_event_producer.send_ca_gc_weather_aqhi_forecast(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _forecast)
     print(f"Sent 'ca.gc.weather.aqhi.Forecast' event: {_forecast.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ca_gc_weather_aqhi_mqtt_event_producer = CaGcWeatherAqhiMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ca_gc_weather_aqhi_mqtt_event_producer = CaGcWeatherAqhiMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- ca.gc.weather.aqhi.mqtt.Community ----
+    # TODO: Supply event data for the ca.gc.weather.aqhi.mqtt.Community event
+    _community = Community()
+
+    # sends the 'ca.gc.weather.aqhi.mqtt.Community' event to Kafka topic.
+    await ca_gc_weather_aqhi_mqtt_event_producer.send_ca_gc_weather_aqhi_mqtt_community(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _community)
+    print(f"Sent 'ca.gc.weather.aqhi.mqtt.Community' event: {_community.to_json()}")
+
+    # ---- ca.gc.weather.aqhi.mqtt.Observation ----
+    # TODO: Supply event data for the ca.gc.weather.aqhi.mqtt.Observation event
+    _observation = Observation()
+
+    # sends the 'ca.gc.weather.aqhi.mqtt.Observation' event to Kafka topic.
+    await ca_gc_weather_aqhi_mqtt_event_producer.send_ca_gc_weather_aqhi_mqtt_observation(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _observation)
+    print(f"Sent 'ca.gc.weather.aqhi.mqtt.Observation' event: {_observation.to_json()}")
+
+    # ---- ca.gc.weather.aqhi.mqtt.Forecast ----
+    # TODO: Supply event data for the ca.gc.weather.aqhi.mqtt.Forecast event
+    _forecast = Forecast()
+
+    # sends the 'ca.gc.weather.aqhi.mqtt.Forecast' event to Kafka topic.
+    await ca_gc_weather_aqhi_mqtt_event_producer.send_ca_gc_weather_aqhi_mqtt_forecast(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _forecast)
+    print(f"Sent 'ca.gc.weather.aqhi.mqtt.Forecast' event: {_forecast.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ca_gc_weather_aqhi_amqp_event_producer = CaGcWeatherAqhiAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ca_gc_weather_aqhi_amqp_event_producer = CaGcWeatherAqhiAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- ca.gc.weather.aqhi.amqp.Community ----
+    # TODO: Supply event data for the ca.gc.weather.aqhi.amqp.Community event
+    _community = Community()
+
+    # sends the 'ca.gc.weather.aqhi.amqp.Community' event to Kafka topic.
+    await ca_gc_weather_aqhi_amqp_event_producer.send_ca_gc_weather_aqhi_amqp_community(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _community)
+    print(f"Sent 'ca.gc.weather.aqhi.amqp.Community' event: {_community.to_json()}")
+
+    # ---- ca.gc.weather.aqhi.amqp.Observation ----
+    # TODO: Supply event data for the ca.gc.weather.aqhi.amqp.Observation event
+    _observation = Observation()
+
+    # sends the 'ca.gc.weather.aqhi.amqp.Observation' event to Kafka topic.
+    await ca_gc_weather_aqhi_amqp_event_producer.send_ca_gc_weather_aqhi_amqp_observation(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _observation)
+    print(f"Sent 'ca.gc.weather.aqhi.amqp.Observation' event: {_observation.to_json()}")
+
+    # ---- ca.gc.weather.aqhi.amqp.Forecast ----
+    # TODO: Supply event data for the ca.gc.weather.aqhi.amqp.Forecast event
+    _forecast = Forecast()
+
+    # sends the 'ca.gc.weather.aqhi.amqp.Forecast' event to Kafka topic.
+    await ca_gc_weather_aqhi_amqp_event_producer.send_ca_gc_weather_aqhi_amqp_forecast(_province = 'TODO: replace me', _community_name = 'TODO: replace me', data = _forecast)
+    print(f"Sent 'ca.gc.weather.aqhi.amqp.Forecast' event: {_forecast.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

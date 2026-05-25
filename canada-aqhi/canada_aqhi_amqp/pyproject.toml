@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "canada-aqhi-amqp"
+version = "0.1.0"
+description = "canada-aqhi AMQP companion feeder"
+requires-python = ">=3.10"
+dependencies = ['python-qpid-proton>=0.39.0', 'azure-identity>=1.15.0']
+
+[tool.setuptools.packages.find]
+where = ["."]
