@@ -1,6 +1,6 @@
 # GeoSphere Austria — TAWES Weather Observations Events
 
-This bridge polls 10-minute weather observations from the [GeoSphere Austria](https://geosphere.at) TAWES (Teilautomatische Wetterstationen) automatic station network and emits them as CloudEvents into Apache Kafka.
+GeoSphere Austria Weather publishes weather observations from GeoSphere Austria for Austrian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `at.geosphere.tawes.WeatherStation`
 
 #### What it tells you
 
-Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state. Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID.
+Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state.
 
 #### Identity
 
@@ -85,7 +85,7 @@ CloudEvents type: `at.geosphere.tawes.WeatherObservation`
 
 #### What it tells you
 
-10-minute weather observation from a GeoSphere Austria TAWES station, including temperature, humidity, precipitation, wind, pressure, sunshine duration, and global radiation. 10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters.
+10-minute weather observation from a GeoSphere Austria TAWES station, including temperature, humidity, precipitation, wind, pressure, sunshine duration, and global radiation.
 
 #### Identity
 
