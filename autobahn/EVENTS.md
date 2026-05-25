@@ -1,6 +1,6 @@
 # German Autobahn Traffic Bridge Events
 
-MQTT/5.0 mirror of the DE.Autobahn CloudEvents, published into the Unified-Namespace topic tree 'traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}'. {kind} (10 values) and {state} (appeared/updated/resolved) are literally baked per-message so xrcg can resolve every placeholder from schema fields. Lifecycle-event families (roadwork, short-term-roadwork, closure, entry-exit-closure, warning) are QoS-1 non-retained — they are state-change notifications, not LKV slots. Stable-object families (weight-limit-3-5, webcam, parking-lorry, electric-charging-station, strong-electric-charging-station) are QoS-1 retained so late subscribers see the current state of every known object; the bridge publishes an empty retained payload on `resolved` to clear the slot.
+Autobahn publishes road traffic incidents, closures, webcams, and travel information from Germany's Autobahn GmbH traffic APIs for German motorway segments, roadworks, closures, and traffic messages. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `DE.Autobahn.RoadworkAppeared`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -94,11 +94,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -149,7 +149,7 @@ CloudEvents type: `DE.Autobahn.RoadworkUpdated`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -191,11 +191,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -246,7 +246,7 @@ CloudEvents type: `DE.Autobahn.RoadworkResolved`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -288,11 +288,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -343,7 +343,7 @@ CloudEvents type: `DE.Autobahn.ShortTermRoadworkAppeared`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -385,11 +385,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -440,7 +440,7 @@ CloudEvents type: `DE.Autobahn.ShortTermRoadworkUpdated`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -482,11 +482,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -537,7 +537,7 @@ CloudEvents type: `DE.Autobahn.ShortTermRoadworkResolved`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -579,11 +579,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -634,7 +634,7 @@ CloudEvents type: `DE.Autobahn.WarningAppeared`
 
 #### What it tells you
 
-Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -680,7 +680,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`source_name`** (string or null, optional): source value from the Autobahn warning item that identifies the origin of the warning.
 ##### `display_type` values
 
-- `WARNING`
+- `WARNING`: Provider coded value `WARNING` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -735,7 +735,7 @@ CloudEvents type: `DE.Autobahn.WarningUpdated`
 
 #### What it tells you
 
-Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -781,7 +781,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`source_name`** (string or null, optional): source value from the Autobahn warning item that identifies the origin of the warning.
 ##### `display_type` values
 
-- `WARNING`
+- `WARNING`: Provider coded value `WARNING` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -836,7 +836,7 @@ CloudEvents type: `DE.Autobahn.WarningResolved`
 
 #### What it tells you
 
-Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -882,7 +882,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`source_name`** (string or null, optional): source value from the Autobahn warning item that identifies the origin of the warning.
 ##### `display_type` values
 
-- `WARNING`
+- `WARNING`: Provider coded value `WARNING` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -937,7 +937,7 @@ CloudEvents type: `DE.Autobahn.ClosureAppeared`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -979,11 +979,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1034,7 +1034,7 @@ CloudEvents type: `DE.Autobahn.ClosureUpdated`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -1076,11 +1076,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1131,7 +1131,7 @@ CloudEvents type: `DE.Autobahn.ClosureResolved`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -1173,11 +1173,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1228,7 +1228,7 @@ CloudEvents type: `DE.Autobahn.EntryExitClosureAppeared`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -1270,11 +1270,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1325,7 +1325,7 @@ CloudEvents type: `DE.Autobahn.EntryExitClosureUpdated`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -1367,11 +1367,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1422,7 +1422,7 @@ CloudEvents type: `DE.Autobahn.EntryExitClosureResolved`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network. A transport update from Germany's Autobahn GmbH traffic APIs.
 
 #### Identity
 
@@ -1464,11 +1464,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1519,7 +1519,7 @@ CloudEvents type: `DE.Autobahn.WeightLimit35RestrictionAppeared`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -1561,11 +1561,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1616,7 +1616,7 @@ CloudEvents type: `DE.Autobahn.WeightLimit35RestrictionUpdated`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -1658,11 +1658,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1713,7 +1713,7 @@ CloudEvents type: `DE.Autobahn.WeightLimit35RestrictionResolved`
 
 #### What it tells you
 
-Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -1755,11 +1755,11 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ROADWORKS`
-- `SHORT_TERM_ROADWORKS`
-- `CLOSURE`
-- `CLOSURE_ENTRY_EXIT`
-- `WEIGHT_LIMIT_35`
+- `ROADWORKS`: Provider coded value `ROADWORKS` for this field.
+- `SHORT_TERM_ROADWORKS`: Provider coded value `SHORT_TERM_ROADWORKS` for this field.
+- `CLOSURE`: Provider coded value `CLOSURE` for this field.
+- `CLOSURE_ENTRY_EXIT`: Provider coded value `CLOSURE_ENTRY_EXIT` for this field.
+- `WEIGHT_LIMIT_35`: Provider coded value `WEIGHT_LIMIT_35` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1810,7 +1810,7 @@ CloudEvents type: `DE.Autobahn.ParkingLorryAppeared`
 
 #### What it tells you
 
-Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -1850,7 +1850,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`lorry_space_count`** (integer or null, optional): Number of lorry spaces parsed from description lines that contain LKW Stellplätze. Constraints: minimum `0`.
 ##### `display_type` values
 
-- `PARKING`
+- `PARKING`: Provider coded value `PARKING` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1899,7 +1899,7 @@ CloudEvents type: `DE.Autobahn.ParkingLorryUpdated`
 
 #### What it tells you
 
-Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -1939,7 +1939,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`lorry_space_count`** (integer or null, optional): Number of lorry spaces parsed from description lines that contain LKW Stellplätze. Constraints: minimum `0`.
 ##### `display_type` values
 
-- `PARKING`
+- `PARKING`: Provider coded value `PARKING` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -1988,7 +1988,7 @@ CloudEvents type: `DE.Autobahn.ParkingLorryResolved`
 
 #### What it tells you
 
-Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -2028,7 +2028,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`lorry_space_count`** (integer or null, optional): Number of lorry spaces parsed from description lines that contain LKW Stellplätze. Constraints: minimum `0`.
 ##### `display_type` values
 
-- `PARKING`
+- `PARKING`: Provider coded value `PARKING` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2077,7 +2077,7 @@ CloudEvents type: `DE.Autobahn.ElectricChargingStationAppeared`
 
 #### What it tells you
 
-Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -2116,8 +2116,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ELECTRIC_CHARGING_STATION`
-- `STRONG_ELECTRIC_CHARGING_STATION`
+- `ELECTRIC_CHARGING_STATION`: Provider coded value `ELECTRIC_CHARGING_STATION` for this field.
+- `STRONG_ELECTRIC_CHARGING_STATION`: Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2163,7 +2163,7 @@ CloudEvents type: `DE.Autobahn.ElectricChargingStationUpdated`
 
 #### What it tells you
 
-Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -2202,8 +2202,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ELECTRIC_CHARGING_STATION`
-- `STRONG_ELECTRIC_CHARGING_STATION`
+- `ELECTRIC_CHARGING_STATION`: Provider coded value `ELECTRIC_CHARGING_STATION` for this field.
+- `STRONG_ELECTRIC_CHARGING_STATION`: Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2249,7 +2249,7 @@ CloudEvents type: `DE.Autobahn.ElectricChargingStationResolved`
 
 #### What it tells you
 
-Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -2288,8 +2288,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ELECTRIC_CHARGING_STATION`
-- `STRONG_ELECTRIC_CHARGING_STATION`
+- `ELECTRIC_CHARGING_STATION`: Provider coded value `ELECTRIC_CHARGING_STATION` for this field.
+- `STRONG_ELECTRIC_CHARGING_STATION`: Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2335,7 +2335,7 @@ CloudEvents type: `DE.Autobahn.StrongElectricChargingStationAppeared`
 
 #### What it tells you
 
-Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -2374,8 +2374,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ELECTRIC_CHARGING_STATION`
-- `STRONG_ELECTRIC_CHARGING_STATION`
+- `ELECTRIC_CHARGING_STATION`: Provider coded value `ELECTRIC_CHARGING_STATION` for this field.
+- `STRONG_ELECTRIC_CHARGING_STATION`: Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2421,7 +2421,7 @@ CloudEvents type: `DE.Autobahn.StrongElectricChargingStationUpdated`
 
 #### What it tells you
 
-Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -2460,8 +2460,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ELECTRIC_CHARGING_STATION`
-- `STRONG_ELECTRIC_CHARGING_STATION`
+- `ELECTRIC_CHARGING_STATION`: Provider coded value `ELECTRIC_CHARGING_STATION` for this field.
+- `STRONG_ELECTRIC_CHARGING_STATION`: Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2507,7 +2507,7 @@ CloudEvents type: `DE.Autobahn.StrongElectricChargingStationResolved`
 
 #### What it tells you
 
-Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.
+A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 #### Identity
 
@@ -2546,8 +2546,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`footer_lines`** (array of string, optional): Footer lines from the Autobahn API footer array.
 ##### `display_type` values
 
-- `ELECTRIC_CHARGING_STATION`
-- `STRONG_ELECTRIC_CHARGING_STATION`
+- `ELECTRIC_CHARGING_STATION`: Provider coded value `ELECTRIC_CHARGING_STATION` for this field.
+- `STRONG_ELECTRIC_CHARGING_STATION`: Provider coded value `STRONG_ELECTRIC_CHARGING_STATION` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2593,7 +2593,7 @@ CloudEvents type: `DE.Autobahn.WebcamAppeared`
 
 #### What it tells you
 
-Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -2632,7 +2632,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`stream_url`** (uri or null, optional): linkurl value from the Autobahn API webcam item for the linked stream or detail page.
 ##### `display_type` values
 
-- `WEBCAM`
+- `WEBCAM`: Provider coded value `WEBCAM` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2678,7 +2678,7 @@ CloudEvents type: `DE.Autobahn.WebcamUpdated`
 
 #### What it tells you
 
-Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -2717,7 +2717,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`stream_url`** (uri or null, optional): linkurl value from the Autobahn API webcam item for the linked stream or detail page.
 ##### `display_type` values
 
-- `WEBCAM`
+- `WEBCAM`: Provider coded value `WEBCAM` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -2763,7 +2763,7 @@ CloudEvents type: `DE.Autobahn.WebcamResolved`
 
 #### What it tells you
 
-Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.
+A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
 
 #### Identity
 
@@ -2802,7 +2802,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`stream_url`** (uri or null, optional): linkurl value from the Autobahn API webcam item for the linked stream or detail page.
 ##### `display_type` values
 
-- `WEBCAM`
+- `WEBCAM`: Provider coded value `WEBCAM` for this field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
