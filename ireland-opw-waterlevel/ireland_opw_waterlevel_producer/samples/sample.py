@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from ireland_opw_waterlevel_producer_kafka_producer.producer import IeGovOpwWaterlevelEventProducer
+from ireland_opw_waterlevel_producer_kafka_producer.producer import IeGovOpwWaterlevelMqttEventProducer
+from ireland_opw_waterlevel_producer_kafka_producer.producer import IeGovOpwWaterlevelAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'ie.gov.opw.waterlevel.WaterLevelReading' event to Kafka topic.
     await ie_gov_opw_waterlevel_event_producer.send_ie_gov_opw_waterlevel_water_level_reading(_feedurl = 'TODO: replace me', _station_ref = 'TODO: replace me', data = _water_level_reading)
     print(f"Sent 'ie.gov.opw.waterlevel.WaterLevelReading' event: {_water_level_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ie_gov_opw_waterlevel_mqtt_event_producer = IeGovOpwWaterlevelMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ie_gov_opw_waterlevel_mqtt_event_producer = IeGovOpwWaterlevelMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- ie.gov.opw.waterlevel.mqtt.Station ----
+    # TODO: Supply event data for the ie.gov.opw.waterlevel.mqtt.Station event
+    _station = Station()
+
+    # sends the 'ie.gov.opw.waterlevel.mqtt.Station' event to Kafka topic.
+    await ie_gov_opw_waterlevel_mqtt_event_producer.send_ie_gov_opw_waterlevel_mqtt_station(_feedurl = 'TODO: replace me', _station_ref = 'TODO: replace me', data = _station)
+    print(f"Sent 'ie.gov.opw.waterlevel.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- ie.gov.opw.waterlevel.mqtt.WaterLevelReading ----
+    # TODO: Supply event data for the ie.gov.opw.waterlevel.mqtt.WaterLevelReading event
+    _water_level_reading = WaterLevelReading()
+
+    # sends the 'ie.gov.opw.waterlevel.mqtt.WaterLevelReading' event to Kafka topic.
+    await ie_gov_opw_waterlevel_mqtt_event_producer.send_ie_gov_opw_waterlevel_mqtt_water_level_reading(_feedurl = 'TODO: replace me', _station_ref = 'TODO: replace me', data = _water_level_reading)
+    print(f"Sent 'ie.gov.opw.waterlevel.mqtt.WaterLevelReading' event: {_water_level_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ie_gov_opw_waterlevel_amqp_event_producer = IeGovOpwWaterlevelAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ie_gov_opw_waterlevel_amqp_event_producer = IeGovOpwWaterlevelAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- ie.gov.opw.waterlevel.amqp.Station ----
+    # TODO: Supply event data for the ie.gov.opw.waterlevel.amqp.Station event
+    _station = Station()
+
+    # sends the 'ie.gov.opw.waterlevel.amqp.Station' event to Kafka topic.
+    await ie_gov_opw_waterlevel_amqp_event_producer.send_ie_gov_opw_waterlevel_amqp_station(_feedurl = 'TODO: replace me', _station_ref = 'TODO: replace me', data = _station)
+    print(f"Sent 'ie.gov.opw.waterlevel.amqp.Station' event: {_station.to_json()}")
+
+    # ---- ie.gov.opw.waterlevel.amqp.WaterLevelReading ----
+    # TODO: Supply event data for the ie.gov.opw.waterlevel.amqp.WaterLevelReading event
+    _water_level_reading = WaterLevelReading()
+
+    # sends the 'ie.gov.opw.waterlevel.amqp.WaterLevelReading' event to Kafka topic.
+    await ie_gov_opw_waterlevel_amqp_event_producer.send_ie_gov_opw_waterlevel_amqp_water_level_reading(_feedurl = 'TODO: replace me', _station_ref = 'TODO: replace me', data = _water_level_reading)
+    print(f"Sent 'ie.gov.opw.waterlevel.amqp.WaterLevelReading' event: {_water_level_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
