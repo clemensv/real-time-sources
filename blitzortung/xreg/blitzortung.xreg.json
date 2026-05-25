@@ -57,7 +57,7 @@
       "messagegroups": [
         "#/messagegroups/Blitzortung.Lightning.amqp"
       ],
-      "description": "AMQP 1.0 producer endpoint for blitzortung."
+      "description": "AMQP 1.0 producer endpoint for blitzortung CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -99,58 +99,25 @@
             "topic_name": "weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke",
             "qos": 0,
             "retain": false
-          },
-          "envelopemetadata": {
-            "type": {
-              "value": "Blitzortung.Lightning.LightningStroke"
-            },
-            "source": {
-              "value": "wss://live.lightningmaps.org/"
-            },
-            "subject": {
-              "value": "{geohash5}/{geohash7}/{stroke_id}",
-              "type": "uritemplate"
-            },
-            "time": {
-              "value": "{event_time}",
-              "type": "uritemplate"
-            }
           }
         }
       }
     },
     "Blitzortung.Lightning.amqp": {
-      "description": "AMQP 1.0 companion message group for Blitzortung.Lightning.",
+      "description": "AMQP 1.0 transport variant for blitzortung events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
       "messages": {
         "Blitzortung.Lightning.amqp.LightningStroke": {
           "name": "LightningStroke",
           "basemessageurl": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
-          "envelopemetadata": {
-            "type": {
-              "value": "Blitzortung.Lightning.LightningStroke"
-            },
-            "source": {
-              "value": "wss://live.lightningmaps.org/"
-            },
-            "subject": {
-              "value": "{geohash5}/{geohash7}/{stroke_id}",
-              "type": "uritemplate"
-            },
-            "time": {
-              "value": "{event_time}",
-              "type": "uritemplate"
-            }
-          },
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
               "subject": {
                 "type": "uritemplate",
-                "value": "{geohash5}/{geohash7}/{stroke_id}",
-                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+                "value": "{source_id}/{stroke_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
-            },
-            "application_properties": {}
+            }
           }
         }
       }

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "tfl_road_traffic_amqp"
+version = "0.1.0"
+description = "AMQP 1.0 companion feeder for tfl-road-traffic."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "tfl_road_traffic_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+python-qpid-proton = ">=0.40.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+azure-identity = ">=1.17.0"
+azure-core = ">=1.30.0"
+tfl_road_traffic_amqp_producer_data = { path = "../tfl_road_traffic_amqp_producer/tfl_road_traffic_amqp_producer_data" }
+tfl_road_traffic_amqp_producer_amqp_producer = { path = "../tfl_road_traffic_amqp_producer/tfl_road_traffic_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+tfl-road-traffic-amqp = "tfl_road_traffic_amqp.app:main"

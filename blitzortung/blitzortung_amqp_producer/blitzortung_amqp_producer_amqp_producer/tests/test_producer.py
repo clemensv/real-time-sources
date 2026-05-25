@@ -256,8 +256,7 @@ class TestBlitzortungLightningAmqpProducer:
             for i in range(5):
                 producer.send_lightning_stroke(
                     data=payload,
-                    _geohash5="value",
-                    _geohash7="value",
+                    _source_id="value",
                     _stroke_id="value",
                     _event_time="value",
                     content_type="application/json"
@@ -287,7 +286,7 @@ class TestBlitzortungLightningAmqpProducer:
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "{geohash5}/{geohash7}/{stroke_id}".format(geohash5="value", geohash7="value", stroke_id="value")
+                assert received.subject == "{source_id}/{stroke_id}".format(source_id="value", stroke_id="value")
         finally:
             producer.close()
 

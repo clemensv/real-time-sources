@@ -41,6 +41,31 @@
       "messagegroups": [
         "#/messagegroups/gov.cbp.borderwait.mqtt"
       ]
+    },
+    "gov.cbp.borderwait.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/cbp-border-wait"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "cbp-border-wait"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.cbp.borderwait.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -109,6 +134,69 @@
             "retain": true,
             "message_expiry_interval": 7200
           }
+        }
+      }
+    },
+    "gov.cbp.borderwait.amqp": {
+      "description": "AMQP 1.0 transport variants for cbp-border-wait. All CloudEvents are published to the cbp-border-wait address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "gov.cbp.borderwait.amqp.Port": {
+          "name": "Port",
+          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{port_number}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "border_slug": {
+                "type": "uritemplate",
+                "value": "{border_slug}",
+                "description": "AMQP application property mirroring the border_slug routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{port_number}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "gov.cbp.borderwait.amqp.Port"
+        },
+        "gov.cbp.borderwait.amqp.WaitTime": {
+          "name": "WaitTime",
+          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{port_number}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "border_slug": {
+                "type": "uritemplate",
+                "value": "{border_slug}",
+                "description": "AMQP application property mirroring the border_slug routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{port_number}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "gov.cbp.borderwait.amqp.WaitTime"
         }
       }
     }

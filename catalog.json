@@ -191,7 +191,8 @@
     "desc": "United States — ~1.5M stations",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "usgs-nwis-wq",
@@ -365,7 +366,9 @@
     "cat": "Weather",
     "key": false,
     "desc": "United States — active alerts via api.weather.gov",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nws-forecasts",
@@ -528,7 +531,8 @@
     "desc": "European Alps — daily avalanche bulletins, CAAMLv6",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "gdacs",
@@ -537,7 +541,8 @@
     "key": false,
     "desc": "Global — earthquakes, floods, cyclones, volcanoes, droughts",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "inpe-deter-brazil",
@@ -546,7 +551,8 @@
     "key": false,
     "desc": "Brazil — Amazon & Cerrado deforestation alerts",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nifc-usa-wildfires",
@@ -563,7 +569,8 @@
     "key": false,
     "desc": "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ptwc-tsunami",
@@ -572,7 +579,8 @@
     "key": false,
     "desc": "Pacific and Atlantic — NOAA tsunami bulletins",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "seattle-911",
@@ -582,7 +590,8 @@
     "desc": "Seattle, WA — real-time fire dispatch incidents",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "usgs-earthquakes",
@@ -592,7 +601,8 @@
     "desc": "Global — seismic events",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "bfs-odl",
@@ -601,7 +611,9 @@
     "key": false,
     "desc": "Germany — ~1,700 stations, hourly gamma dose rate",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "eurdep-radiation",
@@ -620,7 +632,8 @@
     "desc": "United States — 14 observatories, 1-min geomagnetic field",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "aisstream",
@@ -678,7 +691,9 @@
     "key": false,
     "desc": "Germany — roadworks, warnings, closures, webcams",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "digitraffic-road",
@@ -745,7 +760,9 @@
     "key": false,
     "desc": "Paris — ~141 counting stations, hourly counts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "seattle-street-closures",
@@ -761,7 +778,9 @@
     "name": "TfL Road Traffic",
     "cat": "Transport",
     "key": false,
-    "desc": "London, UK — road corridor status and disruptions"
+    "desc": "London, UK — road corridor status and disruptions",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "tokyo-docomo-bikeshare",
@@ -778,7 +797,8 @@
     "desc": "US borders — ~81 ports of entry",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "wsdot",
@@ -796,7 +816,8 @@
     "key": false,
     "desc": "Norway — national real-time transit, SIRI ET/VM/SX",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "irail",
@@ -806,7 +827,8 @@
     "desc": "Belgium — ~600 NMBS/SNCB stations, departures, delays",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "xceed",
@@ -935,7 +957,8 @@
     "desc": "Global — LIGO/Virgo/KAGRA gravitational wave candidates",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-amedas",
@@ -953,7 +976,9 @@
     "key": false,
     "desc": "Japan — JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-volcano",
@@ -971,7 +996,9 @@
     "key": false,
     "desc": "Japan — per-prefecture weather warnings + tsunami alerts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "tepco-denkiyoho",

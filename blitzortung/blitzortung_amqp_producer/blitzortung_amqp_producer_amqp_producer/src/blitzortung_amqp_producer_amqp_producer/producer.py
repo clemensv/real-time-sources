@@ -599,8 +599,7 @@ class BlitzortungLightningAmqpProducer:
     
     def send_lightning_stroke(self,
         data: LightningStroke,
-        _geohash5: str,
-        _geohash7: str,
+        _source_id: str,
         _stroke_id: str,
         _event_time: str,
         content_type: str = 'application/json') -> None:
@@ -609,8 +608,7 @@ class BlitzortungLightningAmqpProducer:
         Live lightning-stroke event from the public LightningMaps / Blitzortung websocket feed. Each event represents one source-scoped stroke identifier with its observation time, coordinates, upstream delay and accuracy values, and optionally the detector participation flags carried in the public sta object.
         
         Args:
-            _geohash5 (str): Value for placeholder geohash5 in attribute subject
-            _geohash7 (str): Value for placeholder geohash7 in attribute subject
+            _source_id (str): Value for placeholder source_id in attribute subject
             _stroke_id (str): Value for placeholder stroke_id in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
             data (LightningStroke): The message data object
@@ -623,7 +621,7 @@ class BlitzortungLightningAmqpProducer:
             "source":
             "wss://live.lightningmaps.org/",
             "subject":
-            "{geohash5}/{geohash7}/{stroke_id}".format(geohash5=_geohash5, geohash7=_geohash7, stroke_id=_stroke_id),
+            "{source_id}/{stroke_id}".format(source_id=_source_id, stroke_id=_stroke_id),
             "time":
             None,  # Will be auto-generated
         }
@@ -657,7 +655,7 @@ class BlitzortungLightningAmqpProducer:
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "{geohash5}/{geohash7}/{stroke_id}".format(geohash5=_geohash5, geohash7=_geohash7, stroke_id=_stroke_id)
+        amqp_msg.subject = "{source_id}/{stroke_id}".format(source_id=_source_id, stroke_id=_stroke_id)
 
         app_properties = {}
         if app_properties:
@@ -673,8 +671,7 @@ class BlitzortungLightningAmqpProducer:
     
     def send_lightning_stroke_batch(self,
         data_array: typing.List[LightningStroke],
-        _geohash5: str,
-        _geohash7: str,
+        _source_id: str,
         _stroke_id: str,
         _event_time: str,
         content_type: str = 'application/json') -> None:
@@ -683,8 +680,7 @@ class BlitzortungLightningAmqpProducer:
         
         Args:
             data_array (typing.List[LightningStroke]): Array of message data objects
-            _geohash5 (str): Value for placeholder geohash5 in attribute subject
-            _geohash7 (str): Value for placeholder geohash7 in attribute subject
+            _source_id (str): Value for placeholder source_id in attribute subject
             _stroke_id (str): Value for placeholder stroke_id in attribute subject
             _event_time (str): Value for placeholder event_time in attribute time
             content_type (str): The content type of the message data
@@ -692,8 +688,7 @@ class BlitzortungLightningAmqpProducer:
         for data in data_array:
             self.send_lightning_stroke(
                 data=data,
-                _geohash5=_geohash5,
-                _geohash7=_geohash7,
+                _source_id=_source_id,
                 _stroke_id=_stroke_id,
                 _event_time=_event_time,
                 content_type=content_type)

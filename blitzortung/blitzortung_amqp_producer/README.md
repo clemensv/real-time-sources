@@ -165,8 +165,7 @@ optionally the detector participation flags carried in the public sta object.
 
 **Parameters:**
 - `data` (LightningStroke): The message data object
-- `_geohash5` (str): Value for placeholder geohash5 in attribute subject
-- `_geohash7` (str): Value for placeholder geohash7 in attribute subject
+- `_source_id` (str): Value for placeholder source_id in attribute subject
 - `_stroke_id` (str): Value for placeholder stroke_id in attribute subject
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
@@ -177,8 +176,7 @@ Send multiple LightningStroke messages in sequence.
 
 **Parameters:**
 - `data_array` (List[LightningStroke]): Array of message data objects
-- `_geohash5` (str): Value for placeholder geohash5 in attribute subject
-- `_geohash7` (str): Value for placeholder geohash7 in attribute subject
+- `_source_id` (str): Value for placeholder source_id in attribute subject
 - `_stroke_id` (str): Value for placeholder stroke_id in attribute subject
 - `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data

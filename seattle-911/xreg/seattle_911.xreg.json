@@ -41,6 +41,31 @@
       "messagegroups": [
         "#/messagegroups/US.WA.Seattle.Fire911.mqtt"
       ]
+    },
+    "US.WA.Seattle.Fire911.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/seattle-911"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "seattle-911"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/US.WA.Seattle.Fire911.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -83,6 +108,40 @@
             "retain": false,
             "message_expiry_interval": 86400
           }
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.amqp": {
+      "description": "AMQP 1.0 transport variants for seattle-911. All CloudEvents are published to the seattle-911 address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "US.WA.Seattle.Fire911.amqp.Incident": {
+          "name": "Incident",
+          "basemessageurl": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{incident_number}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "incident_type_slug": {
+                "type": "uritemplate",
+                "value": "{incident_type_slug}",
+                "description": "AMQP application property mirroring the incident_type_slug routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{incident_number}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "US.WA.Seattle.Fire911.amqp.Incident"
         }
       }
     }
