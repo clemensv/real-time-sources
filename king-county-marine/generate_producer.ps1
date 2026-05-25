@@ -24,3 +24,13 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
     exit 1
 }
+
+
+xrcg generate `
+    --style amqpproducer `
+    --language py `
+    --definitions xreg\king_county_marine.xreg.json `
+    --endpoint US.WA.KingCounty.Marine.Amqp `
+    --projectname king_county_marine_amqp_producer `
+    --template-args azure_cbs_target=servicebus `
+    --output king_county_marine_amqp_producer
