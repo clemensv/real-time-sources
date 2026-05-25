@@ -1,12 +1,12 @@
 # Wallonia ISSeP Events
 
-MQTT/5.0 transport variants of the ISSeP Wallonia air quality CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under aq/be/wallonia/wallonia-issep/{configuration_id}/... The bridge publishes sensor configuration info and observations per configuration_id.
+Wallonia ISSeP Air Quality publishes pollutant concentration measurements from Wallonia's Institut Scientifique de Service Public (ISSeP) for Walloon air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 2 documented event types (4 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0
-- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{configuration_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -52,7 +52,7 @@ CloudEvents type: `be.issep.airquality.SensorConfiguration`
 
 #### What it tells you
 
-Reference data for one ISSeP Wallonia air quality sensor configuration. Each id_configuration identifies a deployed sensor unit. The bridge emits this event at startup for each distinct configuration seen in the data records.
+A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -84,7 +84,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Observation
 
@@ -92,7 +92,7 @@ CloudEvents type: `be.issep.airquality.Observation`
 
 #### What it tells you
 
-Air quality observation from one ISSeP Wallonia sensor at a specific moment in time. Includes raw electrochemical gas readings, calibrated ppb and µg/m³ values, particulate matter concentrations, environmental parameters, reference station comparisons, and quality status flags. Negative raw values (e.g.
+A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

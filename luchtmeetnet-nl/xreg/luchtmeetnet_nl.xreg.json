@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/nl.rivm.luchtmeetnet"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Luchtmeetnet NL CloudEvents on the `luchtmeetnet-nl` topic keyed by `{station_number}`."
     },
     "nl.rivm.luchtmeetnet.components.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/nl.rivm.luchtmeetnet.components"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Luchtmeetnet NL CloudEvents on the `luchtmeetnet-nl` topic keyed by `{formula}`."
     }
   },
   "messagegroups": {
@@ -103,7 +105,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.LKI"
         }
-      }
+      },
+      "description": "Events from Luchtmeetnet NL covering Dutch air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "nl.rivm.luchtmeetnet.components": {
       "messages": {
@@ -126,7 +129,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.components.Component"
         }
-      }
+      },
+      "description": "Events from Luchtmeetnet NL covering Dutch air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -151,7 +155,7 @@
                         "Station": {
                           "name": "Station",
                           "type": "object",
-                          "description": "Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.",
+                          "description": "Luchtmeetnet station metadata with location, operator, coordinates, and the formulas measured at the station.",
                           "properties": {
                             "station_number": {
                               "type": "string",
@@ -244,7 +248,7 @@
                         "Measurement": {
                           "name": "Measurement",
                           "type": "object",
-                          "description": "Hourly Luchtmeetnet measurement for a station and a single component formula. The API returns the latest values on page 1 and orders the series by measurement time.",
+                          "description": "Hourly Luchtmeetnet measurement for a station and component formula.",
                           "properties": {
                             "station_number": {
                               "type": "string",
@@ -298,7 +302,7 @@
                         "LKI": {
                           "name": "LKI",
                           "type": "object",
-                          "description": "Hourly Dutch national air quality index value for a station. The LKI scale runs from 1 to 11, where lower values indicate better air quality.",
+                          "description": "Hourly Dutch Luchtkwaliteitsindex value for a station.",
                           "properties": {
                             "station_number": {
                               "type": "string",
@@ -348,7 +352,7 @@
                           "Component": {
                             "name": "Component",
                             "type": "object",
-                            "description": "Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.",
+                            "description": "Reference definition for a monitored component formula in the Luchtmeetnet network.",
                             "properties": {
                               "formula": {
                                 "type": "string",
@@ -398,22 +402,26 @@
                   {
                     "name": "station_number",
                     "type": "string",
-                    "doc": "Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests."
+                    "doc": "Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "location",
                     "type": "string",
-                    "doc": "Human-readable station location label published by Luchtmeetnet."
+                    "doc": "Human-readable station location label published by Luchtmeetnet.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "type",
                     "type": "string",
-                    "doc": "Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional."
+                    "doc": "Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "organisation",
                     "type": "string",
-                    "doc": "Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency."
+                    "doc": "Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "municipality",
@@ -422,7 +430,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Municipality name for the station location when present in the detail response; null when the API does not provide one."
+                    "doc": "Municipality name for the station location when present in the detail response; null when the API does not provide one.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "province",
@@ -431,22 +440,26 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Province name for the station location when present in the detail response; null when the API omits it."
+                    "doc": "Province name for the station location when present in the detail response; null when the API omits it.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "longitude",
                     "type": "double",
-                    "doc": "Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0]."
+                    "doc": "Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0].",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "latitude",
                     "type": "double",
-                    "doc": "Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1]."
+                    "doc": "Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1].",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "year_start",
                     "type": "string",
-                    "doc": "Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated."
+                    "doc": "Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "components",
@@ -454,9 +467,11 @@
                       "type": "array",
                       "items": "string"
                     },
-                    "doc": "Ordered list of formula codes measured at the station, as returned by the station detail endpoint."
+                    "doc": "Ordered list of formula codes measured at the station, as returned by the station detail endpoint.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   }
-                ]
+                ],
+                "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source."
               }
             }
           }
@@ -477,24 +492,29 @@
                   {
                     "name": "station_number",
                     "type": "string",
-                    "doc": "Stable Luchtmeetnet station code identifying where the measurement was taken."
+                    "doc": "Stable Luchtmeetnet station code identifying where the measurement was taken.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "formula",
                     "type": "string",
-                    "doc": "Component formula code identifying what was measured, for example NO2, O3, PM10, or FN."
+                    "doc": "Component formula code identifying what was measured, for example NO2, O3, PM10, or FN.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "value",
                     "type": "double",
-                    "doc": "Numeric measurement value published by the API for the station and formula at the given timestamp."
+                    "doc": "Numeric measurement value published by the API for the station and formula at the given timestamp.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "timestamp_measured",
                     "type": "string",
-                    "doc": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset."
+                    "doc": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
               }
             }
           }
@@ -515,19 +535,23 @@
                   {
                     "name": "station_number",
                     "type": "string",
-                    "doc": "Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated."
+                    "doc": "Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "value",
                     "type": "int",
-                    "doc": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale."
+                    "doc": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "timestamp_measured",
                     "type": "string",
-                    "doc": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset."
+                    "doc": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
               }
             }
           }
@@ -548,24 +572,33 @@
                   {
                     "name": "formula",
                     "type": "string",
-                    "doc": "Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB."
+                    "doc": "Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "name_nl",
                     "type": "string",
-                    "doc": "Dutch display name for the component from the component catalog."
+                    "doc": "Dutch display name for the component from the component catalog.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   },
                   {
                     "name": "name_en",
                     "type": "string",
-                    "doc": "English display name for the component from the component catalog."
+                    "doc": "English display name for the component from the component catalog.",
+                    "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "Luchtmeetnet NL publishes pollutant concentration measurements from the Dutch national air-quality monitoring network for Dutch air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Luchtmeetnet NL, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

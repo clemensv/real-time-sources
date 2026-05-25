@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "BE.Gov.KMI.Weather.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,7 +17,10 @@
           "key": "{station_code}"
         }
       },
-      "messagegroups": ["#/messagegroups/BE.Gov.KMI.Weather"]
+      "messagegroups": [
+        "#/messagegroups/BE.Gov.KMI.Weather"
+      ],
+      "description": "Kafka producer endpoint for KMI Belgium Weather CloudEvents on the `kmi-belgium` topic keyed by `{station_code}`."
     }
   },
   "messagegroups": {
@@ -25,25 +30,42 @@
           "name": "Station",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "BE.Gov.KMI.Weather.Station"},
-            "source": {"value": "https://opendata.meteo.be"},
-            "subject": {"value": "{station_code}", "type": "uritemplate"}
+            "type": {
+              "value": "BE.Gov.KMI.Weather.Station"
+            },
+            "source": {
+              "value": "https://opendata.meteo.be"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.Station"
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.Station",
+          "description": "A reference record published by the Royal Meteorological Institute of Belgium (KMI/IRM). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "BE.Gov.KMI.Weather.WeatherObservation": {
           "name": "WeatherObservation",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "BE.Gov.KMI.Weather.WeatherObservation"},
-            "source": {"value": "https://opendata.meteo.be"},
-            "subject": {"value": "{station_code}", "type": "uritemplate"}
+            "type": {
+              "value": "BE.Gov.KMI.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://opendata.meteo.be"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.WeatherObservation"
+          "dataschemauri": "#/schemagroups/BE.Gov.KMI.Weather.jstruct/schemas/BE.Gov.KMI.Weather.WeatherObservation",
+          "description": "A current environmental measurement from the Royal Meteorological Institute of Belgium (KMI/IRM). It carries weather observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from KMI Belgium Weather covering Belgian weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -61,8 +83,12 @@
                 "$id": "https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/Station",
                 "type": "object",
                 "name": "Station",
-                "description": "Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.",
-                "required": ["station_code", "latitude", "longitude"],
+                "description": "A reference record published by the Royal Meteorological Institute of Belgium (KMI/IRM). It lets consumers label, group, and route the live measurement or forecast events.",
+                "required": [
+                  "station_code",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "station_code": {
                     "type": "string",
@@ -97,8 +123,11 @@
                 "$id": "https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.",
-                "required": ["station_code", "observation_time"],
+                "description": "A current environmental measurement from the Royal Meteorological Institute of Belgium (KMI/IRM). It carries weather observations when the upstream feed reports a new or refreshed value.",
+                "required": [
+                  "station_code",
+                  "observation_time"
+                ],
                 "properties": {
                   "station_code": {
                     "type": "string",
@@ -109,103 +138,154 @@
                     "description": "Observation timestamp in UTC from the feature property `timestamp`."
                   },
                   "precip_quantity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Precipitation quantity reported for the 10-minute observation period.",
                     "unit": "mm",
                     "symbol": "mm"
                   },
                   "temp_dry_shelter_avg": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average air temperature measured in the 2 m dry shelter during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "temp_grass_pt100_avg": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average grass-level temperature measured by the Pt100 sensor during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "temp_soil_avg": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average soil surface temperature during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "temp_soil_avg_5cm": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average soil temperature measured at 5 cm depth during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "temp_soil_avg_10cm": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average soil temperature measured at 10 cm depth during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "temp_soil_avg_20cm": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average soil temperature measured at 20 cm depth during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "temp_soil_avg_50cm": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average soil temperature measured at 50 cm depth during the observation period.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "wind_speed_10m": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind speed measured at 10 m above ground level.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "wind_speed_avg_30m": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average wind speed measured at 30 m above ground level.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind direction in degrees from which the wind is blowing.",
                     "unit": "degree",
                     "symbol": "°"
                   },
                   "wind_gusts_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum wind gust speed observed during the 10-minute period.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "humidity_rel_shelter_avg": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average relative humidity measured in the shelter during the observation period.",
                     "unit": "percent",
                     "symbol": "%"
                   },
                   "pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station-level atmospheric pressure reported by the automatic weather station.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "sun_duration": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Sunshine duration accumulated during the 10-minute observation period.",
                     "unit": "min",
                     "symbol": "min"
                   },
                   "short_wave_from_sky_avg": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average downward shortwave radiation from the sky during the observation period.",
                     "unit": "W/m2",
                     "symbol": "W/m²"
                   },
                   "sun_int_avg": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average direct sunshine intensity during the observation period.",
                     "unit": "W/m2",
                     "symbol": "W/m²"
@@ -217,5 +297,10 @@
         }
       }
     }
+  },
+  "description": "KMI Belgium Weather publishes weather observations from the Royal Meteorological Institute of Belgium (KMI/IRM) for Belgian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for KMI Belgium Weather, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

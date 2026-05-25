@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "SG.Gov.NEA.Weather.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,10 +17,15 @@
           "key": "{station_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/SG.Gov.NEA.Weather"]
+      "messagegroups": [
+        "#/messagegroups/SG.Gov.NEA.Weather"
+      ],
+      "description": "Kafka producer endpoint for Singapore NEA Environment CloudEvents on the `singapore-nea` topic keyed by `{station_id}`."
     },
     "SG.Gov.NEA.AirQuality.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -32,7 +39,10 @@
           "key": "{region}"
         }
       },
-      "messagegroups": ["#/messagegroups/SG.Gov.NEA.AirQuality"]
+      "messagegroups": [
+        "#/messagegroups/SG.Gov.NEA.AirQuality"
+      ],
+      "description": "Kafka producer endpoint for Singapore NEA Environment CloudEvents on the `singapore-nea-airquality` topic keyed by `{region}`."
     }
   },
   "messagegroups": {
@@ -54,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.Station"
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.Station",
+          "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "SG.Gov.NEA.Weather.WeatherObservation": {
           "name": "WeatherObservation",
@@ -72,9 +83,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.WeatherObservation"
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.WeatherObservation",
+          "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Singapore NEA Environment covering Singapore weather and air-quality regions and stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "SG.Gov.NEA.AirQuality": {
       "messages": {
@@ -94,7 +107,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.Region"
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.Region",
+          "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "SG.Gov.NEA.AirQuality.PSIReading": {
           "name": "PSIReading",
@@ -112,7 +126,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PSIReading"
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PSIReading",
+          "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value."
         },
         "SG.Gov.NEA.AirQuality.PM25Reading": {
           "name": "PM25Reading",
@@ -130,9 +145,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PM25Reading"
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PM25Reading",
+          "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Singapore NEA Environment covering Singapore weather and air-quality regions and stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -150,7 +167,7 @@
                 "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/Station",
                 "type": "object",
                 "name": "Station",
-                "description": "Reference data for a Singapore NEA weather observation station. Stations are identified by a stable device ID (e.g. S109) and include location coordinates. The data_types field indicates which parameters this station reports.",
+                "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.",
                 "required": [
                   "station_id",
                   "name",
@@ -203,7 +220,7 @@
                 "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity and wind every minute. Fields are null when the station does not report that parameter.",
+                "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "station_id",
                   "station_name",
@@ -288,7 +305,7 @@
                 "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/Region",
                 "type": "object",
                 "name": "Region",
-                "description": "Reference data for a Singapore NEA air quality monitoring region. NEA divides Singapore into five geographic regions for PSI and PM2.5 reporting.",
+                "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.",
                 "required": [
                   "region",
                   "latitude",
@@ -335,7 +352,7 @@
                 "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/PSIReading",
                 "type": "object",
                 "name": "PSIReading",
-                "description": "Pollutant Standards Index (PSI) reading for a Singapore NEA air quality region. PSI is a composite index calculated from six pollutant sub-indices. Published hourly by the NEA via data.gov.sg.",
+                "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "region",
                   "timestamp",
@@ -487,7 +504,7 @@
                 "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/PM25Reading",
                 "type": "object",
                 "name": "PM25Reading",
-                "description": "Hourly PM2.5 concentration reading for a Singapore NEA air quality region. Fine particulate matter with aerodynamic diameter less than or equal to 2.5 micrometres. Published hourly by NEA.",
+                "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.",
                 "required": [
                   "region",
                   "timestamp",
@@ -531,5 +548,10 @@
         }
       }
     }
+  },
+  "description": "Singapore NEA Environment publishes weather observations, air-quality readings, and environmental indexes from Singapore's National Environment Agency (NEA) for Singapore weather and air-quality regions and stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Singapore NEA Environment, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

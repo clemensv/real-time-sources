@@ -1,12 +1,12 @@
 # HKO Hong Kong Weather Observation Bridge Events
 
-This bridge fetches real-time weather observations from the [Hong Kong Observatory (HKO)](https://www.hko.gov.hk/en/abouthko/opendata_intro.htm) and emits them as CloudEvents into Apache Kafka or Azure Event Hubs.
+Hong Kong Observatory Weather publishes weather observations from the Hong Kong Observatory for Hong Kong weather observation locations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 2 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{place_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,7 +38,7 @@ CloudEvents type: `HK.Gov.HKO.Weather.Station`
 
 #### What it tells you
 
-Reference data for a HKO weather observation place. Places include automatic weather stations (temperature), rainfall reporting districts, and special measurement locations (humidity at HKO headquarters, UV index at King's Park).
+A reference record published by the Hong Kong Observatory. It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -71,7 +71,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Weather Observation
 
@@ -79,7 +79,7 @@ CloudEvents type: `HK.Gov.HKO.Weather.WeatherObservation`
 
 #### What it tells you
 
-Current weather observation for a HKO place from the rhrread endpoint. Temperature from automatic weather stations, rainfall from district-level rain gauges, humidity from HKO headquarters, UV index from King's Park. Fields are null when the place does not report that data type.
+A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

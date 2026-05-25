@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.DWD.Pollenflug"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DWD Pollenflug CloudEvents on the `dwd-pollenflug` topic keyed by `{region_id}`."
     }
   },
   "messagegroups": {
@@ -41,7 +42,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.Region"
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.Region",
+          "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "DE.DWD.Pollenflug.PollenForecast": {
           "name": "PollenForecast",
@@ -59,9 +61,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.PollenForecast"
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.PollenForecast",
+          "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source."
         }
-      }
+      },
+      "description": "Events from DWD Pollenflug covering German pollen forecast regions. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -79,7 +83,7 @@
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Pollenflug/Region",
                 "type": "object",
                 "name": "Region",
-                "description": "Reference data for a DWD pollen forecast region or sub-region. Germany is divided into 11 main regions, some of which are subdivided into 2–4 sub-regions for a total of 27 forecast areas. Emitted at bridge startup so downstream consumers can correlate forecast events with region metadata.",
+                "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.",
                 "required": [
                   "region_id",
                   "region_name"
@@ -124,7 +128,7 @@
                 "$id": "https://opendata.dwd.de/schemas/DE/DWD/Pollenflug/PollenForecast",
                 "type": "object",
                 "name": "PollenForecast",
-                "description": "Daily pollen forecast for a single German region or sub-region, published by the Deutscher Wetterdienst (DWD). Contains intensity values for eight pollen types across three forecast days (today, tomorrow, day after tomorrow). Intensity is on a scale from 0 (no load) to 3 (high load) with intermediate half-step ranges such as '0-1', '1-2', '2-3'. The bridge maps the German pollen names from the upstream API to English equivalents.",
+                "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source.",
                 "required": [
                   "region_id",
                   "region_name",
@@ -402,5 +406,10 @@
         }
       }
     }
+  },
+  "description": "DWD Pollenflug publishes pollen exposure forecasts by region and plant type from Germany's Deutscher Wetterdienst (DWD) for German pollen forecast regions. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for DWD Pollenflug, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

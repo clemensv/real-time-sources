@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "CA.Gov.ECCC.Weather.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,7 +17,10 @@
           "key": "{msc_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/CA.Gov.ECCC.Weather"]
+      "messagegroups": [
+        "#/messagegroups/CA.Gov.ECCC.Weather"
+      ],
+      "description": "Kafka producer endpoint for Environment Canada Weather CloudEvents on the `environment-canada` topic keyed by `{msc_id}`."
     }
   },
   "messagegroups": {
@@ -25,25 +30,42 @@
           "name": "Station",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "CA.Gov.ECCC.Weather.Station"},
-            "source": {"value": "https://api.weather.gc.ca"},
-            "subject": {"value": "{msc_id}", "type": "uritemplate"}
+            "type": {
+              "value": "CA.Gov.ECCC.Weather.Station"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca"
+            },
+            "subject": {
+              "value": "{msc_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.jstruct/schemas/CA.Gov.ECCC.Weather.Station"
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.jstruct/schemas/CA.Gov.ECCC.Weather.Station",
+          "description": "A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "CA.Gov.ECCC.Weather.WeatherObservation": {
           "name": "WeatherObservation",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "CA.Gov.ECCC.Weather.WeatherObservation"},
-            "source": {"value": "https://api.weather.gc.ca"},
-            "subject": {"value": "{msc_id}", "type": "uritemplate"}
+            "type": {
+              "value": "CA.Gov.ECCC.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca"
+            },
+            "subject": {
+              "value": "{msc_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.jstruct/schemas/CA.Gov.ECCC.Weather.WeatherObservation"
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Weather.jstruct/schemas/CA.Gov.ECCC.Weather.WeatherObservation",
+          "description": "A current environmental measurement from Environment and Climate Change Canada (ECCC). It carries current weather observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Environment Canada Weather covering Canadian weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -61,8 +83,11 @@
                 "$id": "https://api.weather.gc.ca/schemas/CA/Gov/ECCC/Weather/Station",
                 "type": "object",
                 "name": "Station",
-                "description": "Reference data for an Environment Canada SWOB weather station. Stations are identified by their MSC ID (Meteorological Service of Canada identifier) and include WMO synoptic IDs where available.",
-                "required": ["msc_id", "name"],
+                "description": "A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events.",
+                "required": [
+                  "msc_id",
+                  "name"
+                ],
                 "properties": {
                   "msc_id": {
                     "type": "string",
@@ -77,7 +102,10 @@
                     "description": "IATA station code, e.g. 'CYYZ' for Toronto Pearson."
                   },
                   "wmo_id": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "WMO synoptic station identifier, e.g. 71624 for Toronto Pearson. Null for stations without a WMO assignment."
                   },
                   "province_territory": {
@@ -97,19 +125,28 @@
                     "description": "Station type: 'AUTO' for automatic, 'MAN' for manual, or combination."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "WGS84 latitude of the station in decimal degrees.",
                     "unit": "degree",
                     "symbol": "°"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "WGS84 longitude of the station in decimal degrees.",
                     "unit": "degree",
                     "symbol": "°"
                   },
                   "elevation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station elevation above sea level in meters.",
                     "unit": "m",
                     "symbol": "m"
@@ -131,8 +168,12 @@
                 "$id": "https://api.weather.gc.ca/schemas/CA/Gov/ECCC/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.",
-                "required": ["msc_id", "station_name", "observation_time"],
+                "description": "A current environmental measurement from Environment and Climate Change Canada (ECCC). It carries current weather observations when the upstream feed reports a new or refreshed value.",
+                "required": [
+                  "msc_id",
+                  "station_name",
+                  "observation_time"
+                ],
                 "properties": {
                   "msc_id": {
                     "type": "string",
@@ -147,127 +188,206 @@
                     "description": "Observation timestamp in UTC from the obs_date_tm field."
                   },
                   "air_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Instantaneous air temperature from the air_temp field.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "dew_point": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dew point temperature from the dwpt_temp field.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "relative_humidity": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Relative humidity from the rel_hum field.",
                     "unit": "percent",
                     "symbol": "%"
                   },
                   "station_pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station-level atmospheric pressure from the stn_pres field.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average wind speed at 10m over the last 1 minute from avg_wnd_spd_10m_pst1mt.",
                     "unit": "km/h",
                     "symbol": "km/h"
                   },
                   "wind_direction": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Average wind direction at 10m over the last 1 minute from avg_wnd_dir_10m_pst1mt, in degrees clockwise from true north.",
                     "unit": "degree",
                     "symbol": "°"
                   },
                   "wind_gust": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum wind speed at 10m in the last 1 minute from max_wnd_spd_10m_pst1mt.",
                     "unit": "km/h",
                     "symbol": "km/h"
                   },
                   "precipitation_1hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Total precipitation in the last hour from pcpn_amt_pst1hr.",
                     "unit": "mm",
                     "symbol": "mm"
                   },
                   "mean_sea_level_pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Mean sea-level pressure (MSLP) from the mslp field. Available on synoptic and hourly reporting stations. Null on minutely auto-only stations.",
                     "unit": "hPa",
                     "symbol": "hPa",
-                    "altnames": {"json": "mslp"}
+                    "altnames": {
+                      "json": "mslp"
+                    }
                   },
                   "visibility": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Horizontal visibility from the vis field. Primarily available on staffed and NAV CANADA stations.",
                     "unit": "km",
                     "symbol": "km",
-                    "altnames": {"json": "vis"}
+                    "altnames": {
+                      "json": "vis"
+                    }
                   },
                   "snow_depth": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Snow depth on the ground from the snw_dpth field. Available on stations equipped with ultrasonic snow depth sensors.",
                     "unit": "cm",
                     "symbol": "cm",
-                    "altnames": {"json": "snw_dpth"}
+                    "altnames": {
+                      "json": "snw_dpth"
+                    }
                   },
                   "total_cloud_cover": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Total cloud amount code from the tot_cld_amt field. Reports cloud cover in tenths (0-10) or oktas depending on reporting convention. Available on staffed and select automated stations.",
-                    "altnames": {"json": "tot_cld_amt"}
+                    "altnames": {
+                      "json": "tot_cld_amt"
+                    }
                   },
                   "pressure_tendency_3hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Change in station pressure over the preceding 3 hours from pres_tend_amt_pst3hrs. Positive values indicate rising pressure.",
                     "unit": "hPa",
                     "symbol": "hPa",
-                    "altnames": {"json": "pres_tend_amt_pst3hrs"}
+                    "altnames": {
+                      "json": "pres_tend_amt_pst3hrs"
+                    }
                   },
                   "max_temperature_24hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum air temperature in the past 24 hours from max_air_temp_pst24hrs.",
                     "unit": "Cel",
                     "symbol": "°C",
-                    "altnames": {"json": "max_air_temp_pst24hrs"}
+                    "altnames": {
+                      "json": "max_air_temp_pst24hrs"
+                    }
                   },
                   "min_temperature_24hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Minimum air temperature in the past 24 hours from min_air_temp_pst24hrs.",
                     "unit": "Cel",
                     "symbol": "°C",
-                    "altnames": {"json": "min_air_temp_pst24hrs"}
+                    "altnames": {
+                      "json": "min_air_temp_pst24hrs"
+                    }
                   },
                   "wind_speed_1hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average wind speed at 10m over the past hour from avg_wnd_spd_10m_pst1hr.",
                     "unit": "km/h",
                     "symbol": "km/h",
-                    "altnames": {"json": "avg_wnd_spd_10m_pst1hr"}
+                    "altnames": {
+                      "json": "avg_wnd_spd_10m_pst1hr"
+                    }
                   },
                   "wind_gust_1hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum wind speed at 10m in the past hour from max_wnd_spd_10m_pst1hr.",
                     "unit": "km/h",
                     "symbol": "km/h",
-                    "altnames": {"json": "max_wnd_spd_10m_pst1hr"}
+                    "altnames": {
+                      "json": "max_wnd_spd_10m_pst1hr"
+                    }
                   },
                   "precipitation_24hr": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Total precipitation in the past 24 hours from pcpn_amt_pst24hrs.",
                     "unit": "mm",
                     "symbol": "mm",
-                    "altnames": {"json": "pcpn_amt_pst24hrs"}
+                    "altnames": {
+                      "json": "pcpn_amt_pst24hrs"
+                    }
                   },
                   "altimeter_setting": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Altimeter setting from the altmetr_setng field. Used in aviation.",
                     "unit": "[in_i'Hg]",
                     "symbol": "inHg",
-                    "altnames": {"json": "altmetr_setng"}
+                    "altnames": {
+                      "json": "altmetr_setng"
+                    }
                   }
                 }
               }
@@ -276,5 +396,10 @@
         }
       }
     }
+  },
+  "description": "Environment Canada Weather publishes current weather observations from Environment and Climate Change Canada (ECCC) for Canadian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Environment Canada Weather, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

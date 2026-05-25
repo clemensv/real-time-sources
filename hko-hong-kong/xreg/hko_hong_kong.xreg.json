@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "HK.Gov.HKO.Weather.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,7 +17,10 @@
           "key": "{place_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/HK.Gov.HKO.Weather"]
+      "messagegroups": [
+        "#/messagegroups/HK.Gov.HKO.Weather"
+      ],
+      "description": "Kafka producer endpoint for Hong Kong Observatory Weather CloudEvents on the `hko-hong-kong` topic keyed by `{place_id}`."
     }
   },
   "messagegroups": {
@@ -25,25 +30,42 @@
           "name": "Station",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "HK.Gov.HKO.Weather.Station"},
-            "source": {"value": "https://data.weather.gov.hk"},
-            "subject": {"value": "{place_id}", "type": "uritemplate"}
+            "type": {
+              "value": "HK.Gov.HKO.Weather.Station"
+            },
+            "source": {
+              "value": "https://data.weather.gov.hk"
+            },
+            "subject": {
+              "value": "{place_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.jstruct/schemas/HK.Gov.HKO.Weather.Station"
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.jstruct/schemas/HK.Gov.HKO.Weather.Station",
+          "description": "A reference record published by the Hong Kong Observatory. It lets consumers label, group, and route the live measurement or forecast events."
         },
         "HK.Gov.HKO.Weather.WeatherObservation": {
           "name": "WeatherObservation",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "HK.Gov.HKO.Weather.WeatherObservation"},
-            "source": {"value": "https://data.weather.gov.hk"},
-            "subject": {"value": "{place_id}", "type": "uritemplate"}
+            "type": {
+              "value": "HK.Gov.HKO.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://data.weather.gov.hk"
+            },
+            "subject": {
+              "value": "{place_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.jstruct/schemas/HK.Gov.HKO.Weather.WeatherObservation"
+          "dataschemauri": "#/schemagroups/HK.Gov.HKO.Weather.jstruct/schemas/HK.Gov.HKO.Weather.WeatherObservation",
+          "description": "A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Hong Kong Observatory Weather covering Hong Kong weather observation locations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -61,8 +83,12 @@
                 "$id": "https://data.weather.gov.hk/schemas/HK/Gov/HKO/Weather/Station",
                 "type": "object",
                 "name": "Station",
-                "description": "Reference data for a HKO weather observation place. Places include automatic weather stations (temperature), rainfall reporting districts, and special measurement locations (humidity at HKO headquarters, UV index at King's Park).",
-                "required": ["place_id", "name", "data_types"],
+                "description": "A reference record published by the Hong Kong Observatory. It lets consumers label, group, and route the live measurement or forecast events.",
+                "required": [
+                  "place_id",
+                  "name",
+                  "data_types"
+                ],
                 "properties": {
                   "place_id": {
                     "type": "string",
@@ -93,8 +119,12 @@
                 "$id": "https://data.weather.gov.hk/schemas/HK/Gov/HKO/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Current weather observation for a HKO place from the rhrread endpoint. Temperature from automatic weather stations, rainfall from district-level rain gauges, humidity from HKO headquarters, UV index from King's Park. Fields are null when the place does not report that data type.",
-                "required": ["place_id", "place_name", "observation_time"],
+                "description": "A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value.",
+                "required": [
+                  "place_id",
+                  "place_name",
+                  "observation_time"
+                ],
                 "properties": {
                   "place_id": {
                     "type": "string",
@@ -109,30 +139,45 @@
                     "description": "ISO 8601 timestamp of the observation including Hong Kong timezone offset (+08:00), from the updateTime field."
                   },
                   "temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Air temperature from automatic weather stations.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "rainfall_max": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum rainfall in the past hour from district-level rain gauges.",
                     "unit": "mm",
                     "symbol": "mm"
                   },
                   "humidity": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Relative humidity, currently only from Hong Kong Observatory headquarters.",
                     "unit": "percent",
                     "symbol": "%"
                   },
                   "uv_index": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "UV index during the past hour, currently only from King's Park.",
                     "unit": "1"
                   },
                   "uv_description": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'."
                   }
                 }
@@ -142,5 +187,10 @@
         }
       }
     }
+  },
+  "description": "Hong Kong Observatory Weather publishes weather observations from the Hong Kong Observatory for Hong Kong weather observation locations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Hong Kong Observatory Weather, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

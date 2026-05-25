@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/fi.fmi.opendata.airquality"
-      ]
+      ],
+      "description": "Kafka producer endpoint for FMI Finland Weather CloudEvents on the `fmi-finland-airquality` topic keyed by `{fmisid}`."
     }
   },
   "messagegroups": {
@@ -65,7 +66,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/fi.fmi.opendata.airquality.jstruct/schemas/fi.fmi.opendata.airquality.Observation"
         }
-      }
+      },
+      "description": "Events from FMI Finland Weather covering Finnish weather observation stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -91,7 +93,7 @@
                           "Station": {
                             "name": "Station",
                             "type": "object",
-                            "description": "Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid). Municipality is taken from the WFS station metadata region name, and coordinates are the representative point published by FMI.",
+                            "description": "Reference data for a Finnish Meteorological Institute air quality monitoring station.",
                             "properties": {
                               "fmisid": {
                                 "type": "string",
@@ -310,7 +312,7 @@
                           "Observation": {
                             "name": "Observation",
                             "type": "object",
-                            "description": "Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.",
+                            "description": "Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results.",
                             "properties": {
                               "fmisid": {
                                 "type": "string",
@@ -445,22 +447,26 @@
                   {
                     "name": "fmisid",
                     "type": "string",
-                    "doc": "Stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject."
+                    "doc": "Stable FMI station identifier (fmisid) used as the Kafka key and CloudEvents subject.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "station_name",
                     "type": "string",
-                    "doc": "Air quality station name from the FMI station metadata."
+                    "doc": "Air quality station name from the FMI station metadata.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the FMI Finland Weather source."
                   },
                   {
                     "name": "latitude",
                     "type": "double",
-                    "doc": "WGS84 latitude of the station representative point in decimal degrees."
+                    "doc": "WGS84 latitude of the station representative point in decimal degrees.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "longitude",
                     "type": "double",
-                    "doc": "WGS84 longitude of the station representative point in decimal degrees."
+                    "doc": "WGS84 longitude of the station representative point in decimal degrees.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "municipality",
@@ -469,9 +475,11 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Municipality or region name from the station metadata if available."
+                    "doc": "Municipality or region name from the station metadata if available.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   }
-                ]
+                ],
+                "description": "Reference details for one station, monitoring site, or forecast area in the FMI Finland Weather source."
               }
             }
           }
@@ -492,17 +500,20 @@
                   {
                     "name": "fmisid",
                     "type": "string",
-                    "doc": "Stable FMI station identifier (fmisid) for the observing station."
+                    "doc": "Stable FMI station identifier (fmisid) for the observing station.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "station_name",
                     "type": "string",
-                    "doc": "Station name resolved from station metadata or, if metadata lookup fails, the station identifier string."
+                    "doc": "Station name resolved from station metadata or, if metadata lookup fails, the station identifier string.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the FMI Finland Weather source."
                   },
                   {
                     "name": "observation_time",
                     "type": "string",
-                    "doc": "Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z."
+                    "doc": "Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "aqindex",
@@ -511,7 +522,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Finnish Air Quality Index 1-hour average."
+                    "doc": "Finnish Air Quality Index 1-hour average.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "pm10_ug_m3",
@@ -520,7 +532,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "PM10 particulate matter concentration 1-hour average in micrograms per cubic meter."
+                    "doc": "PM10 particulate matter concentration 1-hour average in micrograms per cubic meter.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "pm2_5_ug_m3",
@@ -529,7 +542,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter."
+                    "doc": "PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "no2_ug_m3",
@@ -538,7 +552,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter."
+                    "doc": "Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "o3_ug_m3",
@@ -547,7 +562,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Ozone concentration 1-hour average in micrograms per cubic meter."
+                    "doc": "Ozone concentration 1-hour average in micrograms per cubic meter.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "so2_ug_m3",
@@ -556,7 +572,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Sulfur dioxide concentration 1-hour average in micrograms per cubic meter."
+                    "doc": "Sulfur dioxide concentration 1-hour average in micrograms per cubic meter.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   },
                   {
                     "name": "co_mg_m3",
@@ -565,14 +582,21 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Carbon monoxide concentration 1-hour average in milligrams per cubic meter."
+                    "doc": "Carbon monoxide concentration 1-hour average in milligrams per cubic meter.",
+                    "description": "Measurement payload for weather observations in the FMI Finland Weather source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for weather observations in the FMI Finland Weather source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "FMI Finland Weather publishes weather observations from the Finnish Meteorological Institute (FMI) for Finnish weather observation stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for FMI Finland Weather, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

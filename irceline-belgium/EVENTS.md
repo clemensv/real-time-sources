@@ -1,12 +1,12 @@
 # IRCELINE Belgium Events
 
-This source bridges the IRCELINE Belgium 52°North SOS Timeseries API into Kafka as CloudEvents. It covers Belgium's interregional air-quality monitoring network and emits both reference data and hourly telemetry into a single topic.
+IRCELINE Belgium Air Quality publishes pollutant concentration and air-quality measurements from Belgium's IRCELINE interregional environment agency for Belgian air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 3 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
+- **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
 - **Identity:** `{station_id}`, `{timeseries_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,7 +38,7 @@ CloudEvents type: `be.irceline.Station`
 
 #### What it tells you
 
-Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.
+A reference record published by Belgium's IRCELINE interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -73,7 +73,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Timeseries
 
@@ -81,7 +81,7 @@ CloudEvents type: `be.irceline.Timeseries`
 
 #### What it tells you
 
-Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.
+A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -139,7 +139,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Observation
 
@@ -147,7 +147,7 @@ CloudEvents type: `be.irceline.Observation`
 
 #### What it tells you
 
-Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.
+A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

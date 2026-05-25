@@ -1,12 +1,12 @@
 # Hong Kong EPD AQHI Bridge Events
 
-MQTT/5.0 transport variants of the HK EPD AQHI CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under air-quality/hk/epd/hongkong-epd/{district}/{station_id}/... The {district} placeholder is the Hong Kong 18-district administrative area where the station is located, normalized to lowercase snake_case.
+Hong Kong EPD Air Quality publishes air-quality health index and pollutant measurements from Hong Kong's Environmental Protection Department for Hong Kong air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 2 documented event types (4 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0
-- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{station_id}` identifies the resource each event is about.
 - **Operations:** The checked-in guide documents a default polling interval of 3600 seconds.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -52,7 +52,7 @@ CloudEvents type: `HK.Gov.EPD.AQHI.Station`
 
 #### What it tells you
 
-Reference data for a Hong Kong EPD AQHI monitoring station. The EPD operates a network of General Stations and Roadside Stations across Hong Kong. Station coordinates are derived from the EPD station map.
+A reference record published by Hong Kong's Environmental Protection Department. It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -92,7 +92,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Aqhireading
 
@@ -100,7 +100,7 @@ CloudEvents type: `HK.Gov.EPD.AQHI.AQHIReading`
 
 #### What it tells you
 
-Air Quality Health Index (AQHI) reading for a Hong Kong EPD monitoring station. AQHI quantifies health risk from air pollution on a scale of 1 to 10+ and is calculated from concentrations of nitrogen dioxide, sulphur dioxide, ozone, and PM2.5. Published hourly by the EPD.
+A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

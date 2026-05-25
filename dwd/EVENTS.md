@@ -1,12 +1,12 @@
 # DWD Open Data Bridge Usage Guide Events
 
-**DWD Open Data Bridge** polls the [Deutscher Wetterdienst (DWD) Climate Data Center](https://opendata.dwd.de/) open-data file server for weather observations, station metadata, and weather alerts from ~1,450 stations across Germany. The data is forwarded to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
+DWD Weather publishes weather observations, warnings, and forecast product updates from Germany's Deutscher Wetterdienst (DWD) for German weather stations, alerts, radar, and forecast products. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 13 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 3 reference/catalog event types and 10 telemetry event types.
+- **Reference vs telemetry:** 1 reference/catalog event type and 12 telemetry event types.
 - **Identity:** `{station_id}`, `{identifier}`, `{file_url}` identifies the resource each event is about.
 - **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,11 +38,11 @@ CloudEvents type: `DE.DWD.CDC.StationMetadata`
 
 #### What it tells you
 
-This event carries station metadata data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -54,14 +54,14 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station Metadata` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`, `elevation`.
 
-- **`station_id`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`longitude`** (double, required): No description provided.
-- **`elevation`** (double, required): No description provided.
-- **`state`** (string, optional): No description provided.
-- **`from_date`** (string, optional): No description provided.
-- **`to_date`** (string, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`station_name`** (string, required): Human-readable name of the station or monitoring site.
+- **`latitude`** (double, required): Latitude of the station or site in WGS 84 coordinates.
+- **`longitude`** (double, required): Longitude of the station or site in WGS 84 coordinates.
+- **`elevation`** (double, required): Elevation of the station above mean sea level or the provider datum.
+- **`state`** (string, optional): State, province, or administrative region for the station or area.
+- **`from_date`** (string, optional): Start date when the station, product, or metadata record is valid.
+- **`to_date`** (string, optional): End date when the station, product, or metadata record is valid, when known.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -81,7 +81,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Air Temperature10 Min
 
@@ -89,11 +89,11 @@ CloudEvents type: `DE.DWD.CDC.AirTemperature10Min`
 
 #### What it tells you
 
-This event carries air temperature10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -105,14 +105,14 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Air Temperature10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`pressure_station_level`** (double, optional): No description provided.
-- **`air_temperature_2m`** (double, optional): No description provided.
-- **`air_temperature_5cm`** (double, optional): No description provided.
-- **`relative_humidity`** (double, optional): No description provided.
-- **`dew_point_temperature`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`pressure_station_level`** (double, optional): Reference details for a station, monitoring site, or reporting area in the DWD Weather source.
+- **`air_temperature_2m`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_5cm`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`relative_humidity`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`dew_point_temperature`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -132,7 +132,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Precipitation10 Min
 
@@ -140,11 +140,11 @@ CloudEvents type: `DE.DWD.CDC.Precipitation10Min`
 
 #### What it tells you
 
-This event carries precipitation10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -156,11 +156,11 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Precipitation10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`precipitation_height`** (double, optional): No description provided.
-- **`precipitation_indicator`** (int32, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`precipitation_height`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`precipitation_indicator`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -177,7 +177,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Wind10 Min
 
@@ -185,11 +185,11 @@ CloudEvents type: `DE.DWD.CDC.Wind10Min`
 
 #### What it tells you
 
-This event carries wind10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -201,11 +201,11 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Wind10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`wind_speed`** (double, optional): No description provided.
-- **`wind_direction`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_speed`** (double, optional): Wind speed reported by the station.
+- **`wind_direction`** (double, optional): Wind direction reported by the station.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -222,7 +222,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Solar10 Min
 
@@ -230,11 +230,11 @@ CloudEvents type: `DE.DWD.CDC.Solar10Min`
 
 #### What it tells you
 
-This event carries solar10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -246,13 +246,13 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Solar10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`global_radiation`** (double, optional): No description provided.
-- **`sunshine_duration`** (double, optional): No description provided.
-- **`diffuse_radiation`** (double, optional): No description provided.
-- **`longwave_radiation`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`global_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`sunshine_duration`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`diffuse_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`longwave_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -271,7 +271,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Hourly Observation
 
@@ -279,11 +279,11 @@ CloudEvents type: `DE.DWD.CDC.HourlyObservation`
 
 #### What it tells you
 
-This event carries hourly observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -295,12 +295,12 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Hourly Observation` payloads are JSON object. Required fields: `station_id`, `timestamp`, `parameter`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`parameter`** (string, required): No description provided.
-- **`value`** (double, optional): No description provided.
-- **`unit`** (string, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`parameter`** (string, required): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`value`** (double, optional): Measured or forecast value reported by the upstream provider.
+- **`unit`** (string, optional): Unit used for the reported value.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -326,11 +326,11 @@ CloudEvents type: `DE.DWD.CDC.ExtremeWind10Min`
 
 #### What it tells you
 
-This event carries extreme wind10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -342,12 +342,12 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Extreme Wind10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`wind_speed_maximum`** (double, optional): No description provided.
-- **`wind_speed_minimum`** (double, optional): No description provided.
-- **`wind_direction_at_maximum`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_speed_maximum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_speed_minimum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_direction_at_maximum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -365,7 +365,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Extreme Temperature10 Min
 
@@ -373,11 +373,11 @@ CloudEvents type: `DE.DWD.CDC.ExtremeTemperature10Min`
 
 #### What it tells you
 
-This event carries extreme temperature10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the station or monitoring site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -389,11 +389,11 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Extreme Temperature10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`timestamp`** (string, required): No description provided.
-- **`quality_level`** (int32, optional): No description provided.
-- **`air_temperature_maximum_2m`** (double, optional): No description provided.
-- **`air_temperature_minimum_5cm`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
+- **`timestamp`** (string, required): Time when the provider recorded or published the value.
+- **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_maximum_2m`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_minimum_5cm`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -410,7 +410,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Alert
 
@@ -418,11 +418,11 @@ CloudEvents type: `DE.DWD.Weather.Alert`
 
 #### What it tells you
 
-This event carries alert data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area.
 
 #### Identity
 
-Each event identifies the real-world resource with `{identifier}`. `{identifier}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{identifier}`. `{identifier}` is measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -434,22 +434,22 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 
 `Alert` payloads are JSON object. Required fields: `identifier`, `sender`, `sent`, `severity`, `event`.
 
-- **`identifier`** (string, required): No description provided.
-- **`sender`** (string, required): No description provided.
-- **`sent`** (string, required): No description provided.
-- **`status`** (string, optional): No description provided.
-- **`msg_type`** (string, optional): No description provided.
-- **`severity`** (string, required): No description provided.
-- **`urgency`** (string, optional): No description provided.
-- **`certainty`** (string, optional): No description provided.
-- **`event`** (string, required): No description provided.
-- **`headline`** (string, optional): No description provided.
-- **`description`** (string, optional): No description provided.
-- **`effective`** (string, optional): No description provided.
-- **`onset`** (string, optional): No description provided.
-- **`expires`** (string, optional): No description provided.
-- **`area_desc`** (string, optional): No description provided.
-- **`geocodes`** (string, optional): No description provided.
+- **`identifier`** (string, required): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`sender`** (string, required): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`sent`** (string, required): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`status`** (string, optional): Provider status value for the station, product, warning, or measurement.
+- **`msg_type`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`severity`** (string, required): Provider severity level for a warning or alert.
+- **`urgency`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`certainty`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`event`** (string, required): Provider event type, warning type, or product event category.
+- **`headline`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`description`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`effective`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`onset`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`expires`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`area_desc`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`geocodes`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -485,7 +485,7 @@ CloudEvents type: `DE.DWD.Radar.RadarProductCatalog`
 
 #### What it tells you
 
-Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -518,7 +518,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Radar File Product
 
@@ -526,7 +526,7 @@ CloudEvents type: `DE.DWD.Radar.RadarFileProduct`
 
 #### What it tells you
 
-Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
+A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -563,7 +563,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Forecast Model Catalog
 
@@ -571,7 +571,7 @@ CloudEvents type: `DE.DWD.Forecast.ForecastModelCatalog`
 
 #### What it tells you
 
-Reference (catalog) event describing a single NWP forecast model family published by DWD Open Data. One event is emitted per model the first time the bridge observes it, so consumers can build a catalog of available models and the URLs from which their forecast files can be discovered.
+A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.
 
 #### Identity
 
@@ -612,7 +612,7 @@ CloudEvents type: `DE.DWD.Forecast.IconD2ForecastFile`
 
 #### What it tells you
 
-Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
+A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.
 
 #### Identity
 

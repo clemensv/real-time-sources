@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/pl.gov.gios.airquality"
-      ]
+      ],
+      "description": "Kafka producer endpoint for GIOŚ Poland Air Quality CloudEvents on the `gios-poland` topic keyed by `{station_id}`."
     }
   },
   "messagegroups": {
@@ -101,7 +102,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/pl.gov.gios.airquality.jstruct/schemas/pl.gov.gios.airquality.AirQualityIndex"
         }
-      }
+      },
+      "description": "Events from GIOŚ Poland Air Quality covering Polish air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -137,44 +139,68 @@
                     "description": "Human-readable name of the monitoring station, typically including city and street. Mapped from 'Nazwa stacji'."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Latitude of the station in decimal degrees north (WGS84). Mapped from 'WGS84 φ N'.",
                     "unit": "deg",
                     "symbol": "°N"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Longitude of the station in decimal degrees east (WGS84). Mapped from 'WGS84 λ E'.",
                     "unit": "deg",
                     "symbol": "°E"
                   },
                   "city_id": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Numeric identifier of the city where the station is located. Mapped from 'Identyfikator miasta'."
                   },
                   "city_name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Name of the city where the station is located. Mapped from 'Nazwa miasta'."
                   },
                   "commune": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Name of the commune (gmina) where the station is located. Mapped from 'Gmina'."
                   },
                   "district": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Name of the district (powiat) where the station is located. Mapped from 'Powiat'."
                   },
                   "voivodeship": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Name of the voivodeship (province) where the station is located, in uppercase Polish. Mapped from 'Województwo'."
                   },
                   "street": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Street address of the station, if available. Mapped from 'Ulica'."
                   }
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Station",
-                "description": "Reference record for a GIOŚ air quality monitoring station in Poland. Contains the station identifier, code, name, WGS84 coordinates, and administrative location (city, commune, district, voivodeship, street). Fields are mapped from the Polish-language GIOŚ REST API /station/findAll endpoint."
+                "description": "Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship."
               }
             }
           }
@@ -210,7 +236,10 @@
                     "description": "Polish-language name of the measured pollutant, e.g. 'pył zawieszony PM10', 'dwutlenek azotu'. Mapped from 'Wskaźnik'."
                   },
                   "parameter_formula": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Chemical formula of the measured pollutant, e.g. 'PM10', 'NO2', 'SO2', 'O3', 'CO', 'C6H6', 'PM2.5'. Mapped from 'Wskaźnik - wzór'."
                   },
                   "parameter_code": {
@@ -218,12 +247,15 @@
                     "description": "Short code identifying the pollutant parameter, e.g. 'PM10', 'NO2'. Mapped from 'Wskaźnik - kod'."
                   },
                   "parameter_id": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Numeric identifier of the pollutant parameter in the GIOŚ system. Mapped from 'Id wskaźnika'."
                   }
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Sensor",
-                "description": "Reference record for a sensor installed at a GIOŚ air quality station. Identifies the specific pollutant being measured (e.g. PM10, NO₂, O₃) along with the sensor and station identifiers. Fields are mapped from the Polish-language /station/sensors/{stationId} endpoint."
+                "description": "Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures."
               }
             }
           }
@@ -263,14 +295,17 @@
                     "description": "Measurement timestamp in local Polish time (ISO 8601 format). Mapped from 'Data'."
                   },
                   "value": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Measured pollutant concentration. Unit: micrograms per cubic meter (µg/m³). Null when the measurement is missing or invalid. Mapped from 'Wartość'.",
                     "unit": "ug/m3",
                     "symbol": "µg/m³"
                   }
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Measurement",
-                "description": "Hourly air quality measurement from a GIOŚ sensor. Reports the pollutant concentration in µg/m³ at a specific timestamp. The measurement may be null when data is missing or under validation. Fields are mapped from the Polish-language /data/getData/{sensorId} endpoint."
+                "description": "Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³."
               }
             }
           }
@@ -300,113 +335,193 @@
                     "description": "Timestamp when the overall index was calculated (ISO 8601 in local Polish time). Mapped from 'Data wykonania obliczeń indeksu'."
                   },
                   "index_value": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "Overall air quality index value: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Zły (Bad), 5=Bardzo zły (Very bad). Mapped from 'Wartość indeksu'."
                   },
                   "index_category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Polish-language category name of the overall index, e.g. 'Bardzo dobry', 'Dobry', 'Umiarkowany'. Mapped from 'Nazwa kategorii indeksu'."
                   },
                   "source_data_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp of the source measurement data used for the overall index calculation. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika st'."
                   },
                   "so2_calculation_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp when the SO₂ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika SO2'."
                   },
                   "so2_index_value": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "SO₂ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika SO2'."
                   },
                   "so2_index_category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Polish-language category name for the SO₂ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika SO2'."
                   },
                   "so2_source_data_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp of the source data used for the SO₂ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika SO2'."
                   },
                   "no2_calculation_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp when the NO₂ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika NO2'."
                   },
                   "no2_index_value": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "NO₂ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika NO2'."
                   },
                   "no2_index_category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Polish-language category name for the NO₂ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika NO2'."
                   },
                   "no2_source_data_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp of the source data used for the NO₂ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika NO2'."
                   },
                   "pm10_calculation_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp when the PM10 sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika PM10'."
                   },
                   "pm10_index_value": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "PM10 sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika PM10'."
                   },
                   "pm10_index_category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Polish-language category name for the PM10 sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika PM10'."
                   },
                   "pm10_source_data_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp of the source data used for the PM10 sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika PM10'."
                   },
                   "pm25_calculation_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp when the PM2.5 sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika PM2.5'."
                   },
                   "pm25_index_value": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "PM2.5 sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika PM2.5'."
                   },
                   "pm25_index_category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Polish-language category name for the PM2.5 sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika PM2.5'."
                   },
                   "pm25_source_data_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp of the source data used for the PM2.5 sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika PM2.5'."
                   },
                   "o3_calculation_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp when the O₃ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika O3'."
                   },
                   "o3_index_value": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "O₃ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika O3'."
                   },
                   "o3_index_category": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Polish-language category name for the O₃ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika O3'."
                   },
                   "o3_source_data_timestamp": {
-                    "type": ["datetime", "null"],
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Timestamp of the source data used for the O₃ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika O3'."
                   },
                   "overall_status": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the overall air quality index is currently valid for this station. Mapped from 'Status indeksu ogólnego dla stacji pomiarowej'."
                   },
                   "critical_pollutant_code": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Code of the pollutant that determined the overall index value, e.g. 'OZON', 'PM10'. Mapped from 'Kod zanieczyszczenia krytycznego'."
                   }
                 },
                 "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/AirQualityIndex",
-                "description": "Current Polish Air Quality Index (Indeks Jakości Powietrza) for a GIOŚ monitoring station. Includes the overall index value and category plus sub-indices for SO₂, NO₂, PM10, PM2.5, and O₃. Each sub-index uses a 0–5 scale: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Zły (Bad), 5=Bardzo zły (Very bad). Fields are mapped from the Polish-language /aqindex/getIndex/{stationId} endpoint."
+                "description": "Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃)."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "GIOŚ Poland Air Quality publishes sensor readings and air-quality index values from Poland's Chief Inspectorate of Environmental Protection (GIOŚ) for Polish air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for GIOŚ Poland Air Quality, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

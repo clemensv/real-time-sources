@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.gov.defra.aurn.Stations"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DEFRA AURN CloudEvents on the `defra-aurn` topic keyed by `{station_id}`."
     },
     "uk.gov.defra.aurn.Timeseries.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.gov.defra.aurn.Timeseries"
-      ]
+      ],
+      "description": "Kafka producer endpoint for DEFRA AURN CloudEvents on the `defra-aurn` topic keyed by `{timeseries_id}`."
     }
   },
   "messagegroups": {
@@ -65,7 +67,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Station"
         }
-      }
+      },
+      "description": "Events from DEFRA AURN covering UK air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "uk.gov.defra.aurn.Timeseries": {
       "messages": {
@@ -107,7 +110,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Observation"
         }
-      }
+      },
+      "description": "Events from DEFRA AURN covering UK air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -133,7 +137,7 @@
                           "Station": {
                             "name": "Station",
                             "type": "object",
-                            "description": "Metadata for a Defra AURN monitoring station as returned by GET /stations. The bridge flattens the GeoJSON feature into a payload with the station identifier, the upstream display label, and WGS84 latitude and longitude values taken from geometry.coordinates[0] and geometry.coordinates[1], because this API returns coordinates in latitude, longitude order.",
+                            "description": "Reference metadata for a Defra AURN monitoring station entry as published by the 52°North SOS Timeseries API stations collection.",
                             "properties": {
                               "station_id": {
                                 "type": "string",
@@ -197,7 +201,7 @@
                           "Timeseries": {
                             "name": "Timeseries",
                             "type": "object",
-                            "description": "Reference metadata for a Defra AURN station and pollutant timeseries combination, assembled from GET /timeseries/{id}?expanded=true. The payload preserves the stable timeseries identifier, linked station metadata, unit of measurement, and pollutant taxonomy references published in parameters.phenomenon and parameters.category.",
+                            "description": "Reference metadata for a Defra AURN station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.",
                             "properties": {
                               "timeseries_id": {
                                 "type": "string",
@@ -311,7 +315,7 @@
                           "Observation": {
                             "name": "Observation",
                             "type": "object",
-                            "description": "Observation value from GET /timeseries/{id}/getData. The bridge converts the upstream Unix millisecond timestamp to an ISO 8601 UTC timestamp string and republishes the measurement value together with the timeseries identifier and unit of measurement from the reference metadata.",
+                            "description": "Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.",
                             "properties": {
                               "timeseries_id": {
                                 "type": "string",
@@ -370,24 +374,29 @@
                   {
                     "name": "station_id",
                     "type": "string",
-                    "doc": "Stable numeric monitoring station identifier from properties.id."
+                    "doc": "Stable numeric monitoring station identifier from properties.id.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source."
                   },
                   {
                     "name": "label",
                     "type": "string",
-                    "doc": "Upstream station label from properties.label."
+                    "doc": "Upstream station label from properties.label.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "latitude",
                     "type": "double",
-                    "doc": "WGS84 latitude in decimal degrees from geometry.coordinates[0]."
+                    "doc": "WGS84 latitude in decimal degrees from geometry.coordinates[0].",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "longitude",
                     "type": "double",
-                    "doc": "WGS84 longitude in decimal degrees from geometry.coordinates[1]."
+                    "doc": "WGS84 longitude in decimal degrees from geometry.coordinates[1].",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   }
-                ]
+                ],
+                "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source."
               }
             }
           }
@@ -408,27 +417,32 @@
                   {
                     "name": "timeseries_id",
                     "type": "string",
-                    "doc": "Stable numeric timeseries identifier from id."
+                    "doc": "Stable numeric timeseries identifier from id.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "label",
                     "type": "string",
-                    "doc": "Descriptive label from the timeseries label field."
+                    "doc": "Descriptive label from the timeseries label field.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "uom",
                     "type": "string",
-                    "doc": "Unit of measurement string from the timeseries uom field."
+                    "doc": "Unit of measurement string from the timeseries uom field.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "station_id",
                     "type": "string",
-                    "doc": "Stable station identifier from station.properties.id."
+                    "doc": "Stable station identifier from station.properties.id.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source."
                   },
                   {
                     "name": "station_label",
                     "type": "string",
-                    "doc": "Station display label from station.properties.label."
+                    "doc": "Station display label from station.properties.label.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source."
                   },
                   {
                     "name": "latitude",
@@ -437,7 +451,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Nullable WGS84 latitude in decimal degrees from station.geometry.coordinates[0]."
+                    "doc": "Nullable WGS84 latitude in decimal degrees from station.geometry.coordinates[0].",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "longitude",
@@ -446,7 +461,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Nullable WGS84 longitude in decimal degrees from station.geometry.coordinates[1]."
+                    "doc": "Nullable WGS84 longitude in decimal degrees from station.geometry.coordinates[1].",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "phenomenon_id",
@@ -455,7 +471,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Nullable pollutant phenomenon identifier from parameters.phenomenon.id."
+                    "doc": "Nullable pollutant phenomenon identifier from parameters.phenomenon.id.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "phenomenon_label",
@@ -464,7 +481,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Nullable pollutant label from parameters.phenomenon.label."
+                    "doc": "Nullable pollutant label from parameters.phenomenon.label.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "category_id",
@@ -473,7 +491,8 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Nullable category identifier from parameters.category.id."
+                    "doc": "Nullable category identifier from parameters.category.id.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "category_label",
@@ -482,9 +501,11 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Nullable category label from parameters.category.label."
+                    "doc": "Nullable category label from parameters.category.label.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
               }
             }
           }
@@ -505,12 +526,14 @@
                   {
                     "name": "timeseries_id",
                     "type": "string",
-                    "doc": "Stable numeric timeseries identifier for the series that produced this observation."
+                    "doc": "Stable numeric timeseries identifier for the series that produced this observation.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "timestamp",
                     "type": "string",
-                    "doc": "Observation timestamp encoded as an ISO 8601 UTC string."
+                    "doc": "Observation timestamp encoded as an ISO 8601 UTC string.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "value",
@@ -519,19 +542,27 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "Measured pollutant concentration or other reported numeric reading."
+                    "doc": "Measured pollutant concentration or other reported numeric reading.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   },
                   {
                     "name": "uom",
                     "type": "string",
-                    "doc": "Unit of measurement for the observation."
+                    "doc": "Unit of measurement for the observation.",
+                    "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "DEFRA AURN publishes pollutant concentration measurements from the UK Department for Environment, Food and Rural Affairs Automatic Urban and Rural Network for UK air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for DEFRA AURN, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

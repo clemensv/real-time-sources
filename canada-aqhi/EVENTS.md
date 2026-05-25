@@ -1,6 +1,6 @@
 # Canada AQHI Bridge Events
 
-This source bridges the Canadian Air Quality Health Index (AQHI) program from Environment and Climate Change Canada into Kafka as structured JSON [CloudEvents](https://cloudevents.io/).
+Canada AQHI publishes air-quality health index observations and forecasts from Environment and Climate Change Canada (ECCC) for Canadian Air Quality Health Index communities. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `ca.gc.weather.aqhi.Community`
 
 #### What it tells you
 
-Reference data for a Canadian Air Quality Health Index reporting community, including its stable CGNDB identifier and current upstream feed URLs. Reference record for an AQHI community from the official ECCC AQHI city lists. It links the public community name and province code to the CGNDB key and current XML feeds used by the bridge.
+Reference data for a Canadian Air Quality Health Index reporting community, including its stable CGNDB identifier and current upstream feed URLs.
 
 #### Identity
 
@@ -87,7 +87,7 @@ CloudEvents type: `ca.gc.weather.aqhi.Observation`
 
 #### What it tells you
 
-Latest AQHI observation for a reporting community. Observations are published hourly and may include decimal AQHI values. The value reflects short-term health risk from air pollution and may be null when the upstream feed has not published a value yet.
+Latest AQHI observation for a reporting community. Observations are published hourly and may include decimal AQHI values.
 
 #### Identity
 
@@ -141,7 +141,7 @@ CloudEvents type: `ca.gc.weather.aqhi.Forecast`
 
 #### What it tells you
 
-Public AQHI forecast for one of the four standard Canadian forecast periods published for an AQHI community. Public AQHI forecast for a community and one of the four standard forecast periods published by ECCC.
+Public AQHI forecast for one of the four standard Canadian forecast periods published for an AQHI community.
 
 #### Identity
 

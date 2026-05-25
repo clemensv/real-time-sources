@@ -1,12 +1,12 @@
 # KMI Belgium Weather Observation Bridge Events
 
-This bridge fetches real-time automatic weather station observations from the [Royal Meteorological Institute of Belgium (KMI/RMI)](https://opendata.meteo.be/) and emits them as CloudEvents into Apache Kafka or Azure Event Hubs.
+KMI Belgium Weather publishes weather observations from the Royal Meteorological Institute of Belgium (KMI/IRM) for Belgian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 2 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{station_code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,7 +38,7 @@ CloudEvents type: `BE.Gov.KMI.Weather.Station`
 
 #### What it tells you
 
-Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.
+A reference record published by the Royal Meteorological Institute of Belgium (KMI/IRM). It lets consumers label, group, and route the live measurement or forecast events.
 
 #### Identity
 
@@ -71,7 +71,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Weather Observation
 
@@ -79,7 +79,7 @@ CloudEvents type: `BE.Gov.KMI.Weather.WeatherObservation`
 
 #### What it tells you
 
-Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.
+A current environmental measurement from the Royal Meteorological Institute of Belgium (KMI/IRM). It carries weather observations when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

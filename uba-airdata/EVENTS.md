@@ -1,6 +1,6 @@
 # UBA Germany Air Quality Bridge Events
 
-This source bridges the Umweltbundesamt (UBA) `air_data/v3` API into Apache Kafka compatible brokers as structured JSON CloudEvents.
+UBA Airdata publishes pollutant concentration measurements from the Austrian Umweltbundesamt air-quality data service for Austrian air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `de.uba.airdata.Station`
 
 #### What it tells you
 
-Reference data for a UBA air quality monitoring station, including geographic position, station environment, and the denormalized monitoring network metadata published by the UBA air_data/v3 station catalog. Reference data for a station in the Umweltbundesamt air_data/v3 station catalog. The station payload describes the UBA station identifier, official station code, station naming, active period, WGS84 coordinates, the denormalized federal state monitoring network, and the station environment classification.
+Reference data for a UBA air quality monitoring station, including geographic position, station environment, and the denormalized monitoring network metadata published by the UBA air_data/v3 station catalog.
 
 #### Identity
 
@@ -109,7 +109,7 @@ CloudEvents type: `de.uba.airdata.Measure`
 
 #### What it tells you
 
-Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint. Hourly air quality measurement record from the UBA air_data/v3 measures endpoint. The upstream API returns measurements grouped by station and measurement start time for a requested component and averaging scope.
+Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.
 
 #### Identity
 
@@ -158,7 +158,7 @@ CloudEvents type: `de.uba.airdata.components.Component`
 
 #### What it tells you
 
-Reference data for an air pollutant component published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol, unit, and English display name. Reference data for a pollutant component from the UBA air_data/v3 components catalog. Each component defines the stable numeric component identifier, short code, published symbol, published unit string, and English display name.
+Reference data for an air pollutant component published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol, unit, and English display name.
 
 #### Identity
 

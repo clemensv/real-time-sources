@@ -1,6 +1,6 @@
 # GIOŚ Poland Air Quality Poller Events
 
-**GIOŚ Poland Air Quality Poller** polls the Polish Chief Inspectorate of Environmental Protection (GIOŚ) air quality API for station metadata, sensor reference data, hourly measurements, and air quality index values, and sends them to a Kafka topic as CloudEvents. The tool tracks previously seen measurement timestamps per sensor to avoid sending duplicates.
+GIOŚ Poland Air Quality publishes sensor readings and air-quality index values from Poland's Chief Inspectorate of Environmental Protection (GIOŚ) for Polish air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `pl.gov.gios.airquality.Station`
 
 #### What it tells you
 
-Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship. Reference record for a GIOŚ air quality monitoring station in Poland. Contains the station identifier, code, name, WGS84 coordinates, and administrative location (city, commune, district, voivodeship, street).
+Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship.
 
 #### Identity
 
@@ -95,7 +95,7 @@ CloudEvents type: `pl.gov.gios.airquality.Sensor`
 
 #### What it tells you
 
-Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures. Reference record for a sensor installed at a GIOŚ air quality station. Identifies the specific pollutant being measured (e.g.
+Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures.
 
 #### Identity
 
@@ -142,7 +142,7 @@ CloudEvents type: `pl.gov.gios.airquality.Measurement`
 
 #### What it tells you
 
-Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³. Hourly air quality measurement from a GIOŚ sensor. Reports the pollutant concentration in µg/m³ at a specific timestamp.
+Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³.
 
 #### Identity
 
@@ -187,7 +187,7 @@ CloudEvents type: `pl.gov.gios.airquality.AirQualityIndex`
 
 #### What it tells you
 
-Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃). Current Polish Air Quality Index (Indeks Jakości Powietrza) for a GIOŚ monitoring station. Includes the overall index value and category plus sub-indices for SO₂, NO₂, PM10, PM2.5, and O₃.
+Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃).
 
 #### Identity
 
