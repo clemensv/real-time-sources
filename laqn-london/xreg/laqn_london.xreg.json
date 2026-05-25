@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.kcl.laqn"
-      ]
+      ],
+      "description": "Kafka producer endpoint for London Air Quality Network CloudEvents on the `laqn-london` topic keyed by `{site_code}`."
     },
     "uk.kcl.laqn.species.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/uk.kcl.laqn.species"
-      ]
+      ],
+      "description": "Kafka producer endpoint for London Air Quality Network CloudEvents on the `laqn-london` topic keyed by `{species_code}`."
     }
   },
   "messagegroups": {
@@ -103,7 +105,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.DailyIndex"
         }
-      }
+      },
+      "description": "Events from London Air Quality Network covering London air-quality monitoring sites. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     },
     "uk.kcl.laqn.species": {
       "messages": {
@@ -126,7 +129,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Species"
         }
-      }
+      },
+      "description": "Events from London Air Quality Network covering London air-quality monitoring sites. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -151,7 +155,7 @@
                         "Site": {
                           "name": "Site",
                           "type": "object",
-                          "description": "Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.",
+                          "description": "LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.",
                           "properties": {
                             "site_code": {
                               "type": "string",
@@ -290,7 +294,7 @@
                         "Species": {
                           "name": "Species",
                           "type": "object",
-                          "description": "Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.",
+                          "description": "LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code.",
                           "properties": {
                             "species_code": {
                               "type": "string",
@@ -363,7 +367,7 @@
                         "Measurement": {
                           "name": "Measurement",
                           "type": "object",
-                          "description": "Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.",
+                          "description": "LAQN hourly pollutant measurement for a site and species at a GMT timestamp.",
                           "properties": {
                             "site_code": {
                               "type": "string",
@@ -428,7 +432,7 @@
                         "DailyIndex": {
                           "name": "DailyIndex",
                           "type": "object",
-                          "description": "Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.",
+                          "description": "LAQN Daily Air Quality Index (DAQI) for a site and pollutant, published as the latest London-wide bulletin.",
                           "properties": {
                             "site_code": {
                               "type": "string",
@@ -522,27 +526,32 @@
                   {
                     "name": "site_code",
                     "type": "string",
-                    "doc": "Stable LAQN site code that identifies the monitoring site, such as BX1."
+                    "doc": "Stable LAQN site code that identifies the monitoring site, such as BX1.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source."
                   },
                   {
                     "name": "site_name",
                     "type": "string",
-                    "doc": "Human-readable LAQN site name published for the monitoring site."
+                    "doc": "Human-readable LAQN site name published for the monitoring site.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source."
                   },
                   {
                     "name": "site_type",
                     "type": "string",
-                    "doc": "Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other."
+                    "doc": "Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source."
                   },
                   {
                     "name": "local_authority_code",
                     "type": "string",
-                    "doc": "Stable local authority code associated with the site in the LAQN reference data."
+                    "doc": "Stable local authority code associated with the site in the LAQN reference data.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "local_authority_name",
                     "type": "string",
-                    "doc": "Human-readable local authority name associated with the site in the LAQN reference data."
+                    "doc": "Human-readable local authority name associated with the site in the LAQN reference data.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "latitude",
@@ -551,7 +560,8 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank."
+                    "doc": "WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "longitude",
@@ -560,12 +570,14 @@
                       "double"
                     ],
                     "default": null,
-                    "doc": "WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank."
+                    "doc": "WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "date_opened",
                     "type": "string",
-                    "doc": "Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format."
+                    "doc": "Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "date_closed",
@@ -574,19 +586,23 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published."
+                    "doc": "Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "data_owner",
                     "type": "string",
-                    "doc": "Organisation listed by LAQN as the owner of the site's data."
+                    "doc": "Organisation listed by LAQN as the owner of the site's data.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "data_manager",
                     "type": "string",
-                    "doc": "Organisation listed by LAQN as the manager of the monitoring site data."
+                    "doc": "Organisation listed by LAQN as the manager of the monitoring site data.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   }
-                ]
+                ],
+                "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source."
               }
             }
           }
@@ -607,29 +623,35 @@
                   {
                     "name": "species_code",
                     "type": "string",
-                    "doc": "Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO."
+                    "doc": "Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "species_name",
                     "type": "string",
-                    "doc": "Human-readable pollutant name published by LAQN for the pollutant code."
+                    "doc": "Human-readable pollutant name published by LAQN for the pollutant code.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "description",
                     "type": "string",
-                    "doc": "LAQN explanatory description of the pollutant and how it is formed or encountered."
+                    "doc": "LAQN explanatory description of the pollutant and how it is formed or encountered.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "health_effect",
                     "type": "string",
-                    "doc": "LAQN health effect guidance describing the health impacts associated with exposure to the pollutant."
+                    "doc": "LAQN health effect guidance describing the health impacts associated with exposure to the pollutant.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "link",
                     "type": "string",
-                    "doc": "HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant."
+                    "doc": "HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
               }
             }
           }
@@ -650,24 +672,29 @@
                   {
                     "name": "site_code",
                     "type": "string",
-                    "doc": "Stable LAQN site code for the monitoring site that produced the measurement."
+                    "doc": "Stable LAQN site code for the monitoring site that produced the measurement.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source."
                   },
                   {
                     "name": "species_code",
                     "type": "string",
-                    "doc": "Stable LAQN pollutant code for the measured species."
+                    "doc": "Stable LAQN pollutant code for the measured species.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "measurement_date_gmt",
                     "type": "string",
-                    "doc": "Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS."
+                    "doc": "Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "value",
                     "type": "double",
-                    "doc": "Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value."
+                    "doc": "Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
               }
             }
           }
@@ -688,39 +715,51 @@
                   {
                     "name": "site_code",
                     "type": "string",
-                    "doc": "Stable LAQN site code for the monitoring site to which the daily index applies."
+                    "doc": "Stable LAQN site code for the monitoring site to which the daily index applies.",
+                    "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source."
                   },
                   {
                     "name": "bulletin_date",
                     "type": "string",
-                    "doc": "Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS."
+                    "doc": "Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "species_code",
                     "type": "string",
-                    "doc": "Stable LAQN pollutant code for the species to which the daily index applies."
+                    "doc": "Stable LAQN pollutant code for the species to which the daily index applies.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "air_quality_index",
                     "type": "int",
-                    "doc": "LAQN Daily Air Quality Index value from 1 to 10."
+                    "doc": "LAQN Daily Air Quality Index value from 1 to 10.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "air_quality_band",
                     "type": "string",
-                    "doc": "Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High."
+                    "doc": "Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   },
                   {
                     "name": "index_source",
                     "type": "string",
-                    "doc": "Origin of the daily index published by LAQN, typically Measurement or Forecast."
+                    "doc": "Origin of the daily index published by LAQN, typically Measurement or Forecast.",
+                    "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
                   }
-                ]
+                ],
+                "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "London Air Quality Network publishes pollutant concentration measurements from the London Air Quality Network for London air-quality monitoring sites. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for London Air Quality Network, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

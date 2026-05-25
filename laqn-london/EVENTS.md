@@ -1,6 +1,6 @@
 # LAQN London Air Quality Network Events
 
-The LAQN London Air Quality Network bridge polls the public LAQN API operated by King's College London and emits structured JSON CloudEvents to Kafka. It keeps the upstream split intact: site metadata, species metadata, hourly site measurements, and Daily Air Quality Index bulletin records.
+London Air Quality Network publishes pollutant concentration measurements from the London Air Quality Network for London air-quality monitoring sites. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `uk.kcl.laqn.Site`
 
 #### What it tells you
 
-LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates. Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.
+LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.
 
 #### Identity
 
@@ -104,7 +104,7 @@ CloudEvents type: `uk.kcl.laqn.Measurement`
 
 #### What it tells you
 
-LAQN hourly pollutant measurement for a site and species at a GMT timestamp. Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.
+LAQN hourly pollutant measurement for a site and species at a GMT timestamp.
 
 #### Identity
 
@@ -147,7 +147,7 @@ CloudEvents type: `uk.kcl.laqn.DailyIndex`
 
 #### What it tells you
 
-LAQN Daily Air Quality Index (DAQI) for a site and pollutant, published as the latest London-wide bulletin. Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.
+LAQN Daily Air Quality Index (DAQI) for a site and pollutant, published as the latest London-wide bulletin.
 
 #### Identity
 
@@ -204,7 +204,7 @@ CloudEvents type: `uk.kcl.laqn.Species`
 
 #### What it tells you
 
-LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code. Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.
+LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code.
 
 #### Identity
 
