@@ -224,3 +224,20 @@ every MQTT 5 broker.
 
 See `CONTAINER.md` for the full deployment contract (environment
 variables, broker examples, subscription patterns).
+
+## AMQP 1.0 companion feeder
+
+This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `nve_hydro_amqp/`, uses the generated `nve_hydro_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `nve-hydro`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
+
+Build and run locally:
+
+```bash
+docker build -f Dockerfile.amqp -t nve-hydro-amqp .
+docker run --rm \
+  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/nve-hydro \
+  -e ONCE_MODE=true \
+  nve-hydro-amqp
+```
+
+For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=nve-hydro`.
+

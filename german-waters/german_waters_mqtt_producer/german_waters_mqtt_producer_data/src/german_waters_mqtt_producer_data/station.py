@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the German Waters source.
     
     Attributes:
         station_id (str)
@@ -179,19 +179,19 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='eakjxwnipngtqmluxwif',
-            station_name='pimgxeucxgrorhimhbrk',
-            water_body='rqifdaajrjonpbjejkyq',
-            state='sljtpyvodqpsjnywzrlj',
-            region='zsqhdogzuclflxhiphvz',
-            provider='asziziigzhnfbxdqcoko',
-            latitude=float(64.48818576212577),
-            longitude=float(20.34850513014034),
-            river_km=float(56.530640306623766),
-            altitude=float(98.8244265541659),
-            station_type='lpovzkudoegyfqeawhfs',
-            warn_level_cm=float(13.28843227366171),
-            alarm_level_cm=float(62.7120745244371),
-            warn_level_m3s=float(50.03185921009104),
-            alarm_level_m3s=float(3.810150209169272)
+            station_id='cqegmpghgkhfxipgpzma',
+            station_name='zomoifinwojpddlilfgi',
+            water_body='gqjyvnoiqcoqqnzsfkyg',
+            state='lbglpaaqegwdqahtcjxo',
+            region='bmllcvlplwzeyienhcky',
+            provider='bcjiawepltiotzfwilkm',
+            latitude=float(5.366119470433439),
+            longitude=float(72.45821740165457),
+            river_km=float(61.733840224289125),
+            altitude=float(50.01135870156269),
+            station_type='jckweffbpjfrsrmlokbd',
+            warn_level_cm=float(35.84511796483045),
+            alarm_level_cm=float(87.61262732202096),
+            warn_level_m3s=float(42.899513130180914),
+            alarm_level_m3s=float(38.21384646804788)
         )

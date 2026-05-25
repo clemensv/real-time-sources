@@ -43,6 +43,28 @@
         "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for SMHI Hydrological Data CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "SE.Gov.SMHI.Hydro.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/smhi-hydro"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/SE.Gov.SMHI.Hydro.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for smhi-hydro CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/discharge",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.amqp": {
+      "description": "AMQP 1.0 variant of the smhi-hydro events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "SE.Gov.SMHI.Hydro.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "catchment_name": {
+                "type": "uritemplate",
+                "value": "{catchment_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (catchment_name)."
+              }
+            }
+          }
+        },
+        "SE.Gov.SMHI.Hydro.amqp.DischargeObservation": {
+          "name": "DischargeObservation",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "catchment_name": {
+                "type": "uritemplate",
+                "value": "{catchment_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (catchment_name)."
+              }
+            }
           }
         }
       }

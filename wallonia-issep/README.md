@@ -92,3 +92,20 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwallonia-issep%2Fazure-template-with-eventhub.json)
+
+## AMQP 1.0 companion feeder
+
+This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `wallonia_issep_amqp/`, uses the generated `wallonia_issep_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `wallonia-issep`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
+
+Build and run locally:
+
+```bash
+docker build -f Dockerfile.amqp -t wallonia-issep-amqp .
+docker run --rm \
+  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/wallonia-issep \
+  -e ONCE_MODE=true \
+  wallonia-issep-amqp
+```
+
+For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=wallonia-issep`.
+

@@ -43,6 +43,28 @@
         "#/messagegroups/be.issep.airquality.Sensors.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for Wallonia ISSeP Air Quality CloudEvents using the source topic hierarchy and retain settings declared in this manifest."
+    },
+    "be.issep.airquality.Sensors.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/wallonia-issep"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/be.issep.airquality.Sensors.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for wallonia-issep CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "air-quality/be/issep/wallonia-issep/{province}/{configuration_id}/observation",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.amqp": {
+      "description": "AMQP 1.0 variant of the wallonia-issep events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "be.issep.airquality.Sensors.amqp.SensorConfiguration": {
+          "name": "SensorConfiguration",
+          "basemessageurl": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.SensorConfiguration",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{configuration_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (province)."
+              }
+            }
+          }
+        },
+        "be.issep.airquality.Sensors.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{configuration_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (province)."
+              }
+            }
           }
         }
       }

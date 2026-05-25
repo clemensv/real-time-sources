@@ -207,3 +207,62 @@ Exit after one polling cycle. Set to `1`, `true`, or `yes`.
 
 Path to the deduplication state file. Default: `~/.rws_waterwebservices_mqtt_state.json`.
 
+## AMQP 1.0 image
+
+Image: `ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest`
+
+The AMQP image publishes the same reference and telemetry CloudEvents as the Kafka and MQTT variants, but targets queue-oriented AMQP 1.0 consumers such as ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, Azure Service Bus, and Azure Event Hubs.
+
+### Generic AMQP broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/rws-waterwebservices \
+  -e AMQP_AUTH_MODE=password \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra CBS)
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=<namespace>.servicebus.windows.net \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS=rws-waterwebservices \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
+```
+
+### Service Bus emulator / SAS CBS
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=servicebus-emulator \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=rws-waterwebservices \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey \
+  -e AMQP_SAS_KEY=<emulator-key> \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
+```
+
+### AMQP environment variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `AMQP_BROKER_URL` | Full AMQP URL; path becomes the address when present. | empty |
+| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when not using `AMQP_BROKER_URL`. | `localhost` / `5672` or `5671` with TLS |
+| `AMQP_ADDRESS` | Queue, topic, or event hub name. | `rws-waterwebservices` |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | empty |
+| `AMQP_TLS` | Enable TLS for AMQP. | `false` (`true` for Entra deployments) |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
+| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS Entra auth. | `https://servicebus.azure.net/.default` |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. | empty |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy and key for CBS SAS auth / emulator. | empty |
+| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
+| `MOCK_MODE` | Emit deterministic reference + telemetry mock events and exit; used by Docker E2E. | `false` |
+
+Deploy to Azure with `azure-template-with-servicebus.json` (mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus namespace and queue, user-assigned managed identity, Data Sender role assignment, ACI container group, Log Analytics workspace, and Azure Files state share.
+

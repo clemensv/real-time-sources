@@ -155,7 +155,9 @@ de_waters_hydrology_mqtt_station_async:  Callable[[PartitionContext, EventData, 
 
 make test
 
-```Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.Station`:
+```Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.Station`: A reference record for one German state water
+monitoring station published by German state open data portals. It fires when the bridge publishes or refreshes the
+station catalog so consumers can interpret measurement events.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -198,7 +200,9 @@ WaterLevelObservation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.WaterLevelObservation`:
+```Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.WaterLevelObservation`: A current measurement from German
+state open data portals for one monitoring site. It carries water level and discharge observations when the upstream
+feed reports a new or refreshed value.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

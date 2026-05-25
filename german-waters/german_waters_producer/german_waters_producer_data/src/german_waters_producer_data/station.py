@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the German Waters source.
     
     Attributes:
         station_id (str)
@@ -40,7 +40,7 @@ class Station:
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\"}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"river_km\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"altitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"station_type\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"warn_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"warn_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}]}"
+        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the German Waters source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Stable identifier assigned by the upstream provider for the monitoring station or site.\"}, {\"name\": \"station_name\", \"type\": \"string\", \"doc\": \"Human-readable name of the monitoring station.\"}, {\"name\": \"water_body\", \"type\": \"string\", \"doc\": \"Provider-supplied water body value for this record.\"}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"doc\": \"State, province, or region containing the station.\", \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"string\"], \"doc\": \"Provider-supplied region value for this record.\", \"default\": null}, {\"name\": \"provider\", \"type\": \"string\", \"doc\": \"Provider-supplied provider value for this record.\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"doc\": \"Latitude of the station in WGS 84 coordinates.\", \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"doc\": \"Longitude of the station in WGS 84 coordinates.\", \"default\": null}, {\"name\": \"river_km\", \"type\": [\"null\", \"double\"], \"doc\": \"Provider-supplied river km value for this record.\", \"default\": null}, {\"name\": \"altitude\", \"type\": [\"null\", \"double\"], \"doc\": \"Provider-supplied altitude value for this record.\", \"default\": null}, {\"name\": \"station_type\", \"type\": [\"null\", \"string\"], \"doc\": \"Provider-supplied station type value for this record.\", \"default\": null}, {\"name\": \"warn_level_cm\", \"type\": [\"null\", \"double\"], \"doc\": \"Provider-supplied warn level cm value for this record.\", \"default\": null}, {\"name\": \"alarm_level_cm\", \"type\": [\"null\", \"double\"], \"doc\": \"Provider-supplied alarm level cm value for this record.\", \"default\": null}, {\"name\": \"warn_level_m3s\", \"type\": [\"null\", \"double\"], \"doc\": \"Provider-supplied warn level m3s value for this record.\", \"default\": null}, {\"name\": \"alarm_level_m3s\", \"type\": [\"null\", \"double\"], \"doc\": \"Provider-supplied alarm level m3s value for this record.\", \"default\": null}]}"
     )
     
     
@@ -269,19 +269,19 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='qzpnpzonbqteubaosmmy',
-            station_name='agewzytsnmhvyfklphav',
-            water_body='dwiyqiuawdynxdzilrlj',
-            state='ozsdcxbyedeeznjccfbz',
-            region='akkxbbmougbwhjvoykps',
-            provider='ueyaxdporhvwnzaiqivk',
-            latitude=float(68.90349861976425),
-            longitude=float(87.51844962742975),
-            river_km=float(97.52917537581185),
-            altitude=float(66.24783751053795),
-            station_type='lhzskhdxlsjkavlwyvdh',
-            warn_level_cm=float(80.82965976388567),
-            alarm_level_cm=float(54.92113975744053),
-            warn_level_m3s=float(61.75023322032087),
-            alarm_level_m3s=float(86.44185070876027)
+            station_id='qyyjacdurtdihrirtcoa',
+            station_name='vfbdliwrochmbnrkjjlg',
+            water_body='siqyrckjawawfrqgtxho',
+            state='nwqxzbotcgtxqraummdn',
+            region='ybcqpfjbchyvghjxrqwz',
+            provider='pisdauelwpocwluesxuy',
+            latitude=float(86.99018389503213),
+            longitude=float(63.335812681782045),
+            river_km=float(72.21979187860978),
+            altitude=float(44.97665521641734),
+            station_type='lnybulguzjdrlltgeriv',
+            warn_level_cm=float(90.2450475095844),
+            alarm_level_cm=float(26.925948181352478),
+            warn_level_m3s=float(8.843125707510502),
+            alarm_level_m3s=float(22.247370142366506)
         )

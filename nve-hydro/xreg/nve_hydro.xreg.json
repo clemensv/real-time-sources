@@ -43,6 +43,28 @@
         "#/messagegroups/NO.NVE.Hydrology.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for NVE Hydrology CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "NO.NVE.Hydrology.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/nve-hydro"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NO.NVE.Hydrology.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for nve-hydro CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "hydro/no/nve/nve-hydro/{river_name}/{station_id}/water-level",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "NO.NVE.Hydrology.amqp": {
+      "description": "AMQP 1.0 variant of the nve-hydro events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "NO.NVE.Hydrology.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "river_name": {
+                "type": "uritemplate",
+                "value": "{river_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (river_name)."
+              }
+            }
+          }
+        },
+        "NO.NVE.Hydrology.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "river_name": {
+                "type": "uritemplate",
+                "value": "{river_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (river_name)."
+              }
+            }
           }
         }
       }

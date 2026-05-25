@@ -43,6 +43,28 @@
         "#/messagegroups/DE.Waters.Hydrology.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for German Waters CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "DE.Waters.Hydrology.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/german-waters"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.Waters.Hydrology.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for german-waters CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "DE.Waters.Hydrology.amqp": {
+      "description": "AMQP 1.0 variant of the german-waters events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "DE.Waters.Hydrology.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "water_body": {
+                "type": "uritemplate",
+                "value": "{water_body}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body)."
+              }
+            }
+          }
+        },
+        "DE.Waters.Hydrology.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "water_body": {
+                "type": "uritemplate",
+                "value": "{water_body}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body)."
+              }
+            }
           }
         }
       }
@@ -263,11 +332,11 @@
                     "description": "Time associated with the discharge measurement."
                   },
                   "trend": {
-                    "type": "int32",
+                    "type": ["int32", "null"],
                     "description": "Provider-supplied trend value for this record."
                   },
                   "situation": {
-                    "type": "int32",
+                    "type": ["int32", "null"],
                     "description": "Provider-supplied situation value for this record."
                   }
                 },

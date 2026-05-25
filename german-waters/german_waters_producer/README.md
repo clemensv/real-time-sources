@@ -17,7 +17,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - DEWatersHydrologyEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    DEWatersHydrologyMqttEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    DEWatersHydrologyMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DEWatersHydrologyAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +47,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - DEWatersHydrologyMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DEWatersHydrologyAmqpProducersolution for event-driven applications.
 
 
 
@@ -153,7 +159,9 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `DE.Waters.Hydrology.Station`:
+Asynchronous handler hook for `DE.Waters.Hydrology.Station`: A reference record for one German state water monitoring
+station published by German state open data portals. It fires when the bridge publishes or refreshes the station catalog
+so consumers can interpret measurement events.
 
 ## Generated Producer Classes
 
@@ -233,6 +241,43 @@ de_waters_hydrology_mqtt_dispatcher.de_waters_hydrology_station_async = de_water
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyAmqpProducer- `data`: The event data of type `german_waters_producer_data.Station`.
+
+
+
+Producer for `DE.Waters.Hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DEWatersHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_amqp_dispatcher.de_waters_hydrology_station_async = de_waters_hydrology_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -252,7 +297,9 @@ CloudEvent, WaterLevelObservation], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `DE.Waters.Hydrology.WaterLevelObservation`:
+Asynchronous handler hook for `DE.Waters.Hydrology.WaterLevelObservation`: A current measurement from German state open
+data portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a
+new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -336,6 +383,45 @@ de_waters_hydrology_water_level_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyAmqpProducer- `data`: The event data of type `german_waters_producer_data.WaterLevelObservation`.
+
+
+
+Producer for `DE.Waters.Hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_water_level_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelObservation) -> None:
+
+```python    # Process the event data
+
+DEWatersHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_amqp_dispatcher.de_waters_hydrology_water_level_observation_async =
+de_waters_hydrology_water_level_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -372,7 +458,9 @@ async def send_de_waters_hydrology_station(
 
 
 
-Send a single `DE.Waters.Hydrology.Station` message.Args:
+Send a single `DE.Waters.Hydrology.Station` message. A reference record for one German state water monitoring station
+published by German state open data portals. It fires when the bridge publishes or refreshes the station catalog so
+consumers can interpret measurement events.Args:
 
 - `record`: The Kafka record.
 
@@ -475,7 +563,9 @@ async def send_de_waters_hydrology_water_level_observation(
 
 
 
-Send a single `DE.Waters.Hydrology.WaterLevelObservation` message.Args:
+Send a single `DE.Waters.Hydrology.WaterLevelObservation` message. A current measurement from German state open data
+portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new
+or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -655,7 +745,9 @@ Station], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.Station`:
+Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.Station`: A reference record for one German state water
+monitoring station published by German state open data portals. It fires when the bridge publishes or refreshes the
+station catalog so consumers can interpret measurement events.
 
 ## Generated Producer Classes
 
@@ -737,6 +829,44 @@ de_waters_hydrology_mqtt_dispatcher.de_waters_hydrology_mqtt_station_async = de_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyAmqpProducer- `data`: The event data of type `german_waters_producer_data.Station`.
+
+
+
+Producer for `DE.Waters.Hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+DEWatersHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_amqp_dispatcher.de_waters_hydrology_mqtt_station_async = de_waters_hydrology_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -756,7 +886,9 @@ CloudEvent, WaterLevelObservation], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.WaterLevelObservation`:
+Asynchronous handler hook for `DE.Waters.Hydrology.mqtt.WaterLevelObservation`: A current measurement from German state
+open data portals for one monitoring site. It carries water level and discharge observations when the upstream feed
+reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -840,6 +972,45 @@ de_waters_hydrology_mqtt_water_level_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyAmqpProducer- `data`: The event data of type `german_waters_producer_data.WaterLevelObservation`.
+
+
+
+Producer for `DE.Waters.Hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_mqtt_water_level_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelObservation) -> None:
+
+```python    # Process the event data
+
+DEWatersHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_amqp_dispatcher.de_waters_hydrology_mqtt_water_level_observation_async =
+de_waters_hydrology_mqtt_water_level_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -876,7 +1047,9 @@ async def send_de_waters_hydrology_mqtt_station(
 
 
 
-Send a single `DE.Waters.Hydrology.mqtt.Station` message.Args:
+Send a single `DE.Waters.Hydrology.mqtt.Station` message. A reference record for one German state water monitoring
+station published by German state open data portals. It fires when the bridge publishes or refreshes the station catalog
+so consumers can interpret measurement events.Args:
 
 - `record`: The Kafka record.
 
@@ -979,7 +1152,9 @@ async def send_de_waters_hydrology_mqtt_water_level_observation(
 
 
 
-Send a single `DE.Waters.Hydrology.mqtt.WaterLevelObservation` message.Args:
+Send a single `DE.Waters.Hydrology.mqtt.WaterLevelObservation` message. A current measurement from German state open
+data portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a
+new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -1037,6 +1212,595 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_de_waters_hydrology_mqtt_water_level_observation_batch(```
+
+    messages=[
+
+        WaterLevelObservation(...),Initializes the runner with a Kafka consumer.
+
+        WaterLevelObservation(...),
+
+        WaterLevelObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DEWatersHydrologyAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DEWatersHydrologyAmqpEventDispatcher` handles events for the DE.Waters.Hydrology.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from german_waters_producer import DEWatersHydrologyProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DEWatersHydrologyProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_waters_hydrology_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DEWatersHydrologyAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DEWatersHydrologyProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_waters_hydrology_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_waters_hydrology_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Waters.Hydrology.amqp.Station`: A reference record for one German state water
+monitoring station published by German state open data portals. It fires when the bridge publishes or refreshes the
+station catalog so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyProducer- `data`: The event data of type `german_waters_producer_data.Station`.
+
+
+
+Producer for `DE.Waters.Hydrology` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+DEWatersHydrologyProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_dispatcher.de_waters_hydrology_amqp_station_async = de_waters_hydrology_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyMqttProducer- `data`: The event data of type `german_waters_producer_data.Station`.
+
+
+
+Producer for `DE.Waters.Hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+DEWatersHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_mqtt_dispatcher.de_waters_hydrology_amqp_station_async = de_waters_hydrology_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyAmqpProducer- `data`: The event data of type `german_waters_producer_data.Station`.
+
+
+
+Producer for `DE.Waters.Hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+DEWatersHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_amqp_dispatcher.de_waters_hydrology_amqp_station_async = de_waters_hydrology_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_waters_hydrology_amqp_water_level_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_waters_hydrology_amqp_water_level_observation_async:  Callable[[ConsumerRecord,
+CloudEvent, WaterLevelObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Waters.Hydrology.amqp.WaterLevelObservation`: A current measurement from German state
+open data portals for one monitoring site. It carries water level and discharge observations when the upstream feed
+reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyProducer- `data`: The event data of type `german_waters_producer_data.WaterLevelObservation`.
+
+
+
+Producer for `DE.Waters.Hydrology` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_amqp_water_level_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelObservation) -> None:
+
+```python    # Process the event data
+
+DEWatersHydrologyProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_dispatcher.de_waters_hydrology_amqp_water_level_observation_async =
+de_waters_hydrology_amqp_water_level_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyMqttProducer- `data`: The event data of type `german_waters_producer_data.WaterLevelObservation`.
+
+
+
+Producer for `DE.Waters.Hydrology.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_amqp_water_level_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelObservation) -> None:
+
+```python    # Process the event data
+
+DEWatersHydrologyMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_mqtt_dispatcher.de_waters_hydrology_amqp_water_level_observation_async =
+de_waters_hydrology_amqp_water_level_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEWatersHydrologyAmqpProducer- `data`: The event data of type `german_waters_producer_data.WaterLevelObservation`.
+
+
+
+Producer for `DE.Waters.Hydrology.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_waters_hydrology_amqp_water_level_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterLevelObservation) -> None:
+
+```python    # Process the event data
+
+DEWatersHydrologyAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_waters_hydrology_amqp_dispatcher.de_waters_hydrology_amqp_water_level_observation_async =
+de_waters_hydrology_amqp_water_level_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_waters_hydrology_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_waters_hydrology_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Waters.Hydrology.amqp.Station` message. A reference record for one German state water monitoring
+station published by German state open data portals. It fires when the bridge publishes or refreshes the station catalog
+so consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_waters_hydrology_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Waters.Hydrology.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_waters_hydrology_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_waters_hydrology_amqp_water_level_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_waters_hydrology_amqp_water_level_observation(
+
+    self,##### `_process_event`
+
+    data: WaterLevelObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Waters.Hydrology.amqp.WaterLevelObservation` message. A current measurement from German state open
+data portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a
+new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WaterLevelObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_waters_hydrology_amqp_water_level_observation(
+
+    data=WaterLevelObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Waters.Hydrology.amqp.WaterLevelObservation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_waters_hydrology_amqp_water_level_observation_batch(```
 
     messages=[
 

@@ -43,6 +43,28 @@
         "#/messagegroups/CH.BAFU.Hydrology.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for BAFU Hydrology CloudEvents using the source's documented topic hierarchy and retain settings."
+    },
+    "CH.BAFU.Hydrology.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/bafu-hydro"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CH.BAFU.Hydrology.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for bafu-hydro CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -110,6 +132,53 @@
             "topic_name": "hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/water-level",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "CH.BAFU.Hydrology.amqp": {
+      "description": "AMQP 1.0 variant of the bafu-hydro events. It carries the same reference and telemetry semantics for queue-oriented AMQP consumers and Azure Service Bus.",
+      "messages": {
+        "CH.BAFU.Hydrology.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "water_body_name": {
+                "type": "uritemplate",
+                "value": "{water_body_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body_name)."
+              }
+            }
+          }
+        },
+        "CH.BAFU.Hydrology.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "water_body_name": {
+                "type": "uritemplate",
+                "value": "{water_body_name}",
+                "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body_name)."
+              }
+            }
           }
         }
       }
