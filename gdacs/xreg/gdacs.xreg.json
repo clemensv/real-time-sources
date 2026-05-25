@@ -41,6 +41,31 @@
         }
       ],
       "description": "MQTT 5 producer endpoint for GDACS CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "GDACS.Alerts.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqp://localhost:5672/gdacs"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "gdacs"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/GDACS.Alerts.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -80,6 +105,55 @@
             "qos": 1,
             "retain": false
           }
+        }
+      }
+    },
+    "GDACS.Alerts.amqp": {
+      "description": "AMQP 1.0 transport variants for gdacs. All CloudEvents are published to the gdacs address; the subject and application properties mirror the existing Kafka key and MQTT routing axes.",
+      "messages": {
+        "GDACS.Alerts.amqp.DisasterAlert": {
+          "name": "DisasterAlert",
+          "basemessageurl": "/messagegroups/GDACS.Alerts/messages/GDACS.DisasterAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_type}/{event_id}",
+                "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
+              }
+            },
+            "application_properties": {
+              "event_type": {
+                "type": "uritemplate",
+                "value": "{event_type}",
+                "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "event_id": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP application property mirroring the event_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "alert_color": {
+                "type": "uritemplate",
+                "value": "{alert_color}",
+                "description": "AMQP application property mirroring the alert_color routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              },
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "AMQP application property mirroring the country routing axis from the Kafka subject/MQTT topic for broker-side filtering."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{event_type}/{event_id}",
+                "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports."
+              }
+            }
+          },
+          "messageid": "GDACS.Alerts.amqp.DisasterAlert"
         }
       }
     }

@@ -43,6 +43,28 @@
         "#/messagegroups/BR.INPE.DETER.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for INPE DETER Brazil CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
+    },
+    "BR.INPE.DETER.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/inpe-deter-brazil"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BR.INPE.DETER.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for inpe-deter-brazil CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -87,6 +109,25 @@
             "qos": 1,
             "retain": false,
             "message_expiry_interval": 604800
+          }
+        }
+      }
+    },
+    "BR.INPE.DETER.amqp": {
+      "description": "AMQP 1.0 transport variant for inpe-deter-brazil events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "BR.INPE.DETER.amqp.DeforestationAlert": {
+          "name": "DeforestationAlert",
+          "basemessageurl": "/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{biome}/{alert_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
           }
         }
       }

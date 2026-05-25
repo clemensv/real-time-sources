@@ -49,18 +49,6 @@ def main():
         # print("WeatherWarning message sent successfully!")
         
         
-        
-        # Send TsunamiAlert message
-        print("Sending TsunamiAlert message...")
-        # TODO: Create a TsunamiAlert instance with actual data
-        # data = TsunamiAlert(...)
-        # producer.send_tsunami_alert(
-        #     data=data,
-        #     content_type="application/json"
-        # )
-        # print("TsunamiAlert message sent successfully!")
-        
-        
         print("\nAll messages sent successfully!")
         
     except Exception as e:

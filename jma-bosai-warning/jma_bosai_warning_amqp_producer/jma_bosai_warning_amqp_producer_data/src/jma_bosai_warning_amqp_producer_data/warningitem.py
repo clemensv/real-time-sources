@@ -161,9 +161,9 @@ class WarningItem:
             An instance of the dataclass.
         """
         return cls(
-            code='rlrioageenukqbafxjmn',
-            code_description_jp='npiwmgjwnktgilcgtomt',
-            code_description_en='dxamctfdjmqtmlutlfew',
+            code='etjdsfihjsagclxztdtc',
+            code_description_jp='mjdxtuemcandzowgbish',
+            code_description_en='ysqyjaihjgbrfbvulyxn',
             status=StatusEnum.ISSUED,
-            severity=SeverityEnum.advisory
+            severity=SeverityEnum.REFERENCE
         )

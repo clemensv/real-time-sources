@@ -259,8 +259,6 @@ class TestJPJMAQuakeAmqpProducer:
                     _feedurl="value",
                     _event_id="value",
                     _serial="value",
-                    _prefecture="value",
-                    _magnitude_bucket="value",
                     content_type="application/json"
                 )
 
@@ -289,8 +287,6 @@ class TestJPJMAQuakeAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "jp.jma.quake/{event_id}/{serial}".format(event_id="value", serial="value")
-                assert properties.get('prefecture') == "{prefecture}".format(prefecture="value")
-                assert properties.get('magnitude_bucket') == "{magnitude_bucket}".format(magnitude_bucket="value")
         finally:
             producer.close()
 

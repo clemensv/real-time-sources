@@ -31,18 +31,16 @@
       "envelopeoptions": {
         "mode": "binary"
       },
-      "protocoloptions": {
-        "deployed": false,
-        "endpoints": [
-          {
-            "uri": "mqtt://localhost:1883"
-          }
-        ]
-      },
       "messagegroups": [
         "#/messagegroups/JP.JMA.Quake.mqtt"
       ],
-      "description": "MQTT/5.0 producer endpoint for jma-bosai-quake CloudEvents."
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "description": "MQTT 5 producer endpoint for JMA Bosai Earthquake CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     },
     "JP.JMA.Quake.Amqp": {
       "usage": [
@@ -64,7 +62,7 @@
       "messagegroups": [
         "#/messagegroups/JP.JMA.Quake.amqp"
       ],
-      "description": "AMQP/1.0 producer endpoint for jma-bosai-quake CloudEvents."
+      "description": "AMQP 1.0 producer endpoint for jma-bosai-quake CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -94,7 +92,7 @@
       "description": "Events from JMA Bosai Earthquake covering Japanese earthquake report areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "JP.JMA.Quake.mqtt": {
-      "description": "MQTT 5 variant of jma-bosai-quake events with UNS topic routing.",
+      "description": "MQTT 5 variant of the JMA Bosai Earthquake events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "JP.JMA.Quake.mqtt.EarthquakeReport": {
           "name": "EarthquakeReport",
@@ -109,7 +107,7 @@
       }
     },
     "JP.JMA.Quake.amqp": {
-      "description": "AMQP 1.0 variant of jma-bosai-quake events for queue-oriented consumers.",
+      "description": "AMQP 1.0 transport variant for jma-bosai-quake events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
       "messages": {
         "JP.JMA.Quake.amqp.EarthquakeReport": {
           "name": "EarthquakeReport",
@@ -120,19 +118,7 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.jma.quake/{event_id}/{serial}",
-                "description": "AMQP message subject matching the CloudEvent subject."
-              }
-            },
-            "application_properties": {
-              "prefecture": {
-                "type": "uritemplate",
-                "value": "{prefecture}",
-                "description": "prefecture routing axis carried in the event payload."
-              },
-              "magnitude_bucket": {
-                "type": "uritemplate",
-                "value": "{magnitude_bucket}",
-                "description": "magnitude_bucket routing axis carried in the event payload."
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
             }
           }
@@ -162,8 +148,8 @@
                   },
                   "magnitude_bucket": {
                     "type": "string",
-                    "description": "MQTT/AMQP routing bucket derived as m{floor(magnitude)} for 0 through 9; mx when magnitude is unknown.",
-                    "pattern": "^m([0-9]|x)$"
+                    "description": "MQTT routing bucket derived from the JMA magnitude. Values are magnitude-lt1, magnitude-1 through magnitude-8 for floor buckets, magnitude-9plus, or magnitude-unknown when the bulletin omits magnitude.",
+                    "pattern": "^magnitude-(unknown|lt1|[1-8]|9plus)$"
                   },
                   "event_id": {
                     "type": "string",

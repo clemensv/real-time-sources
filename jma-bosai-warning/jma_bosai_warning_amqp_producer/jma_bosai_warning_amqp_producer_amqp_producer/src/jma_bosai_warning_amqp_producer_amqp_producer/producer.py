@@ -396,7 +396,6 @@ class _CbsAzureHandler(MessagingHandler):
         self._pending.clear()
 from jma_bosai_warning_amqp_producer_data import Office
 from jma_bosai_warning_amqp_producer_data import WeatherWarning
-from jma_bosai_warning_amqp_producer_data import TsunamiAlert
 
 class JPJMAWarningAmqpProducer:
     """
@@ -604,9 +603,6 @@ class JPJMAWarningAmqpProducer:
         _feedurl: str,
         _office_code: str,
         _area_code: str,
-        _prefecture: str,
-        _severity: str,
-        _event: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `JP.JMA.Warning.amqp.Office` message
@@ -616,9 +612,6 @@ class JPJMAWarningAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _office_code (str): Value for placeholder office_code in attribute subject
             _area_code (str): Value for placeholder area_code in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _severity (str): Value for AMQP protocol option placeholder severity
-            _event (str): Value for AMQP protocol option placeholder event
             data (Office): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -664,9 +657,6 @@ class JPJMAWarningAmqpProducer:
         amqp_msg.subject = "jp.jma.warning/{office_code}/{area_code}".format(office_code=_office_code, area_code=_area_code)
 
         app_properties = {}
-        app_properties["prefecture"] = "{prefecture}".format(prefecture=_prefecture)
-        app_properties["severity"] = "{severity}".format(severity=_severity)
-        app_properties["event"] = "{event}".format(event=_event)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -683,9 +673,6 @@ class JPJMAWarningAmqpProducer:
         _feedurl: str,
         _office_code: str,
         _area_code: str,
-        _prefecture: str,
-        _severity: str,
-        _event: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `JP.JMA.Warning.amqp.Office` messages
@@ -695,9 +682,6 @@ class JPJMAWarningAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _office_code (str): Value for placeholder office_code in attribute subject
             _area_code (str): Value for placeholder area_code in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _severity (str): Value for AMQP protocol option placeholder severity
-            _event (str): Value for AMQP protocol option placeholder event
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -706,9 +690,6 @@ class JPJMAWarningAmqpProducer:
                 _feedurl=_feedurl,
                 _office_code=_office_code,
                 _area_code=_area_code,
-                _prefecture=_prefecture,
-                _severity=_severity,
-                _event=_event,
                 content_type=content_type)
     
     
@@ -717,9 +698,6 @@ class JPJMAWarningAmqpProducer:
         _feedurl: str,
         _office_code: str,
         _area_code: str,
-        _prefecture: str,
-        _severity: str,
-        _event: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `JP.JMA.Warning.amqp.WeatherWarning` message
@@ -729,9 +707,6 @@ class JPJMAWarningAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _office_code (str): Value for placeholder office_code in attribute subject
             _area_code (str): Value for placeholder area_code in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _severity (str): Value for AMQP protocol option placeholder severity
-            _event (str): Value for AMQP protocol option placeholder event
             data (WeatherWarning): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -777,9 +752,6 @@ class JPJMAWarningAmqpProducer:
         amqp_msg.subject = "jp.jma.warning/{office_code}/{area_code}".format(office_code=_office_code, area_code=_area_code)
 
         app_properties = {}
-        app_properties["prefecture"] = "{prefecture}".format(prefecture=_prefecture)
-        app_properties["severity"] = "{severity}".format(severity=_severity)
-        app_properties["event"] = "{event}".format(event=_event)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -796,9 +768,6 @@ class JPJMAWarningAmqpProducer:
         _feedurl: str,
         _office_code: str,
         _area_code: str,
-        _prefecture: str,
-        _severity: str,
-        _event: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `JP.JMA.Warning.amqp.WeatherWarning` messages
@@ -808,9 +777,6 @@ class JPJMAWarningAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _office_code (str): Value for placeholder office_code in attribute subject
             _area_code (str): Value for placeholder area_code in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _severity (str): Value for AMQP protocol option placeholder severity
-            _event (str): Value for AMQP protocol option placeholder event
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -819,116 +785,6 @@ class JPJMAWarningAmqpProducer:
                 _feedurl=_feedurl,
                 _office_code=_office_code,
                 _area_code=_area_code,
-                _prefecture=_prefecture,
-                _severity=_severity,
-                _event=_event,
-                content_type=content_type)
-    
-    
-    def send_tsunami_alert(self,
-        data: TsunamiAlert,
-        _feedurl: str,
-        _event_id: str,
-        _serial: str,
-        _prefecture: str,
-        _severity: str,
-        content_type: str = 'application/json') -> None:
-        """
-        Send the `JP.JMA.Warning.amqp.TsunamiAlert` message
-        JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.
-        
-        Args:
-            _feedurl (str): Value for placeholder feedurl in attribute source
-            _event_id (str): Value for placeholder event_id in attribute subject
-            _serial (str): Value for placeholder serial in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _severity (str): Value for AMQP protocol option placeholder severity
-            data (TsunamiAlert): The message data object
-            content_type (str): The content type of the message data (default: 'application/json')
-        """
-        # Build CloudEvent attributes
-        attributes = {
-            "type":
-            "JP.JMA.Tsunami.TsunamiAlert",
-            "source":
-            "{feedurl}".format(feedurl=_feedurl),
-            "subject":
-            "jp.jma.tsunami/{event_id}/{serial}".format(event_id=_event_id, serial=_serial),
-        }
-        
-        # Remove None values
-        attributes = {k: v for k, v in attributes.items() if v is not None}
-        
-        # Serialize data
-        byte_data = self._serialize_payload(data, content_type)
-        
-        # Create CloudEvent
-        cloud_event = CloudEvent(attributes, byte_data)
-        
-        # Convert to AMQP message based on content mode
-        if self.content_mode == 'structured':
-            headers, body = to_structured(cloud_event)
-            if isinstance(body, dict):
-                msg_body = json.dumps(body).encode('utf-8')
-            elif isinstance(body, bytes):
-                msg_body = body
-            else:
-                msg_body = str(body).encode('utf-8')
-            amqp_msg = Message(body=msg_body, inferred=True)
-            amqp_msg.content_type = self.format_type or headers.get('content-type')
-        else:  # binary mode
-            headers, body = to_binary(cloud_event)
-            if isinstance(body, str):
-                body = body.encode('utf-8')
-            amqp_msg = Message(body=body, inferred=True)
-            amqp_msg.content_type = content_type
-            if headers:
-                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
-        # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "jp.jma.tsunami/{event_id}/{serial}".format(event_id=_event_id, serial=_serial)
-
-        app_properties = {}
-        app_properties["prefecture"] = "{prefecture}".format(prefecture=_prefecture)
-        app_properties["severity"] = "{severity}".format(severity=_severity)
-        if app_properties:
-            if amqp_msg.properties is None:
-                amqp_msg.properties = {}
-            amqp_msg.properties.update(app_properties)
-        
-        # Send message
-        if getattr(self, "_handler", None) is not None:
-            self._send_via_reactor(amqp_msg)
-        else:
-            self._sender.send(amqp_msg)
-    
-    def send_tsunami_alert_batch(self,
-        data_array: typing.List[TsunamiAlert],
-        _feedurl: str,
-        _event_id: str,
-        _serial: str,
-        _prefecture: str,
-        _severity: str,
-        content_type: str = 'application/json') -> None:
-        """
-        Send multiple `JP.JMA.Warning.amqp.TsunamiAlert` messages
-        
-        Args:
-            data_array (typing.List[TsunamiAlert]): Array of message data objects
-            _feedurl (str): Value for placeholder feedurl in attribute source
-            _event_id (str): Value for placeholder event_id in attribute subject
-            _serial (str): Value for placeholder serial in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _severity (str): Value for AMQP protocol option placeholder severity
-            content_type (str): The content type of the message data
-        """
-        for data in data_array:
-            self.send_tsunami_alert(
-                data=data,
-                _feedurl=_feedurl,
-                _event_id=_event_id,
-                _serial=_serial,
-                _prefecture=_prefecture,
-                _severity=_severity,
                 content_type=content_type)
     
     

@@ -602,8 +602,6 @@ class JPJMAQuakeAmqpProducer:
         _feedurl: str,
         _event_id: str,
         _serial: str,
-        _prefecture: str,
-        _magnitude_bucket: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `JP.JMA.Quake.amqp.EarthquakeReport` message
@@ -613,8 +611,6 @@ class JPJMAQuakeAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _event_id (str): Value for placeholder event_id in attribute subject
             _serial (str): Value for placeholder serial in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _magnitude_bucket (str): Value for AMQP protocol option placeholder magnitude_bucket
             data (EarthquakeReport): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -660,8 +656,6 @@ class JPJMAQuakeAmqpProducer:
         amqp_msg.subject = "jp.jma.quake/{event_id}/{serial}".format(event_id=_event_id, serial=_serial)
 
         app_properties = {}
-        app_properties["prefecture"] = "{prefecture}".format(prefecture=_prefecture)
-        app_properties["magnitude_bucket"] = "{magnitude_bucket}".format(magnitude_bucket=_magnitude_bucket)
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
@@ -678,8 +672,6 @@ class JPJMAQuakeAmqpProducer:
         _feedurl: str,
         _event_id: str,
         _serial: str,
-        _prefecture: str,
-        _magnitude_bucket: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `JP.JMA.Quake.amqp.EarthquakeReport` messages
@@ -689,8 +681,6 @@ class JPJMAQuakeAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _event_id (str): Value for placeholder event_id in attribute subject
             _serial (str): Value for placeholder serial in attribute subject
-            _prefecture (str): Value for AMQP protocol option placeholder prefecture
-            _magnitude_bucket (str): Value for AMQP protocol option placeholder magnitude_bucket
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -699,8 +689,6 @@ class JPJMAQuakeAmqpProducer:
                 _feedurl=_feedurl,
                 _event_id=_event_id,
                 _serial=_serial,
-                _prefecture=_prefecture,
-                _magnitude_bucket=_magnitude_bucket,
                 content_type=content_type)
     
     

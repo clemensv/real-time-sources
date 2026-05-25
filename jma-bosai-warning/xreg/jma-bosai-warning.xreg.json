@@ -84,7 +84,7 @@
       "messagegroups": [
         "#/messagegroups/JP.JMA.Warning.amqp"
       ],
-      "description": "AMQP/1.0 producer endpoint for jma-bosai-warning CloudEvents."
+      "description": "AMQP 1.0 producer endpoint for jma-bosai-warning CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -180,21 +180,11 @@
             "qos": 1,
             "retain": false
           }
-        },
-        "JP.JMA.Warning.mqtt.TsunamiAlert": {
-          "name": "TsunamiAlert",
-          "basemessageurl": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
-          "protocol": "MQTT/5.0",
-          "protocoloptions": {
-            "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami",
-            "qos": 1,
-            "retain": false
-          }
         }
       }
     },
     "JP.JMA.Warning.amqp": {
-      "description": "AMQP 1.0 variant of JMA Bosai warning and tsunami events.",
+      "description": "AMQP 1.0 transport variant for jma-bosai-warning events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
       "messages": {
         "JP.JMA.Warning.amqp.Office": {
           "name": "Office",
@@ -205,24 +195,7 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.jma.warning/{office_code}/{area_code}",
-                "description": "AMQP message subject matching the CloudEvent subject."
-              }
-            },
-            "application_properties": {
-              "prefecture": {
-                "type": "uritemplate",
-                "value": "{prefecture}",
-                "description": "prefecture routing axis carried in the event payload."
-              },
-              "severity": {
-                "type": "uritemplate",
-                "value": "{severity}",
-                "description": "severity routing axis carried in the event payload."
-              },
-              "event": {
-                "type": "uritemplate",
-                "value": "{event}",
-                "description": "event routing axis carried in the event payload."
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
             }
           }
@@ -236,50 +209,7 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.jma.warning/{office_code}/{area_code}",
-                "description": "AMQP message subject matching the CloudEvent subject."
-              }
-            },
-            "application_properties": {
-              "prefecture": {
-                "type": "uritemplate",
-                "value": "{prefecture}",
-                "description": "prefecture routing axis carried in the event payload."
-              },
-              "severity": {
-                "type": "uritemplate",
-                "value": "{severity}",
-                "description": "severity routing axis carried in the event payload."
-              },
-              "event": {
-                "type": "uritemplate",
-                "value": "{event}",
-                "description": "event routing axis carried in the event payload."
-              }
-            }
-          }
-        },
-        "JP.JMA.Warning.amqp.TsunamiAlert": {
-          "name": "TsunamiAlert",
-          "basemessageurl": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
-          "protocol": "AMQP/1.0",
-          "protocoloptions": {
-            "properties": {
-              "subject": {
-                "type": "uritemplate",
-                "value": "jp.jma.tsunami/{event_id}/{serial}",
-                "description": "AMQP message subject matching the CloudEvent subject."
-              }
-            },
-            "application_properties": {
-              "prefecture": {
-                "type": "uritemplate",
-                "value": "{prefecture}",
-                "description": "prefecture routing axis carried in the event payload."
-              },
-              "severity": {
-                "type": "uritemplate",
-                "value": "{severity}",
-                "description": "severity routing axis carried in the event payload."
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
               }
             }
           }
@@ -354,19 +284,27 @@
                   },
                   "severity": {
                     "type": "string",
-                    "description": "Japan-native severity axis for JMA warning topics: advisory (注意報), warning (警報), emergency (特別警報); office info records use info.",
+                    "description": "MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity.",
                     "enum": [
-                      "info",
-                      "advisory",
-                      "warning",
-                      "emergency"
-                    ]
+                      "REFERENCE",
+                      "NONE",
+                      "ADVISORY",
+                      "WARNING",
+                      "EMERGENCY_WARNING"
+                    ],
+                    "descriptions": {
+                      "REFERENCE": "Provider value `REFERENCE` for this coded alert field.",
+                      "NONE": "Provider value `NONE` for this coded alert field.",
+                      "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                      "WARNING": "Provider value `WARNING` for this coded alert field.",
+                      "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                    }
                   },
                   "event": {
                     "type": "string",
                     "description": "Fixed MQTT topic event segment for retained office reference records.",
                     "enum": [
-                      "info"
+                      "office"
                     ],
                     "descriptions": {
                       "office": "Provider value `office` for this coded alert field."
@@ -409,12 +347,21 @@
                   },
                   "severity": {
                     "type": "string",
-                    "description": "Japan-native severity axis for JMA warning topics: advisory (注意報), warning (警報), emergency (特別警報); office info records use info.",
+                    "description": "MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis.",
                     "enum": [
-                      "advisory",
-                      "warning",
-                      "emergency"
-                    ]
+                      "REFERENCE",
+                      "NONE",
+                      "ADVISORY",
+                      "WARNING",
+                      "EMERGENCY_WARNING"
+                    ],
+                    "descriptions": {
+                      "REFERENCE": "Provider value `REFERENCE` for this coded alert field.",
+                      "NONE": "Provider value `NONE` for this coded alert field.",
+                      "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                      "WARNING": "Provider value `WARNING` for this coded alert field.",
+                      "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                    }
                   },
                   "office_code": {
                     "type": "string",
@@ -605,10 +552,17 @@
                           "type": "string",
                           "description": "Normalized severity derived from the JMA status text and special-warning codes. NONE represents 発表警報・注意報はなし, ADVISORY represents 注意報-level notices, WARNING represents 警報/発表/継続 items, and EMERGENCY_WARNING represents 特別警報 or special-warning category codes 32-38.",
                           "enum": [
-                            "advisory",
-                            "warning",
-                            "emergency"
-                          ]
+                            "NONE",
+                            "ADVISORY",
+                            "WARNING",
+                            "EMERGENCY_WARNING"
+                          ],
+                          "descriptions": {
+                            "NONE": "Provider value `NONE` for this coded alert field.",
+                            "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+                            "WARNING": "Provider value `WARNING` for this coded alert field.",
+                            "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                          }
                         }
                       },
                       "required": [
@@ -896,25 +850,9 @@
                         "arrival_status"
                       ]
                     }
-                  },
-                  "prefecture": {
-                    "type": "string",
-                    "description": "ASCII-safe Japan region routing axis for tsunami MQTT/AMQP topics.",
-                    "pattern": "^[a-z0-9][a-z0-9-]*$"
-                  },
-                  "severity": {
-                    "type": "string",
-                    "enum": [
-                      "advisory",
-                      "warning",
-                      "emergency"
-                    ],
-                    "description": "Japan-native tsunami warning severity axis: advisory, warning, or emergency."
                   }
                 },
                 "required": [
-                  "severity",
-                  "prefecture",
                   "event_id",
                   "serial",
                   "info_type",

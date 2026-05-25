@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_warning_amqp_producer_data.weatherwarning import WeatherWarning
-from jma_bosai_warning_amqp_producer_data.eventenum import EventEnum
-from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_amqp_producer_data.warningitem import WarningItem
+from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
+from jma_bosai_warning_amqp_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -32,16 +32,16 @@ class Test_WeatherWarning(unittest.TestCase):
         Create instance of WeatherWarning for testing
         """
         instance = WeatherWarning(
-            prefecture='srwrtrhpnduexbahztqz',
-            severity=SeverityEnum.advisory,
-            office_code='iyccvxkmqupzpxljtfuu',
-            area_code='bpofozwpcfplyoxzeotz',
-            event=EventEnum.warning,
-            area_name='tskwrgiaojhizmyywdlt',
+            prefecture='lijugrbtaeeacfuxecph',
+            severity=SeverityEnum.REFERENCE,
+            office_code='kvrfumydxpxtexgbujng',
+            area_code='xptfdjfywaugxsqxbkxx',
+            event=EventEnum.office,
+            area_name='dnrdaiusandddijsmbxa',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='ehuqcbyisfezaidstjsx',
-            warnings=[None, None],
+            headline_text='oudrkdwojsebhmrtbajj',
+            warnings=[None, None, None],
             time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )
         return instance
@@ -51,7 +51,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'srwrtrhpnduexbahztqz'
+        test_value = 'lijugrbtaeeacfuxecph'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -59,7 +59,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.advisory
+        test_value = SeverityEnum.REFERENCE
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -67,7 +67,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test office_code property
         """
-        test_value = 'iyccvxkmqupzpxljtfuu'
+        test_value = 'kvrfumydxpxtexgbujng'
         self.instance.office_code = test_value
         self.assertEqual(self.instance.office_code, test_value)
     
@@ -75,7 +75,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'bpofozwpcfplyoxzeotz'
+        test_value = 'xptfdjfywaugxsqxbkxx'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -83,7 +83,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test event property
         """
-        test_value = EventEnum.warning
+        test_value = EventEnum.office
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     
@@ -91,7 +91,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test area_name property
         """
-        test_value = 'tskwrgiaojhizmyywdlt'
+        test_value = 'dnrdaiusandddijsmbxa'
         self.instance.area_name = test_value
         self.assertEqual(self.instance.area_name, test_value)
     
@@ -115,7 +115,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test headline_text property
         """
-        test_value = 'ehuqcbyisfezaidstjsx'
+        test_value = 'oudrkdwojsebhmrtbajj'
         self.instance.headline_text = test_value
         self.assertEqual(self.instance.headline_text, test_value)
     
@@ -123,7 +123,7 @@ class Test_WeatherWarning(unittest.TestCase):
         """
         Test warnings property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.warnings = test_value
         self.assertEqual(self.instance.warnings, test_value)
     

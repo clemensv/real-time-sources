@@ -58,15 +58,13 @@ Configuration can also be supplied via environment variables: `CONNECTION_STRING
 
 The bridge persists a FIFO set of the latest 1000 `(eid, ser)` tuples in `./state/jma-bosai-quake.json` by default. State advances only after Kafka flush succeeds, so failed deliveries are retried on the next poll.
 
+## AMQP 1.0 companion feeder
 
-## MQTT and AMQP companion transports
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `jma-bosai-quake`).
 
-This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=jma-bosai-quake   ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest
+```
 
-Topic templates:
-- `seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report`
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-amqp.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-mqtt:latest` (`Dockerfile.mqtt`)
-- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest` (`Dockerfile.amqp`)
-- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
-- `magnitude_bucket` uses `m0` through `m9`; unknown or negative magnitude uses `mx`.

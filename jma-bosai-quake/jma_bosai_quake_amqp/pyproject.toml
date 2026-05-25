@@ -3,22 +3,22 @@ requires = ["poetry-core>=1.1.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "jma-bosai-quake-amqp"
+name = "jma_bosai_quake-amqp"
 version = "0.1.0"
-description = "AMQP feeder for jma-bosai-quake"
+description = "AMQP 1.0 feeder for jma-bosai-quake"
 authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 packages = [{ include = "jma_bosai_quake_amqp" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-requests = ">=2.32.3"
+python-qpid-proton = ">=0.40.0"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
-python-qpid-proton = ">=0.40.0"
-jma_bosai_quake = { path = ".." }
+azure-identity = ">=1.17.0"
+azure-core = ">=1.30.0"
 jma_bosai_quake_amqp_producer_data = { path = "../jma_bosai_quake_amqp_producer/jma_bosai_quake_amqp_producer_data" }
 jma_bosai_quake_amqp_producer_amqp_producer = { path = "../jma_bosai_quake_amqp_producer/jma_bosai_quake_amqp_producer_amqp_producer" }
 
 [tool.poetry.scripts]
-jma-bosai-quake-amqp = "jma_bosai_quake_amqp.app:main"
+jma-bosai-quake-amqp = "jma_bosai_quake_amqp:main"

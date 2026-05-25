@@ -3,11 +3,13 @@ from enum import Enum
 
 class SeverityEnum(Enum):
     """
-    Japan-native tsunami warning severity axis: advisory, warning, or emergency.
+    MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity.
     """
-    advisory = 'advisory'
-    warning = 'warning'
-    emergency = 'emergency'
+    REFERENCE = 'REFERENCE'
+    NONE = 'NONE'
+    ADVISORY = 'ADVISORY'
+    WARNING = 'WARNING'
+    EMERGENCY_WARNING = 'EMERGENCY_WARNING'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'SeverityEnum':

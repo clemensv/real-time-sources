@@ -40,16 +40,13 @@ MQTT topics:
 
 Configuration is via environment variables or CLI flags. Required Kafka configuration is either `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS`.
 
+## AMQP 1.0 companion feeder
 
-## MQTT and AMQP companion transports
+This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `jma-bosai-warning`).
 
-This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=jma-bosai-warning   ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+```
 
-Topic templates:
-- `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}`
-- `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami`
+[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-amqp.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt:latest` (`Dockerfile.mqtt`)
-- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest` (`Dockerfile.amqp`)
-- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
-- Severity uses Japan-native lowercase `advisory`/`warning`/`emergency`; office info records use `info`.
