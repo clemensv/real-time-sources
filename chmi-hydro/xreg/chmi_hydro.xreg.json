@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/CZ.Gov.CHMI.Hydro"
-      ]
+      ],
+      "description": "Kafka producer endpoint for ČHMÚ Hydrological Data CloudEvents on the `chmi-hydro` topic keyed by `{station_id}`."
     },
     "CZ.Gov.CHMI.Hydro.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/CZ.Gov.CHMI.Hydro.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for ČHMÚ Hydrological Data CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.Station"
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.Station",
+          "description": "A reference record for one Czech hydrological monitoring station published by the Czech Hydrometeorological Institute (ČHMÚ). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "description": "A current measurement from the Czech Hydrometeorological Institute (ČHMÚ) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from ČHMÚ Hydrological Data covering Czech hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "CZ.Gov.CHMI.Hydro.mqtt": {
-      "description": "MQTT/5.0 transport variants of the CHMI Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/... The {stream_name} placeholder is sourced from the CHMI hydrology catalog (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/cz/chmi/chmi-hydro/vltava/+/water-level).",
+      "description": "MQTT 5 variant of the ČHMÚ Hydrological Data events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "CZ.Gov.CHMI.Hydro.mqtt.Station": {
           "name": "Station",
@@ -133,41 +138,70 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "dbc": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider-supplied dbc value for this record."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "stream_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the stream."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "flood_level_1": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Provider-supplied flood level 1 value for this record."
                   },
                   "flood_level_2": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Provider-supplied flood level 2 value for this record."
                   },
                   "flood_level_3": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Provider-supplied flood level 3 value for this record."
                   },
                   "flood_level_4": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Provider-supplied flood level 4 value for this record."
                   },
                   "has_forecast": {
-                    "type": ["boolean", "null"]
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "Provider-supplied has forecast value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the ČHMÚ Hydrological Data source."
               }
             }
           }
@@ -190,36 +224,62 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "stream_name": {
                     "type": "string",
                     "description": "Name of the watercourse / stream the station observes (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava'). Sourced by the bridge from the CHMI hydrology station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {stream_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Current water level reported for the station."
                   },
                   "water_level_timestamp": {
-                    "type": ["datetime", "null"]
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Time associated with the water-level measurement."
                   },
                   "discharge": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_timestamp": {
-                    "type": ["datetime", "null"]
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Time associated with the discharge measurement."
                   },
                   "water_temperature": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Current water temperature reported for the station."
                   },
                   "water_temperature_timestamp": {
-                    "type": ["datetime", "null"]
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "description": "Time associated with the water-temperature measurement."
                   }
                 },
                 "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level and discharge observations in the ČHMÚ Hydrological Data source."
               }
             }
           }
@@ -238,7 +298,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the ČHMÚ Hydrological Data source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -309,7 +369,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "CZ.Gov.CHMI.Hydro"
+                "namespace": "CZ.Gov.CHMI.Hydro",
+                "description": "Reference details for one monitoring station or site in the ČHMÚ Hydrological Data source."
               }
             }
           }
@@ -324,7 +385,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the ČHMÚ Hydrological Data source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -397,12 +458,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "CZ.Gov.CHMI.Hydro"
+                "namespace": "CZ.Gov.CHMI.Hydro",
+                "description": "Measurement payload for observations in the ČHMÚ Hydrological Data source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "ČHMÚ Hydrological Data publishes water level and discharge observations from the Czech Hydrometeorological Institute (ČHMÚ) for Czech hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for ČHMÚ Hydrological Data, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

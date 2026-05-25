@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/SE.Gov.SMHI.Hydro"
-      ]
+      ],
+      "description": "Kafka producer endpoint for SMHI Hydrological Data CloudEvents on the `smhi-hydro` topic keyed by `{station_id}`."
     },
     "SE.Gov.SMHI.Hydro.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/SE.Gov.SMHI.Hydro.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for SMHI Hydrological Data CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.Station"
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.Station",
+          "description": "A reference record for one Swedish hydrological monitoring station published by the Swedish Meteorological and Hydrological Institute (SMHI). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "SE.Gov.SMHI.Hydro.DischargeObservation": {
           "name": "DischargeObservation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "description": "A current measurement from the Swedish Meteorological and Hydrological Institute (SMHI) for one monitoring site. It carries river discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from SMHI Hydrological Data covering Swedish hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "SE.Gov.SMHI.Hydro.mqtt": {
-      "description": "MQTT/5.0 transport variants of the SMHI Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/... The {catchment_name} placeholder is sourced from the SMHI station catalog (field 'catchmentName', e.g. 'Torneälven', 'Dalälven') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole catchments (e.g. hydro/se/smhi/smhi-hydro/tornealven/+/discharge).",
+      "description": "MQTT 5 variant of the SMHI Hydrological Data events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "SE.Gov.SMHI.Hydro.mqtt.Station": {
           "name": "Station",
@@ -133,39 +138,48 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the station, site, or location."
                   },
                   "owner": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied owner value for this record."
                   },
                   "measuring_stations": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied measuring stations value for this record."
                   },
                   "region": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider-supplied region value for this record."
                   },
                   "catchment_name": {
                     "type": "string",
                     "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing."
                   },
                   "catchment_number": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider-supplied catchment number value for this record."
                   },
                   "catchment_size": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied catchment size value for this record."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   }
                 },
                 "$id": "https://example.com/schemas/SE/Gov/SMHI/Hydro/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the SMHI Hydrological Data source."
               }
             }
           }
@@ -190,23 +204,28 @@
                 "name": "DischargeObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "catchment_name": {
                     "type": "string",
                     "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time when the provider recorded or published the observation."
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current streamflow or discharge reported for the station."
                   },
                   "quality": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider quality flag or qualification for the measurement."
                   }
                 },
                 "$id": "https://example.com/schemas/SE/Gov/SMHI/Hydro/DischargeObservation",
@@ -229,7 +248,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the SMHI Hydrological Data source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -293,7 +312,8 @@
                     "type": "double"
                   }
                 ],
-                "namespace": "SE.Gov.SMHI.Hydro"
+                "namespace": "SE.Gov.SMHI.Hydro",
+                "description": "Reference details for one monitoring station or site in the SMHI Hydrological Data source."
               }
             }
           }
@@ -308,7 +328,7 @@
               "schema": {
                 "type": "record",
                 "name": "DischargeObservation",
-                "doc": "DischargeObservation",
+                "doc": "Measurement payload for observations in the SMHI Hydrological Data source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -343,12 +363,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "SE.Gov.SMHI.Hydro"
+                "namespace": "SE.Gov.SMHI.Hydro",
+                "description": "Measurement payload for observations in the SMHI Hydrological Data source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "SMHI Hydrological Data publishes river discharge observations from the Swedish Meteorological and Hydrological Institute (SMHI) for Swedish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for SMHI Hydrological Data, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

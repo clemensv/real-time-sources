@@ -1,6 +1,6 @@
 # ČHMÚ Hydrological Data Bridge Events
 
-MQTT/5.0 transport variants of the CHMI Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/... The {stream_name} placeholder is sourced from the CHMI hydrology catalog (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/cz/chmi/chmi-hydro/vltava/+/water-level).
+ČHMÚ Hydrological Data publishes water level and discharge observations from the Czech Hydrometeorological Institute (ČHMÚ) for Czech hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -52,11 +52,11 @@ CloudEvents type: `CZ.Gov.CHMI.Hydro.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Czech hydrological monitoring station published by the Czech Hydrometeorological Institute (ČHMÚ). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the ČHMÚ Hydrological Data source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -69,17 +69,17 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `stream_name`, `latitude`, `longitude`.
 
-- **`station_id`** (string, required): No description provided.
-- **`dbc`** (string or null, optional): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`stream_name`** (string, required): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`longitude`** (double, required): No description provided.
-- **`flood_level_1`** (double or null, optional): No description provided.
-- **`flood_level_2`** (double or null, optional): No description provided.
-- **`flood_level_3`** (double or null, optional): No description provided.
-- **`flood_level_4`** (double or null, optional): No description provided.
-- **`has_forecast`** (boolean or null, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`dbc`** (string or null, optional): Provider-supplied dbc value for this record.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
+- **`stream_name`** (string, required): Human-readable name of the stream.
+- **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
+- **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
+- **`flood_level_1`** (double or null, optional): Provider-supplied flood level 1 value for this record.
+- **`flood_level_2`** (double or null, optional): Provider-supplied flood level 2 value for this record.
+- **`flood_level_3`** (double or null, optional): Provider-supplied flood level 3 value for this record.
+- **`flood_level_4`** (double or null, optional): Provider-supplied flood level 4 value for this record.
+- **`has_forecast`** (boolean or null, optional): Provider-supplied has forecast value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -110,11 +110,11 @@ CloudEvents type: `CZ.Gov.CHMI.Hydro.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from the Czech Hydrometeorological Institute (ČHMÚ) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value. Measurement payload for water level and discharge observations in the ČHMÚ Hydrological Data source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -127,15 +127,15 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`, `station_name`, `stream_name`.
 
-- **`station_id`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
 - **`stream_name`** (string, required): Name of the watercourse / stream the station observes (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava'). Sourced by the bridge from the CHMI hydrology station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {stream_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
-- **`water_level`** (double or null, optional): No description provided.
-- **`water_level_timestamp`** (datetime or null, optional): No description provided.
-- **`discharge`** (double or null, optional): No description provided.
-- **`discharge_timestamp`** (datetime or null, optional): No description provided.
-- **`water_temperature`** (double or null, optional): No description provided.
-- **`water_temperature_timestamp`** (datetime or null, optional): No description provided.
+- **`water_level`** (double or null, optional): Current water level reported for the station.
+- **`water_level_timestamp`** (datetime or null, optional): Time associated with the water-level measurement.
+- **`discharge`** (double or null, optional): Current streamflow or discharge reported for the station.
+- **`discharge_timestamp`** (datetime or null, optional): Time associated with the discharge measurement.
+- **`water_temperature`** (double or null, optional): Current water temperature reported for the station.
+- **`water_temperature_timestamp`** (datetime or null, optional): Time associated with the water-temperature measurement.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

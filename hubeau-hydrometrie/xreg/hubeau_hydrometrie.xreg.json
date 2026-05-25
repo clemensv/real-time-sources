@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Hub'Eau Hydrométrie CloudEvents on the `hubeau-hydrometrie` topic keyed by `{code_station}`."
     }
   },
   "messagegroups": {
@@ -41,7 +42,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "description": "A reference record for one French hydrometric monitoring station published by the French Eaufrance Hub'Eau hydrometry API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
           "name": "Observation",
@@ -59,9 +61,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "description": "A current measurement from the French Eaufrance Hub'Eau hydrometry API for one monitoring site. It carries water height and discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Hub'Eau Hydrométrie covering French hydrometric monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -86,38 +90,66 @@
                 "name": "Station",
                 "properties": {
                   "code_station": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations."
                   },
                   "libelle_station": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Display label for the hydrometry station as published by Hub'Eau. It is useful for maps and UI labels but should not be used as a stable key."
                   },
                   "code_site": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Optional Hub'Eau site code grouping one or more stations at the same monitoring location."
                   },
                   "longitude_station": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "latitude_station": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "libelle_cours_eau": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Name of the river or watercourse monitored by the station."
                   },
                   "libelle_commune": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Municipality where the station is located."
                   },
                   "code_departement": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "French department code for the station location."
                   },
                   "en_service": {
-                    "type": ["boolean", "null"]
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "Whether Hub'Eau marks the station as currently in service."
                   },
                   "date_ouverture_station": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Date when the station began operating, when the upstream catalog provides it."
                   }
                 },
                 "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source."
               }
             }
           }
@@ -141,26 +173,38 @@
                 "name": "Observation",
                 "properties": {
                   "code_station": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations."
                   },
                   "date_obs": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Observation timestamp published by Hub'Eau for this measurement."
                   },
                   "resultat_obs": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height."
                   },
                   "grandeur_hydro": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Hydrometric quantity code identifying what `resultat_obs` measures, such as discharge or water height."
                   },
                   "libelle_methode_obs": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider label for the observation method used to produce the measurement."
                   },
                   "libelle_qualification_obs": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider quality label describing how Hub'Eau qualifies the observation."
                   }
                 },
                 "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Observation",
-                "description": "Observation"
+                "description": "Measurement payload for water height and discharge observations in the Hub'Eau Hydrométrie source."
               }
             }
           }
@@ -179,7 +223,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source.",
                 "fields": [
                   {
                     "name": "code_station",
@@ -246,7 +290,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie"
+                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
+                "description": "Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source."
               }
             }
           }
@@ -261,7 +306,7 @@
               "schema": {
                 "type": "record",
                 "name": "Observation",
-                "doc": "Observation",
+                "doc": "Measurement payload for observations in the Hub'Eau Hydrométrie source.",
                 "fields": [
                   {
                     "name": "code_station",
@@ -299,12 +344,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie"
+                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
+                "description": "Measurement payload for observations in the Hub'Eau Hydrométrie source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "Hub'Eau Hydrométrie publishes water height and discharge observations from the French Eaufrance Hub'Eau hydrometry API for French hydrometric monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Hub'Eau Hydrométrie, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

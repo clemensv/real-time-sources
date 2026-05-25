@@ -1,6 +1,6 @@
 # BAFU Hydrology Bridge Usage Guide Events
 
-MQTT/5.0 transport variants of the BAFU Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/... The {water_body_name} placeholder is sourced from the upstream existenz.ch station catalog (BAFU/FOEN field 'water-body-name', e.g. 'Rhein', 'Aare') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers / lakes (e.g. hydro/ch/bafu/bafu-hydro/rhein/+/water-level).
+BAFU Hydrology publishes water level, discharge, and water temperature observations from the Swiss Federal Office for the Environment (BAFU/FOEN) for Swiss river, lake, and stream gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -52,11 +52,11 @@ CloudEvents type: `CH.BAFU.Hydrology.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Swiss river, lake, and stream gauge published by the Swiss Federal Office for the Environment (BAFU/FOEN). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the BAFU Hydrology source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -69,12 +69,12 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station` payloads are JSON object. Required fields: `station_id`, `name`, `latitude`, `longitude`.
 
-- **`station_id`** (string, required): No description provided.
-- **`name`** (string, required): No description provided.
-- **`water_body_name`** (string, optional): No description provided.
-- **`water_body_type`** (string, optional): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`longitude`** (double, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`name`** (string, required): Human-readable name of the station, site, or location.
+- **`water_body_name`** (string, optional): Name of the river, lake, canal, reservoir, or other water body observed at the station.
+- **`water_body_type`** (string, optional): Provider classification for the observed water body.
+- **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
+- **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -100,11 +100,11 @@ CloudEvents type: `CH.BAFU.Hydrology.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from the Swiss Federal Office for the Environment (BAFU/FOEN) for one monitoring site. It carries water level, discharge, and water temperature observations when the upstream feed reports a new or refreshed value. Measurement payload for water level, discharge, and water temperature observations in the BAFU Hydrology source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -117,17 +117,17 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`, `water_body_name`.
 
-- **`station_id`** (string, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
 - **`water_body_name`** (string, required): Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
-- **`water_level`** (double, optional): No description provided.
-- **`water_level_unit`** (string, optional): No description provided.
-- **`water_level_timestamp`** (datetime, optional): No description provided.
-- **`discharge`** (double, optional): No description provided.
-- **`discharge_unit`** (string, optional): No description provided.
-- **`discharge_timestamp`** (datetime, optional): No description provided.
-- **`water_temperature`** (double, optional): No description provided.
-- **`water_temperature_unit`** (string, optional): No description provided.
-- **`water_temperature_timestamp`** (datetime, optional): No description provided.
+- **`water_level`** (double, optional): Current water level reported for the station.
+- **`water_level_unit`** (string, optional): Unit used for the water-level value.
+- **`water_level_timestamp`** (datetime, optional): Time associated with the water-level measurement.
+- **`discharge`** (double, optional): Current streamflow or discharge reported for the station.
+- **`discharge_unit`** (string, optional): Unit used for the discharge value.
+- **`discharge_timestamp`** (datetime, optional): Time associated with the discharge measurement.
+- **`water_temperature`** (double, optional): Current water temperature reported for the station.
+- **`water_temperature_unit`** (string, optional): Unit used for the water-temperature value.
+- **`water_temperature_timestamp`** (datetime, optional): Time associated with the water-temperature measurement.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

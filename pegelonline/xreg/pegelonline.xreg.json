@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/de.wsv.pegelonline.kafka"
-      ]
+      ],
+      "description": "Kafka producer endpoint for PegelOnline CloudEvents on the `pegelonline` topic keyed by `{station_id}`."
     },
     "de.wsv.pegelonline.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/de.wsv.pegelonline.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for PegelOnline CloudEvents using the source's documented topic hierarchy and retain settings."
     },
     "de.wsv.pegelonline.Amqp": {
       "usage": [
@@ -61,7 +63,8 @@
       },
       "messagegroups": [
         "#/messagegroups/de.wsv.pegelonline.amqp"
-      ]
+      ],
+      "description": "AMQP 1.0 producer endpoint for PegelOnline CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -70,7 +73,7 @@
         "de.wsv.pegelonline.Station": {
           "name": "Station",
           "envelope": "CloudEvents/1.0",
-          "description": "Reference catalog entry for one WSV PegelOnline gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API v2.",
+          "description": "A reference record for one federally administered German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
           "envelopemetadata": {
             "type": {
               "value": "de.wsv.pegelonline.Station"
@@ -90,7 +93,7 @@
         "de.wsv.pegelonline.CurrentMeasurement": {
           "name": "CurrentMeasurement",
           "envelope": "CloudEvents/1.0",
-          "description": "Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.",
+          "description": "A current measurement from Germany's Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for rivers, canals, and estuaries when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "de.wsv.pegelonline.CurrentMeasurement"
@@ -107,10 +110,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.CurrentMeasurement"
         }
-      }
+      },
+      "description": "Events from PegelOnline covering federally administered German inland and coastal gauges and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "de.wsv.pegelonline.kafka": {
-      "description": "Kafka-transport variants of the PegelOnline CloudEvents, adding per-message Kafka key for partitioning.",
+      "description": "Kafka variant of the PegelOnline events. It carries the same station and measurement semantics as the source events and uses stable site identifiers for partitioning where configured.",
       "messages": {
         "de.wsv.pegelonline.kafka.Station": {
           "name": "Station",
@@ -139,7 +143,7 @@
       }
     },
     "de.wsv.pegelonline.mqtt": {
-      "description": "MQTT/5.0 transport variants of the PegelOnline CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/pegelonline/...",
+      "description": "MQTT 5 variant of the PegelOnline events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "de.wsv.pegelonline.mqtt.Station": {
           "name": "Station",
@@ -164,7 +168,7 @@
       }
     },
     "de.wsv.pegelonline.amqp": {
-      "description": "AMQP 1.0 transport variants of the PegelOnline CloudEvents, sent in binary CloudEvents mode to a single AMQP node ('pegelonline') — works with generic brokers (ActiveMQ Artemis, RabbitMQ AMQP 1.0 plugin, Qpid Dispatch) and with Azure Service Bus / Event Hubs via CBS + Entra ID or SAS-token. Routing key is the CloudEvent subject (`{station_id}`); per-waterway routing is exposed as the `water_shortname` AMQP application property so brokers and SB/EH subscription filters can route without cracking the JSON body.",
+      "description": "AMQP 1.0 variant of the PegelOnline events. It carries the same station and measurement semantics as the source events for brokers and services that consume AMQP messages.",
       "messages": {
         "de.wsv.pegelonline.amqp.Station": {
           "name": "Station",
@@ -280,7 +284,10 @@
                               "description": "Canonical gauge name as used in WSV publications (≤255 characters). Mutable — do not use as a routing key."
                             },
                             "km": {
-                              "type": ["null", "double"],
+                              "type": [
+                                "null",
+                                "double"
+                              ],
                               "unit": "km",
                               "symbol": "km",
                               "description": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km."
@@ -326,7 +333,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Reference details for one monitoring station or site in the PegelOnline source."
               }
             }
           }
@@ -419,7 +427,10 @@
                               "description": "Categorical classification of the current water level against the highest navigable water level (HSW) reference for the reach, as computed by the upstream feed. Drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Note: upstream never emits 'low' on this series — HSW is an upper bound only. Omitted by upstream when the gauge has no HSW reference (treat absence as 'unknown')."
                             },
                             "trend": {
-                              "type": ["int8", "null"],
+                              "type": [
+                                "int8",
+                                "null"
+                              ],
                               "enum": [
                                 -1,
                                 0,
@@ -444,7 +455,8 @@
                       }
                     }
                   }
-                }
+                },
+                "description": "Measurement payload for observations in the PegelOnline source."
               }
             }
           }
@@ -528,7 +540,8 @@
                       ]
                     }
                   }
-                ]
+                ],
+                "description": "Reference details for one monitoring station or site in the PegelOnline source."
               }
             }
           },
@@ -612,7 +625,8 @@
                     "default": null,
                     "doc": "Short-term trend of the water level relative to the previous reading: -1 falling, 0 steady, +1 rising. Sourced from the upstream 'trend' field. Null when upstream cannot compute a trend (e.g. first reading after a gap)."
                   }
-                ]
+                ],
+                "description": "Measurement payload for observations in the PegelOnline source."
               }
             }
           },
@@ -620,5 +634,10 @@
         }
       }
     }
+  },
+  "description": "PegelOnline publishes water level measurements for rivers, canals, and estuaries from Germany's Federal Waterways and Shipping Administration (WSV) for federally administered German inland and coastal gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for PegelOnline, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

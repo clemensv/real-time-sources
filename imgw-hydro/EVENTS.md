@@ -1,6 +1,6 @@
 # IMGW-PIB Hydrological Data Bridge Events
 
-This bridge fetches real-time hydrological data from the Polish Institute of Meteorology and Water Management (IMGW-PIB) public API and forwards it to Apache Kafka or Microsoft Azure Event Hubs as CloudEvents.
+IMGW-PIB Hydrological Data publishes water level and discharge observations from the Polish Institute of Meteorology and Water Management (IMGW-PIB) for Polish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -37,11 +37,11 @@ CloudEvents type: `PL.Gov.IMGW.Hydro.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Polish hydrological monitoring station published by the Polish Institute of Meteorology and Water Management (IMGW-PIB). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -53,12 +53,12 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station` payloads are JSON object. Required fields: `station_id`, `station_name`.
 
-- **`station_id`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`river`** (string or null, optional): No description provided.
-- **`voivodeship`** (string or null, optional): No description provided.
-- **`longitude`** (double or null, optional): No description provided.
-- **`latitude`** (double or null, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
+- **`river`** (string or null, optional): Provider-supplied river value for this record.
+- **`voivodeship`** (string or null, optional): Provider-supplied voivodeship value for this record.
+- **`longitude`** (double or null, optional): Longitude of the station in WGS 84 coordinates.
+- **`latitude`** (double or null, optional): Latitude of the station in WGS 84 coordinates.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -84,11 +84,11 @@ CloudEvents type: `PL.Gov.IMGW.Hydro.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from the Polish Institute of Meteorology and Water Management (IMGW-PIB) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value. Measurement payload for water level and discharge observations in the IMGW-PIB Hydrological Data source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -100,18 +100,18 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`, `station_name`, `water_level`, `water_level_timestamp`.
 
-- **`station_id`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`river`** (string or null, optional): No description provided.
-- **`voivodeship`** (string or null, optional): No description provided.
-- **`water_level`** (double, required): No description provided.
-- **`water_level_timestamp`** (datetime, required): No description provided.
-- **`water_temperature`** (double or null, optional): No description provided.
-- **`water_temperature_timestamp`** (datetime or null, optional): No description provided.
-- **`discharge`** (double or null, optional): No description provided.
-- **`discharge_timestamp`** (datetime or null, optional): No description provided.
-- **`ice_phenomenon_code`** (string or null, optional): No description provided.
-- **`overgrowth_code`** (string or null, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
+- **`river`** (string or null, optional): Provider-supplied river value for this record.
+- **`voivodeship`** (string or null, optional): Provider-supplied voivodeship value for this record.
+- **`water_level`** (double, required): Current water level reported for the station.
+- **`water_level_timestamp`** (datetime, required): Time associated with the water-level measurement.
+- **`water_temperature`** (double or null, optional): Current water temperature reported for the station.
+- **`water_temperature_timestamp`** (datetime or null, optional): Time associated with the water-temperature measurement.
+- **`discharge`** (double or null, optional): Current streamflow or discharge reported for the station.
+- **`discharge_timestamp`** (datetime or null, optional): Time associated with the discharge measurement.
+- **`ice_phenomenon_code`** (string or null, optional): Provider code identifying the ice phenomenon.
+- **`overgrowth_code`** (string or null, optional): Provider code identifying the overgrowth.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

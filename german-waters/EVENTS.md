@@ -1,6 +1,6 @@
 # German Waters Bridge Events
 
-MQTT/5.0 transport variants of the German Waters Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/german-waters/{water_body}/{station_id}/... The {water_body} placeholder is sourced from the per-provider station catalog (Station.water_body field, e.g. 'Rhein', 'Donau', 'Elbe') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/de/wsv/german-waters/rhein/+/water-level).
+German Waters publishes water level and discharge observations from German state open data portals for German state water monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -52,11 +52,11 @@ CloudEvents type: `DE.Waters.Hydrology.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one German state water monitoring station published by German state open data portals. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the German Waters source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -69,21 +69,21 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `water_body`, `provider`.
 
-- **`station_id`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`water_body`** (string, required): No description provided.
-- **`state`** (string, optional): No description provided.
-- **`region`** (string, optional): No description provided.
-- **`provider`** (string, required): No description provided.
-- **`latitude`** (double, optional): No description provided.
-- **`longitude`** (double, optional): No description provided.
-- **`river_km`** (double, optional): No description provided.
-- **`altitude`** (double, optional): No description provided.
-- **`station_type`** (string, optional): No description provided.
-- **`warn_level_cm`** (double, optional): No description provided.
-- **`alarm_level_cm`** (double, optional): No description provided.
-- **`warn_level_m3s`** (double, optional): No description provided.
-- **`alarm_level_m3s`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
+- **`water_body`** (string, required): Provider-supplied water body value for this record.
+- **`state`** (string, optional): State, province, or region containing the station.
+- **`region`** (string, optional): Provider-supplied region value for this record.
+- **`provider`** (string, required): Provider-supplied provider value for this record.
+- **`latitude`** (double, optional): Latitude of the station in WGS 84 coordinates.
+- **`longitude`** (double, optional): Longitude of the station in WGS 84 coordinates.
+- **`river_km`** (double, optional): Provider-supplied river km value for this record.
+- **`altitude`** (double, optional): Provider-supplied altitude value for this record.
+- **`station_type`** (string, optional): Provider-supplied station type value for this record.
+- **`warn_level_cm`** (double, optional): Provider-supplied warn level cm value for this record.
+- **`alarm_level_cm`** (double, optional): Provider-supplied alarm level cm value for this record.
+- **`warn_level_m3s`** (double, optional): Provider-supplied warn level m3s value for this record.
+- **`alarm_level_m3s`** (double, optional): Provider-supplied alarm level m3s value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -118,11 +118,11 @@ CloudEvents type: `DE.Waters.Hydrology.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from German state open data portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value. Measurement payload for water level and discharge observations in the German Waters source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -135,17 +135,17 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`, `provider`, `water_body`.
 
-- **`station_id`** (string, required): No description provided.
-- **`provider`** (string, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`provider`** (string, required): Provider-supplied provider value for this record.
 - **`water_body`** (string, required): Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Sourced by the bridge from the per-provider station catalog (Station.water_body field) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
-- **`water_level`** (double, optional): No description provided.
-- **`water_level_unit`** (string, optional): No description provided.
-- **`water_level_timestamp`** (datetime, optional): No description provided.
-- **`discharge`** (double, optional): No description provided.
-- **`discharge_unit`** (string, optional): No description provided.
-- **`discharge_timestamp`** (datetime, optional): No description provided.
-- **`trend`** (int32, optional): No description provided.
-- **`situation`** (int32, optional): No description provided.
+- **`water_level`** (double, optional): Current water level reported for the station.
+- **`water_level_unit`** (string, optional): Unit used for the water-level value.
+- **`water_level_timestamp`** (datetime, optional): Time associated with the water-level measurement.
+- **`discharge`** (double, optional): Current streamflow or discharge reported for the station.
+- **`discharge_unit`** (string, optional): Unit used for the discharge value.
+- **`discharge_timestamp`** (datetime, optional): Time associated with the discharge measurement.
+- **`trend`** (int32, optional): Provider-supplied trend value for this record.
+- **`situation`** (int32, optional): Provider-supplied situation value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

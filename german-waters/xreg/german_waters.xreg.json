@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.Waters.Hydrology"
-      ]
+      ],
+      "description": "Kafka producer endpoint for German Waters CloudEvents on the `german-waters` topic keyed by `{station_id}`."
     },
     "DE.Waters.Hydrology.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/DE.Waters.Hydrology.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for German Waters CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.Station"
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.Station",
+          "description": "A reference record for one German state water monitoring station published by German state open data portals. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "DE.Waters.Hydrology.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation",
+          "description": "A current measurement from German state open data portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from German Waters covering German state water monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "DE.Waters.Hydrology.mqtt": {
-      "description": "MQTT/5.0 transport variants of the German Waters Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/de/wsv/german-waters/{water_body}/{station_id}/... The {water_body} placeholder is sourced from the per-provider station catalog (Station.water_body field, e.g. 'Rhein', 'Donau', 'Elbe') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/de/wsv/german-waters/rhein/+/water-level).",
+      "description": "MQTT 5 variant of the German Waters events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "DE.Waters.Hydrology.mqtt.Station": {
           "name": "Station",
@@ -132,59 +137,74 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "water_body": {
                     "type": "string",
                     "altnames": {
                       "lang:de": "Gewaesser"
-                    }
+                    },
+                    "description": "Provider-supplied water body value for this record."
                   },
                   "state": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "State, province, or region containing the station."
                   },
                   "region": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied region value for this record."
                   },
                   "provider": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied provider value for this record."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "river_km": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied river km value for this record."
                   },
                   "altitude": {
                     "type": "double",
                     "altnames": {
                       "lang:de": "Hoehe"
-                    }
+                    },
+                    "description": "Provider-supplied altitude value for this record."
                   },
                   "station_type": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied station type value for this record."
                   },
                   "warn_level_cm": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied warn level cm value for this record."
                   },
                   "alarm_level_cm": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied alarm level cm value for this record."
                   },
                   "warn_level_m3s": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied warn level m3s value for this record."
                   },
                   "alarm_level_m3s": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied alarm level m3s value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/Waters/Hydrology/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the German Waters source."
               }
             }
           }
@@ -207,42 +227,52 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "provider": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied provider value for this record."
                   },
                   "water_body": {
                     "type": "string",
                     "description": "Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Sourced by the bridge from the per-provider station catalog (Station.water_body field) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {water_body} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current water level reported for the station."
                   },
                   "water_level_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the water-level value."
                   },
                   "water_level_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the water-level measurement."
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the discharge value."
                   },
                   "discharge_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the discharge measurement."
                   },
                   "trend": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider-supplied trend value for this record."
                   },
                   "situation": {
-                    "type": "int32"
+                    "type": "int32",
+                    "description": "Provider-supplied situation value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/DE/Waters/Hydrology/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level and discharge observations in the German Waters source."
               }
             }
           }
@@ -261,7 +291,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the German Waters source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -368,7 +398,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "DE.Waters.Hydrology"
+                "namespace": "DE.Waters.Hydrology",
+                "description": "Reference details for one monitoring station or site in the German Waters source."
               }
             }
           }
@@ -383,7 +414,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the German Waters source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -469,12 +500,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "DE.Waters.Hydrology"
+                "namespace": "DE.Waters.Hydrology",
+                "description": "Measurement payload for observations in the German Waters source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "German Waters publishes water level and discharge observations from German state open data portals for German state water monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for German Waters, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

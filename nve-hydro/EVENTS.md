@@ -1,6 +1,6 @@
 # NVE Hydrology Bridge Usage Guide Events
 
-MQTT/5.0 transport variants of the NVE Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/no/nve/nve-hydro/{river_name}/{station_id}/... The {river_name} placeholder is sourced from the NVE HydAPI station catalog field 'riverName' (Norwegian: 'Vassdrag', e.g. 'Glomma', 'Drammenselva') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/no/nve/nve-hydro/glomma/+/water-level).
+NVE Hydrology publishes water level and discharge observations from the Norwegian Water Resources and Energy Directorate (NVE) for Norwegian hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -52,11 +52,11 @@ CloudEvents type: `NO.NVE.Hydrology.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Norwegian hydrological monitoring station published by the Norwegian Water Resources and Energy Directorate (NVE). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the NVE Hydrology source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -69,15 +69,15 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`.
 
-- **`station_id`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`river_name`** (string, optional): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`longitude`** (double, required): No description provided.
-- **`masl`** (double, optional): No description provided.
-- **`council_name`** (string, optional): No description provided.
-- **`county_name`** (string, optional): No description provided.
-- **`drainage_basin_area`** (double, optional): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
+- **`river_name`** (string, optional): Name of the river or watercourse observed at the station.
+- **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
+- **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
+- **`masl`** (double, optional): Provider-supplied masl value for this record.
+- **`council_name`** (string, optional): Human-readable name of the council.
+- **`county_name`** (string, optional): Human-readable name of the county.
+- **`drainage_basin_area`** (double, optional): Provider-supplied drainage basin area value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -106,11 +106,11 @@ CloudEvents type: `NO.NVE.Hydrology.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from the Norwegian Water Resources and Energy Directorate (NVE) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value. Measurement payload for water level and discharge observations in the NVE Hydrology source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -123,14 +123,14 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`, `river_name`.
 
-- **`station_id`** (string, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
 - **`river_name`** (string, required): Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.
-- **`water_level`** (double, optional): No description provided.
-- **`water_level_unit`** (string, optional): No description provided.
-- **`water_level_timestamp`** (datetime, optional): No description provided.
-- **`discharge`** (double, optional): No description provided.
-- **`discharge_unit`** (string, optional): No description provided.
-- **`discharge_timestamp`** (datetime, optional): No description provided.
+- **`water_level`** (double, optional): Current water level reported for the station.
+- **`water_level_unit`** (string, optional): Unit used for the water-level value.
+- **`water_level_timestamp`** (datetime, optional): Time associated with the water-level measurement.
+- **`discharge`** (double, optional): Current streamflow or discharge reported for the station.
+- **`discharge_unit`** (string, optional): Unit used for the discharge value.
+- **`discharge_timestamp`** (datetime, optional): Time associated with the discharge measurement.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

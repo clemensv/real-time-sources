@@ -1,12 +1,12 @@
 # USGS NWIS Water Quality - Continuous Water Quality Sensor Data Events
 
-**usgs-nwis-wq** is a bridge that polls the [USGS Water Services](https://waterservices.usgs.gov/) Instantaneous Values Service API for continuous water quality sensor readings from over 3,000 monitoring sites across the United States. The bridge focuses specifically on water quality parameters: dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate.
+USGS NWIS Water Quality publishes continuous water-quality sensor readings from the U.S. Geological Survey (USGS) Water Services API for United States water-quality monitoring sites. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 2 documented event types.
 - **Transports:** KAFKA
-- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{site_number}`, `{site_number}/{parameter_code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -38,7 +38,7 @@ CloudEvents type: `USGS.WaterQuality.Sites.MonitoringSite`
 
 #### What it tells you
 
-USGS water quality monitoring site reference data. Describes a physical monitoring location equipped with continuous water quality sensors. USGS water quality monitoring site.
+A reference record for one United States water-quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 #### Identity
 
@@ -65,7 +65,7 @@ null
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
 
 ### Water Quality Reading
 
@@ -73,7 +73,7 @@ CloudEvents type: `USGS.WaterQuality.Readings.WaterQualityReading`
 
 #### What it tells you
 
-A single water quality observation from a USGS continuous monitoring sensor, including dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate readings. A single water quality observation from a USGS continuous monitoring sensor. The USGS Instantaneous Values Service returns time series of sensor readings in WaterML 2.0 JSON format.
+A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings when the upstream feed reports a new or refreshed value.
 
 #### Identity
 

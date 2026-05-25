@@ -1,6 +1,6 @@
 # SYKE Hydrology Bridge Usage Guide Events
 
-**SYKE Hydrology Bridge** connects to the Finnish Environment Institute's (SYKE) hydrological monitoring network — via the [Hydrology OData API](https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata) — and forwards water level and discharge observations to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
+SYKE Hydrology publishes water level and discharge observations from the Finnish Environment Institute (SYKE) for Finnish hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,11 +38,11 @@ CloudEvents type: `FI.SYKE.Hydrology.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Finnish hydrological monitoring station published by the Finnish Environment Institute (SYKE). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the SYKE Hydrology source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -54,13 +54,13 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Station` payloads are JSON object. Required fields: `station_id`, `name`, `latitude`, `longitude`.
 
-- **`station_id`** (string, required): No description provided.
-- **`name`** (string, required): No description provided.
-- **`river_name`** (string, optional): No description provided.
-- **`water_area_name`** (string, optional): No description provided.
-- **`municipality`** (string, optional): No description provided.
-- **`latitude`** (double, required): No description provided.
-- **`longitude`** (double, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`name`** (string, required): Human-readable name of the station, site, or location.
+- **`river_name`** (string, optional): Name of the river or watercourse observed at the station.
+- **`water_area_name`** (string, optional): Human-readable name of the water area.
+- **`municipality`** (string, optional): Provider-supplied municipality value for this record.
+- **`latitude`** (double, required): Latitude of the station in WGS 84 coordinates.
+- **`longitude`** (double, required): Longitude of the station in WGS 84 coordinates.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -87,11 +87,11 @@ CloudEvents type: `FI.SYKE.Hydrology.WaterLevelObservation`
 
 #### What it tells you
 
-This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from the Finnish Environment Institute (SYKE) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value. Measurement payload for water level and discharge observations in the SYKE Hydrology source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable identifier assigned by the upstream provider for the monitoring station or site. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -103,7 +103,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Water Level Observation` payloads are JSON object. Required fields: `station_id`.
 
-- **`station_id`** (string, required): No description provided.
+- **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the monitoring station or site.
 - **`water_level`** (double or null, optional): Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.
 - **`water_level_unit`** (string or null, optional): Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null.
 - **`water_level_timestamp`** (datetime or null, optional): RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.

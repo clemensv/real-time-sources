@@ -1,6 +1,6 @@
 # Hub'Eau Hydrométrie API Bridge Events
 
-This project bridges the [Hub'Eau Hydrométrie API](https://hubeau.eaufrance.fr/page/api-hydrometrie) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams. It provides real-time water level (height) and flow (discharge) data from approximately 6,300 monitoring stations across France.
+Hub'Eau Hydrométrie publishes water height and discharge observations from the French Eaufrance Hub'Eau hydrometry API for French hydrometric monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,11 +38,11 @@ CloudEvents type: `FR.Gov.Eaufrance.HubEau.Hydrometrie.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one French hydrometric monitoring station published by the French Eaufrance Hub'Eau hydrometry API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{code_station}`. `{code_station}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{code_station}`. `{code_station}` is permanent hydrometry-station code assigned by the French monitoring network. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -54,16 +54,16 @@ Each event identifies the real-world resource with `{code_station}`. `{code_stat
 
 `Station` payloads are JSON object. Required fields: `code_station`, `libelle_station`, `longitude_station`, `latitude_station`.
 
-- **`code_station`** (string, required): No description provided.
-- **`libelle_station`** (string, required): No description provided.
-- **`code_site`** (string or null, optional): No description provided.
-- **`longitude_station`** (double, required): No description provided.
-- **`latitude_station`** (double, required): No description provided.
-- **`libelle_cours_eau`** (string or null, optional): No description provided.
-- **`libelle_commune`** (string or null, optional): No description provided.
-- **`code_departement`** (string or null, optional): No description provided.
-- **`en_service`** (boolean or null, optional): No description provided.
-- **`date_ouverture_station`** (string or null, optional): No description provided.
+- **`code_station`** (string, required): Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations.
+- **`libelle_station`** (string, required): Display label for the hydrometry station as published by Hub'Eau. It is useful for maps and UI labels but should not be used as a stable key.
+- **`code_site`** (string or null, optional): Optional Hub'Eau site code grouping one or more stations at the same monitoring location.
+- **`longitude_station`** (double, required): Longitude of the station in WGS 84 coordinates.
+- **`latitude_station`** (double, required): Latitude of the station in WGS 84 coordinates.
+- **`libelle_cours_eau`** (string or null, optional): Name of the river or watercourse monitored by the station.
+- **`libelle_commune`** (string or null, optional): Municipality where the station is located.
+- **`code_departement`** (string or null, optional): French department code for the station location.
+- **`en_service`** (boolean or null, optional): Whether Hub'Eau marks the station as currently in service.
+- **`date_ouverture_station`** (string or null, optional): Date when the station began operating, when the upstream catalog provides it.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -93,11 +93,11 @@ CloudEvents type: `FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation`
 
 #### What it tells you
 
-This event carries observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from the French Eaufrance Hub'Eau hydrometry API for one monitoring site. It carries water height and discharge observations when the upstream feed reports a new or refreshed value. Measurement payload for water height and discharge observations in the Hub'Eau Hydrométrie source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{code_station}`. `{code_station}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{code_station}`. `{code_station}` is permanent hydrometry-station code assigned by the French monitoring network. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -109,12 +109,12 @@ Each event identifies the real-world resource with `{code_station}`. `{code_stat
 
 `Observation` payloads are JSON object. Required fields: `code_station`, `date_obs`, `resultat_obs`, `grandeur_hydro`.
 
-- **`code_station`** (string, required): No description provided.
-- **`date_obs`** (datetime, required): No description provided.
-- **`resultat_obs`** (double, required): No description provided.
-- **`grandeur_hydro`** (string, required): No description provided.
-- **`libelle_methode_obs`** (string or null, optional): No description provided.
-- **`libelle_qualification_obs`** (string or null, optional): No description provided.
+- **`code_station`** (string, required): Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations.
+- **`date_obs`** (datetime, required): Observation timestamp published by Hub'Eau for this measurement.
+- **`resultat_obs`** (double, required): Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height.
+- **`grandeur_hydro`** (string, required): Hydrometric quantity code identifying what `resultat_obs` measures, such as discharge or water height.
+- **`libelle_methode_obs`** (string or null, optional): Provider label for the observation method used to produce the measurement.
+- **`libelle_qualification_obs`** (string or null, optional): Provider quality label describing how Hub'Eau qualifies the observation.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

@@ -1,6 +1,6 @@
 # Nepal BIPAD Portal — Real-Time River Monitoring Bridge Events
 
-This project provides a bridge between the [Nepal BIPAD Portal](https://bipadportal.gov.np/) river monitoring API and Apache Kafka, Azure Event Hubs, and Fabric Event Streams.
+Nepal BIPAD River Monitoring publishes river water level observations from Nepal's BIPAD Portal for river monitoring stations in Nepal. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `np.gov.bipad.hydrology.RiverStation`
 
 #### What it tells you
 
-Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.
+A reference record for one river monitoring stations in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.
 
 #### Identity
 
@@ -101,7 +101,7 @@ CloudEvents type: `np.gov.bipad.hydrology.WaterLevelReading`
 
 #### What it tells you
 
-Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.
+A current measurement from Nepal's BIPAD Portal for one monitoring site. It carries river water level observations when the upstream feed reports a new or refreshed value. Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.
 
 #### Identity
 

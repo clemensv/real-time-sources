@@ -1,6 +1,6 @@
 # PegelOnline → Apache Kafka, MQTT/UNS & AMQP 1.0 Events
 
-Kafka-transport variants of the PegelOnline CloudEvents, adding per-message Kafka key for partitioning.
+PegelOnline publishes water level measurements for rivers, canals, and estuaries from Germany's Federal Waterways and Shipping Administration (WSV) for federally administered German inland and coastal gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -66,7 +66,7 @@ CloudEvents type: `de.wsv.pegelonline.Station`
 
 #### What it tells you
 
-Reference catalog entry for one WSV PegelOnline gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API v2.
+A reference record for one federally administered German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. WSV PegelOnline gauge installation.
 
 #### Identity
 
@@ -131,7 +131,7 @@ CloudEvents type: `de.wsv.pegelonline.CurrentMeasurement`
 
 #### What it tells you
 
-Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.
+A current measurement from Germany's Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for rivers, canals, and estuaries when the upstream feed reports a new or refreshed value. Latest 15-minute water-level reading for one WSV PegelOnline gauge.
 
 #### Identity
 

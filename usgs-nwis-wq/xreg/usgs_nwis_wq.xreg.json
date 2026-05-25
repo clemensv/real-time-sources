@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/USGS.WaterQuality.Sites"
-      ]
+      ],
+      "description": "Kafka producer endpoint for USGS NWIS Water Quality CloudEvents on the `usgs-nwis-wq` topic keyed by `{site_number}`."
     },
     "USGS.WaterQuality.Readings.Kafka": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/USGS.WaterQuality.Readings"
-      ]
+      ],
+      "description": "Kafka producer endpoint for USGS NWIS Water Quality CloudEvents on the `usgs-nwis-wq` topic keyed by `{site_number}/{parameter_code}`."
     }
   },
   "messagegroups": {
@@ -49,7 +51,7 @@
         "USGS.WaterQuality.Sites.MonitoringSite": {
           "name": "MonitoringSite",
           "envelope": "CloudEvents/1.0",
-          "description": "USGS water quality monitoring site reference data. Describes a physical monitoring location equipped with continuous water quality sensors.",
+          "description": "A reference record for one United States water-quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.WaterQuality.Sites.MonitoringSite"
@@ -66,14 +68,15 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.jstruct/schemas/USGS.WaterQuality.Sites.MonitoringSite"
         }
-      }
+      },
+      "description": "Events from USGS NWIS Water Quality covering United States water-quality monitoring sites and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "USGS.WaterQuality.Readings": {
       "messages": {
         "USGS.WaterQuality.Readings.WaterQualityReading": {
           "name": "WaterQualityReading",
           "envelope": "CloudEvents/1.0",
-          "description": "A single water quality observation from a USGS continuous monitoring sensor, including dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate readings.",
+          "description": "A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings when the upstream feed reports a new or refreshed value.",
           "envelopemetadata": {
             "type": {
               "value": "USGS.WaterQuality.Readings.WaterQualityReading"
@@ -90,7 +93,8 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.jstruct/schemas/USGS.WaterQuality.Readings.WaterQualityReading"
         }
-      }
+      },
+      "description": "Events from USGS NWIS Water Quality covering United States water-quality monitoring sites and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -125,32 +129,50 @@
                   },
                   {
                     "name": "latitude",
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Decimal latitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system."
                   },
                   {
                     "name": "longitude",
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Decimal longitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system."
                   },
                   {
                     "name": "site_type",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "USGS site type code indicating the category of the monitoring location. Common values include 'ST' (stream), 'LK' (lake), 'GW' (groundwater), 'ES' (estuary)."
                   },
                   {
                     "name": "state_code",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Two-digit FIPS state code for the state or territory where the site is located (e.g. '24' for Maryland)."
                   },
                   {
                     "name": "county_code",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Five-digit FIPS county code for the county where the site is located (e.g. '24031' for Montgomery County, MD)."
                   },
                   {
                     "name": "huc_code",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Hydrologic Unit Code (HUC) identifying the watershed or drainage basin containing the site."
                   }
                 ]
@@ -196,7 +218,10 @@
                   },
                   {
                     "name": "value",
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Numeric sensor reading for the parameter at the given date_time. Null when the sensor did not return a valid numeric value (e.g. equipment malfunction, ice-affected, or the USGS noDataValue sentinel -999999.0)."
                   },
                   {
@@ -206,7 +231,10 @@
                   },
                   {
                     "name": "qualifier",
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "USGS data qualifier code indicating the quality or status of the reading. Common values: 'P' (provisional), 'A' (approved), 'e' (estimated). Null when no qualifier is provided."
                   },
                   {
@@ -221,5 +249,10 @@
         }
       }
     }
+  },
+  "description": "USGS NWIS Water Quality publishes continuous water-quality sensor readings from the U.S. Geological Survey (USGS) Water Services API for United States water-quality monitoring sites. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for USGS NWIS Water Quality, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

@@ -1,12 +1,12 @@
 # USGS Water Services - Instantaneous Value Service Usage Guide Events
 
-MQTT/5.0 transport variants for USGS site metadata. Topics are retained QoS-1 site info leaves under hydro/us/usgs/usgs-iv/{site_no}/info. The manifest intentionally uses existing schema field names site_no and parameter_cd rather than adding aliases.
+USGS Instantaneous Values publishes instantaneous water observations such as gauge height, discharge, and temperature from the U.S. Geological Survey (USGS) Water Services API for United States streamgages and other monitoring sites. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
 - **Event types:** 28 documented event types (56 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0
-- **Reference vs telemetry:** 1 reference/catalog event type and 27 telemetry event types.
+- **Reference vs telemetry:** 3 reference/catalog event types and 25 telemetry event types.
 - **Identity:** `{agency_cd}/{site_no}`, `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -52,11 +52,11 @@ CloudEvents type: `USGS.Sites.Site`
 
 #### What it tells you
 
-USGS site metadata.
+A reference record for one United States streamgages and other monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 #### Identity
 
-Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{agency_cd}` is agency code; `{site_no}` is USGS site number. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{agency_cd}` is USGS or partner agency code for the site; `{site_no}` is USGS site number within the agency. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -69,22 +69,22 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 
 `Site` payloads are JSON object. Required fields: `agency_cd`, `site_no`, `station_nm`, `site_tp_cd`, `lat_va`, `long_va`, `coord_meth_cd`, `coord_acy_cd`, `coord_datum_cd`, `dec_coord_datum_cd`, `district_cd`, `state_cd`, `county_cd`, `country_cd`, `land_net_ds`, `map_nm`, `alt_meth_cd`, `alt_datum_cd`, `huc_cd`, `basin_cd`, `topo_cd`, `instruments_cd`, `tz_cd`, `local_time_fg`, `reliability_cd`, `gw_file_cd`, `nat_aqfr_cd`, `aqfr_cd`, `aqfr_type_cd`, `depth_src_cd`, `project_no`.
 
-- **`agency_cd`** (string, required): Agency code.
-- **`site_no`** (string, required): USGS site number.
-- **`station_nm`** (string, required): Station name.
-- **`site_tp_cd`** (string, required): Site type code.
-- **`lat_va`** (string, required): DMS latitude.
-- **`long_va`** (string, required): DMS longitude.
-- **`dec_lat_va`** (float, optional): Decimal latitude.
-- **`dec_long_va`** (float, optional): Decimal longitude.
-- **`coord_meth_cd`** (string, required): Latitude-longitude method code.
-- **`coord_acy_cd`** (string, required): Coordinate accuracy code.
-- **`coord_datum_cd`** (string, required): Latitude-longitude datum code.
-- **`dec_coord_datum_cd`** (string, required): Decimal latitude-longitude datum code.
-- **`district_cd`** (string, required): District code.
-- **`state_cd`** (string, required): State code.
-- **`county_cd`** (string, required): County code.
-- **`country_cd`** (string, required): Country code.
+- **`agency_cd`** (string, required): USGS or partner agency code for the site. Combined with `site_no`, it forms the stable site identity used in CloudEvents subjects and transport keys.
+- **`site_no`** (string, required): USGS site number within the agency. Combined with `agency_cd`, it uniquely identifies the monitoring location.
+- **`station_nm`** (string, required): Human-readable site name published by USGS. Use `agency_cd` and `site_no` for stable joins because names can change.
+- **`site_tp_cd`** (string, required): USGS site-type code describing the kind of monitoring location, such as stream, lake, well, or atmospheric site.
+- **`lat_va`** (string, required): Latitude in degrees-minutes-seconds text as published by USGS.
+- **`long_va`** (string, required): Longitude in degrees-minutes-seconds text as published by USGS.
+- **`dec_lat_va`** (float, optional): Latitude in decimal degrees when USGS provides decimal coordinates.
+- **`dec_long_va`** (float, optional): Longitude in decimal degrees when USGS provides decimal coordinates.
+- **`coord_meth_cd`** (string, required): USGS method code describing how the latitude and longitude were determined.
+- **`coord_acy_cd`** (string, required): USGS accuracy code for the published coordinates.
+- **`coord_datum_cd`** (string, required): Horizontal datum code for the degrees-minutes-seconds coordinates.
+- **`dec_coord_datum_cd`** (string, required): Horizontal datum code for the decimal coordinates.
+- **`district_cd`** (string, required): USGS district code responsible for or associated with the site.
+- **`state_cd`** (string, required): FIPS state code for the site location.
+- **`county_cd`** (string, required): FIPS county code for the site location.
+- **`country_cd`** (string, required): Country code for the site location.
 - **`land_net_ds`** (string, required): Land net location description.
 - **`map_nm`** (string, required): Location map name.
 - **`map_scale_fc`** (float, optional): Location map scale factor.
@@ -92,17 +92,17 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 - **`alt_meth_cd`** (string, required): Method altitude determined code.
 - **`alt_acy_va`** (float, optional): Altitude accuracy.
 - **`alt_datum_cd`** (string, required): Altitude datum code.
-- **`huc_cd`** (string, required): Hydrologic unit code.
+- **`huc_cd`** (string, required): Hydrologic Unit Code identifying the watershed containing the site.
 - **`basin_cd`** (string, required): Drainage basin code.
 - **`topo_cd`** (string, required): Topographic setting code.
-- **`instruments_cd`** (string, required): Flags for instruments at site.
+- **`instruments_cd`** (string, required): USGS code summarizing the instrumentation installed at the site.
 - **`construction_dt`** (string, optional): Date of first construction.
 - **`inventory_dt`** (string, optional): Date site established or inventoried.
 - **`drain_area_va`** (float, optional): Drainage area.
 - **`contrib_drain_area_va`** (float, optional): Contributing drainage area.
-- **`tz_cd`** (string, required): Time Zone abbreviation.
-- **`local_time_fg`** (boolean, required): Site honors Daylight Savings Time flag.
-- **`reliability_cd`** (string, required): Data reliability code.
+- **`tz_cd`** (string, required): Time-zone code used for local timestamps at the site.
+- **`local_time_fg`** (boolean, required): Flag indicating whether timestamps are reported in the site local time zone.
+- **`reliability_cd`** (string, required): USGS reliability code describing the expected reliability of the site data.
 - **`gw_file_cd`** (string, required): Data-other GW files code.
 - **`nat_aqfr_cd`** (string, required): National aquifer code.
 - **`aqfr_cd`** (string, required): Local aquifer code.
@@ -110,7 +110,7 @@ Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{ag
 - **`well_depth_va`** (float, optional): Well depth.
 - **`hole_depth_va`** (float, optional): Hole depth.
 - **`depth_src_cd`** (string, required): Source of depth data.
-- **`project_no`** (string, required): Project number.
+- **`project_no`** (string, required): USGS project number associated with the site, when provided.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -164,7 +164,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Site Timeseries
 
@@ -172,7 +172,7 @@ CloudEvents type: `USGS.Sites.SiteTimeseries`
 
 #### What it tells you
 
-USGS site timeseries metadata.
+A reference record for one United States streamgages and other monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 #### Identity
 
@@ -210,7 +210,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Other Parameter
 
@@ -218,7 +218,7 @@ CloudEvents type: `USGS.InstantaneousValues.OtherParameter`
 
 #### What it tells you
 
-USGS other parameter data.
+A other parameter event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -270,7 +270,7 @@ CloudEvents type: `USGS.InstantaneousValues.Precipitation`
 
 #### What it tells you
 
-USGS precipitation data. Parameter code 00045.
+A precipitation event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -322,7 +322,7 @@ CloudEvents type: `USGS.InstantaneousValues.Streamflow`
 
 #### What it tells you
 
-USGS streamflow data. Parameter code 00060.
+A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -366,7 +366,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Gage Height
 
@@ -374,7 +374,7 @@ CloudEvents type: `USGS.InstantaneousValues.GageHeight`
 
 #### What it tells you
 
-USGS gage height data. Parameter code 00065.
+A gage height event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -426,7 +426,7 @@ CloudEvents type: `USGS.InstantaneousValues.WaterTemperature`
 
 #### What it tells you
 
-USGS water temperature data. Parameter code 00010.
+A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -470,7 +470,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Dissolved Oxygen
 
@@ -478,7 +478,7 @@ CloudEvents type: `USGS.InstantaneousValues.DissolvedOxygen`
 
 #### What it tells you
 
-USGS dissolved oxygen data. Parameter code 00300.
+A dissolved oxygen event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -530,7 +530,7 @@ CloudEvents type: `USGS.InstantaneousValues.pH`
 
 #### What it tells you
 
-USGS pH data. Parameter code 00400.
+A p h event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -582,7 +582,7 @@ CloudEvents type: `USGS.InstantaneousValues.SpecificConductance`
 
 #### What it tells you
 
-USGS specific conductance data. Parameter code 00095.
+A specific conductance event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -634,7 +634,7 @@ CloudEvents type: `USGS.InstantaneousValues.Turbidity`
 
 #### What it tells you
 
-USGS turbidity data. Parameter code 00076.
+A turbidity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -686,7 +686,7 @@ CloudEvents type: `USGS.InstantaneousValues.AirTemperature`
 
 #### What it tells you
 
-USGS air temperature data. Parameter code 00020.
+A air temperature event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -738,7 +738,7 @@ CloudEvents type: `USGS.InstantaneousValues.WindSpeed`
 
 #### What it tells you
 
-USGS wind speed data. Parameter code 00035.
+A wind speed event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -790,7 +790,7 @@ CloudEvents type: `USGS.InstantaneousValues.WindDirection`
 
 #### What it tells you
 
-USGS wind direction data. Parameter codes 00036 and 163695.
+A wind direction event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -842,7 +842,7 @@ CloudEvents type: `USGS.InstantaneousValues.RelativeHumidity`
 
 #### What it tells you
 
-USGS relative humidity data. Parameter code 00052.
+A relative humidity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -894,7 +894,7 @@ CloudEvents type: `USGS.InstantaneousValues.BarometricPressure`
 
 #### What it tells you
 
-USGS barometric pressure data. Parameter codes 62605 and 75969.
+A barometric pressure event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -946,7 +946,7 @@ CloudEvents type: `USGS.InstantaneousValues.TurbidityFNU`
 
 #### What it tells you
 
-USGS turbidity data (FNU). Parameter code 63680.
+A turbidity f n u event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -998,7 +998,7 @@ CloudEvents type: `USGS.InstantaneousValues.fDOM`
 
 #### What it tells you
 
-USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.
+A f d o m event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1050,7 +1050,7 @@ CloudEvents type: `USGS.InstantaneousValues.ReservoirStorage`
 
 #### What it tells you
 
-USGS reservoir storage data. Parameter code 00054.
+A current reservoir record from the U.S. Geological Survey (USGS) Water Services API. It reports the latest storage, elevation, capacity, or related reservoir status available for one reservoir.
 
 #### Identity
 
@@ -1094,7 +1094,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Lake Elevation NGVD29
 
@@ -1102,7 +1102,7 @@ CloudEvents type: `USGS.InstantaneousValues.LakeElevationNGVD29`
 
 #### What it tells you
 
-USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.
+A lake elevation n g v d29 event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1154,7 +1154,7 @@ CloudEvents type: `USGS.InstantaneousValues.WaterDepth`
 
 #### What it tells you
 
-USGS water depth data. Parameter code 72199.
+A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -1198,7 +1198,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Equipment Status
 
@@ -1206,7 +1206,7 @@ CloudEvents type: `USGS.InstantaneousValues.EquipmentStatus`
 
 #### What it tells you
 
-USGS equipment alarm status data. Parameter code 99235.
+A equipment status event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1252,7 +1252,7 @@ CloudEvents type: `USGS.InstantaneousValues.TidallyFilteredDischarge`
 
 #### What it tells you
 
-USGS tidally filtered discharge data. Parameter code 72137.
+A tidally filtered discharge event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1304,7 +1304,7 @@ CloudEvents type: `USGS.InstantaneousValues.WaterVelocity`
 
 #### What it tells you
 
-USGS water velocity data. Parameter code 72254.
+A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries instantaneous water observations such as gauge height, discharge, and temperature when the upstream feed reports a new or refreshed value.
 
 #### Identity
 
@@ -1348,7 +1348,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
 ### Estuary Elevation NGVD29
 
@@ -1356,7 +1356,7 @@ CloudEvents type: `USGS.InstantaneousValues.EstuaryElevationNGVD29`
 
 #### What it tells you
 
-USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.
+A estuary elevation n g v d29 event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1408,7 +1408,7 @@ CloudEvents type: `USGS.InstantaneousValues.LakeElevationNAVD88`
 
 #### What it tells you
 
-USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.
+A lake elevation n a v d88 event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1460,7 +1460,7 @@ CloudEvents type: `USGS.InstantaneousValues.Salinity`
 
 #### What it tells you
 
-USGS salinity data. Parameter code 00480.
+A salinity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 
@@ -1512,7 +1512,7 @@ CloudEvents type: `USGS.InstantaneousValues.GateOpening`
 
 #### What it tells you
 
-USGS gate opening data. Parameter code 45592.
+A gate opening event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.
 
 #### Identity
 

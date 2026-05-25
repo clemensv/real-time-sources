@@ -1,6 +1,6 @@
 # Canada ECCC Water Office Hydrometric Bridge Events
 
-Real-time hydrometric data from [Environment and Climate Change Canada (ECCC) Water Survey of Canada](https://wateroffice.ec.gc.ca/) bridged to Apache Kafka as CloudEvents.
+ECCC Water Office publishes real-time water level and flow observations from Environment and Climate Change Canada Water Survey of Canada for Canadian hydrometric stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `CA.Gov.ECCC.Hydro.Station`
 
 #### What it tells you
 
-Reference data for a Water Survey of Canada hydrometric monitoring station from the ECCC OGC API hydrometric-stations collection.
+A reference record for one Canadian hydrometric station published by Environment and Climate Change Canada Water Survey of Canada. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference data for a Water Survey of Canada hydrometric monitoring station from the ECCC OGC API hydrometric-stations collection.
 
 #### Identity
 
@@ -95,7 +95,7 @@ CloudEvents type: `CA.Gov.ECCC.Hydro.Observation`
 
 #### What it tells you
 
-Real-time hydrometric observation from the ECCC OGC API hydrometric-realtime collection. Data are provisional and updated approximately every 5 minutes.
+A current measurement from Environment and Climate Change Canada Water Survey of Canada for one monitoring site. It carries real-time water level and flow observations when the upstream feed reports a new or refreshed value. Real-time hydrometric observation from the ECCC OGC API hydrometric-realtime collection.
 
 #### Identity
 

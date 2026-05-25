@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/CH.BAFU.Hydrology"
-      ]
+      ],
+      "description": "Kafka producer endpoint for BAFU Hydrology CloudEvents on the `bafu-hydro` topic keyed by `{station_id}`."
     },
     "CH.BAFU.Hydrology.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/CH.BAFU.Hydrology.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for BAFU Hydrology CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology.jstruct/schemas/CH.BAFU.Hydrology.Station"
+          "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology.jstruct/schemas/CH.BAFU.Hydrology.Station",
+          "description": "A reference record for one Swiss river, lake, and stream gauge published by the Swiss Federal Office for the Environment (BAFU/FOEN). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "CH.BAFU.Hydrology.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology.jstruct/schemas/CH.BAFU.Hydrology.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology.jstruct/schemas/CH.BAFU.Hydrology.WaterLevelObservation",
+          "description": "A current measurement from the Swiss Federal Office for the Environment (BAFU/FOEN) for one monitoring site. It carries water level, discharge, and water temperature observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from BAFU Hydrology covering Swiss river, lake, and stream gauges and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "CH.BAFU.Hydrology.mqtt": {
-      "description": "MQTT/5.0 transport variants of the BAFU Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/... The {water_body_name} placeholder is sourced from the upstream existenz.ch station catalog (BAFU/FOEN field 'water-body-name', e.g. 'Rhein', 'Aare') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers / lakes (e.g. hydro/ch/bafu/bafu-hydro/rhein/+/water-level).",
+      "description": "MQTT 5 variant of the BAFU Hydrology events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "CH.BAFU.Hydrology.mqtt.Station": {
           "name": "Station",
@@ -132,26 +137,32 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the station, site, or location."
                   },
                   "water_body_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the river, lake, canal, reservoir, or other water body observed at the station."
                   },
                   "water_body_type": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider classification for the observed water body."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   }
                 },
                 "$id": "https://example.com/schemas/CH/BAFU/Hydrology/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the BAFU Hydrology source."
               }
             }
           }
@@ -173,42 +184,52 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "water_body_name": {
                     "type": "string",
                     "description": "Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current water level reported for the station."
                   },
                   "water_level_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the water-level value."
                   },
                   "water_level_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the water-level measurement."
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the discharge value."
                   },
                   "discharge_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the discharge measurement."
                   },
                   "water_temperature": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current water temperature reported for the station."
                   },
                   "water_temperature_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the water-temperature value."
                   },
                   "water_temperature_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the water-temperature measurement."
                   }
                 },
                 "$id": "https://example.com/schemas/CH/BAFU/Hydrology/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level, discharge, and water temperature observations in the BAFU Hydrology source."
               }
             }
           }
@@ -227,7 +248,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the BAFU Hydrology source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -262,7 +283,8 @@
                     "type": "double"
                   }
                 ],
-                "namespace": "CH.BAFU.Hydrology"
+                "namespace": "CH.BAFU.Hydrology",
+                "description": "Reference details for one monitoring station or site in the BAFU Hydrology source."
               }
             }
           }
@@ -277,7 +299,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the BAFU Hydrology source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -370,12 +392,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "CH.BAFU.Hydrology"
+                "namespace": "CH.BAFU.Hydrology",
+                "description": "Measurement payload for observations in the BAFU Hydrology source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "BAFU Hydrology publishes water level, discharge, and water temperature observations from the Swiss Federal Office for the Environment (BAFU/FOEN) for Swiss river, lake, and stream gauges. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for BAFU Hydrology, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }

@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NO.NVE.Hydrology"
-      ]
+      ],
+      "description": "Kafka producer endpoint for NVE Hydrology CloudEvents on the `nve-hydro` topic keyed by `{station_id}`."
     },
     "NO.NVE.Hydrology.Mqtt": {
       "usage": [
@@ -40,7 +41,8 @@
       },
       "messagegroups": [
         "#/messagegroups/NO.NVE.Hydrology.mqtt"
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for NVE Hydrology CloudEvents using the source's documented topic hierarchy and retain settings."
     }
   },
   "messagegroups": {
@@ -62,7 +64,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.NVE.Hydrology.jstruct/schemas/NO.NVE.Hydrology.Station"
+          "dataschemauri": "#/schemagroups/NO.NVE.Hydrology.jstruct/schemas/NO.NVE.Hydrology.Station",
+          "description": "A reference record for one Norwegian hydrological monitoring station published by the Norwegian Water Resources and Energy Directorate (NVE). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "NO.NVE.Hydrology.WaterLevelObservation": {
           "name": "WaterLevelObservation",
@@ -80,12 +83,14 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/NO.NVE.Hydrology.jstruct/schemas/NO.NVE.Hydrology.WaterLevelObservation"
+          "dataschemauri": "#/schemagroups/NO.NVE.Hydrology.jstruct/schemas/NO.NVE.Hydrology.WaterLevelObservation",
+          "description": "A current measurement from the Norwegian Water Resources and Energy Directorate (NVE) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from NVE Hydrology covering Norwegian hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     },
     "NO.NVE.Hydrology.mqtt": {
-      "description": "MQTT/5.0 transport variants of the NVE Hydrology CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under hydro/no/nve/nve-hydro/{river_name}/{station_id}/... The {river_name} placeholder is sourced from the NVE HydAPI station catalog field 'riverName' (Norwegian: 'Vassdrag', e.g. 'Glomma', 'Drammenselva') and normalized by the bridge to lowercase kebab-case before publishing so subscribers can wildcard whole rivers (e.g. hydro/no/nve/nve-hydro/glomma/+/water-level).",
+      "description": "MQTT 5 variant of the NVE Hydrology events. It carries the same station and measurement semantics as the source events, with MQTT topics arranged for source, water body, and station subscriptions where the manifest defines those segments.",
       "messages": {
         "NO.NVE.Hydrology.mqtt.Station": {
           "name": "Station",
@@ -132,35 +137,44 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "river_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the river or watercourse observed at the station."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the station in WGS 84 coordinates."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the station in WGS 84 coordinates."
                   },
                   "masl": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied masl value for this record."
                   },
                   "council_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the council."
                   },
                   "county_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the county."
                   },
                   "drainage_basin_area": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied drainage basin area value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/NO/NVE/Hydrology/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the NVE Hydrology source."
               }
             }
           }
@@ -182,33 +196,40 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "river_name": {
                     "type": "string",
                     "description": "Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current water level reported for the station."
                   },
                   "water_level_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the water-level value."
                   },
                   "water_level_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the water-level measurement."
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_unit": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unit used for the discharge value."
                   },
                   "discharge_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time associated with the discharge measurement."
                   }
                 },
                 "$id": "https://example.com/schemas/NO/NVE/Hydrology/WaterLevelObservation",
-                "description": "WaterLevelObservation"
+                "description": "Measurement payload for water level and discharge observations in the NVE Hydrology source."
               }
             }
           }
@@ -227,7 +248,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the NVE Hydrology source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -286,7 +307,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "NO.NVE.Hydrology"
+                "namespace": "NO.NVE.Hydrology",
+                "description": "Reference details for one monitoring station or site in the NVE Hydrology source."
               }
             }
           }
@@ -301,7 +323,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelObservation",
-                "doc": "WaterLevelObservation",
+                "doc": "Measurement payload for observations in the NVE Hydrology source.",
                 "fields": [
                   {
                     "name": "station_id",
@@ -367,12 +389,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "NO.NVE.Hydrology"
+                "namespace": "NO.NVE.Hydrology",
+                "description": "Measurement payload for observations in the NVE Hydrology source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "NVE Hydrology publishes water level and discharge observations from the Norwegian Water Resources and Energy Directorate (NVE) for Norwegian hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for NVE Hydrology, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
