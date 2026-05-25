@@ -1,6 +1,6 @@
 # NDW Netherlands Road Traffic Bridge Events
 
-This bridge downloads DATEX II XML data published by the Dutch NDW (Nationaal Dataportaal Wegverkeer) at `https://opendata.ndw.nu` and forwards traffic speed, travel time, and situation data to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
+NDL Netherlands publishes road traffic measurements and situation updates from Dutch road-traffic open data feeds for Dutch road network sites and traffic situations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `NL.NDW.Traffic.TrafficSpeed`
 
 #### What it tells you
 
-Aggregated traffic speed and flow measurement per road segment from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes. Aggregated traffic speed and flow measurement per road segment from the NDW DATEX II trafficspeed feed.
+Aggregated traffic speed and flow measurement per road segment from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.
 
 #### Identity
 
@@ -83,7 +83,7 @@ CloudEvents type: `NL.NDW.Traffic.TravelTime`
 
 #### What it tells you
 
-Travel time measurement for a road segment from the Dutch NDW DATEX II traveltime feed. Each record contains the actual measured travel time and the static free-flow reference time for a measurement site. Travel time measurement for a road segment from the NDW DATEX II traveltime feed.
+Travel time measurement for a road segment from the Dutch NDW DATEX II traveltime feed. Each record contains the actual measured travel time and the static free-flow reference time for a measurement site.
 
 #### Identity
 
@@ -132,7 +132,7 @@ CloudEvents type: `NL.NDW.Traffic.TrafficSituation`
 
 #### What it tells you
 
-Current traffic situation record from the Dutch NDW DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-affecting events on the Dutch road network. Current traffic situation from the NDW DATEX II v3 actueel_beeld feed.
+Current traffic situation record from the Dutch NDW DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-affecting events on the Dutch road network.
 
 #### Identity
 
