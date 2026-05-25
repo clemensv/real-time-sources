@@ -41,6 +41,28 @@
       "messagegroups": [
         "#/messagegroups/gov.usgs.geomag.mqtt"
       ]
+    },
+    "gov.usgs.geomag.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/usgs-geomag"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.usgs.geomag.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for usgs-geomag CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -109,6 +131,39 @@
           }
         }
       }
+    },
+    "gov.usgs.geomag.amqp": {
+      "description": "AMQP 1.0 transport variant for usgs-geomag events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "messages": {
+        "gov.usgs.geomag.amqp.Observatory": {
+          "name": "Observatory",
+          "basemessageurl": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{iaga_code}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "gov.usgs.geomag.amqp.MagneticFieldReading": {
+          "name": "MagneticFieldReading",
+          "basemessageurl": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.MagneticFieldReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{iaga_code}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -159,7 +214,7 @@
                     ],
                     "description": "Geodetic latitude of the observatory in decimal degrees. Positive values indicate north of the equator.",
                     "unit": "deg",
-                    "symbol": "\u00b0"
+                    "symbol": "°"
                   },
                   "longitude": {
                     "type": [
@@ -168,7 +223,7 @@
                     ],
                     "description": "Geodetic longitude of the observatory in decimal degrees east. Values above 180 represent west longitudes expressed as 360 minus the west longitude (e.g. 254.763 = -105.237 W).",
                     "unit": "deg",
-                    "symbol": "\u00b0"
+                    "symbol": "°"
                   },
                   "elevation": {
                     "type": [
@@ -247,9 +302,9 @@
                       "double",
                       "null"
                     ],
-                    "description": "Declination angle \u2014 the angular difference between magnetic north and geographic north. Positive values indicate east declination. Null when the observatory does not report this element or the value is missing for this minute.",
+                    "description": "Declination angle — the angular difference between magnetic north and geographic north. Positive values indicate east declination. Null when the observatory does not report this element or the value is missing for this minute.",
                     "unit": "'",
-                    "symbol": "\u2032"
+                    "symbol": "′"
                   },
                   "z": {
                     "type": [
@@ -265,7 +320,7 @@
                       "double",
                       "null"
                     ],
-                    "description": "Total field intensity \u2014 the scalar magnitude of the full geomagnetic field vector. Measured by an independent proton or Overhauser magnetometer. Null when the observatory does not report this element or the value is missing for this minute.",
+                    "description": "Total field intensity — the scalar magnitude of the full geomagnetic field vector. Measured by an independent proton or Overhauser magnetometer. Null when the observatory does not report this element or the value is missing for this minute.",
                     "unit": "nT",
                     "symbol": "nT"
                   }
