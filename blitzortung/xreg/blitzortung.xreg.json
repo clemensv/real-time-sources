@@ -99,6 +99,22 @@
             "topic_name": "weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke",
             "qos": 0,
             "retain": false
+          },
+          "envelopemetadata": {
+            "type": {
+              "value": "Blitzortung.Lightning.LightningStroke"
+            },
+            "source": {
+              "value": "wss://live.lightningmaps.org/"
+            },
+            "subject": {
+              "value": "{geohash5}/{geohash7}/{stroke_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
           }
         }
       }
