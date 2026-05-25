@@ -54,8 +54,8 @@ jobs:
             echo "$files"
             echo "EOF_FILES"
           } >> "$GITHUB_OUTPUT"
-          echo "[changed] $(wc -l <<< "$files") file(s):"
-          sed -n '1,50p' <<< "$files"
+          echo "[changed] $(echo "$files" | wc -l) file(s):"
+          echo "$files" | head -50 || true
 
       - name: Compute filtered matrix
         id: compute

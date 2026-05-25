@@ -40,6 +40,28 @@
       "messagegroups": [
         "#/messagegroups/Wikimedia.EventStreams.mqtt"
       ]
+    },
+    "Wikimedia.EventStreams.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/wikimedia-eventstreams"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Wikimedia.EventStreams.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for wikimedia-eventstreams CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -88,6 +110,25 @@
               "topic": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change",
               "qos": 0,
               "retain": false
+            }
+          }
+        }
+      }
+    },
+    "Wikimedia.EventStreams.amqp": {
+      "description": "AMQP 1.0 variant of the wikimedia-eventstreams events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "Wikimedia.EventStreams.amqp.RecentChange": {
+          "name": "RecentChange",
+          "basemessageurl": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
             }
           }
         }

@@ -169,3 +169,15 @@ social/intl/bluesky/bluesky/{collection}/{lang}/{did}/{event}
 ride as MQTT 5 user properties; `subject` equals the author DID.
 
 See `CONTAINER.md` for the container image and environment variables.
+
+## AMQP 1.0 feeder
+
+This source also ships an AMQP 1.0 companion container (`Dockerfile.amqp`, image `ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest`). It publishes the same CloudEvents contract documented in [EVENTS.md](EVENTS.md) to a single AMQP address named `bluesky` by default. Use it for enterprise queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, or Azure Service Bus.
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/bluesky   -e BLUESKY_MOCK=true   ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest
+```
+
+Azure Service Bus deployment (new namespace, queue, managed identity, and ACI):
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Finfra%2Fazure-template-amqp.json)

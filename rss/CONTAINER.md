@@ -198,3 +198,35 @@ Deploy the MQTT container against an existing MQTT 5 broker:
 Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-with-eventgrid-mqtt.json)
+
+
+## AMQP 1.0 container
+
+The AMQP companion image publishes RSS/Atom feeds CloudEvents to a single broker address. It supports SASL PLAIN for generic AMQP 1.0 brokers and CBS token authentication for Azure Service Bus (`AMQP_AUTH_MODE=entra` for managed identity, `AMQP_AUTH_MODE=sas` for emulator/SAS-key scenarios).
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-rss-amqp:latest
+
+docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/rss   -e RSS_SAMPLE_MODE=true   ghcr.io/clemensv/real-time-sources-rss-amqp:latest
+```
+
+### AMQP environment variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `AMQP_BROKER_URL` | Full `amqp://` or `amqps://` URL. Path overrides `AMQP_ADDRESS`. | empty |
+| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URL is supplied. | `localhost` / 5672 or 5671 |
+| `AMQP_ADDRESS` | Queue, topic, or link target address. | `rss` |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
+| `AMQP_TLS` | Force TLS for generic brokers. | `false` |
+| `AMQP_CONTENT_MODE` | CloudEvents AMQP binding mode: `binary` or `structured`. | `binary` |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
+| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS/Entra authentication. | `https://servicebus.azure.net/.default` |
+| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS key credentials for Service Bus emulator/SAS CBS. | empty |
+
+### Deploy to Azure Service Bus
+
+This template creates a Service Bus namespace and queue, user-assigned managed identity, role assignment for Azure Service Bus Data Sender, Log Analytics workspace, storage file share for state, and an Azure Container Instance running the AMQP image.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Finfra%2Fazure-template-amqp.json)

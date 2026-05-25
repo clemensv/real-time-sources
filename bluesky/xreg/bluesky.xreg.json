@@ -41,6 +41,28 @@
       "messagegroups": [
         "#/messagegroups/BlueskyFirehose.mqtt"
       ]
+    },
+    "BlueskyFirehose.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/bluesky"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BlueskyFirehose.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for bluesky CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -360,6 +382,95 @@
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/profile",
             "qos": 0,
             "retain": false
+          }
+        }
+      }
+    },
+    "BlueskyFirehose.amqp": {
+      "description": "AMQP 1.0 variant of the bluesky events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "BlueskyFirehose.amqp.Post": {
+          "name": "Post",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{did}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Like": {
+          "name": "Like",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{did}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Repost": {
+          "name": "Repost",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{did}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Follow": {
+          "name": "Follow",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{did}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Block": {
+          "name": "Block",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{did}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Profile": {
+          "name": "Profile",
+          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{did}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            }
           }
         }
       }
