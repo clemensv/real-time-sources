@@ -1,6 +1,6 @@
 # JMA Bosai Earthquake & Seismic Intensity Information Events
 
-MQTT/5.0 transport variant for JMA Bosai earthquake reports. Non-retained QoS-1 report events route by Romanized prefecture, magnitude bucket, event id, and retained JMA serial under seismic/jp/jma/jma-bosai-quake/... so subscribers can follow revisions distinctly.
+JMA Bosai Earthquake publishes earthquake reports and intensity updates from the Japan Meteorological Agency for Japanese earthquake report areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
@@ -52,7 +52,7 @@ CloudEvents type: `JP.JMA.Quake.EarthquakeReport`
 
 #### What it tells you
 
-JMA Bosai earthquake and seismic intensity report header enriched with parsed hypocenter coordinates, prefecture and city intensity summaries, and tsunami-related comment interpretation from the detail bulletin when available. A JMA Bosai earthquake report record built from the recent earthquake list endpoint and, when available, the matching full detail JSON bulletin. The record is keyed by the stable JMA event id plus report serial so updates, corrections, and cancellations for the same earthquake remain distinct stream records.
+JMA Bosai earthquake and seismic intensity report header enriched with parsed hypocenter coordinates, prefecture and city intensity summaries, and tsunami-related comment interpretation from the detail bulletin when available.
 
 #### Identity
 
@@ -98,28 +98,28 @@ Each event identifies the real-world resource with `jp.jma.quake/{event_id}/{ser
 - **`tsunami_possible`** (boolean or null, required): Interpretation of tsunami-related text in the full detail JSON comments. True means the detail bulletin text indicates tsunami attention or possibility; false means the detail explicitly states there is no tsunami concern; null means no tsunami-related detail text was available or fetched.
 ##### `info_type` values
 
-- `ISSUED`
-- `CORRECTED`
-- `CANCELLED`
+- `ISSUED`: Provider value `ISSUED` for this coded alert field.
+- `CORRECTED`: Provider value `CORRECTED` for this coded alert field.
+- `CANCELLED`: Provider value `CANCELLED` for this coded alert field.
 ##### `max_intensity` values
 
-- `1`
-- `2`
-- `3`
-- `4`
-- `5-`
-- `5+`
-- `6-`
-- `6+`
-- `7`
+- `1`: Provider value `1` for this coded alert field.
+- `2`: Provider value `2` for this coded alert field.
+- `3`: Provider value `3` for this coded alert field.
+- `4`: Provider value `4` for this coded alert field.
+- `5-`: Provider value `5-` for this coded alert field.
+- `5+`: Provider value `5+` for this coded alert field.
+- `6-`: Provider value `6-` for this coded alert field.
+- `6+`: Provider value `6+` for this coded alert field.
+- `7`: Provider value `7` for this coded alert field.
 ##### `bulletin_type` values
 
-- `VXSE51`
-- `VXSE52`
-- `VXSE53`
-- `VXSE5k`
-- `VXSE61`
-- `VYSE52`
+- `VXSE51`: Provider value `VXSE51` for this coded alert field.
+- `VXSE52`: Provider value `VXSE52` for this coded alert field.
+- `VXSE53`: Provider value `VXSE53` for this coded alert field.
+- `VXSE5k`: Provider value `VXSE5k` for this coded alert field.
+- `VXSE61`: Provider value `VXSE61` for this coded alert field.
+- `VYSE52`: Provider value `VYSE52` for this coded alert field.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/JP.JMA.Quake"
-      ]
+      ],
+      "description": "Kafka producer endpoint for JMA Bosai Earthquake CloudEvents on the `jma-bosai-quake` topic keyed by `jp.jma.quake/{event_id}/{serial}`."
     },
     "JP.JMA.Quake.Mqtt": {
       "usage": [
@@ -38,7 +39,8 @@
         {
           "uri": "mqtt://localhost:1883"
         }
-      ]
+      ],
+      "description": "MQTT 5 producer endpoint for JMA Bosai Earthquake CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     }
   },
   "messagegroups": {
@@ -64,10 +66,11 @@
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/JP.JMA.Quake.jstruct/schemas/JP.JMA.Quake.EarthquakeReport"
         }
-      }
+      },
+      "description": "Events from JMA Bosai Earthquake covering Japanese earthquake report areas. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
     },
     "JP.JMA.Quake.mqtt": {
-      "description": "MQTT/5.0 transport variant for JMA Bosai earthquake reports. Non-retained QoS-1 report events route by Romanized prefecture, magnitude bucket, event id, and retained JMA serial under seismic/jp/jma/jma-bosai-quake/... so subscribers can follow revisions distinctly.",
+      "description": "MQTT 5 variant of the JMA Bosai Earthquake events. It carries the same alert semantics as the base events with MQTT topic routing and retain behavior declared per message.",
       "messages": {
         "JP.JMA.Quake.mqtt.EarthquakeReport": {
           "name": "EarthquakeReport",
@@ -95,7 +98,7 @@
               "schema": {
                 "name": "EarthquakeReport",
                 "type": "object",
-                "description": "A JMA Bosai earthquake report record built from the recent earthquake list endpoint and, when available, the matching full detail JSON bulletin. The record is keyed by the stable JMA event id plus report serial so updates, corrections, and cancellations for the same earthquake remain distinct stream records.",
+                "description": "JMA Bosai earthquake and seismic intensity report header enriched with parsed hypocenter coordinates, prefecture and city intensity summaries, and tsunami-related comment interpretation from the detail bulletin when available.",
                 "properties": {
                   "prefecture": {
                     "type": "string",
@@ -144,6 +147,11 @@
                     },
                     "altnames": {
                       "jma-bosai": "ift"
+                    },
+                    "descriptions": {
+                      "ISSUED": "Provider value `ISSUED` for this coded alert field.",
+                      "CORRECTED": "Provider value `CORRECTED` for this coded alert field.",
+                      "CANCELLED": "Provider value `CANCELLED` for this coded alert field."
                     }
                   },
                   "report_datetime": {
@@ -320,7 +328,18 @@
                       "6-",
                       "6+",
                       "7"
-                    ]
+                    ],
+                    "descriptions": {
+                      "1": "Provider value `1` for this coded alert field.",
+                      "2": "Provider value `2` for this coded alert field.",
+                      "3": "Provider value `3` for this coded alert field.",
+                      "4": "Provider value `4` for this coded alert field.",
+                      "5-": "Provider value `5-` for this coded alert field.",
+                      "5+": "Provider value `5+` for this coded alert field.",
+                      "6-": "Provider value `6-` for this coded alert field.",
+                      "6+": "Provider value `6+` for this coded alert field.",
+                      "7": "Provider value `7` for this coded alert field."
+                    }
                   },
                   "bulletin_type": {
                     "type": "string",
@@ -345,6 +364,14 @@
                         "VXSE61": "長周期地震動に関する観測情報 — observed long-period ground motion information related to an earthquake.",
                         "VYSE52": "南海トラフ地震関連解説情報 — explanatory information related to the Nankai Trough earthquake assessment process."
                       }
+                    },
+                    "descriptions": {
+                      "VXSE51": "Provider value `VXSE51` for this coded alert field.",
+                      "VXSE52": "Provider value `VXSE52` for this coded alert field.",
+                      "VXSE53": "Provider value `VXSE53` for this coded alert field.",
+                      "VXSE5k": "Provider value `VXSE5k` for this coded alert field.",
+                      "VXSE61": "Provider value `VXSE61` for this coded alert field.",
+                      "VYSE52": "Provider value `VYSE52` for this coded alert field."
                     }
                   },
                   "detail_url": {
@@ -360,7 +387,8 @@
                     "items": {
                       "type": {
                         "$ref": "#/definitions/AffectedPrefecture"
-                      }
+                      },
+                      "description": "Payload for an emergency or hazard event from the Japan Meteorological Agency. It carries earthquake reports and intensity updates for Japanese earthquake report areas."
                     },
                     "altnames": {
                       "jma-bosai": "int"
@@ -372,7 +400,8 @@
                     "items": {
                       "type": {
                         "$ref": "#/definitions/AffectedCity"
-                      }
+                      },
+                      "description": "Payload for an emergency or hazard event from the Japan Meteorological Agency. It carries earthquake reports and intensity updates for Japanese earthquake report areas."
                     },
                     "altnames": {
                       "jma-bosai": "int.city"
@@ -451,7 +480,18 @@
                           "6-",
                           "6+",
                           "7"
-                        ]
+                        ],
+                        "descriptions": {
+                          "1": "Provider value `1` for this coded alert field.",
+                          "2": "Provider value `2` for this coded alert field.",
+                          "3": "Provider value `3` for this coded alert field.",
+                          "4": "Provider value `4` for this coded alert field.",
+                          "5-": "Provider value `5-` for this coded alert field.",
+                          "5+": "Provider value `5+` for this coded alert field.",
+                          "6-": "Provider value `6-` for this coded alert field.",
+                          "6+": "Provider value `6+` for this coded alert field.",
+                          "7": "Provider value `7` for this coded alert field."
+                        }
                       }
                     },
                     "required": [
@@ -505,7 +545,18 @@
                           "6-",
                           "6+",
                           "7"
-                        ]
+                        ],
+                        "descriptions": {
+                          "1": "Provider value `1` for this coded alert field.",
+                          "2": "Provider value `2` for this coded alert field.",
+                          "3": "Provider value `3` for this coded alert field.",
+                          "4": "Provider value `4` for this coded alert field.",
+                          "5-": "Provider value `5-` for this coded alert field.",
+                          "5+": "Provider value `5+` for this coded alert field.",
+                          "6-": "Provider value `6-` for this coded alert field.",
+                          "6+": "Provider value `6+` for this coded alert field.",
+                          "7": "Provider value `7` for this coded alert field."
+                        }
                       }
                     },
                     "required": [
@@ -521,5 +572,10 @@
         }
       }
     }
+  },
+  "description": "JMA Bosai Earthquake publishes earthquake reports and intensity updates from the Japan Meteorological Agency for Japanese earthquake report areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.",
+  "documentation": {
+    "description": "Source documentation for JMA Bosai Earthquake, including upstream feed context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
