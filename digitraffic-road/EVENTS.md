@@ -1,219 +1,738 @@
-# Digitraffic Road — Finnish Road Traffic Events
+# Digitraffic Road — Finnish Road Traffic Data Events
 
-The bridge emits CloudEvents in structured JSON format to Kafka-compatible
-endpoints. Telemetry is streamed in real time from the Digitraffic MQTT service
-at `wss://tie.digitraffic.fi/mqtt`. Reference data — station metadata and
-maintenance task type catalogs — is fetched from the Digitraffic REST API at
-startup and emitted before the telemetry stream begins.
+Real-time road traffic data from the Finnish national road network operated by Fintraffic. Telemetry is streamed via the Digitraffic MQTT service at `wss://tie.digitraffic.fi/mqtt` and includes TMS sensor readings, road weather sensor readings, traffic messages (incidents, road works, weight restrictions, exempted transports), and maintenance vehicle tracking. Station metadata and maintenance task type catalogs are fetched as reference data from the Digitraffic REST API at startup.
 
-## Endpoints & Kafka Topics
+## At a glance
 
-| Kafka topic | Key template | Message group | Data kind |
-|---|---|---|---|
-| `digitraffic-road-sensors` | `{station_id}/{sensor_id}` | Sensor readings (TMS + weather) | Telemetry |
-| `digitraffic-road-sensors` | `{station_id}` | Station metadata (TMS + weather) | Reference |
-| `digitraffic-road-messages` | `{situation_id}` | Traffic messages (announcements, road works, restrictions) | Telemetry |
-| `digitraffic-road-maintenance` | `{domain}` | Maintenance vehicle tracking | Telemetry |
-| `digitraffic-road-maintenance` | `{task_id}` | Maintenance task type catalog | Reference |
+- **Event types:** 10 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 2 reference/catalog event types and 8 telemetry event types.
+- **Identity:** `{station_id}/{sensor_id}`, `{situation_id}`, `{domain}`, `{station_id}`, `{task_id}` identifies the resource each event is about.
+- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
-## Event Types
+## Quick start — how to consume
 
-### Station Reference Data
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Event type | Payload schema | REST source |
-|---|---|---|
-| `fi.digitraffic.road.stations.TmsStation` | `TmsStation` | `/api/tms/v1/stations` |
-| `fi.digitraffic.road.stations.WeatherStation` | `WeatherStation` | `/api/weather/v1/stations` |
+### Kafka
 
-### Sensor Telemetry
+Subscribe to `digitraffic-road-sensors`, `digitraffic-road-messages`, `digitraffic-road-maintenance`. The record key is `{station_id}/{sensor_id}`, `{situation_id}`, `{domain}`, `{station_id}`, `{task_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-| Event type | Payload schema | MQTT source topic |
-|---|---|---|
-| `fi.digitraffic.road.sensors.TmsSensorData` | `TmsSensorData` | `tms-v2/{stationId}/{sensorId}` |
-| `fi.digitraffic.road.sensors.WeatherSensorData` | `WeatherSensorData` | `weather-v2/{stationId}/{sensorId}` |
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['digitraffic-road-sensors', 'digitraffic-road-messages', 'digitraffic-road-maintenance'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-### Traffic Messages
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-| Event type | Payload schema | MQTT source topic |
-|---|---|---|
-| `fi.digitraffic.road.messages.TrafficAnnouncement` | `TrafficMessage` | `traffic-message-v3/simple/TRAFFIC_ANNOUNCEMENT` |
-| `fi.digitraffic.road.messages.RoadWork` | `TrafficMessage` | `traffic-message-v3/simple/ROAD_WORK` |
-| `fi.digitraffic.road.messages.WeightRestriction` | `TrafficMessage` | `traffic-message-v3/simple/WEIGHT_RESTRICTION` |
-| `fi.digitraffic.road.messages.ExemptedTransport` | `TrafficMessage` | `traffic-message-v3/simple/EXEMPTED_TRANSPORT` |
+## Event catalog
 
-### Maintenance Telemetry
+### Tms Sensor Data
 
-| Event type | Payload schema | MQTT source topic |
-|---|---|---|
-| `fi.digitraffic.road.maintenance.MaintenanceTracking` | `MaintenanceTracking` | `maintenance-v2/routes/{domain}` |
+CloudEvents type: `fi.digitraffic.road.sensors.TmsSensorData`
 
-### Maintenance Reference Data
+#### What it tells you
 
-| Event type | Payload schema | REST source |
-|---|---|---|
-| `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` | `MaintenanceTaskType` | `/api/maintenance/v1/tracking/tasks` |
+Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows.
 
-## Payload Shapes
+#### Identity
 
-### TmsStation (reference)
+Each event identifies the real-world resource with `{station_id}/{sensor_id}`. `{station_id}` is TMS station numeric identifier as assigned by Fintraffic; `{sensor_id}` is computational sensor identifier within the TMS station. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-TMS station metadata. Over 500 TMS stations measure traffic volumes and
-speeds across the Finnish road network. Contextualizes TmsSensorData telemetry.
+#### Where to find it
 
-| Field | Type | Description |
-|---|---|---|
-| `station_id` | int | TMS station identifier |
-| `name` | string | Internal station name |
-| `tms_number` | int or null | Legacy TMS numbering |
-| `names_fi` | string | Finnish display name |
-| `names_sv` | string or null | Swedish display name |
-| `names_en` | string or null | English display name |
-| `longitude` | double | WGS84 longitude |
-| `latitude` | double | WGS84 latitude |
-| `altitude` | double or null | Altitude (meters) |
-| `municipality` | string | Municipality name |
-| `municipality_code` | int | Finnish municipality code |
-| `province` | string | Province name |
-| `province_code` | int | Province code |
-| `road_number` | int | Road number |
-| `road_section` | int | Road section number |
-| `distance_from_section_start` | int | Distance from section start (meters) |
-| `carriageway` | string or null | Carriageway type |
-| `side` | string or null | Road side |
-| `station_type` | string | Hardware type code (e.g. `DSL_6`) |
-| `collection_status` | string | `GATHERING`, `REMOVED_TEMPORARILY`, or `REMOVED_PERMANENTLY` |
-| `state` | string or null | Operational state (`OK`, `FAULT`, `DISABLED`) |
-| `free_flow_speed_1` | double or null | Direction 1 free-flow speed (km/h) |
-| `free_flow_speed_2` | double or null | Direction 2 free-flow speed (km/h) |
-| `bearing` | int or null | Road bearing (degrees) |
-| `start_time` | string | ISO 8601 data collection start date |
-| `livi_id` | string or null | Legacy Fintraffic identifier |
-| `sensors` | array of int | Available sensor identifiers |
-| `data_updated_time` | string or null | ISO 8601 last metadata update |
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}/{sensor_id}` |
 
-### WeatherStation (reference)
+#### Payload
 
-Road weather station metadata. Over 350 stations measure atmospheric and road
-surface conditions. Contextualizes WeatherSensorData telemetry.
+`Tms Sensor Data` payloads are JSON object. Required fields: `station_id`, `sensor_id`, `value`, `time`.
 
-| Field | Type | Description |
-|---|---|---|
-| `station_id` | int | Weather station identifier |
-| `name` | string | Internal station name |
-| `names_fi` | string | Finnish display name |
-| `names_sv` | string or null | Swedish display name |
-| `names_en` | string or null | English display name |
-| `longitude` | double | WGS84 longitude |
-| `latitude` | double | WGS84 latitude |
-| `altitude` | double or null | Altitude (meters) |
-| `municipality` | string | Municipality name |
-| `municipality_code` | int | Finnish municipality code |
-| `province` | string | Province name |
-| `province_code` | int | Province code |
-| `road_number` | int | Road number |
-| `road_section` | int | Road section number |
-| `distance_from_section_start` | int | Distance from section start (meters) |
-| `carriageway` | string or null | Carriageway type |
-| `side` | string or null | Road side |
-| `contract_area` | string or null | Maintenance contract area name |
-| `contract_area_code` | int or null | Contract area code |
-| `station_type` | string | Hardware type code (e.g. `RWS_200`) |
-| `master` | boolean | Whether this is the primary station |
-| `collection_status` | string | Data collection status |
-| `collection_interval` | int | Collection interval (seconds) |
-| `state` | string or null | Operational state |
-| `start_time` | string | ISO 8601 data collection start date |
-| `livi_id` | string or null | Legacy Fintraffic identifier |
-| `sensors` | array of int | Available sensor identifiers |
-| `data_updated_time` | string or null | ISO 8601 last metadata update |
+- **`station_id`** (int32, required): TMS station numeric identifier as assigned by Fintraffic. Each station is located at a fixed point on the Finnish road network and identified by a unique integer (e.g. 23001). Station metadata including road address, municipality, and free-flow speeds is available from the /api/tms/v1/stations REST endpoint.
+- **`sensor_id`** (int32, required): Computational sensor identifier within the TMS station. Each sensor measures a specific traffic parameter in a given direction and time window. Common sensor families include OHITUKSET (vehicle passings, unit kpl/h), KESKINOPEUS (average speed, unit km/h), and LIUKUVA_NOPEUS (rolling speed per lane, unit km/h). Sensor metadata is available from /api/tms/v1/sensors.
+- **`value`** (double, required): Measured value in the sensor's native unit. Units vary by sensor family: kpl/h (vehicles per hour) for OHITUKSET passings sensors, km/h for KESKINOPEUS and LIUKUVA_NOPEUS speed sensors, and dimensionless percentage ratios for traffic situation indicators (VVAPAAS, MS suffixed sensors).
+- **`time`** (int32, required): Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken or the aggregation period was last updated.
+- **`start`** (int32 or null, optional): Start of the fixed time window as Unix epoch seconds (UTC). Present for fixed-window aggregate sensors such as OHITUKSET_5MIN_KIINTEA (5-minute fixed passings), KESKINOPEUS_60MIN_KIINTEA (60-minute fixed average speed), and OHITUKSET_60MIN_KIINTEA. Null or absent for rolling-window sensors (LIUKUVA suffix) and per-lane sensors.
+- **`end`** (int32 or null, optional): End of the fixed time window as Unix epoch seconds (UTC). Present for fixed-window aggregate sensors. Null or absent for rolling-window and per-lane sensors.
+#### Example payload
 
-### MaintenanceTaskType (reference)
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-Maintenance task type definition with multilingual names. Approximately 40
-task types classify road maintenance activities. Contextualizes the `tasks`
-array in MaintenanceTracking telemetry.
+```json
+{
+  "station_id": 0,
+  "sensor_id": 0,
+  "value": 0,
+  "time": 0,
+  "start": 0,
+  "end": 0
+}
+```
 
-| Field | Type | Description |
-|---|---|---|
-| `task_id` | string | Task type identifier (e.g. `PLOUGHING_AND_SLUSH_REMOVAL`) |
-| `name_fi` | string | Finnish name |
-| `name_en` | string | English name |
-| `name_sv` | string | Swedish name |
-| `data_updated_time` | string or null | ISO 8601 last update timestamp |
+#### Reference vs telemetry
 
-### TmsSensorData
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-Traffic Measurement System sensor reading. Each message is a single
-computational sensor measurement at a TMS station. Over 500 TMS stations
-across the Finnish road network report vehicle counts and average
-speeds aggregated over rolling or fixed time windows.
+### Weather Sensor Data
 
-| Field | Type | Description |
-|---|---|---|
-| `station_id` | int | TMS station identifier |
-| `sensor_id` | int | Sensor identifier within the station |
-| `value` | double | Measured value (kpl/h for passings, km/h for speed) |
-| `time` | int | Measurement timestamp (Unix epoch seconds, UTC) |
-| `start` | int or null | Time window start for fixed-window sensors (epoch seconds) |
-| `end` | int or null | Time window end for fixed-window sensors (epoch seconds) |
+CloudEvents type: `fi.digitraffic.road.sensors.WeatherSensorData`
 
-### WeatherSensorData
+#### What it tells you
 
-Road weather station sensor reading. Each message is a single sensor
-measurement at a road weather station. Over 350 stations measure air and
-road surface temperatures, wind, humidity, dew point, and precipitation.
+Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (JÄÄTYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation.
 
-| Field | Type | Description |
-|---|---|---|
-| `station_id` | int | Weather station identifier |
-| `sensor_id` | int | Sensor identifier within the station |
-| `value` | double | Measured value (°C, m/s, %, mm depending on sensor) |
-| `time` | int | Measurement timestamp (Unix epoch seconds, UTC) |
+#### Identity
 
-### TrafficMessage
+Each event identifies the real-world resource with `{station_id}/{sensor_id}`. `{station_id}` is road weather station numeric identifier as assigned by Fintraffic (e.g. 1012); `{sensor_id}` is sensor identifier within the road weather station. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-Traffic message describing a road situation (incident, road work, weight
-restriction, or exempted transport). The MQTT payload is gzip-compressed and
-base64-encoded Simple JSON (GeoJSON). The bridge flattens the first
-announcement into first-class fields and preserves full detail in serialized
-JSON fields.
+#### Where to find it
 
-| Field | Type | Description |
-|---|---|---|
-| `situation_id` | string | Unique situation GUID (e.g. `GUID50455291`) |
-| `situation_type` | string | `traffic announcement`, `road work`, `weight restriction`, or `exempted transport` |
-| `traffic_announcement_type` | string or null | Sub-type for traffic announcements (e.g. `preliminary accident report`) |
-| `version` | int | Monotonically increasing version counter |
-| `release_time` | string | ISO 8601 UTC first release timestamp |
-| `version_time` | string | ISO 8601 UTC timestamp for this version |
-| `title` | string or null | Human-readable title (Finnish) |
-| `language` | string or null | ISO 639-1 language code (typically `fi`) |
-| `sender` | string or null | Issuing traffic management center |
-| `location_description` | string or null | Human-readable location description |
-| `start_time` | string or null | ISO 8601 start of the situation time window |
-| `end_time` | string or null | ISO 8601 expected end of the situation |
-| `features_json` | string or null | JSON array of traffic impact features |
-| `road_work_phases_json` | string or null | JSON array of road work phases (road work only) |
-| `comment` | string or null | Free-text comment |
-| `additional_information` | string or null | Supplementary information |
-| `contact_phone` | string or null | Contact telephone number |
-| `contact_email` | string or null | Contact email address |
-| `announcements_json` | string or null | Full JSON array of all announcements |
-| `geometry_type` | string or null | GeoJSON geometry type |
-| `geometry_coordinates_json` | string or null | JSON array of GeoJSON coordinates |
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}/{sensor_id}` |
 
-### MaintenanceTracking
+#### Payload
 
-Maintenance vehicle position and task report. Data originates from the
-Finnish Transport Infrastructure Agency's Harja system for state roads and
-from municipal systems for other domains.
+`Weather Sensor Data` payloads are JSON object. Required fields: `station_id`, `sensor_id`, `value`, `time`.
 
-| Field | Type | Description |
-|---|---|---|
-| `domain` | string | Source domain (e.g. `state-roads`, `autori-kuopio`) |
-| `time` | int | Tracking timestamp (Unix epoch seconds, UTC) |
-| `source` | string or null | Source system name (e.g. `Harja/Väylävirasto`) |
-| `tasks` | array of string | Maintenance task type identifiers (e.g. `SALTING`, `PLOUGHING_AND_SLUSH_REMOVAL`) |
-| `x` | double | Longitude (WGS84) |
-| `y` | double | Latitude (WGS84) |
-| `direction` | double or null | Vehicle heading in degrees (0-360) |
+- **`station_id`** (int32, required): Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Station metadata including road address, municipality, and available sensors is available from the /api/weather/v1/stations REST endpoint.
+- **`sensor_id`** (int32, required): Sensor identifier within the road weather station. Each sensor measures a specific weather or road surface parameter. Common sensors: ILMA (id 1, air temperature °C), ILMA_DERIVAATTA (id 2, air temp derivative °C/h), TIE_1 (id 3, road surface temp °C), MAA_1 (id 7, ground temp °C), KASTEPISTE (id 9, dew point °C), JÄÄTYMISPISTE_1 (id 10, freezing point °C), KESKITUULI (id 16, avg wind m/s), MAKSIMITUULI (id 17, max wind m/s), ILMAN_KOSTEUS (id 19, relative humidity %). Full sensor list at /api/weather/v1/sensors.
+- **`value`** (double, required): Measured value in the sensor's native unit. Units vary by sensor: °C for temperatures and dew/freezing points, °C/h for temperature derivatives, m/s for wind speed, % for relative humidity, mm for precipitation amounts.
+- **`time`** (int32, required): Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": 0,
+  "sensor_id": 0,
+  "value": 0,
+  "time": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Traffic Announcement
+
+CloudEvents type: `fi.digitraffic.road.messages.TrafficAnnouncement`
+
+#### What it tells you
+
+Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+
+#### Payload
+
+`Traffic Announcement` payloads are JSON object. Required fields: `situation_id`, `situation_type`, `version`, `release_time`, `version_time`.
+
+- **`situation_id`** (string, required): Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation.
+- **`situation_type`** (string, required): Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment.
+- **`traffic_announcement_type`** (string or null, optional): Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise.
+- **`version`** (int32, required): Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status.
+- **`release_time`** (string, required): ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z').
+- **`version_time`** (string, required): ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z').
+- **`title`** (string or null, optional): Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankylä. Ensitiedote liikenneonnettomuudesta.').
+- **`language`** (string or null, optional): ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish).
+- **`sender`** (string or null, optional): Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki').
+- **`location_description`** (string or null, optional): Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish.
+- **`start_time`** (string or null, optional): ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified.
+- **`end_time`** (string or null, optional): ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended.
+- **`features_json`** (string or null, optional): JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed.
+- **`road_work_phases_json`** (string or null, optional): JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise.
+- **`comment`** (string or null, optional): Free-text comment from the first announcement, providing additional context such as detour instructions or situation details.
+- **`additional_information`** (string or null, optional): Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal.
+- **`contact_phone`** (string or null, optional): Contact telephone number for the issuing traffic management center (e.g. '02002100').
+- **`contact_email`** (string or null, optional): Contact email address for the issuing traffic management center.
+- **`announcements_json`** (string or null, optional): JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields.
+- **`geometry_type`** (string or null, optional): GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available.
+- **`geometry_coordinates_json`** (string or null, optional): JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "situation_id": "string",
+  "situation_type": "string",
+  "traffic_announcement_type": "string",
+  "version": 0,
+  "release_time": "string",
+  "version_time": "string",
+  "title": "string",
+  "language": "string",
+  "sender": "string",
+  "location_description": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "features_json": "string",
+  "road_work_phases_json": "string",
+  "comment": "string",
+  "additional_information": "string",
+  "contact_phone": "string",
+  "contact_email": "string",
+  "announcements_json": "string",
+  "geometry_type": "string",
+  "geometry_coordinates_json": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Road Work
+
+CloudEvents type: `fi.digitraffic.road.messages.RoadWork`
+
+#### What it tells you
+
+Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+
+#### Payload
+
+`Road Work` payloads are JSON object. Required fields: `situation_id`, `situation_type`, `version`, `release_time`, `version_time`.
+
+- **`situation_id`** (string, required): Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation.
+- **`situation_type`** (string, required): Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment.
+- **`traffic_announcement_type`** (string or null, optional): Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise.
+- **`version`** (int32, required): Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status.
+- **`release_time`** (string, required): ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z').
+- **`version_time`** (string, required): ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z').
+- **`title`** (string or null, optional): Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankylä. Ensitiedote liikenneonnettomuudesta.').
+- **`language`** (string or null, optional): ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish).
+- **`sender`** (string or null, optional): Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki').
+- **`location_description`** (string or null, optional): Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish.
+- **`start_time`** (string or null, optional): ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified.
+- **`end_time`** (string or null, optional): ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended.
+- **`features_json`** (string or null, optional): JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed.
+- **`road_work_phases_json`** (string or null, optional): JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise.
+- **`comment`** (string or null, optional): Free-text comment from the first announcement, providing additional context such as detour instructions or situation details.
+- **`additional_information`** (string or null, optional): Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal.
+- **`contact_phone`** (string or null, optional): Contact telephone number for the issuing traffic management center (e.g. '02002100').
+- **`contact_email`** (string or null, optional): Contact email address for the issuing traffic management center.
+- **`announcements_json`** (string or null, optional): JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields.
+- **`geometry_type`** (string or null, optional): GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available.
+- **`geometry_coordinates_json`** (string or null, optional): JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "situation_id": "string",
+  "situation_type": "string",
+  "traffic_announcement_type": "string",
+  "version": 0,
+  "release_time": "string",
+  "version_time": "string",
+  "title": "string",
+  "language": "string",
+  "sender": "string",
+  "location_description": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "features_json": "string",
+  "road_work_phases_json": "string",
+  "comment": "string",
+  "additional_information": "string",
+  "contact_phone": "string",
+  "contact_email": "string",
+  "announcements_json": "string",
+  "geometry_type": "string",
+  "geometry_coordinates_json": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Weight Restriction
+
+CloudEvents type: `fi.digitraffic.road.messages.WeightRestriction`
+
+#### What it tells you
+
+Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+
+#### Payload
+
+`Weight Restriction` payloads are JSON object. Required fields: `situation_id`, `situation_type`, `version`, `release_time`, `version_time`.
+
+- **`situation_id`** (string, required): Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation.
+- **`situation_type`** (string, required): Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment.
+- **`traffic_announcement_type`** (string or null, optional): Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise.
+- **`version`** (int32, required): Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status.
+- **`release_time`** (string, required): ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z').
+- **`version_time`** (string, required): ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z').
+- **`title`** (string or null, optional): Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankylä. Ensitiedote liikenneonnettomuudesta.').
+- **`language`** (string or null, optional): ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish).
+- **`sender`** (string or null, optional): Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki').
+- **`location_description`** (string or null, optional): Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish.
+- **`start_time`** (string or null, optional): ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified.
+- **`end_time`** (string or null, optional): ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended.
+- **`features_json`** (string or null, optional): JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed.
+- **`road_work_phases_json`** (string or null, optional): JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise.
+- **`comment`** (string or null, optional): Free-text comment from the first announcement, providing additional context such as detour instructions or situation details.
+- **`additional_information`** (string or null, optional): Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal.
+- **`contact_phone`** (string or null, optional): Contact telephone number for the issuing traffic management center (e.g. '02002100').
+- **`contact_email`** (string or null, optional): Contact email address for the issuing traffic management center.
+- **`announcements_json`** (string or null, optional): JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields.
+- **`geometry_type`** (string or null, optional): GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available.
+- **`geometry_coordinates_json`** (string or null, optional): JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "situation_id": "string",
+  "situation_type": "string",
+  "traffic_announcement_type": "string",
+  "version": 0,
+  "release_time": "string",
+  "version_time": "string",
+  "title": "string",
+  "language": "string",
+  "sender": "string",
+  "location_description": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "features_json": "string",
+  "road_work_phases_json": "string",
+  "comment": "string",
+  "additional_information": "string",
+  "contact_phone": "string",
+  "contact_email": "string",
+  "announcements_json": "string",
+  "geometry_type": "string",
+  "geometry_coordinates_json": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Exempted Transport
+
+CloudEvents type: `fi.digitraffic.road.messages.ExemptedTransport`
+
+#### What it tells you
+
+Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+
+#### Payload
+
+`Exempted Transport` payloads are JSON object. Required fields: `situation_id`, `situation_type`, `version`, `release_time`, `version_time`.
+
+- **`situation_id`** (string, required): Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation.
+- **`situation_type`** (string, required): Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment.
+- **`traffic_announcement_type`** (string or null, optional): Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise.
+- **`version`** (int32, required): Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status.
+- **`release_time`** (string, required): ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z').
+- **`version_time`** (string, required): ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z').
+- **`title`** (string or null, optional): Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankylä. Ensitiedote liikenneonnettomuudesta.').
+- **`language`** (string or null, optional): ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish).
+- **`sender`** (string or null, optional): Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki').
+- **`location_description`** (string or null, optional): Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish.
+- **`start_time`** (string or null, optional): ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified.
+- **`end_time`** (string or null, optional): ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended.
+- **`features_json`** (string or null, optional): JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed.
+- **`road_work_phases_json`** (string or null, optional): JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise.
+- **`comment`** (string or null, optional): Free-text comment from the first announcement, providing additional context such as detour instructions or situation details.
+- **`additional_information`** (string or null, optional): Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal.
+- **`contact_phone`** (string or null, optional): Contact telephone number for the issuing traffic management center (e.g. '02002100').
+- **`contact_email`** (string or null, optional): Contact email address for the issuing traffic management center.
+- **`announcements_json`** (string or null, optional): JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields.
+- **`geometry_type`** (string or null, optional): GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available.
+- **`geometry_coordinates_json`** (string or null, optional): JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "situation_id": "string",
+  "situation_type": "string",
+  "traffic_announcement_type": "string",
+  "version": 0,
+  "release_time": "string",
+  "version_time": "string",
+  "title": "string",
+  "language": "string",
+  "sender": "string",
+  "location_description": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "features_json": "string",
+  "road_work_phases_json": "string",
+  "comment": "string",
+  "additional_information": "string",
+  "contact_phone": "string",
+  "contact_email": "string",
+  "announcements_json": "string",
+  "geometry_type": "string",
+  "geometry_coordinates_json": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Maintenance Tracking
+
+CloudEvents type: `fi.digitraffic.road.maintenance.MaintenanceTracking`
+
+#### What it tells you
+
+Road maintenance vehicle tracking update from the Finnish national road network operated by Fintraffic. Each message represents a position and task report from a maintenance vehicle, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic maintenance-v2/routes/{domain}. Data originates from the Finnish Transport Infrastructure Agency's Harja system for state roads and from municipal systems for other domains.
+
+#### Identity
+
+Each event identifies the real-world resource with `{domain}`. `{domain}` is data domain identifying the source system. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-maintenance`, key `{domain}` |
+
+#### Payload
+
+`Maintenance Tracking` payloads are JSON object. Required fields: `domain`, `time`, `tasks`, `x`, `y`.
+
+- **`domain`** (string, required): Data domain identifying the source system. Primary domain is 'state-roads' for data from the Finnish Transport Infrastructure Agency's Harja system. Other domains include municipal systems such as 'autori-kuopio', 'autori-oulu', and 'paikannin-kuopio'. The domain value comes from the MQTT topic path.
+- **`time`** (int32, required): Tracking timestamp as Unix epoch seconds (UTC). Indicates when the position and task were recorded by the vehicle.
+- **`source`** (string or null, optional): Name of the source system that produced the tracking data (e.g. 'Harja/Väylävirasto' for the state road maintenance system). May be null if the source system is not identified.
+- **`tasks`** (array of string, required): Array of maintenance task type identifiers being performed by the vehicle at this position. Task types follow the Fintraffic taxonomy, e.g. 'BRUSHING', 'SALTING', 'PLOUGHING_AND_SLUSH_REMOVAL', 'LEVELLING_GRAVEL_ROAD_SURFACE'. Full task type list with Finnish, English, and Swedish names is available at /api/maintenance/v1/tracking/tasks.
+- **`x`** (double, required): Longitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees.
+- **`y`** (double, required): Latitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees.
+- **`direction`** (double or null, optional): Vehicle heading in degrees (0-360, clockwise from north). May be null or absent if heading information is not available from the tracking device.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "domain": "string",
+  "time": 0,
+  "source": "string",
+  "tasks": [
+    "string"
+  ],
+  "x": 0,
+  "y": 0,
+  "direction": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Tms Station
+
+CloudEvents type: `fi.digitraffic.road.stations.TmsStation`
+
+#### What it tells you
+
+Traffic Measurement System (TMS) station metadata from the Finnish national road network operated by Fintraffic. Each TMS station is a fixed roadside installation that measures traffic volumes and speeds. Over 500 TMS stations are deployed across the Finnish road network.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is TMS station numeric identifier as assigned by Fintraffic (e.g. 23001). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}` |
+
+#### Payload
+
+`Tms Station` payloads are JSON object. Required fields: `station_id`, `name`, `longitude`, `latitude`, `municipality`, `municipality_code`, `province`, `province_code`, `road_number`, `road_section`, `station_type`, `collection_status`, `start_time`, `sensors`.
+
+- **`station_id`** (int32, required): TMS station numeric identifier as assigned by Fintraffic (e.g. 23001). Unique across all TMS stations in the Finnish road network. Corresponds to the station_id in TmsSensorData telemetry events.
+- **`name`** (string, required): Internal station name used by Fintraffic, typically encoding road and location (e.g. "vt7_Rita"). Not intended for display; use names_fi/sv/en for human-readable names.
+- **`tms_number`** (int32 or null, optional): Legacy TMS numbering used in older Fintraffic systems. May differ from station_id. Null if not assigned.
+- **`names_fi`** (string, optional): Finnish display name for the station, typically including road number, municipality, and local area (e.g. "Tie 7 Porvoo, Rita").
+- **`names_sv`** (string or null, optional): Swedish display name for the station (e.g. "Väg 7 Borgå, Rita"). Null if no Swedish translation is available.
+- **`names_en`** (string or null, optional): English display name for the station (e.g. "Road 7 Porvoo, Rita"). Null if no English translation is available.
+- **`longitude`** (double, required): Station longitude in WGS84 (EPSG:4326) decimal degrees.
+- **`latitude`** (double, required): Station latitude in WGS84 (EPSG:4326) decimal degrees.
+- **`altitude`** (double or null, optional): Station altitude in meters above sea level. Null or 0.0 if altitude data is not available.
+- **`municipality`** (string, required): Name of the Finnish municipality where the station is located (e.g. "Porvoo", "Espoo").
+- **`municipality_code`** (int32, required): Finnish municipality code as defined by Statistics Finland (e.g. 638 for Porvoo, 49 for Espoo).
+- **`province`** (string, required): Name of the Finnish province (maakunta) where the station is located (e.g. "Uusimaa", "Pirkanmaa").
+- **`province_code`** (int32, required): Finnish province code as defined by Statistics Finland (e.g. 1 for Uusimaa).
+- **`road_number`** (int32, required): Finnish road number where the station is installed (e.g. 7 for Highway 7 / E18).
+- **`road_section`** (int32, required): Road section number within the road, part of the Finnish road addressing system.
+- **`distance_from_section_start`** (int32, optional): Distance from the start of the road section in meters, part of the Finnish road addressing system.
+- **`carriageway`** (string or null, optional): Carriageway type at the station location. Values from the Digitraffic API include "DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION", "DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION", "ONE_CARRIAGEWAY". Null if not specified.
+- **`side`** (string or null, optional): Side of the road where the station is located. Values: "LEFT", "RIGHT", "BETWEEN", "UNKNOWN". Null if not specified.
+- **`station_type`** (string, required): TMS station type code indicating the hardware configuration (e.g. "DSL_6" for a 6-loop DSL station). Determines which sensor families are available.
+- **`collection_status`** (string, required): Current data collection status of the station. Values: "GATHERING" (actively collecting), "REMOVED_TEMPORARILY", "REMOVED_PERMANENTLY". Only stations with GATHERING status produce telemetry.
+- **`state`** (string or null, optional): Operational state of the station hardware. Values include "OK", "FAULT", "DISABLED". Null if state information is not available.
+- **`free_flow_speed_1`** (double or null, optional): Reference free-flow speed for traffic direction 1 in km/h. Used to calculate traffic fluency ratios for VVAPAAS-suffixed sensors. Null if not calibrated.
+- **`free_flow_speed_2`** (double or null, optional): Reference free-flow speed for traffic direction 2 in km/h. Used to calculate traffic fluency ratios. Null if not calibrated or station is on a one-way road.
+- **`bearing`** (int32 or null, optional): Bearing of the road at the station in degrees (0-360, clockwise from north). Indicates the direction of increasing road section numbering. Null if not measured.
+- **`start_time`** (string, required): ISO 8601 UTC timestamp when the station started collecting data (e.g. "2001-11-07T00:00:00Z").
+- **`livi_id`** (string or null, optional): Legacy identifier used by the Finnish Transport Infrastructure Agency (Väylävirasto, formerly Liikennevirasto) for the station (e.g. "Livi968639"). Null if not assigned.
+- **`sensors`** (array of int32, required): Array of computational sensor identifiers available at this station. Each ID corresponds to a sensor that produces TmsSensorData telemetry events. Common sensor families: OHITUKSET (passings), KESKINOPEUS (average speed), LIUKUVA_NOPEUS (rolling speed). Sensor metadata is available at /api/tms/v1/sensors.
+- **`data_updated_time`** (string or null, optional): ISO 8601 UTC timestamp when the station metadata was last updated in the Digitraffic system. Null if not tracked.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": 0,
+  "name": "string",
+  "tms_number": 0,
+  "names_fi": "string",
+  "names_sv": "string",
+  "names_en": "string",
+  "longitude": 0,
+  "latitude": 0,
+  "altitude": 0,
+  "municipality": "string",
+  "municipality_code": 0,
+  "province": "string",
+  "province_code": 0,
+  "road_number": 0,
+  "road_section": 0,
+  "distance_from_section_start": 0,
+  "carriageway": "string",
+  "side": "string",
+  "station_type": "string",
+  "collection_status": "string",
+  "state": "string",
+  "free_flow_speed_1": 0,
+  "free_flow_speed_2": 0,
+  "bearing": 0,
+  "start_time": "string",
+  "livi_id": "string",
+  "sensors": [
+    0
+  ],
+  "data_updated_time": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Weather Station
+
+CloudEvents type: `fi.digitraffic.road.stations.WeatherStation`
+
+#### What it tells you
+
+Road weather station metadata from the Finnish national road network operated by Fintraffic. Over 350 road weather stations measure atmospheric and road surface conditions. Station metadata includes geographic location, road address, municipality, sensor list, collection parameters, and administrative details.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}` |
+
+#### Payload
+
+`Weather Station` payloads are JSON object. Required fields: `station_id`, `name`, `longitude`, `latitude`, `municipality`, `municipality_code`, `province`, `province_code`, `road_number`, `road_section`, `station_type`, `master`, `collection_status`, `collection_interval`, `start_time`, `sensors`.
+
+- **`station_id`** (int32, required): Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Uniqueness scope is road weather stations. Corresponds to the station_id in WeatherSensorData telemetry events.
+- **`name`** (string, required): Internal station name used by Fintraffic, typically encoding road type, municipality and area (e.g. "kt51_Espoo_Kivenlahti"). Not intended for display.
+- **`names_fi`** (string, optional): Finnish display name for the station (e.g. "Tie 51 Espoo, Kivenlahti").
+- **`names_sv`** (string or null, optional): Swedish display name for the station (e.g. "Väg 51 Esbo, Stensvik"). Null if no translation available.
+- **`names_en`** (string or null, optional): English display name for the station (e.g. "Road 51 Espoo, Kivenlahti"). Null if no translation available.
+- **`longitude`** (double, required): Station longitude in WGS84 (EPSG:4326) decimal degrees.
+- **`latitude`** (double, required): Station latitude in WGS84 (EPSG:4326) decimal degrees.
+- **`altitude`** (double or null, optional): Station altitude in meters above sea level. Null or 0.0 if altitude data is not available.
+- **`municipality`** (string, required): Name of the Finnish municipality where the station is located.
+- **`municipality_code`** (int32, required): Finnish municipality code as defined by Statistics Finland.
+- **`province`** (string, required): Name of the Finnish province (maakunta) where the station is located.
+- **`province_code`** (int32, required): Finnish province code as defined by Statistics Finland.
+- **`road_number`** (int32, required): Finnish road number where the station is installed.
+- **`road_section`** (int32, required): Road section number within the road.
+- **`distance_from_section_start`** (int32, optional): Distance from the start of the road section in meters.
+- **`carriageway`** (string or null, optional): Carriageway type at the station location. Values include "DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION", "DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION", "ONE_CARRIAGEWAY". Null if not specified.
+- **`side`** (string or null, optional): Side of the road. Values: "LEFT", "RIGHT", "BETWEEN", "UNKNOWN". Null if not specified.
+- **`contract_area`** (string or null, optional): Road maintenance contract area name (e.g. "Espoo 19-24"). Identifies the maintenance contract responsible for the road section. Null if not assigned.
+- **`contract_area_code`** (int32 or null, optional): Numeric code for the maintenance contract area (e.g. 142). Null if not assigned.
+- **`station_type`** (string, required): Weather station type code indicating the hardware configuration (e.g. "RWS_200" for a Rosa RWS-200 station). Determines available sensor capabilities.
+- **`master`** (boolean, required): Whether this is a master station. Master stations are the primary data source; non-master stations may be auxiliary or backup installations at the same location.
+- **`collection_status`** (string, required): Current data collection status. Values: "GATHERING" (actively collecting), "REMOVED_TEMPORARILY", "REMOVED_PERMANENTLY".
+- **`collection_interval`** (int32, required): Data collection interval in seconds. Typical value is 300 (5 minutes) for road weather stations.
+- **`state`** (string or null, optional): Operational state of the station hardware. Null if state information is not available from the upstream API.
+- **`start_time`** (string, required): ISO 8601 UTC timestamp when the station started collecting data.
+- **`livi_id`** (string or null, optional): Legacy identifier from the Finnish Transport Infrastructure Agency. Null if not assigned.
+- **`sensors`** (array of int32, required): Array of sensor identifiers available at this station. Each ID corresponds to a sensor producing WeatherSensorData telemetry. Common sensors: ILMA (1, air temp), TIE_1 (3, road surface temp), KASTEPISTE (9, dew point), KESKITUULI (16, avg wind), ILMAN_KOSTEUS (19, humidity). Full list at /api/weather/v1/sensors.
+- **`data_updated_time`** (string or null, optional): ISO 8601 UTC timestamp when the station metadata was last updated. Null if not tracked.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": 0,
+  "name": "string",
+  "names_fi": "string",
+  "names_sv": "string",
+  "names_en": "string",
+  "longitude": 0,
+  "latitude": 0,
+  "altitude": 0,
+  "municipality": "string",
+  "municipality_code": 0,
+  "province": "string",
+  "province_code": 0,
+  "road_number": 0,
+  "road_section": 0,
+  "distance_from_section_start": 0,
+  "carriageway": "string",
+  "side": "string",
+  "contract_area": "string",
+  "contract_area_code": 0,
+  "station_type": "string",
+  "master": false,
+  "collection_status": "string",
+  "collection_interval": 0,
+  "state": "string",
+  "start_time": "string",
+  "livi_id": "string",
+  "sensors": [
+    0
+  ],
+  "data_updated_time": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Maintenance Task Type
+
+CloudEvents type: `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType`
+
+#### What it tells you
+
+Maintenance task type reference from the Finnish road maintenance system operated by Fintraffic. Each task type classifies a specific road maintenance activity such as ploughing, salting, or brush clearing. Task type identifiers appear in the tasks array of MaintenanceTracking telemetry events.
+
+#### Identity
+
+Each event identifies the real-world resource with `{task_id}`. `{task_id}` is unique task type identifier using SCREAMING_SNAKE_CASE convention (e.g. "PLOUGHING_AND_SLUSH_REMOVAL", "SALTING", "BRUSHING"). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `digitraffic-road-maintenance`, key `{task_id}` |
+
+#### Payload
+
+`Maintenance Task Type` payloads are JSON object. Required fields: `task_id`, `name_fi`, `name_en`, `name_sv`.
+
+- **`task_id`** (string, required): Unique task type identifier using SCREAMING_SNAKE_CASE convention (e.g. "PLOUGHING_AND_SLUSH_REMOVAL", "SALTING", "BRUSHING"). This identifier appears in the tasks array of MaintenanceTracking telemetry events.
+- **`name_fi`** (string, required): Finnish name for the maintenance task type (e.g. "Auraus ja sohjonpoisto", "Suolaus", "Harjaus").
+- **`name_en`** (string, required): English name for the maintenance task type (e.g. "Ploughing and slush removal", "Salting", "Brushing").
+- **`name_sv`** (string, required): Swedish name for the maintenance task type (e.g. "Plöjning och snöslaskborttagning", "Saltning", "Borstning").
+- **`data_updated_time`** (string or null, optional): ISO 8601 UTC timestamp when this task type definition was last updated in the Digitraffic system (e.g. "2020-03-30T00:00:00Z"). Null if not tracked.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "task_id": "string",
+  "name_fi": "string",
+  "name_en": "string",
+  "name_sv": "string",
+  "data_updated_time": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+
+## References
+
+- xRegistry manifest: [`xreg/digitraffic_road.xreg.json`](xreg/digitraffic_road.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

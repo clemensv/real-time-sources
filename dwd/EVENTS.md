@@ -1,297 +1,689 @@
-# DWD Open Data Bridge Events
+# DWD Open Data Bridge Usage Guide Events
 
-This document describes the events emitted by the DWD Open Data bridge.
+**DWD Open Data Bridge** polls the [Deutscher Wetterdienst (DWD) Climate Data Center](https://opendata.dwd.de/) open-data file server for weather observations, station metadata, and weather alerts from ~1,450 stations across Germany. The data is forwarded to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
 
-- [DE.DWD.CDC](#message-group-dedwdcdc)
-  - [DE.DWD.CDC.StationMetadata](#message-dedwdcdcstationmetadata)
-  - [DE.DWD.CDC.AirTemperature10Min](#message-dedwdcdcairtemperature10min)
-  - [DE.DWD.CDC.Precipitation10Min](#message-dedwdcdcprecipitation10min)
-  - [DE.DWD.CDC.Wind10Min](#message-dedwdcdcwind10min)
-  - [DE.DWD.CDC.Solar10Min](#message-dedwdcdcsolar10min)
-  - [DE.DWD.CDC.HourlyObservation](#message-dedwdcdchourlyobservation)
-  - [DE.DWD.CDC.ExtremeWind10Min](#message-dedwdcdcextremewind10min)
-  - [DE.DWD.CDC.ExtremeTemperature10Min](#message-dedwdcdcextremetemperature10min)
-- [DE.DWD.Weather](#message-group-dedwdweather)
-  - [DE.DWD.Weather.Alert](#message-dedwdweatheralert)
-- [DE.DWD.Radar](#message-group-dedwdradar)
-  - [DE.DWD.Radar.RadarProductCatalog](#message-dedwdradarradarproductcatalog)
-  - [DE.DWD.Radar.RadarFileProduct](#message-dedwdradarradarfileproduct)
-- [DE.DWD.Forecast](#message-group-dedwdforecast)
-  - [DE.DWD.Forecast.ForecastModelCatalog](#message-dedwdforecastforecastmodelcatalog)
-  - [DE.DWD.Forecast.IconD2ForecastFile](#message-dedwdforecasticond2forecastfile)
+## At a glance
 
----
+- **Event types:** 13 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 3 reference/catalog event types and 10 telemetry event types.
+- **Identity:** `{station_id}`, `{identifier}`, `{file_url}` identifies the resource each event is about.
+- **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
-## Message Group: DE.DWD.CDC
----
-### Message: DE.DWD.CDC.StationMetadata
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.StationMetadata` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+## Quick start — how to consume
 
-#### Schema:
-##### Object: StationMetadata
-*StationMetadata*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `station_name` | *string* | - | `True` |  |
-| `latitude` | *double* | - | `True` |  |
-| `longitude` | *double* | - | `True` |  |
-| `elevation` | *double* | - | `True` |  |
-| `state` | *string* | - | `False` |  |
-| `from_date` | *string* | - | `False` |  |
-| `to_date` | *string* | - | `False` |  |
----
-### Message: DE.DWD.CDC.AirTemperature10Min
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.AirTemperature10Min` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-#### Schema:
-##### Object: AirTemperature10Min
-*AirTemperature10Min*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `pressure_station_level` | *double* | - | `False` |  |
-| `air_temperature_2m` | *double* | - | `False` |  |
-| `air_temperature_5cm` | *double* | - | `False` |  |
-| `relative_humidity` | *double* | - | `False` |  |
-| `dew_point_temperature` | *double* | - | `False` |  |
----
-### Message: DE.DWD.CDC.Precipitation10Min
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.Precipitation10Min` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+### Kafka
 
-#### Schema:
-##### Object: Precipitation10Min
-*Precipitation10Min*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `precipitation_height` | *double* | - | `False` |  |
-| `precipitation_indicator` | *int32* | - | `False` |  |
----
-### Message: DE.DWD.CDC.Wind10Min
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.Wind10Min` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+Subscribe to `dwd`. The record key is `{station_id}`, `{identifier}`, `{file_url}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-#### Schema:
-##### Object: Wind10Min
-*Wind10Min*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `wind_speed` | *double* | - | `False` |  |
-| `wind_direction` | *double* | - | `False` |  |
----
-### Message: DE.DWD.CDC.Solar10Min
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.Solar10Min` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['dwd'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-#### Schema:
-##### Object: Solar10Min
-*Solar10Min*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `global_radiation` | *double* | - | `False` |  |
-| `sunshine_duration` | *double* | - | `False` |  |
-| `diffuse_radiation` | *double* | - | `False` |  |
-| `longwave_radiation` | *double* | - | `False` |  |
----
-### Message: DE.DWD.CDC.HourlyObservation
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.HourlyObservation` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Schema:
-##### Object: HourlyObservation
-*HourlyObservation*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `parameter` | *string* | - | `True` |  |
-| `value` | *double* | - | `False` |  |
-| `unit` | *string* | - | `False` |  |
----
-### Message: DE.DWD.CDC.ExtremeWind10Min
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.ExtremeWind10Min` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+## Event catalog
 
-#### Schema:
-##### Object: ExtremeWind10Min
-*ExtremeWind10Min*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `wind_speed_maximum` | *double* | - | `False` |  |
-| `wind_speed_minimum` | *double* | - | `False` |  |
-| `wind_direction_at_maximum` | *double* | - | `False` |  |
----
-### Message: DE.DWD.CDC.ExtremeTemperature10Min
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.CDC.ExtremeTemperature10Min` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+### Station Metadata
 
-#### Schema:
-##### Object: ExtremeTemperature10Min
-*ExtremeTemperature10Min*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `station_id` | *string* | - | `True` |  |
-| `timestamp` | *string* | - | `True` |  |
-| `quality_level` | *int32* | - | `False` |  |
-| `air_temperature_maximum_2m` | *double* | - | `False` |  |
-| `air_temperature_minimum_5cm` | *double* | - | `False` |  |
-## Message Group: DE.DWD.Weather
----
-### Message: DE.DWD.Weather.Alert
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.Weather.Alert` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de` |
-| `subject` |  | `uritemplate` | `False` | `{identifier}` |
+CloudEvents type: `DE.DWD.CDC.StationMetadata`
 
-#### Schema:
-##### Object: Alert
-*Alert*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `identifier` | *string* | - | `True` |  |
-| `sender` | *string* | - | `True` |  |
-| `sent` | *string* | - | `True` |  |
-| `status` | *string* | - | `False` |  |
-| `msg_type` | *string* | - | `False` |  |
-| `severity` | *string* | - | `True` |  |
-| `urgency` | *string* | - | `False` |  |
-| `certainty` | *string* | - | `False` |  |
-| `event` | *string* | - | `True` |  |
-| `headline` | *string* | - | `False` |  |
-| `description` | *string* | - | `False` |  |
-| `effective` | *string* | - | `False` |  |
-| `onset` | *string* | - | `False` |  |
-| `expires` | *string* | - | `False` |  |
-| `area_desc` | *string* | - | `False` |  |
-| `geocodes` | *string* | - | `False` |  |
-## Message Group: DE.DWD.Radar
----
-### Message: DE.DWD.Radar.RadarProductCatalog
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.Radar.RadarProductCatalog` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de/weather/radar` |
-| `subject` |  | `uritemplate` | `False` | `{file_url}` |
+#### What it tells you
 
-#### Schema:
-##### Object: RadarProductCatalog
-*Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `product` | *string* | - | `True` | Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value. |
-| `file_url` | *string* | - | `True` | Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'. |
-| `description` | *string* | - | `False` | Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata. |
----
-### Message: DE.DWD.Radar.RadarFileProduct
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.Radar.RadarFileProduct` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de/weather/radar` |
-| `subject` |  | `uritemplate` | `False` | `{file_url}` |
+This event carries station metadata data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
 
-#### Schema:
-##### Object: RadarFileProduct
-*Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `file_url` | *string* | - | `True` | Absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. The URL is publicly fetchable with an unauthenticated HTTP GET and supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event by performing a plain GET against this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key, which guarantees per-file ordering. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/composite_wn_20260517_2005-hd5'. |
-| `product` | *string* | - | `True` | Short identifier of the radar product family this file belongs to (for example 'wn', 'rv', 'dmax'); matches the 'product' field of the corresponding RadarProductCatalog event. |
-| `file_name` | *string* | - | `True` | Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url. |
-| `modified` | *string* | - | `True` | Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication. |
-| `size_bytes` | *int64* (optional) | - | `False` | File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites). |
-## Message Group: DE.DWD.Forecast
----
-### Message: DE.DWD.Forecast.ForecastModelCatalog
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.Forecast.ForecastModelCatalog` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de/weather/nwp/icon-d2` |
-| `subject` |  | `uritemplate` | `False` | `{file_url}` |
+#### Identity
 
-#### Schema:
-##### Object: ForecastModelCatalog
-*Reference (catalog) event describing a single NWP forecast model family published by DWD Open Data. One event is emitted per model the first time the bridge observes it, so consumers can build a catalog of available models and the URLs from which their forecast files can be discovered.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `model` | *string* | - | `True` | Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours. |
-| `file_url` | *string* | - | `True` | Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'. |
-| `description` | *string* | - | `False` | Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata. |
----
-### Message: DE.DWD.Forecast.IconD2ForecastFile
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `DE.DWD.Forecast.IconD2ForecastFile` |
-| `source` |  | `` | `False` | `https://opendata.dwd.de/weather/nwp/icon-d2` |
-| `subject` |  | `uritemplate` | `False` | `{file_url}` |
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-#### Schema:
-##### Object: IconD2ForecastFile
-*Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `file_url` | *string* | - | `True` | Absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. The file is bzip2-compressed GRIB2 (.grib2.bz2) and can be fetched with an unauthenticated HTTP GET; the server supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event with a plain GET against this URL. Each file holds a single variable at a single vertical level for a single forecast lead hour, which keeps per-file payloads small (typically a few hundred KB compressed). Also used verbatim as the CloudEvents 'subject' and the Kafka partition key. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t/icon-d2_germany_icosahedral_model-level_2026051700_003_10_t.grib2.bz2'. |
-| `model` | *string* | - | `True` | Identifier of the source forecast model; matches the 'model' field of the corresponding ForecastModelCatalog event. Currently always 'icon-d2'. |
-| `file_name` | *string* | - | `True` | Bare file name as listed in the DWD Apache directory index, following the DWD convention 'icon-d2_<grid>_<level_type>_<run>_<lead>_<level>_<parameter>.grib2.bz2'. Convenient for parsing without splitting file_url. |
-| `run` | *string* (optional) | - | `False` | Model run cycle in 'YYYYMMDDHH' UTC form, parsed from file_name (e.g. '2026051700' for the 00 UTC run on 2026-05-17). ICON-D2 is run every three hours. Null when the file name does not match the expected pattern (for example time-invariant or auxiliary files). |
-| `forecast_hour` | *int32* (optional) | - | `False` | Forecast lead time in whole hours from the start of the run, parsed from file_name. For ICON-D2 this ranges from 0 to 48. Null when the file name does not match the expected pattern. |
-| `parameter` | *string* (optional) | - | `False` | Short ICON-D2 parameter identifier parsed from file_name (for example 't' for temperature, 'u'/'v' for wind components, 'tot_prec' for total precipitation, 'clct' for total cloud cover, 'alb_rad' for shortwave albedo). |
-| `level_type` | *string* (optional) | - | `False` | Vertical level encoding parsed from file_name. Common values are 'single-level' (surface and 2D fields), 'model-level' (native ICON hybrid levels indexed 1..65 from top to bottom), 'pressure-level' (interpolated to fixed pressure surfaces, in hPa), and 'time-invariant' (constant fields such as orography). |
-| `level` | *string* (optional) | - | `False` | Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted. |
-| `modified` | *string* | - | `True` | Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication. |
-| `size_bytes` | *int64* (optional) | - | `False` | File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed. |
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Station Metadata` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`, `elevation`.
+
+- **`station_id`** (string, required): No description provided.
+- **`station_name`** (string, required): No description provided.
+- **`latitude`** (double, required): No description provided.
+- **`longitude`** (double, required): No description provided.
+- **`elevation`** (double, required): No description provided.
+- **`state`** (string, optional): No description provided.
+- **`from_date`** (string, optional): No description provided.
+- **`to_date`** (string, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "station_name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "elevation": 0,
+  "state": "string",
+  "from_date": "string",
+  "to_date": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Air Temperature10 Min
+
+CloudEvents type: `DE.DWD.CDC.AirTemperature10Min`
+
+#### What it tells you
+
+This event carries air temperature10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Air Temperature10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`pressure_station_level`** (double, optional): No description provided.
+- **`air_temperature_2m`** (double, optional): No description provided.
+- **`air_temperature_5cm`** (double, optional): No description provided.
+- **`relative_humidity`** (double, optional): No description provided.
+- **`dew_point_temperature`** (double, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "pressure_station_level": 0,
+  "air_temperature_2m": 0,
+  "air_temperature_5cm": 0,
+  "relative_humidity": 0,
+  "dew_point_temperature": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Precipitation10 Min
+
+CloudEvents type: `DE.DWD.CDC.Precipitation10Min`
+
+#### What it tells you
+
+This event carries precipitation10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Precipitation10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`precipitation_height`** (double, optional): No description provided.
+- **`precipitation_indicator`** (int32, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "precipitation_height": 0,
+  "precipitation_indicator": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Wind10 Min
+
+CloudEvents type: `DE.DWD.CDC.Wind10Min`
+
+#### What it tells you
+
+This event carries wind10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Wind10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`wind_speed`** (double, optional): No description provided.
+- **`wind_direction`** (double, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "wind_speed": 0,
+  "wind_direction": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Solar10 Min
+
+CloudEvents type: `DE.DWD.CDC.Solar10Min`
+
+#### What it tells you
+
+This event carries solar10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Solar10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`global_radiation`** (double, optional): No description provided.
+- **`sunshine_duration`** (double, optional): No description provided.
+- **`diffuse_radiation`** (double, optional): No description provided.
+- **`longwave_radiation`** (double, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "global_radiation": 0,
+  "sunshine_duration": 0,
+  "diffuse_radiation": 0,
+  "longwave_radiation": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Hourly Observation
+
+CloudEvents type: `DE.DWD.CDC.HourlyObservation`
+
+#### What it tells you
+
+This event carries hourly observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Hourly Observation` payloads are JSON object. Required fields: `station_id`, `timestamp`, `parameter`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`parameter`** (string, required): No description provided.
+- **`value`** (double, optional): No description provided.
+- **`unit`** (string, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "parameter": "string",
+  "value": 0,
+  "unit": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Extreme Wind10 Min
+
+CloudEvents type: `DE.DWD.CDC.ExtremeWind10Min`
+
+#### What it tells you
+
+This event carries extreme wind10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Extreme Wind10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`wind_speed_maximum`** (double, optional): No description provided.
+- **`wind_speed_minimum`** (double, optional): No description provided.
+- **`wind_direction_at_maximum`** (double, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "wind_speed_maximum": 0,
+  "wind_speed_minimum": 0,
+  "wind_direction_at_maximum": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Extreme Temperature10 Min
+
+CloudEvents type: `DE.DWD.CDC.ExtremeTemperature10Min`
+
+#### What it tells you
+
+This event carries extreme temperature10 min data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{station_id}` |
+
+#### Payload
+
+`Extreme Temperature10 Min` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): No description provided.
+- **`timestamp`** (string, required): No description provided.
+- **`quality_level`** (int32, optional): No description provided.
+- **`air_temperature_maximum_2m`** (double, optional): No description provided.
+- **`air_temperature_minimum_5cm`** (double, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "string",
+  "quality_level": 0,
+  "air_temperature_maximum_2m": 0,
+  "air_temperature_minimum_5cm": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Alert
+
+CloudEvents type: `DE.DWD.Weather.Alert`
+
+#### What it tells you
+
+This event carries alert data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{identifier}`. `{identifier}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{identifier}` |
+
+#### Payload
+
+`Alert` payloads are JSON object. Required fields: `identifier`, `sender`, `sent`, `severity`, `event`.
+
+- **`identifier`** (string, required): No description provided.
+- **`sender`** (string, required): No description provided.
+- **`sent`** (string, required): No description provided.
+- **`status`** (string, optional): No description provided.
+- **`msg_type`** (string, optional): No description provided.
+- **`severity`** (string, required): No description provided.
+- **`urgency`** (string, optional): No description provided.
+- **`certainty`** (string, optional): No description provided.
+- **`event`** (string, required): No description provided.
+- **`headline`** (string, optional): No description provided.
+- **`description`** (string, optional): No description provided.
+- **`effective`** (string, optional): No description provided.
+- **`onset`** (string, optional): No description provided.
+- **`expires`** (string, optional): No description provided.
+- **`area_desc`** (string, optional): No description provided.
+- **`geocodes`** (string, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "identifier": "string",
+  "sender": "string",
+  "sent": "string",
+  "status": "string",
+  "msg_type": "string",
+  "severity": "string",
+  "urgency": "string",
+  "certainty": "string",
+  "event": "string",
+  "headline": "string",
+  "description": "string",
+  "effective": "string",
+  "onset": "string",
+  "expires": "string",
+  "area_desc": "string",
+  "geocodes": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Radar Product Catalog
+
+CloudEvents type: `DE.DWD.Radar.RadarProductCatalog`
+
+#### What it tells you
+
+Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered.
+
+#### Identity
+
+Each event identifies the real-world resource with `{file_url}`. `{file_url}` is absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{file_url}` |
+
+#### Payload
+
+`Radar Product Catalog` payloads are JSON object. Required fields: `product`, `file_url`.
+
+- **`product`** (string, required): Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value.
+- **`file_url`** (string, required): Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'.
+- **`description`** (string, optional): Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "product": "string",
+  "file_url": "string",
+  "description": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Radar File Product
+
+CloudEvents type: `DE.DWD.Radar.RadarFileProduct`
+
+#### What it tells you
+
+Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
+
+#### Identity
+
+Each event identifies the real-world resource with `{file_url}`. `{file_url}` is absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{file_url}` |
+
+#### Payload
+
+`Radar File Product` payloads are JSON object. Required fields: `file_url`, `product`, `file_name`, `modified`.
+
+- **`file_url`** (string, required): Absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. The URL is publicly fetchable with an unauthenticated HTTP GET and supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event by performing a plain GET against this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key, which guarantees per-file ordering. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/composite_wn_20260517_2005-hd5'.
+- **`product`** (string, required): Short identifier of the radar product family this file belongs to (for example 'wn', 'rv', 'dmax'); matches the 'product' field of the corresponding RadarProductCatalog event.
+- **`file_name`** (string, required): Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url.
+- **`modified`** (string, required): Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication.
+- **`size_bytes`** (int64 or null, optional): File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites).
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "file_url": "string",
+  "product": "string",
+  "file_name": "string",
+  "modified": "string",
+  "size_bytes": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Forecast Model Catalog
+
+CloudEvents type: `DE.DWD.Forecast.ForecastModelCatalog`
+
+#### What it tells you
+
+Reference (catalog) event describing a single NWP forecast model family published by DWD Open Data. One event is emitted per model the first time the bridge observes it, so consumers can build a catalog of available models and the URLs from which their forecast files can be discovered.
+
+#### Identity
+
+Each event identifies the real-world resource with `{file_url}`. `{file_url}` is absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{file_url}` |
+
+#### Payload
+
+`Forecast Model Catalog` payloads are JSON object. Required fields: `model`, `file_url`.
+
+- **`model`** (string, required): Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours.
+- **`file_url`** (string, required): Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'.
+- **`description`** (string, optional): Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "model": "string",
+  "file_url": "string",
+  "description": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Icon D2 Forecast File
+
+CloudEvents type: `DE.DWD.Forecast.IconD2ForecastFile`
+
+#### What it tells you
+
+Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
+
+#### Identity
+
+Each event identifies the real-world resource with `{file_url}`. `{file_url}` is absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `dwd`, key `{file_url}` |
+
+#### Payload
+
+`Icon D2 Forecast File` payloads are JSON object. Required fields: `file_url`, `model`, `file_name`, `modified`.
+
+- **`file_url`** (string, required): Absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. The file is bzip2-compressed GRIB2 (.grib2.bz2) and can be fetched with an unauthenticated HTTP GET; the server supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event with a plain GET against this URL. Each file holds a single variable at a single vertical level for a single forecast lead hour, which keeps per-file payloads small (typically a few hundred KB compressed). Also used verbatim as the CloudEvents 'subject' and the Kafka partition key. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t/icon-d2_germany_icosahedral_model-level_2026051700_003_10_t.grib2.bz2'.
+- **`model`** (string, required): Identifier of the source forecast model; matches the 'model' field of the corresponding ForecastModelCatalog event. Currently always 'icon-d2'.
+- **`file_name`** (string, required): Bare file name as listed in the DWD Apache directory index, following the DWD convention 'icon-d2_<grid>_<level_type>_<run>_<lead>_<level>_<parameter>.grib2.bz2'. Convenient for parsing without splitting file_url.
+- **`run`** (string or null, optional): Model run cycle in 'YYYYMMDDHH' UTC form, parsed from file_name (e.g. '2026051700' for the 00 UTC run on 2026-05-17). ICON-D2 is run every three hours. Null when the file name does not match the expected pattern (for example time-invariant or auxiliary files).
+- **`forecast_hour`** (int32 or null, optional): Forecast lead time in whole hours from the start of the run, parsed from file_name. For ICON-D2 this ranges from 0 to 48. Null when the file name does not match the expected pattern.
+- **`parameter`** (string or null, optional): Short ICON-D2 parameter identifier parsed from file_name (for example 't' for temperature, 'u'/'v' for wind components, 'tot_prec' for total precipitation, 'clct' for total cloud cover, 'alb_rad' for shortwave albedo).
+- **`level_type`** (string or null, optional): Vertical level encoding parsed from file_name. Common values are 'single-level' (surface and 2D fields), 'model-level' (native ICON hybrid levels indexed 1..65 from top to bottom), 'pressure-level' (interpolated to fixed pressure surfaces, in hPa), and 'time-invariant' (constant fields such as orography).
+- **`level`** (string or null, optional): Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted.
+- **`modified`** (string, required): Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication.
+- **`size_bytes`** (int64 or null, optional): File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "file_url": "string",
+  "model": "string",
+  "file_name": "string",
+  "run": "string",
+  "forecast_hour": 0,
+  "parameter": "string",
+  "level_type": "string",
+  "level": "string",
+  "modified": "string",
+  "size_bytes": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+
+## References
+
+- xRegistry manifest: [`xreg/dwd.xreg.json`](xreg/dwd.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- opendata.dwd.de: <https://opendata.dwd.de/>

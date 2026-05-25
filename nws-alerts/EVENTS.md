@@ -1,292 +1,205 @@
-# NWS CAP Weather Alerts Events
+# NWS CAP Weather Alerts Bridge Events
 
-CloudEvents contract for NWS CAP weather alerts. Kafka uses topic `nws-alerts` keyed by `{alert_id}`. MQTT publishes binary-mode CloudEvents to `alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert` with CAP severity baked as one of `minor`, `moderate`, `severe`, `extreme`, or `unknown`.
+MQTT/5.0 mirror of NWS CAP weather alerts, published into the Unified-Namespace topic tree 'alerts/us/noaa/nws-alerts/{state}/<severity>/{event_type}/{alert_id}/alert'. CAP severity is baked as one of five literal sub-tree partitions (minor, moderate, severe, extreme, unknown) so every template placeholder resolves from an enriched WeatherAlert schema field. Alerts are QoS-1 non-retained one-shot lifecycle events.
 
-- [NWS.Alerts](#message-group-nwsalerts)
-  - [NWS.WeatherAlert](#message-nwsweatheralert)
-- [NWS.Alerts.mqtt](#message-group-nwsalertsmqtt)
-  - [NWS.WeatherAlert.Minor.mqtt](#message-nwsweatheralertminormqtt)
-  - [NWS.WeatherAlert.Moderate.mqtt](#message-nwsweatheralertmoderatemqtt)
-  - [NWS.WeatherAlert.Severe.mqtt](#message-nwsweatheralertseveremqtt)
-  - [NWS.WeatherAlert.Extreme.mqtt](#message-nwsweatheralertextrememqtt)
-  - [NWS.WeatherAlert.Unknown.mqtt](#message-nwsweatheralertunknownmqtt)
+## At a glance
 
----
+- **Event types:** 1 documented event type (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{alert_id}` identifies the resource each event is about.
+- **Operations:** The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
-## Message Group: NWS.Alerts
----
-### Message: NWS.WeatherAlert
-*A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.*
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `NWS.WeatherAlert` |
-| `source` |  | `` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
+## Quick start — how to consume
 
-#### Schema:
-##### Object: WeatherAlert
-*A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `alert_id` | *string* | - | `True` | The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert. |
-| `area_desc` | *string* | - | `False` | A textual description of the affected geographic area (e.g., county names). |
-| `same_codes` | *string* | - | `False` | Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). |
-| `ugc_codes` | *string* | - | `False` | Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). |
-| `sent` | *datetime* | - | `True` | The date and time when the alert was sent, in ISO-8601 format. |
-| `effective` | *datetime* | - | `False` | The date and time when the alert becomes effective. |
-| `onset` | *datetime* | - | `False` | The expected date and time of onset of the weather event. |
-| `expires` | *datetime* | - | `False` | The date and time when the alert expires. |
-| `ends` | *datetime* | - | `False` | The expected end time of the weather event. |
-| `status` | *string* | - | `True` | The CAP alert status. |
-| `message_type` | *string* | - | `True` | The CAP message type. |
-| `category` | *string* | - | `False` | The CAP alert category (e.g., 'Met' for meteorological). |
-| `severity` | *string* | - | `True` | The CAP severity level. |
-| `certainty` | *string* | - | `True` | The CAP certainty level. |
-| `urgency` | *string* | - | `True` | The CAP urgency level. |
-| `event` | *string* | - | `True` | The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory'). |
-| `sender` | *string* | - | `False` | The email address or identifier of the alert sender. |
-| `sender_name` | *string* | - | `False` | The human-readable name of the sender (e.g., 'NWS Tulsa OK'). |
-| `headline` | *string* | - | `False` | A brief headline summarizing the alert. |
-| `description` | *string* | - | `False` | The full textual description of the alert. |
-| `instruction` | *string* | - | `False` | Recommended protective actions. |
-| `response` | *string* | - | `False` | The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). |
-| `scope` | *string* | - | `False` | The CAP scope of the alert. |
-| `code` | *string* | - | `False` | The IPAWS code (e.g., 'IPAWSv1.0'). |
-| `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
-| `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
-| `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
-| `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
-## Message Group: NWS.Alerts.mqtt
----
-### Message: NWS.WeatherAlert.Minor.mqtt
-*A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.*
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `NWS.WeatherAlert` |
-| `source` |  | `` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-#### Schema:
-##### Object: WeatherAlert
-*A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `alert_id` | *string* | - | `True` | The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert. |
-| `area_desc` | *string* | - | `False` | A textual description of the affected geographic area (e.g., county names). |
-| `same_codes` | *string* | - | `False` | Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). |
-| `ugc_codes` | *string* | - | `False` | Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). |
-| `sent` | *datetime* | - | `True` | The date and time when the alert was sent, in ISO-8601 format. |
-| `effective` | *datetime* | - | `False` | The date and time when the alert becomes effective. |
-| `onset` | *datetime* | - | `False` | The expected date and time of onset of the weather event. |
-| `expires` | *datetime* | - | `False` | The date and time when the alert expires. |
-| `ends` | *datetime* | - | `False` | The expected end time of the weather event. |
-| `status` | *string* | - | `True` | The CAP alert status. |
-| `message_type` | *string* | - | `True` | The CAP message type. |
-| `category` | *string* | - | `False` | The CAP alert category (e.g., 'Met' for meteorological). |
-| `severity` | *string* | - | `True` | The CAP severity level. |
-| `certainty` | *string* | - | `True` | The CAP certainty level. |
-| `urgency` | *string* | - | `True` | The CAP urgency level. |
-| `event` | *string* | - | `True` | The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory'). |
-| `sender` | *string* | - | `False` | The email address or identifier of the alert sender. |
-| `sender_name` | *string* | - | `False` | The human-readable name of the sender (e.g., 'NWS Tulsa OK'). |
-| `headline` | *string* | - | `False` | A brief headline summarizing the alert. |
-| `description` | *string* | - | `False` | The full textual description of the alert. |
-| `instruction` | *string* | - | `False` | Recommended protective actions. |
-| `response` | *string* | - | `False` | The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). |
-| `scope` | *string* | - | `False` | The CAP scope of the alert. |
-| `code` | *string* | - | `False` | The IPAWS code (e.g., 'IPAWSv1.0'). |
-| `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
-| `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
-| `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
-| `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
----
-### Message: NWS.WeatherAlert.Moderate.mqtt
-*A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.*
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `NWS.WeatherAlert` |
-| `source` |  | `` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
+### Kafka
 
-#### Schema:
-##### Object: WeatherAlert
-*A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `alert_id` | *string* | - | `True` | The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert. |
-| `area_desc` | *string* | - | `False` | A textual description of the affected geographic area (e.g., county names). |
-| `same_codes` | *string* | - | `False` | Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). |
-| `ugc_codes` | *string* | - | `False` | Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). |
-| `sent` | *datetime* | - | `True` | The date and time when the alert was sent, in ISO-8601 format. |
-| `effective` | *datetime* | - | `False` | The date and time when the alert becomes effective. |
-| `onset` | *datetime* | - | `False` | The expected date and time of onset of the weather event. |
-| `expires` | *datetime* | - | `False` | The date and time when the alert expires. |
-| `ends` | *datetime* | - | `False` | The expected end time of the weather event. |
-| `status` | *string* | - | `True` | The CAP alert status. |
-| `message_type` | *string* | - | `True` | The CAP message type. |
-| `category` | *string* | - | `False` | The CAP alert category (e.g., 'Met' for meteorological). |
-| `severity` | *string* | - | `True` | The CAP severity level. |
-| `certainty` | *string* | - | `True` | The CAP certainty level. |
-| `urgency` | *string* | - | `True` | The CAP urgency level. |
-| `event` | *string* | - | `True` | The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory'). |
-| `sender` | *string* | - | `False` | The email address or identifier of the alert sender. |
-| `sender_name` | *string* | - | `False` | The human-readable name of the sender (e.g., 'NWS Tulsa OK'). |
-| `headline` | *string* | - | `False` | A brief headline summarizing the alert. |
-| `description` | *string* | - | `False` | The full textual description of the alert. |
-| `instruction` | *string* | - | `False` | Recommended protective actions. |
-| `response` | *string* | - | `False` | The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). |
-| `scope` | *string* | - | `False` | The CAP scope of the alert. |
-| `code` | *string* | - | `False` | The IPAWS code (e.g., 'IPAWSv1.0'). |
-| `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
-| `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
-| `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
-| `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
----
-### Message: NWS.WeatherAlert.Severe.mqtt
-*A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.*
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `NWS.WeatherAlert` |
-| `source` |  | `` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
+Subscribe to `nws-alerts`. The record key is `{alert_id}`. In plain language, `{alert_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-#### Schema:
-##### Object: WeatherAlert
-*A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `alert_id` | *string* | - | `True` | The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert. |
-| `area_desc` | *string* | - | `False` | A textual description of the affected geographic area (e.g., county names). |
-| `same_codes` | *string* | - | `False` | Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). |
-| `ugc_codes` | *string* | - | `False` | Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). |
-| `sent` | *datetime* | - | `True` | The date and time when the alert was sent, in ISO-8601 format. |
-| `effective` | *datetime* | - | `False` | The date and time when the alert becomes effective. |
-| `onset` | *datetime* | - | `False` | The expected date and time of onset of the weather event. |
-| `expires` | *datetime* | - | `False` | The date and time when the alert expires. |
-| `ends` | *datetime* | - | `False` | The expected end time of the weather event. |
-| `status` | *string* | - | `True` | The CAP alert status. |
-| `message_type` | *string* | - | `True` | The CAP message type. |
-| `category` | *string* | - | `False` | The CAP alert category (e.g., 'Met' for meteorological). |
-| `severity` | *string* | - | `True` | The CAP severity level. |
-| `certainty` | *string* | - | `True` | The CAP certainty level. |
-| `urgency` | *string* | - | `True` | The CAP urgency level. |
-| `event` | *string* | - | `True` | The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory'). |
-| `sender` | *string* | - | `False` | The email address or identifier of the alert sender. |
-| `sender_name` | *string* | - | `False` | The human-readable name of the sender (e.g., 'NWS Tulsa OK'). |
-| `headline` | *string* | - | `False` | A brief headline summarizing the alert. |
-| `description` | *string* | - | `False` | The full textual description of the alert. |
-| `instruction` | *string* | - | `False` | Recommended protective actions. |
-| `response` | *string* | - | `False` | The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). |
-| `scope` | *string* | - | `False` | The CAP scope of the alert. |
-| `code` | *string* | - | `False` | The IPAWS code (e.g., 'IPAWSv1.0'). |
-| `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
-| `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
-| `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
-| `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
----
-### Message: NWS.WeatherAlert.Extreme.mqtt
-*A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.*
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `NWS.WeatherAlert` |
-| `source` |  | `` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['nws-alerts'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-#### Schema:
-##### Object: WeatherAlert
-*A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `alert_id` | *string* | - | `True` | The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert. |
-| `area_desc` | *string* | - | `False` | A textual description of the affected geographic area (e.g., county names). |
-| `same_codes` | *string* | - | `False` | Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). |
-| `ugc_codes` | *string* | - | `False` | Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). |
-| `sent` | *datetime* | - | `True` | The date and time when the alert was sent, in ISO-8601 format. |
-| `effective` | *datetime* | - | `False` | The date and time when the alert becomes effective. |
-| `onset` | *datetime* | - | `False` | The expected date and time of onset of the weather event. |
-| `expires` | *datetime* | - | `False` | The date and time when the alert expires. |
-| `ends` | *datetime* | - | `False` | The expected end time of the weather event. |
-| `status` | *string* | - | `True` | The CAP alert status. |
-| `message_type` | *string* | - | `True` | The CAP message type. |
-| `category` | *string* | - | `False` | The CAP alert category (e.g., 'Met' for meteorological). |
-| `severity` | *string* | - | `True` | The CAP severity level. |
-| `certainty` | *string* | - | `True` | The CAP certainty level. |
-| `urgency` | *string* | - | `True` | The CAP urgency level. |
-| `event` | *string* | - | `True` | The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory'). |
-| `sender` | *string* | - | `False` | The email address or identifier of the alert sender. |
-| `sender_name` | *string* | - | `False` | The human-readable name of the sender (e.g., 'NWS Tulsa OK'). |
-| `headline` | *string* | - | `False` | A brief headline summarizing the alert. |
-| `description` | *string* | - | `False` | The full textual description of the alert. |
-| `instruction` | *string* | - | `False` | Recommended protective actions. |
-| `response` | *string* | - | `False` | The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). |
-| `scope` | *string* | - | `False` | The CAP scope of the alert. |
-| `code` | *string* | - | `False` | The IPAWS code (e.g., 'IPAWSv1.0'). |
-| `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
-| `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
-| `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
-| `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
----
-### Message: NWS.WeatherAlert.Unknown.mqtt
-*A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.*
-#### CloudEvents Attributes:
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `NWS.WeatherAlert` |
-| `source` |  | `` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
 
-#### Schema:
-##### Object: WeatherAlert
-*A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.*
-| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
-|----------------|----------|----------|--------------|-----------------|
-| `alert_id` | *string* | - | `True` | The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert. |
-| `area_desc` | *string* | - | `False` | A textual description of the affected geographic area (e.g., county names). |
-| `same_codes` | *string* | - | `False` | Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS). |
-| `ugc_codes` | *string* | - | `False` | Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001'). |
-| `sent` | *datetime* | - | `True` | The date and time when the alert was sent, in ISO-8601 format. |
-| `effective` | *datetime* | - | `False` | The date and time when the alert becomes effective. |
-| `onset` | *datetime* | - | `False` | The expected date and time of onset of the weather event. |
-| `expires` | *datetime* | - | `False` | The date and time when the alert expires. |
-| `ends` | *datetime* | - | `False` | The expected end time of the weather event. |
-| `status` | *string* | - | `True` | The CAP alert status. |
-| `message_type` | *string* | - | `True` | The CAP message type. |
-| `category` | *string* | - | `False` | The CAP alert category (e.g., 'Met' for meteorological). |
-| `severity` | *string* | - | `True` | The CAP severity level. |
-| `certainty` | *string* | - | `True` | The CAP certainty level. |
-| `urgency` | *string* | - | `True` | The CAP urgency level. |
-| `event` | *string* | - | `True` | The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory'). |
-| `sender` | *string* | - | `False` | The email address or identifier of the alert sender. |
-| `sender_name` | *string* | - | `False` | The human-readable name of the sender (e.g., 'NWS Tulsa OK'). |
-| `headline` | *string* | - | `False` | A brief headline summarizing the alert. |
-| `description` | *string* | - | `False` | The full textual description of the alert. |
-| `instruction` | *string* | - | `False` | Recommended protective actions. |
-| `response` | *string* | - | `False` | The recommended response type (e.g., 'Shelter', 'Evacuate', 'None'). |
-| `scope` | *string* | - | `False` | The CAP scope of the alert. |
-| `code` | *string* | - | `False` | The IPAWS code (e.g., 'IPAWSv1.0'). |
-| `nws_headline` | *string* | - | `False` | The NWS-specific headline from the parameters block. |
-| `vtec` | *string* | - | `False` | The P-VTEC (Valid Time Event Code) string for NWS event tracking. |
-| `web` | *string* | - | `False` | A URL to the full alert details. |
-| `state` | *string* | - | `True` | Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved. |
-| `event_type` | *string* | - | `True` | Lowercase kebab-case slug derived from the CAP event field for topic partitioning. |
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/us/noaa/nws-alerts/+/minor/+/+/alert`, `alerts/us/noaa/nws-alerts/+/moderate/+/+/alert`, `alerts/us/noaa/nws-alerts/+/severe/+/+/alert`, `alerts/us/noaa/nws-alerts/+/extreme/+/+/alert`, `alerts/us/noaa/nws-alerts/+/unknown/+/+/alert`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('alerts/us/noaa/nws-alerts/+/minor/+/+/alert', 1))
+c.loop_forever()
+```
 
-## Subscription patterns
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 
-MQTT subscribers can use standard wildcards over the severity-partitioned UNS tree:
+## Event catalog
 
-- All NWS alerts: `alerts/us/noaa/nws-alerts/+/+/+/+/alert`
-- All extreme severity alerts in California: `alerts/us/noaa/nws-alerts/ca/extreme/+/+/alert`
-- Tornado warnings across all states and severities: `alerts/us/noaa/nws-alerts/+/+/tornado-warning/+/alert`
-- All severe or extreme alerts in Texas: subscribe to both `alerts/us/noaa/nws-alerts/tx/severe/+/+/alert` and `alerts/us/noaa/nws-alerts/tx/extreme/+/+/alert`
-- All alerts with no resolved state: `alerts/us/noaa/nws-alerts/nostate/+/+/+/alert`
+### Weather Alert
+
+CloudEvents type: `NWS.WeatherAlert`
+
+#### What it tells you
+
+A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard. A weather or non-weather alert from the US National Weather Service (NWS/NOAA).
+
+#### Identity
+
+Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is the unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `nws-alerts`, key `{alert_id}` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+| `MQTT/5.0` | topic `alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert`, retain `false`, QoS `1` |
+
+#### Payload
+
+`Weather Alert` payloads are JSON object. Required fields: `alert_id`, `sent`, `status`, `message_type`, `severity`, `certainty`, `urgency`, `event`, `state`, `event_type`.
+
+- **`alert_id`** (string, required): The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert.
+- **`area_desc`** (string, optional): A textual description of the affected geographic area (e.g., county names).
+- **`same_codes`** (string, optional): Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS).
+- **`ugc_codes`** (string, optional): Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001').
+- **`sent`** (datetime, required): The date and time when the alert was sent, in ISO-8601 format.
+- **`effective`** (datetime, optional): The date and time when the alert becomes effective.
+- **`onset`** (datetime, optional): The expected date and time of onset of the weather event.
+- **`expires`** (datetime, optional): The date and time when the alert expires.
+- **`ends`** (datetime, optional): The expected end time of the weather event.
+- **`status`** (enum, required): The CAP alert status.
+- **`message_type`** (enum, required): The CAP message type.
+- **`category`** (string, optional): The CAP alert category (e.g., 'Met' for meteorological).
+- **`severity`** (enum, required): The CAP severity level.
+- **`certainty`** (enum, required): The CAP certainty level.
+- **`urgency`** (enum, required): The CAP urgency level.
+- **`event`** (string, required): The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory').
+- **`sender`** (string, optional): The email address or identifier of the alert sender.
+- **`sender_name`** (string, optional): The human-readable name of the sender (e.g., 'NWS Tulsa OK').
+- **`headline`** (string, optional): A brief headline summarizing the alert.
+- **`description`** (string, optional): The full textual description of the alert.
+- **`instruction`** (string, optional): Recommended protective actions.
+- **`response`** (string, optional): The recommended response type (e.g., 'Shelter', 'Evacuate', 'None').
+- **`scope`** (string, optional): The CAP scope of the alert.
+- **`code`** (string, optional): The IPAWS code (e.g., 'IPAWSv1.0').
+- **`nws_headline`** (string, optional): The NWS-specific headline from the parameters block.
+- **`vtec`** (string, optional): The P-VTEC (Valid Time Event Code) string for NWS event tracking.
+- **`web`** (string, optional): A URL to the full alert details.
+- **`state`** (string, required): Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved.
+- **`event_type`** (string, required): Lowercase kebab-case slug derived from the CAP event field for topic partitioning.
+##### `status` values
+
+- `Actual`
+- `Exercise`
+- `System`
+- `Test`
+- `Draft`
+##### `message_type` values
+
+- `Alert`
+- `Update`
+- `Cancel`
+- `Ack`
+- `Error`
+##### `severity` values
+
+- `Extreme`
+- `Severe`
+- `Moderate`
+- `Minor`
+- `Unknown`
+##### `certainty` values
+
+- `Observed`
+- `Likely`
+- `Possible`
+- `Unlikely`
+- `Unknown`
+##### `urgency` values
+
+- `Immediate`
+- `Expected`
+- `Future`
+- `Past`
+- `Unknown`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "alert_id": "string",
+  "area_desc": "string",
+  "same_codes": "string",
+  "ugc_codes": "string",
+  "sent": "2024-01-01T00:00:00Z",
+  "effective": "2024-01-01T00:00:00Z",
+  "onset": "2024-01-01T00:00:00Z",
+  "expires": "2024-01-01T00:00:00Z",
+  "ends": "2024-01-01T00:00:00Z",
+  "status": "Actual",
+  "message_type": "Alert",
+  "category": "string",
+  "severity": "Extreme",
+  "certainty": "Observed",
+  "urgency": "Immediate",
+  "event": "string",
+  "sender": "string",
+  "sender_name": "string",
+  "headline": "string",
+  "description": "string",
+  "instruction": "string",
+  "response": "string",
+  "scope": "string",
+  "code": "string",
+  "nws_headline": "string",
+  "vtec": "string",
+  "web": "string",
+  "state": "string",
+  "event_type": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+
+## References
+
+- xRegistry manifest: [`xreg/nws_alerts.xreg.json`](xreg/nws_alerts.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

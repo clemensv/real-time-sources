@@ -1,56 +1,203 @@
-# NDW Netherlands Road Traffic Events
+# NDW Netherlands Road Traffic Bridge Events
 
-The bridge emits CloudEvents in structured JSON format to Kafka-compatible
-endpoints.
+This bridge downloads DATEX II XML data published by the Dutch NDW (Nationaal Dataportaal Wegverkeer) at `https://opendata.ndw.nu` and forwards traffic speed, travel time, and situation data to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
 
-## Topics and Keys
+## At a glance
 
-| Topic | Key template | Message group | Event types |
-|---|---|---|---|
-| `ndl-traffic` | `{site_id}` | `NL.NDW.Traffic.Measurements` | `TrafficSpeed`, `TravelTime` |
-| `ndl-traffic-situations` | `{situation_id}` | `NL.NDW.Traffic.Situations` | `TrafficSituation` |
+- **Event types:** 3 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
+- **Identity:** `{site_id}`, `{situation_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
-## Event Types
+## Quick start — how to consume
 
-### NL.NDW.Traffic.TrafficSpeed
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-Aggregated traffic speed and flow measurement per road segment from the NDW
-DATEX II trafficspeed feed. Speed is averaged and flow summed across all
-reporting lanes.
+### Kafka
 
-| Field | Type | Description |
-|---|---|---|
-| `site_id` | string | NDW measurement site ID |
-| `measurement_time` | string (ISO 8601) | Measurement timestamp (UTC) |
-| `average_speed` | double \| null | Average speed in km/h across valid lanes |
-| `vehicle_flow_rate` | int \| null | Total flow in vehicles/hour |
-| `number_of_lanes_with_data` | int | Lanes with valid data |
+Subscribe to `ndl-traffic`, `ndl-traffic-situations`. The record key is `{site_id}`, `{situation_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### NL.NDW.Traffic.TravelTime
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['ndl-traffic', 'ndl-traffic-situations'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-Travel time measurement per road segment from the NDW DATEX II traveltime feed.
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-| Field | Type | Description |
-|---|---|---|
-| `site_id` | string | NDW measurement site ID |
-| `measurement_time` | string (ISO 8601) | Measurement timestamp (UTC) |
-| `duration` | double \| null | Actual travel time in seconds |
-| `reference_duration` | double \| null | Free-flow reference time in seconds |
-| `accuracy` | double \| null | Measurement accuracy (0–100%) |
-| `data_quality` | double \| null | Supplier data quality score (0–100%) |
-| `number_of_input_values` | int \| null | Vehicle count used in calculation |
+## Event catalog
 
-### NL.NDW.Traffic.TrafficSituation
+### Traffic Speed
 
-Current traffic situation from the NDW DATEX II v3 actueel_beeld feed.
+CloudEvents type: `NL.NDW.Traffic.TrafficSpeed`
 
-| Field | Type | Description |
-|---|---|---|
-| `situation_id` | string | Situation ID |
-| `version_time` | string (ISO 8601) | Last version timestamp (UTC) |
-| `severity` | string \| null | low, medium, high, highest, unknown |
-| `record_type` | string \| null | DATEX II record type |
-| `cause_type` | string \| null | Cause (roadMaintenance, accident, etc.) |
-| `start_time` | string \| null | Validity start (ISO 8601) |
-| `end_time` | string \| null | Validity end (ISO 8601) |
-| `information_status` | string | real, test, or exercise |
+#### What it tells you
+
+Aggregated traffic speed and flow measurement per road segment from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes. Aggregated traffic speed and flow measurement per road segment from the NDW DATEX II trafficspeed feed.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_id}`. `{site_id}` is unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `ndl-traffic`, key `{site_id}` |
+
+#### Payload
+
+`Traffic Speed` payloads are JSON object. Required fields: `site_id`, `measurement_time`, `number_of_lanes_with_data`.
+
+- **`site_id`** (string, required): Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. Example: PZH01_MST_0029-00.
+- **`measurement_time`** (string, required): Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element.
+- **`average_speed`** (double or null, optional, km/h): Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed (all lanes had speed <= 0).
+- **`vehicle_flow_rate`** (int32 or null, optional, vehicles/h): Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported.
+- **`number_of_lanes_with_data`** (int32, required): Number of lanes that reported valid measurement data (speed > 0 or flow >= 0) at this measurement site.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_id": "string",
+  "measurement_time": "string",
+  "average_speed": 0,
+  "vehicle_flow_rate": 0,
+  "number_of_lanes_with_data": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Travel Time
+
+CloudEvents type: `NL.NDW.Traffic.TravelTime`
+
+#### What it tells you
+
+Travel time measurement for a road segment from the Dutch NDW DATEX II traveltime feed. Each record contains the actual measured travel time and the static free-flow reference time for a measurement site. Travel time measurement for a road segment from the NDW DATEX II traveltime feed.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_id}`. `{site_id}` is unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `ndl-traffic`, key `{site_id}` |
+
+#### Payload
+
+`Travel Time` payloads are JSON object. Required fields: `site_id`, `measurement_time`.
+
+- **`site_id`** (string, required): Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute.
+- **`measurement_time`** (string, required): Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element.
+- **`duration`** (double or null, optional, s): Actual measured travel time in seconds for this road segment. Null when the measurement has a data error (duration is -1 in the upstream).
+- **`reference_duration`** (double or null, optional, s): Static reference (free-flow) travel time in seconds for this road segment. Null when unavailable or when the measurement has a data error.
+- **`accuracy`** (double or null, optional): Accuracy of the travel time measurement as a percentage (0-100), indicating the quality of the sensor coverage.
+- **`data_quality`** (double or null, optional): Supplier-calculated data quality score as a percentage (0-100). Higher values indicate more reliable measurements.
+- **`number_of_input_values`** (int32 or null, optional): Number of individual vehicle travel times used to compute this aggregate travel time measurement.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_id": "string",
+  "measurement_time": "string",
+  "duration": 0,
+  "reference_duration": 0,
+  "accuracy": 0,
+  "data_quality": 0,
+  "number_of_input_values": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Traffic Situation
+
+CloudEvents type: `NL.NDW.Traffic.TrafficSituation`
+
+#### What it tells you
+
+Current traffic situation record from the Dutch NDW DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-affecting events on the Dutch road network. Current traffic situation from the NDW DATEX II v3 actueel_beeld feed.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique identifier of the traffic situation from the DATEX II situation id attribute. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `ndl-traffic-situations`, key `{situation_id}` |
+
+#### Payload
+
+`Traffic Situation` payloads are JSON object. Required fields: `situation_id`, `version_time`, `information_status`.
+
+- **`situation_id`** (string, required): Unique identifier of the traffic situation from the DATEX II situation id attribute. Example: RWS01_SM1117672_D2_WWA.
+- **`version_time`** (string, required): Timestamp of the latest version of this situation in ISO 8601 format (UTC), from the DATEX II situationVersionTime element.
+- **`severity`** (string or null, optional): Overall severity of the situation. Values include: low, medium, high, highest, unknown. Null if not specified.
+- **`record_type`** (string or null, optional): DATEX II situation record type indicating the nature of the event. Common values: RoadOrCarriagewayOrLaneManagement, MaintenanceWorks, ConstructionWorks, ReroutingManagement. Null when not available.
+- **`cause_type`** (string or null, optional): Cause of the traffic situation. Common values: roadMaintenance, accident, congestion, roadClosed. Null when no cause is specified.
+- **`start_time`** (string or null, optional): Start time of the situation validity period in ISO 8601 format (UTC). Null when no validity time specification is provided.
+- **`end_time`** (string or null, optional): End time of the situation validity period in ISO 8601 format (UTC). Null when the end time is open-ended or not specified.
+- **`information_status`** (string, required): Status of the information: real (confirmed traffic data), test (test data), or exercise (drill/exercise data).
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "situation_id": "string",
+  "version_time": "string",
+  "severity": "string",
+  "record_type": "string",
+  "cause_type": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "information_status": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+
+## References
+
+- xRegistry manifest: [`xreg/ndl_netherlands.xreg.json`](xreg/ndl_netherlands.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

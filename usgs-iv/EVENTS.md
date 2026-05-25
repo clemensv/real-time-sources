@@ -1,920 +1,1586 @@
-# USGS Instantaneous Values API Bridge Events
-
-This document describes the events that are emitted by the USGS Instantaneous Values API Bridge.
-
-## MQTT/UNS topics
-
-The MQTT feeder publishes binary CloudEvents with QoS 1 under the hydro UNS root:
-
-- Site metadata: `hydro/us/usgs/usgs-iv/{site_no}/info` (retained, 30-day expiry)
-- Timeseries metadata: `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/timeseries` (retained, 30-day expiry)
-- Latest observations: `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation` (retained, 24-hour expiry)
-
-The topic uses the existing schema field names `site_no`, `parameter_cd`, and `timeseries_cd`; `agency_cd` remains in the CloudEvent subject and payload. Example subscriptions: all values for one site: `hydro/us/usgs/usgs-iv/01646500/+/+/observation`; one parameter at one site: `hydro/us/usgs/usgs-iv/01646500/00060/+/observation`.
-
-- [USGS.Sites](#message-group-usgssites)
-  - [USGS.Sites.Site](#message-usgssitessite)
-  - [USGS.Sites.SiteTimeseries](#message-usgssitessitetimeseries)
-- [USGS.InstantaneousValues](#message-group-usgsinstantaneousvalues)
-  - [USGS.InstantaneousValues.OtherParameter](#message-usgsinstantaneousvaluesotherparameter)
-  - [USGS.InstantaneousValues.Precipitation](#message-usgsinstantaneousvaluesprecipitation)
-  - [USGS.InstantaneousValues.Streamflow](#message-usgsinstantaneousvaluesstreamflow)
-  - [USGS.InstantaneousValues.GageHeight](#message-usgsinstantaneousvaluesgageheight)
-  - [USGS.InstantaneousValues.WaterTemperature](#message-usgsinstantaneousvalueswatertemperature)
-  - [USGS.InstantaneousValues.DissolvedOxygen](#message-usgsinstantaneousvaluesdissolvedoxygen)
-  - [USGS.InstantaneousValues.pH](#message-usgsinstantaneousvaluesph)
-  - [USGS.InstantaneousValues.SpecificConductance](#message-usgsinstantaneousvaluesspecificconductance)
-  - [USGS.InstantaneousValues.Turbidity](#message-usgsinstantaneousvaluesturbidity)
-  - [USGS.InstantaneousValues.AirTemperature](#message-usgsinstantaneousvaluesairtemperature)
-  - [USGS.InstantaneousValues.WindSpeed](#message-usgsinstantaneousvalueswindspeed)
-  - [USGS.InstantaneousValues.WindDirection](#message-usgsinstantaneousvalueswinddirection)
-  - [USGS.InstantaneousValues.RelativeHumidity](#message-usgsinstantaneousvaluesrelativehumidity)
-  - [USGS.InstantaneousValues.BarometricPressure](#message-usgsinstantaneousvaluesbarometricpressure)
-  - [USGS.InstantaneousValues.TurbidityFNU](#message-usgsinstantaneousvaluesturbidityfnu)
-  - [USGS.InstantaneousValues.fDOM](#message-usgsinstantaneousvaluesfdom)
-  - [USGS.InstantaneousValues.ReservoirStorage](#message-usgsinstantaneousvaluesreservoirstorage)
-  - [USGS.InstantaneousValues.LakeElevationNGVD29](#message-usgsinstantaneousvalueslakeelevationngvd29)
-  - [USGS.InstantaneousValues.WaterDepth](#message-usgsinstantaneousvalueswaterdepth)
-  - [USGS.InstantaneousValues.EquipmentStatus](#message-usgsinstantaneousvaluesequipmentstatus)
-  - [USGS.InstantaneousValues.TidallyFilteredDischarge](#message-usgsinstantaneousvaluestidallyfiltereddischarge)
-  - [USGS.InstantaneousValues.WaterVelocity](#message-usgsinstantaneousvalueswatervelocity)
-  - [USGS.InstantaneousValues.EstuaryElevationNGVD29](#message-usgsinstantaneousvaluesestuaryelevationngvd29)
-  - [USGS.InstantaneousValues.LakeElevationNAVD88](#message-usgsinstantaneousvalueslakeelevationnavd88)
-  - [USGS.InstantaneousValues.Salinity](#message-usgsinstantaneousvaluessalinity)
-  - [USGS.InstantaneousValues.GateOpening](#message-usgsinstantaneousvaluesgateopening)
-
----
-
-## Message Group: USGS.Sites
-
----
-
-### Message: USGS.Sites.Site
-
-*USGS site metadata.*
-
-#### CloudEvents Attributes:
-
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.Sites.Site` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}` |
-
-#### Schema:
-
-##### Record: Site
-
-*USGS site metadata.*
-
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `agency_cd` | *string* | Agency code. |
-| `site_no` | *string* | USGS site number. |
-| `station_nm` | *string* | Station name. |
-| `site_tp_cd` | *string* | Site type code. |
-| `lat_va` | *string* | DMS latitude. |
-| `long_va` | *string* | DMS longitude. |
-| `dec_lat_va` | *float* (optional) | Decimal latitude. |
-| `dec_long_va` | *float* (optional) | Decimal longitude. |
-| `coord_meth_cd` | *string* | Latitude-longitude method code. |
-| `coord_acy_cd` | *string* | Coordinate accuracy code. |
-| `coord_datum_cd` | *string* | Latitude-longitude datum code. |
-| `dec_coord_datum_cd` | *string* | Decimal latitude-longitude datum code. |
-| `district_cd` | *string* | District code. |
-| `state_cd` | *string* | State code. |
-| `county_cd` | *string* | County code. |
-| `country_cd` | *string* | Country code. |
-| `land_net_ds` | *string* | Land net location description. |
-| `map_nm` | *string* | Location map name. |
-| `map_scale_fc` | *float* (optional) | Location map scale factor. |
-| `alt_va` | *float* (optional) | Altitude. |
-| `alt_meth_cd` | *string* | Method altitude determined code. |
-| `alt_acy_va` | *float* (optional) | Altitude accuracy. |
-| `alt_datum_cd` | *string* | Altitude datum code. |
-| `huc_cd` | *string* | Hydrologic unit code. |
-| `basin_cd` | *string* | Drainage basin code. |
-| `topo_cd` | *string* | Topographic setting code. |
-| `instruments_cd` | *string* | Flags for instruments at site. |
-| `construction_dt` | *string* (optional) | Date of first construction. |
-| `inventory_dt` | *string* (optional) | Date site established or inventoried. |
-| `drain_area_va` | *float* (optional) | Drainage area. |
-| `contrib_drain_area_va` | *float* (optional) | Contributing drainage area. |
-| `tz_cd` | *string* | Time Zone abbreviation. |
-| `local_time_fg` | *boolean* | Site honors Daylight Savings Time flag. |
-| `reliability_cd` | *string* | Data reliability code. |
-| `gw_file_cd` | *string* | Data-other GW files code. |
-| `nat_aqfr_cd` | *string* | National aquifer code. |
-| `aqfr_cd` | *string* | Local aquifer code. |
-| `aqfr_type_cd` | *string* | Local aquifer type code. |
-| `well_depth_va` | *float* (optional) | Well depth. |
-| `hole_depth_va` | *float* (optional) | Hole depth. |
-| `depth_src_cd` | *string* | Source of depth data. |
-| `project_no` | *string* | Project number. |
----
+# USGS Water Services - Instantaneous Value Service Usage Guide Events
+
+MQTT/5.0 transport variants for USGS site metadata. Topics are retained QoS-1 site info leaves under hydro/us/usgs/usgs-iv/{site_no}/info. The manifest intentionally uses existing schema field names site_no and parameter_cd rather than adding aliases.
+
+## At a glance
+
+- **Event types:** 28 documented event types (56 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 1 reference/catalog event type and 27 telemetry event types.
+- **Identity:** `{agency_cd}/{site_no}`, `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
+
+## Quick start — how to consume
+
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
+
+### Kafka
+
+Subscribe to `usgs-iv`. The record key is `{agency_cd}/{site_no}`, `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['usgs-iv'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `hydro/us/usgs/usgs-iv/+/info`, `hydro/us/usgs/usgs-iv/+/+/+/timeseries`, `hydro/us/usgs/usgs-iv/+/+/+/observation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('hydro/us/usgs/usgs-iv/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Site
+
+CloudEvents type: `USGS.Sites.Site`
+
+#### What it tells you
+
+USGS site metadata.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}`. `{agency_cd}` is agency code; `{site_no}` is USGS site number. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/info`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Site` payloads are JSON object. Required fields: `agency_cd`, `site_no`, `station_nm`, `site_tp_cd`, `lat_va`, `long_va`, `coord_meth_cd`, `coord_acy_cd`, `coord_datum_cd`, `dec_coord_datum_cd`, `district_cd`, `state_cd`, `county_cd`, `country_cd`, `land_net_ds`, `map_nm`, `alt_meth_cd`, `alt_datum_cd`, `huc_cd`, `basin_cd`, `topo_cd`, `instruments_cd`, `tz_cd`, `local_time_fg`, `reliability_cd`, `gw_file_cd`, `nat_aqfr_cd`, `aqfr_cd`, `aqfr_type_cd`, `depth_src_cd`, `project_no`.
+
+- **`agency_cd`** (string, required): Agency code.
+- **`site_no`** (string, required): USGS site number.
+- **`station_nm`** (string, required): Station name.
+- **`site_tp_cd`** (string, required): Site type code.
+- **`lat_va`** (string, required): DMS latitude.
+- **`long_va`** (string, required): DMS longitude.
+- **`dec_lat_va`** (float, optional): Decimal latitude.
+- **`dec_long_va`** (float, optional): Decimal longitude.
+- **`coord_meth_cd`** (string, required): Latitude-longitude method code.
+- **`coord_acy_cd`** (string, required): Coordinate accuracy code.
+- **`coord_datum_cd`** (string, required): Latitude-longitude datum code.
+- **`dec_coord_datum_cd`** (string, required): Decimal latitude-longitude datum code.
+- **`district_cd`** (string, required): District code.
+- **`state_cd`** (string, required): State code.
+- **`county_cd`** (string, required): County code.
+- **`country_cd`** (string, required): Country code.
+- **`land_net_ds`** (string, required): Land net location description.
+- **`map_nm`** (string, required): Location map name.
+- **`map_scale_fc`** (float, optional): Location map scale factor.
+- **`alt_va`** (float, optional): Altitude.
+- **`alt_meth_cd`** (string, required): Method altitude determined code.
+- **`alt_acy_va`** (float, optional): Altitude accuracy.
+- **`alt_datum_cd`** (string, required): Altitude datum code.
+- **`huc_cd`** (string, required): Hydrologic unit code.
+- **`basin_cd`** (string, required): Drainage basin code.
+- **`topo_cd`** (string, required): Topographic setting code.
+- **`instruments_cd`** (string, required): Flags for instruments at site.
+- **`construction_dt`** (string, optional): Date of first construction.
+- **`inventory_dt`** (string, optional): Date site established or inventoried.
+- **`drain_area_va`** (float, optional): Drainage area.
+- **`contrib_drain_area_va`** (float, optional): Contributing drainage area.
+- **`tz_cd`** (string, required): Time Zone abbreviation.
+- **`local_time_fg`** (boolean, required): Site honors Daylight Savings Time flag.
+- **`reliability_cd`** (string, required): Data reliability code.
+- **`gw_file_cd`** (string, required): Data-other GW files code.
+- **`nat_aqfr_cd`** (string, required): National aquifer code.
+- **`aqfr_cd`** (string, required): Local aquifer code.
+- **`aqfr_type_cd`** (string, required): Local aquifer type code.
+- **`well_depth_va`** (float, optional): Well depth.
+- **`hole_depth_va`** (float, optional): Hole depth.
+- **`depth_src_cd`** (string, required): Source of depth data.
+- **`project_no`** (string, required): Project number.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "agency_cd": "string",
+  "site_no": "string",
+  "station_nm": "string",
+  "site_tp_cd": "string",
+  "lat_va": "string",
+  "long_va": "string",
+  "dec_lat_va": 0,
+  "dec_long_va": 0,
+  "coord_meth_cd": "string",
+  "coord_acy_cd": "string",
+  "coord_datum_cd": "string",
+  "dec_coord_datum_cd": "string",
+  "district_cd": "string",
+  "state_cd": "string",
+  "county_cd": "string",
+  "country_cd": "string",
+  "land_net_ds": "string",
+  "map_nm": "string",
+  "map_scale_fc": 0,
+  "alt_va": 0,
+  "alt_meth_cd": "string",
+  "alt_acy_va": 0,
+  "alt_datum_cd": "string",
+  "huc_cd": "string",
+  "basin_cd": "string",
+  "topo_cd": "string",
+  "instruments_cd": "string",
+  "construction_dt": "string",
+  "inventory_dt": "string",
+  "drain_area_va": 0,
+  "contrib_drain_area_va": 0,
+  "tz_cd": "string",
+  "local_time_fg": false,
+  "reliability_cd": "string",
+  "gw_file_cd": "string",
+  "nat_aqfr_cd": "string",
+  "aqfr_cd": "string",
+  "aqfr_type_cd": "string",
+  "well_depth_va": 0,
+  "hole_depth_va": 0,
+  "depth_src_cd": "string",
+  "project_no": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Site Timeseries
+
+CloudEvents type: `USGS.Sites.SiteTimeseries`
+
+#### What it tells you
+
+USGS site timeseries metadata.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is agency code; `{site_no}` is USGS site number; `{parameter_cd}` is parameter code; `{timeseries_cd}` is timeseries code. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/timeseries`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Site Timeseries` payloads are JSON object. Required fields: `agency_cd`, `site_no`, `parameter_cd`, `timeseries_cd`, `description`.
+
+- **`agency_cd`** (string, required): Agency code.
+- **`site_no`** (string, required): USGS site number.
+- **`parameter_cd`** (string, required): Parameter code.
+- **`timeseries_cd`** (string, required): Timeseries code.
+- **`description`** (string, required): Description.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "agency_cd": "string",
+  "site_no": "string",
+  "parameter_cd": "string",
+  "timeseries_cd": "string",
+  "description": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Other Parameter
+
+CloudEvents type: `USGS.InstantaneousValues.OtherParameter`
+
+#### What it tells you
+
+USGS other parameter data.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Other Parameter` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Precipitation
+
+CloudEvents type: `USGS.InstantaneousValues.Precipitation`
+
+#### What it tells you
+
+USGS precipitation data. Parameter code 00045.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-### Message: USGS.Sites.SiteTimeseries
+#### Payload
 
-*USGS site timeseries metadata.*
+`Precipitation` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-#### CloudEvents Attributes:
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Precipitation value, inches."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.Sites.SiteTimeseries` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### Schema:
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Streamflow
+
+CloudEvents type: `USGS.InstantaneousValues.Streamflow`
+
+#### What it tells you
+
+USGS streamflow data. Parameter code 00060.
+
+#### Identity
 
-##### Record: SiteTimeseries
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-*USGS site timeseries metadata.*
+#### Where to find it
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `agency_cd` | *string* | Agency code. |
-| `site_no` | *string* | USGS site number. |
-| `parameter_cd` | *string* | Parameter code. |
-| `timeseries_cd` | *string* | Timeseries code. |
-| `description` | *string* | Description. |
-## Message Group: USGS.InstantaneousValues
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
----
+#### Payload
 
-### Message: USGS.InstantaneousValues.OtherParameter
+`Streamflow` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-*USGS other parameter data.*
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Discharge value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-#### CloudEvents Attributes:
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.OtherParameter` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-#### Schema:
+#### Reference vs telemetry
 
-##### Record: OtherParameter
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Gage Height
 
-*USGS other parameter data.*
+CloudEvents type: `USGS.InstantaneousValues.GageHeight`
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### What it tells you
 
-### Message: USGS.InstantaneousValues.Precipitation
+USGS gage height data. Parameter code 00065.
 
-*USGS precipitation data. Parameter code 00045.*
+#### Identity
 
-#### CloudEvents Attributes:
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.Precipitation` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### Where to find it
 
-#### Schema:
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-##### Record: Precipitation
+#### Payload
 
-*USGS precipitation data. Parameter code 00045.*
+`Gage Height` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Precipitation value, inches."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Gage height value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-### Message: USGS.InstantaneousValues.Streamflow
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-*USGS streamflow data. Parameter code 00060.*
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-#### CloudEvents Attributes:
+#### Reference vs telemetry
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.Streamflow` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-#### Schema:
+### Water Temperature
 
-##### Record: Streamflow
+CloudEvents type: `USGS.InstantaneousValues.WaterTemperature`
 
-*USGS streamflow data. Parameter code 00060.*
+#### What it tells you
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Discharge value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+USGS water temperature data. Parameter code 00010.
 
-### Message: USGS.InstantaneousValues.GageHeight
+#### Identity
 
-*USGS gage height data. Parameter code 00065.*
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-#### CloudEvents Attributes:
+#### Where to find it
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.GageHeight` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-#### Schema:
+#### Payload
 
-##### Record: GageHeight
+`Water Temperature` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-*USGS gage height data. Parameter code 00065.*
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Water temperature value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Gage height value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-### Message: USGS.InstantaneousValues.WaterTemperature
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-*USGS water temperature data. Parameter code 00010.*
+#### Reference vs telemetry
 
-#### CloudEvents Attributes:
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.WaterTemperature` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+### Dissolved Oxygen
 
-#### Schema:
+CloudEvents type: `USGS.InstantaneousValues.DissolvedOxygen`
 
-##### Record: WaterTemperature
+#### What it tells you
 
-*USGS water temperature data. Parameter code 00010.*
+USGS dissolved oxygen data. Parameter code 00300.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Water temperature value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Identity
 
-### Message: USGS.InstantaneousValues.DissolvedOxygen
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-*USGS dissolved oxygen data. Parameter code 00300.*
+#### Where to find it
 
-#### CloudEvents Attributes:
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.DissolvedOxygen` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### Payload
 
-#### Schema:
+`Dissolved Oxygen` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-##### Record: DissolvedOxygen
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Dissolved oxygen value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-*USGS dissolved oxygen data. Parameter code 00300.*
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Dissolved oxygen value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-### Message: USGS.InstantaneousValues.pH
+#### Reference vs telemetry
 
-*USGS pH data. Parameter code 00400.*
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-#### CloudEvents Attributes:
+### P H
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.pH` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+CloudEvents type: `USGS.InstantaneousValues.pH`
 
-#### Schema:
+#### What it tells you
 
-##### Record: pH
+USGS pH data. Parameter code 00400.
 
-*USGS pH data. Parameter code 00400.*
+#### Identity
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "pH value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-### Message: USGS.InstantaneousValues.SpecificConductance
+#### Where to find it
 
-*USGS specific conductance data. Parameter code 00095.*
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-#### CloudEvents Attributes:
+#### Payload
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.SpecificConductance` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+`P H` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-#### Schema:
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "pH value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-##### Record: SpecificConductance
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-*USGS specific conductance data. Parameter code 00095.*
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Specific conductance value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Reference vs telemetry
 
-### Message: USGS.InstantaneousValues.Turbidity
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-*USGS turbidity data. Parameter code 00076.*
+### Specific Conductance
 
-#### CloudEvents Attributes:
+CloudEvents type: `USGS.InstantaneousValues.SpecificConductance`
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.Turbidity` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### What it tells you
 
-#### Schema:
+USGS specific conductance data. Parameter code 00095.
 
-##### Record: Turbidity
+#### Identity
 
-*USGS turbidity data. Parameter code 00076.*
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Turbidity value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Where to find it
 
-### Message: USGS.InstantaneousValues.AirTemperature
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-*USGS air temperature data. Parameter code 00020.*
+#### Payload
 
-#### CloudEvents Attributes:
+`Specific Conductance` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.AirTemperature` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Specific conductance value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-#### Schema:
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Record: AirTemperature
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-*USGS air temperature data. Parameter code 00020.*
+#### Reference vs telemetry
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Air temperature value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-### Message: USGS.InstantaneousValues.WindSpeed
+### Turbidity
 
-*USGS wind speed data. Parameter code 00035.*
+CloudEvents type: `USGS.InstantaneousValues.Turbidity`
 
-#### CloudEvents Attributes:
+#### What it tells you
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.WindSpeed` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+USGS turbidity data. Parameter code 00076.
 
-#### Schema:
+#### Identity
 
-##### Record: WindSpeed
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-*USGS wind speed data. Parameter code 00035.*
+#### Where to find it
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Wind speed value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-### Message: USGS.InstantaneousValues.WindDirection
+#### Payload
 
-*USGS wind direction data. Parameter codes 00036 and 163695.*
+`Turbidity` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-#### CloudEvents Attributes:
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Turbidity value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.WindDirection` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### Schema:
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-##### Record: WindDirection
+#### Reference vs telemetry
 
-*USGS wind direction data. Parameter codes 00036 and 163695.*
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Wind direction value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+### Air Temperature
 
-### Message: USGS.InstantaneousValues.RelativeHumidity
+CloudEvents type: `USGS.InstantaneousValues.AirTemperature`
 
-*USGS relative humidity data. Parameter code 00052.*
+#### What it tells you
 
-#### CloudEvents Attributes:
+USGS air temperature data. Parameter code 00020.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.RelativeHumidity` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### Identity
 
-#### Schema:
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-##### Record: RelativeHumidity
+#### Where to find it
 
-*USGS relative humidity data. Parameter code 00052.*
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Relative humidity value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Payload
 
-### Message: USGS.InstantaneousValues.BarometricPressure
+`Air Temperature` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-*USGS barometric pressure data. Parameter codes 62605 and 75969.*
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Air temperature value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-#### CloudEvents Attributes:
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.BarometricPressure` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-#### Schema:
+#### Reference vs telemetry
 
-##### Record: BarometricPressure
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-*USGS barometric pressure data. Parameter codes 62605 and 75969.*
+### Wind Speed
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Barometric pressure value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+CloudEvents type: `USGS.InstantaneousValues.WindSpeed`
 
-### Message: USGS.InstantaneousValues.TurbidityFNU
+#### What it tells you
 
-*USGS turbidity data (FNU). Parameter code 63680.*
+USGS wind speed data. Parameter code 00035.
 
-#### CloudEvents Attributes:
+#### Identity
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.TurbidityFNU` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-#### Schema:
+#### Where to find it
 
-##### Record: TurbidityFNU
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-*USGS turbidity data (FNU). Parameter code 63680.*
+#### Payload
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Turbidity value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+`Wind Speed` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-### Message: USGS.InstantaneousValues.fDOM
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Wind speed value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-*USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.*
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-#### CloudEvents Attributes:
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.fDOM` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### Reference vs telemetry
 
-#### Schema:
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-##### Record: fDOM
+### Wind Direction
 
-*USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.*
+CloudEvents type: `USGS.InstantaneousValues.WindDirection`
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Dissolved organic matter fluorescence value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### What it tells you
 
-### Message: USGS.InstantaneousValues.ReservoirStorage
+USGS wind direction data. Parameter codes 00036 and 163695.
 
-*USGS reservoir storage data. Parameter code 00054.*
+#### Identity
 
-#### CloudEvents Attributes:
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.ReservoirStorage` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### Where to find it
 
-#### Schema:
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-##### Record: ReservoirStorage
+#### Payload
 
-*USGS reservoir storage data. Parameter code 00054.*
+`Wind Direction` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Reservoir storage value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Wind direction value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-### Message: USGS.InstantaneousValues.LakeElevationNGVD29
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-*USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.*
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-#### CloudEvents Attributes:
+#### Reference vs telemetry
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.LakeElevationNGVD29` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-#### Schema:
+### Relative Humidity
 
-##### Record: LakeElevationNGVD29
+CloudEvents type: `USGS.InstantaneousValues.RelativeHumidity`
 
-*USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.*
+#### What it tells you
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Lake elevation above NGVD 1929."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+USGS relative humidity data. Parameter code 00052.
 
-### Message: USGS.InstantaneousValues.WaterDepth
+#### Identity
 
-*USGS water depth data. Parameter code 72199.*
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-#### CloudEvents Attributes:
+#### Where to find it
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.WaterDepth` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-#### Schema:
+#### Payload
 
-##### Record: WaterDepth
+`Relative Humidity` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-*USGS water depth data. Parameter code 72199.*
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Relative humidity value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Water depth value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-### Message: USGS.InstantaneousValues.EquipmentStatus
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-*USGS equipment alarm status data. Parameter code 99235.*
+#### Reference vs telemetry
 
-#### CloudEvents Attributes:
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.EquipmentStatus` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+### Barometric Pressure
 
-#### Schema:
+CloudEvents type: `USGS.InstantaneousValues.BarometricPressure`
 
-##### Record: EquipmentStatus
+#### What it tells you
 
-*USGS equipment alarm status data. Parameter code 99235.*
+USGS barometric pressure data. Parameter codes 62605 and 75969.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `status` | *string* (optional) | {"description": "Status of equipment alarm as codes."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Identity
 
-### Message: USGS.InstantaneousValues.TidallyFilteredDischarge
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-*USGS tidally filtered discharge data. Parameter code 72137.*
+#### Where to find it
 
-#### CloudEvents Attributes:
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.TidallyFilteredDischarge` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### Payload
 
-#### Schema:
+`Barometric Pressure` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-##### Record: TidallyFilteredDischarge
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Barometric pressure value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-*USGS tidally filtered discharge data. Parameter code 72137.*
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Tidally filtered discharge value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-### Message: USGS.InstantaneousValues.WaterVelocity
+#### Reference vs telemetry
 
-*USGS water velocity data. Parameter code 72254.*
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-#### CloudEvents Attributes:
+### Turbidity FNU
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.WaterVelocity` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+CloudEvents type: `USGS.InstantaneousValues.TurbidityFNU`
 
-#### Schema:
+#### What it tells you
 
-##### Record: WaterVelocity
+USGS turbidity data (FNU). Parameter code 63680.
 
-*USGS water velocity data. Parameter code 72254.*
+#### Identity
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Water velocity value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-### Message: USGS.InstantaneousValues.EstuaryElevationNGVD29
+#### Where to find it
 
-*USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.*
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-#### CloudEvents Attributes:
+#### Payload
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.EstuaryElevationNGVD29` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+`Turbidity FNU` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-#### Schema:
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Turbidity value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-##### Record: EstuaryElevationNGVD29
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-*USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.*
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Estuary or ocean water surface elevation above NGVD 1929."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Reference vs telemetry
 
-### Message: USGS.InstantaneousValues.LakeElevationNAVD88
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-*USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.*
+### F DOM
 
-#### CloudEvents Attributes:
+CloudEvents type: `USGS.InstantaneousValues.fDOM`
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.LakeElevationNAVD88` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+#### What it tells you
 
-#### Schema:
+USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.
 
-##### Record: LakeElevationNAVD88
+#### Identity
 
-*USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.*
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Lake elevation above NAVD 1988."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+#### Where to find it
 
-### Message: USGS.InstantaneousValues.Salinity
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
 
-*USGS salinity data. Parameter code 00480.*
+#### Payload
 
-#### CloudEvents Attributes:
+`F DOM` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.Salinity` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Dissolved organic matter fluorescence value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
 
-#### Schema:
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Record: Salinity
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
 
-*USGS salinity data. Parameter code 00480.*
+#### Reference vs telemetry
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Salinity value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
----
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-### Message: USGS.InstantaneousValues.GateOpening
+### Reservoir Storage
 
-*USGS gate opening data. Parameter code 45592.*
+CloudEvents type: `USGS.InstantaneousValues.ReservoirStorage`
 
-#### CloudEvents Attributes:
+#### What it tells you
 
-| **Name**    | **Description** | **Type**     | **Required** | **Value** |
-|-------------|-----------------|--------------|--------------|-----------|
-| `type` |  | `` | `False` | `USGS.InstantaneousValues.GateOpening` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
-| `time` |  | `uritemplate` | `False` | `{datetime}` |
+USGS reservoir storage data. Parameter code 00054.
 
-#### Schema:
+#### Identity
 
-##### Record: GateOpening
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-*USGS gate opening data. Parameter code 45592.*
+#### Where to find it
 
-| **Field Name** | **Type** | **Description** |
-|----------------|----------|-----------------|
-| `site_no` | *string* | {"description": "USGS site number."} |
-| `datetime` | *string* | {"description": "Date and time of the measurement in ISO-8601 format."} |
-| `value` | *double* (optional) | {"description": "Gate opening value."} |
-| `exception` | *string* (optional) | {"description": "Exception code when the value is unavailable."} |
-| `qualifiers` | *array* | {"description": "Qualifiers for the measurement."} |
-| `parameter_cd` | *string* | {"description": "Parameter code."} |
-| `timeseries_cd` | *string* | {"description": "Timeseries code."} |
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Reservoir Storage` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Reservoir storage value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Lake Elevation NGVD29
+
+CloudEvents type: `USGS.InstantaneousValues.LakeElevationNGVD29`
+
+#### What it tells you
+
+USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Lake Elevation NGVD29` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Lake elevation above NGVD 1929."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Water Depth
+
+CloudEvents type: `USGS.InstantaneousValues.WaterDepth`
+
+#### What it tells you
+
+USGS water depth data. Parameter code 72199.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Water Depth` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Water depth value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Equipment Status
+
+CloudEvents type: `USGS.InstantaneousValues.EquipmentStatus`
+
+#### What it tells you
+
+USGS equipment alarm status data. Parameter code 99235.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Equipment Status` payloads are JSON object. Required fields: `site_no`, `datetime`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`status`** (string, optional): {"description": "Status of equipment alarm as codes."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "status": "string",
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Tidally Filtered Discharge
+
+CloudEvents type: `USGS.InstantaneousValues.TidallyFilteredDischarge`
+
+#### What it tells you
+
+USGS tidally filtered discharge data. Parameter code 72137.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Tidally Filtered Discharge` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Tidally filtered discharge value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Water Velocity
+
+CloudEvents type: `USGS.InstantaneousValues.WaterVelocity`
+
+#### What it tells you
+
+USGS water velocity data. Parameter code 72254.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Water Velocity` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Water velocity value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Estuary Elevation NGVD29
+
+CloudEvents type: `USGS.InstantaneousValues.EstuaryElevationNGVD29`
+
+#### What it tells you
+
+USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Estuary Elevation NGVD29` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Estuary or ocean water surface elevation above NGVD 1929."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Lake Elevation NAVD88
+
+CloudEvents type: `USGS.InstantaneousValues.LakeElevationNAVD88`
+
+#### What it tells you
+
+USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Lake Elevation NAVD88` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Lake elevation above NAVD 1988."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Salinity
+
+CloudEvents type: `USGS.InstantaneousValues.Salinity`
+
+#### What it tells you
+
+USGS salinity data. Parameter code 00480.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Salinity` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Salinity value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Gate Opening
+
+CloudEvents type: `USGS.InstantaneousValues.GateOpening`
+
+#### What it tells you
+
+USGS gate opening data. Parameter code 45592.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`. `{agency_cd}` is a payload field with the same name; `{site_no}` is {"description": "USGS site number."}; `{parameter_cd}` is {"description": "Parameter code."}; `{timeseries_cd}` is {"description": "Timeseries code."}. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `usgs-iv`, key `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| `MQTT/5.0` | topic `hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Gate Opening` payloads are JSON object. Required fields: `site_no`, `datetime`, `qualifiers`, `parameter_cd`, `timeseries_cd`.
+
+- **`site_no`** (string, required): {"description": "USGS site number."}
+- **`datetime`** (string, required): {"description": "Date and time of the measurement in ISO-8601 format."}
+- **`value`** (double, optional): {"description": "Gate opening value."}
+- **`exception`** (string, optional): {"description": "Exception code when the value is unavailable."}
+- **`qualifiers`** (array of string, required): {"description": "Qualifiers for the measurement."}
+- **`parameter_cd`** (string, required): {"description": "Parameter code."}
+- **`timeseries_cd`** (string, required): {"description": "Timeseries code."}
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_no": "string",
+  "datetime": "string",
+  "value": 0,
+  "exception": "string",
+  "qualifiers": [
+    "string"
+  ],
+  "parameter_cd": "string",
+  "timeseries_cd": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+
+## References
+
+- xRegistry manifest: [`xreg/usgs_iv.xreg.json`](xreg/usgs_iv.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- USGS Water Services: <https://waterservices.usgs.gov/>
