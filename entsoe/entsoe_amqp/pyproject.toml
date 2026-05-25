@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "entsoe-amqp"
+version = "0.1.0"
+packages = [{include = "entsoe_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+entsoe-core = {path = "../entsoe_core"}
+entsoe_amqp_producer_data = {path = "../entsoe_amqp_producer/entsoe_amqp_producer_data"}
+entsoe_amqp_producer_amqp_producer = {path = "../entsoe_amqp_producer/entsoe_amqp_producer_amqp_producer"}

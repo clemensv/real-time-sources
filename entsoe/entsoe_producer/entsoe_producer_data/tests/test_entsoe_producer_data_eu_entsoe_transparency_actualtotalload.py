@@ -28,11 +28,11 @@ class Test_ActualTotalLoad(unittest.TestCase):
         Create instance of ActualTotalLoad for testing
         """
         instance = ActualTotalLoad(
-            inDomain='jsgtuqrnkbpeqkjfvagp',
-            quantity=float(77.58694784888154),
-            resolution='xupkivxwxmhyecinkatf',
-            outDomain='dnwywstnmwyxfjywxoep',
-            documentType='digxhqbxhniaganulwjs'
+            inDomain='dscvpuotksqtdjkjjqzq',
+            quantity=float(14.721563488423095),
+            resolution='wjpfeyakbefqcuzdyzmo',
+            outDomain='udvfswuxuryvbnbyyags',
+            documentType='xlepbyvaqqojhuacnfpo'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'jsgtuqrnkbpeqkjfvagp'
+        test_value = 'dscvpuotksqtdjkjjqzq'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(77.58694784888154)
+        test_value = float(14.721563488423095)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'xupkivxwxmhyecinkatf'
+        test_value = 'wjpfeyakbefqcuzdyzmo'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test outDomain property
         """
-        test_value = 'dnwywstnmwyxfjywxoep'
+        test_value = 'udvfswuxuryvbnbyyags'
         self.instance.outDomain = test_value
         self.assertEqual(self.instance.outDomain, test_value)
     
@@ -73,7 +73,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'digxhqbxhniaganulwjs'
+        test_value = 'xlepbyvaqqojhuacnfpo'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     

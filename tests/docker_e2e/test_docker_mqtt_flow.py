@@ -4931,3 +4931,31 @@ def mosquitto_entur_norway():
 class TestEnturNorwayMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_entur_norway, entur_norway_mqtt_image):
         _run_mqtt_contract_flow('entur-norway', entur_norway_mqtt_image, mosquitto_entur_norway, timeout=900)
+
+
+@pytest.fixture(scope='module')
+def entsoe_mqtt_image():
+    return build_image('entsoe', dockerfile='Dockerfile.mqtt', tag='test-entsoe-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_entsoe():
+    container, network, host_port = _generic_mosquitto('entsoe-mqtt-e2e', 'entsoe-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'entsoe-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestEntsoeMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_entsoe, entsoe_mqtt_image):
+        messages = _run_mqtt_contract_flow(
+            'entsoe', entsoe_mqtt_image, mosquitto_entsoe,
+            extra_env={'ENTSOE_SAMPLE_MODE': 'true'}, timeout=180, min_messages=11,
+        )
+        observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
+        assert 'eu.entsoe.transparency.DayAheadPrices' in observed
+        assert 'eu.entsoe.transparency.CrossBorderPhysicalFlows' in observed

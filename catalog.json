@@ -805,7 +805,9 @@
     "cat": "Energy",
     "key": true,
     "desc": "Europe — electricity generation, prices, load, flows (requires token)",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "bluesky",

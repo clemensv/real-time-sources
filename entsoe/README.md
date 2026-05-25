@@ -1,143 +1,55 @@
 # ENTSO-E Transparency Platform Bridge
 
-## Overview
+Grid operators, energy traders, analysts, and public-sector planners use ENTSO-E Transparency Platform data to track European electricity demand, generation, prices, hydro storage, installed capacity, and cross-border physical flows. This feeder polls the ENTSO-E REST API, parses IEC 62325 XML documents, checkpoints high-water marks per market area, and emits CloudEvents for downstream operational dashboards, market analytics, compliance archives, and real-time intelligence systems.
 
-The **ENTSO-E Transparency Platform Bridge** polls the [ENTSO-E Transparency Platform REST API](https://transparency.entsoe.eu/) for European electricity market data and emits it as [CloudEvents](https://cloudevents.io/) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+## Transports
 
-The bridge covers eleven data categories:
+| Variant | Image | Delivery shape | Deployment templates |
+|---|---|---|---|
+| Kafka | `ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest` | Structured CloudEvents to Kafka/Event Hubs/Fabric Event Streams topic `entsoe-transparency` | `Dockerfile.kafka`, `azure-template.json`, `azure-template-with-eventhub.json` |
+| MQTT/UNS | `ghcr.io/clemensv/real-time-sources-entsoe-mqtt:latest` | MQTT 5 binary-mode CloudEvents under `energy/eu/entsoe/transparency/...` | `Dockerfile.mqtt`, `azure-template-mqtt.json`, `azure-template-mqtt-eg.json` |
+| AMQP 1.0 | `ghcr.io/clemensv/real-time-sources-entsoe-amqp:latest` | AMQP 1.0 binary-mode CloudEvents to address `entsoe` | `Dockerfile.amqp`, `azure-template-amqp.json` |
 
-| Document Type | Code | Description |
-|---------------|------|-------------|
-| Actual Generation per Type | A75 | Real-time power generation broken down by production type (wind, solar, nuclear, etc.) |
-| Day-Ahead Prices | A44 | Day-ahead electricity market prices per bidding zone |
-| Actual Total Load | A65 | Actual total electricity consumption per bidding zone |
-| Wind & Solar Forecast | A69 | Day-ahead forecast for wind and solar generation per type |
-| Load Forecast Margin | A70 | Day-ahead forecast margin (available capacity minus forecast load) |
-| Generation Forecast | A71 | Day-ahead total generation forecast |
-| Reservoir Filling Information | A72 | Hydro reservoir filling levels |
-| Actual Generation (Aggregate) | A73 | Actual total generation (aggregated, no PSR breakdown) |
-| Wind & Solar Generation | A74 | Actual wind and solar generation per type |
-| Installed Generation Capacity per Type | A68 | Year-ahead installed generation capacity by production type |
-| Cross-Border Physical Flows | A11 | Physical electricity flows between bidding zones |
+Kafka is the log-oriented default for replayable analytics pipelines. MQTT/UNS is useful for lightweight subscribers that want a hierarchical topic tree by domain, PSR type, and cross-border pair. AMQP 1.0 serves queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, Azure Service Bus, or Event Hubs.
 
-Data is polled for configurable European bidding zones (default: DE-AT-LU, France, Netherlands, Spain, Germany) and emitted as delta-only events — only new data points since the last checkpoint are forwarded.
+## Event families
 
-## Key Features
+The bridge covers A75 actual generation per type, A44 day-ahead prices, A65 actual total load, A69 wind/solar forecast, A70 load forecast margin, A71 generation forecast, A72 reservoir filling, A73 actual generation, A74 wind/solar generation, A68 installed generation capacity per type, and A11 cross-border physical flows. Event contracts are in [EVENTS.md](EVENTS.md).
 
-- **11 document types**: Generation, prices, load, forecasts, capacity, reservoir, cross-border flows
-- **Cross-border flows**: Polls configurable domain pairs for physical electricity flows (A11)
-- **Delta-only emission**: Tracks watermarks per (document_type, domain) to avoid duplicates
-- **Persistent state**: Checkpoint state file survives restarts via mounted volume
-- **IEC 62325 XML parsing**: Handles both `GL_MarketDocument` and `Publication_MarketDocument` response formats
-- **Configurable polling**: Adjustable polling interval, lookback window, domains, and document types
-
-## Installation
-
-The tool requires Python 3.10 or later.
+## Quick start
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=entsoe
+# Kafka / Event Hubs / Fabric Event Streams
+docker run --rm -e ENTSOE_SECURITY_TOKEN='<token>' -e CONNECTION_STRING='<event-hubs-or-fabric-connection-string>' ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest
+
+# MQTT broker
+docker run --rm -e ENTSOE_SECURITY_TOKEN='<token>' -e MQTT_BROKER_URL='mqtt://broker:1883' ghcr.io/clemensv/real-time-sources-entsoe-mqtt:latest
+
+# AMQP generic broker
+docker run --rm -e ENTSOE_SECURITY_TOKEN='<token>' -e AMQP_BROKER_URL='amqp://user:pass@broker:5672/entsoe' ghcr.io/clemensv/real-time-sources-entsoe-amqp:latest
 ```
 
-Or from a local clone:
+## Configuration
 
-```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/entsoe
-pip install .
-```
+Common variables: `ENTSOE_SECURITY_TOKEN`, `ENTSOE_DOMAINS`, `ENTSOE_DOCUMENT_TYPES`, `ENTSOE_CROSS_BORDER_PAIRS`, `POLLING_INTERVAL`, `ENTSOE_LOOKBACK_HOURS`, `STATE_FILE`, `ONCE_MODE`.
 
-For a container deployment, see [CONTAINER.md](CONTAINER.md).
+Kafka uses `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`, `KAFKA_ENABLE_TLS`.
+MQTT uses `MQTT_BROKER_URL`, `MQTT_AUTH_MODE`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_TLS`/`MQTT_ENABLE_TLS`, `MQTT_CLIENT_ID`, `MQTT_ENTRA_CLIENT_ID`, `MQTT_ENTRA_AUDIENCE`.
+AMQP uses `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `AMQP_USERNAME`, `AMQP_PASSWORD`, `AMQP_TLS`, `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE`, `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY`.
+See [CONTAINER.md](CONTAINER.md) for container deployment details.
 
-## Prerequisites
+## Repository layout
 
-You need an ENTSO-E Transparency Platform API security token. Register at [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/) and request an API token via your account settings.
+- `entsoe_core/` — shared ENTSO-E API acquisition, XML parsing, delta state, sample corpus.
+- `entsoe_kafka/`, `entsoe_mqtt/`, `entsoe_amqp/` — transport-specific applications.
+- `entsoe_producer/`, `entsoe_mqtt_producer/`, `entsoe_amqp_producer/` — generated xrcg producers (do not edit by hand).
+- `Dockerfile.kafka`, `Dockerfile.mqtt`, `Dockerfile.amqp` — transport images.
+- `xreg/entsoe.xreg.json` — authoritative CloudEvents/xRegistry contract.
 
-## Usage
+## Azure deployment
 
-The events sent to Kafka are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-
-### Command-Line Arguments
-
-| Argument | Environment Variable | Description | Default |
-|----------|---------------------|-------------|---------|
-| `--security-token` | `ENTSOE_SECURITY_TOKEN` | ENTSO-E API security token | (required) |
-| `--connection-string` | `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string | — |
-| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers | — |
-| `--kafka-topic` | `KAFKA_TOPIC` | Kafka topic | — |
-| `--sasl-username` | `SASL_USERNAME` | SASL username | — |
-| `--sasl-password` | `SASL_PASSWORD` | SASL password | — |
-| `--domains` | `ENTSOE_DOMAINS` | Comma-separated EIC domain codes | DE-AT-LU, FR, NL, ES, DE |
-| `--document-types` | `ENTSOE_DOCUMENT_TYPES` | Comma-separated document type codes | A75, A44, A65, A69, A70, A71, A72, A73, A74, A68, A11 |
-| `--cross-border-pairs` | `ENTSOE_CROSS_BORDER_PAIRS` | Semicolon-separated `in>out` domain pairs for A11 | 20 major European interconnections |
-| `--polling-interval` | `POLLING_INTERVAL` | Seconds between poll cycles | 900 |
-| `--lookback-hours` | `ENTSOE_LOOKBACK_HOURS` | Initial lookback window in hours | 24 |
-| `--state-file` | `STATE_FILE` | Path to the delta state file | ~/.entsoe_state.json |
-
-### Examples
-
-#### Using a connection string (Event Hubs / Fabric Event Streams)
-
-```bash
-entsoe --security-token "<your-entsoe-token>" \
-       --connection-string "<your-connection-string>"
-```
-
-#### Using Kafka parameters directly
-
-```bash
-entsoe --security-token "<your-entsoe-token>" \
-       --kafka-bootstrap-servers "<bootstrap-servers>" \
-       --kafka-topic "<topic>" \
-       --sasl-username "<username>" \
-       --sasl-password "<password>"
-```
-
-#### Using environment variables
-
-```bash
-export ENTSOE_SECURITY_TOKEN="<your-entsoe-token>"
-export CONNECTION_STRING="<your-connection-string>"
-entsoe
-```
-
-## Database Schemas
-
-If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
-
-## Default Bidding Zones
-
-| EIC Code | Region |
-|----------|--------|
-| `10YDE-AT-LU---Q` | Germany/Austria/Luxembourg |
-| `10YFR-RTE------C` | France |
-| `10YNL----------L` | Netherlands |
-| `10YES-REE------0` | Spain |
-| `10Y1001A1001A83F` | Germany |
-
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/entsoe)
-- **ENTSO-E API Documentation**: [Transparency Platform RESTful API Guide](https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html)
-- **License**: MIT
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template-with-eventhub.json)
+[![Kafka BYO Event Hub](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template.json)
+[![Kafka + Event Hub](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template-with-eventhub.json)
+[![MQTT BYO Broker](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template-mqtt.json)
+[![MQTT Event Grid](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template-mqtt-eg.json)
+[![AMQP Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template-amqp.json)

@@ -66,7 +66,8 @@ class EuEntsoeTransparencyByDomainEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.DayAheadPrices",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}".format(inDomain = _in_domain)
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -98,7 +99,8 @@ class EuEntsoeTransparencyByDomainEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.ActualTotalLoad",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}".format(inDomain = _in_domain)
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -130,7 +132,8 @@ class EuEntsoeTransparencyByDomainEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.LoadForecastMargin",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}".format(inDomain = _in_domain)
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -162,7 +165,8 @@ class EuEntsoeTransparencyByDomainEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.GenerationForecast",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}".format(inDomain = _in_domain)
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -194,7 +198,8 @@ class EuEntsoeTransparencyByDomainEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.ReservoirFillingInformation",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}".format(inDomain = _in_domain)
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -226,7 +231,8 @@ class EuEntsoeTransparencyByDomainEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.ActualGeneration",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}".format(inDomain = _in_domain)
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -341,7 +347,8 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.ActualGenerationPerType",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type)
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -374,7 +381,8 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.WindSolarForecast",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type)
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -407,7 +415,8 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.WindSolarGeneration",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type)
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -440,7 +449,8 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.InstalledGenerationCapacityPerType",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type)
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -555,7 +565,8 @@ class EuEntsoeTransparencyCrossBorderEventProducer:
         attributes = {
              "type":"eu.entsoe.transparency.CrossBorderPhysicalFlows",
              "source":"https://transparency.entsoe.eu/api",
-             "subject":"{inDomain}/{outDomain}".format(inDomain = _in_domain,outDomain = _out_domain)
+             "subject":"{inDomain}/{outDomain}".format(inDomain = _in_domain,outDomain = _out_domain),
+             "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -602,6 +613,1212 @@ class EuEntsoeTransparencyCrossBorderEventProducer:
 
     @classmethod
     def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyCrossBorderEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class EuEntsoeTransparencyByDomainMqttEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (DayAheadPrices): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, DayAheadPrices], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.DayAheadPrices",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (ActualTotalLoad): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ActualTotalLoad], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ActualTotalLoad",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (LoadForecastMargin): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, LoadForecastMargin], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.LoadForecastMargin",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (GenerationForecast): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, GenerationForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.GenerationForecast",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (ReservoirFillingInformation): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ReservoirFillingInformation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ReservoirFillingInformation",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (ActualGeneration): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ActualGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ActualGeneration",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyByDomainMqttEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (ActualGenerationPerType): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ActualGenerationPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ActualGenerationPerType",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (WindSolarForecast): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, WindSolarForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.WindSolarForecast",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (WindSolarGeneration): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, WindSolarGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.WindSolarGeneration",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (InstalledGenerationCapacityPerType): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class EuEntsoeTransparencyCrossBorderMqttEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _out_domain(str):  Value for placeholder outDomain in attribute subject
+            data: (CrossBorderPhysicalFlows): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, CrossBorderPhysicalFlows], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.CrossBorderPhysicalFlows",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{outDomain}".format(inDomain = _in_domain,outDomain = _out_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyCrossBorderMqttEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class EuEntsoeTransparencyByDomainAmqpEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (DayAheadPrices): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, DayAheadPrices], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.DayAheadPrices",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (ActualTotalLoad): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ActualTotalLoad], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ActualTotalLoad",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (LoadForecastMargin): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, LoadForecastMargin], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.LoadForecastMargin",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.amqp.GenerationForecast' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (GenerationForecast): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, GenerationForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.GenerationForecast",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (ReservoirFillingInformation): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ReservoirFillingInformation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ReservoirFillingInformation",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_amqp_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomain.amqp.ActualGeneration' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            data: (ActualGeneration): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ActualGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ActualGeneration",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}".format(inDomain = _in_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyByDomainAmqpEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (ActualGenerationPerType): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ActualGenerationPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.ActualGenerationPerType",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (WindSolarForecast): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, WindSolarForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.WindSolarForecast",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (WindSolarGeneration): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, WindSolarGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.WindSolarGeneration",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _psr_type(str):  Value for placeholder psrType in attribute subject
+            data: (InstalledGenerationCapacityPerType): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{psrType}".format(inDomain = _in_domain,psrType = _psr_type),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer':
+        """
+        Create a Kafka producer from a connection string and a topic name.
+
+        Args:
+            connection_string (str): The connection string.
+            topic (Optional[str]): The Kafka topic.
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+
+        Returns:
+            Producer: The Kafka producer
+        """
+        config, topic_name = cls.parse_connection_string(connection_string)
+        if topic:
+            topic_name = topic
+        if not topic_name:
+            raise ValueError("Topic name not found in connection string")
+        return cls(Producer(config), topic_name, content_mode)
+
+
+
+class EuEntsoeTransparencyCrossBorderAmqpEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
+        """
+        Initializes the Kafka producer
+
+        Args:
+            producer (Producer): The Kafka producer client
+            topic (str): The Kafka topic to send events to
+            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
+        """
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
+        """
+        Maps a CloudEvent to a Kafka key
+
+        Args:
+            x (CloudEvent): The CloudEvent to map
+            m (Any): The event data
+            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
+        """
+        if key_mapper:
+            return key_mapper(x, m)
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
+
+    def send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
+        """
+        Sends the 'eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows' event to the Kafka topic
+
+        Args:
+            _in_domain(str):  Value for placeholder inDomain in attribute subject
+            _out_domain(str):  Value for placeholder outDomain in attribute subject
+            data: (CrossBorderPhysicalFlows): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, CrossBorderPhysicalFlows], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+        """
+        kafka_key = None
+        attributes = {
+             "type":"eu.entsoe.transparency.CrossBorderPhysicalFlows",
+             "source":"https://transparency.entsoe.eu/api",
+             "subject":"{inDomain}/{outDomain}".format(inDomain = _in_domain,outDomain = _out_domain),
+             "datacontenttype":"application/json"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    @classmethod
+    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
+        """
+        Parse the connection string and extract bootstrap server, topic name, username, and password.
+
+        Args:
+            connection_string (str): The connection string.
+
+        Returns:
+            Tuple[Dict[str, str], str]: Kafka config, topic name
+        """
+        config_dict = {
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanisms': 'PLAIN',
+            'sasl.username': '$ConnectionString',
+            'sasl.password': connection_string.strip()
+        }
+        kafka_topic = None
+        try:
+            for part in connection_string.split(';'):
+                if 'Endpoint' in part:
+                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
+                        '"').replace('sb://', '').replace('/', '')+':9093'
+                elif 'EntityPath' in part:
+                    kafka_topic = part.split('=')[1].strip('"')
+        except IndexError as e:
+            raise ValueError("Invalid connection string format") from e
+        return config_dict, kafka_topic
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'EuEntsoeTransparencyCrossBorderAmqpEventProducer':
         """
         Create a Kafka producer from a connection string and a topic name.
 
