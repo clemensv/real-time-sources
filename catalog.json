@@ -304,7 +304,8 @@
     "key": false,
     "desc": "Europe — 37 countries, severe weather warnings",
     "kql": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "noaa-goes",
@@ -385,7 +386,8 @@
     "desc": "United States — city-scoped hourly and daily UV forecasts",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "fmi-finland",
@@ -412,7 +414,9 @@
     "key": false,
     "desc": "Hong Kong — 18 AQHI stations, hourly health index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "irceline-belgium",

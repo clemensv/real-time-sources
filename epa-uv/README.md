@@ -2,7 +2,7 @@
 
 ## Overview
 
-**EPA UV Bridge** polls the official US EPA Envirofacts UV Index web services and emits hourly and daily UV forecast events to Kafka as CloudEvents.
+**EPA UV Bridge** polls the official US EPA Envirofacts UV Index web services and emits hourly and daily UV forecast events to Kafka, MQTT 5.0, and AMQP 1.0 as CloudEvents.
 
 The upstream exposes four parameterized endpoints: hourly-by-city/state, hourly-by-ZIP, daily-by-city/state, and daily-by-ZIP. This bridge models the city/state family because the ZIP endpoints are duplicate parameterizations of the same products rather than distinct event families.
 
@@ -97,3 +97,23 @@ Four Azure Container Instance deployment shapes are documented for this source:
 | MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
 
 See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
+
+## AMQP 1.0 companion feeder
+
+This source now ships Kafka, MQTT, and AMQP 1.0 transport variants. The AMQP container (`ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest`) publishes the same CloudEvents payloads as the Kafka and MQTT feeders to a single broker address named `epa-uv` by default, using binary-mode AMQP 1.0 for generic brokers or Azure Service Bus.
+
+Run locally against an AMQP 1.0 broker:
+
+```bash
+docker run --rm \
+  -e AMQP_HOST=broker \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS=epa-uv \
+  -e AMQP_USERNAME=admin \
+  -e AMQP_PASSWORD=admin \
+  -e AMQP_AUTH_MODE=password \
+  ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
+```
+
+Deploy to Azure Service Bus with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus queue, storage-backed state share, a user-assigned managed identity, and an Azure Container Instance configured for AMQP CBS / Entra ID authentication.
+

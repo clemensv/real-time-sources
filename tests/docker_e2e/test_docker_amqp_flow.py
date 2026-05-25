@@ -181,3 +181,27 @@ class TestAisstreamAmqpDockerFlow(AmqpDockerFlowBase):
     image = "aisstream-amqp"
     env = {"AISSTREAM_MOCK": "true"}
     expected_types = {"IO.AISstream.mqtt.PositionReport", "IO.AISstream.mqtt.ShipStatic", "IO.AISstream.mqtt.AidToNavigation"}
+
+class TestEpaUvAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "epa-uv"
+    image = "epa-uv-amqp"
+    env = {"EPA_UV_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"US.EPA.UVIndex.HourlyForecast", "US.EPA.UVIndex.DailyForecast"}
+    expected_count = 2
+
+
+class TestHongkongEpdAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "hongkong-epd"
+    image = "hongkong-epd-amqp"
+    env = {"HONGKONG_EPD_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"HK.Gov.EPD.AQHI.Station", "HK.Gov.EPD.AQHI.AQHIReading"}
+    expected_count = 2
+
+
+class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "meteoalarm"
+    image = "meteoalarm-amqp"
+    env = {"METEOALARM_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"Meteoalarm.WeatherWarning"}
+    expected_count = 1
+
