@@ -38,6 +38,28 @@
         "#/messagegroups/NO.Kystverket.AIS.mqtt"
       ],
       "description": "MQTT 5 producer endpoint for Kystverket AIS CloudEvents using the topic hierarchy and retain settings declared in this manifest."
+    },
+    "NO.Kystverket.AIS.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/kystverket-ais"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NO.Kystverket.AIS.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for kystverket-ais CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -210,6 +232,104 @@
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation",
             "qos": 0,
             "retain": false
+          }
+        }
+      }
+    },
+    "NO.Kystverket.AIS.amqp": {
+      "description": "AMQP 1.0 variant of the kystverket-ais events. It carries the same source event semantics for brokers and services that consume AMQP messages.",
+      "messages": {
+        "NO.Kystverket.AIS.amqp.PositionReport": {
+          "name": "PositionReport",
+          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{mmsi}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "flag": {
+                "type": "uritemplate",
+                "value": "{flag}",
+                "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              },
+              "ship_type": {
+                "type": "uritemplate",
+                "value": "{ship_type}",
+                "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              },
+              "geohash5": {
+                "type": "uritemplate",
+                "value": "{geohash5}",
+                "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.amqp.ShipStatic": {
+          "name": "ShipStatic",
+          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{mmsi}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "flag": {
+                "type": "uritemplate",
+                "value": "{flag}",
+                "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              },
+              "ship_type": {
+                "type": "uritemplate",
+                "value": "{ship_type}",
+                "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              },
+              "geohash5": {
+                "type": "uritemplate",
+                "value": "{geohash5}",
+                "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              }
+            }
+          }
+        },
+        "NO.Kystverket.AIS.amqp.AidToNavigation": {
+          "name": "AidToNavigation",
+          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{mmsi}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
+              }
+            },
+            "application_properties": {
+              "flag": {
+                "type": "uritemplate",
+                "value": "{flag}",
+                "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              },
+              "ship_type": {
+                "type": "uritemplate",
+                "value": "{ship_type}",
+                "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              },
+              "geohash5": {
+                "type": "uritemplate",
+                "value": "{geohash5}",
+                "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload."
+              }
+            }
           }
         }
       }

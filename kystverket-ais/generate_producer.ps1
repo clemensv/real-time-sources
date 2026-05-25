@@ -32,3 +32,13 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
 }
+
+
+xrcg generate `
+    --style amqpproducer `
+    --language py `
+    --definitions xreg\ais.xreg.json `
+    --endpoint NO.Kystverket.AIS.Amqp `
+    --projectname kystverket_ais_amqp_producer `
+    --template-args azure_cbs_target=servicebus `
+    --output kystverket_ais_amqp_producer
