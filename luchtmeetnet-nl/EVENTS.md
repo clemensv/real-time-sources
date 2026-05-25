@@ -1,6 +1,6 @@
 # Luchtmeetnet Netherlands Air Quality Bridge Events
 
-This source bridges the public Dutch **Luchtmeetnet** API into Apache Kafka compatible brokers as structured JSON CloudEvents. It emits both slowly changing reference data and hourly telemetry so downstream consumers can reconstruct air quality context and measurements over time without making their own side calls.
+Luchtmeetnet NL publishes pollutant concentration measurements from the Dutch national air-quality monitoring network for Dutch air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `nl.rivm.luchtmeetnet.Station`
 
 #### What it tells you
 
-Luchtmeetnet station metadata with location, operator, coordinates, and the formulas measured at the station. Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.
+Luchtmeetnet station metadata with location, operator, coordinates, and the formulas measured at the station.
 
 #### Identity
 
@@ -95,7 +95,7 @@ CloudEvents type: `nl.rivm.luchtmeetnet.Measurement`
 
 #### What it tells you
 
-Hourly Luchtmeetnet measurement for a station and component formula. Hourly Luchtmeetnet measurement for a station and a single component formula. The API returns the latest values on page 1 and orders the series by measurement time.
+Hourly Luchtmeetnet measurement for a station and component formula.
 
 #### Identity
 
@@ -138,7 +138,7 @@ CloudEvents type: `nl.rivm.luchtmeetnet.LKI`
 
 #### What it tells you
 
-Hourly Dutch Luchtkwaliteitsindex value for a station. Hourly Dutch national air quality index value for a station. The LKI scale runs from 1 to 11, where lower values indicate better air quality.
+Hourly Dutch Luchtkwaliteitsindex value for a station.
 
 #### Identity
 
@@ -179,7 +179,7 @@ CloudEvents type: `nl.rivm.luchtmeetnet.components.Component`
 
 #### What it tells you
 
-Reference definition for a monitored component formula in the Luchtmeetnet network. Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.
+Reference definition for a monitored component formula in the Luchtmeetnet network.
 
 #### Identity
 
