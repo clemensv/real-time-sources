@@ -108,6 +108,7 @@ class AmqpDockerFlowBase:
             time.sleep(8)
 
             env = {
+                "AMQP_BROKER_URL": f"amqp://{self.image}-broker:5672",
                 "AMQP_HOST": f"{self.image}-broker",
                 "AMQP_PORT": "5672",
                 "AMQP_ADDRESS": queue,
@@ -124,6 +125,13 @@ class AmqpDockerFlowBase:
             messages = _receive_messages("127.0.0.1", host_port, queue, expected=self.expected_count, timeout=60)
             assert messages, "No AMQP messages received"
             seen = {str(_extract_ce_attrs(m).get("type")) for m in messages}
+            deadline = time.time() + 120
+            while not self.expected_types <= seen and time.time() < deadline:
+                more = _receive_messages("127.0.0.1", host_port, queue, expected=10, timeout=10)
+                if not more:
+                    break
+                messages.extend(more)
+                seen = {str(_extract_ce_attrs(m).get("type")) for m in messages}
             assert self.expected_types <= seen, f"Missing event types. Seen: {sorted(seen)}"
             for msg in messages:
                 ce = _extract_ce_attrs(msg)
@@ -205,3 +213,75 @@ class TestMeteoalarmAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"Meteoalarm.WeatherWarning"}
     expected_count = 1
 
+
+
+class TestUSGSEarthquakesAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "usgs-earthquakes"
+    image = "usgs-earthquakes-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'USGS.Earthquakes.Event'}
+    expected_count = 1
+
+
+class TestUSGSGeomagAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "usgs-geomag"
+    image = "usgs-geomag-amqp"
+    env = {"ONCE_MODE": "true", "GEOMAG_OBSERVATORIES": "BOU"}
+    expected_types = {'gov.usgs.geomag.Observatory', 'gov.usgs.geomag.MagneticFieldReading'}
+    expected_count = 2
+
+
+class TestUSGSIVAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "usgs-iv"
+    image = "usgs-iv-amqp"
+    env = {"ONCE_MODE": "true", "USGS_FORCE_SITE_REFRESH": "true", "USGS_FORCE_DATA_REFRESH": "true", "USGS_STATE": "DE"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestJmaBosaiQuakeAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-quake"
+    image = "jma-bosai-quake-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'JP.JMA.Quake.EarthquakeReport'}
+    expected_count = 1
+
+
+class TestJmaBosaiWarningAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-warning"
+    image = "jma-bosai-warning-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'JP.JMA.Warning.Office', 'JP.JMA.Warning.WeatherWarning'}
+    expected_count = 2
+
+
+class TestBlitzortungAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "blitzortung"
+    image = "blitzortung-amqp"
+    env = {"BLITZORTUNG_MOCK": "true"}
+    expected_types = {'Blitzortung.Lightning.LightningStroke'}
+    expected_count = 1
+
+
+class TestBfsOdlAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bfs-odl"
+    image = "bfs-odl-amqp"
+    env = {"ONCE_MODE": "true", "POLLING_INTERVAL": "60"}
+    expected_types = {'de.bfs.odl.Station', 'de.bfs.odl.DoseRateMeasurement'}
+    expected_count = 2
+
+
+class TestGracedbAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "gracedb"
+    image = "gracedb-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'org.ligo.gracedb.Superevent'}
+    expected_count = 1
+
+
+class TestInpeDeterBrazilAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "inpe-deter-brazil"
+    image = "inpe-deter-brazil-amqp"
+    env = {"ONCE_MODE": "true", "INPE_DETER_MOCK": "true"}
+    expected_types = {'BR.INPE.DETER.DeforestationAlert'}
+    expected_count = 1
