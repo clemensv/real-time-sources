@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "SE.Gov.SMHI.Weather.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,7 +17,10 @@
           "key": "{station_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/SE.Gov.SMHI.Weather"]
+      "messagegroups": [
+        "#/messagegroups/SE.Gov.SMHI.Weather"
+      ],
+      "description": "Kafka producer endpoint for SMHI Weather CloudEvents on the `smhi-weather` topic keyed by `{station_id}`."
     }
   },
   "messagegroups": {
@@ -25,25 +30,42 @@
           "name": "Station",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "SE.Gov.SMHI.Weather.Station"},
-            "source": {"value": "https://opendata-download-metobs.smhi.se"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "SE.Gov.SMHI.Weather.Station"
+            },
+            "source": {
+              "value": "https://opendata-download-metobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.Station"
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.Station",
+          "description": "A reference record published by the Swedish Meteorological and Hydrological Institute (SMHI). It lets consumers label, group, and route the live measurement or forecast events."
         },
         "SE.Gov.SMHI.Weather.WeatherObservation": {
           "name": "WeatherObservation",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "SE.Gov.SMHI.Weather.WeatherObservation"},
-            "source": {"value": "https://opendata-download-metobs.smhi.se"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "SE.Gov.SMHI.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://opendata-download-metobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.WeatherObservation"
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.WeatherObservation",
+          "description": "A current environmental measurement from the Swedish Meteorological and Hydrological Institute (SMHI). It carries weather observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from SMHI Weather covering Swedish weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
     }
   },
   "schemagroups": {
@@ -61,8 +83,13 @@
                 "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/Station",
                 "type": "object",
                 "name": "Station",
-                "description": "Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.",
-                "required": ["station_id", "name", "latitude", "longitude"],
+                "description": "A reference record published by the Swedish Meteorological and Hydrological Institute (SMHI). It lets consumers label, group, and route the live measurement or forecast events.",
+                "required": [
+                  "station_id",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -119,8 +146,12 @@
                 "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.",
-                "required": ["station_id", "station_name", "observation_time"],
+                "description": "A current environmental measurement from the Swedish Meteorological and Hydrological Institute (SMHI). It carries weather observations when the upstream feed reports a new or refreshed value.",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "observation_time"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -135,89 +166,134 @@
                     "description": "Timestamp of the observation in UTC, derived from the SMHI epoch millisecond value."
                   },
                   "air_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Instantaneous air temperature, reported hourly (SMHI parameter 1).",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "wind_gust": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum wind gust speed, reported hourly (SMHI parameter 21).",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "dew_point": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dew point temperature, reported hourly (SMHI parameter 39).",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "air_pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Atmospheric pressure reduced to mean sea level, reported hourly (SMHI parameter 9).",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "relative_humidity": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Relative humidity as a percentage, reported hourly (SMHI parameter 6).",
                     "unit": "percent",
                     "symbol": "%"
                   },
                   "precipitation_last_hour": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Total precipitation in the last hour, reported hourly (SMHI parameter 7).",
                     "unit": "mm",
                     "symbol": "mm"
                   },
                   "wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind direction in degrees from which the wind is blowing, measured at 10 m height, reported hourly (SMHI parameter 3).",
                     "unit": "degree",
                     "symbol": "°"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Mean wind speed over 10 minutes measured at 10 m height, reported hourly (SMHI parameter 4).",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "max_wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum of 10-minute mean wind speed during the hour, measured at 10 m height (SMHI parameter 25).",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "visibility": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Horizontal visibility, reported hourly (SMHI parameter 12).",
                     "unit": "km",
                     "symbol": "km"
                   },
                   "total_cloud_cover": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "Total cloud cover in oktas (eighths of sky covered), reported hourly (SMHI parameter 16).",
                     "unit": "okta",
                     "symbol": "okta"
                   },
                   "present_weather": {
-                    "type": ["int32", "null"],
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
                     "description": "WMO present weather code (ww table 4677) describing current weather phenomena at the time of observation (SMHI parameter 13). Values range from 0 (clear) to 99 (thunderstorm with hail)."
                   },
                   "sunshine_duration": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Duration of sunshine during the last hour in seconds (SMHI parameter 10).",
                     "unit": "s",
                     "symbol": "s"
                   },
                   "global_irradiance": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Global solar irradiance (direct + diffuse), average over the hour, measured by pyranometer (SMHI parameter 11).",
                     "unit": "W/m2",
                     "symbol": "W/m²"
                   },
                   "precipitation_intensity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Instantaneous precipitation intensity measured by optical or weighing gauge (SMHI parameter 38).",
                     "unit": "mm/h",
                     "symbol": "mm/h"
@@ -233,5 +309,10 @@
         }
       }
     }
+  },
+  "description": "SMHI Weather publishes weather observations from the Swedish Meteorological and Hydrological Institute (SMHI) for Swedish weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for SMHI Weather, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
