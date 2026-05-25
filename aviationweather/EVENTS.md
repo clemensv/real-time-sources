@@ -2,280 +2,255 @@
 
 **AviationWeather.gov Bridge** polls the NOAA Aviation Weather Center API for METAR observations, SIGMET advisories, and station reference data, then sends them to a Kafka topic as CloudEvents. The tool tracks previously seen observations to avoid sending duplicates.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 3 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
+- **Identity:** `{icao_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 1 |
+### Kafka
 
-## Endpoints
+Subscribe to `aviationweather`. The record key is `{icao_id}`. In plain language, `{icao_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `gov.noaa.aviationweather.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['aviationweather'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`gov.noaa.aviationweather`](#messagegroup-govnoaaaviationweather) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `aviationweather` |
-| Kafka key | `{icao_id}` |
-| Deployed | False |
+### Station
 
-## Messagegroups
+CloudEvents type: `gov.noaa.aviationweather.Station`
 
-### Messagegroup `gov.noaa.aviationweather`
-<a id="messagegroup-govnoaaaviationweather"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `gov.noaa.aviationweather.Kafka` (KAFKA) |
-| Messages | 3 |
-
-#### Message `gov.noaa.aviationweather.Station`
-<a id="message-govnoaaaviationweatherstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Station`](#schema-govnoaaaviationweatherstation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `gov.noaa.aviationweather.Station` |
-| `source` |  | `string` | `False` | `https://aviationweather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{icao_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `gov.noaa.aviationweather.Kafka` | `KAFKA` | topic `aviationweather`; key `{icao_id}` |
-
-#### Message `gov.noaa.aviationweather.Metar`
-<a id="message-govnoaaaviationweathermetar"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Metar |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Metar`](#schema-govnoaaaviationweathermetar) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `gov.noaa.aviationweather.Metar` |
-| `source` |  | `string` | `False` | `https://aviationweather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{icao_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `gov.noaa.aviationweather.Kafka` | `KAFKA` | topic `aviationweather`; key `{icao_id}` |
-
-#### Message `gov.noaa.aviationweather.Sigmet`
-<a id="message-govnoaaaviationweathersigmet"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Sigmet |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Sigmet`](#schema-govnoaaaviationweathersigmet) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `gov.noaa.aviationweather.Sigmet` |
-| `source` |  | `string` | `False` | `https://aviationweather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{icao_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `gov.noaa.aviationweather.Kafka` | `KAFKA` | topic `aviationweather`; key `{icao_id}` |
-
-## Schemagroups
-
-### Schemagroup `gov.noaa.aviationweather.jstruct`
-<a id="schemagroup-govnoaaaviationweatherjstruct"></a>
-
-#### Schema `gov.noaa.aviationweather.Station`
-<a id="schema-govnoaaaviationweatherstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://aviationweather.gov/schemas/gov/noaa/aviationweather/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
+#### What it tells you
 
 Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is ICAO station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://aviationweather.gov/schemas/gov/noaa/aviationweather/Station` |
+| `KAFKA` | topic `aviationweather`, key `{icao_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `icao_id` | `string` | `True` | ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport). | - | - | - |
-| `iata_id` | `union` | `False` | IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations. | - | - | - |
-| `faa_id` | `union` | `False` | FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations. | - | - | - |
-| `wmo_id` | `union` | `False` | WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null. | - | - | - |
-| `name` | `string` | `True` | Human-readable site name from the AviationWeather station database, e.g. 'New York/JF Kennedy Intl'. | - | - | - |
-| `latitude` | `double` | `True` | Station latitude in decimal degrees north. Negative values indicate southern hemisphere. | unit=`deg` symbol=`°` | - | - |
-| `longitude` | `double` | `True` | Station longitude in decimal degrees east. Negative values indicate western hemisphere. | unit=`deg` symbol=`°` | - | - |
-| `elevation` | `union` | `False` | Station field elevation in meters above mean sea level. | unit=`m` symbol=`m` | - | - |
-| `state` | `union` | `False` | State or province code where the station is located (e.g. 'NY'). May be null for non-US stations. | - | - | - |
-| `country` | `union` | `False` | Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB'). | - | - | - |
-| `site_type` | `union` | `False` | Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF'). | - | - | - |
+#### Payload
 
-#### Schema `gov.noaa.aviationweather.Metar`
-<a id="schema-govnoaaaviationweathermetar"></a>
+`Station` payloads are JSON object. Required fields: `icao_id`, `name`, `latitude`, `longitude`.
 
-| Field | Value |
-| --- | --- |
-| Name | Metar |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`icao_id`** (string, required): ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport).
+- **`iata_id`** (string or null, optional): IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations.
+- **`faa_id`** (string or null, optional): FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations.
+- **`wmo_id`** (string or null, optional): WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null.
+- **`name`** (string, required): Human-readable site name from the AviationWeather station database, e.g. 'New York/JF Kennedy Intl'.
+- **`latitude`** (double, required, deg (°)): Station latitude in decimal degrees north. Negative values indicate southern hemisphere.
+- **`longitude`** (double, required, deg (°)): Station longitude in decimal degrees east. Negative values indicate western hemisphere.
+- **`elevation`** (double or null, optional, m): Station field elevation in meters above mean sea level.
+- **`state`** (string or null, optional): State or province code where the station is located (e.g. 'NY'). May be null for non-US stations.
+- **`country`** (string or null, optional): Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB').
+- **`site_type`** (string or null, optional): Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF').
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "icao_id": "string",
+  "iata_id": "string",
+  "faa_id": "string",
+  "wmo_id": "string",
+  "name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "elevation": 0,
+  "state": "string",
+  "country": "string",
+  "site_type": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://aviationweather.gov/schemas/gov/noaa/aviationweather/Metar` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
 
-###### Object `Metar`
-<a id="schema-node-metar"></a>
+### Metar
+
+CloudEvents type: `gov.noaa.aviationweather.Metar`
+
+#### What it tells you
 
 METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is ICAO station identifier for the reporting station (e.g. 'KJFK'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://aviationweather.gov/schemas/gov/noaa/aviationweather/Metar` |
+| `KAFKA` | topic `aviationweather`, key `{icao_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `icao_id` | `string` | `True` | ICAO station identifier for the reporting station (e.g. 'KJFK'). | - | - | - |
-| `obs_time` | `datetime` | `True` | Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response. | - | - | - |
-| `report_time` | `union` | `False` | Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported. | - | - | - |
-| `temp` | `union` | `False` | Air temperature at the station. Unit: degrees Celsius. | unit=`CEL` symbol=`°C` | - | - |
-| `dewp` | `union` | `False` | Dewpoint temperature at the station. Unit: degrees Celsius. | unit=`CEL` symbol=`°C` | - | - |
-| `wdir` | `union` | `False` | Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm. | unit=`deg` symbol=`°` | - | - |
-| `wspd` | `union` | `False` | Sustained wind speed in knots. | unit=`[kn_i]` symbol=`kt` | - | - |
-| `wgst` | `union` | `False` | Wind gust speed in knots. Null if no gusts reported. | unit=`[kn_i]` symbol=`kt` | - | - |
-| `visib` | `union` | `False` | Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles. | - | - | - |
-| `altim` | `union` | `False` | Altimeter setting (QNH) in hectopascals. | unit=`hPa` symbol=`hPa` | - | - |
-| `slp` | `union` | `False` | Sea level pressure in hectopascals. May be null if not reported. | unit=`hPa` symbol=`hPa` | - | - |
-| `qc_field` | `union` | `False` | Quality control flag bitmask from the qcField in the API response. | - | - | - |
-| `wx_string` | `union` | `False` | Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist). | - | - | - |
-| `metar_type` | `union` | `False` | METAR report type: 'METAR' for routine, 'SPECI' for special observation. | - | - | - |
-| `raw_ob` | `string` | `True` | The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'. | - | - | - |
-| `latitude` | `union` | `False` | Station latitude in decimal degrees north from the METAR response. | unit=`deg` symbol=`°` | - | - |
-| `longitude` | `union` | `False` | Station longitude in decimal degrees east from the METAR response. | unit=`deg` symbol=`°` | - | - |
-| `elevation` | `union` | `False` | Station elevation in meters above mean sea level from the METAR response. | unit=`m` symbol=`m` | - | - |
-| `flt_cat` | `union` | `False` | Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR. | - | - | - |
-| `clouds` | `union` | `False` | JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{"cover":"SCT","base":5000}]'. | - | - | - |
-| `name` | `union` | `False` | Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US'). | - | - | - |
+#### Payload
 
-#### Schema `gov.noaa.aviationweather.Sigmet`
-<a id="schema-govnoaaaviationweathersigmet"></a>
+`Metar` payloads are JSON object. Required fields: `icao_id`, `obs_time`, `raw_ob`.
 
-| Field | Value |
-| --- | --- |
-| Name | Sigmet |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`icao_id`** (string, required): ICAO station identifier for the reporting station (e.g. 'KJFK').
+- **`obs_time`** (datetime, required): Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response.
+- **`report_time`** (datetime or null, optional): Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported.
+- **`temp`** (double or null, optional, CEL (°C)): Air temperature at the station. Unit: degrees Celsius.
+- **`dewp`** (double or null, optional, CEL (°C)): Dewpoint temperature at the station. Unit: degrees Celsius.
+- **`wdir`** (int32 or null, optional, deg (°)): Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm.
+- **`wspd`** (int32 or null, optional, [kn_i] (kt)): Sustained wind speed in knots.
+- **`wgst`** (int32 or null, optional, [kn_i] (kt)): Wind gust speed in knots. Null if no gusts reported.
+- **`visib`** (string or null, optional): Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles.
+- **`altim`** (double or null, optional, hPa): Altimeter setting (QNH) in hectopascals.
+- **`slp`** (double or null, optional, hPa): Sea level pressure in hectopascals. May be null if not reported.
+- **`qc_field`** (int32 or null, optional): Quality control flag bitmask from the qcField in the API response.
+- **`wx_string`** (string or null, optional): Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist).
+- **`metar_type`** (string or null, optional): METAR report type: 'METAR' for routine, 'SPECI' for special observation.
+- **`raw_ob`** (string, required): The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'.
+- **`latitude`** (double or null, optional, deg (°)): Station latitude in decimal degrees north from the METAR response.
+- **`longitude`** (double or null, optional, deg (°)): Station longitude in decimal degrees east from the METAR response.
+- **`elevation`** (double or null, optional, m): Station elevation in meters above mean sea level from the METAR response.
+- **`flt_cat`** (string or null, optional): Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR.
+- **`clouds`** (string or null, optional): JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{"cover":"SCT","base":5000}]'.
+- **`name`** (string or null, optional): Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US').
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "icao_id": "string",
+  "obs_time": "2024-01-01T00:00:00Z",
+  "report_time": "2024-01-01T00:00:00Z",
+  "temp": 0,
+  "dewp": 0,
+  "wdir": 0,
+  "wspd": 0,
+  "wgst": 0,
+  "visib": "string",
+  "altim": 0,
+  "slp": 0,
+  "qc_field": 0,
+  "wx_string": "string",
+  "metar_type": "string",
+  "raw_ob": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "elevation": 0,
+  "flt_cat": "string",
+  "clouds": "string",
+  "name": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://aviationweather.gov/schemas/gov/noaa/aviationweather/Sigmet` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `Sigmet`
-<a id="schema-node-sigmet"></a>
+### Sigmet
+
+CloudEvents type: `gov.noaa.aviationweather.Sigmet`
+
+#### What it tells you
 
 SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://aviationweather.gov/schemas/gov/noaa/aviationweather/Sigmet` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `icao_id` | `string` | `True` | ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs. | - | - | - |
-| `series_id` | `string` | `True` | SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international). | - | - | - |
-| `valid_time_from` | `datetime` | `True` | Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z). | - | - | - |
-| `valid_time_to` | `datetime` | `True` | End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z). | - | - | - |
-| `hazard` | `union` | `False` | Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc. | - | - | - |
-| `qualifier` | `union` | `False` | Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs. | - | - | - |
-| `sigmet_type` | `union` | `False` | SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs. | - | - | - |
-| `altitude_hi` | `union` | `False` | Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs. | unit=`[ft_i]` symbol=`ft` | - | - |
-| `altitude_low` | `union` | `False` | Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs. | unit=`[ft_i]` symbol=`ft` | - | - |
-| `movement_dir` | `union` | `False` | Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international. | - | - | - |
-| `movement_spd` | `union` | `False` | Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international. | - | - | - |
-| `severity` | `union` | `False` | Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity. | - | - | - |
-| `raw_sigmet` | `union` | `False` | Full raw SIGMET text as received from the upstream source. | - | - | - |
-| `coords` | `union` | `False` | JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{"lat":41.88,"lon":-123.70},{"lat":40.00,"lon":-124.23}]'. | - | - | - |
+Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `aviationweather`, key `{icao_id}` |
+
+#### Payload
+
+`Sigmet` payloads are JSON object. Required fields: `icao_id`, `series_id`, `valid_time_from`, `valid_time_to`.
+
+- **`icao_id`** (string, required): ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs.
+- **`series_id`** (string, required): SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international).
+- **`valid_time_from`** (datetime, required): Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).
+- **`valid_time_to`** (datetime, required): End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).
+- **`hazard`** (string or null, optional): Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc.
+- **`qualifier`** (string or null, optional): Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs.
+- **`sigmet_type`** (string or null, optional): SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs.
+- **`altitude_hi`** (int32 or null, optional, [ft_i] (ft)): Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs.
+- **`altitude_low`** (int32 or null, optional, [ft_i] (ft)): Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs.
+- **`movement_dir`** (string or null, optional): Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international.
+- **`movement_spd`** (string or null, optional): Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international.
+- **`severity`** (int32 or null, optional): Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity.
+- **`raw_sigmet`** (string or null, optional): Full raw SIGMET text as received from the upstream source.
+- **`coords`** (string or null, optional): JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{"lat":41.88,"lon":-123.70},{"lat":40.00,"lon":-124.23}]'.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "icao_id": "string",
+  "series_id": "string",
+  "valid_time_from": "2024-01-01T00:00:00Z",
+  "valid_time_to": "2024-01-01T00:00:00Z",
+  "hazard": "string",
+  "qualifier": "string",
+  "sigmet_type": "string",
+  "altitude_hi": 0,
+  "altitude_low": 0,
+  "movement_dir": "string",
+  "movement_spd": "string",
+  "severity": 0,
+  "raw_sigmet": "string",
+  "coords": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+
+## References
+
+- xRegistry manifest: [`xreg/aviationweather.xreg.json`](xreg/aviationweather.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

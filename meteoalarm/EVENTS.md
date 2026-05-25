@@ -2,206 +2,214 @@
 
 MQTT/5.0 transport variant for Meteoalarm CAP weather warnings. Non-retained QoS-1 warning events route by country feed slug, native CAP severity, normalized Meteoalarm awareness type, and CAP identifier under alerts/intl/meteoalarm/meteoalarm/... The awareness_type axis is derived from the Meteoalarm awareness_type parameter label and normalized for MQTT topic safety.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 1 documented event type (2 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{identifier}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `meteoalarm`. The record key is `{identifier}`. In plain language, `{identifier}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['meteoalarm'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/intl/meteoalarm/meteoalarm/+/+/+/+/warning`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('alerts/intl/meteoalarm/meteoalarm/+/+/+/+/warning', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Weather Warning
+
+CloudEvents type: `Meteoalarm.WeatherWarning`
+
+#### What it tells you
+
+A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types. A severe weather warning from the EUMETNET Meteoalarm system.
+
+#### Identity
+
+Each event identifies the real-world resource with `{identifier}`. `{identifier}` is the unique CAP alert identifier assigned by the issuing national meteorological service. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 1 |
+| `KAFKA` | topic `meteoalarm`, key `{identifier}` |
+| `MQTT/5.0` | topic `alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning`, retain `false`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `Meteoalarm.Warnings.Kafka`
+`Weather Warning` payloads are JSON object. Required fields: `identifier`, `sender`, `sent`, `status`, `msg_type`, `scope`, `country`, `event`, `severity`, `urgency`, `certainty`, `awareness_type`, `area_desc`.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`Meteoalarm.Warnings`](#messagegroup-meteoalarmwarnings) |
+- **`identifier`** (string, required): The unique CAP alert identifier assigned by the issuing national meteorological service.
+- **`sender`** (string, required): The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').
+- **`sent`** (datetime, required): The date and time when the warning was issued, in ISO-8601 format.
+- **`status`** (enum, required): The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.
+- **`msg_type`** (enum, required): The CAP message type indicating the nature of the alert.
+- **`scope`** (enum, required): The CAP scope of the alert. Typically 'Public' for weather warnings.
+- **`country`** (string, required): Country feed slug where the warning applies (for example germany or france). Matches the {country} MQTT topic axis.
+- **`event`** (string, required): The weather event description, typically in the national language of the issuing service (e.g., 'STURMBÖEN', 'Thunderstorm').
+- **`category`** (enum, optional): The CAP alert category. 'Met' for meteorological warnings.
+- **`severity`** (enum, required): Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.
+- **`urgency`** (enum, required): The CAP urgency level indicating the time-frame for protective action.
+- **`certainty`** (enum, required): The CAP certainty level indicating the confidence in the forecast.
+- **`headline`** (string, optional): A brief human-readable headline summarizing the warning, often in the national language.
+- **`description`** (string, optional): A detailed description of the weather warning, often in the national language.
+- **`instruction`** (string, optional): Recommended protective actions for the public.
+- **`effective`** (datetime, optional): The date and time when the warning becomes effective, in ISO-8601 format.
+- **`onset`** (datetime, optional): The expected date and time of onset of the weather event, in ISO-8601 format.
+- **`expires`** (datetime, optional): The date and time when the warning expires, in ISO-8601 format.
+- **`web`** (string, optional): A URL to the full warning details on the issuing service's website.
+- **`contact`** (string, optional): Contact information for the issuing meteorological service.
+- **`awareness_level`** (string, optional): The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous).
+- **`awareness_type`** (string, required): Meteoalarm awareness type label normalized to lowercase kebab-case for MQTT topic routing (for example wind, snow-ice, thunderstorm, flooding). Matches the {awareness_type} MQTT topic axis.
+- **`area_desc`** (string, required): A textual description of the affected geographic area.
+- **`geocodes`** (string, optional): A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones.
+- **`language`** (string, optional): The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB').
+- **`awareness_type_raw`** (string, optional): Raw Meteoalarm awareness_type parameter value as provided by CAP, for example "2; Snow/Ice".
+##### `status` values
 
-#### Transport options
+- `Actual`
+- `Exercise`
+- `System`
+- `Test`
+- `Draft`
+##### `msg_type` values
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `meteoalarm` |
-| Kafka key | `{identifier}` |
-| Deployed | False |
+- `Alert`
+- `Update`
+- `Cancel`
+- `Ack`
+- `Error`
+##### `scope` values
 
-### Endpoint `Meteoalarm.Warnings.Mqtt`
+- `Public`
+- `Restricted`
+- `Private`
+##### `category` values
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`Meteoalarm.Warnings.mqtt`](#messagegroup-meteoalarmwarningsmqtt) |
+- `Met`
+- `Geo`
+- `Safety`
+- `Security`
+- `Rescue`
+- `Fire`
+- `Health`
+- `Env`
+- `Transport`
+- `Infra`
+- `CBRNE`
+- `Other`
+##### `severity` values
 
-#### Transport options
+- `Extreme`
+- `Severe`
+- `Moderate`
+- `Minor`
+- `Unknown`
+##### `urgency` values
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+- `Immediate`
+- `Expected`
+- `Future`
+- `Past`
+- `Unknown`
+##### `certainty` values
 
-## Messagegroups
+- `Observed`
+- `Likely`
+- `Possible`
+- `Unlikely`
+- `Unknown`
+#### Example payload
 
-### Messagegroup `Meteoalarm.Warnings`
-<a id="messagegroup-meteoalarmwarnings"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `Meteoalarm.Warnings.Kafka` (KAFKA) |
-| Messages | 1 |
+```json
+{
+  "identifier": "string",
+  "sender": "string",
+  "sent": "2024-01-01T00:00:00Z",
+  "status": "Actual",
+  "msg_type": "Alert",
+  "scope": "Public",
+  "country": "string",
+  "event": "string",
+  "category": "Met",
+  "severity": "Extreme",
+  "urgency": "Immediate",
+  "certainty": "Observed",
+  "headline": "string",
+  "description": "string",
+  "instruction": "string",
+  "effective": "2024-01-01T00:00:00Z",
+  "onset": "2024-01-01T00:00:00Z",
+  "expires": "2024-01-01T00:00:00Z",
+  "web": "string",
+  "contact": "string",
+  "awareness_level": "string",
+  "awareness_type": "string",
+  "area_desc": "string",
+  "geocodes": "string",
+  "language": "string",
+  "awareness_type_raw": "string"
+}
+```
 
-#### Message `Meteoalarm.WeatherWarning`
-<a id="message-meteoalarmweatherwarning"></a>
+#### Reference vs telemetry
 
-A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherWarning |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning`](#schema-meteoalarmweatherwarning) |
-| Event role | Telemetry/event data |
+## Conventions
 
-##### CloudEvents metadata
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Meteoalarm.WeatherWarning` |
-| `source` |  | `string` | `False` | `https://feeds.meteoalarm.org` |
-| `subject` |  | `uritemplate` | `False` | `{identifier}` |
+Transport bindings carry CloudEvents metadata differently:
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `Meteoalarm.Warnings.Kafka` | `KAFKA` | topic `meteoalarm`; key `{identifier}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-### Messagegroup `Meteoalarm.Warnings.mqtt`
-<a id="messagegroup-meteoalarmwarningsmqtt"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variant for Meteoalarm CAP weather warnings. Non-retained QoS-1 warning events route by country feed slug, native CAP severity, normalized Meteoalarm awareness type, and CAP identifier under alerts/intl/meteoalarm/meteoalarm/... The awareness_type axis is derived from the Meteoalarm awareness_type parameter label and normalized for MQTT topic safety. |
-| Transport bindings | `Meteoalarm.Warnings.Mqtt` (MQTT/5.0) |
-| Messages | 1 |
+## Operational notes
 
-#### Message `Meteoalarm.Warnings.mqtt.WeatherWarning`
-<a id="message-meteoalarmwarningsmqttweatherwarning"></a>
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
-A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.
+## References
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherWarning |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning`](#schema-meteoalarmweatherwarning) |
-| Base message chain | `/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Meteoalarm.WeatherWarning` |
-| `source` |  | `string` | `False` | `https://feeds.meteoalarm.org` |
-| `subject` |  | `uritemplate` | `False` | `{identifier}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Meteoalarm.Warnings.Mqtt` | `MQTT/5.0` | topic `alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning` |
-| QoS | 1 |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `Meteoalarm.jstruct`
-<a id="schemagroup-meteoalarmjstruct"></a>
-
-#### Schema `Meteoalarm.WeatherWarning`
-<a id="schema-meteoalarmweatherwarning"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherWarning |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-| Description | A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks. |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://meteoalarm.org/schemas/Meteoalarm/WeatherWarning` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `WeatherWarning`
-<a id="schema-node-weatherwarning"></a>
-
-A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks.
-
-| Field | Value |
-| --- | --- |
-| $id | `https://meteoalarm.org/schemas/Meteoalarm/WeatherWarning` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `identifier` | `string` | `True` | The unique CAP alert identifier assigned by the issuing national meteorological service. | - | - | - |
-| `sender` | `string` | `True` | The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de'). | - | - | - |
-| `sent` | `datetime` | `True` | The date and time when the warning was issued, in ISO-8601 format. | - | - | - |
-| `status` | enum `['Actual', 'Exercise', 'System', 'Test', 'Draft']` | `True` | The CAP alert status. 'Actual' for real warnings, 'Test' for test messages. | - | - | - |
-| `msg_type` | enum `['Alert', 'Update', 'Cancel', 'Ack', 'Error']` | `True` | The CAP message type indicating the nature of the alert. | altnames=`{"json": "msgType"}` | - | - |
-| `scope` | enum `['Public', 'Restricted', 'Private']` | `True` | The CAP scope of the alert. Typically 'Public' for weather warnings. | - | - | - |
-| `country` | `string` | `True` | Country feed slug where the warning applies (for example germany or france). Matches the {country} MQTT topic axis. | - | - | - |
-| `event` | `string` | `True` | The weather event description, typically in the national language of the issuing service (e.g., 'STURMBÖEN', 'Thunderstorm'). | - | - | - |
-| `category` | enum `['Met', 'Geo', 'Safety', 'Security', 'Rescue', 'Fire', 'Health', 'Env', 'Transport', 'Infra', 'CBRNE', 'Other']` | `False` | The CAP alert category. 'Met' for meteorological warnings. | - | - | - |
-| `severity` | enum `['Extreme', 'Severe', 'Moderate', 'Minor', 'Unknown']` | `True` | Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing. | - | - | - |
-| `urgency` | enum `['Immediate', 'Expected', 'Future', 'Past', 'Unknown']` | `True` | The CAP urgency level indicating the time-frame for protective action. | - | - | - |
-| `certainty` | enum `['Observed', 'Likely', 'Possible', 'Unlikely', 'Unknown']` | `True` | The CAP certainty level indicating the confidence in the forecast. | - | - | - |
-| `headline` | `string` | `False` | A brief human-readable headline summarizing the warning, often in the national language. | - | - | - |
-| `description` | `string` | `False` | A detailed description of the weather warning, often in the national language. | - | - | - |
-| `instruction` | `string` | `False` | Recommended protective actions for the public. | - | - | - |
-| `effective` | `datetime` | `False` | The date and time when the warning becomes effective, in ISO-8601 format. | - | - | - |
-| `onset` | `datetime` | `False` | The expected date and time of onset of the weather event, in ISO-8601 format. | - | - | - |
-| `expires` | `datetime` | `False` | The date and time when the warning expires, in ISO-8601 format. | - | - | - |
-| `web` | `string` | `False` | A URL to the full warning details on the issuing service's website. | - | - | - |
-| `contact` | `string` | `False` | Contact information for the issuing meteorological service. | - | - | - |
-| `awareness_level` | `string` | `False` | The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous). | - | - | - |
-| `awareness_type` | `string` | `True` | Meteoalarm awareness type label normalized to lowercase kebab-case for MQTT topic routing (for example wind, snow-ice, thunderstorm, flooding). Matches the {awareness_type} MQTT topic axis. | - | - | - |
-| `area_desc` | `string` | `True` | A textual description of the affected geographic area. | - | - | - |
-| `geocodes` | `string` | `False` | A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones. | - | - | - |
-| `language` | `string` | `False` | The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB'). | - | - | - |
-| `awareness_type_raw` | `string` | `False` | Raw Meteoalarm awareness_type parameter value as provided by CAP, for example "2; Snow/Ice". | - | - | - |
+- xRegistry manifest: [`xreg/meteoalarm.xreg.json`](xreg/meteoalarm.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

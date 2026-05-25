@@ -2,935 +2,430 @@
 
 MQTT/5.0 non-retained firehose variants of the Bluesky CloudEvents. Each record family gets a dedicated topic with the kebab record name baked as the trailing segment so subscribers can wildcard per family. QoS 0, retain=false — there is no LKV slot for a firehose.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 6 documented event types (12 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 6 telemetry event types.
+- **Identity:** `{did}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `bluesky`. The record key is `{did}`. In plain language, `{did}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['bluesky'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `social/intl/bluesky/bluesky/+/+/+/post`, `social/intl/bluesky/bluesky/+/+/+/like`, `social/intl/bluesky/bluesky/+/+/+/repost`, `social/intl/bluesky/bluesky/+/+/+/follow`, `social/intl/bluesky/bluesky/+/+/+/block`, `social/intl/bluesky/bluesky/+/+/+/profile`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('social/intl/bluesky/bluesky/+/+/+/post', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Post
+
+CloudEvents type: `Bluesky.Feed.Post`
+
+#### What it tells you
+
+A post in the Bluesky feed A post in the Bluesky feed
+
+#### Identity
+
+Each event identifies the real-world resource with `{did}`. `{did}` is decentralized Identifier of the author. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `bluesky`, key `{did}` |
+| `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/post`, retain `false`, QoS `0` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `BlueskyFirehose.Kafka`
+`Post` payloads are JSON object. Required fields: `uri`, `cid`, `did`, `text`, `langs`, `tags`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
 
-| Field | Value |
+- **`uri`** (string, required): AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)
+- **`cid`** (string, required): Content Identifier (CID) of the post
+- **`did`** (string, required): Decentralized Identifier of the author
+- **`handle`** (string, optional): Handle of the author
+- **`text`** (string, required): Text content of the post
+- **`langs`** (array of string, required): Language codes for the post
+- **`reply_parent`** (string, optional): AT-URI of parent post if this is a reply
+- **`reply_root`** (string, optional): AT-URI of root post in thread
+- **`embed_type`** (string, optional): Type of embedded content (images, external, record, etc.)
+- **`embed_uri`** (string, optional): URI of embedded content
+- **`facets`** (string, optional): JSON string of rich text facets (mentions, links, tags)
+- **`tags`** (array of string, required): Hashtags in the post
+- **`created_at`** (string, required): ISO 8601 timestamp of post creation
+- **`indexed_at`** (string, required): ISO 8601 timestamp of when the post was indexed
+- **`seq`** (int64, required): Firehose sequence number
+- **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+- **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "uri": "string",
+  "cid": "string",
+  "did": "string",
+  "handle": "string",
+  "text": "string",
+  "langs": [],
+  "reply_parent": "string",
+  "reply_root": "string",
+  "embed_type": "string",
+  "embed_uri": "string",
+  "facets": "string",
+  "tags": [],
+  "created_at": "string",
+  "indexed_at": "string",
+  "seq": 0,
+  "collection": "string",
+  "lang": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Like
+
+CloudEvents type: `Bluesky.Feed.Like`
+
+#### What it tells you
+
+A like on a post A like on a post
+
+#### Identity
+
+Each event identifies the real-world resource with `{did}`. `{did}` is DID of the user who liked. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`BlueskyFirehose`](#messagegroup-blueskyfirehose) |
+| `KAFKA` | topic `bluesky`, key `{did}` |
+| `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/like`, retain `false`, QoS `0` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Like` payloads are JSON object. Required fields: `uri`, `cid`, `did`, `subject_uri`, `subject_cid`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
+
+- **`uri`** (string, required): AT-URI of the like record
+- **`cid`** (string, required): Content Identifier of the like
+- **`did`** (string, required): DID of the user who liked
+- **`handle`** (string, optional): Handle of the user who liked
+- **`subject_uri`** (string, required): AT-URI of the liked post
+- **`subject_cid`** (string, required): CID of the liked post
+- **`created_at`** (string, required): ISO 8601 timestamp of like creation
+- **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
+- **`seq`** (int64, required): Firehose sequence number
+- **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+- **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "uri": "string",
+  "cid": "string",
+  "did": "string",
+  "handle": "string",
+  "subject_uri": "string",
+  "subject_cid": "string",
+  "created_at": "string",
+  "indexed_at": "string",
+  "seq": 0,
+  "collection": "string",
+  "lang": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Repost
+
+CloudEvents type: `Bluesky.Feed.Repost`
+
+#### What it tells you
+
+A repost of a post A repost of a post
+
+#### Identity
+
+Each event identifies the real-world resource with `{did}`. `{did}` is DID of the user who reposted. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `bluesky` |
-| Kafka key | `{did}` |
-| Deployed | False |
+| `KAFKA` | topic `bluesky`, key `{did}` |
+| `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/repost`, retain `false`, QoS `0` |
 
-### Endpoint `BlueskyFirehose.Mqtt`
+#### Payload
 
-| Field | Value |
+`Repost` payloads are JSON object. Required fields: `uri`, `cid`, `did`, `subject_uri`, `subject_cid`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
+
+- **`uri`** (string, required): AT-URI of the repost record
+- **`cid`** (string, required): Content Identifier of the repost
+- **`did`** (string, required): DID of the user who reposted
+- **`handle`** (string, optional): Handle of the user who reposted
+- **`subject_uri`** (string, required): AT-URI of the reposted post
+- **`subject_cid`** (string, required): CID of the reposted post
+- **`created_at`** (string, required): ISO 8601 timestamp of repost creation
+- **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
+- **`seq`** (int64, required): Firehose sequence number
+- **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+- **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "uri": "string",
+  "cid": "string",
+  "did": "string",
+  "handle": "string",
+  "subject_uri": "string",
+  "subject_cid": "string",
+  "created_at": "string",
+  "indexed_at": "string",
+  "seq": 0,
+  "collection": "string",
+  "lang": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Follow
+
+CloudEvents type: `Bluesky.Graph.Follow`
+
+#### What it tells you
+
+A follow relationship between users A follow relationship between users
+
+#### Identity
+
+Each event identifies the real-world resource with `{did}`. `{did}` is DID of the follower. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`BlueskyFirehose.mqtt`](#messagegroup-blueskyfirehosemqtt) |
+| `KAFKA` | topic `bluesky`, key `{did}` |
+| `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/follow`, retain `false`, QoS `0` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Follow` payloads are JSON object. Required fields: `uri`, `cid`, `did`, `subject`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
+
+- **`uri`** (string, required): AT-URI of the follow record
+- **`cid`** (string, required): Content Identifier of the follow
+- **`did`** (string, required): DID of the follower
+- **`handle`** (string, optional): Handle of the follower
+- **`subject`** (string, required): DID of the followed user
+- **`subject_handle`** (string, optional): Handle of the followed user
+- **`created_at`** (string, required): ISO 8601 timestamp of follow creation
+- **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
+- **`seq`** (int64, required): Firehose sequence number
+- **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+- **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "uri": "string",
+  "cid": "string",
+  "did": "string",
+  "handle": "string",
+  "subject": "string",
+  "subject_handle": "string",
+  "created_at": "string",
+  "indexed_at": "string",
+  "seq": 0,
+  "collection": "string",
+  "lang": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Block
+
+CloudEvents type: `Bluesky.Graph.Block`
+
+#### What it tells you
+
+A block relationship between users A block relationship between users
+
+#### Identity
+
+Each event identifies the real-world resource with `{did}`. `{did}` is DID of the blocker. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+| `KAFKA` | topic `bluesky`, key `{did}` |
+| `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/block`, retain `false`, QoS `0` |
 
-## Messagegroups
+#### Payload
 
-### Messagegroup `BlueskyFirehose`
-<a id="messagegroup-blueskyfirehose"></a>
+`Block` payloads are JSON object. Required fields: `uri`, `cid`, `did`, `subject`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
 
-| Field | Value |
+- **`uri`** (string, required): AT-URI of the block record
+- **`cid`** (string, required): Content Identifier of the block
+- **`did`** (string, required): DID of the blocker
+- **`handle`** (string, optional): Handle of the blocker
+- **`subject`** (string, required): DID of the blocked user
+- **`subject_handle`** (string, optional): Handle of the blocked user
+- **`created_at`** (string, required): ISO 8601 timestamp of block creation
+- **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
+- **`seq`** (int64, required): Firehose sequence number
+- **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+- **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "uri": "string",
+  "cid": "string",
+  "did": "string",
+  "handle": "string",
+  "subject": "string",
+  "subject_handle": "string",
+  "created_at": "string",
+  "indexed_at": "string",
+  "seq": 0,
+  "collection": "string",
+  "lang": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Profile
+
+CloudEvents type: `Bluesky.Actor.Profile`
+
+#### What it tells you
+
+A user profile update A user profile update
+
+#### Identity
+
+Each event identifies the real-world resource with `{did}`. `{did}` is decentralized Identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Transport bindings | `BlueskyFirehose.Kafka` (KAFKA) |
-| Messages | 6 |
+| `KAFKA` | topic `bluesky`, key `{did}` |
+| `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/profile`, retain `false`, QoS `0` |
 
-#### Message `Bluesky.Feed.Post`
-<a id="message-blueskyfeedpost"></a>
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Post`](#schema-blueskyfeedpost) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
+`Profile` payloads are JSON object. Required fields: `did`, `handle`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
 
-##### CloudEvents metadata
+- **`did`** (string, required): Decentralized Identifier
+- **`handle`** (string, required): User handle
+- **`display_name`** (string, optional): Display name
+- **`description`** (string, optional): Bio/description
+- **`avatar`** (string, optional): Avatar image URL
+- **`banner`** (string, optional): Banner image URL
+- **`created_at`** (string, required): ISO 8601 timestamp of profile creation
+- **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
+- **`seq`** (int64, required): Firehose sequence number
+- **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+- **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
+#### Example payload
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Feed.Post` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Bound transports
+```json
+{
+  "did": "string",
+  "handle": "string",
+  "display_name": "string",
+  "description": "string",
+  "avatar": "string",
+  "banner": "string",
+  "created_at": "string",
+  "indexed_at": "string",
+  "seq": 0,
+  "collection": "string",
+  "lang": "string"
+}
+```
 
-| Endpoint | Protocol | Binding |
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `BlueskyFirehose.Kafka` | `KAFKA` | topic `bluesky`; key `{did}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `Bluesky.Feed.Like`
-<a id="message-blueskyfeedlike"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Like`](#schema-blueskyfeedlike) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Feed.Like` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Kafka` | `KAFKA` | topic `bluesky`; key `{did}` |
-
-#### Message `Bluesky.Feed.Repost`
-<a id="message-blueskyfeedrepost"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Repost`](#schema-blueskyfeedrepost) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Feed.Repost` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Kafka` | `KAFKA` | topic `bluesky`; key `{did}` |
-
-#### Message `Bluesky.Graph.Follow`
-<a id="message-blueskygraphfollow"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Follow`](#schema-blueskygraphfollow) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Graph.Follow` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Kafka` | `KAFKA` | topic `bluesky`; key `{did}` |
-
-#### Message `Bluesky.Graph.Block`
-<a id="message-blueskygraphblock"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Block`](#schema-blueskygraphblock) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Graph.Block` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Kafka` | `KAFKA` | topic `bluesky`; key `{did}` |
-
-#### Message `Bluesky.Actor.Profile`
-<a id="message-blueskyactorprofile"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Actor.Profile`](#schema-blueskyactorprofile) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Actor.Profile` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Kafka` | `KAFKA` | topic `bluesky`; key `{did}` |
-
-### Messagegroup `BlueskyFirehose.mqtt`
-<a id="messagegroup-blueskyfirehosemqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 non-retained firehose variants of the Bluesky CloudEvents. Each record family gets a dedicated topic with the kebab record name baked as the trailing segment so subscribers can wildcard per family. QoS 0, retain=false — there is no LKV slot for a firehose. |
-| Transport bindings | `BlueskyFirehose.Mqtt` (MQTT/5.0) |
-| Messages | 6 |
-
-#### Message `Bluesky.Feed.Post.mqtt`
-<a id="message-blueskyfeedpostmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Post |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Post`](#schema-blueskyfeedpost) |
-| Base message chain | `/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Feed.Post` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Mqtt` | `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/post` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/post` |
-| Retain | False |
-
-#### Message `Bluesky.Feed.Like.mqtt`
-<a id="message-blueskyfeedlikemqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Like |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Like`](#schema-blueskyfeedlike) |
-| Base message chain | `/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Feed.Like` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Mqtt` | `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/like` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/like` |
-| Retain | False |
-
-#### Message `Bluesky.Feed.Repost.mqtt`
-<a id="message-blueskyfeedrepostmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Repost |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Repost`](#schema-blueskyfeedrepost) |
-| Base message chain | `/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Feed.Repost` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Mqtt` | `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/repost` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/repost` |
-| Retain | False |
-
-#### Message `Bluesky.Graph.Follow.mqtt`
-<a id="message-blueskygraphfollowmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Follow |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Follow`](#schema-blueskygraphfollow) |
-| Base message chain | `/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Graph.Follow` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Mqtt` | `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/follow` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/follow` |
-| Retain | False |
-
-#### Message `Bluesky.Graph.Block.mqtt`
-<a id="message-blueskygraphblockmqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Block |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Block`](#schema-blueskygraphblock) |
-| Base message chain | `/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Graph.Block` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Mqtt` | `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/block` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/block` |
-| Retain | False |
-
-#### Message `Bluesky.Actor.Profile.mqtt`
-<a id="message-blueskyactorprofilemqtt"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Profile |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Actor.Profile`](#schema-blueskyactorprofile) |
-| Base message chain | `/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `Bluesky.Actor.Profile` |
-| `source` | Source Firehose URL | `uritemplate` | `True` | `{firehoseurl}` |
-| `subject` | Decentralized Identifier | `uritemplate` | `True` | `{did}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BlueskyFirehose.Mqtt` | `MQTT/5.0` | topic `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/profile` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `social/intl/bluesky/bluesky/{collection}/{lang}/{did}/profile` |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `BlueskyFirehose.jstruct`
-<a id="schemagroup-blueskyfirehosejstruct"></a>
-
-#### Schema `Bluesky.Feed.Post`
-<a id="schema-blueskyfeedpost"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Post |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Bluesky/Feed/Post` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Bluesky/Feed/Post` |
-| Type | `object` |
-
-###### Object `Post`
-<a id="schema-node-post"></a>
-
-A post in the Bluesky feed
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `uri` | `string` | `True` | AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx) | - | - | - |
-| `cid` | `string` | `True` | Content Identifier (CID) of the post | - | - | - |
-| `did` | `string` | `True` | Decentralized Identifier of the author | - | - | - |
-| `handle` | `string` | `False` | Handle of the author | - | default=`-` | default=`-` |
-| `text` | `string` | `True` | Text content of the post | - | - | - |
-| `langs` | array of `string` | `True` | Language codes for the post | - | default=`[]` | default=`[]` |
-| `reply_parent` | `string` | `False` | AT-URI of parent post if this is a reply | - | default=`-` | default=`-` |
-| `reply_root` | `string` | `False` | AT-URI of root post in thread | - | default=`-` | default=`-` |
-| `embed_type` | `string` | `False` | Type of embedded content (images, external, record, etc.) | - | default=`-` | default=`-` |
-| `embed_uri` | `string` | `False` | URI of embedded content | - | default=`-` | default=`-` |
-| `facets` | `string` | `False` | JSON string of rich text facets (mentions, links, tags) | - | default=`-` | default=`-` |
-| `tags` | array of `string` | `True` | Hashtags in the post | - | default=`[]` | default=`[]` |
-| `created_at` | `string` | `True` | ISO 8601 timestamp of post creation | - | - | - |
-| `indexed_at` | `string` | `True` | ISO 8601 timestamp of when the post was indexed | - | - | - |
-| `seq` | `int64` | `True` | Firehose sequence number | - | - | - |
-| `collection` | `string` | `True` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | - | - | - |
-| `lang` | `string` | `True` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | - | - | - |
-
-#### Schema `Bluesky.Feed.Like`
-<a id="schema-blueskyfeedlike"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Like |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Bluesky/Feed/Like` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Bluesky/Feed/Like` |
-| Type | `object` |
-
-###### Object `Like`
-<a id="schema-node-like"></a>
-
-A like on a post
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `uri` | `string` | `True` | AT-URI of the like record | - | - | - |
-| `cid` | `string` | `True` | Content Identifier of the like | - | - | - |
-| `did` | `string` | `True` | DID of the user who liked | - | - | - |
-| `handle` | `string` | `False` | Handle of the user who liked | - | default=`-` | default=`-` |
-| `subject_uri` | `string` | `True` | AT-URI of the liked post | - | - | - |
-| `subject_cid` | `string` | `True` | CID of the liked post | - | - | - |
-| `created_at` | `string` | `True` | ISO 8601 timestamp of like creation | - | - | - |
-| `indexed_at` | `string` | `True` | ISO 8601 timestamp of indexing | - | - | - |
-| `seq` | `int64` | `True` | Firehose sequence number | - | - | - |
-| `collection` | `string` | `True` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | - | - | - |
-| `lang` | `string` | `True` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | - | - | - |
-
-#### Schema `Bluesky.Feed.Repost`
-<a id="schema-blueskyfeedrepost"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Repost |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Bluesky/Feed/Repost` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Bluesky/Feed/Repost` |
-| Type | `object` |
-
-###### Object `Repost`
-<a id="schema-node-repost"></a>
-
-A repost of a post
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `uri` | `string` | `True` | AT-URI of the repost record | - | - | - |
-| `cid` | `string` | `True` | Content Identifier of the repost | - | - | - |
-| `did` | `string` | `True` | DID of the user who reposted | - | - | - |
-| `handle` | `string` | `False` | Handle of the user who reposted | - | default=`-` | default=`-` |
-| `subject_uri` | `string` | `True` | AT-URI of the reposted post | - | - | - |
-| `subject_cid` | `string` | `True` | CID of the reposted post | - | - | - |
-| `created_at` | `string` | `True` | ISO 8601 timestamp of repost creation | - | - | - |
-| `indexed_at` | `string` | `True` | ISO 8601 timestamp of indexing | - | - | - |
-| `seq` | `int64` | `True` | Firehose sequence number | - | - | - |
-| `collection` | `string` | `True` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | - | - | - |
-| `lang` | `string` | `True` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | - | - | - |
-
-#### Schema `Bluesky.Graph.Follow`
-<a id="schema-blueskygraphfollow"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Follow |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Bluesky/Graph/Follow` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Bluesky/Graph/Follow` |
-| Type | `object` |
-
-###### Object `Follow`
-<a id="schema-node-follow"></a>
-
-A follow relationship between users
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `uri` | `string` | `True` | AT-URI of the follow record | - | - | - |
-| `cid` | `string` | `True` | Content Identifier of the follow | - | - | - |
-| `did` | `string` | `True` | DID of the follower | - | - | - |
-| `handle` | `string` | `False` | Handle of the follower | - | default=`-` | default=`-` |
-| `subject` | `string` | `True` | DID of the followed user | - | - | - |
-| `subject_handle` | `string` | `False` | Handle of the followed user | - | default=`-` | default=`-` |
-| `created_at` | `string` | `True` | ISO 8601 timestamp of follow creation | - | - | - |
-| `indexed_at` | `string` | `True` | ISO 8601 timestamp of indexing | - | - | - |
-| `seq` | `int64` | `True` | Firehose sequence number | - | - | - |
-| `collection` | `string` | `True` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | - | - | - |
-| `lang` | `string` | `True` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | - | - | - |
-
-#### Schema `Bluesky.Graph.Block`
-<a id="schema-blueskygraphblock"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Block |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Bluesky/Graph/Block` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Bluesky/Graph/Block` |
-| Type | `object` |
-
-###### Object `Block`
-<a id="schema-node-block"></a>
-
-A block relationship between users
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `uri` | `string` | `True` | AT-URI of the block record | - | - | - |
-| `cid` | `string` | `True` | Content Identifier of the block | - | - | - |
-| `did` | `string` | `True` | DID of the blocker | - | - | - |
-| `handle` | `string` | `False` | Handle of the blocker | - | default=`-` | default=`-` |
-| `subject` | `string` | `True` | DID of the blocked user | - | - | - |
-| `subject_handle` | `string` | `False` | Handle of the blocked user | - | default=`-` | default=`-` |
-| `created_at` | `string` | `True` | ISO 8601 timestamp of block creation | - | - | - |
-| `indexed_at` | `string` | `True` | ISO 8601 timestamp of indexing | - | - | - |
-| `seq` | `int64` | `True` | Firehose sequence number | - | - | - |
-| `collection` | `string` | `True` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | - | - | - |
-| `lang` | `string` | `True` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | - | - | - |
-
-#### Schema `Bluesky.Actor.Profile`
-<a id="schema-blueskyactorprofile"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Profile |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/Bluesky/Actor/Profile` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/Bluesky/Actor/Profile` |
-| Type | `object` |
-
-###### Object `Profile`
-<a id="schema-node-profile"></a>
-
-A user profile update
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `did` | `string` | `True` | Decentralized Identifier | - | - | - |
-| `handle` | `string` | `True` | User handle | - | - | - |
-| `display_name` | `string` | `False` | Display name | - | default=`-` | default=`-` |
-| `description` | `string` | `False` | Bio/description | - | default=`-` | default=`-` |
-| `avatar` | `string` | `False` | Avatar image URL | - | default=`-` | default=`-` |
-| `banner` | `string` | `False` | Banner image URL | - | default=`-` | default=`-` |
-| `created_at` | `string` | `True` | ISO 8601 timestamp of profile creation | - | - | - |
-| `indexed_at` | `string` | `True` | ISO 8601 timestamp of indexing | - | - | - |
-| `seq` | `int64` | `True` | Firehose sequence number | - | - | - |
-| `collection` | `string` | `True` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | - | - | - |
-| `lang` | `string` | `True` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | - | - | - |
-
-### Schemagroup `BlueskyFirehose.avro`
-<a id="schemagroup-blueskyfirehoseavro"></a>
-
-#### Schema `Bluesky.Feed.Post`
-<a id="schema-blueskyfeedpost"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Post |
-| Namespace | Bluesky.Feed |
-| Type | `record` |
-| Doc | A post in the Bluesky feed |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `uri` | `string` | AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx) | `-` |
-| `cid` | `string` | Content Identifier (CID) of the post | `-` |
-| `did` | `string` | Decentralized Identifier of the author | `-` |
-| `handle` | `null` \| `string` | Handle of the author | `-` |
-| `text` | `string` | Text content of the post | `-` |
-| `langs` | array of `string` | Language codes for the post | `[]` |
-| `reply_parent` | `null` \| `string` | AT-URI of parent post if this is a reply | `-` |
-| `reply_root` | `null` \| `string` | AT-URI of root post in thread | `-` |
-| `embed_type` | `null` \| `string` | Type of embedded content (images, external, record, etc.) | `-` |
-| `embed_uri` | `null` \| `string` | URI of embedded content | `-` |
-| `facets` | `null` \| `string` | JSON string of rich text facets (mentions, links, tags) | `-` |
-| `tags` | array of `string` | Hashtags in the post | `[]` |
-| `created_at` | `string` | ISO 8601 timestamp of post creation | `-` |
-| `indexed_at` | `string` | ISO 8601 timestamp of when the post was indexed | `-` |
-| `seq` | `long` | Firehose sequence number | `-` |
-| `collection` | `string` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | `-` |
-| `lang` | `string` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | `und` |
-
-#### Schema `Bluesky.Feed.Like`
-<a id="schema-blueskyfeedlike"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Like |
-| Namespace | Bluesky.Feed |
-| Type | `record` |
-| Doc | A like on a post |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `uri` | `string` | AT-URI of the like record | `-` |
-| `cid` | `string` | Content Identifier of the like | `-` |
-| `did` | `string` | DID of the user who liked | `-` |
-| `handle` | `null` \| `string` | Handle of the user who liked | `-` |
-| `subject_uri` | `string` | AT-URI of the liked post | `-` |
-| `subject_cid` | `string` | CID of the liked post | `-` |
-| `created_at` | `string` | ISO 8601 timestamp of like creation | `-` |
-| `indexed_at` | `string` | ISO 8601 timestamp of indexing | `-` |
-| `seq` | `long` | Firehose sequence number | `-` |
-| `collection` | `string` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | `-` |
-| `lang` | `string` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | `und` |
-
-#### Schema `Bluesky.Feed.Repost`
-<a id="schema-blueskyfeedrepost"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Repost |
-| Namespace | Bluesky.Feed |
-| Type | `record` |
-| Doc | A repost of a post |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `uri` | `string` | AT-URI of the repost record | `-` |
-| `cid` | `string` | Content Identifier of the repost | `-` |
-| `did` | `string` | DID of the user who reposted | `-` |
-| `handle` | `null` \| `string` | Handle of the user who reposted | `-` |
-| `subject_uri` | `string` | AT-URI of the reposted post | `-` |
-| `subject_cid` | `string` | CID of the reposted post | `-` |
-| `created_at` | `string` | ISO 8601 timestamp of repost creation | `-` |
-| `indexed_at` | `string` | ISO 8601 timestamp of indexing | `-` |
-| `seq` | `long` | Firehose sequence number | `-` |
-| `collection` | `string` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | `-` |
-| `lang` | `string` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | `und` |
-
-#### Schema `Bluesky.Graph.Follow`
-<a id="schema-blueskygraphfollow"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Follow |
-| Namespace | Bluesky.Graph |
-| Type | `record` |
-| Doc | A follow relationship between users |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `uri` | `string` | AT-URI of the follow record | `-` |
-| `cid` | `string` | Content Identifier of the follow | `-` |
-| `did` | `string` | DID of the follower | `-` |
-| `handle` | `null` \| `string` | Handle of the follower | `-` |
-| `subject` | `string` | DID of the followed user | `-` |
-| `subject_handle` | `null` \| `string` | Handle of the followed user | `-` |
-| `created_at` | `string` | ISO 8601 timestamp of follow creation | `-` |
-| `indexed_at` | `string` | ISO 8601 timestamp of indexing | `-` |
-| `seq` | `long` | Firehose sequence number | `-` |
-| `collection` | `string` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | `-` |
-| `lang` | `string` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | `und` |
-
-#### Schema `Bluesky.Graph.Block`
-<a id="schema-blueskygraphblock"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Block |
-| Namespace | Bluesky.Graph |
-| Type | `record` |
-| Doc | A block relationship between users |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `uri` | `string` | AT-URI of the block record | `-` |
-| `cid` | `string` | Content Identifier of the block | `-` |
-| `did` | `string` | DID of the blocker | `-` |
-| `handle` | `null` \| `string` | Handle of the blocker | `-` |
-| `subject` | `string` | DID of the blocked user | `-` |
-| `subject_handle` | `null` \| `string` | Handle of the blocked user | `-` |
-| `created_at` | `string` | ISO 8601 timestamp of block creation | `-` |
-| `indexed_at` | `string` | ISO 8601 timestamp of indexing | `-` |
-| `seq` | `long` | Firehose sequence number | `-` |
-| `collection` | `string` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | `-` |
-| `lang` | `string` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | `und` |
-
-#### Schema `Bluesky.Actor.Profile`
-<a id="schema-blueskyactorprofile"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Profile |
-| Namespace | Bluesky.Actor |
-| Type | `record` |
-| Doc | A user profile update |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `did` | `string` | Decentralized Identifier | `-` |
-| `handle` | `string` | User handle | `-` |
-| `display_name` | `null` \| `string` | Display name | `-` |
-| `description` | `null` \| `string` | Bio/description | `-` |
-| `avatar` | `null` \| `string` | Avatar image URL | `-` |
-| `banner` | `null` \| `string` | Banner image URL | `-` |
-| `created_at` | `string` | ISO 8601 timestamp of profile creation | `-` |
-| `indexed_at` | `string` | ISO 8601 timestamp of indexing | `-` |
-| `seq` | `long` | Firehose sequence number | `-` |
-| `collection` | `string` | AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty. | `-` |
-| `lang` | `string` | Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`. | `und` |
+- xRegistry manifest: [`xreg/bluesky.xreg.json`](xreg/bluesky.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

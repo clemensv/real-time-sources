@@ -2,3085 +2,1858 @@
 
 **GTFS and GTFS-RT API Bridge** is a tool that fetches GTFS (General Transit Feed Specification) Realtime and Static data from various transit agency sources, processes the data, and publishes it to Kafka topics using SASL PLAIN authentication. This tool can be integrated with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 31 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 31 telemetry event types.
+- **Identity:** `{agencyid}` identifies the resource each event is about.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 2 |
-| Schemagroups | 4 |
+### Kafka
 
-## Endpoints
+Subscribe to `gtfs`. The record key is `{agencyid}`. In plain language, `{agencyid}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `GeneralTransitFeed.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['gtfs'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`GeneralTransitFeedRealTime`](#messagegroup-generaltransitfeedrealtime), [`GeneralTransitFeedStatic`](#messagegroup-generaltransitfeedstatic) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `gtfs` |
-| Kafka key | `{agencyid}` |
-| Deployed | False |
+### Vehicle Position
 
-## Messagegroups
+CloudEvents type: `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
 
-### Messagegroup `GeneralTransitFeedRealTime`
-<a id="messagegroup-generaltransitfeedrealtime"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `GeneralTransitFeed.Kafka` (KAFKA) |
-| Messages | 3 |
-
-#### Message `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
-<a id="message-generaltransitfeedrealtimevehiclevehicleposition"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedRealTime.jstruct/schemas/GeneralTransitFeedRealTime.Vehicle.VehiclePosition`](#schema-generaltransitfeedrealtimevehiclevehicleposition) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedRealTime.Vehicle.VehiclePosition` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedRealTime.Trip.TripUpdate`
-<a id="message-generaltransitfeedrealtimetriptripupdate"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedRealTime.jstruct/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate`](#schema-generaltransitfeedrealtimetriptripupdate) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedRealTime.Trip.TripUpdate` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedRealTime.Alert.Alert`
-<a id="message-generaltransitfeedrealtimealertalert"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedRealTime.jstruct/schemas/GeneralTransitFeedRealTime.Alert.Alert`](#schema-generaltransitfeedrealtimealertalert) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedRealTime.Alert.Alert` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-### Messagegroup `GeneralTransitFeedStatic`
-<a id="messagegroup-generaltransitfeedstatic"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `GeneralTransitFeed.Kafka` (KAFKA) |
-| Messages | 28 |
-
-#### Message `GeneralTransitFeedStatic.Agency`
-<a id="message-generaltransitfeedstaticagency"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Agency`](#schema-generaltransitfeedstaticagency) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Agency` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Areas`
-<a id="message-generaltransitfeedstaticareas"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Areas`](#schema-generaltransitfeedstaticareas) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Areas` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Attributions`
-<a id="message-generaltransitfeedstaticattributions"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Attributions`](#schema-generaltransitfeedstaticattributions) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Attributions` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeed.BookingRules`
-<a id="message-generaltransitfeedbookingrules"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeed.BookingRules`](#schema-generaltransitfeedbookingrules) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeed.BookingRules` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FareAttributes`
-<a id="message-generaltransitfeedstaticfareattributes"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FareAttributes`](#schema-generaltransitfeedstaticfareattributes) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareAttributes` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FareLegRules`
-<a id="message-generaltransitfeedstaticfarelegrules"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FareLegRules`](#schema-generaltransitfeedstaticfarelegrules) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareLegRules` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FareMedia`
-<a id="message-generaltransitfeedstaticfaremedia"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FareMedia`](#schema-generaltransitfeedstaticfaremedia) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareMedia` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FareProducts`
-<a id="message-generaltransitfeedstaticfareproducts"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FareProducts`](#schema-generaltransitfeedstaticfareproducts) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareProducts` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FareRules`
-<a id="message-generaltransitfeedstaticfarerules"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FareRules`](#schema-generaltransitfeedstaticfarerules) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareRules` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FareTransferRules`
-<a id="message-generaltransitfeedstaticfaretransferrules"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FareTransferRules`](#schema-generaltransitfeedstaticfaretransferrules) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareTransferRules` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.FeedInfo`
-<a id="message-generaltransitfeedstaticfeedinfo"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.FeedInfo`](#schema-generaltransitfeedstaticfeedinfo) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FeedInfo` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Frequencies`
-<a id="message-generaltransitfeedstaticfrequencies"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Frequencies`](#schema-generaltransitfeedstaticfrequencies) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Frequencies` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Levels`
-<a id="message-generaltransitfeedstaticlevels"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Levels`](#schema-generaltransitfeedstaticlevels) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Levels` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.LocationGeoJson`
-<a id="message-generaltransitfeedstaticlocationgeojson"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.LocationGeoJson`](#schema-generaltransitfeedstaticlocationgeojson) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.LocationGeoJson` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.LocationGroups`
-<a id="message-generaltransitfeedstaticlocationgroups"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.LocationGroups`](#schema-generaltransitfeedstaticlocationgroups) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.LocationGroups` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.LocationGroupStores`
-<a id="message-generaltransitfeedstaticlocationgroupstores"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.LocationGroupStores`](#schema-generaltransitfeedstaticlocationgroupstores) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.LocationGroupStores` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Networks`
-<a id="message-generaltransitfeedstaticnetworks"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Networks`](#schema-generaltransitfeedstaticnetworks) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Networks` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Pathways`
-<a id="message-generaltransitfeedstaticpathways"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Pathways`](#schema-generaltransitfeedstaticpathways) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Pathways` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.RouteNetworks`
-<a id="message-generaltransitfeedstaticroutenetworks"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.RouteNetworks`](#schema-generaltransitfeedstaticroutenetworks) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.RouteNetworks` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Routes`
-<a id="message-generaltransitfeedstaticroutes"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Routes`](#schema-generaltransitfeedstaticroutes) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Routes` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Shapes`
-<a id="message-generaltransitfeedstaticshapes"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Shapes`](#schema-generaltransitfeedstaticshapes) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Shapes` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.StopAreas`
-<a id="message-generaltransitfeedstaticstopareas"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.StopAreas`](#schema-generaltransitfeedstaticstopareas) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.StopAreas` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Stops`
-<a id="message-generaltransitfeedstaticstops"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Stops`](#schema-generaltransitfeedstaticstops) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Stops` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.StopTimes`
-<a id="message-generaltransitfeedstaticstoptimes"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.StopTimes`](#schema-generaltransitfeedstaticstoptimes) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.StopTimes` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Timeframes`
-<a id="message-generaltransitfeedstatictimeframes"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Timeframes`](#schema-generaltransitfeedstatictimeframes) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Timeframes` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Transfers`
-<a id="message-generaltransitfeedstatictransfers"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Transfers`](#schema-generaltransitfeedstatictransfers) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Transfers` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Translations`
-<a id="message-generaltransitfeedstatictranslations"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Translations`](#schema-generaltransitfeedstatictranslations) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Translations` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-#### Message `GeneralTransitFeedStatic.Trips`
-<a id="message-generaltransitfeedstatictrips"></a>
-
-| Field | Value |
-| --- | --- |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Trips`](#schema-generaltransitfeedstatictrips) |
-| Transport override | `None` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
-| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Trips` |
-| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
-| `subject` | Provider name | `uritemplate` | `True` | `{agencyid}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `GeneralTransitFeed.Kafka` | `KAFKA` | topic `gtfs`; key `{agencyid}` |
-
-## Schemagroups
-
-### Schemagroup `GeneralTransitFeedRealTime.jstruct`
-<a id="schemagroup-generaltransitfeedrealtimejstruct"></a>
-
-#### Schema `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
-<a id="schema-generaltransitfeedrealtimevehiclevehicleposition"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | VehiclePosition |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedRealTime/Vehicle/VehiclePosition` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition` |
-| Type | `object` |
-
-###### Object `VehiclePosition`
-<a id="schema-node-vehicleposition"></a>
+#### What it tells you
 
 Realtime positioning information for a given vehicle.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `trip` | `schema` | `False` | The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance. | - | - | - |
-| `vehicle` | `schema` | `False` | Additional information on the vehicle that is serving this trip. | - | - | - |
-| `position` | `schema` | `False` | Current position of this vehicle. The stop sequence index of the current stop. The meaning of | - | - | - |
-| `current_stop_sequence` | `int32` | `False` | current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in | - | - | - |
-| `stop_id` | `string` | `False` | the corresponding GTFS feed. | - | - | - |
-| `current_status` | `schema` | `False` | The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time | - | - | - |
-| `timestamp` | `int64` | `False` | (i.e., number of seconds since January 1st 1970 00:00:00 UTC). | - | - | - |
-| `congestion_level` | `schema` | `False` |  | - | - | - |
-| `occupancy_status` | `schema` | `False` |  | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedRealTime.Trip.TripUpdate`
-<a id="schema-generaltransitfeedrealtimetriptripupdate"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | TripUpdate |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
+`Vehicle Position` payloads are JSON object. No required field list is declared.
+
+- **`trip`** (object, optional): The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance. See [TripDescriptor](#payload-generaltransitfeedrealtime-vehicle-vehicleposition-tripdescriptor).
+- **`vehicle`** (object, optional): Additional information on the vehicle that is serving this trip. See [VehicleDescriptor](#payload-generaltransitfeedrealtime-vehicle-vehicleposition-vehicledescriptor).
+- **`position`** (object, optional): Current position of this vehicle. The stop sequence index of the current stop. The meaning of See [Position](#payload-generaltransitfeedrealtime-vehicle-vehicleposition-position).
+- **`current_stop_sequence`** (int32, optional): current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in
+- **`stop_id`** (string, optional): the corresponding GTFS feed.
+- **`current_status`** (enum, optional): The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time
+- **`timestamp`** (int64, optional): (i.e., number of seconds since January 1st 1970 00:00:00 UTC).
+- **`congestion_level`** (enum, optional): Congestion level that is affecting this vehicle.
+- **`occupancy_status`** (enum, optional): The degree of passenger occupancy of the vehicle. This field is still experimental, and subject to change. It may be formally adopted in the future.
+##### `current_status` values
+
+- `INCOMING_AT`
+- `STOPPED_AT`
+- `IN_TRANSIT_TO`
+##### `congestion_level` values
+
+- `UNKNOWN_CONGESTION_LEVEL`
+- `RUNNING_SMOOTHLY`
+- `STOP_AND_GO`
+- `CONGESTION`
+- `SEVERE_CONGESTION`
+##### `occupancy_status` values
+
+- `EMPTY`
+- `MANY_SEATS_AVAILABLE`
+- `FEW_SEATS_AVAILABLE`
+- `STANDING_ROOM_ONLY`
+- `CRUSHED_STANDING_ROOM_ONLY`
+- `FULL`
+- `NOT_ACCEPTING_PASSENGERS`
+##### `schedule_relationship` values
+
+- `SCHEDULED`
+- `ADDED`
+- `UNSCHEDULED`
+- `CANCELED`
+##### TripDescriptor
+<a id="payload-generaltransitfeedrealtime-vehicle-vehicleposition-tripdescriptor"></a>
+
+A descriptor that identifies an instance of a GTFS trip, or all instances of a trip along a route. - To specify a single trip instance, the trip_id (and if necessary, start_time) is set. If route_id is also set, then it should be same as one that the given trip corresponds to. - To specify all the trips along a given route, only the route_id should be set. Note that if the trip_id is not known, then stop sequence ids in TripUpdate are not sufficient, and stop_ids must be provided as well. In addition, absolute arrival/departure times must be provided.
+
+- **`trip_id`** (string, optional): The trip_id from the GTFS feed that this selector refers to. For non frequency-based trips, this field is enough to uniquely identify the trip. For frequency-based trip, start_time and start_date might also be necessary.
+- **`route_id`** (string, optional): The route_id from the GTFS that this selector refers to. The direction_id from the GTFS feed trips.txt file, indicating the
+- **`direction_id`** (int32, optional): direction of travel for trips this selector refers to. This field is still experimental, and subject to change. It may be formally adopted in the future.
+- **`start_time`** (string, optional): The initially scheduled start time of this trip instance. When the trip_id corresponds to a non-frequency-based trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id corresponds to a frequency-based trip, the start_time must be specified for trip updates and vehicle positions. If the trip corresponds to exact_times=1 GTFS record, then start_time must be some multiple (including zero) of headway_secs later than frequencies.txt start_time for the corresponding time period. If the trip corresponds to exact_times=0, then its start_time may be arbitrary, and is initially expected to be the first departure of the trip. Once established, the start_time of this frequency-based trip should be considered immutable, even if the first departure time changes -- that time change may instead be reflected in a StopTimeUpdate. Format and semantics of the field is same as that of GTFS/frequencies.txt/start_time, e.g., 11:15:35 or 25:15:35. The scheduled start date of this trip instance.
+- **`start_date`** (string, optional): Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format.
+- **`schedule_relationship`** (enum, optional): The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED.
+##### VehicleDescriptor
+<a id="payload-generaltransitfeedrealtime-vehicle-vehicleposition-vehicledescriptor"></a>
+
+Identification information for the vehicle performing the trip.
+
+- **`id`** (string, optional): Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to
+- **`label`** (string, optional): help identify the correct vehicle.
+- **`license_plate`** (string, optional): The license plate of the vehicle.
+##### Position
+<a id="payload-generaltransitfeedrealtime-vehicle-vehicleposition-position"></a>
+
+A position.
+
+- **`latitude`** (float, required): Degrees North, in the WGS-84 coordinate system.
+- **`longitude`** (float, required): Degrees East, in the WGS-84 coordinate system.
+- **`bearing`** (float, optional): Bearing, in degrees, clockwise from North, i.e., 0 is North and 90 is East. This can be the compass bearing, or the direction towards the next stop or intermediate location. This should not be direction deduced from the sequence of previous positions, which can be computed from previous data.
+- **`odometer`** (double, optional): Odometer value, in meters.
+- **`speed`** (float, optional): Momentary speed measured by the vehicle, in meters per second.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "trip": {
+    "trip_id": "string",
+    "route_id": "string",
+    "direction_id": 0,
+    "start_time": "string",
+    "start_date": "string",
+    "schedule_relationship": "SCHEDULED"
+  },
+  "vehicle": {
+    "id": "string",
+    "label": "string",
+    "license_plate": "string"
+  },
+  "position": {
+    "latitude": 0,
+    "longitude": 0,
+    "bearing": 0,
+    "odometer": 0,
+    "speed": 0
+  },
+  "current_stop_sequence": 0,
+  "stop_id": "string",
+  "current_status": "INCOMING_AT",
+  "timestamp": 0,
+  "congestion_level": "UNKNOWN_CONGESTION_LEVEL",
+  "occupancy_status": "EMPTY"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Trip Update
+
+CloudEvents type: `GeneralTransitFeedRealTime.Trip.TripUpdate`
+
+#### What it tells you
+
+Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule.
+
+#### Identity
+
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Format | JsonStructure/draft-02 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-###### JsonStructure
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedRealTime/Trip/TripUpdate` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate` |
-| Type | `object` |
+`Trip Update` payloads are JSON object. Required fields: `trip`, `stop_time_update`.
 
-###### Object `TripUpdate`
-<a id="schema-node-tripupdate"></a>
+- **`trip`** (object, required): The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule. See [TripDescriptor](#payload-generaltransitfeedrealtime-trip-tripupdate-tripdescriptor).
+- **`vehicle`** (object, optional): Additional information on the vehicle that is serving this trip. See [VehicleDescriptor](#payload-generaltransitfeedrealtime-trip-tripupdate-vehicledescriptor).
+- **`stop_time_update`** (array of object, required): Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX
+- **`timestamp`** (int64, optional): time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip. Delay should only be
+- **`delay`** (int32, optional): specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.
+##### `schedule_relationship` values
 
-Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful.
+- `SCHEDULED`
+- `ADDED`
+- `UNSCHEDULED`
+- `CANCELED`
+##### TripDescriptor
+<a id="payload-generaltransitfeedrealtime-trip-tripupdate-tripdescriptor"></a>
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `trip` | `schema` | `True` | The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule. | - | - | - |
-| `vehicle` | `schema` | `False` | Additional information on the vehicle that is serving this trip. | - | - | - |
-| `stop_time_update` | array of [`StopTimeUpdate`](#schema-node-stoptimeupdate) | `True` | Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX | - | - | - |
-| `timestamp` | `int64` | `False` | time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be | - | - | - |
-| `delay` | `int32` | `False` | specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future. | - | - | - |
+A descriptor that identifies an instance of a GTFS trip, or all instances of a trip along a route. - To specify a single trip instance, the trip_id (and if necessary, start_time) is set. If route_id is also set, then it should be same as one that the given trip corresponds to. - To specify all the trips along a given route, only the route_id should be set. Note that if the trip_id is not known, then stop sequence ids in TripUpdate are not sufficient, and stop_ids must be provided as well. In addition, absolute arrival/departure times must be provided.
 
-###### Object `StopTimeUpdate`
-<a id="schema-node-stoptimeupdate"></a>
+- **`trip_id`** (string, optional): The trip_id from the GTFS feed that this selector refers to. For non frequency-based trips, this field is enough to uniquely identify the trip. For frequency-based trip, start_time and start_date might also be necessary.
+- **`route_id`** (string, optional): The route_id from the GTFS that this selector refers to. The direction_id from the GTFS feed trips.txt file, indicating the
+- **`direction_id`** (int32, optional): direction of travel for trips this selector refers to. This field is still experimental, and subject to change. It may be formally adopted in the future.
+- **`start_time`** (string, optional): The initially scheduled start time of this trip instance. When the trip_id corresponds to a non-frequency-based trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id corresponds to a frequency-based trip, the start_time must be specified for trip updates and vehicle positions. If the trip corresponds to exact_times=1 GTFS record, then start_time must be some multiple (including zero) of headway_secs later than frequencies.txt start_time for the corresponding time period. If the trip corresponds to exact_times=0, then its start_time may be arbitrary, and is initially expected to be the first departure of the trip. Once established, the start_time of this frequency-based trip should be considered immutable, even if the first departure time changes -- that time change may instead be reflected in a StopTimeUpdate. Format and semantics of the field is same as that of GTFS/frequencies.txt/start_time, e.g., 11:15:35 or 25:15:35. The scheduled start date of this trip instance.
+- **`start_date`** (string, optional): Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format.
+- **`schedule_relationship`** (enum, optional): The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED.
+##### VehicleDescriptor
+<a id="payload-generaltransitfeedrealtime-trip-tripupdate-vehicledescriptor"></a>
 
-Realtime update for arrival and/or departure events for a given stop on a trip. Updates can be supplied for both past and future events. The producer is allowed, although not required, to drop past events.
+Identification information for the vehicle performing the trip.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `stop_sequence` | `int32` | `False` | The update is linked to a specific stop either through stop_sequence or stop_id, so one of the fields below must necessarily be set. See the documentation in TripDescriptor for more information. Must be the same as in stop_times.txt in the corresponding GTFS feed. | - | - | - |
-| `stop_id` | `string` | `False` | Must be the same as in stops.txt in the corresponding GTFS feed. | - | - | - |
-| `arrival` | `schema` | `False` |  | - | - | - |
-| `departure` | `schema` | `False` |  | - | - | - |
-| `schedule_relationship` | `schema` | `False` |  | - | - | - |
+- **`id`** (string, optional): Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to
+- **`label`** (string, optional): help identify the correct vehicle.
+- **`license_plate`** (string, optional): The license plate of the vehicle.
+#### Example payload
 
-#### Schema `GeneralTransitFeedRealTime.Alert.Alert`
-<a id="schema-generaltransitfeedrealtimealertalert"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Name | Alert |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+```json
+{
+  "trip": {
+    "trip_id": "string",
+    "route_id": "string",
+    "direction_id": 0,
+    "start_time": "string",
+    "start_date": "string",
+    "schedule_relationship": "SCHEDULED"
+  },
+  "vehicle": {
+    "id": "string",
+    "label": "string",
+    "license_plate": "string"
+  },
+  "stop_time_update": [
+    {
+      "stop_sequence": 0,
+      "stop_id": "string",
+      "arrival": {
+        "delay": 0,
+        "time": 0,
+        "uncertainty": 0
+      },
+      "departure": {},
+      "schedule_relationship": "SCHEDULED"
+    }
+  ],
+  "timestamp": 0,
+  "delay": 0
+}
+```
 
-##### Version `1`
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### JsonStructure
+### Alert
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedRealTime/Alert/Alert` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedRealTime/Alert/Alert` |
-| Type | `object` |
+CloudEvents type: `GeneralTransitFeedRealTime.Alert.Alert`
 
-###### Object `Alert`
-<a id="schema-node-alert"></a>
+#### What it tells you
 
 An alert, indicating some sort of incident in the public transit network.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `active_period` | array of [`TimeRange`](#schema-node-timerange) | `True` | Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them. | - | - | - |
-| `informed_entity` | array of [`EntitySelector`](#schema-node-entityselector) | `True` | Entities whose users we should notify of this alert. | - | - | - |
-| `cause` | `schema` | `False` |  | - | - | - |
-| `effect` | `schema` | `False` |  | - | - | - |
-| `url` | `schema` | `False` | The URL which provides additional information about the alert. | - | - | - |
-| `header_text` | `schema` | `False` | Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the | - | - | - |
-| `description_text` | `schema` | `False` | description should add to the information of the header. | - | - | - |
+#### Identity
 
-###### Object `TimeRange`
-<a id="schema-node-timerange"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-Low level data structures used above. A time interval. The interval is considered active at time 't' if 't' is greater than or equal to the start time and less than the end time.
+#### Where to find it
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `start` | `int64` | `False` | Start time, in POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If missing, the interval starts at minus infinity. | - | - | - |
-| `end` | `int64` | `False` | End time, in POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If missing, the interval ends at plus infinity. | - | - | - |
-
-###### Object `EntitySelector`
-<a id="schema-node-entityselector"></a>
-
-A selector for an entity in a GTFS feed.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `agency_id` | `string` | `False` | The values of the fields should correspond to the appropriate fields in the GTFS feed. At least one specifier must be given. If several are given, then the matching has to apply to all the given specifiers. | - | - | - |
-| `route_id` | `string` | `False` |  | - | - | - |
-| `route_type` | `int32` | `False` | corresponds to route_type in GTFS. | - | - | - |
-| `trip` | `schema` | `False` |  | - | - | - |
-| `stop_id` | `string` | `False` |  | - | - | - |
-
-### Schemagroup `GeneralTransitFeedRealTime.avro`
-<a id="schemagroup-generaltransitfeedrealtimeavro"></a>
-
-#### Schema `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
-<a id="schema-generaltransitfeedrealtimevehiclevehicleposition"></a>
-
-| Field | Value |
+| Transport | Location |
 | --- | --- |
-| Format | Avro |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | Avro |
+`Alert` payloads are JSON object. Required fields: `active_period`, `informed_entity`.
 
-###### Avro
+- **`active_period`** (array of object, required): Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.
+- **`informed_entity`** (array of object, required): Entities whose users we should notify of this alert.
+- **`cause`** (enum, optional): Cause of this alert.
+- **`effect`** (enum, optional): What is the effect of this problem on the affected entity.
+- **`url`** (object, optional): The URL which provides additional information about the alert. See [TranslatedString](#payload-generaltransitfeedrealtime-alert-alert-translatedstring).
+- **`header_text`** (object, optional): Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the See [TranslatedString](#payload-generaltransitfeedrealtime-alert-alert-translatedstring).
+- **`description_text`** (object, optional): description should add to the information of the header. See [TranslatedString](#payload-generaltransitfeedrealtime-alert-alert-translatedstring).
+##### `cause` values
 
-| Field | Value |
-| --- | --- |
-| Name | VehiclePosition |
-| Namespace | GeneralTransitFeedRealTime.Vehicle |
-| Type | `record` |
-| Doc | Realtime positioning information for a given vehicle. |
+- `UNKNOWN_CAUSE`
+- `OTHER_CAUSE`
+- `TECHNICAL_PROBLEM`
+- `STRIKE`
+- `DEMONSTRATION`
+- `ACCIDENT`
+- `HOLIDAY`
+- `WEATHER`
+- `MAINTENANCE`
+- `CONSTRUCTION`
+- `POLICE_ACTIVITY`
+- `MEDICAL_EMERGENCY`
+##### `effect` values
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `trip` | `null` \| record `TripDescriptor` | The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance. | `-` |
-| `vehicle` | `null` \| record `VehicleDescriptor` | Additional information on the vehicle that is serving this trip. | `-` |
-| `position` | `null` \| record `Position` | Current position of this vehicle. The stop sequence index of the current stop. The meaning of | `-` |
-| `current_stop_sequence` | `null` \| `int` | current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in | `-` |
-| `stop_id` | `null` \| `string` | the corresponding GTFS feed. | `-` |
-| `current_status` | `null` \| enum `VehicleStopStatus` | The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time | `-` |
-| `timestamp` | `null` \| `long` | (i.e., number of seconds since January 1st 1970 00:00:00 UTC). | `-` |
-| `congestion_level` | `null` \| enum `CongestionLevel` |  | `-` |
-| `occupancy_status` | `null` \| enum `OccupancyStatus` |  | `-` |
+- `NO_SERVICE`
+- `REDUCED_SERVICE`
+- `SIGNIFICANT_DELAYS`
+- `DETOUR`
+- `ADDITIONAL_SERVICE`
+- `MODIFIED_SERVICE`
+- `OTHER_EFFECT`
+- `UNKNOWN_EFFECT`
+- `STOP_MOVED`
+##### TranslatedString
+<a id="payload-generaltransitfeedrealtime-alert-alert-translatedstring"></a>
 
-#### Schema `GeneralTransitFeedRealTime.Trip.TripUpdate`
-<a id="schema-generaltransitfeedrealtimetriptripupdate"></a>
+An internationalized message containing per-language versions of a snippet of text or a URL. One of the strings from a message will be picked up. The resolution proceeds as follows: 1. If the UI language matches the language code of a translation, the first matching translation is picked. 2. If a default UI language (e.g., English) matches the language code of a translation, the first matching translation is picked. 3. If some translation has an unspecified language code, that translation is picked.
 
-| Field | Value |
-| --- | --- |
-| Format | Avro |
+- **`translation`** (array of object, required): At least one translation must be provided.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | Avro |
+```json
+{
+  "active_period": [
+    {
+      "start": 0,
+      "end": 0
+    }
+  ],
+  "informed_entity": [
+    {
+      "agency_id": "string",
+      "route_id": "string",
+      "route_type": 0,
+      "trip": {
+        "trip_id": "string",
+        "route_id": "string",
+        "direction_id": 0,
+        "start_time": "string",
+        "start_date": "string",
+        "schedule_relationship": "SCHEDULED"
+      },
+      "stop_id": "string"
+    }
+  ],
+  "cause": "UNKNOWN_CAUSE",
+  "effect": "NO_SERVICE",
+  "url": {
+    "translation": [
+      {
+        "text": "string",
+        "language": "string"
+      }
+    ]
+  },
+  "header_text": {},
+  "description_text": {}
+}
+```
 
-###### Avro
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Name | TripUpdate |
-| Namespace | GeneralTransitFeedRealTime.Trip |
-| Type | `record` |
-| Doc | Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful. |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `trip` | record `TripDescriptor` | The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule. | `-` |
-| `vehicle` | `null` \| record `VehicleDescriptor` | Additional information on the vehicle that is serving this trip. | `-` |
-| `stop_time_update` | array of record `StopTimeUpdate` | Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX | `-` |
-| `timestamp` | `null` \| `long` | time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be | `-` |
-| `delay` | `null` \| `int` | specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future. | `-` |
+### Agency
 
-#### Schema `GeneralTransitFeedRealTime.Alert.Alert`
-<a id="schema-generaltransitfeedrealtimealertalert"></a>
+CloudEvents type: `GeneralTransitFeedStatic.Agency`
 
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Alert |
-| Namespace | GeneralTransitFeedRealTime.Alert |
-| Type | `record` |
-| Doc | An alert, indicating some sort of incident in the public transit network. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `active_period` | array of record `TimeRange` | Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them. | `-` |
-| `informed_entity` | array of record `EntitySelector` | Entities whose users we should notify of this alert. | `-` |
-| `cause` | `null` \| enum `Cause` |  | `-` |
-| `effect` | `null` \| enum `Effect` |  | `-` |
-| `url` | `null` \| record `TranslatedString` | The URL which provides additional information about the alert. | `-` |
-| `header_text` | `null` \| `GeneralTransitFeedRealTime.Alert.TranslatedString` | Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the | `-` |
-| `description_text` | `null` \| `GeneralTransitFeedRealTime.Alert.TranslatedString` | description should add to the information of the header. | `-` |
-
-### Schemagroup `GeneralTransitFeedStatic.jstruct`
-<a id="schemagroup-generaltransitfeedstaticjstruct"></a>
-
-#### Schema `GeneralTransitFeedStatic.Agency`
-<a id="schema-generaltransitfeedstaticagency"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Agency |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Agency` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Agency` |
-| Type | `object` |
-
-###### Object `Agency`
-<a id="schema-node-agency"></a>
+#### What it tells you
 
 Information about the transit agencies.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `agencyId` | `string` | `True` | Identifies a transit brand which is often synonymous with a transit agency. | - | - | - |
-| `agencyName` | `string` | `True` | Full name of the transit agency. | - | - | - |
-| `agencyUrl` | `string` | `True` | URL of the transit agency. | - | - | - |
-| `agencyTimezone` | `string` | `True` | Timezone where the transit agency is located. | - | - | - |
-| `agencyLang` | `string` | `False` | Primary language used by this transit agency. | - | default=`-` | default=`-` |
-| `agencyPhone` | `string` | `False` | A voice telephone number for the specified agency. | - | default=`-` | default=`-` |
-| `agencyFareUrl` | `string` | `False` | URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online. | - | default=`-` | default=`-` |
-| `agencyEmail` | `string` | `False` | Email address actively monitored by the agency’s customer service department. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Areas`
-<a id="schema-generaltransitfeedstaticareas"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Areas |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Agency` payloads are JSON object. Required fields: `agencyId`, `agencyName`, `agencyUrl`, `agencyTimezone`.
 
-###### JsonStructure
+- **`agencyId`** (string, required): Identifies a transit brand which is often synonymous with a transit agency.
+- **`agencyName`** (string, required): Full name of the transit agency.
+- **`agencyUrl`** (string, required): URL of the transit agency.
+- **`agencyTimezone`** (string, required): Timezone where the transit agency is located.
+- **`agencyLang`** (string, optional): Primary language used by this transit agency.
+- **`agencyPhone`** (string, optional): A voice telephone number for the specified agency.
+- **`agencyFareUrl`** (string, optional): URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.
+- **`agencyEmail`** (string, optional): Email address actively monitored by the agency’s customer service department.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Areas` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Areas` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Areas`
-<a id="schema-node-areas"></a>
+```json
+{
+  "agencyId": "string",
+  "agencyName": "string",
+  "agencyUrl": "string",
+  "agencyTimezone": "string",
+  "agencyLang": "string",
+  "agencyPhone": "string",
+  "agencyFareUrl": "string",
+  "agencyEmail": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Areas
+
+CloudEvents type: `GeneralTransitFeedStatic.Areas`
+
+#### What it tells you
 
 Defines areas.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `areaId` | `string` | `True` | Identifies an area. | - | - | - |
-| `areaName` | `string` | `True` | Name of the area. | - | - | - |
-| `areaDesc` | `string` | `False` | Description of the area. | - | default=`-` | default=`-` |
-| `areaUrl` | `string` | `False` | URL of a web page about the area. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Attributions`
-<a id="schema-generaltransitfeedstaticattributions"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Attributions |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Areas` payloads are JSON object. Required fields: `areaId`, `areaName`.
 
-###### JsonStructure
+- **`areaId`** (string, required): Identifies an area.
+- **`areaName`** (string, required): Name of the area.
+- **`areaDesc`** (string, optional): Description of the area.
+- **`areaUrl`** (string, optional): URL of a web page about the area.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Attributions` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Attributions` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Attributions`
-<a id="schema-node-attributions"></a>
+```json
+{
+  "areaId": "string",
+  "areaName": "string",
+  "areaDesc": "string",
+  "areaUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Attributions
+
+CloudEvents type: `GeneralTransitFeedStatic.Attributions`
+
+#### What it tells you
 
 Provides information about the attributions.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `attributionId` | `string` | `False` | Identifies an attribution for the dataset. | - | default=`-` | default=`-` |
-| `agencyId` | `string` | `False` | Identifies the agency associated with the attribution. | - | default=`-` | default=`-` |
-| `routeId` | `string` | `False` | Identifies the route associated with the attribution. | - | default=`-` | default=`-` |
-| `tripId` | `string` | `False` | Identifies the trip associated with the attribution. | - | default=`-` | default=`-` |
-| `organizationName` | `string` | `True` | Name of the organization associated with the attribution. | - | - | - |
-| `isProducer` | `int32` | `False` | Indicates if the organization is a producer. | - | default=`-` | default=`-` |
-| `isOperator` | `int32` | `False` | Indicates if the organization is an operator. | - | default=`-` | default=`-` |
-| `isAuthority` | `int32` | `False` | Indicates if the organization is an authority. | - | default=`-` | default=`-` |
-| `attributionUrl` | `string` | `False` | URL of a web page about the attribution. | - | default=`-` | default=`-` |
-| `attributionEmail` | `string` | `False` | Email address associated with the attribution. | - | default=`-` | default=`-` |
-| `attributionPhone` | `string` | `False` | Phone number associated with the attribution. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeed.BookingRules`
-<a id="schema-generaltransitfeedbookingrules"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | BookingRules |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Attributions` payloads are JSON object. Required fields: `organizationName`.
 
-###### JsonStructure
+- **`attributionId`** (string, optional): Identifies an attribution for the dataset.
+- **`agencyId`** (string, optional): Identifies the agency associated with the attribution.
+- **`routeId`** (string, optional): Identifies the route associated with the attribution.
+- **`tripId`** (string, optional): Identifies the trip associated with the attribution.
+- **`organizationName`** (string, required): Name of the organization associated with the attribution.
+- **`isProducer`** (int32, optional): Indicates if the organization is a producer.
+- **`isOperator`** (int32, optional): Indicates if the organization is an operator.
+- **`isAuthority`** (int32, optional): Indicates if the organization is an authority.
+- **`attributionUrl`** (string, optional): URL of a web page about the attribution.
+- **`attributionEmail`** (string, optional): Email address associated with the attribution.
+- **`attributionPhone`** (string, optional): Phone number associated with the attribution.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/BookingRules` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/BookingRules` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `BookingRules`
-<a id="schema-node-bookingrules"></a>
+```json
+{
+  "attributionId": "string",
+  "agencyId": "string",
+  "routeId": "string",
+  "tripId": "string",
+  "organizationName": "string",
+  "isProducer": 0,
+  "isOperator": 0,
+  "isAuthority": 0,
+  "attributionUrl": "string",
+  "attributionEmail": "string",
+  "attributionPhone": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Booking Rules
+
+CloudEvents type: `GeneralTransitFeed.BookingRules`
+
+#### What it tells you
 
 Defines booking rules.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `bookingRuleId` | `string` | `True` | Identifies a booking rule. | - | - | - |
-| `bookingRuleName` | `string` | `True` | Name of the booking rule. | - | - | - |
-| `bookingRuleDesc` | `string` | `False` | Description of the booking rule. | - | default=`-` | default=`-` |
-| `bookingRuleUrl` | `string` | `False` | URL of a web page about the booking rule. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FareAttributes`
-<a id="schema-generaltransitfeedstaticfareattributes"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FareAttributes |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Booking Rules` payloads are JSON object. Required fields: `bookingRuleId`, `bookingRuleName`.
 
-###### JsonStructure
+- **`bookingRuleId`** (string, required): Identifies a booking rule.
+- **`bookingRuleName`** (string, required): Name of the booking rule.
+- **`bookingRuleDesc`** (string, optional): Description of the booking rule.
+- **`bookingRuleUrl`** (string, optional): URL of a web page about the booking rule.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FareAttributes` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FareAttributes` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FareAttributes`
-<a id="schema-node-fareattributes"></a>
+```json
+{
+  "bookingRuleId": "string",
+  "bookingRuleName": "string",
+  "bookingRuleDesc": "string",
+  "bookingRuleUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Fare Attributes
+
+CloudEvents type: `GeneralTransitFeedStatic.FareAttributes`
+
+#### What it tells you
 
 Defines fare attributes.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fareId` | `string` | `True` | Identifies a fare class. | - | - | - |
-| `price` | `double` | `True` | Fare price, in the unit specified by currency_type. | - | - | - |
-| `currencyType` | `string` | `True` | Currency type used to pay the fare. | - | - | - |
-| `paymentMethod` | `int32` | `True` | When 0, fare must be paid on board. When 1, fare must be paid before boarding. | - | - | - |
-| `transfers` | `int32` | `False` | Specifies the number of transfers permitted on this fare. | - | default=`-` | default=`-` |
-| `agencyId` | `string` | `False` | Identifies the agency for the specified fare. | - | default=`-` | default=`-` |
-| `transferDuration` | `int64` | `False` | Length of time in seconds before a transfer expires. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FareLegRules`
-<a id="schema-generaltransitfeedstaticfarelegrules"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FareLegRules |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Fare Attributes` payloads are JSON object. Required fields: `fareId`, `price`, `currencyType`, `paymentMethod`.
 
-###### JsonStructure
+- **`fareId`** (string, required): Identifies a fare class.
+- **`price`** (double, required): Fare price, in the unit specified by currency_type.
+- **`currencyType`** (string, required): Currency type used to pay the fare.
+- **`paymentMethod`** (int32, required): When 0, fare must be paid on board. When 1, fare must be paid before boarding.
+- **`transfers`** (int32, optional): Specifies the number of transfers permitted on this fare.
+- **`agencyId`** (string, optional): Identifies the agency for the specified fare.
+- **`transferDuration`** (int64, optional): Length of time in seconds before a transfer expires.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FareLegRules` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FareLegRules` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FareLegRules`
-<a id="schema-node-farelegrules"></a>
+```json
+{
+  "fareId": "string",
+  "price": 0,
+  "currencyType": "string",
+  "paymentMethod": 0,
+  "transfers": 0,
+  "agencyId": "string",
+  "transferDuration": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Fare Leg Rules
+
+CloudEvents type: `GeneralTransitFeedStatic.FareLegRules`
+
+#### What it tells you
 
 Defines fare leg rules.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fareLegRuleId` | `string` | `True` | Identifies a fare leg rule. | - | - | - |
-| `fareProductId` | `string` | `True` | Identifies a fare product. | - | - | - |
-| `legGroupId` | `string` | `False` | Identifies a group of legs. | - | default=`-` | default=`-` |
-| `networkId` | `string` | `False` | Identifies a network. | - | default=`-` | default=`-` |
-| `fromAreaId` | `string` | `False` | Identifies the origin area. | - | default=`-` | default=`-` |
-| `toAreaId` | `string` | `False` | Identifies the destination area. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FareMedia`
-<a id="schema-generaltransitfeedstaticfaremedia"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FareMedia |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Fare Leg Rules` payloads are JSON object. Required fields: `fareLegRuleId`, `fareProductId`.
 
-###### JsonStructure
+- **`fareLegRuleId`** (string, required): Identifies a fare leg rule.
+- **`fareProductId`** (string, required): Identifies a fare product.
+- **`legGroupId`** (string, optional): Identifies a group of legs.
+- **`networkId`** (string, optional): Identifies a network.
+- **`fromAreaId`** (string, optional): Identifies the origin area.
+- **`toAreaId`** (string, optional): Identifies the destination area.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FareMedia` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FareMedia` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FareMedia`
-<a id="schema-node-faremedia"></a>
+```json
+{
+  "fareLegRuleId": "string",
+  "fareProductId": "string",
+  "legGroupId": "string",
+  "networkId": "string",
+  "fromAreaId": "string",
+  "toAreaId": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Fare Media
+
+CloudEvents type: `GeneralTransitFeedStatic.FareMedia`
+
+#### What it tells you
 
 Defines fare media.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fareMediaId` | `string` | `True` | Identifies a fare media. | - | - | - |
-| `fareMediaName` | `string` | `True` | Name of the fare media. | - | - | - |
-| `fareMediaDesc` | `string` | `False` | Description of the fare media. | - | default=`-` | default=`-` |
-| `fareMediaUrl` | `string` | `False` | URL of a web page about the fare media. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FareProducts`
-<a id="schema-generaltransitfeedstaticfareproducts"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FareProducts |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Fare Media` payloads are JSON object. Required fields: `fareMediaId`, `fareMediaName`.
 
-###### JsonStructure
+- **`fareMediaId`** (string, required): Identifies a fare media.
+- **`fareMediaName`** (string, required): Name of the fare media.
+- **`fareMediaDesc`** (string, optional): Description of the fare media.
+- **`fareMediaUrl`** (string, optional): URL of a web page about the fare media.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FareProducts` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FareProducts` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FareProducts`
-<a id="schema-node-fareproducts"></a>
+```json
+{
+  "fareMediaId": "string",
+  "fareMediaName": "string",
+  "fareMediaDesc": "string",
+  "fareMediaUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Fare Products
+
+CloudEvents type: `GeneralTransitFeedStatic.FareProducts`
+
+#### What it tells you
 
 Defines fare products.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fareProductId` | `string` | `True` | Identifies a fare product. | - | - | - |
-| `fareProductName` | `string` | `True` | Name of the fare product. | - | - | - |
-| `fareProductDesc` | `string` | `False` | Description of the fare product. | - | default=`-` | default=`-` |
-| `fareProductUrl` | `string` | `False` | URL of a web page about the fare product. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FareRules`
-<a id="schema-generaltransitfeedstaticfarerules"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FareRules |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Fare Products` payloads are JSON object. Required fields: `fareProductId`, `fareProductName`.
 
-###### JsonStructure
+- **`fareProductId`** (string, required): Identifies a fare product.
+- **`fareProductName`** (string, required): Name of the fare product.
+- **`fareProductDesc`** (string, optional): Description of the fare product.
+- **`fareProductUrl`** (string, optional): URL of a web page about the fare product.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FareRules` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FareRules` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FareRules`
-<a id="schema-node-farerules"></a>
+```json
+{
+  "fareProductId": "string",
+  "fareProductName": "string",
+  "fareProductDesc": "string",
+  "fareProductUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Fare Rules
+
+CloudEvents type: `GeneralTransitFeedStatic.FareRules`
+
+#### What it tells you
 
 Defines fare rules.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fareId` | `string` | `True` | Identifies a fare class. | - | - | - |
-| `routeId` | `string` | `False` | Identifies a route associated with the fare. | - | default=`-` | default=`-` |
-| `originId` | `string` | `False` | Identifies the fare zone of the origin. | - | default=`-` | default=`-` |
-| `destinationId` | `string` | `False` | Identifies the fare zone of the destination. | - | default=`-` | default=`-` |
-| `containsId` | `string` | `False` | Identifies the fare zone that a rider will enter or leave. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FareTransferRules`
-<a id="schema-generaltransitfeedstaticfaretransferrules"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FareTransferRules |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Fare Rules` payloads are JSON object. Required fields: `fareId`.
 
-###### JsonStructure
+- **`fareId`** (string, required): Identifies a fare class.
+- **`routeId`** (string, optional): Identifies a route associated with the fare.
+- **`originId`** (string, optional): Identifies the fare zone of the origin.
+- **`destinationId`** (string, optional): Identifies the fare zone of the destination.
+- **`containsId`** (string, optional): Identifies the fare zone that a rider will enter or leave.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FareTransferRules` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FareTransferRules` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FareTransferRules`
-<a id="schema-node-faretransferrules"></a>
+```json
+{
+  "fareId": "string",
+  "routeId": "string",
+  "originId": "string",
+  "destinationId": "string",
+  "containsId": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Fare Transfer Rules
+
+CloudEvents type: `GeneralTransitFeedStatic.FareTransferRules`
+
+#### What it tells you
 
 Defines fare transfer rules.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fareTransferRuleId` | `string` | `True` | Identifies a fare transfer rule. | - | - | - |
-| `fareProductId` | `string` | `True` | Identifies a fare product. | - | - | - |
-| `transferCount` | `int32` | `False` | Number of transfers permitted. | - | default=`-` | default=`-` |
-| `fromLegGroupId` | `string` | `False` | Identifies the leg group from which the transfer starts. | - | default=`-` | default=`-` |
-| `toLegGroupId` | `string` | `False` | Identifies the leg group to which the transfer applies. | - | default=`-` | default=`-` |
-| `duration` | `int64` | `False` | Length of time in seconds before a transfer expires. | - | default=`-` | default=`-` |
-| `durationType` | `string` | `False` | Type of duration for the transfer. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.FeedInfo`
-<a id="schema-generaltransitfeedstaticfeedinfo"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | FeedInfo |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Fare Transfer Rules` payloads are JSON object. Required fields: `fareTransferRuleId`, `fareProductId`.
 
-###### JsonStructure
+- **`fareTransferRuleId`** (string, required): Identifies a fare transfer rule.
+- **`fareProductId`** (string, required): Identifies a fare product.
+- **`transferCount`** (int32, optional): Number of transfers permitted.
+- **`fromLegGroupId`** (string, optional): Identifies the leg group from which the transfer starts.
+- **`toLegGroupId`** (string, optional): Identifies the leg group to which the transfer applies.
+- **`duration`** (int64, optional): Length of time in seconds before a transfer expires.
+- **`durationType`** (string, optional): Type of duration for the transfer.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/FeedInfo` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/FeedInfo` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `FeedInfo`
-<a id="schema-node-feedinfo"></a>
+```json
+{
+  "fareTransferRuleId": "string",
+  "fareProductId": "string",
+  "transferCount": 0,
+  "fromLegGroupId": "string",
+  "toLegGroupId": "string",
+  "duration": 0,
+  "durationType": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Feed Info
+
+CloudEvents type: `GeneralTransitFeedStatic.FeedInfo`
+
+#### What it tells you
 
 Provides information about the GTFS feed itself.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `feedPublisherName` | `string` | `True` | Full name of the organization that publishes the feed. | - | - | - |
-| `feedPublisherUrl` | `string` | `True` | URL of the feed publishing organization's website. | - | - | - |
-| `feedLang` | `string` | `True` | Default language for the text in this feed. | - | - | - |
-| `defaultLang` | `string` | `False` | Specifies the language used when the data consumer doesn’t know the language of the user. | - | default=`-` | default=`-` |
-| `feedStartDate` | `string` | `False` | The start date for the dataset. | - | default=`-` | default=`-` |
-| `feedEndDate` | `string` | `False` | The end date for the dataset. | - | default=`-` | default=`-` |
-| `feedVersion` | `string` | `False` | Version string that indicates the current version of their GTFS dataset. | - | default=`-` | default=`-` |
-| `feedContactEmail` | `string` | `False` | Email address for communication with the data publisher. | - | default=`-` | default=`-` |
-| `feedContactUrl` | `string` | `False` | URL for a web page that allows a feed consumer to contact the data publisher. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Frequencies`
-<a id="schema-generaltransitfeedstaticfrequencies"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Frequencies |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Feed Info` payloads are JSON object. Required fields: `feedPublisherName`, `feedPublisherUrl`, `feedLang`.
 
-###### JsonStructure
+- **`feedPublisherName`** (string, required): Full name of the organization that publishes the feed.
+- **`feedPublisherUrl`** (string, required): URL of the feed publishing organization's website.
+- **`feedLang`** (string, required): Default language for the text in this feed.
+- **`defaultLang`** (string, optional): Specifies the language used when the data consumer doesn’t know the language of the user.
+- **`feedStartDate`** (string, optional): The start date for the dataset.
+- **`feedEndDate`** (string, optional): The end date for the dataset.
+- **`feedVersion`** (string, optional): Version string that indicates the current version of their GTFS dataset.
+- **`feedContactEmail`** (string, optional): Email address for communication with the data publisher.
+- **`feedContactUrl`** (string, optional): URL for a web page that allows a feed consumer to contact the data publisher.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Frequencies` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Frequencies` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Frequencies`
-<a id="schema-node-frequencies"></a>
+```json
+{
+  "feedPublisherName": "string",
+  "feedPublisherUrl": "string",
+  "feedLang": "string",
+  "defaultLang": "string",
+  "feedStartDate": "string",
+  "feedEndDate": "string",
+  "feedVersion": "string",
+  "feedContactEmail": "string",
+  "feedContactUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Frequencies
+
+CloudEvents type: `GeneralTransitFeedStatic.Frequencies`
+
+#### What it tells you
 
 Defines frequencies.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `tripId` | `string` | `True` | Identifies a trip. | - | - | - |
-| `startTime` | `string` | `True` | Time at which service begins with the specified frequency. | - | - | - |
-| `endTime` | `string` | `True` | Time at which service ends with the specified frequency. | - | - | - |
-| `headwaySecs` | `int32` | `True` | Time between departures from the same stop (headway) for this trip, in seconds. | - | - | - |
-| `exactTimes` | `int32` | `False` | When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Levels`
-<a id="schema-generaltransitfeedstaticlevels"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Levels |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Frequencies` payloads are JSON object. Required fields: `tripId`, `startTime`, `endTime`, `headwaySecs`.
 
-###### JsonStructure
+- **`tripId`** (string, required): Identifies a trip.
+- **`startTime`** (string, required): Time at which service begins with the specified frequency.
+- **`endTime`** (string, required): Time at which service ends with the specified frequency.
+- **`headwaySecs`** (int32, required): Time between departures from the same stop (headway) for this trip, in seconds.
+- **`exactTimes`** (int32, optional): When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Levels` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Levels` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Levels`
-<a id="schema-node-levels"></a>
+```json
+{
+  "tripId": "string",
+  "startTime": "string",
+  "endTime": "string",
+  "headwaySecs": 0,
+  "exactTimes": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Levels
+
+CloudEvents type: `GeneralTransitFeedStatic.Levels`
+
+#### What it tells you
 
 Defines levels.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `levelId` | `string` | `True` | Identifies a level. | - | - | - |
-| `levelIndex` | `double` | `True` | Numeric index of the level that indicates relative position of the level in relation to other levels. | - | - | - |
-| `levelName` | `string` | `False` | Name of the level. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.LocationGeoJson`
-<a id="schema-generaltransitfeedstaticlocationgeojson"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | LocationGeoJson |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Levels` payloads are JSON object. Required fields: `levelId`, `levelIndex`.
 
-###### JsonStructure
+- **`levelId`** (string, required): Identifies a level.
+- **`levelIndex`** (double, required): Numeric index of the level that indicates relative position of the level in relation to other levels.
+- **`levelName`** (string, optional): Name of the level.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/LocationGeoJson` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/LocationGeoJson` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `LocationGeoJson`
-<a id="schema-node-locationgeojson"></a>
+```json
+{
+  "levelId": "string",
+  "levelIndex": 0,
+  "levelName": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Location Geo Json
+
+CloudEvents type: `GeneralTransitFeedStatic.LocationGeoJson`
+
+#### What it tells you
 
 Defines location GeoJSON data.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `locationGeoJsonId` | `string` | `True` | Identifies a location GeoJSON. | - | - | - |
-| `locationGeoJsonType` | `string` | `True` | Type of the GeoJSON. | - | - | - |
-| `locationGeoJsonData` | `string` | `True` | GeoJSON data. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.LocationGroups`
-<a id="schema-generaltransitfeedstaticlocationgroups"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | LocationGroups |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Location Geo Json` payloads are JSON object. Required fields: `locationGeoJsonId`, `locationGeoJsonType`, `locationGeoJsonData`.
 
-###### JsonStructure
+- **`locationGeoJsonId`** (string, required): Identifies a location GeoJSON.
+- **`locationGeoJsonType`** (string, required): Type of the GeoJSON.
+- **`locationGeoJsonData`** (string, required): GeoJSON data.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/LocationGroups` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/LocationGroups` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `LocationGroups`
-<a id="schema-node-locationgroups"></a>
+```json
+{
+  "locationGeoJsonId": "string",
+  "locationGeoJsonType": "string",
+  "locationGeoJsonData": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Location Groups
+
+CloudEvents type: `GeneralTransitFeedStatic.LocationGroups`
+
+#### What it tells you
 
 Defines location groups.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `locationGroupId` | `string` | `True` | Identifies a location group. | - | - | - |
-| `locationGroupName` | `string` | `True` | Name of the location group. | - | - | - |
-| `locationGroupDesc` | `string` | `False` | Description of the location group. | - | default=`-` | default=`-` |
-| `locationGroupUrl` | `string` | `False` | URL of a web page about the location group. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.LocationGroupStores`
-<a id="schema-generaltransitfeedstaticlocationgroupstores"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | LocationGroupStores |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Location Groups` payloads are JSON object. Required fields: `locationGroupId`, `locationGroupName`.
 
-###### JsonStructure
+- **`locationGroupId`** (string, required): Identifies a location group.
+- **`locationGroupName`** (string, required): Name of the location group.
+- **`locationGroupDesc`** (string, optional): Description of the location group.
+- **`locationGroupUrl`** (string, optional): URL of a web page about the location group.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/LocationGroupStores` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/LocationGroupStores` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `LocationGroupStores`
-<a id="schema-node-locationgroupstores"></a>
+```json
+{
+  "locationGroupId": "string",
+  "locationGroupName": "string",
+  "locationGroupDesc": "string",
+  "locationGroupUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Location Group Stores
+
+CloudEvents type: `GeneralTransitFeedStatic.LocationGroupStores`
+
+#### What it tells you
 
 Defines location group stores.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `locationGroupStoreId` | `string` | `True` | Identifies a location group store. | - | - | - |
-| `locationGroupId` | `string` | `True` | Identifies a location group. | - | - | - |
-| `storeId` | `string` | `True` | Identifies a store. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Networks`
-<a id="schema-generaltransitfeedstaticnetworks"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Networks |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Location Group Stores` payloads are JSON object. Required fields: `locationGroupStoreId`, `locationGroupId`, `storeId`.
 
-###### JsonStructure
+- **`locationGroupStoreId`** (string, required): Identifies a location group store.
+- **`locationGroupId`** (string, required): Identifies a location group.
+- **`storeId`** (string, required): Identifies a store.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Networks` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Networks` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Networks`
-<a id="schema-node-networks"></a>
+```json
+{
+  "locationGroupStoreId": "string",
+  "locationGroupId": "string",
+  "storeId": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Networks
+
+CloudEvents type: `GeneralTransitFeedStatic.Networks`
+
+#### What it tells you
 
 Defines networks.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `networkId` | `string` | `True` | Identifies a network. | - | - | - |
-| `networkName` | `string` | `True` | Name of the network. | - | - | - |
-| `networkDesc` | `string` | `False` | Description of the network. | - | default=`-` | default=`-` |
-| `networkUrl` | `string` | `False` | URL of a web page about the network. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Pathways`
-<a id="schema-generaltransitfeedstaticpathways"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Pathways |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Networks` payloads are JSON object. Required fields: `networkId`, `networkName`.
 
-###### JsonStructure
+- **`networkId`** (string, required): Identifies a network.
+- **`networkName`** (string, required): Name of the network.
+- **`networkDesc`** (string, optional): Description of the network.
+- **`networkUrl`** (string, optional): URL of a web page about the network.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Pathways` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Pathways` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Pathways`
-<a id="schema-node-pathways"></a>
+```json
+{
+  "networkId": "string",
+  "networkName": "string",
+  "networkDesc": "string",
+  "networkUrl": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Pathways
+
+CloudEvents type: `GeneralTransitFeedStatic.Pathways`
+
+#### What it tells you
 
 Defines pathways.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `pathwayId` | `string` | `True` | Identifies a pathway. | - | - | - |
-| `fromStopId` | `string` | `True` | Identifies a stop or station where the pathway begins. | - | - | - |
-| `toStopId` | `string` | `True` | Identifies a stop or station where the pathway ends. | - | - | - |
-| `pathwayMode` | `int32` | `True` | Type of pathway between the specified (from_stop_id, to_stop_id) pair. | - | - | - |
-| `isBidirectional` | `int32` | `True` | When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id). | - | - | - |
-| `length` | `double` | `False` | Length of the pathway, in meters. | - | default=`-` | default=`-` |
-| `traversalTime` | `int32` | `False` | Average time, in seconds, needed to walk through the pathway. | - | default=`-` | default=`-` |
-| `stairCount` | `int32` | `False` | Number of stairs of the pathway. | - | default=`-` | default=`-` |
-| `maxSlope` | `double` | `False` | Maximum slope of the pathway, in percent. | - | default=`-` | default=`-` |
-| `minWidth` | `double` | `False` | Minimum width of the pathway, in meters. | - | default=`-` | default=`-` |
-| `signpostedAs` | `string` | `False` | Signposting information for the pathway. | - | default=`-` | default=`-` |
-| `reversedSignpostedAs` | `string` | `False` | Reversed signposting information for the pathway. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.RouteNetworks`
-<a id="schema-generaltransitfeedstaticroutenetworks"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | RouteNetworks |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Pathways` payloads are JSON object. Required fields: `pathwayId`, `fromStopId`, `toStopId`, `pathwayMode`, `isBidirectional`.
 
-###### JsonStructure
+- **`pathwayId`** (string, required): Identifies a pathway.
+- **`fromStopId`** (string, required): Identifies a stop or station where the pathway begins.
+- **`toStopId`** (string, required): Identifies a stop or station where the pathway ends.
+- **`pathwayMode`** (int32, required): Type of pathway between the specified (from_stop_id, to_stop_id) pair.
+- **`isBidirectional`** (int32, required): When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id).
+- **`length`** (double, optional): Length of the pathway, in meters.
+- **`traversalTime`** (int32, optional): Average time, in seconds, needed to walk through the pathway.
+- **`stairCount`** (int32, optional): Number of stairs of the pathway.
+- **`maxSlope`** (double, optional): Maximum slope of the pathway, in percent.
+- **`minWidth`** (double, optional): Minimum width of the pathway, in meters.
+- **`signpostedAs`** (string, optional): Signposting information for the pathway.
+- **`reversedSignpostedAs`** (string, optional): Reversed signposting information for the pathway.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/RouteNetworks` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/RouteNetworks` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `RouteNetworks`
-<a id="schema-node-routenetworks"></a>
+```json
+{
+  "pathwayId": "string",
+  "fromStopId": "string",
+  "toStopId": "string",
+  "pathwayMode": 0,
+  "isBidirectional": 0,
+  "length": 0,
+  "traversalTime": 0,
+  "stairCount": 0,
+  "maxSlope": 0,
+  "minWidth": 0,
+  "signpostedAs": "string",
+  "reversedSignpostedAs": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Route Networks
+
+CloudEvents type: `GeneralTransitFeedStatic.RouteNetworks`
+
+#### What it tells you
 
 Defines route networks.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `routeNetworkId` | `string` | `True` | Identifies a route network. | - | - | - |
-| `routeId` | `string` | `True` | Identifies a route. | - | - | - |
-| `networkId` | `string` | `True` | Identifies a network. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Routes`
-<a id="schema-generaltransitfeedstaticroutes"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Routes |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Route Networks` payloads are JSON object. Required fields: `routeNetworkId`, `routeId`, `networkId`.
 
-###### JsonStructure
+- **`routeNetworkId`** (string, required): Identifies a route network.
+- **`routeId`** (string, required): Identifies a route.
+- **`networkId`** (string, required): Identifies a network.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Routes` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Routes` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Routes`
-<a id="schema-node-routes"></a>
+```json
+{
+  "routeNetworkId": "string",
+  "routeId": "string",
+  "networkId": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Routes
+
+CloudEvents type: `GeneralTransitFeedStatic.Routes`
+
+#### What it tells you
 
 Identifies a route.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `routeId` | `string` | `True` | Identifies a route. | - | - | - |
-| `agencyId` | `string` | `False` | Agency for the specified route. | - | default=`-` | default=`-` |
-| `routeShortName` | `string` | `False` | Short name of a route. | - | default=`-` | default=`-` |
-| `routeLongName` | `string` | `False` | Full name of a route. | - | default=`-` | default=`-` |
-| `routeDesc` | `string` | `False` | Description of a route that provides useful, quality information. | - | default=`-` | default=`-` |
-| `routeType` | `schema` | `True` | Indicates the type of transportation used on a route. | - | - | - |
-| `routeUrl` | `string` | `False` | URL of a web page about the particular route. | - | default=`-` | default=`-` |
-| `routeColor` | `string` | `False` | Route color designation that matches public facing material. | - | default=`-` | default=`-` |
-| `routeTextColor` | `string` | `False` | Legible color to use for text drawn against a background of route_color. | - | default=`-` | default=`-` |
-| `routeSortOrder` | `int32` | `False` | Orders the routes in a way which is ideal for presentation to customers. | - | default=`-` | default=`-` |
-| `continuousPickup` | `schema` | `True` | Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. | - | - | - |
-| `continuousDropOff` | `schema` | `True` | Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. | - | - | - |
-| `networkId` | `string` | `False` | Identifies a group of routes. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Shapes`
-<a id="schema-generaltransitfeedstaticshapes"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Shapes |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Routes` payloads are JSON object. Required fields: `routeId`, `routeType`, `continuousPickup`, `continuousDropOff`.
 
-###### JsonStructure
+- **`routeId`** (string, required): Identifies a route.
+- **`agencyId`** (string, optional): Agency for the specified route.
+- **`routeShortName`** (string, optional): Short name of a route.
+- **`routeLongName`** (string, optional): Full name of a route.
+- **`routeDesc`** (string, optional): Description of a route that provides useful, quality information.
+- **`routeType`** (enum, required): Indicates the type of transportation used on a route.
+- **`routeUrl`** (string, optional): URL of a web page about the particular route.
+- **`routeColor`** (string, optional): Route color designation that matches public facing material.
+- **`routeTextColor`** (string, optional): Legible color to use for text drawn against a background of route_color.
+- **`routeSortOrder`** (int32, optional): Orders the routes in a way which is ideal for presentation to customers.
+- **`continuousPickup`** (enum, required): Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path.
+- **`continuousDropOff`** (enum, required): Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path.
+- **`networkId`** (string, optional): Identifies a group of routes.
+##### `routeType` values
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Shapes` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Shapes` |
-| Type | `object` |
+- `TRAM`
+- `SUBWAY`
+- `RAIL`
+- `BUS`
+- `FERRY`
+- `CABLE_TRAM`
+- `AERIAL_LIFT`
+- `FUNICULAR`
+- `RESERVED_1`
+- `RESERVED_2`
+- `RESERVED_3`
+- `TROLLEYBUS`
+- `MONORAIL`
+- `OTHER`
+##### `continuousPickup` values
 
-###### Object `Shapes`
-<a id="schema-node-shapes"></a>
+- `CONTINUOUS_STOPPING`
+- `NO_CONTINUOUS_STOPPING`
+- `PHONE_AGENCY`
+- `COORDINATE_WITH_DRIVER`
+##### `continuousDropOff` values
+
+- `CONTINUOUS_STOPPING`
+- `NO_CONTINUOUS_STOPPING`
+- `PHONE_AGENCY`
+- `COORDINATE_WITH_DRIVER`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "routeId": "string",
+  "agencyId": "string",
+  "routeShortName": "string",
+  "routeLongName": "string",
+  "routeDesc": "string",
+  "routeType": "TRAM",
+  "routeUrl": "string",
+  "routeColor": "string",
+  "routeTextColor": "string",
+  "routeSortOrder": 0,
+  "continuousPickup": "CONTINUOUS_STOPPING",
+  "continuousDropOff": "CONTINUOUS_STOPPING",
+  "networkId": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Shapes
+
+CloudEvents type: `GeneralTransitFeedStatic.Shapes`
+
+#### What it tells you
 
 Defines shapes.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `shapeId` | `string` | `True` | Identifies a shape. | - | - | - |
-| `shapePtLat` | `double` | `True` | Latitude of a shape point. | - | - | - |
-| `shapePtLon` | `double` | `True` | Longitude of a shape point. | - | - | - |
-| `shapePtSequence` | `int32` | `True` | Sequence in which the shape points connect to form the shape. | - | - | - |
-| `shapeDistTraveled` | `double` | `False` | Actual distance traveled along the shape from the first shape point to the specified shape point. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.StopAreas`
-<a id="schema-generaltransitfeedstaticstopareas"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | StopAreas |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Shapes` payloads are JSON object. Required fields: `shapeId`, `shapePtLat`, `shapePtLon`, `shapePtSequence`.
 
-###### JsonStructure
+- **`shapeId`** (string, required): Identifies a shape.
+- **`shapePtLat`** (double, required): Latitude of a shape point.
+- **`shapePtLon`** (double, required): Longitude of a shape point.
+- **`shapePtSequence`** (int32, required): Sequence in which the shape points connect to form the shape.
+- **`shapeDistTraveled`** (double, optional): Actual distance traveled along the shape from the first shape point to the specified shape point.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/StopAreas` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/StopAreas` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `StopAreas`
-<a id="schema-node-stopareas"></a>
+```json
+{
+  "shapeId": "string",
+  "shapePtLat": 0,
+  "shapePtLon": 0,
+  "shapePtSequence": 0,
+  "shapeDistTraveled": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Stop Areas
+
+CloudEvents type: `GeneralTransitFeedStatic.StopAreas`
+
+#### What it tells you
 
 Defines stop areas.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `stopAreaId` | `string` | `True` | Identifies a stop area. | - | - | - |
-| `stopId` | `string` | `True` | Identifies a stop. | - | - | - |
-| `areaId` | `string` | `True` | Identifies an area. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Stops`
-<a id="schema-generaltransitfeedstaticstops"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Stops |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Stop Areas` payloads are JSON object. Required fields: `stopAreaId`, `stopId`, `areaId`.
 
-###### JsonStructure
+- **`stopAreaId`** (string, required): Identifies a stop area.
+- **`stopId`** (string, required): Identifies a stop.
+- **`areaId`** (string, required): Identifies an area.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Stops` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Stops` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Stops`
-<a id="schema-node-stops"></a>
+```json
+{
+  "stopAreaId": "string",
+  "stopId": "string",
+  "areaId": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Stops
+
+CloudEvents type: `GeneralTransitFeedStatic.Stops`
+
+#### What it tells you
 
 Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `stopId` | `string` | `True` | Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area. | - | - | - |
-| `stopCode` | `string` | `False` | Short text or a number that identifies the location for riders. | - | default=`-` | default=`-` |
-| `stopName` | `string` | `False` | Name of the location. | - | default=`-` | default=`-` |
-| `ttsStopName` | `string` | `False` | Readable version of the stop_name. | - | default=`-` | default=`-` |
-| `stopDesc` | `string` | `False` | Description of the location that provides useful, quality information. | - | default=`-` | default=`-` |
-| `stopLat` | `double` | `False` | Latitude of the location. | - | default=`-` | default=`-` |
-| `stopLon` | `double` | `False` | Longitude of the location. | - | default=`-` | default=`-` |
-| `zoneId` | `string` | `False` | Identifies the fare zone for a stop. | - | default=`-` | default=`-` |
-| `stopUrl` | `string` | `False` | URL of a web page about the location. | - | default=`-` | default=`-` |
-| `locationType` | `schema` | `True` | Location type. | - | - | - |
-| `parentStation` | `string` | `False` | Defines hierarchy between the different locations. | - | default=`-` | default=`-` |
-| `stopTimezone` | `string` | `False` | Timezone of the location. | - | default=`-` | default=`-` |
-| `wheelchairBoarding` | `schema` | `True` | Indicates whether wheelchair boardings are possible from the location. | - | - | - |
-| `levelId` | `string` | `False` | Level of the location. | - | default=`-` | default=`-` |
-| `platformCode` | `string` | `False` | Platform identifier for a platform stop. | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.StopTimes`
-<a id="schema-generaltransitfeedstaticstoptimes"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | StopTimes |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Stops` payloads are JSON object. Required fields: `stopId`, `locationType`, `wheelchairBoarding`.
 
-###### JsonStructure
+- **`stopId`** (string, required): Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.
+- **`stopCode`** (string, optional): Short text or a number that identifies the location for riders.
+- **`stopName`** (string, optional): Name of the location.
+- **`ttsStopName`** (string, optional): Readable version of the stop_name.
+- **`stopDesc`** (string, optional): Description of the location that provides useful, quality information.
+- **`stopLat`** (double, optional): Latitude of the location.
+- **`stopLon`** (double, optional): Longitude of the location.
+- **`zoneId`** (string, optional): Identifies the fare zone for a stop.
+- **`stopUrl`** (string, optional): URL of a web page about the location.
+- **`locationType`** (enum, required): Location type.
+- **`parentStation`** (string, optional): Defines hierarchy between the different locations.
+- **`stopTimezone`** (string, optional): Timezone of the location.
+- **`wheelchairBoarding`** (enum, required): Indicates whether wheelchair boardings are possible from the location.
+- **`levelId`** (string, optional): Level of the location.
+- **`platformCode`** (string, optional): Platform identifier for a platform stop.
+##### `locationType` values
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/StopTimes` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/StopTimes` |
-| Type | `object` |
+- `STOP`
+- `STATION`
+- `ENTRANCE_EXIT`
+- `GENERIC_NODE`
+- `BOARDING_AREA`
+##### `wheelchairBoarding` values
 
-###### Object `StopTimes`
-<a id="schema-node-stoptimes"></a>
+- `NO_INFO`
+- `SOME_VEHICLES`
+- `NOT_POSSIBLE`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "stopId": "string",
+  "stopCode": "string",
+  "stopName": "string",
+  "ttsStopName": "string",
+  "stopDesc": "string",
+  "stopLat": 0,
+  "stopLon": 0,
+  "zoneId": "string",
+  "stopUrl": "string",
+  "locationType": "STOP",
+  "parentStation": "string",
+  "stopTimezone": "string",
+  "wheelchairBoarding": "NO_INFO",
+  "levelId": "string",
+  "platformCode": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Stop Times
+
+CloudEvents type: `GeneralTransitFeedStatic.StopTimes`
+
+#### What it tells you
 
 Represents times that a vehicle arrives at and departs from individual stops for each trip.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `tripId` | `string` | `True` | Identifies a trip. | - | - | - |
-| `arrivalTime` | `string` | `False` | Arrival time at the stop for a specific trip. | - | default=`-` | default=`-` |
-| `departureTime` | `string` | `False` | Departure time from the stop for a specific trip. | - | default=`-` | default=`-` |
-| `stopId` | `string` | `False` | Identifies the serviced stop. | - | default=`-` | default=`-` |
-| `stopSequence` | `int32` | `True` | Order of stops for a particular trip. | - | - | - |
-| `stopHeadsign` | `string` | `False` | Text that appears on signage identifying the trip's destination to riders. | - | default=`-` | default=`-` |
-| `pickupType` | `schema` | `True` | Indicates pickup method. | - | - | - |
-| `dropOffType` | `schema` | `True` | Indicates drop off method. | - | - | - |
-| `continuousPickup` | `schema` | `False` | Indicates continuous stopping pickup. | - | default=`-` | default=`-` |
-| `continuousDropOff` | `schema` | `False` | Indicates continuous stopping drop off. | - | default=`-` | default=`-` |
-| `shapeDistTraveled` | `double` | `False` | Actual distance traveled along the shape from the first stop to the stop specified in this record. | - | default=`-` | default=`-` |
-| `timepoint` | `schema` | `True` | Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Timeframes`
-<a id="schema-generaltransitfeedstatictimeframes"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Timeframes |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Stop Times` payloads are JSON object. Required fields: `tripId`, `stopSequence`, `pickupType`, `dropOffType`, `timepoint`.
 
-###### JsonStructure
+- **`tripId`** (string, required): Identifies a trip.
+- **`arrivalTime`** (string, optional): Arrival time at the stop for a specific trip.
+- **`departureTime`** (string, optional): Departure time from the stop for a specific trip.
+- **`stopId`** (string, optional): Identifies the serviced stop.
+- **`stopSequence`** (int32, required): Order of stops for a particular trip.
+- **`stopHeadsign`** (string, optional): Text that appears on signage identifying the trip's destination to riders.
+- **`pickupType`** (enum, required): Indicates pickup method.
+- **`dropOffType`** (enum, required): Indicates drop off method.
+- **`continuousPickup`** (enum, optional): Indicates continuous stopping pickup.
+- **`continuousDropOff`** (enum, optional): Indicates continuous stopping drop off.
+- **`shapeDistTraveled`** (double, optional): Actual distance traveled along the shape from the first stop to the stop specified in this record.
+- **`timepoint`** (enum, required): Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.
+##### `pickupType` values
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Timeframes` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Timeframes` |
-| Type | `object` |
+- `REGULAR`
+- `NO_PICKUP`
+- `PHONE_AGENCY`
+- `COORDINATE_WITH_DRIVER`
+##### `dropOffType` values
 
-###### Object `Timeframes`
-<a id="schema-node-timeframes"></a>
+- `REGULAR`
+- `NO_DROP_OFF`
+- `PHONE_AGENCY`
+- `COORDINATE_WITH_DRIVER`
+##### `continuousPickup` values
+
+- `CONTINUOUS_STOPPING`
+- `NO_CONTINUOUS_STOPPING`
+- `PHONE_AGENCY`
+- `COORDINATE_WITH_DRIVER`
+##### `continuousDropOff` values
+
+- `CONTINUOUS_STOPPING`
+- `NO_CONTINUOUS_STOPPING`
+- `PHONE_AGENCY`
+- `COORDINATE_WITH_DRIVER`
+##### `timepoint` values
+
+- `APPROXIMATE`
+- `EXACT`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "tripId": "string",
+  "arrivalTime": "string",
+  "departureTime": "string",
+  "stopId": "string",
+  "stopSequence": 0,
+  "stopHeadsign": "string",
+  "pickupType": "REGULAR",
+  "dropOffType": "REGULAR",
+  "continuousPickup": "CONTINUOUS_STOPPING",
+  "continuousDropOff": "CONTINUOUS_STOPPING",
+  "shapeDistTraveled": 0,
+  "timepoint": "APPROXIMATE"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Timeframes
+
+CloudEvents type: `GeneralTransitFeedStatic.Timeframes`
+
+#### What it tells you
 
 Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `timeframeGroupId` | `string` | `True` | Identifies a timeframe or set of timeframes. | - | - | - |
-| `startTime` | `string` | `False` | Defines the beginning of a timeframe. | - | default=`-` | default=`-` |
-| `endTime` | `string` | `False` | Defines the end of a timeframe. | - | default=`-` | default=`-` |
-| `serviceDates` | `choice` | `True` | Identifies a set of dates when service is available for one or more routes. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Transfers`
-<a id="schema-generaltransitfeedstatictransfers"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Transfers |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Timeframes` payloads are JSON object. Required fields: `timeframeGroupId`, `serviceDates`.
 
-###### JsonStructure
+- **`timeframeGroupId`** (string, required): Identifies a timeframe or set of timeframes.
+- **`startTime`** (string, optional): Defines the beginning of a timeframe.
+- **`endTime`** (string, optional): Defines the end of a timeframe.
+- **`serviceDates`** (choice, required): Identifies a set of dates when service is available for one or more routes.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Transfers` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Transfers` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Transfers`
-<a id="schema-node-transfers"></a>
+```json
+{
+  "timeframeGroupId": "string",
+  "startTime": "string",
+  "endTime": "string",
+  "serviceDates": null
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Transfers
+
+CloudEvents type: `GeneralTransitFeedStatic.Transfers`
+
+#### What it tells you
 
 Defines transfers.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `fromStopId` | `string` | `True` | Identifies a stop or station where a connection between routes begins. | - | - | - |
-| `toStopId` | `string` | `True` | Identifies a stop or station where a connection between routes ends. | - | - | - |
-| `transferType` | `int32` | `True` | Type of connection for the specified (from_stop_id, to_stop_id) pair. | - | - | - |
-| `minTransferTime` | `int32` | `False` | Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id). | - | default=`-` | default=`-` |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Translations`
-<a id="schema-generaltransitfeedstatictranslations"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Translations |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Transfers` payloads are JSON object. Required fields: `fromStopId`, `toStopId`, `transferType`.
 
-###### JsonStructure
+- **`fromStopId`** (string, required): Identifies a stop or station where a connection between routes begins.
+- **`toStopId`** (string, required): Identifies a stop or station where a connection between routes ends.
+- **`transferType`** (int32, required): Type of connection for the specified (from_stop_id, to_stop_id) pair.
+- **`minTransferTime`** (int32, optional): Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id).
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Translations` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Translations` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Translations`
-<a id="schema-node-translations"></a>
+```json
+{
+  "fromStopId": "string",
+  "toStopId": "string",
+  "transferType": 0,
+  "minTransferTime": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Translations
+
+CloudEvents type: `GeneralTransitFeedStatic.Translations`
+
+#### What it tells you
 
 Defines translations.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `tableName` | `string` | `True` | Name of the table containing the field to be translated. | - | - | - |
-| `fieldName` | `string` | `True` | Name of the field to be translated. | - | - | - |
-| `language` | `string` | `True` | Language of the translation. | - | - | - |
-| `translation` | `string` | `True` | Translated value. | - | - | - |
+#### Identity
 
-#### Schema `GeneralTransitFeedStatic.Trips`
-<a id="schema-generaltransitfeedstatictrips"></a>
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
-| Field | Value |
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Trips |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
 
-##### Version `1`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+`Translations` payloads are JSON object. Required fields: `tableName`, `fieldName`, `language`, `translation`.
 
-###### JsonStructure
+- **`tableName`** (string, required): Name of the table containing the field to be translated.
+- **`fieldName`** (string, required): Name of the field to be translated.
+- **`language`** (string, required): Language of the translation.
+- **`translation`** (string, required): Translated value.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/GeneralTransitFeedStatic/Trips` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/GeneralTransitFeedStatic/Trips` |
-| Type | `object` |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-###### Object `Trips`
-<a id="schema-node-trips"></a>
+```json
+{
+  "tableName": "string",
+  "fieldName": "string",
+  "language": "string",
+  "translation": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Trips
+
+CloudEvents type: `GeneralTransitFeedStatic.Trips`
+
+#### What it tells you
 
 Identifies a trip.
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `routeId` | `string` | `True` | Identifies a route. | - | - | - |
-| `serviceDates` | `schema` | `True` |  | - | - | - |
-| `serviceExceptions` | array of [`CalendarDates`](#schema-node-calendardates) | `True` |  | - | - | - |
-| `tripId` | `string` | `True` | Identifies a trip. | - | - | - |
-| `tripHeadsign` | `string` | `False` | Text that appears on signage identifying the trip's destination to riders. | - | default=`-` | default=`-` |
-| `tripShortName` | `string` | `False` | Public facing text used to identify the trip to riders. | - | default=`-` | default=`-` |
-| `directionId` | `schema` | `True` | Indicates the direction of travel for a trip. | - | - | - |
-| `blockId` | `string` | `False` | Identifies the block to which the trip belongs. | - | default=`-` | default=`-` |
-| `shapeId` | `string` | `False` | Identifies a geospatial shape describing the vehicle travel path for a trip. | - | default=`-` | default=`-` |
-| `wheelchairAccessible` | `schema` | `True` | Indicates wheelchair accessibility. | - | - | - |
-| `bikesAllowed` | `schema` | `True` | Indicates whether bikes are allowed. | - | - | - |
-
-###### Object `CalendarDates`
-<a id="schema-node-calendardates"></a>
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `serviceId` | `string` | `True` | Identifies a set of dates when a service exception occurs for one or more routes. | - | - | - |
-| `date` | `string` | `True` | Date when service exception occurs. | - | - | - |
-| `exceptionType` | `schema` | `True` | Indicates whether service is available on the date specified. | - | - | - |
-
-### Schemagroup `GeneralTransitFeedStatic.avro`
-<a id="schemagroup-generaltransitfeedstaticavro"></a>
-
-#### Schema `GeneralTransitFeedStatic.Agency`
-<a id="schema-generaltransitfeedstaticagency"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Agency |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Information about the transit agencies. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `agencyId` | `string` | Identifies a transit brand which is often synonymous with a transit agency. | `-` |
-| `agencyName` | `string` | Full name of the transit agency. | `-` |
-| `agencyUrl` | `string` | URL of the transit agency. | `-` |
-| `agencyTimezone` | `string` | Timezone where the transit agency is located. | `-` |
-| `agencyLang` | `null` \| `string` | Primary language used by this transit agency. | `-` |
-| `agencyPhone` | `null` \| `string` | A voice telephone number for the specified agency. | `-` |
-| `agencyFareUrl` | `null` \| `string` | URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online. | `-` |
-| `agencyEmail` | `null` \| `string` | Email address actively monitored by the agency’s customer service department. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Areas`
-<a id="schema-generaltransitfeedstaticareas"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Areas |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines areas. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `areaId` | `string` | Identifies an area. | `-` |
-| `areaName` | `string` | Name of the area. | `-` |
-| `areaDesc` | `null` \| `string` | Description of the area. | `-` |
-| `areaUrl` | `null` \| `string` | URL of a web page about the area. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Attributions`
-<a id="schema-generaltransitfeedstaticattributions"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Attributions |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Provides information about the attributions. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `attributionId` | `null` \| `string` | Identifies an attribution for the dataset. | `-` |
-| `agencyId` | `null` \| `string` | Identifies the agency associated with the attribution. | `-` |
-| `routeId` | `null` \| `string` | Identifies the route associated with the attribution. | `-` |
-| `tripId` | `null` \| `string` | Identifies the trip associated with the attribution. | `-` |
-| `organizationName` | `string` | Name of the organization associated with the attribution. | `-` |
-| `isProducer` | `null` \| `int` | Indicates if the organization is a producer. | `-` |
-| `isOperator` | `null` \| `int` | Indicates if the organization is an operator. | `-` |
-| `isAuthority` | `null` \| `int` | Indicates if the organization is an authority. | `-` |
-| `attributionUrl` | `null` \| `string` | URL of a web page about the attribution. | `-` |
-| `attributionEmail` | `null` \| `string` | Email address associated with the attribution. | `-` |
-| `attributionPhone` | `null` \| `string` | Phone number associated with the attribution. | `-` |
-
-#### Schema `GeneralTransitFeed.BookingRules`
-<a id="schema-generaltransitfeedbookingrules"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BookingRules |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines booking rules. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `bookingRuleId` | `string` | Identifies a booking rule. | `-` |
-| `bookingRuleName` | `string` | Name of the booking rule. | `-` |
-| `bookingRuleDesc` | `null` \| `string` | Description of the booking rule. | `-` |
-| `bookingRuleUrl` | `null` \| `string` | URL of a web page about the booking rule. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FareAttributes`
-<a id="schema-generaltransitfeedstaticfareattributes"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FareAttributes |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines fare attributes. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fareId` | `string` | Identifies a fare class. | `-` |
-| `price` | `double` | Fare price, in the unit specified by currency_type. | `-` |
-| `currencyType` | `string` | Currency type used to pay the fare. | `-` |
-| `paymentMethod` | `int` | When 0, fare must be paid on board. When 1, fare must be paid before boarding. | `-` |
-| `transfers` | `null` \| `int` | Specifies the number of transfers permitted on this fare. | `-` |
-| `agencyId` | `null` \| `string` | Identifies the agency for the specified fare. | `-` |
-| `transferDuration` | `null` \| `long` | Length of time in seconds before a transfer expires. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FareLegRules`
-<a id="schema-generaltransitfeedstaticfarelegrules"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FareLegRules |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines fare leg rules. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fareLegRuleId` | `string` | Identifies a fare leg rule. | `-` |
-| `fareProductId` | `string` | Identifies a fare product. | `-` |
-| `legGroupId` | `null` \| `string` | Identifies a group of legs. | `-` |
-| `networkId` | `null` \| `string` | Identifies a network. | `-` |
-| `fromAreaId` | `null` \| `string` | Identifies the origin area. | `-` |
-| `toAreaId` | `null` \| `string` | Identifies the destination area. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FareMedia`
-<a id="schema-generaltransitfeedstaticfaremedia"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FareMedia |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines fare media. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fareMediaId` | `string` | Identifies a fare media. | `-` |
-| `fareMediaName` | `string` | Name of the fare media. | `-` |
-| `fareMediaDesc` | `null` \| `string` | Description of the fare media. | `-` |
-| `fareMediaUrl` | `null` \| `string` | URL of a web page about the fare media. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FareProducts`
-<a id="schema-generaltransitfeedstaticfareproducts"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FareProducts |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines fare products. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fareProductId` | `string` | Identifies a fare product. | `-` |
-| `fareProductName` | `string` | Name of the fare product. | `-` |
-| `fareProductDesc` | `null` \| `string` | Description of the fare product. | `-` |
-| `fareProductUrl` | `null` \| `string` | URL of a web page about the fare product. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FareRules`
-<a id="schema-generaltransitfeedstaticfarerules"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FareRules |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines fare rules. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fareId` | `string` | Identifies a fare class. | `-` |
-| `routeId` | `null` \| `string` | Identifies a route associated with the fare. | `-` |
-| `originId` | `null` \| `string` | Identifies the fare zone of the origin. | `-` |
-| `destinationId` | `null` \| `string` | Identifies the fare zone of the destination. | `-` |
-| `containsId` | `null` \| `string` | Identifies the fare zone that a rider will enter or leave. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FareTransferRules`
-<a id="schema-generaltransitfeedstaticfaretransferrules"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FareTransferRules |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines fare transfer rules. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fareTransferRuleId` | `string` | Identifies a fare transfer rule. | `-` |
-| `fareProductId` | `string` | Identifies a fare product. | `-` |
-| `transferCount` | `null` \| `int` | Number of transfers permitted. | `-` |
-| `fromLegGroupId` | `null` \| `string` | Identifies the leg group from which the transfer starts. | `-` |
-| `toLegGroupId` | `null` \| `string` | Identifies the leg group to which the transfer applies. | `-` |
-| `duration` | `null` \| `long` | Length of time in seconds before a transfer expires. | `-` |
-| `durationType` | `null` \| `string` | Type of duration for the transfer. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.FeedInfo`
-<a id="schema-generaltransitfeedstaticfeedinfo"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | FeedInfo |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Provides information about the GTFS feed itself. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `feedPublisherName` | `string` | Full name of the organization that publishes the feed. | `-` |
-| `feedPublisherUrl` | `string` | URL of the feed publishing organization's website. | `-` |
-| `feedLang` | `string` | Default language for the text in this feed. | `-` |
-| `defaultLang` | `null` \| `string` | Specifies the language used when the data consumer doesn’t know the language of the user. | `-` |
-| `feedStartDate` | `null` \| `string` | The start date for the dataset. | `-` |
-| `feedEndDate` | `null` \| `string` | The end date for the dataset. | `-` |
-| `feedVersion` | `null` \| `string` | Version string that indicates the current version of their GTFS dataset. | `-` |
-| `feedContactEmail` | `null` \| `string` | Email address for communication with the data publisher. | `-` |
-| `feedContactUrl` | `null` \| `string` | URL for a web page that allows a feed consumer to contact the data publisher. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Frequencies`
-<a id="schema-generaltransitfeedstaticfrequencies"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Frequencies |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines frequencies. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `tripId` | `string` | Identifies a trip. | `-` |
-| `startTime` | `string` | Time at which service begins with the specified frequency. | `-` |
-| `endTime` | `string` | Time at which service ends with the specified frequency. | `-` |
-| `headwaySecs` | `int` | Time between departures from the same stop (headway) for this trip, in seconds. | `-` |
-| `exactTimes` | `null` \| `int` | When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Levels`
-<a id="schema-generaltransitfeedstaticlevels"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Levels |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines levels. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `levelId` | `string` | Identifies a level. | `-` |
-| `levelIndex` | `double` | Numeric index of the level that indicates relative position of the level in relation to other levels. | `-` |
-| `levelName` | `null` \| `string` | Name of the level. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.LocationGeoJson`
-<a id="schema-generaltransitfeedstaticlocationgeojson"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | LocationGeoJson |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines location GeoJSON data. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `locationGeoJsonId` | `string` | Identifies a location GeoJSON. | `-` |
-| `locationGeoJsonType` | `string` | Type of the GeoJSON. | `-` |
-| `locationGeoJsonData` | `string` | GeoJSON data. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.LocationGroups`
-<a id="schema-generaltransitfeedstaticlocationgroups"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | LocationGroups |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines location groups. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `locationGroupId` | `string` | Identifies a location group. | `-` |
-| `locationGroupName` | `string` | Name of the location group. | `-` |
-| `locationGroupDesc` | `null` \| `string` | Description of the location group. | `-` |
-| `locationGroupUrl` | `null` \| `string` | URL of a web page about the location group. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.LocationGroupStores`
-<a id="schema-generaltransitfeedstaticlocationgroupstores"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | LocationGroupStores |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines location group stores. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `locationGroupStoreId` | `string` | Identifies a location group store. | `-` |
-| `locationGroupId` | `string` | Identifies a location group. | `-` |
-| `storeId` | `string` | Identifies a store. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Networks`
-<a id="schema-generaltransitfeedstaticnetworks"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Networks |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines networks. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `networkId` | `string` | Identifies a network. | `-` |
-| `networkName` | `string` | Name of the network. | `-` |
-| `networkDesc` | `null` \| `string` | Description of the network. | `-` |
-| `networkUrl` | `null` \| `string` | URL of a web page about the network. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Pathways`
-<a id="schema-generaltransitfeedstaticpathways"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Pathways |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines pathways. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `pathwayId` | `string` | Identifies a pathway. | `-` |
-| `fromStopId` | `string` | Identifies a stop or station where the pathway begins. | `-` |
-| `toStopId` | `string` | Identifies a stop or station where the pathway ends. | `-` |
-| `pathwayMode` | `int` | Type of pathway between the specified (from_stop_id, to_stop_id) pair. | `-` |
-| `isBidirectional` | `int` | When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id). | `-` |
-| `length` | `null` \| `double` | Length of the pathway, in meters. | `-` |
-| `traversalTime` | `null` \| `int` | Average time, in seconds, needed to walk through the pathway. | `-` |
-| `stairCount` | `null` \| `int` | Number of stairs of the pathway. | `-` |
-| `maxSlope` | `null` \| `double` | Maximum slope of the pathway, in percent. | `-` |
-| `minWidth` | `null` \| `double` | Minimum width of the pathway, in meters. | `-` |
-| `signpostedAs` | `null` \| `string` | Signposting information for the pathway. | `-` |
-| `reversedSignpostedAs` | `null` \| `string` | Reversed signposting information for the pathway. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.RouteNetworks`
-<a id="schema-generaltransitfeedstaticroutenetworks"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | RouteNetworks |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines route networks. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `routeNetworkId` | `string` | Identifies a route network. | `-` |
-| `routeId` | `string` | Identifies a route. | `-` |
-| `networkId` | `string` | Identifies a network. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Routes`
-<a id="schema-generaltransitfeedstaticroutes"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Routes |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Identifies a route. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `routeId` | `string` | Identifies a route. | `-` |
-| `agencyId` | `null` \| `string` | Agency for the specified route. | `-` |
-| `routeShortName` | `null` \| `string` | Short name of a route. | `-` |
-| `routeLongName` | `null` \| `string` | Full name of a route. | `-` |
-| `routeDesc` | `null` \| `string` | Description of a route that provides useful, quality information. | `-` |
-| `routeType` | enum `RouteType` | Indicates the type of transportation used on a route. | `-` |
-| `routeUrl` | `null` \| `string` | URL of a web page about the particular route. | `-` |
-| `routeColor` | `null` \| `string` | Route color designation that matches public facing material. | `-` |
-| `routeTextColor` | `null` \| `string` | Legible color to use for text drawn against a background of route_color. | `-` |
-| `routeSortOrder` | `null` \| `int` | Orders the routes in a way which is ideal for presentation to customers. | `-` |
-| `continuousPickup` | enum `ContinuousPickup` | Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. | `-` |
-| `continuousDropOff` | enum `ContinuousDropOff` | Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. | `-` |
-| `networkId` | `null` \| `string` | Identifies a group of routes. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Shapes`
-<a id="schema-generaltransitfeedstaticshapes"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Shapes |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines shapes. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `shapeId` | `string` | Identifies a shape. | `-` |
-| `shapePtLat` | `double` | Latitude of a shape point. | `-` |
-| `shapePtLon` | `double` | Longitude of a shape point. | `-` |
-| `shapePtSequence` | `int` | Sequence in which the shape points connect to form the shape. | `-` |
-| `shapeDistTraveled` | `null` \| `double` | Actual distance traveled along the shape from the first shape point to the specified shape point. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.StopAreas`
-<a id="schema-generaltransitfeedstaticstopareas"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | StopAreas |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines stop areas. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `stopAreaId` | `string` | Identifies a stop area. | `-` |
-| `stopId` | `string` | Identifies a stop. | `-` |
-| `areaId` | `string` | Identifies an area. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Stops`
-<a id="schema-generaltransitfeedstaticstops"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Stops |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `stopId` | `string` | Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area. | `-` |
-| `stopCode` | `null` \| `string` | Short text or a number that identifies the location for riders. | `-` |
-| `stopName` | `null` \| `string` | Name of the location. | `-` |
-| `ttsStopName` | `null` \| `string` | Readable version of the stop_name. | `-` |
-| `stopDesc` | `null` \| `string` | Description of the location that provides useful, quality information. | `-` |
-| `stopLat` | `null` \| `double` | Latitude of the location. | `-` |
-| `stopLon` | `null` \| `double` | Longitude of the location. | `-` |
-| `zoneId` | `null` \| `string` | Identifies the fare zone for a stop. | `-` |
-| `stopUrl` | `null` \| `string` | URL of a web page about the location. | `-` |
-| `locationType` | enum `LocationType` | Location type. | `-` |
-| `parentStation` | `null` \| `string` | Defines hierarchy between the different locations. | `-` |
-| `stopTimezone` | `null` \| `string` | Timezone of the location. | `-` |
-| `wheelchairBoarding` | enum `WheelchairBoarding` | Indicates whether wheelchair boardings are possible from the location. | `-` |
-| `levelId` | `null` \| `string` | Level of the location. | `-` |
-| `platformCode` | `null` \| `string` | Platform identifier for a platform stop. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.StopTimes`
-<a id="schema-generaltransitfeedstaticstoptimes"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | StopTimes |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Represents times that a vehicle arrives at and departs from individual stops for each trip. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `tripId` | `string` | Identifies a trip. | `-` |
-| `arrivalTime` | `null` \| `string` | Arrival time at the stop for a specific trip. | `-` |
-| `departureTime` | `null` \| `string` | Departure time from the stop for a specific trip. | `-` |
-| `stopId` | `null` \| `string` | Identifies the serviced stop. | `-` |
-| `stopSequence` | `int` | Order of stops for a particular trip. | `-` |
-| `stopHeadsign` | `null` \| `string` | Text that appears on signage identifying the trip's destination to riders. | `-` |
-| `pickupType` | enum `PickupType` | Indicates pickup method. | `-` |
-| `dropOffType` | enum `DropOffType` | Indicates drop off method. | `-` |
-| `continuousPickup` | `null` \| enum `ContinuousPickup` | Indicates continuous stopping pickup. | `-` |
-| `continuousDropOff` | `null` \| enum `ContinuousDropOff` | Indicates continuous stopping drop off. | `-` |
-| `shapeDistTraveled` | `null` \| `double` | Actual distance traveled along the shape from the first stop to the stop specified in this record. | `-` |
-| `timepoint` | enum `Timepoint` | Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Timeframes`
-<a id="schema-generaltransitfeedstatictimeframes"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Timeframes |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `timeframeGroupId` | `string` | Identifies a timeframe or set of timeframes. | `-` |
-| `startTime` | `null` \| `string` | Defines the beginning of a timeframe. | `-` |
-| `endTime` | `null` \| `string` | Defines the end of a timeframe. | `-` |
-| `serviceDates` | record `Calendar` \| record `CalendarDates` | Identifies a set of dates when service is available for one or more routes. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Transfers`
-<a id="schema-generaltransitfeedstatictransfers"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Transfers |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines transfers. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `fromStopId` | `string` | Identifies a stop or station where a connection between routes begins. | `-` |
-| `toStopId` | `string` | Identifies a stop or station where a connection between routes ends. | `-` |
-| `transferType` | `int` | Type of connection for the specified (from_stop_id, to_stop_id) pair. | `-` |
-| `minTransferTime` | `null` \| `int` | Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id). | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Translations`
-<a id="schema-generaltransitfeedstatictranslations"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Translations |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Defines translations. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `tableName` | `string` | Name of the table containing the field to be translated. | `-` |
-| `fieldName` | `string` | Name of the field to be translated. | `-` |
-| `language` | `string` | Language of the translation. | `-` |
-| `translation` | `string` | Translated value. | `-` |
-
-#### Schema `GeneralTransitFeedStatic.Trips`
-<a id="schema-generaltransitfeedstatictrips"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Trips |
-| Namespace | GeneralTransitFeedStatic |
-| Type | `record` |
-| Doc | Identifies a trip. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `routeId` | `string` | Identifies a route. | `-` |
-| `serviceDates` | record `Calendar` |  | `-` |
-| `serviceExceptions` | array of record `CalendarDates` |  | `-` |
-| `tripId` | `string` | Identifies a trip. | `-` |
-| `tripHeadsign` | `null` \| `string` | Text that appears on signage identifying the trip's destination to riders. | `-` |
-| `tripShortName` | `null` \| `string` | Public facing text used to identify the trip to riders. | `-` |
-| `directionId` | enum `DirectionId` | Indicates the direction of travel for a trip. | `-` |
-| `blockId` | `null` \| `string` | Identifies the block to which the trip belongs. | `-` |
-| `shapeId` | `null` \| `string` | Identifies a geospatial shape describing the vehicle travel path for a trip. | `-` |
-| `wheelchairAccessible` | enum `WheelchairAccessible` | Indicates wheelchair accessibility. | `-` |
-| `bikesAllowed` | enum `BikesAllowed` | Indicates whether bikes are allowed. | `-` |
+#### Identity
+
+Each event identifies the real-world resource with `{agencyid}`. `{agencyid}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `gtfs`, key `{agencyid}` |
+
+#### Payload
+
+`Trips` payloads are JSON object. Required fields: `routeId`, `serviceDates`, `serviceExceptions`, `tripId`, `directionId`, `wheelchairAccessible`, `bikesAllowed`.
+
+- **`routeId`** (string, required): Identifies a route.
+- **`serviceDates`** (object, required): No description provided. See [Calendar](#payload-generaltransitfeedstatic-trips-calendar).
+- **`serviceExceptions`** (array of object, required): No description provided.
+- **`tripId`** (string, required): Identifies a trip.
+- **`tripHeadsign`** (string, optional): Text that appears on signage identifying the trip's destination to riders.
+- **`tripShortName`** (string, optional): Public facing text used to identify the trip to riders.
+- **`directionId`** (enum, required): Indicates the direction of travel for a trip.
+- **`blockId`** (string, optional): Identifies the block to which the trip belongs.
+- **`shapeId`** (string, optional): Identifies a geospatial shape describing the vehicle travel path for a trip.
+- **`wheelchairAccessible`** (enum, required): Indicates wheelchair accessibility.
+- **`bikesAllowed`** (enum, required): Indicates whether bikes are allowed.
+##### `directionId` values
+
+- `OUTBOUND`
+- `INBOUND`
+##### `wheelchairAccessible` values
+
+- `NO_INFO`
+- `WHEELCHAIR_ACCESSIBLE`
+- `NOT_WHEELCHAIR_ACCESSIBLE`
+##### `bikesAllowed` values
+
+- `NO_INFO`
+- `BICYCLE_ALLOWED`
+- `BICYCLE_NOT_ALLOWED`
+##### `monday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### `tuesday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### `wednesday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### `thursday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### `friday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### `saturday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### `sunday` values
+
+- `NO_SERVICE`
+- `SERVICE_AVAILABLE`
+##### Calendar
+<a id="payload-generaltransitfeedstatic-trips-calendar"></a>
+
+Nested record.
+
+- **`serviceId`** (string, required): Identifies a set of dates when service is available for one or more routes.
+- **`monday`** (enum, required): Indicates whether the service operates on all Mondays in the date range specified.
+- **`tuesday`** (enum, required): Indicates whether the service operates on all Tuesdays in the date range specified.
+- **`wednesday`** (enum, required): Indicates whether the service operates on all Wednesdays in the date range specified.
+- **`thursday`** (enum, required): Indicates whether the service operates on all Thursdays in the date range specified.
+- **`friday`** (enum, required): Indicates whether the service operates on all Fridays in the date range specified.
+- **`saturday`** (enum, required): Indicates whether the service operates on all Saturdays in the date range specified.
+- **`sunday`** (enum, required): Indicates whether the service operates on all Sundays in the date range specified.
+- **`startDate`** (string, required): Start service day for the service interval.
+- **`endDate`** (string, required): End service day for the service interval.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "routeId": "string",
+  "serviceDates": {
+    "serviceId": "string",
+    "monday": "NO_SERVICE",
+    "tuesday": "NO_SERVICE",
+    "wednesday": "NO_SERVICE",
+    "thursday": "NO_SERVICE",
+    "friday": "NO_SERVICE",
+    "saturday": "NO_SERVICE",
+    "sunday": "NO_SERVICE",
+    "startDate": "string",
+    "endDate": "string"
+  },
+  "serviceExceptions": [
+    {
+      "serviceId": "string",
+      "date": "string",
+      "exceptionType": "SERVICE_ADDED"
+    }
+  ],
+  "tripId": "string",
+  "tripHeadsign": "string",
+  "tripShortName": "string",
+  "directionId": "OUTBOUND",
+  "blockId": "string",
+  "shapeId": "string",
+  "wheelchairAccessible": "NO_INFO",
+  "bikesAllowed": "NO_INFO"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+
+## References
+
+- xRegistry manifest: [`xreg/gtfs.xreg.json`](xreg/gtfs.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

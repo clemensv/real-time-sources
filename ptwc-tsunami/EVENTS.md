@@ -2,195 +2,160 @@
 
 MQTT/5.0 transport variant for tsunami.gov PTWC/NTWC tsunami bulletins. Non-retained QoS-1 bulletin events route by basin, tsunami bulletin level, and bulletin id under alerts/intl/ptwc/ptwc-tsunami/... Basin is derived from the NOAA feed (PHEB=pacific, PAAQ=alaska); ptwc_level is the native bulletin category normalized to lowercase.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 1 documented event type (2 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{bulletin_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `ptwc-tsunami`. The record key is `{bulletin_id}`. In plain language, `{bulletin_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['ptwc-tsunami'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/intl/ptwc/ptwc-tsunami/+/+/+/bulletin`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('alerts/intl/ptwc/ptwc-tsunami/+/+/+/bulletin', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+
+## Event catalog
+
+### Tsunami Bulletin
+
+CloudEvents type: `PTWC.TsunamiBulletin`
+
+#### What it tells you
+
+A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov. Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.
+
+#### Identity
+
+Each event identifies the real-world resource with `{bulletin_id}`. `{bulletin_id}` is the unique bulletin identifier as a URN UUID from the Atom entry (e.g., 'urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9'). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 1 |
+| `KAFKA` | topic `ptwc-tsunami`, key `{bulletin_id}` |
+| `MQTT/5.0` | topic `alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin`, retain `false`, QoS `1` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `PTWC.Bulletins.Kafka`
+`Tsunami Bulletin` payloads are JSON object. Required fields: `bulletin_id`, `feed`, `title`, `updated`, `basin`, `ptwc_level`.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`PTWC.Bulletins`](#messagegroup-ptwcbulletins) |
+- **`bulletin_id`** (string, required): The unique bulletin identifier as a URN UUID from the Atom entry (e.g., 'urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9').
+- **`feed`** (enum, required): The feed this bulletin was obtained from.
+- **`center`** (string, optional): The issuing tsunami warning center name (e.g., 'NWS National Tsunami Warning Center Palmer AK', 'NWS PACIFIC TSUNAMI WARNING CENTER HONOLULU HI').
+- **`title`** (string, required): The title of the bulletin, typically the location of the seismic event (e.g., '60 miles SW of Buldir I., Alaska').
+- **`updated`** (datetime, required): The date and time when the bulletin was last updated, in ISO-8601 format.
+- **`latitude`** (double, optional): The latitude of the seismic event epicenter in decimal degrees.
+- **`longitude`** (double, optional): The longitude of the seismic event epicenter in decimal degrees.
+- **`category`** (enum, optional): Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form.
+- **`magnitude`** (string, optional): The preliminary earthquake magnitude and type (e.g., '5.2(mb)', '7.1(Mw)').
+- **`affected_region`** (string, optional): The affected region description from the bulletin summary.
+- **`note`** (string, optional): Additional notes from the bulletin (e.g., 'There is NO tsunami danger from this earthquake.').
+- **`bulletin_url`** (string, optional): URL to the full text bulletin on tsunami.gov.
+- **`cap_url`** (string, optional): URL to the CAP XML document for this bulletin.
+- **`basin`** (enum, required): Basin or warning-area slug derived from the NOAA tsunami.gov feed (pacific for PHEB, alaska for PAAQ, or unknown). Matches the {basin} MQTT topic axis.
+- **`ptwc_level`** (enum, required): Native tsunami bulletin category normalized to lowercase for MQTT routing. Matches the {ptwc_level} MQTT topic axis.
+##### `feed` values
 
-#### Transport options
+- `PAAQ`
+- `PHEB`
+##### `category` values
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `ptwc-tsunami` |
-| Kafka key | `{bulletin_id}` |
-| Deployed | False |
+- `Warning`
+- `Advisory`
+- `Watch`
+- `Information`
+##### `basin` values
 
-### Endpoint `PTWC.Bulletins.Mqtt`
+- `pacific`
+- `alaska`
+- `unknown`
+##### `ptwc_level` values
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`PTWC.Bulletins.mqtt`](#messagegroup-ptwcbulletinsmqtt) |
+- `warning`
+- `advisory`
+- `watch`
+- `information`
+- `unknown`
+#### Example payload
 
-#### Transport options
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+```json
+{
+  "bulletin_id": "string",
+  "feed": "PAAQ",
+  "center": "string",
+  "title": "string",
+  "updated": "2024-01-01T00:00:00Z",
+  "latitude": 0,
+  "longitude": 0,
+  "category": "Warning",
+  "magnitude": "string",
+  "affected_region": "string",
+  "note": "string",
+  "bulletin_url": "string",
+  "cap_url": "string",
+  "basin": "pacific",
+  "ptwc_level": "warning"
+}
+```
 
-## Messagegroups
+#### Reference vs telemetry
 
-### Messagegroup `PTWC.Bulletins`
-<a id="messagegroup-ptwcbulletins"></a>
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `PTWC.Bulletins.Kafka` (KAFKA) |
-| Messages | 1 |
+## Conventions
 
-#### Message `PTWC.TsunamiBulletin`
-<a id="message-ptwctsunamibulletin"></a>
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.
+Transport bindings carry CloudEvents metadata differently:
 
-| Field | Value |
-| --- | --- |
-| Name | TsunamiBulletin |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/PTWC.jstruct/schemas/PTWC.TsunamiBulletin`](#schema-ptwctsunamibulletin) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `PTWC.TsunamiBulletin` |
-| `source` |  | `string` | `False` | `https://www.tsunami.gov` |
-| `subject` |  | `uritemplate` | `False` | `{bulletin_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `PTWC.Bulletins.Kafka` | `KAFKA` | topic `ptwc-tsunami`; key `{bulletin_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-### Messagegroup `PTWC.Bulletins.mqtt`
-<a id="messagegroup-ptwcbulletinsmqtt"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variant for tsunami.gov PTWC/NTWC tsunami bulletins. Non-retained QoS-1 bulletin events route by basin, tsunami bulletin level, and bulletin id under alerts/intl/ptwc/ptwc-tsunami/... Basin is derived from the NOAA feed (PHEB=pacific, PAAQ=alaska); ptwc_level is the native bulletin category normalized to lowercase. |
-| Transport bindings | `PTWC.Bulletins.Mqtt` (MQTT/5.0) |
-| Messages | 1 |
+## Operational notes
 
-#### Message `PTWC.Bulletins.mqtt.TsunamiBulletin`
-<a id="message-ptwcbulletinsmqtttsunamibulletin"></a>
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
-A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.
+## References
 
-| Field | Value |
-| --- | --- |
-| Name | TsunamiBulletin |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/PTWC.jstruct/schemas/PTWC.TsunamiBulletin`](#schema-ptwctsunamibulletin) |
-| Base message chain | `/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `PTWC.TsunamiBulletin` |
-| `source` |  | `string` | `False` | `https://www.tsunami.gov` |
-| `subject` |  | `uritemplate` | `False` | `{bulletin_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `PTWC.Bulletins.Mqtt` | `MQTT/5.0` | topic `alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin` |
-| QoS | 1 |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `PTWC.jstruct`
-<a id="schemagroup-ptwcjstruct"></a>
-
-#### Schema `PTWC.TsunamiBulletin`
-<a id="schema-ptwctsunamibulletin"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TsunamiBulletin |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-| Description | A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds. |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.tsunami.gov/schemas/PTWC/TsunamiBulletin` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `TsunamiBulletin`
-<a id="schema-node-tsunamibulletin"></a>
-
-A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.tsunami.gov/schemas/PTWC/TsunamiBulletin` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `bulletin_id` | `string` | `True` | The unique bulletin identifier as a URN UUID from the Atom entry (e.g., 'urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9'). | - | - | - |
-| `feed` | enum `['PAAQ', 'PHEB']` | `True` | The feed this bulletin was obtained from. | - | - | - |
-| `center` | `string` | `False` | The issuing tsunami warning center name (e.g., 'NWS National Tsunami Warning Center Palmer AK', 'NWS PACIFIC TSUNAMI WARNING CENTER HONOLULU HI'). | - | - | - |
-| `title` | `string` | `True` | The title of the bulletin, typically the location of the seismic event (e.g., '60 miles SW of Buldir I., Alaska'). | - | - | - |
-| `updated` | `datetime` | `True` | The date and time when the bulletin was last updated, in ISO-8601 format. | - | - | - |
-| `latitude` | `double` | `False` | The latitude of the seismic event epicenter in decimal degrees. | - | - | - |
-| `longitude` | `double` | `False` | The longitude of the seismic event epicenter in decimal degrees. | - | - | - |
-| `category` | enum `['Warning', 'Advisory', 'Watch', 'Information']` | `False` | Native tsunami bulletin category from the feed summary (Warning, Advisory, Watch, or Information). ptwc_level carries the lowercase topic-routing form. | - | - | - |
-| `magnitude` | `string` | `False` | The preliminary earthquake magnitude and type (e.g., '5.2(mb)', '7.1(Mw)'). | - | - | - |
-| `affected_region` | `string` | `False` | The affected region description from the bulletin summary. | - | - | - |
-| `note` | `string` | `False` | Additional notes from the bulletin (e.g., 'There is NO tsunami danger from this earthquake.'). | - | - | - |
-| `bulletin_url` | `string` | `False` | URL to the full text bulletin on tsunami.gov. | - | - | - |
-| `cap_url` | `string` | `False` | URL to the CAP XML document for this bulletin. | - | - | - |
-| `basin` | enum `['pacific', 'alaska', 'unknown']` | `True` | Basin or warning-area slug derived from the NOAA tsunami.gov feed (pacific for PHEB, alaska for PAAQ, or unknown). Matches the {basin} MQTT topic axis. | - | - | - |
-| `ptwc_level` | enum `['warning', 'advisory', 'watch', 'information', 'unknown']` | `True` | Native tsunami bulletin category normalized to lowercase for MQTT routing. Matches the {ptwc_level} MQTT topic axis. | - | - | - |
+- xRegistry manifest: [`xreg/ptwc_tsunami.xreg.json`](xreg/ptwc_tsunami.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

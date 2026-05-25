@@ -2,259 +2,157 @@
 
 **SYKE Hydrology Bridge** connects to the Finnish Environment Institute's (SYKE) hydrological monitoring network — via the [Hydrology OData API](https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata) — and forwards water level and discharge observations to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_id}` identifies the resource each event is about.
+- **Operations:** The checked-in guide documents a default polling interval of 3600 seconds.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `syke-hydro`. The record key is `{station_id}`. In plain language, `{station_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['syke-hydro'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `FI.SYKE.Hydrology.Station`
+
+#### What it tells you
+
+This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `syke-hydro`, key `{station_id}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `FI.SYKE.Hydrology.Kafka`
+`Station` payloads are JSON object. Required fields: `station_id`, `name`, `latitude`, `longitude`.
 
-| Field | Value |
+- **`station_id`** (string, required): No description provided.
+- **`name`** (string, required): No description provided.
+- **`river_name`** (string, optional): No description provided.
+- **`water_area_name`** (string, optional): No description provided.
+- **`municipality`** (string, optional): No description provided.
+- **`latitude`** (double, required): No description provided.
+- **`longitude`** (double, required): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "name": "string",
+  "river_name": "string",
+  "water_area_name": "string",
+  "municipality": "string",
+  "latitude": 0,
+  "longitude": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Water Level Observation
+
+CloudEvents type: `FI.SYKE.Hydrology.WaterLevelObservation`
+
+#### What it tells you
+
+This event carries water level observation data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`FI.SYKE.Hydrology`](#messagegroup-fisykehydrology) |
+| `KAFKA` | topic `syke-hydro`, key `{station_id}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `syke-hydro` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
+`Water Level Observation` payloads are JSON object. Required fields: `station_id`.
 
-## Messagegroups
+- **`station_id`** (string, required): No description provided.
+- **`water_level`** (double or null, optional): Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.
+- **`water_level_unit`** (string or null, optional): Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null.
+- **`water_level_timestamp`** (datetime or null, optional): RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.
+- **`discharge`** (double or null, optional): Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.
+- **`discharge_unit`** (string or null, optional): Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null.
+- **`discharge_timestamp`** (datetime or null, optional): RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.
+#### Example payload
 
-### Messagegroup `FI.SYKE.Hydrology`
-<a id="messagegroup-fisykehydrology"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `FI.SYKE.Hydrology.Kafka` (KAFKA) |
-| Messages | 2 |
+```json
+{
+  "station_id": "string",
+  "water_level": 0,
+  "water_level_unit": "string",
+  "water_level_timestamp": "2024-01-01T00:00:00Z",
+  "discharge": 0,
+  "discharge_unit": "string",
+  "discharge_timestamp": "2024-01-01T00:00:00Z"
+}
+```
 
-#### Message `FI.SYKE.Hydrology.Station`
-<a id="message-fisykehydrologystation"></a>
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station`](#schema-fisykehydrologystation) |
-| Event role | Reference/status data |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-##### CloudEvents metadata
+## Conventions
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `FI.SYKE.Hydrology.Station` |
-| `source` |  | `string` | `False` | `https://rajapinnat.ymparisto.fi` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-##### Bound transports
+Transport bindings carry CloudEvents metadata differently:
 
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `FI.SYKE.Hydrology.Kafka` | `KAFKA` | topic `syke-hydro`; key `{station_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `FI.SYKE.Hydrology.WaterLevelObservation`
-<a id="message-fisykehydrologywaterlevelobservation"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.WaterLevelObservation`](#schema-fisykehydrologywaterlevelobservation) |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+- The checked-in guide documents a default polling interval of 3600 seconds.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `FI.SYKE.Hydrology.WaterLevelObservation` |
-| `source` |  | `string` | `False` | `https://rajapinnat.ymparisto.fi` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `FI.SYKE.Hydrology.Kafka` | `KAFKA` | topic `syke-hydro`; key `{station_id}` |
-
-## Schemagroups
-
-### Schemagroup `FI.SYKE.Hydrology.jstruct`
-<a id="schemagroup-fisykehydrologyjstruct"></a>
-
-#### Schema `FI.SYKE.Hydrology.Station`
-<a id="schema-fisykehydrologystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/FI/SYKE/Hydrology/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Station
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/FI/SYKE/Hydrology/Station` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` |  | altnames=`{"lang:fi": "Paikka_Id"}` | - | - |
-| `name` | `string` | `True` |  | altnames=`{"lang:fi": "Nimi"}` | - | - |
-| `river_name` | `string` | `False` |  | altnames=`{"lang:fi": "PaaVesalNimi"}` | - | - |
-| `water_area_name` | `string` | `False` |  | altnames=`{"lang:fi": "VesalNimi"}` | - | - |
-| `municipality` | `string` | `False` |  | altnames=`{"lang:fi": "KuntaNimi"}` | - | - |
-| `latitude` | `double` | `True` |  | - | - | - |
-| `longitude` | `double` | `True` |  | - | - | - |
-
-#### Schema `FI.SYKE.Hydrology.WaterLevelObservation`
-<a id="schema-fisykehydrologywaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `WaterLevelObservation`
-<a id="schema-node-waterlevelobservation"></a>
-
-WaterLevelObservation
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` |  | altnames=`{"lang:fi": "Paikka_Id"}` | - | - |
-| `water_level` | `union` | `False` | Water level reading value in centimetres. Null when the station does not report a water level in the current polling window. | altnames=`{"lang:fi": "Arvo"}` | - | - |
-| `water_level_unit` | `union` | `False` | Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null. | - | - | - |
-| `water_level_timestamp` | `union` | `False` | RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available. | altnames=`{"lang:fi": "Aika"}` | - | - |
-| `discharge` | `union` | `False` | Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge. | altnames=`{"lang:fi": "Arvo"}` | - | - |
-| `discharge_unit` | `union` | `False` | Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null. | - | - | - |
-| `discharge_timestamp` | `union` | `False` | RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available. | altnames=`{"lang:fi": "Aika"}` | - | - |
-
-### Schemagroup `FI.SYKE.Hydrology.avro`
-<a id="schemagroup-fisykehydrologyavro"></a>
-
-#### Schema `FI.SYKE.Hydrology.Station`
-<a id="schema-fisykehydrologystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | FI.SYKE.Hydrology |
-| Type | `record` |
-| Doc | Station |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `name` | `string` |  | `-` |
-| `river_name` | `null` \| `string` |  | `-` |
-| `water_area_name` | `null` \| `string` |  | `-` |
-| `municipality` | `null` \| `string` |  | `-` |
-| `latitude` | `double` |  | `-` |
-| `longitude` | `double` |  | `-` |
-
-#### Schema `FI.SYKE.Hydrology.WaterLevelObservation`
-<a id="schema-fisykehydrologywaterlevelobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelObservation |
-| Namespace | FI.SYKE.Hydrology |
-| Type | `record` |
-| Doc | WaterLevelObservation |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `water_level` | `null` \| `double` |  | `-` |
-| `water_level_unit` | `null` \| `string` |  | `-` |
-| `water_level_timestamp` | `null` \| `string` |  | `-` |
-| `discharge` | `null` \| `double` |  | `-` |
-| `discharge_unit` | `null` \| `string` |  | `-` |
-| `discharge_timestamp` | `null` \| `string` |  | `-` |
+- xRegistry manifest: [`xreg/syke_hydro.xreg.json`](xreg/syke_hydro.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Hydrology OData API: <https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata>

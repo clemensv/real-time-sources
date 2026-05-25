@@ -2,468 +2,330 @@
 
 **NOAA NWS Weather Alerts Poller** polls the National Weather Service (NWS) Weather Alerts API for active weather alerts across the United States and sends them to a Kafka topic as CloudEvents. The tool tracks previously seen alert IDs to avoid sending duplicates.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 4 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
+- **Identity:** `{alert_id}`, `{zone_id}`, `{station_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 3 |
-| Messagegroups | 3 |
-| Schemagroups | 2 |
+### Kafka
 
-## Endpoints
+Subscribe to `noaa-nws`. The record key is `{alert_id}`, `{zone_id}`, `{station_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `Microsoft.OpenData.US.NOAA.NWS.Alerts.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['noaa-nws'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`Microsoft.OpenData.US.NOAA.NWS.Alerts`](#messagegroup-microsoftopendatausnoaanwsalerts) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `noaa-nws` |
-| Kafka key | `{alert_id}` |
-| Deployed | False |
+### Weather Alert
 
-### Endpoint `Microsoft.OpenData.US.NOAA.NWS.Zones.Kafka`
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NWS.WeatherAlert`
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`Microsoft.OpenData.US.NOAA.NWS.Zones`](#messagegroup-microsoftopendatausnoaanwszones) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Kafka topic | `noaa-nws` |
-| Kafka key | `{zone_id}` |
-| Deployed | False |
-
-### Endpoint `Microsoft.OpenData.US.NOAA.NWS.Observations.Kafka`
-
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`Microsoft.OpenData.US.NOAA.NWS.Observations`](#messagegroup-microsoftopendatausnoaanwsobservations) |
-
-#### Transport options
-
-| Option | Value |
-| --- | --- |
-| Kafka topic | `noaa-nws` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
-
-## Messagegroups
-
-### Messagegroup `Microsoft.OpenData.US.NOAA.NWS.Alerts`
-<a id="messagegroup-microsoftopendatausnoaanwsalerts"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `Microsoft.OpenData.US.NOAA.NWS.Alerts.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `Microsoft.OpenData.US.NOAA.NWS.WeatherAlert`
-<a id="message-microsoftopendatausnoaanwsweatheralert"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherAlert |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert`](#schema-microsoftopendatausnoaanwsweatheralert) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NWS.WeatherAlert` |
-| `source` |  | `string` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{alert_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NWS.Alerts.Kafka` | `KAFKA` | topic `noaa-nws`; key `{alert_id}` |
-
-### Messagegroup `Microsoft.OpenData.US.NOAA.NWS.Zones`
-<a id="messagegroup-microsoftopendatausnoaanwszones"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `Microsoft.OpenData.US.NOAA.NWS.Zones.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `Microsoft.OpenData.US.NOAA.NWS.Zone`
-<a id="message-microsoftopendatausnoaanwszone"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Zone |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.Zone`](#schema-microsoftopendatausnoaanwszone) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NWS.Zone` |
-| `source` |  | `string` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{zone_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NWS.Zones.Kafka` | `KAFKA` | topic `noaa-nws`; key `{zone_id}` |
-
-### Messagegroup `Microsoft.OpenData.US.NOAA.NWS.Observations`
-<a id="messagegroup-microsoftopendatausnoaanwsobservations"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `Microsoft.OpenData.US.NOAA.NWS.Observations.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `Microsoft.OpenData.US.NOAA.NWS.ObservationStation`
-<a id="message-microsoftopendatausnoaanwsobservationstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | ObservationStation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation`](#schema-microsoftopendatausnoaanwsobservationstation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NWS.ObservationStation` |
-| `source` |  | `string` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NWS.Observations.Kafka` | `KAFKA` | topic `noaa-nws`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NWS.WeatherObservation`
-<a id="message-microsoftopendatausnoaanwsweatherobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation`](#schema-microsoftopendatausnoaanwsweatherobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NWS.WeatherObservation` |
-| `source` |  | `string` | `False` | `https://api.weather.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NWS.Observations.Kafka` | `KAFKA` | topic `noaa-nws`; key `{station_id}` |
-
-## Schemagroups
-
-### Schemagroup `Microsoft.OpenData.US.NOAA.NWS.jstruct`
-<a id="schemagroup-microsoftopendatausnoaanwsjstruct"></a>
-
-#### Schema `Microsoft.OpenData.US.NOAA.NWS.WeatherAlert`
-<a id="schema-microsoftopendatausnoaanwsweatheralert"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WeatherAlert |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `WeatherAlert`
-<a id="schema-node-weatheralert"></a>
+#### What it tells you
 
 Active weather alert from the NWS Common Alerting Protocol (CAP) feed. Alerts cover severe weather warnings, watches, advisories, and statements issued by NWS Weather Forecast Offices.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert` |
+| `KAFKA` | topic `noaa-nws`, key `{alert_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `alert_id` | `string` | `True` |  | - | - | - |
-| `area_desc` | `string` | `True` |  | - | - | - |
-| `sent` | `datetime` | `True` |  | - | - | - |
-| `effective` | `datetime` | `True` |  | - | - | - |
-| `expires` | `datetime` | `True` |  | - | - | - |
-| `status` | enum `['Actual', 'Exercise', 'System', 'Test', 'Draft']` | `True` |  | - | - | - |
-| `message_type` | enum `['Alert', 'Update', 'Cancel']` | `True` |  | - | - | - |
-| `category` | enum `['Met', 'Geo', 'Safety', 'Security', 'Rescue', 'Fire', 'Health', 'Env', 'Transport', 'Infra', 'CBRNE', 'Other']` | `False` |  | - | - | - |
-| `severity` | enum `['Extreme', 'Severe', 'Moderate', 'Minor', 'Unknown']` | `True` |  | - | - | - |
-| `certainty` | enum `['Observed', 'Likely', 'Possible', 'Unlikely', 'Unknown']` | `True` |  | - | - | - |
-| `urgency` | enum `['Immediate', 'Expected', 'Future', 'Past', 'Unknown']` | `True` |  | - | - | - |
-| `event` | `string` | `True` |  | - | - | - |
-| `sender_name` | `string` | `False` |  | - | - | - |
-| `headline` | `union` | `False` |  | - | - | - |
-| `description` | `string` | `False` |  | - | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NWS.Zone`
-<a id="schema-microsoftopendatausnoaanwszone"></a>
+`Weather Alert` payloads are JSON object. Required fields: `alert_id`, `area_desc`, `sent`, `effective`, `expires`, `status`, `message_type`, `severity`, `certainty`, `urgency`, `event`.
 
-| Field | Value |
-| --- | --- |
-| Name | Zone |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`alert_id`** (string, required): No description provided.
+- **`area_desc`** (string, required): No description provided.
+- **`sent`** (datetime, required): No description provided.
+- **`effective`** (datetime, required): No description provided.
+- **`expires`** (datetime, required): No description provided.
+- **`status`** (enum, required): No description provided.
+- **`message_type`** (enum, required): No description provided.
+- **`category`** (enum, optional): No description provided.
+- **`severity`** (enum, required): No description provided.
+- **`certainty`** (enum, required): No description provided.
+- **`urgency`** (enum, required): No description provided.
+- **`event`** (string, required): No description provided.
+- **`sender_name`** (string, optional): No description provided.
+- **`headline`** (string or null, optional): No description provided.
+- **`description`** (string, optional): No description provided.
+##### `status` values
 
-##### Version `1`
+- `Actual`
+- `Exercise`
+- `System`
+- `Test`
+- `Draft`
+##### `message_type` values
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+- `Alert`
+- `Update`
+- `Cancel`
+##### `category` values
 
-###### JsonStructure
+- `Met`
+- `Geo`
+- `Safety`
+- `Security`
+- `Rescue`
+- `Fire`
+- `Health`
+- `Env`
+- `Transport`
+- `Infra`
+- `CBRNE`
+- `Other`
+##### `severity` values
 
-| Field | Value |
-| --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+- `Extreme`
+- `Severe`
+- `Moderate`
+- `Minor`
+- `Unknown`
+##### `certainty` values
 
-###### Object `Zone`
-<a id="schema-node-zone"></a>
+- `Observed`
+- `Likely`
+- `Possible`
+- `Unlikely`
+- `Unknown`
+##### `urgency` values
+
+- `Immediate`
+- `Expected`
+- `Future`
+- `Past`
+- `Unknown`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "alert_id": "string",
+  "area_desc": "string",
+  "sent": "2024-01-01T00:00:00Z",
+  "effective": "2024-01-01T00:00:00Z",
+  "expires": "2024-01-01T00:00:00Z",
+  "status": "Actual",
+  "message_type": "Alert",
+  "category": "Met",
+  "severity": "Extreme",
+  "certainty": "Observed",
+  "urgency": "Immediate",
+  "event": "string",
+  "sender_name": "string",
+  "headline": "string",
+  "description": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Zone
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NWS.Zone`
+
+#### What it tells you
 
 NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{zone_id}`. `{zone_id}` is NWS zone identifier, e.g. 'NYZ072' for New York City. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone` |
+| `KAFKA` | topic `noaa-nws`, key `{zone_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `zone_id` | `string` | `True` | NWS zone identifier, e.g. 'NYZ072' for New York City. | - | - | - |
-| `name` | `string` | `True` | Human-readable zone name. | - | - | - |
-| `type` | `string` | `False` | Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'. | - | - | - |
-| `state` | `string` | `True` | Two-letter US state or territory abbreviation. | - | - | - |
-| `forecast_office` | `string` | `False` | NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'. | - | - | - |
-| `timezone` | `string` | `False` | IANA timezone name for the zone, e.g. 'America/New_York'. | - | - | - |
-| `radar_station` | `union` | `False` | Nearest NEXRAD radar station identifier, or null if none assigned. | - | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NWS.ObservationStation`
-<a id="schema-microsoftopendatausnoaanwsobservationstation"></a>
+`Zone` payloads are JSON object. Required fields: `zone_id`, `name`, `state`.
 
-| Field | Value |
-| --- | --- |
-| Name | ObservationStation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`zone_id`** (string, required): NWS zone identifier, e.g. 'NYZ072' for New York City.
+- **`name`** (string, required): Human-readable zone name.
+- **`type`** (string, optional): Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'.
+- **`state`** (string, required): Two-letter US state or territory abbreviation.
+- **`forecast_office`** (string, optional): NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'.
+- **`timezone`** (string, optional): IANA timezone name for the zone, e.g. 'America/New_York'.
+- **`radar_station`** (string or null, optional): Nearest NEXRAD radar station identifier, or null if none assigned.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "zone_id": "string",
+  "name": "string",
+  "type": "string",
+  "state": "string",
+  "forecast_office": "string",
+  "timezone": "string",
+  "radar_station": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/ObservationStation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `ObservationStation`
-<a id="schema-node-observationstation"></a>
+### Observation Station
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NWS.ObservationStation`
+
+#### What it tells you
 
 NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/ObservationStation` |
+| `KAFKA` | topic `noaa-nws`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID. | - | - | - |
-| `name` | `string` | `True` | Human-readable station name, e.g. 'New York, Kennedy International Airport'. | - | - | - |
-| `elevation_m` | `union` | `False` | Station elevation above mean sea level. | unit=`m` symbol=`m` | - | - |
-| `time_zone` | `union` | `False` | IANA timezone of the station, e.g. 'America/New_York'. | - | - | - |
-| `forecast_zone` | `union` | `False` | NWS forecast zone identifier associated with this station. | - | - | - |
-| `county` | `union` | `False` | NWS county zone identifier for the station's location. | - | - | - |
-| `fire_weather_zone` | `union` | `False` | NWS fire weather zone identifier for the station's location. | - | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NWS.WeatherObservation`
-<a id="schema-microsoftopendatausnoaanwsweatherobservation"></a>
+`Observation Station` payloads are JSON object. Required fields: `station_id`, `name`.
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID.
+- **`name`** (string, required): Human-readable station name, e.g. 'New York, Kennedy International Airport'.
+- **`elevation_m`** (double or null, optional, m): Station elevation above mean sea level.
+- **`time_zone`** (string or null, optional): IANA timezone of the station, e.g. 'America/New_York'.
+- **`forecast_zone`** (string or null, optional): NWS forecast zone identifier associated with this station.
+- **`county`** (string or null, optional): NWS county zone identifier for the station's location.
+- **`fire_weather_zone`** (string or null, optional): NWS fire weather zone identifier for the station's location.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "name": "string",
+  "elevation_m": 0,
+  "time_zone": "string",
+  "forecast_zone": "string",
+  "county": "string",
+  "fire_weather_zone": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `WeatherObservation`
-<a id="schema-node-weatherobservation"></a>
+### Weather Observation
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NWS.WeatherObservation`
+
+#### What it tells you
 
 Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl).
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is ICAO or cooperative observer station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherObservation` |
+| `KAFKA` | topic `noaa-nws`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | ICAO or cooperative observer station identifier. | - | - | - |
-| `timestamp` | `datetime` | `True` | UTC timestamp of the observation. | - | - | - |
-| `text_description` | `union` | `False` | Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'. | - | - | - |
-| `temperature` | `union` | `False` | Air temperature at the time of observation. | unit=`Cel` symbol=`°C` | - | - |
-| `dewpoint` | `union` | `False` | Dew point temperature. | unit=`Cel` symbol=`°C` | - | - |
-| `wind_direction` | `union` | `False` | Wind direction in degrees from which the wind is blowing. | unit=`degree` symbol=`°` | - | - |
-| `wind_speed` | `union` | `False` | Sustained wind speed. | unit=`km/h` symbol=`km/h` | - | - |
-| `wind_gust` | `union` | `False` | Peak wind gust speed, null if no gusts observed. | unit=`km/h` symbol=`km/h` | - | - |
-| `barometric_pressure` | `union` | `False` | Station barometric pressure (not reduced to sea level). | unit=`Pa` symbol=`Pa` | - | - |
-| `sea_level_pressure` | `union` | `False` | Atmospheric pressure reduced to mean sea level. | unit=`Pa` symbol=`Pa` | - | - |
-| `visibility` | `union` | `False` | Horizontal visibility. | unit=`m` symbol=`m` | - | - |
-| `relative_humidity` | `union` | `False` | Relative humidity percentage. | unit=`percent` symbol=`%` | - | - |
-| `wind_chill` | `union` | `False` | Calculated wind chill temperature, null when conditions do not warrant it. | unit=`Cel` symbol=`°C` | - | - |
-| `heat_index` | `union` | `False` | Calculated heat index temperature, null when conditions do not warrant it. | unit=`Cel` symbol=`°C` | - | - |
+#### Payload
 
-### Schemagroup `Microsoft.OpenData.US.NOAA.NWS.avro`
-<a id="schemagroup-microsoftopendatausnoaanwsavro"></a>
+`Weather Observation` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-#### Schema `Microsoft.OpenData.US.NOAA.NWS.WeatherAlert`
-<a id="schema-microsoftopendatausnoaanwsweatheralert"></a>
+- **`station_id`** (string, required): ICAO or cooperative observer station identifier.
+- **`timestamp`** (datetime, required): UTC timestamp of the observation.
+- **`text_description`** (string or null, optional): Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'.
+- **`temperature`** (double or null, optional, Cel (°C)): Air temperature at the time of observation.
+- **`dewpoint`** (double or null, optional, Cel (°C)): Dew point temperature.
+- **`wind_direction`** (double or null, optional, degree (°)): Wind direction in degrees from which the wind is blowing.
+- **`wind_speed`** (double or null, optional, km/h): Sustained wind speed.
+- **`wind_gust`** (double or null, optional, km/h): Peak wind gust speed, null if no gusts observed.
+- **`barometric_pressure`** (double or null, optional, Pa): Station barometric pressure (not reduced to sea level).
+- **`sea_level_pressure`** (double or null, optional, Pa): Atmospheric pressure reduced to mean sea level.
+- **`visibility`** (double or null, optional, m): Horizontal visibility.
+- **`relative_humidity`** (double or null, optional, percent (%)): Relative humidity percentage.
+- **`wind_chill`** (double or null, optional, Cel (°C)): Calculated wind chill temperature, null when conditions do not warrant it.
+- **`heat_index`** (double or null, optional, Cel (°C)): Calculated heat index temperature, null when conditions do not warrant it.
+#### Example payload
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherAlert |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-##### Version `1`
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "text_description": "string",
+  "temperature": 0,
+  "dewpoint": 0,
+  "wind_direction": 0,
+  "wind_speed": 0,
+  "wind_gust": 0,
+  "barometric_pressure": 0,
+  "sea_level_pressure": 0,
+  "visibility": 0,
+  "relative_humidity": 0,
+  "wind_chill": 0,
+  "heat_index": 0
+}
+```
 
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
+#### Reference vs telemetry
 
-###### Avro
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-| Field | Value |
-| --- | --- |
-| Name | WeatherAlert |
-| Namespace | Microsoft.OpenData.US.NOAA.NWS |
-| Type | `record` |
-| Doc | WeatherAlert |
+## Conventions
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `alert_id` | `string` |  | `-` |
-| `area_desc` | `string` |  | `-` |
-| `sent` | `string` |  | `-` |
-| `effective` | `string` |  | `-` |
-| `expires` | `string` |  | `-` |
-| `status` | `string` |  | `-` |
-| `message_type` | `string` |  | `-` |
-| `category` | `null` \| `string` |  | `-` |
-| `severity` | `string` |  | `-` |
-| `certainty` | `string` |  | `-` |
-| `urgency` | `string` |  | `-` |
-| `event` | `string` |  | `-` |
-| `sender_name` | `null` \| `string` |  | `-` |
-| `headline` | `null` \| `string` |  | `-` |
-| `description` | `null` \| `string` |  | `-` |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-#### Schema `Microsoft.OpenData.US.NOAA.NWS.Zone`
-<a id="schema-microsoftopendatausnoaanwszone"></a>
+Transport bindings carry CloudEvents metadata differently:
 
-| Field | Value |
-| --- | --- |
-| Name | Zone |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-##### Version `1`
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
+## Operational notes
 
-###### Avro
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
-| Field | Value |
-| --- | --- |
-| Name | Zone |
-| Namespace | Microsoft.OpenData.US.NOAA.NWS |
-| Type | `record` |
-| Doc | Zone |
+## References
 
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `zone_id` | `string` |  | `-` |
-| `name` | `string` |  | `-` |
-| `type` | `null` \| `string` |  | `-` |
-| `state` | `string` |  | `-` |
-| `forecast_office` | `null` \| `string` |  | `-` |
-| `timezone` | `null` \| `string` |  | `-` |
-| `radar_station` | `null` \| `string` |  | `-` |
+- xRegistry manifest: [`xreg/noaa_nws.xreg.json`](xreg/noaa_nws.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

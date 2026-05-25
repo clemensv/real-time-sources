@@ -2,375 +2,202 @@
 
 This bridge downloads DATEX II XML data published by the Dutch NDW (Nationaal Dataportaal Wegverkeer) at `https://opendata.ndw.nu` and forwards traffic speed, travel time, and situation data to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 3 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
+- **Identity:** `{site_id}`, `{situation_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `ndl-traffic`, `ndl-traffic-situations`. The record key is `{site_id}`, `{situation_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['ndl-traffic', 'ndl-traffic-situations'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Traffic Speed
+
+CloudEvents type: `NL.NDW.Traffic.TrafficSpeed`
+
+#### What it tells you
+
+Aggregated traffic speed and flow measurement per road segment from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes. Aggregated traffic speed and flow measurement per road segment from the NDW DATEX II trafficspeed feed.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_id}`. `{site_id}` is unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `ndl-traffic`, key `{site_id}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `NL.NDW.Traffic.Measurements.Kafka`
+`Traffic Speed` payloads are JSON object. Required fields: `site_id`, `measurement_time`, `number_of_lanes_with_data`.
 
-| Field | Value |
+- **`site_id`** (string, required): Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. Example: PZH01_MST_0029-00.
+- **`measurement_time`** (string, required): Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element.
+- **`average_speed`** (double or null, optional, km/h): Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed (all lanes had speed <= 0).
+- **`vehicle_flow_rate`** (int32 or null, optional, vehicles/h): Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported.
+- **`number_of_lanes_with_data`** (int32, required): Number of lanes that reported valid measurement data (speed > 0 or flow >= 0) at this measurement site.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_id": "string",
+  "measurement_time": "string",
+  "average_speed": 0,
+  "vehicle_flow_rate": 0,
+  "number_of_lanes_with_data": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Travel Time
+
+CloudEvents type: `NL.NDW.Traffic.TravelTime`
+
+#### What it tells you
+
+Travel time measurement for a road segment from the Dutch NDW DATEX II traveltime feed. Each record contains the actual measured travel time and the static free-flow reference time for a measurement site. Travel time measurement for a road segment from the NDW DATEX II traveltime feed.
+
+#### Identity
+
+Each event identifies the real-world resource with `{site_id}`. `{site_id}` is unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`NL.NDW.Traffic.Measurements`](#messagegroup-nlndwtrafficmeasurements) |
+| `KAFKA` | topic `ndl-traffic`, key `{site_id}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
+`Travel Time` payloads are JSON object. Required fields: `site_id`, `measurement_time`.
+
+- **`site_id`** (string, required): Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute.
+- **`measurement_time`** (string, required): Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element.
+- **`duration`** (double or null, optional, s): Actual measured travel time in seconds for this road segment. Null when the measurement has a data error (duration is -1 in the upstream).
+- **`reference_duration`** (double or null, optional, s): Static reference (free-flow) travel time in seconds for this road segment. Null when unavailable or when the measurement has a data error.
+- **`accuracy`** (double or null, optional): Accuracy of the travel time measurement as a percentage (0-100), indicating the quality of the sensor coverage.
+- **`data_quality`** (double or null, optional): Supplier-calculated data quality score as a percentage (0-100). Higher values indicate more reliable measurements.
+- **`number_of_input_values`** (int32 or null, optional): Number of individual vehicle travel times used to compute this aggregate travel time measurement.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "site_id": "string",
+  "measurement_time": "string",
+  "duration": 0,
+  "reference_duration": 0,
+  "accuracy": 0,
+  "data_quality": 0,
+  "number_of_input_values": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Traffic Situation
+
+CloudEvents type: `NL.NDW.Traffic.TrafficSituation`
+
+#### What it tells you
+
+Current traffic situation record from the Dutch NDW DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-affecting events on the Dutch road network. Current traffic situation from the NDW DATEX II v3 actueel_beeld feed.
+
+#### Identity
+
+Each event identifies the real-world resource with `{situation_id}`. `{situation_id}` is unique identifier of the traffic situation from the DATEX II situation id attribute. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Kafka topic | `ndl-traffic` |
-| Kafka key | `{site_id}` |
-| Deployed | False |
+| `KAFKA` | topic `ndl-traffic-situations`, key `{situation_id}` |
 
-### Endpoint `NL.NDW.Traffic.Situations.Kafka`
+#### Payload
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`NL.NDW.Traffic.Situations`](#messagegroup-nlndwtrafficsituations) |
+`Traffic Situation` payloads are JSON object. Required fields: `situation_id`, `version_time`, `information_status`.
 
-#### Transport options
+- **`situation_id`** (string, required): Unique identifier of the traffic situation from the DATEX II situation id attribute. Example: RWS01_SM1117672_D2_WWA.
+- **`version_time`** (string, required): Timestamp of the latest version of this situation in ISO 8601 format (UTC), from the DATEX II situationVersionTime element.
+- **`severity`** (string or null, optional): Overall severity of the situation. Values include: low, medium, high, highest, unknown. Null if not specified.
+- **`record_type`** (string or null, optional): DATEX II situation record type indicating the nature of the event. Common values: RoadOrCarriagewayOrLaneManagement, MaintenanceWorks, ConstructionWorks, ReroutingManagement. Null when not available.
+- **`cause_type`** (string or null, optional): Cause of the traffic situation. Common values: roadMaintenance, accident, congestion, roadClosed. Null when no cause is specified.
+- **`start_time`** (string or null, optional): Start time of the situation validity period in ISO 8601 format (UTC). Null when no validity time specification is provided.
+- **`end_time`** (string or null, optional): End time of the situation validity period in ISO 8601 format (UTC). Null when the end time is open-ended or not specified.
+- **`information_status`** (string, required): Status of the information: real (confirmed traffic data), test (test data), or exercise (drill/exercise data).
+#### Example payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `ndl-traffic-situations` |
-| Kafka key | `{situation_id}` |
-| Deployed | False |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-## Messagegroups
+```json
+{
+  "situation_id": "string",
+  "version_time": "string",
+  "severity": "string",
+  "record_type": "string",
+  "cause_type": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "information_status": "string"
+}
+```
 
-### Messagegroup `NL.NDW.Traffic.Measurements`
-<a id="messagegroup-nlndwtrafficmeasurements"></a>
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `NL.NDW.Traffic.Measurements.Kafka` (KAFKA) |
-| Messages | 2 |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-#### Message `NL.NDW.Traffic.TrafficSpeed`
-<a id="message-nlndwtraffictrafficspeed"></a>
+## Conventions
 
-Aggregated traffic speed and flow measurement per road segment from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-| Field | Value |
-| --- | --- |
-| Name | TrafficSpeed |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.NDW.Traffic.jstruct/schemas/NL.NDW.Traffic.TrafficSpeed`](#schema-nlndwtraffictrafficspeed) |
-| Event role | Telemetry/event data |
+Transport bindings carry CloudEvents metadata differently:
 
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.NDW.Traffic.TrafficSpeed` |
-| `source` |  | `string` | `False` | `https://opendata.ndw.nu/trafficspeed.xml.gz` |
-| `subject` |  | `uritemplate` | `False` | `{site_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `NL.NDW.Traffic.Measurements.Kafka` | `KAFKA` | topic `ndl-traffic`; key `{site_id}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `NL.NDW.Traffic.TravelTime`
-<a id="message-nlndwtraffictraveltime"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-Travel time measurement for a road segment from the Dutch NDW DATEX II traveltime feed. Each record contains the actual measured travel time and the static free-flow reference time for a measurement site.
+## Operational notes
 
-| Field | Value |
-| --- | --- |
-| Name | TravelTime |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.NDW.Traffic.jstruct/schemas/NL.NDW.Traffic.TravelTime`](#schema-nlndwtraffictraveltime) |
-| Event role | Telemetry/event data |
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
-##### CloudEvents metadata
+## References
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.NDW.Traffic.TravelTime` |
-| `source` |  | `string` | `False` | `https://opendata.ndw.nu/traveltime.xml.gz` |
-| `subject` |  | `uritemplate` | `False` | `{site_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `NL.NDW.Traffic.Measurements.Kafka` | `KAFKA` | topic `ndl-traffic`; key `{site_id}` |
-
-### Messagegroup `NL.NDW.Traffic.Situations`
-<a id="messagegroup-nlndwtrafficsituations"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `NL.NDW.Traffic.Situations.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `NL.NDW.Traffic.TrafficSituation`
-<a id="message-nlndwtraffictrafficsituation"></a>
-
-Current traffic situation record from the Dutch NDW DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-affecting events on the Dutch road network.
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficSituation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/NL.NDW.Traffic.jstruct/schemas/NL.NDW.Traffic.TrafficSituation`](#schema-nlndwtraffictrafficsituation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `NL.NDW.Traffic.TrafficSituation` |
-| `source` |  | `string` | `False` | `https://opendata.ndw.nu/actueel_beeld.xml.gz` |
-| `subject` |  | `uritemplate` | `False` | `{situation_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `NL.NDW.Traffic.Situations.Kafka` | `KAFKA` | topic `ndl-traffic-situations`; key `{situation_id}` |
-
-## Schemagroups
-
-### Schemagroup `NL.NDW.Traffic.jstruct`
-<a id="schemagroup-nlndwtrafficjstruct"></a>
-
-#### Schema `NL.NDW.Traffic.TrafficSpeed`
-<a id="schema-nlndwtraffictrafficspeed"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficSpeed |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/nl/ndw/traffic/TrafficSpeed` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/nl/ndw/traffic/TrafficSpeed` |
-| Type | `object` |
-
-###### Object `TrafficSpeed`
-<a id="schema-node-trafficspeed"></a>
-
-Aggregated traffic speed and flow measurement per road segment from the NDW DATEX II trafficspeed feed. Speed is averaged and flow is summed across all reporting lanes at the measurement site.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `site_id` | `string` | `True` | Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. Example: PZH01_MST_0029-00. | - | - | - |
-| `measurement_time` | `string` | `True` | Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element. | - | - | - |
-| `average_speed` | `union` | `False` | Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed (all lanes had speed <= 0). | unit=`km/h` | - | - |
-| `vehicle_flow_rate` | `union` | `False` | Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported. | unit=`vehicles/h` | - | - |
-| `number_of_lanes_with_data` | `int32` | `True` | Number of lanes that reported valid measurement data (speed > 0 or flow >= 0) at this measurement site. | - | - | - |
-
-#### Schema `NL.NDW.Traffic.TravelTime`
-<a id="schema-nlndwtraffictraveltime"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TravelTime |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/nl/ndw/traffic/TravelTime` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/nl/ndw/traffic/TravelTime` |
-| Type | `object` |
-
-###### Object `TravelTime`
-<a id="schema-node-traveltime"></a>
-
-Travel time measurement for a road segment from the NDW DATEX II traveltime feed. Contains actual measured travel time and the static free-flow reference time.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `site_id` | `string` | `True` | Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. | - | - | - |
-| `measurement_time` | `string` | `True` | Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element. | - | - | - |
-| `duration` | `union` | `False` | Actual measured travel time in seconds for this road segment. Null when the measurement has a data error (duration is -1 in the upstream). | unit=`s` | - | - |
-| `reference_duration` | `union` | `False` | Static reference (free-flow) travel time in seconds for this road segment. Null when unavailable or when the measurement has a data error. | unit=`s` | - | - |
-| `accuracy` | `union` | `False` | Accuracy of the travel time measurement as a percentage (0-100), indicating the quality of the sensor coverage. | - | - | - |
-| `data_quality` | `union` | `False` | Supplier-calculated data quality score as a percentage (0-100). Higher values indicate more reliable measurements. | - | - | - |
-| `number_of_input_values` | `union` | `False` | Number of individual vehicle travel times used to compute this aggregate travel time measurement. | - | - | - |
-
-#### Schema `NL.NDW.Traffic.TrafficSituation`
-<a id="schema-nlndwtraffictrafficsituation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficSituation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/nl/ndw/traffic/TrafficSituation` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/nl/ndw/traffic/TrafficSituation` |
-| Type | `object` |
-
-###### Object `TrafficSituation`
-<a id="schema-node-trafficsituation"></a>
-
-Current traffic situation from the NDW DATEX II v3 actueel_beeld feed. Covers road works, lane closures, diversions, and other traffic-affecting events on the Dutch road network.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `situation_id` | `string` | `True` | Unique identifier of the traffic situation from the DATEX II situation id attribute. Example: RWS01_SM1117672_D2_WWA. | - | - | - |
-| `version_time` | `string` | `True` | Timestamp of the latest version of this situation in ISO 8601 format (UTC), from the DATEX II situationVersionTime element. | - | - | - |
-| `severity` | `union` | `False` | Overall severity of the situation. Values include: low, medium, high, highest, unknown. Null if not specified. | - | - | - |
-| `record_type` | `union` | `False` | DATEX II situation record type indicating the nature of the event. Common values: RoadOrCarriagewayOrLaneManagement, MaintenanceWorks, ConstructionWorks, ReroutingManagement. Null when not available. | - | - | - |
-| `cause_type` | `union` | `False` | Cause of the traffic situation. Common values: roadMaintenance, accident, congestion, roadClosed. Null when no cause is specified. | - | - | - |
-| `start_time` | `union` | `False` | Start time of the situation validity period in ISO 8601 format (UTC). Null when no validity time specification is provided. | - | - | - |
-| `end_time` | `union` | `False` | End time of the situation validity period in ISO 8601 format (UTC). Null when the end time is open-ended or not specified. | - | - | - |
-| `information_status` | `string` | `True` | Status of the information: real (confirmed traffic data), test (test data), or exercise (drill/exercise data). | - | - | - |
-
-### Schemagroup `NL.NDW.Traffic.avro`
-<a id="schemagroup-nlndwtrafficavro"></a>
-
-#### Schema `NL.NDW.Traffic.TrafficSpeed`
-<a id="schema-nlndwtraffictrafficspeed"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficSpeed |
-| Namespace | nl.ndw.traffic |
-| Type | `record` |
-| Doc | Aggregated traffic speed and flow measurement per road segment from the NDW DATEX II trafficspeed feed. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `site_id` | `string` | Unique identifier of the NDW measurement site. | `-` |
-| `measurement_time` | `string` | Timestamp of the measurement in ISO 8601 format (UTC). | `-` |
-| `average_speed` | `null` \| `double` | Average vehicle speed in km/h across all lanes with valid data. Null when no valid speed data. | `-` |
-| `vehicle_flow_rate` | `null` \| `int` | Total vehicle flow rate in vehicles per hour summed across all lanes. Null when no valid flow data. | `-` |
-| `number_of_lanes_with_data` | `int` | Number of lanes that reported valid measurement data. | `-` |
-
-#### Schema `NL.NDW.Traffic.TravelTime`
-<a id="schema-nlndwtraffictraveltime"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | TravelTime |
-| Namespace | nl.ndw.traffic |
-| Type | `record` |
-| Doc | Travel time measurement for a road segment from the NDW DATEX II traveltime feed. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `site_id` | `string` | Unique identifier of the NDW measurement site. | `-` |
-| `measurement_time` | `string` | Timestamp of the measurement in ISO 8601 format (UTC). | `-` |
-| `duration` | `null` \| `double` | Actual measured travel time in seconds. Null when data error. | `-` |
-| `reference_duration` | `null` \| `double` | Static reference (free-flow) travel time in seconds. Null when unavailable. | `-` |
-| `accuracy` | `null` \| `double` | Accuracy percentage (0-100). | `-` |
-| `data_quality` | `null` \| `double` | Supplier-calculated data quality percentage (0-100). | `-` |
-| `number_of_input_values` | `null` \| `int` | Number of individual vehicle travel times used in the calculation. | `-` |
-
-#### Schema `NL.NDW.Traffic.TrafficSituation`
-<a id="schema-nlndwtraffictrafficsituation"></a>
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficSituation |
-| Namespace | nl.ndw.traffic |
-| Type | `record` |
-| Doc | Current traffic situation from the NDW DATEX II v3 actueel_beeld feed. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `situation_id` | `string` | Unique identifier of the traffic situation. | `-` |
-| `version_time` | `string` | Timestamp of the latest version of this situation in ISO 8601 format (UTC). | `-` |
-| `severity` | `null` \| `string` | Overall severity: low, medium, high, highest, unknown. | `-` |
-| `record_type` | `null` \| `string` | DATEX II situation record type. | `-` |
-| `cause_type` | `null` \| `string` | Cause of the traffic situation. | `-` |
-| `start_time` | `null` \| `string` | Start time of the situation validity period in ISO 8601 format. | `-` |
-| `end_time` | `null` \| `string` | End time of the situation validity period in ISO 8601 format. | `-` |
-| `information_status` | `string` | Status of the information: real, test, or exercise. | `-` |
+- xRegistry manifest: [`xreg/ndl_netherlands.xreg.json`](xreg/ndl_netherlands.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

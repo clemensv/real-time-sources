@@ -2,992 +2,524 @@
 
 **NOAA NDBC Buoy Observations Poller** polls the National Data Buoy Center (NDBC) station table, the composite `latest_obs.txt` feed, and selected `realtime2` family files, then sends them to a Kafka topic as CloudEvents. The bridge emits station reference data first and tracks previously seen timestamps per station and feed family to avoid sending duplicates.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 9 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 8 telemetry event types.
+- **Identity:** `{station_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+### Kafka
 
-## Endpoints
+Subscribe to `noaa-ndbc`. The record key is `{station_id}`. In plain language, `{station_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `Microsoft.OpenData.US.NOAA.NDBC.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['noaa-ndbc'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`Microsoft.OpenData.US.NOAA.NDBC`](#messagegroup-microsoftopendatausnoaandbc) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `noaa-ndbc` |
-| Kafka key | `{station_id}` |
-| Deployed | False |
+### Buoy Observation
 
-## Messagegroups
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation`
 
-### Messagegroup `Microsoft.OpenData.US.NOAA.NDBC`
-<a id="messagegroup-microsoftopendatausnoaandbc"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `Microsoft.OpenData.US.NOAA.NDBC.Kafka` (KAFKA) |
-| Messages | 9 |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation`
-<a id="message-microsoftopendatausnoaandbcbuoyobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation`](#schema-microsoftopendatausnoaandbcbuoyobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation`
-<a id="message-microsoftopendatausnoaandbcbuoystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyStation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation`](#schema-microsoftopendatausnoaandbcbuoystation) |
-| Event role | Reference/status data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation`
-<a id="message-microsoftopendatausnoaandbcbuoysolarradiationobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoySolarRadiationObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation`](#schema-microsoftopendatausnoaandbcbuoysolarradiationobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation`
-<a id="message-microsoftopendatausnoaandbcbuoyoceanographicobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyOceanographicObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation`](#schema-microsoftopendatausnoaandbcbuoyoceanographicobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement`
-<a id="message-microsoftopendatausnoaandbcbuoydartmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyDartMeasurement |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement`](#schema-microsoftopendatausnoaandbcbuoydartmeasurement) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation`
-<a id="message-microsoftopendatausnoaandbcbuoycontinuouswindobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyContinuousWindObservation |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation`](#schema-microsoftopendatausnoaandbcbuoycontinuouswindobservation) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov/data/realtime2/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement`
-<a id="message-microsoftopendatausnoaandbcbuoysupplementalmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoySupplementalMeasurement |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement`](#schema-microsoftopendatausnoaandbcbuoysupplementalmeasurement) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov/data/realtime2/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary`
-<a id="message-microsoftopendatausnoaandbcbuoydetailedwavesummary"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyDetailedWaveSummary |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary`](#schema-microsoftopendatausnoaandbcbuoydetailedwavesummary) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov/data/realtime2/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-#### Message `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement`
-<a id="message-microsoftopendatausnoaandbcbuoyhourlyrainmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyHourlyRainMeasurement |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement`](#schema-microsoftopendatausnoaandbcbuoyhourlyrainmeasurement) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement` |
-| `source` |  | `string` | `False` | `https://www.ndbc.noaa.gov/data/realtime2/` |
-| `subject` |  | `uritemplate` | `False` | `{station_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `Microsoft.OpenData.US.NOAA.NDBC.Kafka` | `KAFKA` | topic `noaa-ndbc`; key `{station_id}` |
-
-## Schemagroups
-
-### Schemagroup `Microsoft.OpenData.US.NOAA.NDBC.jstruct`
-<a id="schemagroup-microsoftopendatausnoaandbcjstruct"></a>
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoyobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `BuoyObservation`
-<a id="schema-node-buoyobservation"></a>
+#### What it tells you
 
 Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations). | - | - | - |
-| `latitude` | `double` | `True` | Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere. | - | - | - |
-| `longitude` | `double` | `True` | Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data. | - | - | - |
-| `wind_direction` | `union` | `False` | Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true. | unit=`deg` symbol=`°` | - | - |
-| `wind_speed` | `union` | `False` | Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second. | unit=`m/s` symbol=`m/s` | - | - |
-| `gust` | `union` | `False` | Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second. | unit=`m/s` symbol=`m/s` | - | - |
-| `wave_height` | `union` | `False` | Significant wave height — the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters. | unit=`m` symbol=`m` | - | - |
-| `dominant_wave_period` | `union` | `False` | Dominant wave period — the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds. | unit=`s` symbol=`s` | - | - |
-| `average_wave_period` | `union` | `False` | Average wave period of all waves during the 20-minute sampling period. Unit: seconds. | unit=`s` symbol=`s` | - | - |
-| `mean_wave_direction` | `union` | `False` | Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true. | unit=`deg` symbol=`°` | - | - |
-| `pressure` | `union` | `False` | Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals. | unit=`hPa` symbol=`hPa` | - | - |
-| `air_temperature` | `union` | `False` | Air temperature measured at the station. Unit: degrees Celsius. | unit=`CEL` symbol=`°C` | - | - |
-| `water_temperature` | `union` | `False` | Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius. | unit=`CEL` symbol=`°C` | - | - |
-| `dewpoint` | `union` | `False` | Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius. | unit=`CEL` symbol=`°C` | - | - |
-| `pressure_tendency` | `union` | `False` | Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals. | unit=`hPa` symbol=`hPa` | - | - |
-| `visibility` | `union` | `False` | Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles. | unit=`[nmi_i]` symbol=`nmi` | - | - |
-| `tide` | `union` | `False` | Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet. | unit=`[ft_i]` symbol=`ft` | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation`
-<a id="schema-microsoftopendatausnoaandbcbuoystation"></a>
+`Buoy Observation` payloads are JSON object. Required fields: `station_id`, `latitude`, `longitude`, `timestamp`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoyStation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations).
+- **`latitude`** (double, required): Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere.
+- **`longitude`** (double, required): Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data.
+- **`wind_direction`** (double or null, optional, deg (°)): Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true.
+- **`wind_speed`** (double or null, optional, m/s): Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second.
+- **`gust`** (double or null, optional, m/s): Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second.
+- **`wave_height`** (double or null, optional, m): Significant wave height — the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters.
+- **`dominant_wave_period`** (double or null, optional, s): Dominant wave period — the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds.
+- **`average_wave_period`** (double or null, optional, s): Average wave period of all waves during the 20-minute sampling period. Unit: seconds.
+- **`mean_wave_direction`** (double or null, optional, deg (°)): Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true.
+- **`pressure`** (double or null, optional, hPa): Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals.
+- **`air_temperature`** (double or null, optional, CEL (°C)): Air temperature measured at the station. Unit: degrees Celsius.
+- **`water_temperature`** (double or null, optional, CEL (°C)): Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius.
+- **`dewpoint`** (double or null, optional, CEL (°C)): Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius.
+- **`pressure_tendency`** (double or null, optional, hPa): Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals.
+- **`visibility`** (double or null, optional, [nmi_i] (nmi)): Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles.
+- **`tide`** (double or null, optional, [ft_i] (ft)): Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "timestamp": "2024-01-01T00:00:00Z",
+  "wind_direction": 0,
+  "wind_speed": 0,
+  "gust": 0,
+  "wave_height": 0,
+  "dominant_wave_period": 0,
+  "average_wave_period": 0,
+  "mean_wave_direction": 0,
+  "pressure": 0,
+  "air_temperature": 0,
+  "water_temperature": 0,
+  "dewpoint": 0,
+  "pressure_tendency": 0,
+  "visibility": 0,
+  "tide": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `BuoyStation`
-<a id="schema-node-buoystation"></a>
+### Buoy Station
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation`
+
+#### What it tells you
 
 Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products. | - | - | - |
-| `owner` | `union` | `False` | Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency. | - | - | - |
-| `station_type` | `union` | `False` | Platform type from the station table, such as Weather Buoy or C-MAN Station. | - | - | - |
-| `hull` | `union` | `False` | Hull or platform class reported in the station table, for example DISCUS or 3-meter. | - | - | - |
-| `name` | `string` | `True` | Human-readable station name from the NDBC station table. | - | - | - |
-| `latitude` | `union` | `False` | Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere. | unit=`deg` symbol=`deg` | - | - |
-| `longitude` | `union` | `False` | Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere. | unit=`deg` symbol=`deg` | - | - |
-| `timezone` | `union` | `False` | Single-letter time-zone code carried in the NDBC station table for display and forecast products. | - | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoysolarradiationobservation"></a>
+`Buoy Station` payloads are JSON object. Required fields: `station_id`, `name`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoySolarRadiationObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products.
+- **`owner`** (string or null, optional): Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency.
+- **`station_type`** (string or null, optional): Platform type from the station table, such as Weather Buoy or C-MAN Station.
+- **`hull`** (string or null, optional): Hull or platform class reported in the station table, for example DISCUS or 3-meter.
+- **`name`** (string, required): Human-readable station name from the NDBC station table.
+- **`latitude`** (double or null, optional, deg): Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere.
+- **`longitude`** (double or null, optional, deg): Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere.
+- **`timezone`** (string or null, optional): Single-letter time-zone code carried in the NDBC station table for display and forecast products.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "owner": "string",
+  "station_type": "string",
+  "hull": "string",
+  "name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "timezone": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySolarRadiationObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
 
-###### Object `BuoySolarRadiationObservation`
-<a id="schema-node-buoysolarradiationobservation"></a>
+### Buoy Solar Radiation Observation
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation`
+
+#### What it tells you
 
 Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySolarRadiationObservation` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file. | - | - | - |
-| `shortwave_radiation_licor` | `union` | `False` | Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter. | unit=`W/m2` symbol=`W/m2` | - | - |
-| `shortwave_radiation_eppley` | `union` | `False` | Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter. | unit=`W/m2` symbol=`W/m2` | - | - |
-| `longwave_radiation` | `union` | `False` | Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter. | unit=`W/m2` symbol=`W/m2` | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoyoceanographicobservation"></a>
+`Buoy Solar Radiation Observation` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoyOceanographicObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file.
+- **`shortwave_radiation_licor`** (double or null, optional, W/m2): Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.
+- **`shortwave_radiation_eppley`** (double or null, optional, W/m2): Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter.
+- **`longwave_radiation`** (double or null, optional, W/m2): Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "shortwave_radiation_licor": 0,
+  "shortwave_radiation_eppley": 0,
+  "longwave_radiation": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyOceanographicObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `BuoyOceanographicObservation`
-<a id="schema-node-buoyoceanographicobservation"></a>
+### Buoy Oceanographic Observation
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation`
+
+#### What it tells you
 
 Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyOceanographicObservation` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file. | - | - | - |
-| `depth` | `double` | `True` | Depth in meters at which the oceanographic measurements in this record were taken. | unit=`m` symbol=`m` | - | - |
-| `ocean_temperature` | `union` | `False` | Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius. | unit=`CEL` symbol=`degC` | - | - |
-| `conductivity` | `union` | `False` | Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter. | unit=`mS/cm` symbol=`mS/cm` | - | - |
-| `salinity` | `union` | `False` | Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units. | unit=`psu` symbol=`psu` | - | - |
-| `oxygen_saturation` | `union` | `False` | Dissolved oxygen saturation percentage from the O2% column. | unit=`%` symbol=`%` | - | - |
-| `oxygen_concentration` | `union` | `False` | Dissolved oxygen concentration from the O2PPM column. Unit: parts per million. | unit=`ppm` symbol=`ppm` | - | - |
-| `chlorophyll_concentration` | `union` | `False` | Chlorophyll concentration from the CLCON column. Unit: micrograms per liter. | unit=`ug/L` symbol=`ug/L` | - | - |
-| `turbidity` | `union` | `False` | Turbidity from the TURB column. Unit: Formazin Turbidity Units. | unit=`FTU` symbol=`FTU` | - | - |
-| `ph` | `union` | `False` | Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless. | - | - | - |
-| `redox_potential` | `union` | `False` | Oxidation-reduction potential of seawater from the EH column. Unit: millivolts. | unit=`mV` symbol=`mV` | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement`
-<a id="schema-microsoftopendatausnoaandbcbuoydartmeasurement"></a>
+`Buoy Oceanographic Observation` payloads are JSON object. Required fields: `station_id`, `timestamp`, `depth`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoyDartMeasurement |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file.
+- **`depth`** (double, required, m): Depth in meters at which the oceanographic measurements in this record were taken.
+- **`ocean_temperature`** (double or null, optional, CEL (degC)): Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius.
+- **`conductivity`** (double or null, optional, mS/cm): Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter.
+- **`salinity`** (double or null, optional, psu): Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units.
+- **`oxygen_saturation`** (double or null, optional, %): Dissolved oxygen saturation percentage from the O2% column.
+- **`oxygen_concentration`** (double or null, optional, ppm): Dissolved oxygen concentration from the O2PPM column. Unit: parts per million.
+- **`chlorophyll_concentration`** (double or null, optional, ug/L): Chlorophyll concentration from the CLCON column. Unit: micrograms per liter.
+- **`turbidity`** (double or null, optional, FTU): Turbidity from the TURB column. Unit: Formazin Turbidity Units.
+- **`ph`** (double or null, optional): Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless.
+- **`redox_potential`** (double or null, optional, mV): Oxidation-reduction potential of seawater from the EH column. Unit: millivolts.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "depth": 0,
+  "ocean_temperature": 0,
+  "conductivity": 0,
+  "salinity": 0,
+  "oxygen_saturation": 0,
+  "oxygen_concentration": 0,
+  "chlorophyll_concentration": 0,
+  "turbidity": 0,
+  "ph": 0,
+  "redox_potential": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `BuoyDartMeasurement`
-<a id="schema-node-buoydartmeasurement"></a>
+### Buoy Dart Measurement
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement`
+
+#### What it tells you
 
 Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file. | - | - | - |
-| `measurement_type_code` | `integer` | `True` | Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement. | - | - | - |
-| `water_column_height` | `double` | `True` | Height of the measured water column from the HEIGHT column in the DART file. Unit: meters. | unit=`m` symbol=`m` | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoycontinuouswindobservation"></a>
+`Buoy Dart Measurement` payloads are JSON object. Required fields: `station_id`, `timestamp`, `measurement_type_code`, `water_column_height`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoyContinuousWindObservation |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file.
+- **`measurement_type_code`** (integer, required): Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement.
+- **`water_column_height`** (double, required, m): Height of the measured water column from the HEIGHT column in the DART file. Unit: meters.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "measurement_type_code": 0,
+  "water_column_height": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyContinuousWindObservation` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `BuoyContinuousWindObservation`
-<a id="schema-node-buoycontinuouswindobservation"></a>
+### Buoy Continuous Wind Observation
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation`
+
+#### What it tells you
 
 Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier for the station publishing the .cwind realtime2 file. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyContinuousWindObservation` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier for the station publishing the .cwind realtime2 file. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file. | - | - | - |
-| `wind_direction` | `union` | `False` | Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true. | unit=`deg` symbol=`°` | - | - |
-| `wind_speed` | `union` | `False` | Ten-minute average wind speed from the WSPD column. Unit: meters per second. | unit=`m/s` symbol=`m/s` | - | - |
-| `gust_direction` | `union` | `False` | Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true. | unit=`deg` symbol=`°` | - | - |
-| `gust` | `union` | `False` | Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second. | unit=`m/s` symbol=`m/s` | - | - |
-| `gust_time_code` | `union` | `False` | HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day. | - | pattern=`^[0-9]{4}$` | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement`
-<a id="schema-microsoftopendatausnoaandbcbuoysupplementalmeasurement"></a>
+`Buoy Continuous Wind Observation` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoySupplementalMeasurement |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier for the station publishing the .cwind realtime2 file.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file.
+- **`wind_direction`** (double or null, optional, deg (°)): Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true.
+- **`wind_speed`** (double or null, optional, m/s): Ten-minute average wind speed from the WSPD column. Unit: meters per second.
+- **`gust_direction`** (double or null, optional, deg (°)): Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true.
+- **`gust`** (double or null, optional, m/s): Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second.
+- **`gust_time_code`** (string or null, optional): HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day. Constraints: pattern `^[0-9]{4}$`.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "wind_direction": 0,
+  "wind_speed": 0,
+  "gust_direction": 0,
+  "gust": 0,
+  "gust_time_code": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySupplementalMeasurement` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `BuoySupplementalMeasurement`
-<a id="schema-node-buoysupplementalmeasurement"></a>
+### Buoy Supplemental Measurement
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement`
+
+#### What it tells you
 
 Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier for the station publishing the .supl realtime2 file. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySupplementalMeasurement` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier for the station publishing the .supl realtime2 file. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file. | - | - | - |
-| `lowest_pressure` | `union` | `False` | Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals. | unit=`hPa` symbol=`hPa` | - | - |
-| `lowest_pressure_time_code` | `union` | `False` | HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. | - | pattern=`^[0-9]{4}$` | - |
-| `highest_wind_speed` | `union` | `False` | Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second. | unit=`m/s` symbol=`m/s` | - | - |
-| `highest_wind_direction` | `union` | `False` | Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true. | unit=`deg` symbol=`°` | - | - |
-| `highest_wind_time_code` | `union` | `False` | HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. | - | pattern=`^[0-9]{4}$` | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary`
-<a id="schema-microsoftopendatausnoaandbcbuoydetailedwavesummary"></a>
+`Buoy Supplemental Measurement` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoyDetailedWaveSummary |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier for the station publishing the .supl realtime2 file.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file.
+- **`lowest_pressure`** (double or null, optional, hPa): Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals.
+- **`lowest_pressure_time_code`** (string or null, optional): HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. Constraints: pattern `^[0-9]{4}$`.
+- **`highest_wind_speed`** (double or null, optional, m/s): Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second.
+- **`highest_wind_direction`** (double or null, optional, deg (°)): Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true.
+- **`highest_wind_time_code`** (string or null, optional): HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day. Constraints: pattern `^[0-9]{4}$`.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "lowest_pressure": 0,
+  "lowest_pressure_time_code": "string",
+  "highest_wind_speed": 0,
+  "highest_wind_direction": 0,
+  "highest_wind_time_code": "string"
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDetailedWaveSummary` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `BuoyDetailedWaveSummary`
-<a id="schema-node-buoydetailedwavesummary"></a>
+### Buoy Detailed Wave Summary
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary`
+
+#### What it tells you
 
 Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier for the station publishing the .spec realtime2 file. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDetailedWaveSummary` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier for the station publishing the .spec realtime2 file. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file. | - | - | - |
-| `significant_wave_height` | `union` | `False` | Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters. | unit=`m` symbol=`m` | - | - |
-| `swell_height` | `union` | `False` | Swell-wave height from the SwH column. Unit: meters. | unit=`m` symbol=`m` | - | - |
-| `swell_period` | `union` | `False` | Swell-wave period from the SwP column. Unit: seconds. | unit=`s` symbol=`s` | - | - |
-| `wind_wave_height` | `union` | `False` | Wind-wave height from the WWH column. Unit: meters. | unit=`m` symbol=`m` | - | - |
-| `wind_wave_period` | `union` | `False` | Wind-wave period from the WWP column. Unit: seconds. | unit=`s` symbol=`s` | - | - |
-| `swell_direction` | `union` | `False` | Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value. | - | - | - |
-| `wind_wave_direction` | `union` | `False` | Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value. | - | - | - |
-| `steepness` | `union` | `False` | Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP. | - | - | - |
-| `average_wave_period` | `union` | `False` | Average wave period from the APD column. Unit: seconds. | unit=`s` symbol=`s` | - | - |
-| `mean_wave_direction` | `union` | `False` | Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true. | unit=`deg` symbol=`°` | - | - |
+#### Payload
 
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement`
-<a id="schema-microsoftopendatausnoaandbcbuoyhourlyrainmeasurement"></a>
+`Buoy Detailed Wave Summary` payloads are JSON object. Required fields: `station_id`, `timestamp`.
 
-| Field | Value |
-| --- | --- |
-| Name | BuoyHourlyRainMeasurement |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`station_id`** (string, required): NDBC station identifier for the station publishing the .spec realtime2 file.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file.
+- **`significant_wave_height`** (double or null, optional, m): Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters.
+- **`swell_height`** (double or null, optional, m): Swell-wave height from the SwH column. Unit: meters.
+- **`swell_period`** (double or null, optional, s): Swell-wave period from the SwP column. Unit: seconds.
+- **`wind_wave_height`** (double or null, optional, m): Wind-wave height from the WWH column. Unit: meters.
+- **`wind_wave_period`** (double or null, optional, s): Wind-wave period from the WWP column. Unit: seconds.
+- **`swell_direction`** (string or null, optional): Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value.
+- **`wind_wave_direction`** (string or null, optional): Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value.
+- **`steepness`** (string or null, optional): Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP.
+- **`average_wave_period`** (double or null, optional, s): Average wave period from the APD column. Unit: seconds.
+- **`mean_wave_direction`** (double or null, optional, deg (°)): Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "significant_wave_height": 0,
+  "swell_height": 0,
+  "swell_period": 0,
+  "wind_wave_height": 0,
+  "wind_wave_period": 0,
+  "swell_direction": "string",
+  "wind_wave_direction": "string",
+  "steepness": "string",
+  "average_wave_period": 0,
+  "mean_wave_direction": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyHourlyRainMeasurement` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
-###### Object `BuoyHourlyRainMeasurement`
-<a id="schema-node-buoyhourlyrainmeasurement"></a>
+### Buoy Hourly Rain Measurement
+
+CloudEvents type: `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement`
+
+#### What it tells you
 
 Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is NDBC station identifier for the station publishing the .rain realtime2 file. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyHourlyRainMeasurement` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_id` | `string` | `True` | NDBC station identifier for the station publishing the .rain realtime2 file. | - | - | - |
-| `timestamp` | `datetime` | `True` | Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file. | - | - | - |
-| `accumulation` | `union` | `False` | Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters. | unit=`mm` symbol=`mm` | - | - |
-
-### Schemagroup `Microsoft.OpenData.US.NOAA.NDBC.avro`
-<a id="schemagroup-microsoftopendatausnoaandbcavro"></a>
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoyobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyObservation |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | BuoyObservation |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `latitude` | `double` |  | `-` |
-| `longitude` | `double` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `wind_direction` | `null` \| `double` |  | `-` |
-| `wind_speed` | `null` \| `double` |  | `-` |
-| `gust` | `null` \| `double` |  | `-` |
-| `wave_height` | `null` \| `double` |  | `-` |
-| `dominant_wave_period` | `null` \| `double` |  | `-` |
-| `average_wave_period` | `null` \| `double` |  | `-` |
-| `mean_wave_direction` | `null` \| `double` |  | `-` |
-| `pressure` | `null` \| `double` |  | `-` |
-| `air_temperature` | `null` \| `double` |  | `-` |
-| `water_temperature` | `null` \| `double` |  | `-` |
-| `dewpoint` | `null` \| `double` |  | `-` |
-| `pressure_tendency` | `null` \| `double` |  | `-` |
-| `visibility` | `null` \| `double` |  | `-` |
-| `tide` | `null` \| `double` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation`
-<a id="schema-microsoftopendatausnoaandbcbuoystation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyStation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyStation |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | BuoyStation |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `owner` | `null` \| `string` |  | `-` |
-| `station_type` | `null` \| `string` |  | `-` |
-| `hull` | `null` \| `string` |  | `-` |
-| `name` | `string` |  | `-` |
-| `latitude` | `null` \| `double` |  | `-` |
-| `longitude` | `null` \| `double` |  | `-` |
-| `timezone` | `null` \| `string` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoysolarradiationobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoySolarRadiationObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoySolarRadiationObservation |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Hourly solar radiation observation from the NDBC .srad realtime2 product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `shortwave_radiation_licor` | `null` \| `double` |  | `-` |
-| `shortwave_radiation_eppley` | `null` \| `double` |  | `-` |
-| `longwave_radiation` | `null` \| `double` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoyoceanographicobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyOceanographicObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyOceanographicObservation |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Oceanographic observation from the NDBC .ocean realtime2 product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `depth` | `double` |  | `-` |
-| `ocean_temperature` | `null` \| `double` |  | `-` |
-| `conductivity` | `null` \| `double` |  | `-` |
-| `salinity` | `null` \| `double` |  | `-` |
-| `oxygen_saturation` | `null` \| `double` |  | `-` |
-| `oxygen_concentration` | `null` \| `double` |  | `-` |
-| `chlorophyll_concentration` | `null` \| `double` |  | `-` |
-| `turbidity` | `null` \| `double` |  | `-` |
-| `ph` | `null` \| `double` |  | `-` |
-| `redox_potential` | `null` \| `double` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement`
-<a id="schema-microsoftopendatausnoaandbcbuoydartmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyDartMeasurement |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyDartMeasurement |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Realtime DART tsunameter measurement from the NDBC .dart product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `measurement_type_code` | `int` |  | `-` |
-| `water_column_height` | `double` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation`
-<a id="schema-microsoftopendatausnoaandbcbuoycontinuouswindobservation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyContinuousWindObservation |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyContinuousWindObservation |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Continuous-wind measurement from the NDBC .cwind realtime2 product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `wind_direction` | `null` \| `double` |  | `-` |
-| `wind_speed` | `null` \| `double` |  | `-` |
-| `gust_direction` | `null` \| `double` |  | `-` |
-| `gust` | `null` \| `double` |  | `-` |
-| `gust_time_code` | `null` \| `string` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement`
-<a id="schema-microsoftopendatausnoaandbcbuoysupplementalmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoySupplementalMeasurement |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoySupplementalMeasurement |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Supplemental hourly extrema from the NDBC .supl realtime2 product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `lowest_pressure` | `null` \| `double` |  | `-` |
-| `lowest_pressure_time_code` | `null` \| `string` |  | `-` |
-| `highest_wind_speed` | `null` \| `double` |  | `-` |
-| `highest_wind_direction` | `null` \| `double` |  | `-` |
-| `highest_wind_time_code` | `null` \| `string` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary`
-<a id="schema-microsoftopendatausnoaandbcbuoydetailedwavesummary"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyDetailedWaveSummary |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyDetailedWaveSummary |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Detailed wave-summary record from the NDBC .spec realtime2 product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `significant_wave_height` | `null` \| `double` |  | `-` |
-| `swell_height` | `null` \| `double` |  | `-` |
-| `swell_period` | `null` \| `double` |  | `-` |
-| `wind_wave_height` | `null` \| `double` |  | `-` |
-| `wind_wave_period` | `null` \| `double` |  | `-` |
-| `swell_direction` | `null` \| `string` |  | `-` |
-| `wind_wave_direction` | `null` \| `string` |  | `-` |
-| `steepness` | `null` \| `string` |  | `-` |
-| `average_wave_period` | `null` \| `double` |  | `-` |
-| `mean_wave_direction` | `null` \| `double` |  | `-` |
-
-#### Schema `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement`
-<a id="schema-microsoftopendatausnoaandbcbuoyhourlyrainmeasurement"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyHourlyRainMeasurement |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | BuoyHourlyRainMeasurement |
-| Namespace | Microsoft.OpenData.US.NOAA.NDBC |
-| Type | `record` |
-| Doc | Hourly precipitation total from the NDBC .rain realtime2 product. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_id` | `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `accumulation` | `null` \| `double` |  | `-` |
+| `KAFKA` | topic `noaa-ndbc`, key `{station_id}` |
+
+#### Payload
+
+`Buoy Hourly Rain Measurement` payloads are JSON object. Required fields: `station_id`, `timestamp`.
+
+- **`station_id`** (string, required): NDBC station identifier for the station publishing the .rain realtime2 file.
+- **`timestamp`** (datetime, required): Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file.
+- **`accumulation`** (double or null, optional, mm): Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "accumulation": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+
+## References
+
+- xRegistry manifest: [`xreg/noaa_ndbc.xreg.json`](xreg/noaa_ndbc.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

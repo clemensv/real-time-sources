@@ -58,13 +58,33 @@ def manifest():
 class PrintDocTests(unittest.TestCase):
     def test_renders_full_surface(self):
         md, warnings = printdoc.generate_documentation(manifest())
-        self.assertEqual([], sorted(warnings.paths))
-        for text in ["## Registry", "### Endpoint `example.Kafka`", "Kafka key", "MQTT topic", "AMQP address", "#### Message `example.mqtt.Created`", "Base message chain", "`partitionkey`", "Reference data (retained transport message)", "#### Schema `example.Created`", "$id", "altnames=", "unit=`metre` symbol=`m`", "pattern=`^[A-Z]+$`", "minimum=`0`", "const=`1`", "Additional properties"]:
+        self.assertIn("missing description: schema example.Created", warnings.paths)
+        for text in [
+            "## At a glance",
+            "## Quick start — how to consume",
+            "### Kafka",
+            "### MQTT 5",
+            "### AMQP 1.0",
+            "## Event catalog",
+            "CloudEvents type: `example.Created`",
+            "#### Where to find it",
+            "topic `example`, key `{id}`",
+            "topic `factory/{id}/created`, retain `true`, QoS `1`",
+            "#### Payload",
+            "metre (m)",
+            "pattern `^[A-Z]+$`",
+            "##### `state` values",
+            "#### Example payload",
+            "## Conventions",
+            "MQTT 5 user properties named by the CloudEvents attribute",
+            "## Operational notes",
+            "## References",
+        ]:
             self.assertIn(text, md)
     def test_unknown_fields_are_warned(self):
         m=manifest(); m["mystery"]=True
         _, warnings = printdoc.generate_documentation(m)
-        self.assertIn("registry.mystery", warnings.paths)
+        self.assertIn("unknown xRegistry field not rendered: registry.mystery", warnings.paths)
     def test_cli_writes_output(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as td:
             p=pathlib.Path(td); mf=p/"sample.xreg.json"; out=p/"EVENTS.md"

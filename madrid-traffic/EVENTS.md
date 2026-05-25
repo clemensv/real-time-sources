@@ -2,188 +2,155 @@
 
 This bridge polls the Madrid Informo traffic sensor API and sends traffic data to Apache Kafka as CloudEvents.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
+- **Identity:** `{sensor_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 1 |
+### Kafka
 
-## Endpoints
+Subscribe to `madrid-traffic`. The record key is `{sensor_id}`. In plain language, `{sensor_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `es.madrid.informo.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['madrid-traffic'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`es.madrid.informo`](#messagegroup-esmadridinformo) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 
-#### Transport options
+## Event catalog
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `madrid-traffic` |
-| Kafka key | `{sensor_id}` |
-| Deployed | False |
+### Measurement Point
 
-## Messagegroups
+CloudEvents type: `es.madrid.informo.MeasurementPoint`
 
-### Messagegroup `es.madrid.informo`
-<a id="messagegroup-esmadridinformo"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `es.madrid.informo.Kafka` (KAFKA) |
-| Messages | 2 |
-
-#### Message `es.madrid.informo.MeasurementPoint`
-<a id="message-esmadridinformomeasurementpoint"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | MeasurementPoint |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/es.madrid.informo.jstruct/schemas/es.madrid.informo.MeasurementPoint`](#schema-esmadridinformomeasurementpoint) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `es.madrid.informo.MeasurementPoint` |
-| `source` |  | `string` | `False` | `https://informo.madrid.es/informo/tmadrid/pm.xml` |
-| `subject` |  | `uritemplate` | `False` | `{sensor_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `es.madrid.informo.Kafka` | `KAFKA` | topic `madrid-traffic`; key `{sensor_id}` |
-
-#### Message `es.madrid.informo.TrafficReading`
-<a id="message-esmadridinformotrafficreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | TrafficReading |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/es.madrid.informo.jstruct/schemas/es.madrid.informo.TrafficReading`](#schema-esmadridinformotrafficreading) |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `es.madrid.informo.TrafficReading` |
-| `source` |  | `string` | `False` | `https://informo.madrid.es/informo/tmadrid/pm.xml` |
-| `subject` |  | `uritemplate` | `False` | `{sensor_id}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `es.madrid.informo.Kafka` | `KAFKA` | topic `madrid-traffic`; key `{sensor_id}` |
-
-## Schemagroups
-
-### Schemagroup `es.madrid.informo.jstruct`
-<a id="schemagroup-esmadridinformojstruct"></a>
-
-#### Schema `es.madrid.informo.MeasurementPoint`
-<a id="schema-esmadridinformomeasurementpoint"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | MeasurementPoint |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://informo.madrid.es/schemas/es/madrid/informo/MeasurementPoint` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `MeasurementPoint`
-<a id="schema-node-measurementpoint"></a>
+#### What it tells you
 
 Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{sensor_id}`. `{sensor_id}` is unique sensor identifier from the Madrid Informo system. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| $id | `https://informo.madrid.es/schemas/es/madrid/informo/MeasurementPoint` |
+| `KAFKA` | topic `madrid-traffic`, key `{sensor_id}` |
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `sensor_id` | `string` | `True` | Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point. | altnames=`{"lang:es": "idelem"}` | - | - |
-| `description` | `string` | `True` | Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish. | altnames=`{"lang:es": "descripcion"}` | - | - |
-| `element_type` | `union` | `False` | Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway. | altnames=`{"lang:es": "tipo_elem"}` | - | - |
-| `subarea` | `union` | `False` | Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors. | - | - | - |
-| `longitude` | `union` | `False` | Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators. | unit=`deg` symbol=`°` | - | - |
-| `latitude` | `union` | `False` | Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators. | unit=`deg` symbol=`°` | - | - |
-| `saturation_intensity` | `union` | `False` | Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios. | unit=`1/h` symbol=`veh/h`<br>altnames=`{"lang:es": "intensidadSat"}` | - | - |
+#### Payload
 
-#### Schema `es.madrid.informo.TrafficReading`
-<a id="schema-esmadridinformotrafficreading"></a>
+`Measurement Point` payloads are JSON object. Required fields: `sensor_id`, `description`.
 
-| Field | Value |
-| --- | --- |
-| Name | TrafficReading |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
+- **`sensor_id`** (string, required): Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.
+- **`description`** (string, required): Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.
+- **`element_type`** (string or null, optional): Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.
+- **`subarea`** (string or null, optional): Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors.
+- **`longitude`** (double or null, optional, deg (°)): Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators.
+- **`latitude`** (double or null, optional, deg (°)): Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators.
+- **`saturation_intensity`** (integer or null, optional, 1/h (veh/h)): Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios.
+#### Example payload
 
-##### Version `1`
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
+```json
+{
+  "sensor_id": "string",
+  "description": "string",
+  "element_type": "string",
+  "subarea": "string",
+  "longitude": 0,
+  "latitude": 0,
+  "saturation_intensity": 0
+}
+```
 
-###### JsonStructure
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| $id | `https://informo.madrid.es/schemas/es/madrid/informo/TrafficReading` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-###### Object `TrafficReading`
-<a id="schema-node-trafficreading"></a>
+### Traffic Reading
+
+CloudEvents type: `es.madrid.informo.TrafficReading`
+
+#### What it tells you
 
 Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets.
 
-| Field | Value |
-| --- | --- |
-| $id | `https://informo.madrid.es/schemas/es/madrid/informo/TrafficReading` |
+#### Identity
 
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `sensor_id` | `string` | `True` | Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data. | altnames=`{"lang:es": "idelem"}` | - | - |
-| `intensity` | `union` | `False` | Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode. | unit=`1/h` symbol=`veh/h`<br>altnames=`{"lang:es": "intensidad"}` | - | - |
-| `occupancy` | `union` | `False` | Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100. | unit=`%` symbol=`%`<br>altnames=`{"lang:es": "ocupacion"}` | - | - |
-| `load` | `union` | `False` | Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100. | unit=`%` symbol=`%`<br>altnames=`{"lang:es": "carga"}` | - | - |
-| `service_level` | `union` | `False` | Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested. | altnames=`{"lang:es": "nivelServicio"}` | - | - |
-| `error_flag` | `union` | `False` | Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable. | - | - | - |
-| `timestamp` | `datetime` | `True` | Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence. | - | - | - |
+Each event identifies the real-world resource with `{sensor_id}`. `{sensor_id}` is unique sensor identifier from the Madrid Informo system. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `madrid-traffic`, key `{sensor_id}` |
+
+#### Payload
+
+`Traffic Reading` payloads are JSON object. Required fields: `sensor_id`, `timestamp`.
+
+- **`sensor_id`** (string, required): Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.
+- **`intensity`** (integer or null, optional, 1/h (veh/h)): Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.
+- **`occupancy`** (integer or null, optional, %): Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.
+- **`load`** (integer or null, optional, %): Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100.
+- **`service_level`** (integer or null, optional): Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested.
+- **`error_flag`** (string or null, optional): Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable.
+- **`timestamp`** (datetime, required): Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "sensor_id": "string",
+  "intensity": 0,
+  "occupancy": 0,
+  "load": 0,
+  "service_level": 0,
+  "error_flag": "string",
+  "timestamp": "2024-01-01T00:00:00Z"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
+| --- | --- | --- |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
+
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+
+## Operational notes
+
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+
+## References
+
+- xRegistry manifest: [`xreg/madrid_traffic.xreg.json`](xreg/madrid_traffic.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

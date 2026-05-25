@@ -2,263 +2,161 @@
 
 This project bridges water level data from the Belgian [Waterinfo.be](https://waterinfo.vlaanderen.be/) KIWIS API (VMM provider) to Apache Kafka, emitting CloudEvents.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 2 documented event types.
+- **Transports:** KAFKA
+- **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
+- **Identity:** `{station_no}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
+### Kafka
+
+Subscribe to `waterinfo-vmm`. The record key is `{station_no}`. In plain language, `{station_no}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['waterinfo-vmm'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
+
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+
+## Event catalog
+
+### Station
+
+CloudEvents type: `BE.Vlaanderen.Waterinfo.VMM.Station`
+
+#### What it tells you
+
+This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_no}`. `{station_no}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Endpoints | 1 |
-| Messagegroups | 1 |
-| Schemagroups | 2 |
+| `KAFKA` | topic `waterinfo-vmm`, key `{station_no}` |
 
-## Endpoints
+#### Payload
 
-### Endpoint `BE.Vlaanderen.Waterinfo.VMM.Kafka`
+`Station` payloads are JSON object. Required fields: `station_no`, `station_name`, `station_latitude`, `station_longitude`.
 
-| Field | Value |
+- **`station_no`** (string, required): No description provided.
+- **`station_name`** (string, required): No description provided.
+- **`station_id`** (string, optional): No description provided.
+- **`station_latitude`** (double, required): No description provided.
+- **`station_longitude`** (double, required): No description provided.
+- **`river_name`** (string or null, optional): No description provided.
+- **`stationparameter_name`** (string or null, optional): No description provided.
+- **`ts_id`** (string or null, optional): No description provided.
+- **`ts_unitname`** (string or null, optional): No description provided.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_no": "string",
+  "station_name": "string",
+  "station_id": "string",
+  "station_latitude": 0,
+  "station_longitude": 0,
+  "river_name": "string",
+  "stationparameter_name": "string",
+  "ts_id": "string",
+  "ts_unitname": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Water Level Reading
+
+CloudEvents type: `BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading`
+
+#### What it tells you
+
+This event carries water level reading data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_no}`. `{station_no}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`BE.Vlaanderen.Waterinfo.VMM`](#messagegroup-bevlaanderenwaterinfovmm) |
+| `KAFKA` | topic `waterinfo-vmm`, key `{station_no}` |
 
-#### Transport options
+#### Payload
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `waterinfo-vmm` |
-| Kafka key | `{station_no}` |
-| Deployed | False |
+`Water Level Reading` payloads are JSON object. Required fields: `ts_id`, `station_no`, `timestamp`, `value`.
 
-## Messagegroups
+- **`ts_id`** (string, required): No description provided.
+- **`station_no`** (string, required): No description provided.
+- **`station_name`** (string, optional): No description provided.
+- **`timestamp`** (datetime, required): No description provided.
+- **`value`** (double, required): No description provided.
+- **`unit_name`** (string, optional): No description provided.
+- **`parameter_name`** (string, optional): No description provided.
+#### Example payload
 
-### Messagegroup `BE.Vlaanderen.Waterinfo.VMM`
-<a id="messagegroup-bevlaanderenwaterinfovmm"></a>
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
-| Field | Value |
-| --- | --- |
-| Transport bindings | `BE.Vlaanderen.Waterinfo.VMM.Kafka` (KAFKA) |
-| Messages | 2 |
+```json
+{
+  "ts_id": "string",
+  "station_no": "string",
+  "station_name": "string",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "value": 0,
+  "unit_name": "string",
+  "parameter_name": "string"
+}
+```
 
-#### Message `BE.Vlaanderen.Waterinfo.VMM.Station`
-<a id="message-bevlaanderenwaterinfovmmstation"></a>
+#### Reference vs telemetry
 
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.Station`](#schema-bevlaanderenwaterinfovmmstation) |
-| Event role | Reference/status data |
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
 
-##### CloudEvents metadata
+## Conventions
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `BE.Vlaanderen.Waterinfo.VMM.Station` |
-| `source` |  | `string` | `False` | `https://waterinfo.vlaanderen.be` |
-| `subject` |  | `uritemplate` | `False` | `{station_no}` |
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
 
-##### Bound transports
+Transport bindings carry CloudEvents metadata differently:
 
-| Endpoint | Protocol | Binding |
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `BE.Vlaanderen.Waterinfo.VMM.Kafka` | `KAFKA` | topic `waterinfo-vmm`; key `{station_no}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-#### Message `BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading`
-<a id="message-bevlaanderenwaterinfovmmwaterlevelreading"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelReading |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading`](#schema-bevlaanderenwaterinfovmmwaterlevelreading) |
-| Event role | Telemetry/event data |
+## Operational notes
 
-##### CloudEvents metadata
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading` |
-| `source` |  | `string` | `False` | `https://waterinfo.vlaanderen.be` |
-| `subject` |  | `uritemplate` | `False` | `{station_no}` |
+## References
 
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `BE.Vlaanderen.Waterinfo.VMM.Kafka` | `KAFKA` | topic `waterinfo-vmm`; key `{station_no}` |
-
-## Schemagroups
-
-### Schemagroup `BE.Vlaanderen.Waterinfo.VMM.jstruct`
-<a id="schemagroup-bevlaanderenwaterinfovmmjstruct"></a>
-
-#### Schema `BE.Vlaanderen.Waterinfo.VMM.Station`
-<a id="schema-bevlaanderenwaterinfovmmstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `Station`
-<a id="schema-node-station"></a>
-
-Station
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `station_no` | `string` | `True` |  | - | - | - |
-| `station_name` | `string` | `True` |  | - | - | - |
-| `station_id` | `string` | `False` |  | - | - | - |
-| `station_latitude` | `double` | `True` |  | - | - | - |
-| `station_longitude` | `double` | `True` |  | - | - | - |
-| `river_name` | `union` | `False` |  | - | - | - |
-| `stationparameter_name` | `union` | `False` |  | - | - | - |
-| `ts_id` | `union` | `False` |  | - | - | - |
-| `ts_unitname` | `union` | `False` |  | - | - | - |
-
-#### Schema `BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading`
-<a id="schema-bevlaanderenwaterinfovmmwaterlevelreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelReading |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/WaterLevelReading` |
-| $schema | `https://json-structure.org/meta/extended/v0/#` |
-| Type | `object` |
-
-###### Object `WaterLevelReading`
-<a id="schema-node-waterlevelreading"></a>
-
-WaterLevelReading
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/WaterLevelReading` |
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `ts_id` | `string` | `True` |  | - | - | - |
-| `station_no` | `string` | `True` |  | - | - | - |
-| `station_name` | `string` | `False` |  | - | - | - |
-| `timestamp` | `datetime` | `True` |  | - | - | - |
-| `value` | `double` | `True` |  | - | - | - |
-| `unit_name` | `string` | `False` |  | - | - | - |
-| `parameter_name` | `string` | `False` |  | - | - | - |
-
-### Schemagroup `BE.Vlaanderen.Waterinfo.VMM.avro`
-<a id="schemagroup-bevlaanderenwaterinfovmmavro"></a>
-
-#### Schema `BE.Vlaanderen.Waterinfo.VMM.Station`
-<a id="schema-bevlaanderenwaterinfovmmstation"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Station |
-| Namespace | BE.Vlaanderen.Waterinfo.VMM |
-| Type | `record` |
-| Doc | Station |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `station_no` | `string` |  | `-` |
-| `station_name` | `string` |  | `-` |
-| `station_id` | `null` \| `string` |  | `-` |
-| `station_latitude` | `double` |  | `-` |
-| `station_longitude` | `double` |  | `-` |
-| `river_name` | `null` \| `string` |  | `-` |
-| `stationparameter_name` | `null` \| `string` |  | `-` |
-| `ts_id` | `null` \| `string` |  | `-` |
-| `ts_unitname` | `null` \| `string` |  | `-` |
-
-#### Schema `BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading`
-<a id="schema-bevlaanderenwaterinfovmmwaterlevelreading"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelReading |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | WaterLevelReading |
-| Namespace | BE.Vlaanderen.Waterinfo.VMM |
-| Type | `record` |
-| Doc | WaterLevelReading |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `ts_id` | `string` |  | `-` |
-| `station_no` | `string` |  | `-` |
-| `station_name` | `null` \| `string` |  | `-` |
-| `timestamp` | `string` |  | `-` |
-| `value` | `double` |  | `-` |
-| `unit_name` | `null` \| `string` |  | `-` |
-| `parameter_name` | `null` \| `string` |  | `-` |
+- xRegistry manifest: [`xreg/waterinfo_vmm.xreg.json`](xreg/waterinfo_vmm.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- KIWIS API docs: <https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>

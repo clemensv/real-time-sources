@@ -2,263 +2,162 @@
 
 MQTT/5.0 transport variant for USGS earthquake events. Non-retained QoS-1 event stream routed by contributor network, magnitude bucket, and event code under seismic/intl/usgs/usgs-earthquakes/... Buckets are m0 for <1 or unknown, m1..m6 for [1,7), and m7plus for >=7.
 
-## Table of Contents
+## At a glance
 
-- [Registry](#registry)
-- [Endpoints](#endpoints)
-- [Messagegroups](#messagegroups)
-- [Schemagroups](#schemagroups)
+- **Event types:** 1 documented event type (2 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0
+- **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
+- **Identity:** `{net}/{code}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
----
+## Quick start — how to consume
 
-## Registry
+These examples show the smallest useful consumer for each transport declared by this source. Replace host names, credentials, topics, and addresses with your deployment values.
 
-| Field | Value |
-| --- | --- |
-| Endpoints | 2 |
-| Messagegroups | 2 |
-| Schemagroups | 2 |
+### Kafka
 
-## Endpoints
+Subscribe to `usgs-earthquakes`. The record key is `{net}/{code}`. In plain language, `{net}/{code}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
-### Endpoint `USGS.Earthquakes.Kafka`
+```python
+from confluent_kafka import Consumer
+c=Consumer({'bootstrap.servers':'localhost:9092','group.id':'events-demo','auto.offset.reset':'earliest'})
+c.subscribe(['usgs-earthquakes'])
+while True:
+    m=c.poll(1.0)
+    if m and not m.error(): print(m.key(), dict(m.headers() or []), m.value())
+```
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `KAFKA` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"format": "application/cloudevents+json", "mode": "structured"}` |
-| Messagegroups | [`USGS.Earthquakes`](#messagegroup-usgsearthquakes) |
+Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
 
-#### Transport options
+Connect to `mqtt://localhost:1883` and subscribe to `seismic/intl/usgs/usgs-earthquakes/+/+/+/quake`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
-| Option | Value |
-| --- | --- |
-| Kafka topic | `usgs-earthquakes` |
-| Kafka key | `{net}/{code}` |
-| Deployed | False |
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('seismic/intl/usgs/usgs-earthquakes/+/+/+/quake', 1))
+c.loop_forever()
+```
 
-### Endpoint `USGS.Earthquakes.Mqtt`
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 
-| Field | Value |
-| --- | --- |
-| Usage | producer |
-| Protocol | `MQTT/5.0` |
-| Envelope | CloudEvents/1.0 |
-| Envelope options | `{"mode": "binary"}` |
-| Messagegroups | [`USGS.Earthquakes.mqtt`](#messagegroup-usgsearthquakesmqtt) |
+## Event catalog
 
-#### Transport options
+### Event
 
-| Option | Value |
-| --- | --- |
-| Deployed | False |
-| Broker endpoints | `[{"uri": "mqtt://localhost:1883"}]` |
+CloudEvents type: `USGS.Earthquakes.Event`
 
-## Messagegroups
-
-### Messagegroup `USGS.Earthquakes`
-<a id="messagegroup-usgsearthquakes"></a>
-
-| Field | Value |
-| --- | --- |
-| Transport bindings | `USGS.Earthquakes.Kafka` (KAFKA) |
-| Messages | 1 |
-
-#### Message `USGS.Earthquakes.Event`
-<a id="message-usgsearthquakesevent"></a>
+#### What it tells you
 
 USGS earthquake event data from the Earthquake Hazards Program.
 
-| Field | Value |
+#### Identity
+
+Each event identifies the real-world resource with `{net}/{code}`. `{net}` is ID of the data contributor network; `{code}` is identifying code assigned by the corresponding source for the event. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
 | --- | --- |
-| Name | Event |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/USGS.Earthquakes.jstruct/schemas/USGS.Earthquakes.Event`](#schema-usgsearthquakesevent) |
-| Event role | Telemetry/event data |
+| `KAFKA` | topic `usgs-earthquakes`, key `{net}/{code}` |
+| `MQTT/5.0` | topic `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake`, retain `false`, QoS `1` |
 
-##### CloudEvents metadata
+#### Payload
 
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `USGS.Earthquakes.Event` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{net}/{code}` |
-| `time` |  | `uritemplate` | `False` | `{event_time}` |
+`Event` payloads are JSON object. Required fields: `id`, `event_time`, `updated`, `status`, `tsunami`, `net`, `code`, `latitude`, `longitude`, `magnitude_bucket`.
 
-##### Bound transports
+- **`id`** (string, required): Unique identifier for the earthquake event.
+- **`magnitude`** (double, optional): Magnitude of the earthquake.
+- **`mag_type`** (string, optional): Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww).
+- **`place`** (string, optional): Textual description of the named geographic region near the event.
+- **`event_time`** (string, required): Time of the earthquake event in ISO-8601 format.
+- **`updated`** (string, required): Time when the event was most recently updated in ISO-8601 format.
+- **`url`** (string, optional): Link to USGS Event Page for this event.
+- **`detail_url`** (string, optional): Link to GeoJSON detail feed for this event.
+- **`felt`** (int32 or null, optional): Number of felt reports submitted to the DYFI system.
+- **`cdi`** (double or null, optional): Maximum reported community determined intensity (DYFI).
+- **`mmi`** (double or null, optional): Maximum estimated instrumental intensity (ShakeMap).
+- **`alert`** (string or null, optional): PAGER alert level (green, yellow, orange, red).
+- **`status`** (string, required): Review status of the event (automatic, reviewed, deleted).
+- **`tsunami`** (int32, required): Flag indicating whether the event has a tsunami advisory (1=yes, 0=no).
+- **`sig`** (int32, optional): Significance of the event, a number describing how significant the event is (0-1000).
+- **`net`** (string, required): ID of the data contributor network.
+- **`code`** (string, required): Identifying code assigned by the corresponding source for the event.
+- **`sources`** (string, optional): Comma-separated list of network contributors.
+- **`nst`** (int32, optional): Number of seismic stations used to determine earthquake location.
+- **`dmin`** (double, optional): Horizontal distance from the epicenter to the nearest station (degrees).
+- **`rms`** (double, optional): Root-mean-square travel time residual (seconds).
+- **`gap`** (double, optional): Largest azimuthal gap between azimuthally adjacent stations (degrees).
+- **`event_type`** (string, optional): Type of seismic event (earthquake, quarry blast, etc.).
+- **`latitude`** (double, required): Latitude of the earthquake epicenter in decimal degrees.
+- **`longitude`** (double, required): Longitude of the earthquake epicenter in decimal degrees.
+- **`depth`** (double, optional): Depth of the earthquake in kilometers.
+- **`magnitude_bucket`** (string, required): Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7.
+#### Example payload
 
-| Endpoint | Protocol | Binding |
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "id": "string",
+  "magnitude": 0,
+  "mag_type": "string",
+  "place": "string",
+  "event_time": "string",
+  "updated": "string",
+  "url": "string",
+  "detail_url": "string",
+  "felt": 0,
+  "cdi": 0,
+  "mmi": 0,
+  "alert": "string",
+  "status": "string",
+  "tsunami": 0,
+  "sig": 0,
+  "net": "string",
+  "code": "string",
+  "sources": "string",
+  "nst": 0,
+  "dmin": 0,
+  "rms": 0,
+  "gap": 0,
+  "event_type": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "depth": 0,
+  "magnitude_bucket": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+## Conventions
+
+CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
+
+Transport bindings carry CloudEvents metadata differently:
+
+| Transport | CloudEvents metadata location | Payload location |
 | --- | --- | --- |
-| `USGS.Earthquakes.Kafka` | `KAFKA` | topic `usgs-earthquakes`; key `{net}/{code}` |
+| Kafka binary mode | Kafka headers named `ce_<attribute>` for CloudEvents attributes except `datacontenttype`; `datacontenttype` maps to Kafka `content-type` | Kafka record value |
+| Kafka structured mode | Inside the JSON CloudEvent envelope, with content type `application/cloudevents+json`; batched mode is not used by this generator | Kafka record value |
+| MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
+| AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-### Messagegroup `USGS.Earthquakes.mqtt`
-<a id="messagegroup-usgsearthquakesmqtt"></a>
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
-| Field | Value |
-| --- | --- |
-| Description | MQTT/5.0 transport variant for USGS earthquake events. Non-retained QoS-1 event stream routed by contributor network, magnitude bucket, and event code under seismic/intl/usgs/usgs-earthquakes/... Buckets are m0 for <1 or unknown, m1..m6 for [1,7), and m7plus for >=7. |
-| Transport bindings | `USGS.Earthquakes.Mqtt` (MQTT/5.0) |
-| Messages | 1 |
+## Operational notes
 
-#### Message `USGS.Earthquakes.mqtt.Event`
-<a id="message-usgsearthquakesmqttevent"></a>
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
-USGS earthquake event data from the Earthquake Hazards Program.
+## References
 
-| Field | Value |
-| --- | --- |
-| Name | Event |
-| Envelope | CloudEvents/1.0 |
-| Schema format | JsonStructure/draft-02 |
-| Data schema | [`#/schemagroups/USGS.Earthquakes.jstruct/schemas/USGS.Earthquakes.Event`](#schema-usgsearthquakesevent) |
-| Base message chain | `/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event` |
-| Transport override | `MQTT/5.0` |
-| Event role | Telemetry/event data |
-
-##### CloudEvents metadata
-
-| Attribute | Description | Type | Required | Value/template |
-| --- | --- | --- | --- | --- |
-| `type` |  | `string` | `False` | `USGS.Earthquakes.Event` |
-| `source` |  | `uritemplate` | `False` | `{source_uri}` |
-| `subject` |  | `uritemplate` | `False` | `{net}/{code}` |
-| `time` |  | `uritemplate` | `False` | `{event_time}` |
-
-##### Bound transports
-
-| Endpoint | Protocol | Binding |
-| --- | --- | --- |
-| `USGS.Earthquakes.Mqtt` | `MQTT/5.0` | topic `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake` |
-
-##### Transport options
-
-| Option | Value |
-| --- | --- |
-| MQTT topic | `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake` |
-| QoS | 1 |
-| Retain | False |
-
-## Schemagroups
-
-### Schemagroup `USGS.Earthquakes.jstruct`
-<a id="schemagroup-usgsearthquakesjstruct"></a>
-
-#### Schema `USGS.Earthquakes.Event`
-<a id="schema-usgsearthquakesevent"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Event |
-| Format | JsonStructure/draft-02 |
-| Default version | 1 |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | JsonStructure/draft-02 |
-
-###### JsonStructure
-
-| Field | Value |
-| --- | --- |
-| $id | `https://example.com/schemas/USGS/Earthquakes/Event` |
-| $schema | `https://json-structure.org/meta/core/v0/#` |
-| $root | `#/definitions/USGS/Earthquakes/Event` |
-| Type | `object` |
-
-###### Object `Event`
-<a id="schema-node-event"></a>
-
-USGS earthquake event data from the Earthquake Hazards Program.
-
-| Field | Type | Required | Description | Extensions | Validation | Default/const |
-| --- | --- | --- | --- | --- | --- | --- |
-| `id` | `string` | `True` | Unique identifier for the earthquake event. | - | - | - |
-| `magnitude` | `double` | `False` | Magnitude of the earthquake. | - | - | - |
-| `mag_type` | `string` | `False` | Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww). | - | - | - |
-| `place` | `string` | `False` | Textual description of the named geographic region near the event. | - | - | - |
-| `event_time` | `string` | `True` | Time of the earthquake event in ISO-8601 format. | - | - | - |
-| `updated` | `string` | `True` | Time when the event was most recently updated in ISO-8601 format. | - | - | - |
-| `url` | `string` | `False` | Link to USGS Event Page for this event. | - | - | - |
-| `detail_url` | `string` | `False` | Link to GeoJSON detail feed for this event. | - | - | - |
-| `felt` | `union` | `False` | Number of felt reports submitted to the DYFI system. | - | - | - |
-| `cdi` | `union` | `False` | Maximum reported community determined intensity (DYFI). | - | - | - |
-| `mmi` | `union` | `False` | Maximum estimated instrumental intensity (ShakeMap). | - | - | - |
-| `alert` | `union` | `False` | PAGER alert level (green, yellow, orange, red). | - | - | - |
-| `status` | `string` | `True` | Review status of the event (automatic, reviewed, deleted). | - | - | - |
-| `tsunami` | `int32` | `True` | Flag indicating whether the event has a tsunami advisory (1=yes, 0=no). | - | - | - |
-| `sig` | `int32` | `False` | Significance of the event, a number describing how significant the event is (0-1000). | - | - | - |
-| `net` | `string` | `True` | ID of the data contributor network. | - | - | - |
-| `code` | `string` | `True` | Identifying code assigned by the corresponding source for the event. | - | - | - |
-| `sources` | `string` | `False` | Comma-separated list of network contributors. | - | - | - |
-| `nst` | `int32` | `False` | Number of seismic stations used to determine earthquake location. | - | - | - |
-| `dmin` | `double` | `False` | Horizontal distance from the epicenter to the nearest station (degrees). | - | - | - |
-| `rms` | `double` | `False` | Root-mean-square travel time residual (seconds). | - | - | - |
-| `gap` | `double` | `False` | Largest azimuthal gap between azimuthally adjacent stations (degrees). | - | - | - |
-| `event_type` | `string` | `False` | Type of seismic event (earthquake, quarry blast, etc.). | - | - | - |
-| `latitude` | `double` | `True` | Latitude of the earthquake epicenter in decimal degrees. | - | - | - |
-| `longitude` | `double` | `True` | Longitude of the earthquake epicenter in decimal degrees. | - | - | - |
-| `depth` | `double` | `False` | Depth of the earthquake in kilometers. | - | - | - |
-| `magnitude_bucket` | `string` | `True` | Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7. | - | - | - |
-
-### Schemagroup `USGS.Earthquakes.avro`
-<a id="schemagroup-usgsearthquakesavro"></a>
-
-#### Schema `USGS.Earthquakes.Event`
-<a id="schema-usgsearthquakesevent"></a>
-
-| Field | Value |
-| --- | --- |
-| Name | Event |
-| Format | Avro/1.11.3 |
-| Default version | 1 |
-| Description | USGS earthquake event data from the Earthquake Hazards Program. |
-
-##### Version `1`
-
-| Field | Value |
-| --- | --- |
-| Format | Avro/1.11.3 |
-
-###### Avro
-
-| Field | Value |
-| --- | --- |
-| Name | Event |
-| Namespace | USGS.Earthquakes |
-| Type | `record` |
-| Doc | USGS earthquake event data from the Earthquake Hazards Program. |
-
-| Field | Type | Description | Default |
-| --- | --- | --- | --- |
-| `id` | `string` | Unique identifier for the earthquake event. | `-` |
-| `magnitude` | `double` \| `null` | Magnitude of the earthquake. | `-` |
-| `magnitude_bucket` | `string` | Topic-safe magnitude bucket: m0 for magnitude <1 or unknown, m1..m6 for [1,7), and m7plus for magnitude >=7. | `m0` |
-| `mag_type` | `string` \| `null` | Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww). | `-` |
-| `place` | `string` \| `null` | Textual description of the named geographic region near the event. | `-` |
-| `event_time` | `string` | Time of the earthquake event in ISO-8601 format. | `-` |
-| `updated` | `string` | Time when the event was most recently updated in ISO-8601 format. | `-` |
-| `url` | `string` \| `null` | Link to USGS Event Page for this event. | `-` |
-| `detail_url` | `string` \| `null` | Link to GeoJSON detail feed for this event. | `-` |
-| `felt` | `int` \| `null` | Number of felt reports submitted to the DYFI system. | `-` |
-| `cdi` | `double` \| `null` | Maximum reported community determined intensity (DYFI). | `-` |
-| `mmi` | `double` \| `null` | Maximum estimated instrumental intensity (ShakeMap). | `-` |
-| `alert` | `string` \| `null` | PAGER alert level (green, yellow, orange, red). | `-` |
-| `status` | `string` | Review status of the event (automatic, reviewed, deleted). | `-` |
-| `tsunami` | `int` | Flag indicating whether the event has a tsunami advisory (1=yes, 0=no). | `-` |
-| `sig` | `int` \| `null` | Significance of the event, a number describing how significant the event is (0-1000). | `-` |
-| `net` | `string` | ID of the data contributor network. | `-` |
-| `code` | `string` | Identifying code assigned by the corresponding source for the event. | `-` |
-| `sources` | `string` \| `null` | Comma-separated list of network contributors. | `-` |
-| `nst` | `int` \| `null` | Number of seismic stations used to determine earthquake location. | `-` |
-| `dmin` | `double` \| `null` | Horizontal distance from the epicenter to the nearest station (degrees). | `-` |
-| `rms` | `double` \| `null` | Root-mean-square travel time residual (seconds). | `-` |
-| `gap` | `double` \| `null` | Largest azimuthal gap between azimuthally adjacent stations (degrees). | `-` |
-| `event_type` | `string` \| `null` | Type of seismic event (earthquake, quarry blast, etc.). | `-` |
-| `latitude` | `double` | Latitude of the earthquake epicenter in decimal degrees. | `-` |
-| `longitude` | `double` | Longitude of the earthquake epicenter in decimal degrees. | `-` |
-| `depth` | `double` \| `null` | Depth of the earthquake in kilometers. | `-` |
+- xRegistry manifest: [`xreg/usgs_earthquakes.xreg.json`](xreg/usgs_earthquakes.xreg.json)
+- Source README: [`README.md`](README.md)
+- Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
