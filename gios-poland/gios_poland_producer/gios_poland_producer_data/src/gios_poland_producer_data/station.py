@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference record for a GIOŚ air quality monitoring station in Poland. Contains the station identifier, code, name, WGS84 coordinates, and administrative location (city, commune, district, voivodeship, street). Fields are mapped from the Polish-language GIOŚ REST API /station/findAll endpoint.
+    Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship.
     
     Attributes:
         station_id (int)
@@ -171,15 +171,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(95),
-            station_code='gyzzsbfsudhyyztekhfa',
-            name='secttyfilizsujfbdagb',
-            latitude=float(62.09034316120611),
-            longitude=float(86.69536926521737),
-            city_id=int(76),
-            city_name='kogienigyoiifhfryjun',
-            commune='nxacvtkcqtigclmonphl',
-            district='uhnojhotpvhbbwpndtjn',
-            voivodeship='yfvuhejcdfrhzicmljyx',
-            street='cevrbvcausopniytwytk'
+            station_id=int(34),
+            station_code='skcvhxmkkisbtsbvfqko',
+            name='dbgrfmpvbggamzsfuihm',
+            latitude=float(95.31600181825),
+            longitude=float(46.269423795868356),
+            city_id=int(23),
+            city_name='ofheemvykxlyettcvdgt',
+            commune='duhdyyobpebpyjgejuew',
+            district='sxqxyeizufyhhfpbubho',
+            voivodeship='ysfxmqwmkunwazwwmwpq',
+            street='noihcxyowmfwazutjayf'
         )

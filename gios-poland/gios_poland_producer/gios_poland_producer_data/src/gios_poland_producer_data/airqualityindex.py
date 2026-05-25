@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class AirQualityIndex:
     """
-    Current Polish Air Quality Index (Indeks Jakości Powietrza) for a GIOŚ monitoring station. Includes the overall index value and category plus sub-indices for SO₂, NO₂, PM10, PM2.5, and O₃. Each sub-index uses a 0–5 scale: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Zły (Bad), 5=Bardzo zły (Very bad). Fields are mapped from the Polish-language /aqindex/getIndex/{stationId} endpoint.
+    Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃).
     
     Attributes:
         station_id (int)
@@ -205,31 +205,31 @@ class AirQualityIndex:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(3),
+            station_id=int(46),
             calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            index_value=int(48),
-            index_category='weutxygkyhfrwttbjvfw',
+            index_value=int(31),
+            index_category='meljzckntbryacxmwawo',
             source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             so2_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            so2_index_value=int(45),
-            so2_index_category='zefcyppeqyrhrkxltjjw',
+            so2_index_value=int(62),
+            so2_index_category='kcbujjglkrvvfbwhyszl',
             so2_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             no2_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            no2_index_value=int(63),
-            no2_index_category='skhaexghkqwqfpsdiufd',
+            no2_index_value=int(78),
+            no2_index_category='abollhbzwphlwmvnzpkw',
             no2_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             pm10_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm10_index_value=int(24),
-            pm10_index_category='husnwuvhtabqkynscwkz',
+            pm10_index_value=int(84),
+            pm10_index_category='dkufgzjkkvcojopyccyo',
             pm10_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             pm25_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm25_index_value=int(56),
-            pm25_index_category='xpewhlojcgkihtctkjjp',
+            pm25_index_value=int(36),
+            pm25_index_category='guraitvgintscophoqnu',
             pm25_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             o3_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            o3_index_value=int(36),
-            o3_index_category='tkfpujxheczxbduzqqvp',
+            o3_index_value=int(0),
+            o3_index_category='xwnliyyoilbgmbcvcevu',
             o3_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             overall_status=False,
-            critical_pollutant_code='gisspskutktcndxxnqkb'
+            critical_pollutant_code='qyeuzkfdcmwzufwkmydb'
         )

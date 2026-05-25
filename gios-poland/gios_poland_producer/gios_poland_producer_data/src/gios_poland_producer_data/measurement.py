@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class Measurement:
     """
-    Hourly air quality measurement from a GIOŚ sensor. Reports the pollutant concentration in µg/m³ at a specific timestamp. The measurement may be null when data is missing or under validation. Fields are mapped from the Polish-language /data/getData/{sensorId} endpoint.
+    Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³.
     
     Attributes:
         station_id (int)
@@ -161,9 +161,9 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(84),
-            sensor_id=int(41),
-            sensor_code='uxjckrnbootrlftseecz',
+            station_id=int(89),
+            sensor_id=int(58),
+            sensor_code='gtpfpnbstufhicycsbui',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(41.276812268222464)
+            value=float(80.09974182635261)
         )
