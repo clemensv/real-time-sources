@@ -1,0 +1,322 @@
+# pylint: disable=line-too-long, trailing-whitespace, missing-module-docstring, missing-function-docstring, missing-class-docstring, redefined-outer-name, unused-argument, broad-exception-caught, broad-exception-raised, invalid-name, trailing-newlines, wrong-import-position, import-error, no-name-in-module
+
+import os
+import sys
+import pytest
+import pytest_asyncio
+import asyncio
+import time
+import paho.mqtt.client as mqtt
+from testcontainers.core.container import DockerContainer
+from testcontainers.core.waiting_utils import wait_for_logs
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../nextbus_mqtt_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../nextbus_mqtt_producer_data/tests')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../nextbus_mqtt_producer_mqtt_client/src')))
+
+import nextbus_mqtt_producer_data
+from nextbus_mqtt_producer_data import VehiclePosition
+from test_nextbus_mqtt_producer_data_vehicleposition import Test_VehiclePosition
+from nextbus_mqtt_producer_data import RouteConfig
+from test_nextbus_mqtt_producer_data_routeconfig import Test_RouteConfig
+from nextbus_mqtt_producer_data import Schedule
+from test_nextbus_mqtt_producer_data_schedule import Test_Schedule
+from nextbus_mqtt_producer_data import Message
+from test_nextbus_mqtt_producer_data_message import Test_Message
+from nextbus_mqtt_producer_mqtt_client import NextbusMqttMqttClient
+
+@pytest_asyncio.fixture
+async def mosquitto_broker():
+    """Start Mosquitto MQTT broker in container."""
+    container = DockerContainer("eclipse-mosquitto:2.0")
+    container.with_exposed_ports(1883)
+    container.with_command("mosquitto -c /mosquitto-no-auth.conf")
+    
+    container.start()
+    
+    try:
+        # Wait for Mosquitto to start
+        wait_for_logs(container, "mosquitto version .* running", timeout=10)
+        await asyncio.sleep(2)  # Additional stabilization time
+        
+        # Get mapped port
+        broker_port = container.get_exposed_port(1883)
+        broker_host = "localhost"
+        
+        yield broker_host, broker_port
+    finally:
+        container.stop()
+
+
+
+@pytest.mark.asyncio
+async def test_nextbus_mqtt_nextbus_vehicle_position_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving nextbus.VehiclePosition.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_VehiclePosition.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = NextbusMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = NextbusMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_nextbus_vehicle_position_mqtt(mqtt_msg, cloud_event, data: nextbus_mqtt_producer_data.VehiclePosition, topic_params: dict):
+        """Handler for nextbus.VehiclePosition.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "nextbus.VehiclePosition"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.nextbus_vehicle_position_mqtt_async = on_nextbus_vehicle_position_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/nextbus_mqtt/nextbus_vehicle_position_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_nextbus_vehicle_position_mqtt(
+            topic=test_topic,
+            agency_id=f"test_agency_id_{i}",
+            route_tag=f"test_route_tag_{i}",
+            vehicle_id=f"test_vehicle_id_{i}",
+            timestamp=f"test_timestamp_{i}",
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+@pytest.mark.asyncio
+async def test_nextbus_mqtt_nextbus_route_config_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving nextbus.RouteConfig.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_RouteConfig.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = NextbusMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = NextbusMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_nextbus_route_config_mqtt(mqtt_msg, cloud_event, data: nextbus_mqtt_producer_data.RouteConfig, topic_params: dict):
+        """Handler for nextbus.RouteConfig.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "nextbus.RouteConfig"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.nextbus_route_config_mqtt_async = on_nextbus_route_config_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/nextbus_mqtt/nextbus_route_config_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_nextbus_route_config_mqtt(
+            topic=test_topic,
+            agency_id=f"test_agency_id_{i}",
+            route_tag=f"test_route_tag_{i}",
+            stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
+            timestamp=f"test_timestamp_{i}",
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+@pytest.mark.asyncio
+async def test_nextbus_mqtt_nextbus_schedule_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving nextbus.Schedule.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_Schedule.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = NextbusMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = NextbusMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_nextbus_schedule_mqtt(mqtt_msg, cloud_event, data: nextbus_mqtt_producer_data.Schedule, topic_params: dict):
+        """Handler for nextbus.Schedule.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "nextbus.Schedule"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.nextbus_schedule_mqtt_async = on_nextbus_schedule_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/nextbus_mqtt/nextbus_schedule_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_nextbus_schedule_mqtt(
+            topic=test_topic,
+            agency_id=f"test_agency_id_{i}",
+            route_tag=f"test_route_tag_{i}",
+            stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
+            timestamp=f"test_timestamp_{i}",
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+@pytest.mark.asyncio
+async def test_nextbus_mqtt_nextbus_message_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving nextbus.Message.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_Message.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = NextbusMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = NextbusMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_nextbus_message_mqtt(mqtt_msg, cloud_event, data: nextbus_mqtt_producer_data.Message, topic_params: dict):
+        """Handler for nextbus.Message.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "nextbus.Message"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.nextbus_message_mqtt_async = on_nextbus_message_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/nextbus_mqtt/nextbus_message_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_nextbus_message_mqtt(
+            topic=test_topic,
+            agency_id=f"test_agency_id_{i}",
+            route_tag=f"test_route_tag_{i}",
+            stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
+            timestamp=f"test_timestamp_{i}",
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+

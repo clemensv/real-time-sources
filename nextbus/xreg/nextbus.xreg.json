@@ -1,0 +1,506 @@
+{
+  "name": "Nextbus",
+  "description": "Nextbus / UMOIQ public XML feed CloudEvents.",
+  "endpoints": {
+    "nextbus.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "nextbus",
+          "key": "{agency_id}/{route_tag}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/nextbus"
+      ],
+      "description": "Kafka endpoint for Nextbus events."
+    },
+    "nextbus.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/nextbus.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "nextbus.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "nextbus"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/nextbus.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
+    }
+  },
+  "messagegroups": {
+    "nextbus": {
+      "description": "Nextbus vehicle and route reference events.",
+      "messages": {
+        "nextbus.VehiclePosition": {
+          "name": "VehiclePosition",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "nextbus.VehiclePosition"
+            },
+            "source": {
+              "value": "https://retro.umoiq.com/service/publicXMLFeed"
+            },
+            "subject": {
+              "value": "{agency_id}/{route_tag}/vehicle/{vehicle_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{timestamp}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nextbus.jstruct/schemas/nextbus.VehiclePosition",
+          "description": "Nextbus VehiclePosition event."
+        },
+        "nextbus.RouteConfig": {
+          "name": "RouteConfig",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "nextbus.RouteConfig"
+            },
+            "source": {
+              "value": "https://retro.umoiq.com/service/publicXMLFeed"
+            },
+            "subject": {
+              "value": "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{timestamp}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nextbus.jstruct/schemas/nextbus.RouteConfig",
+          "description": "Nextbus RouteConfig event."
+        },
+        "nextbus.Schedule": {
+          "name": "Schedule",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "nextbus.Schedule"
+            },
+            "source": {
+              "value": "https://retro.umoiq.com/service/publicXMLFeed"
+            },
+            "subject": {
+              "value": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{timestamp}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nextbus.jstruct/schemas/nextbus.Schedule",
+          "description": "Nextbus Schedule event."
+        },
+        "nextbus.Message": {
+          "name": "Message",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "nextbus.Message"
+            },
+            "source": {
+              "value": "https://retro.umoiq.com/service/publicXMLFeed"
+            },
+            "subject": {
+              "value": "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{timestamp}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nextbus.jstruct/schemas/nextbus.Message",
+          "description": "Nextbus Message event."
+        }
+      }
+    },
+    "nextbus.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for nextbus.",
+      "messages": {
+        "nextbus.VehiclePosition.mqtt": {
+          "name": "VehiclePosition",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "nextbus.RouteConfig.mqtt": {
+          "name": "RouteConfig",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "nextbus.Schedule.mqtt": {
+          "name": "Schedule",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "nextbus.Message.mqtt": {
+          "name": "Message",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Message",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "nextbus.amqp": {
+      "description": "AMQP 1.0 bindings for nextbus.",
+      "messages": {
+        "nextbus.VehiclePosition.amqp": {
+          "name": "VehiclePosition",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/vehicle/{vehicle_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/vehicle/{vehicle_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "nextbus.RouteConfig.amqp": {
+          "name": "RouteConfig",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "nextbus.Schedule.amqp": {
+          "name": "Schedule",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "nextbus.Message.amqp": {
+          "name": "Message",
+          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Message",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "nextbus.jstruct": {
+      "schemas": {
+        "nextbus.VehiclePosition": {
+          "name": "VehiclePosition",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.io/nextbus/nextbus.VehiclePosition/v1",
+                "type": "object",
+                "name": "VehiclePosition",
+                "description": "Nextbus XML feed event payload.",
+                "required": [
+                  "agency_id",
+                  "route_tag",
+                  "vehicle_id",
+                  "stop_or_vehicle_id",
+                  "event_type"
+                ],
+                "properties": {
+                  "agency_id": {
+                    "type": "string",
+                    "description": "agency_id value from the Nextbus XML feed."
+                  },
+                  "route_tag": {
+                    "type": "string",
+                    "description": "route_tag value from the Nextbus XML feed."
+                  },
+                  "vehicle_id": {
+                    "type": "string",
+                    "description": "vehicle_id value from the Nextbus XML feed."
+                  },
+                  "stop_or_vehicle_id": {
+                    "type": "string",
+                    "description": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "event_type value from the Nextbus XML feed."
+                  },
+                  "lat": {
+                    "type": "string",
+                    "description": "lat value from the Nextbus XML feed."
+                  },
+                  "lon": {
+                    "type": "string",
+                    "description": "lon value from the Nextbus XML feed."
+                  },
+                  "timestamp": {
+                    "type": "double",
+                    "description": "timestamp value from the Nextbus XML feed."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nextbus.RouteConfig": {
+          "name": "RouteConfig",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.io/nextbus/nextbus.RouteConfig/v1",
+                "type": "object",
+                "name": "RouteConfig",
+                "description": "Nextbus XML feed event payload.",
+                "required": [
+                  "agency_id",
+                  "route_tag",
+                  "stop_or_vehicle_id",
+                  "event_type",
+                  "route_config"
+                ],
+                "properties": {
+                  "agency_id": {
+                    "type": "string",
+                    "description": "agency_id value from the Nextbus XML feed."
+                  },
+                  "route_tag": {
+                    "type": "string",
+                    "description": "route_tag value from the Nextbus XML feed."
+                  },
+                  "stop_or_vehicle_id": {
+                    "type": "string",
+                    "description": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "event_type value from the Nextbus XML feed."
+                  },
+                  "route_config": {
+                    "type": "string",
+                    "description": "route_config value from the Nextbus XML feed."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nextbus.Schedule": {
+          "name": "Schedule",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.io/nextbus/nextbus.Schedule/v1",
+                "type": "object",
+                "name": "Schedule",
+                "description": "Nextbus XML feed event payload.",
+                "required": [
+                  "agency_id",
+                  "route_tag",
+                  "stop_or_vehicle_id",
+                  "event_type",
+                  "schedule"
+                ],
+                "properties": {
+                  "agency_id": {
+                    "type": "string",
+                    "description": "agency_id value from the Nextbus XML feed."
+                  },
+                  "route_tag": {
+                    "type": "string",
+                    "description": "route_tag value from the Nextbus XML feed."
+                  },
+                  "stop_or_vehicle_id": {
+                    "type": "string",
+                    "description": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "event_type value from the Nextbus XML feed."
+                  },
+                  "schedule": {
+                    "type": "string",
+                    "description": "schedule value from the Nextbus XML feed."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nextbus.Message": {
+          "name": "Message",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.io/nextbus/nextbus.Message/v1",
+                "type": "object",
+                "name": "Message",
+                "description": "Nextbus XML feed event payload.",
+                "required": [
+                  "agency_id",
+                  "route_tag",
+                  "stop_or_vehicle_id",
+                  "event_type",
+                  "message"
+                ],
+                "properties": {
+                  "agency_id": {
+                    "type": "string",
+                    "description": "agency_id value from the Nextbus XML feed."
+                  },
+                  "route_tag": {
+                    "type": "string",
+                    "description": "route_tag value from the Nextbus XML feed."
+                  },
+                  "stop_or_vehicle_id": {
+                    "type": "string",
+                    "description": "stop_or_vehicle_id value from the Nextbus XML feed."
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "event_type value from the Nextbus XML feed."
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "message value from the Nextbus XML feed."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
