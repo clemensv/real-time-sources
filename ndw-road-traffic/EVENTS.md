@@ -1,6 +1,6 @@
 # NDW Road Traffic Events
 
-Real-time road traffic data from the Dutch [Nationaal Dataportaal Wegverkeer (NDW)](https://www.ndw.nu/), the Netherlands national road traffic data platform. Provides live traffic speed, travel time, Dynamic Route Information Panel (DRIP) signs, Matrix Signal Installation (MSI) lane signals, and situation events (road works, bridge openings, temporary closures, speed limits, safety messages) for the Dutch national road network (rijkswegen and provinciale wegen).
+NDW Road Traffic publishes traffic flow, signs, travel-time, and situation updates from the Dutch National Data Warehouse for Traffic Information (NDW) for Dutch road network measurement sites and situations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
@@ -38,7 +38,7 @@ CloudEvents type: `NL.NDW.AVG.PointMeasurementSite`
 
 #### What it tells you
 
-Reference record for a point measurement site from the Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a fixed inductive-loop or microwave sensor. Reference data for a point measurement site from the NDW DATEX II measurement_current feed.
+Reference record for a point measurement site from the Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a fixed inductive-loop or microwave sensor.
 
 #### Identity
 
@@ -91,7 +91,7 @@ CloudEvents type: `NL.NDW.AVG.RouteMeasurementSite`
 
 #### What it tells you
 
-Reference record for a route (section) measurement site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time computation. Reference data for a route (section) measurement site from the NDW DATEX II measurement_current feed.
+Reference record for a route (section) measurement site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time computation.
 
 #### Identity
 
@@ -146,7 +146,7 @@ CloudEvents type: `NL.NDW.AVG.TrafficObservation`
 
 #### What it tells you
 
-Aggregated traffic speed and flow observation from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes. Aggregated traffic speed and flow observation per road segment from the NDW DATEX II trafficspeed feed.
+Aggregated traffic speed and flow observation from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.
 
 #### Identity
 
@@ -191,7 +191,7 @@ CloudEvents type: `NL.NDW.AVG.TravelTimeObservation`
 
 #### What it tells you
 
-Travel time observation for a road segment from the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site. Travel time observation for a road segment from the NDW DATEX II traveltime feed.
+Travel time observation for a road segment from the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.
 
 #### Identity
 
@@ -240,7 +240,7 @@ CloudEvents type: `NL.NDW.DRIP.DripSign`
 
 #### What it tells you
 
-Reference record for a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign unit. Reference data for a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed.
+Reference record for a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign unit.
 
 #### Identity
 
@@ -289,7 +289,7 @@ CloudEvents type: `NL.NDW.DRIP.DripDisplayState`
 
 #### What it tells you
 
-Current display state of a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state of the sign. Current display state of a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed.
+Current display state of a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state of the sign.
 
 #### Identity
 
@@ -338,7 +338,7 @@ CloudEvents type: `NL.NDW.MSI.MsiSign`
 
 #### What it tells you
 
-Reference record for a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane. Reference data for a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed.
+Reference record for a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane.
 
 #### Identity
 
@@ -387,7 +387,7 @@ CloudEvents type: `NL.NDW.MSI.MsiDisplayState`
 
 #### What it tells you
 
-Current display state of a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown. Current display state of a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed.
+Current display state of a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown.
 
 #### Identity
 
@@ -432,7 +432,7 @@ CloudEvents type: `NL.NDW.Situations.Roadwork`
 
 #### What it tells you
 
-Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network. Road construction or maintenance work event from the NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed.
+Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.
 
 #### Identity
 
@@ -489,7 +489,7 @@ CloudEvents type: `NL.NDW.Situations.BridgeOpening`
 
 #### What it tells you
 
-Bridge opening event from the Dutch NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure. Bridge opening event from the NDW DATEX II planningsfeed_brugopeningen feed.
+Bridge opening event from the Dutch NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.
 
 #### Identity
 
@@ -540,7 +540,7 @@ CloudEvents type: `NL.NDW.Situations.TemporaryClosure`
 
 #### What it tells you
 
-Temporary road closure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch national road network. Temporary road closure from the NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed.
+Temporary road closure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch national road network.
 
 #### Identity
 
@@ -593,7 +593,7 @@ CloudEvents type: `NL.NDW.Situations.TemporarySpeedLimit`
 
 #### What it tells you
 
-Temporary speed limit measure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a section of the national road network. Temporary speed limit measure from the NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed.
+Temporary speed limit measure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a section of the national road network.
 
 #### Identity
 
@@ -646,7 +646,7 @@ CloudEvents type: `NL.NDW.Situations.SafetyRelatedMessage`
 
 #### What it tells you
 
-Safety-related traffic information message from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network. Safety-related traffic information message from the NDW DATEX II veiligheidsgerelateerde_berichten_srti feed.
+Safety-related traffic information message from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.
 
 #### Identity
 
