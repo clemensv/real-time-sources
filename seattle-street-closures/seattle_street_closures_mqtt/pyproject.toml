@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seattle-street-closures-mqtt"
+version = "0.1.0"
+description = "MQTT companion feeder for Seattle Street Closures"
+requires-python = ">=3.10"
+dependencies = ["paho-mqtt>=2.1.0"]
+
+[project.scripts]
+seattle-street-closures-mqtt = "seattle_street_closures_mqtt.app:main"
+
+[tool.setuptools.packages.find]
+include = ["seattle_street_closures_mqtt*"]

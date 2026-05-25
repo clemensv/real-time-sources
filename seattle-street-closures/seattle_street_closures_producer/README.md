@@ -1,6 +1,6 @@
 
 
-# Seattle-street-closures-producer Kafka Producer# Seattle-street-closures-producer Event Dispatcher for Apache Kafka
+# Seattle_street_closures_producer Kafka Producer# Seattle_street_closures_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from seattle-street-closures-producer import USWASeattleStreetClosuresProducer```python
+from seattle_street_closures_producer import USWASeattleStreetClosuresProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

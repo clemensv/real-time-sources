@@ -1,7 +1,9 @@
 {
   "endpoints": {
     "US.WA.Seattle.StreetClosures.Kafka": {
-      "usage": ["producer"],
+      "usage": [
+        "producer"
+      ],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -15,7 +17,52 @@
           "key": "{closure_id}"
         }
       },
-      "messagegroups": ["#/messagegroups/US.WA.Seattle.StreetClosures"]
+      "messagegroups": [
+        "#/messagegroups/US.WA.Seattle.StreetClosures"
+      ]
+    },
+    "US.WA.Seattle.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/US.WA.Seattle.StreetClosures.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "US.WA.Seattle.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "seattle-street-closures"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/US.WA.Seattle.StreetClosures.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -38,6 +85,47 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/US.WA.Seattle.StreetClosures.jstruct/schemas/US.WA.Seattle.StreetClosures.StreetClosure"
+        }
+      }
+    },
+    "US.WA.Seattle.StreetClosures.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for seattle-street-closures.",
+      "messages": {
+        "US.WA.Seattle.StreetClosures.StreetClosure.mqtt": {
+          "name": "StreetClosure",
+          "basemessageurl": "/messagegroups/US.WA.Seattle.StreetClosures/messages/US.WA.Seattle.StreetClosures.StreetClosure",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/seattle/seattle-street-closures/{neighborhood}/{closure_id}/closure",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "US.WA.Seattle.StreetClosures.amqp": {
+      "description": "AMQP 1.0 bindings for seattle-street-closures.",
+      "messages": {
+        "US.WA.Seattle.StreetClosures.StreetClosure.amqp": {
+          "name": "StreetClosure",
+          "basemessageurl": "/messagegroups/US.WA.Seattle.StreetClosures/messages/US.WA.Seattle.StreetClosures.StreetClosure",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{closure_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{closure_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
         }
       }
     }
@@ -91,7 +179,10 @@
                     ]
                   },
                   "project_name": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Short title used by Seattle to quickly identify the closure permit.",
                     "alternates": [
                       {
@@ -101,7 +192,10 @@
                     ]
                   },
                   "project_description": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Longer description of the permit, including issuance notes and closure details.",
                     "alternates": [
                       {
@@ -131,51 +225,87 @@
                     ]
                   },
                   "sunday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Sundays between the start and end dates."
                   },
                   "monday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Mondays between the start and end dates."
                   },
                   "tuesday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Tuesdays between the start and end dates."
                   },
                   "wednesday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Wednesdays between the start and end dates."
                   },
                   "thursday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Thursdays between the start and end dates."
                   },
                   "friday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Fridays between the start and end dates."
                   },
                   "saturday": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Time period, if any, during which the closure occurs on Saturdays between the start and end dates."
                   },
                   "street_on": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Street name of the closed street segment."
                   },
                   "street_from": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Name of the intersecting street at the low end of the closed segment."
                   },
                   "street_to": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Name of the intersecting street at the high end of the closed segment."
                   },
                   "segkey": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Identifier for the street segment that is closed."
                   },
                   "geometry_json": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Serialized GeoJSON LineString geometry for the closed street block.",
                     "alternates": [
                       {

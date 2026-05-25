@@ -1,26 +1,11 @@
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\seattle_street_closures.xreg.json"
-$outputDir = Join-Path $projectRoot "seattle_street_closures_producer"
+$xregFile = Join-Path $scriptDir 'xreg\seattle_street_closures.xreg.json'
 
-Write-Host "Generating Seattle street closures producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'US.WA.Seattle.StreetClosures.Kafka' --projectname seattle_street_closures_producer --output (Join-Path $scriptDir 'seattle_street_closures_producer')
 
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'US.WA.Seattle.Mqtt' --projectname seattle_street_closures_mqtt_producer --output (Join-Path $scriptDir 'seattle_street_closures_mqtt_producer')
 
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname seattle-street-closures-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit 1
-}
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'US.WA.Seattle.Amqp' --projectname seattle_street_closures_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'seattle_street_closures_amqp_producer')

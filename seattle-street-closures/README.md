@@ -67,3 +67,13 @@ configured.
 ## Fabric notebook hosting
 
 This bridge can also run as a scheduled Microsoft Fabric notebook (`notebook/seattle-street-closures-feed.ipynb`); deploy it via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `seattle-street-closures` by default.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt:latest`
+- AMQP image: `ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
