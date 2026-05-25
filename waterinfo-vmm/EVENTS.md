@@ -1,6 +1,6 @@
 # Waterinfo VMM (Belgium/Flanders) Water Level Bridge Events
 
-This project bridges water level data from the Belgian [Waterinfo.be](https://waterinfo.vlaanderen.be/) KIWIS API (VMM provider) to Apache Kafka, emitting CloudEvents.
+Waterinfo VMM publishes water level observations from Waterinfo.be and the Flemish Environment Agency (VMM) for Flemish water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
 ## At a glance
 
@@ -38,11 +38,11 @@ CloudEvents type: `BE.Vlaanderen.Waterinfo.VMM.Station`
 
 #### What it tells you
 
-This event carries station data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A reference record for one Flemish water monitoring location published by Waterinfo.be and the Flemish Environment Agency (VMM). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events. Reference details for one monitoring station or site in the Waterinfo VMM source.
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_no}`. `{station_no}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_no}`. `{station_no}` is provider-supplied station no value for this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -54,15 +54,15 @@ Each event identifies the real-world resource with `{station_no}`. `{station_no}
 
 `Station` payloads are JSON object. Required fields: `station_no`, `station_name`, `station_latitude`, `station_longitude`.
 
-- **`station_no`** (string, required): No description provided.
-- **`station_name`** (string, required): No description provided.
-- **`station_id`** (string, optional): No description provided.
-- **`station_latitude`** (double, required): No description provided.
-- **`station_longitude`** (double, required): No description provided.
-- **`river_name`** (string or null, optional): No description provided.
-- **`stationparameter_name`** (string or null, optional): No description provided.
-- **`ts_id`** (string or null, optional): No description provided.
-- **`ts_unitname`** (string or null, optional): No description provided.
+- **`station_no`** (string, required): Provider-supplied station no value for this record.
+- **`station_name`** (string, required): Human-readable name of the monitoring station.
+- **`station_id`** (string, optional): Stable identifier assigned by the upstream provider for the monitoring station or site.
+- **`station_latitude`** (double, required): Provider-supplied station latitude value for this record.
+- **`station_longitude`** (double, required): Provider-supplied station longitude value for this record.
+- **`river_name`** (string or null, optional): Name of the river or watercourse observed at the station.
+- **`stationparameter_name`** (string or null, optional): Human-readable name of the stationparameter.
+- **`ts_id`** (string or null, optional): Stable identifier assigned by the upstream provider for the ts.
+- **`ts_unitname`** (string or null, optional): Provider-supplied ts unitname value for this record.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -91,11 +91,11 @@ CloudEvents type: `BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading`
 
 #### What it tells you
 
-This event carries water level reading data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+A current measurement from Waterinfo.be and the Flemish Environment Agency (VMM) for one monitoring site. It carries water level observations when the upstream feed reports a new or refreshed value. WaterLevelReading
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_no}`. `{station_no}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_no}`. `{station_no}` is provider-supplied station no value for this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -107,13 +107,13 @@ Each event identifies the real-world resource with `{station_no}`. `{station_no}
 
 `Water Level Reading` payloads are JSON object. Required fields: `ts_id`, `station_no`, `timestamp`, `value`.
 
-- **`ts_id`** (string, required): No description provided.
-- **`station_no`** (string, required): No description provided.
-- **`station_name`** (string, optional): No description provided.
-- **`timestamp`** (datetime, required): No description provided.
-- **`value`** (double, required): No description provided.
-- **`unit_name`** (string, optional): No description provided.
-- **`parameter_name`** (string, optional): No description provided.
+- **`ts_id`** (string, required): Stable identifier assigned by the upstream provider for the ts.
+- **`station_no`** (string, required): Provider-supplied station no value for this record.
+- **`station_name`** (string, optional): Human-readable name of the monitoring station.
+- **`timestamp`** (datetime, required): Time when the provider recorded or published the observation.
+- **`value`** (double, required): Measured value reported by the upstream provider.
+- **`unit_name`** (string, optional): Human-readable name of the unit.
+- **`parameter_name`** (string, optional): Plain-language name of the measured parameter.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.

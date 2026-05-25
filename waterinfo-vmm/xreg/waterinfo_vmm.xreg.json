@@ -19,7 +19,8 @@
       },
       "messagegroups": [
         "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM"
-      ]
+      ],
+      "description": "Kafka producer endpoint for Waterinfo VMM CloudEvents on the `waterinfo-vmm` topic keyed by `{station_no}`."
     }
   },
   "messagegroups": {
@@ -41,7 +42,8 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.Station"
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "description": "A reference record for one Flemish water monitoring location published by Waterinfo.be and the Flemish Environment Agency (VMM). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events."
         },
         "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
           "name": "WaterLevelReading",
@@ -59,9 +61,11 @@
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "description": "A current measurement from Waterinfo.be and the Flemish Environment Agency (VMM) for one monitoring site. It carries water level observations when the upstream feed reports a new or refreshed value."
         }
-      }
+      },
+      "description": "Events from Waterinfo VMM covering Flemish water monitoring locations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
     }
   },
   "schemagroups": {
@@ -86,35 +90,56 @@
                 "name": "Station",
                 "properties": {
                   "station_no": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied station no value for this record."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the monitoring station or site."
                   },
                   "station_latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied station latitude value for this record."
                   },
                   "station_longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Provider-supplied station longitude value for this record."
                   },
                   "river_name": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Name of the river or watercourse observed at the station."
                   },
                   "stationparameter_name": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable name of the stationparameter."
                   },
                   "ts_id": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable identifier assigned by the upstream provider for the ts."
                   },
                   "ts_unitname": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Provider-supplied ts unitname value for this record."
                   }
                 },
                 "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station",
-                "description": "Station"
+                "description": "Reference details for one monitoring station or site in the Waterinfo VMM source."
               }
             }
           }
@@ -138,25 +163,32 @@
                 "name": "WaterLevelReading",
                 "properties": {
                   "ts_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Stable identifier assigned by the upstream provider for the ts."
                   },
                   "station_no": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Provider-supplied station no value for this record."
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the monitoring station."
                   },
                   "timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Time when the provider recorded or published the observation."
                   },
                   "value": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Measured value reported by the upstream provider."
                   },
                   "unit_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable name of the unit."
                   },
                   "parameter_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Plain-language name of the measured parameter."
                   }
                 },
                 "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/WaterLevelReading",
@@ -179,7 +211,7 @@
               "schema": {
                 "type": "record",
                 "name": "Station",
-                "doc": "Station",
+                "doc": "Reference details for one monitoring station or site in the Waterinfo VMM source.",
                 "fields": [
                   {
                     "name": "station_no",
@@ -238,7 +270,8 @@
                     "default": null
                   }
                 ],
-                "namespace": "BE.Vlaanderen.Waterinfo.VMM"
+                "namespace": "BE.Vlaanderen.Waterinfo.VMM",
+                "description": "Reference details for one monitoring station or site in the Waterinfo VMM source."
               }
             }
           }
@@ -253,7 +286,7 @@
               "schema": {
                 "type": "record",
                 "name": "WaterLevelReading",
-                "doc": "WaterLevelReading",
+                "doc": "Measurement payload for observations in the Waterinfo VMM source.",
                 "fields": [
                   {
                     "name": "ts_id",
@@ -299,12 +332,18 @@
                     "default": null
                   }
                 ],
-                "namespace": "BE.Vlaanderen.Waterinfo.VMM"
+                "namespace": "BE.Vlaanderen.Waterinfo.VMM",
+                "description": "Measurement payload for observations in the Waterinfo VMM source."
               }
             }
           }
         }
       }
     }
+  },
+  "description": "Waterinfo VMM publishes water level observations from Waterinfo.be and the Flemish Environment Agency (VMM) for Flemish water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.",
+  "documentation": {
+    "description": "Source documentation for Waterinfo VMM, including upstream API context and bridge deployment notes.",
+    "url": "README.md"
   }
 }
