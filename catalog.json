@@ -151,6 +151,16 @@
     "amqp": true
   },
   {
+    "id": "dmi",
+    "name": "DMI",
+    "cat": "Weather",
+    "key": true,
+    "desc": "Denmark — DMI observation triad (metObs + oceanObs + lightning)",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true
+  },
+  {
     "id": "rws-waterwebservices",
     "name": "RWS Waterwebservices",
     "cat": "Hydrology",
@@ -245,7 +255,9 @@
     "key": false,
     "desc": "Global — METAR, SIGMET advisories",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "blitzortung",
@@ -264,7 +276,9 @@
     "key": false,
     "desc": "Australia — ~8 capital city airports, half-hourly obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "dwd",
@@ -272,7 +286,9 @@
     "cat": "Weather",
     "key": false,
     "desc": "Germany — ~1,450 stations, observations and CAP alerts",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "dwd-pollenflug",
@@ -281,7 +297,9 @@
     "key": false,
     "desc": "Germany — daily pollen forecasts, 27 regions",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "dmi",
@@ -300,7 +318,9 @@
     "key": false,
     "desc": "Canada — ~963 SWOB stations, hourly obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "geosphere-austria",
@@ -309,7 +329,9 @@
     "key": false,
     "desc": "Austria — ~280 TAWES stations, 10-min obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "hko-hong-kong",
@@ -318,7 +340,9 @@
     "key": false,
     "desc": "Hong Kong — 27 temp stations, 18 rainfall districts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-japan",
@@ -327,7 +351,9 @@
     "key": false,
     "desc": "Japan — weather bulletins, warnings, forecasts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "kmi-belgium",
@@ -336,7 +362,9 @@
     "key": false,
     "desc": "Belgium — ~14 AWS stations, 10-min observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "meteoalarm",
@@ -355,7 +383,20 @@
     "key": false,
     "desc": "Global — space weather, solar wind, K-index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
+    "id": "noaa-swpc-l1",
+    "name": "NOAA SWPC L1",
+    "cat": "Weather",
+    "key": false,
+    "desc": "Global — L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "noaa-nws",
@@ -364,7 +405,9 @@
     "key": false,
     "desc": "United States — weather alerts, CAP",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nws-alerts",
@@ -383,7 +426,9 @@
     "key": false,
     "desc": "United States — configurable land and marine forecast zones",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "singapore-nea",
@@ -392,7 +437,9 @@
     "key": false,
     "desc": "Singapore — 62 weather stations + 5 air-quality regions",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "smhi-weather",
@@ -401,7 +448,9 @@
     "key": false,
     "desc": "Sweden — ~232 stations, hourly obs",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "canada-aqhi",
@@ -410,7 +459,9 @@
     "key": false,
     "desc": "Canada — community AQHI observations and forecasts",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "defra-aurn",
@@ -419,7 +470,9 @@
     "key": false,
     "desc": "United Kingdom — 300+ monitoring locations, hourly pollutants",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "epa-uv",
@@ -439,7 +492,9 @@
     "key": false,
     "desc": "Finland — hourly air quality observations via FMI WFS",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "gios-poland",
@@ -448,7 +503,9 @@
     "key": false,
     "desc": "Poland — ~250 stations, hourly pollutants + AQI",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "hongkong-epd",
@@ -468,7 +525,9 @@
     "key": false,
     "desc": "Belgium — station, timeseries, and hourly observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "laqn-london",
@@ -477,7 +536,9 @@
     "key": false,
     "desc": "London, UK — site metadata, species, hourly measurements",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "luchtmeetnet-nl",
@@ -486,7 +547,9 @@
     "key": false,
     "desc": "Netherlands — station measurements, components, LKI index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "sensor-community",
@@ -495,7 +558,9 @@
     "key": false,
     "desc": "Global — citizen air sensors, PM and climate readings",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "uba-airdata",
@@ -504,7 +569,9 @@
     "key": false,
     "desc": "Germany — stations, pollutant components, hourly measures",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "wallonia-issep",
@@ -659,7 +726,9 @@
     "cat": "Maritime",
     "key": false,
     "desc": "Finland / Baltic Sea — AIS via MQTT",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "kystverket-ais",
@@ -718,7 +787,9 @@
     "key": false,
     "desc": "France — national road network, DATEX II",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "gtfs",
@@ -726,7 +797,9 @@
     "cat": "Transport",
     "key": false,
     "desc": "Global — 1,000+ transit agencies, vehicles, trips, alerts",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "madrid-traffic",
@@ -735,7 +808,9 @@
     "key": false,
     "desc": "Madrid, Spain — ~4,000 sensors, Informo",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ndl-netherlands",
@@ -744,7 +819,9 @@
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ndw-road-traffic",
@@ -752,14 +829,18 @@
     "cat": "Transport",
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II XML",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nextbus",
     "name": "Nextbus",
     "cat": "Transport",
     "key": true,
-    "desc": "North America — public transit arrivals"
+    "desc": "North America — public transit arrivals",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "paris-bicycle-counters",
@@ -779,7 +860,9 @@
     "key": false,
     "desc": "Seattle, WA — permit-driven street closure windows",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "tfl-road-traffic",
@@ -795,7 +878,9 @@
     "name": "Tokyo Docomo Bikeshare",
     "cat": "Transport",
     "key": false,
-    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT"
+    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "cbp-border-wait",
@@ -815,7 +900,9 @@
     "key": true,
     "desc": "Washington State — ~1,000 traffic flow sensors (requires free key)",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "entur-norway",
@@ -989,7 +1076,9 @@
     "key": false,
     "desc": "Japan — ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-quake",
@@ -1009,7 +1098,9 @@
     "key": false,
     "desc": "Japan — 111 volcanoes, alert levels, eruption observations",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "jma-bosai-warning",
