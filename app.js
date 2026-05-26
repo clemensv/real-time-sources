@@ -507,6 +507,168 @@ function esc(s) {
   return d.innerHTML;
 }
 
+/* ── Welcome / landing panel ───────────────────────────────────────────── */
+function renderWelcome() {
+  let wel = document.getElementById("welcome");
+  if (!wel) {
+    $content.innerHTML = '<div id="welcome" class="welcome welcome-rich"></div>';
+    wel = document.getElementById("welcome");
+  }
+
+  const total = SOURCES.length;
+  const keyFree = SOURCES.filter(s => !s.key).length;
+  const withMqtt = SOURCES.filter(s => s.mqtt).length;
+  const withAmqp = SOURCES.filter(s => s.amqp).length;
+  const withNotebook = SOURCES.filter(s => s.notebook).length;
+
+  // Category counts, sorted by size descending
+  const catCounts = {};
+  for (const s of SOURCES) catCounts[s.cat] = (catCounts[s.cat] || 0) + 1;
+  const cats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
+
+  const catChips = cats.map(([c, n]) =>
+    `<button class="welcome-cat" data-cat="${esc(c)}">${esc(c)} <span class="welcome-cat-n">${n}</span></button>`
+  ).join("");
+
+  const plural = n => n === 1 ? "" : "s";
+
+  // A few curated quick-starts (all key-free unless noted)
+  const quickStarts = [
+    { id: "pegelonline", note: "Germany — 3,000 river gauges, every 15 min. Reference implementation for Kafka + MQTT + AMQP transport variants." },
+    { id: "aisstream",   note: "Global — live AIS vessel positions via WebSocket. Free API key, registers in seconds." },
+    { id: "bluesky",     note: "Global — the Bluesky firehose, normalized to CloudEvents." },
+    { id: "dwd",         note: "Germany — DWD weather observations plus CAP severe-weather alerts." },
+    { id: "gtfs",        note: "Global — GTFS-Realtime transit feeds (vehicle positions, trip updates, alerts)." },
+    { id: "noaa",        note: "United States — NOAA Tides & Currents, ~3,000 coastal/estuarine stations." },
+  ].filter(q => SOURCES.find(s => s.id === q.id));
+
+  const qsCards = quickStarts.map(q => {
+    const s = SOURCES.find(x => x.id === q.id);
+    const keyBadge = s.key ? ' <span class="welcome-quick-key">key</span>' : "";
+    return `<a class="welcome-quick" href="#${esc(s.id)}">
+      <div class="welcome-quick-name">${esc(s.name)}${keyBadge}</div>
+      <div class="welcome-quick-note">${esc(q.note)}</div>
+    </a>`;
+  }).join("");
+
+  wel.innerHTML = `
+    <div class="welcome-hero">
+      <h2>Real-time data for Apache&nbsp;Kafka, MQTT, AMQP&nbsp;1.0 &mdash; on Azure Event&nbsp;Hubs, Service&nbsp;Bus, Event&nbsp;Grid &amp; Microsoft&nbsp;Fabric</h2>
+      <p class="welcome-lede">
+        A curated, open-source catalog of <strong>${total} containerized bridges</strong> that pull live, public data
+        from weather services, water-level networks, transit feeds, lightning detectors, energy markets, AIS vessel
+        trackers, social firehoses, and dozens more &mdash; and re-emit it as binary-mode
+        <a href="https://cloudevents.io/" target="_blank" rel="noopener">CloudEvents</a> with strongly-typed
+        <a href="https://json-structure.org/" target="_blank" rel="noopener">JSON&nbsp;Structure</a> payloads over
+        <strong>Apache&nbsp;Kafka</strong>, <strong>MQTT&nbsp;5.0</strong> (Unified Namespace), and
+        <strong>AMQP&nbsp;1.0</strong>. Pick a source, click <strong>Deploy</strong>,
+        you&rsquo;re streaming in a couple of minutes.
+      </p>
+      <div class="welcome-stats">
+        <div class="welcome-stat"><div class="welcome-stat-n">${total}</div><div class="welcome-stat-l">sources</div></div>
+        <div class="welcome-stat"><div class="welcome-stat-n">${keyFree}</div><div class="welcome-stat-l">no API key</div></div>
+        <div class="welcome-stat"><div class="welcome-stat-n">${withMqtt}</div><div class="welcome-stat-l">also MQTT&nbsp;/&nbsp;UNS</div></div>
+        <div class="welcome-stat"><div class="welcome-stat-n">${withAmqp}</div><div class="welcome-stat-l">also AMQP&nbsp;1.0</div></div>
+        <div class="welcome-stat"><div class="welcome-stat-n">${withNotebook}</div><div class="welcome-stat-l">Fabric notebook</div></div>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <h3>What you&rsquo;ll find in the catalog</h3>
+      <p>Sources are organized by domain. Click a chip to filter the list on the left, or pick any row.</p>
+      <div class="welcome-cats">${catChips}</div>
+    </div>
+
+    <div class="welcome-section">
+      <h3>Five ways to deploy &mdash; one click each</h3>
+      <div class="welcome-deploys">
+        <div class="welcome-deploy">
+          <div class="welcome-deploy-title">Azure Container &rarr; Event Hubs</div>
+          <div class="welcome-deploy-body">
+            ARM templates that spin up an Azure Container Instance running the Kafka feeder, writing into an
+            Event Hubs namespace you already own &mdash; or a brand-new one provisioned alongside.
+            <em>Every source supports this.</em>
+          </div>
+        </div>
+        <div class="welcome-deploy">
+          <div class="welcome-deploy-title">Azure Container &rarr; Service Bus (AMQP&nbsp;1.0)</div>
+          <div class="welcome-deploy-body">
+            ${withAmqp} source${plural(withAmqp)} ship${withAmqp === 1 ? "s" : ""} an AMQP&nbsp;1.0 variant that publishes via Microsoft Entra ID
+            (no SAS-key rotation) into a brand-new Azure Service Bus namespace provisioned by the template.
+            Also works against Event Hubs, RabbitMQ AMQP&nbsp;1.0, Artemis, and Qpid&nbsp;Dispatch.
+          </div>
+        </div>
+        <div class="welcome-deploy">
+          <div class="welcome-deploy-title">Azure Container &rarr; MQTT&nbsp;/&nbsp;Event Grid</div>
+          <div class="welcome-deploy-body">
+            ${withMqtt} source${plural(withMqtt)} additionally publish${withMqtt === 1 ? "es" : ""} MQTT&nbsp;5.0 binary-mode CloudEvents on a hierarchical
+            Unified-Namespace topic tree (e.g. <code>weather/dk/dmi/met-obs/&lt;station&gt;/&lt;parameter&gt;</code>).
+            Deploy alongside an Azure Event Grid namespace MQTT broker, or point at any MQTT&nbsp;5 broker you run.
+          </div>
+        </div>
+        <div class="welcome-deploy">
+          <div class="welcome-deploy-title">Azure Container &rarr; Fabric Event Stream</div>
+          <div class="welcome-deploy-body">
+            Same ACI feeder, deployed via the portal here, writing into a Fabric Event Stream custom endpoint
+            inside a Fabric Eventhouse. The deploy script provisions the Eventhouse, KQL database, and
+            update policies for you.
+          </div>
+        </div>
+        <div class="welcome-deploy">
+          <div class="welcome-deploy-title">Fabric Notebook &mdash; no Azure subscription</div>
+          <div class="welcome-deploy-body">
+            For poll-based sources (${withNotebook} of ${total}): the feeder runs as a scheduled Fabric
+            notebook inside your workspace. Ingestion, storage, query &mdash; all in Fabric.
+            Look for the <em>Fabric Notebook Feeder</em> button.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <h3>Designed for serious use, not just demos</h3>
+      <ul class="welcome-bullets">
+        <li><strong>Stable keys, topics, and addresses.</strong> Every source keys on a stable upstream identifier
+          (station ID, MMSI, gauge number, sensor ID) and aligns the Kafka key, CloudEvents subject, MQTT topic
+          template, and AMQP node so partitioning, log compaction, joins, and broker routing work the way you
+          expect.</li>
+        <li><strong>CloudEvents + JSON&nbsp;Structure contracts.</strong> Every source ships an
+          <a href="https://github.com/xregistry/spec" target="_blank" rel="noopener">xRegistry</a>
+          manifest with exhaustive schemas, units, validation extensions, and altnames mapping to
+          upstream field names. Browse the per-source <code>EVENTS.md</code> for the full event list.</li>
+        <li><strong>Reference data as events.</strong> Catalog data (stations, sensors, routes, zones)
+          is emitted as named CloudEvents on the same topic, MQTT tree, or AMQP node as telemetry &mdash;
+          not hidden in an out-of-band API. Re-emitted on a refresh cadence.</li>
+        <li><strong>KQL schemas included.</strong> Every source ships a generated
+          <code>kql/&lt;source&gt;.kql</code> with tables, materialized views, update policies,
+          and ingestion mappings for Azure Data Explorer / Fabric Eventhouse.</li>
+      </ul>
+    </div>
+
+    <div class="welcome-section">
+      <h3>Try one of these first</h3>
+      <div class="welcome-quicks">${qsCards}</div>
+    </div>
+
+    <div class="welcome-foot">
+      Built and maintained by <a href="https://github.com/clemensv" target="_blank" rel="noopener">Clemens&nbsp;Vasters</a>
+      and contributors &middot; <a href="https://github.com/clemensv/real-time-sources" target="_blank" rel="noopener">source on GitHub</a>
+      &middot; MIT-licensed.
+    </div>
+  `;
+
+  // Wire up category chips
+  wel.querySelectorAll(".welcome-cat").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const cat = chip.getAttribute("data-cat");
+      selectCategory(cat);
+      const sb = document.getElementById("search-box");
+      if (sb) sb.value = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
 /* ── Boot ──────────────────────────────────────────────────────────────── */
 renderPills();
 renderList();
@@ -529,7 +691,16 @@ renderList();
                                (azure-template-with-servicebus.json, Service Bus AMQP 1.0 broker) */
 async function selectFromHash() {
   const raw = (location.hash || "").replace(/^#/, "").trim();
-  if (!raw) return;
+  if (!raw) {
+    // No hash — render the landing/welcome panel.
+    activeSource = null;
+    $deployBar.style.display = "none";
+    $deployBarFabric.style.display = "none";
+    if (typeof closeDeployPane === "function") closeDeployPane();
+    renderList();
+    renderWelcome();
+    return;
+  }
   const [id, action] = raw.split("/");
   const s = SOURCES.find(x => x.id === id);
   if (!s) return;
