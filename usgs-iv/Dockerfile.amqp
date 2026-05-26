@@ -30,6 +30,11 @@ RUN pip install --no-cache-dir ./usgs_iv_amqp_producer/usgs_iv_amqp_producer_dat
  && rm -rf /root/.cache /var/lib/apt/lists/*
 
 ENV AMQP_BROKER_URL=""
+ENV AMQP_HOST=""
+ENV AMQP_PORT=""
 ENV AMQP_ADDRESS="usgs-iv"
+ENV AMQP_AUTH_MODE="password"
+ENV AMQP_TLS="false"
+ENV USGS_IV_MOCK="false"
 
 CMD ["python", "-m", "usgs_iv_amqp", "feed"]

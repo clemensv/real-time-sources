@@ -384,7 +384,7 @@ class TestUSGSGeomagAmqpDockerFlow(AmqpDockerFlowBase):
 class TestUSGSIVAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "usgs-iv"
     image = "usgs-iv-amqp"
-    env = {"ONCE_MODE": "true", "USGS_FORCE_SITE_REFRESH": "true", "USGS_FORCE_DATA_REFRESH": "true", "USGS_STATE": "DE"}
+    env = {"ONCE_MODE": "true", "USGS_IV_MOCK": "true", "USGS_FORCE_SITE_REFRESH": "true", "USGS_FORCE_DATA_REFRESH": "true", "USGS_STATE": "DE"}
     expected_types = set()
     expected_count = 1
 
