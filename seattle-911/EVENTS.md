@@ -1,4 +1,4 @@
-# Seattle Fire 911 Bridge Events
+# Seattle Fire 911 feeder Events
 
 MQTT/5.0 transport variant for Seattle Fire 911 dispatch incidents. Topics are non-retained QoS-1 event messages under civic-events/us/wa/seattle/public-safety/fire-dispatch/{incident_type_slug}/{incident_number}. The incident_type_slug field is the deterministic lowercase kebab-case routing key derived from the display incident_type; incident_number preserves the CloudEvents subject/Kafka key for per-incident subscriptions. Message expiry is 86400 seconds for queued/offline delivery only; this event stream does not use retained MQTT state.
 
@@ -138,3 +138,5 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/seattle_911.xreg.json`](xreg/seattle_911.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
+- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>
