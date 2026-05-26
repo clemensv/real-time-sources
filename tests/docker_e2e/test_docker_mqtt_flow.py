@@ -777,6 +777,7 @@ class TestBfsOdlMqttDockerFlow:
                 'POLLING_INTERVAL': '60',
                 'ONCE_MODE': 'true',
                 'PYTHONUNBUFFERED': '1',
+                'BFS_ODL_SAMPLE_MODE': 'true',
             },
         )
         try:
@@ -792,7 +793,7 @@ class TestBfsOdlMqttDockerFlow:
                 pass
 
         messages = _collect_messages_topic(
-            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/de/bfs/bfs-odl/#',
+            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/ch/bfs/bfs-odl/#',
             timeout=40.0,
         )
         assert messages, 'No retained messages received from broker'
@@ -825,7 +826,7 @@ class TestBfsOdlMqttDockerFlow:
         assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
         assert dose_payload is not None, f"dose-rate payload not parseable: {dose_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload, info_payload
-        assert 'state' in info_payload, info_payload
+        assert 'canton' in info_payload, info_payload
         assert 'station_id' in dose_payload, dose_payload
         assert 'value' in dose_payload, dose_payload
 
@@ -4961,20 +4962,239 @@ class TestEntsoeMqttDockerFlow:
         assert 'eu.entsoe.transparency.CrossBorderPhysicalFlows' in observed
 
 
+# ---- eurdep-radiation ---------------------------------------------------
+
 @pytest.fixture(scope='module')
-def aviationweather_mqtt_image():
-    return build_image('aviationweather', dockerfile='Dockerfile.mqtt', tag='test-aviationweather-mqtt')
+def eurdep_radiation_mqtt_image():
+    return build_image('eurdep-radiation', dockerfile='Dockerfile.mqtt', tag='test-eurdep-radiation-mqtt')
 
 @pytest.fixture()
-def mosquitto_aviationweather():
-    container, network, host_port = _generic_mosquitto('aviationweather-mqtt-e2e', 'aviationweather-mqtt-e2e-broker')
+def mosquitto_eurdep_radiation():
+    container, network, host_port = _generic_mosquitto('eurdep-radiation-mqtt-e2e', 'eurdep-radiation-mqtt-e2e-broker')
     try:
-        yield {'host_port': host_port, 'internal_host': 'aviationweather-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+        yield {'host_port': host_port, 'internal_host': 'eurdep-radiation-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
     finally:
         try: container.kill()
         except docker.errors.APIError: pass
         try: network.remove()
         except docker.errors.APIError: pass
+
+class TestEurdepRadiationMqttDockerFlow:
+    def test_emits_retained_uns_topics(self, mosquitto_eurdep_radiation, eurdep_radiation_mqtt_image):
+        client = docker.from_env(); broker_url = f"mqtt://{mosquitto_eurdep_radiation['internal_host']}:{mosquitto_eurdep_radiation['internal_port']}"
+        feeder = client.containers.run(eurdep_radiation_mqtt_image.id, detach=True, remove=False, network=mosquitto_eurdep_radiation['network'], environment={'MQTT_BROKER_URL': broker_url, 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1', 'EURDEP_RADIATION_SAMPLE_MODE': 'true'})
+        try:
+            result = feeder.wait(timeout=300); logs = feeder.logs().decode('utf-8', errors='replace'); assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n{logs}"
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages = _collect_messages_topic('127.0.0.1', mosquitto_eurdep_radiation['host_port'], 'radiation/intl/eurdep/eurdep-radiation/#', timeout=20.0)
+        assert messages
+        info=[m for m in messages if m['topic'].endswith('/info')]; dose=[m for m in messages if m['topic'].endswith('/dose-rate')]
+        assert info and dose
+        assert {m['user_properties'].get('type') for m in info} == {'eu.jrc.eurdep.Station'}
+        assert {m['user_properties'].get('type') for m in dose} == {'eu.jrc.eurdep.DoseRateReading'}
+        for sample in (info[0], dose[0]):
+            assert sample['retain'] is True and sample['qos'] == 1
+            for required in ('id','source','type','subject','time','specversion'): assert required in sample['user_properties']
+            payload = _to_dict(sample['payload']); assert payload and 'station_id' in payload and 'country' in payload
+
+
+# ---- nifc-usa-wildfires -----------------------------------------------
+
+@pytest.fixture(scope='module')
+def nifc_usa_wildfires_mqtt_image():
+    return build_image('nifc-usa-wildfires', dockerfile='Dockerfile.mqtt', tag='test-nifc-usa-wildfires-mqtt')
+
+@pytest.fixture()
+def mosquitto_nifc_usa_wildfires():
+    container, network, host_port = _generic_mosquitto('nifc-usa-wildfires-mqtt-e2e', 'nifc-usa-wildfires-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'nifc-usa-wildfires-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNifcUsaWildfiresMqttDockerFlow:
+    def test_emits_incident_topic(self, mosquitto_nifc_usa_wildfires, nifc_usa_wildfires_mqtt_image):
+        client=docker.from_env(); broker_url=f"mqtt://{mosquitto_nifc_usa_wildfires['internal_host']}:{mosquitto_nifc_usa_wildfires['internal_port']}"
+        feeder=client.containers.run(nifc_usa_wildfires_mqtt_image.id, detach=True, remove=False, network=mosquitto_nifc_usa_wildfires['network'], environment={'MQTT_BROKER_URL':broker_url,'ONCE_MODE':'true','PYTHONUNBUFFERED':'1','NIFC_USA_WILDFIRES_SAMPLE_MODE':'true'})
+        try:
+            result=feeder.wait(timeout=300); logs=feeder.logs().decode('utf-8',errors='replace'); assert result.get('StatusCode')==0, f"Feeder exited non-zero: {result}\n{logs}"
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages=_collect_messages_topic('127.0.0.1', mosquitto_nifc_usa_wildfires['host_port'], 'wildfire/us/nifc/nifc-usa-wildfires/#', timeout=20.0)
+        assert messages
+        incident=[m for m in messages if m['topic'].endswith('/incident')]; assert incident
+        sample=incident[0]; assert sample['user_properties'].get('type')=='Gov.NIFC.Wildfires.WildfireIncident'
+        for required in ('id','source','type','subject','time','specversion'): assert required in sample['user_properties']
+        payload=_to_dict(sample['payload']); assert payload and payload['state']=='ca' and payload['status']=='active'
+        parts=sample['topic'].split('/'); assert parts[:5]==['wildfire','us','nifc','nifc-usa-wildfires','ca']; assert parts[5]=='active'
+
+
+class TestXceedMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('xceed-mqtt-e2e', 'xceed-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('xceed', dockerfile='Dockerfile.mqtt', tag='test-xceed-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://xceed-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/xceed/xceed/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestElexonBmrsMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('elexon-bmrs-mqtt-e2e', 'elexon-bmrs-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('elexon-bmrs', dockerfile='Dockerfile.mqtt', tag='test-elexon-bmrs-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://elexon-bmrs-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/gb/elexon/elexon-bmrs/gb/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestEnergidataserviceDkMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('energidataservice-dk-mqtt-e2e', 'energidataservice-dk-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('energidataservice-dk', dockerfile='Dockerfile.mqtt', tag='test-energidataservice-dk-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://energidataservice-dk-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/dk/energidataservice/energidataservice-dk/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestEnergyChartsMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('energy-charts-mqtt-e2e', 'energy-charts-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('energy-charts', dockerfile='Dockerfile.mqtt', tag='test-energy-charts-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://energy-charts-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/de/energy-charts/energy-charts/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestBillettoMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('billetto-mqtt-e2e', 'billetto-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('billetto', dockerfile='Dockerfile.mqtt', tag='test-billetto-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://billetto-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/billetto/billetto/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestFientaMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('fienta-mqtt-e2e', 'fienta-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('fienta', dockerfile='Dockerfile.mqtt', tag='test-fienta-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://fienta-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/fienta/fienta/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestTicketmasterMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('ticketmaster-mqtt-e2e', 'ticketmaster-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('ticketmaster', dockerfile='Dockerfile.mqtt', tag='test-ticketmaster-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://ticketmaster-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/ticketmaster/ticketmaster/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestTepcoDenkiyohoMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('tepco-denkiyoho-mqtt-e2e', 'tepco-denkiyoho-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('tepco-denkiyoho', dockerfile='Dockerfile.mqtt', tag='test-tepco-denkiyoho-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://tepco-denkiyoho-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
 
 class TestAviationweatherMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_aviationweather, aviationweather_mqtt_image):
@@ -5179,3 +5399,4 @@ def mosquitto_smhi_weather():
 class TestSmhiWeatherMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_smhi_weather, smhi_weather_mqtt_image):
         _run_mqtt_contract_flow('smhi-weather', smhi_weather_mqtt_image, mosquitto_smhi_weather, extra_env={'SMHI_WEATHER_MOCK': 'true'}, timeout=300)
+

@@ -110,11 +110,11 @@ class EurdepAPI:
                 continue
             geom = feature.get("geometry") or {}
             coords = geom.get("coordinates", [None, None])
-            country_code = station_id[:2] if len(station_id) >= 2 else ""
+            country = station_id[:2].lower() if len(station_id) >= 2 else "unknown"
             stations[station_id] = Station(
                 station_id=station_id,
                 name=props.get("name", ""),
-                country_code=country_code,
+                country=country,
                 latitude=coords[1] if coords[1] is not None else 0.0,
                 longitude=coords[0] if coords[0] is not None else 0.0,
                 height_above_sea=props.get("height_above_sea"),
@@ -146,6 +146,7 @@ class EurdepAPI:
             props = entry
             readings.append(DoseRateReading(
                 station_id=props.get("id", ""),
+                country=(props.get("id", "")[:2].lower() if len(props.get("id", "")) >= 2 else "unknown"),
                 name=props.get("name", ""),
                 value=props.get("value"),
                 unit=props.get("unit", ""),

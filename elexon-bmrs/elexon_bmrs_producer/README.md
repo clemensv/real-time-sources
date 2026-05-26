@@ -1,6 +1,6 @@
 
 
-# Elexon-bmrs-producer Kafka Producer# Elexon-bmrs-producer Event Dispatcher for Apache Kafka
+# Elexon_bmrs_producer Kafka Producer# Elexon_bmrs_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - UKCoElexonBMRSEventDispatcher
+3. [Quick Start](#quick-start)    - UKCoElexonBMRSEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UKCoElexonBMRSMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UKCoElexonBMRSAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - UKCoElexonBMRSProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UKCoElexonBMRSMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UKCoElexonBMRSAmqpProducersolution for event-driven applications.
 
 
 
@@ -86,7 +98,7 @@ Initializes the dispatcher.
 
 ```python
 
-from elexon-bmrs-producer import UKCoElexonBMRSProducer```python
+from elexon_bmrs_producer import UKCoElexonBMRSProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -191,6 +203,82 @@ uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_generation_mix_async = uk_co_elex
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GenerationMix)
+-> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_generation_mix_async = uk_co_elexon_bmrs_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GenerationMix)
+-> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_generation_mix_async = uk_co_elexon_bmrs_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -249,6 +337,218 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_demand_outturn_async = uk_co_elexon_bmrs_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DemandOutturn)
+-> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_demand_outturn_async = uk_co_elexon_bmrs_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DemandOutturn)
+-> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_demand_outturn_async = uk_co_elexon_bmrs_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.Info`: Retained reference information for MQTT/AMQP topic discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_info_async = uk_co_elexon_bmrs_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_info_async = uk_co_elexon_bmrs_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_info_async = uk_co_elexon_bmrs_info_event
 
 **Parameters:**```
 
@@ -459,6 +759,1753 @@ await producer.send_uk_co_elexon_bmrs_demand_outturn_batch(```
         DemandOutturn(...),
 
         DemandOutturn(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UKCoElexonBMRSMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UKCoElexonBMRSMqttEventDispatcher` handles events for the UK.Co.Elexon.BMRS.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from elexon_bmrs_producer import UKCoElexonBMRSProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UKCoElexonBMRSProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_co_elexon_bmrs_generation_mix(```python
+
+    data=GenerationMix(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UKCoElexonBMRSMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UKCoElexonBMRSProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_mqtt_generation_mix_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_mqtt_generation_mix_async:  Callable[[ConsumerRecord, CloudEvent,
+GenerationMix], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.mqtt.GenerationMix`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationMix) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_mqtt_generation_mix_async = uk_co_elexon_bmrs_mqtt_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationMix) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_mqtt_generation_mix_async =
+uk_co_elexon_bmrs_mqtt_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationMix) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_mqtt_generation_mix_async =
+uk_co_elexon_bmrs_mqtt_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_mqtt_demand_outturn_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_mqtt_demand_outturn_async:  Callable[[ConsumerRecord, CloudEvent,
+DemandOutturn], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.mqtt.DemandOutturn`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandOutturn) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_mqtt_demand_outturn_async = uk_co_elexon_bmrs_mqtt_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandOutturn) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_mqtt_demand_outturn_async =
+uk_co_elexon_bmrs_mqtt_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandOutturn) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_mqtt_demand_outturn_async =
+uk_co_elexon_bmrs_mqtt_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_mqtt_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_mqtt_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.mqtt.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_mqtt_info_async = uk_co_elexon_bmrs_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_mqtt_info_async = uk_co_elexon_bmrs_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_mqtt_info_async = uk_co_elexon_bmrs_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_mqtt_generation_mix`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_mqtt_generation_mix(
+
+    self,##### `_process_event`
+
+    data: GenerationMix,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.mqtt.GenerationMix` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GenerationMix`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_mqtt_generation_mix(
+
+    data=GenerationMix(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.mqtt.GenerationMix` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_mqtt_generation_mix_batch(```
+
+    messages=[
+
+        GenerationMix(...),Initializes the runner with a Kafka consumer.
+
+        GenerationMix(...),
+
+        GenerationMix(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_mqtt_demand_outturn`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_mqtt_demand_outturn(
+
+    self,##### `_process_event`
+
+    data: DemandOutturn,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.mqtt.DemandOutturn` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DemandOutturn`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_mqtt_demand_outturn(
+
+    data=DemandOutturn(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.mqtt.DemandOutturn` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_mqtt_demand_outturn_batch(```
+
+    messages=[
+
+        DemandOutturn(...),Initializes the runner with a Kafka consumer.
+
+        DemandOutturn(...),
+
+        DemandOutturn(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_mqtt_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_mqtt_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.mqtt.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_mqtt_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.mqtt.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_mqtt_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UKCoElexonBMRSAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UKCoElexonBMRSAmqpEventDispatcher` handles events for the UK.Co.Elexon.BMRS.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from elexon_bmrs_producer import UKCoElexonBMRSProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UKCoElexonBMRSProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_co_elexon_bmrs_generation_mix(```python
+
+    data=GenerationMix(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UKCoElexonBMRSAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UKCoElexonBMRSProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_amqp_generation_mix_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_amqp_generation_mix_async:  Callable[[ConsumerRecord, CloudEvent,
+GenerationMix], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.amqp.GenerationMix`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationMix) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_amqp_generation_mix_async = uk_co_elexon_bmrs_amqp_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationMix) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_amqp_generation_mix_async =
+uk_co_elexon_bmrs_amqp_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.GenerationMix`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_generation_mix_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GenerationMix) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_amqp_generation_mix_async =
+uk_co_elexon_bmrs_amqp_generation_mix_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_amqp_demand_outturn_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_amqp_demand_outturn_async:  Callable[[ConsumerRecord, CloudEvent,
+DemandOutturn], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.amqp.DemandOutturn`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandOutturn) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_amqp_demand_outturn_async = uk_co_elexon_bmrs_amqp_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandOutturn) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_amqp_demand_outturn_async =
+uk_co_elexon_bmrs_amqp_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.DemandOutturn`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_demand_outturn_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandOutturn) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_amqp_demand_outturn_async =
+uk_co_elexon_bmrs_amqp_demand_outturn_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_co_elexon_bmrs_amqp_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_co_elexon_bmrs_amqp_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Co.Elexon.BMRS.amqp.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_dispatcher.uk_co_elexon_bmrs_amqp_info_async = uk_co_elexon_bmrs_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSMqttProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_mqtt_dispatcher.uk_co_elexon_bmrs_amqp_info_async = uk_co_elexon_bmrs_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKCoElexonBMRSAmqpProducer- `data`: The event data of type `elexon_bmrs_producer_data.Info`.
+
+
+
+Producer for `UK.Co.Elexon.BMRS.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_co_elexon_bmrs_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+UKCoElexonBMRSAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_co_elexon_bmrs_amqp_dispatcher.uk_co_elexon_bmrs_amqp_info_async = uk_co_elexon_bmrs_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_amqp_generation_mix`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_amqp_generation_mix(
+
+    self,##### `_process_event`
+
+    data: GenerationMix,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.amqp.GenerationMix` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GenerationMix`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_amqp_generation_mix(
+
+    data=GenerationMix(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.amqp.GenerationMix` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_amqp_generation_mix_batch(```
+
+    messages=[
+
+        GenerationMix(...),Initializes the runner with a Kafka consumer.
+
+        GenerationMix(...),
+
+        GenerationMix(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_amqp_demand_outturn`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_amqp_demand_outturn(
+
+    self,##### `_process_event`
+
+    data: DemandOutturn,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.amqp.DemandOutturn` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DemandOutturn`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_amqp_demand_outturn(
+
+    data=DemandOutturn(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.amqp.DemandOutturn` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_amqp_demand_outturn_batch(```
+
+    messages=[
+
+        DemandOutturn(...),Initializes the runner with a Kafka consumer.
+
+        DemandOutturn(...),
+
+        DemandOutturn(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_co_elexon_bmrs_amqp_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_co_elexon_bmrs_amqp_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Co.Elexon.BMRS.amqp.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_co_elexon_bmrs_amqp_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Co.Elexon.BMRS.amqp.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_co_elexon_bmrs_amqp_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eurdep-radiation-mqtt"
+version = "0.1.0"
+description = "MQTT feeder for EURDEP radiation"
+requires-python = ">=3.10"
+dependencies = ["paho-mqtt>=2.1.0", "cloudevents>=1.11.0,<2.0.0", "dataclasses_json>=0.6.7", "avro>=1.11.3", "requests>=2.32.3"]
+
+[project.scripts]
+eurdep-radiation-mqtt = "eurdep_radiation_mqtt.app:main"
+
+[tool.setuptools.packages.find]
+include = ["eurdep_radiation_mqtt*"]

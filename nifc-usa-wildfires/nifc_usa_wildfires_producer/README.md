@@ -1,6 +1,6 @@
 
 
-# Nifc-usa-wildfires-producer Kafka Producer# Nifc-usa-wildfires-producer Event Dispatcher for Apache Kafka
+# Nifc_usa_wildfires_producer Kafka Producer# Nifc_usa_wildfires_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from nifc-usa-wildfires-producer import GovNIFCWildfiresProducer```python
+from nifc_usa_wildfires_producer import GovNIFCWildfiresProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

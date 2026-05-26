@@ -198,6 +198,14 @@ class TestAustraliaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
+class TestBfsOdlAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bfs-odl"
+    image = "bfs-odl-amqp"
+    env = {"ONCE_MODE": "true", "BFS_ODL_SAMPLE_MODE": "true"}
+    expected_types = {"de.bfs.odl.Station", "de.bfs.odl.DoseRateMeasurement"}
+    expected_count = 2
+
+
 class TestCarbonIntensityAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "carbon-intensity"
     image = "carbon-intensity-amqp"
@@ -405,14 +413,6 @@ class TestBlitzortungAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
-class TestAviationweatherAmqpDockerFlow(AmqpDockerFlowBase):
-    source_dir = "aviationweather"
-    image = "aviationweather-amqp"
-    env = {"AVIATIONWEATHER_MOCK": "true", "ONCE_MODE": "true"}
-    expected_types = {'gov.noaa.aviationweather.Station', 'gov.noaa.aviationweather.Sigmet', 'gov.noaa.aviationweather.Metar'}
-    expected_count = 3
-
-
 class TestBfsOdlAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "bfs-odl"
     image = "bfs-odl-amqp"
@@ -434,8 +434,87 @@ class TestInpeDeterBrazilAmqpDockerFlow(AmqpDockerFlowBase):
     image = "inpe-deter-brazil-amqp"
     env = {"ONCE_MODE": "true", "INPE_DETER_MOCK": "true"}
     expected_types = {'BR.INPE.DETER.DeforestationAlert'}
+
+
+class TestEurdepRadiationAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "eurdep-radiation"
+    image = "eurdep-radiation-amqp"
+    env = {"ONCE_MODE": "true", "EURDEP_RADIATION_SAMPLE_MODE": "true"}
+    expected_types = {"eu.jrc.eurdep.Station", "eu.jrc.eurdep.DoseRateReading"}
+    expected_count = 2
+
+
+class TestNifcUsaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nifc-usa-wildfires"
+    image = "nifc-usa-wildfires-amqp"
+    env = {"ONCE_MODE": "true", "NIFC_USA_WILDFIRES_SAMPLE_MODE": "true"}
+    expected_types = {"Gov.NIFC.Wildfires.WildfireIncident"}
     expected_count = 1
 
+
+class TestXceedAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "xceed"
+    image = "xceed-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestElexonBmrsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "elexon-bmrs"
+    image = "elexon-bmrs-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestEnergidataserviceDkAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "energidataservice-dk"
+    image = "energidataservice-dk-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestEnergyChartsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "energy-charts"
+    image = "energy-charts-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestBillettoAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "billetto"
+    image = "billetto-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestFientaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "fienta"
+    image = "fienta-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestTicketmasterAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "ticketmaster"
+    image = "ticketmaster-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+class TestTepcoDenkiyohoAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "tepco-denkiyoho"
+    image = "tepco-denkiyoho-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = set()
+    expected_count = 1
+
+
+class TestAviationweatherAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "aviationweather"
+    image = "aviationweather-amqp"
+    env = {"AVIATIONWEATHER_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'gov.noaa.aviationweather.Station', 'gov.noaa.aviationweather.Sigmet', 'gov.noaa.aviationweather.Metar'}
+    expected_count = 3
 
 class TestBomAustraliaAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "bom-australia"
@@ -444,14 +523,12 @@ class TestBomAustraliaAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'AU.Gov.BOM.Weather.Station', 'AU.Gov.BOM.Warning.WarningBulletin', 'AU.Gov.BOM.Weather.WeatherObservation'}
     expected_count = 3
 
-
 class TestDwdAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "dwd"
     image = "dwd-amqp"
     env = {"DWD_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'DE.DWD.CDC.ExtremeTemperature10Min', 'DE.DWD.CDC.ExtremeWind10Min', 'DE.DWD.Forecast.IconD2ForecastFile', 'DE.DWD.Weather.Alert', 'DE.DWD.CDC.Wind10Min', 'DE.DWD.Radar.RadarProductCatalog', 'DE.DWD.Forecast.ForecastModelCatalog', 'DE.DWD.CDC.StationMetadata', 'DE.DWD.CDC.AirTemperature10Min', 'DE.DWD.CDC.Precipitation10Min', 'DE.DWD.CDC.Solar10Min', 'DE.DWD.Radar.RadarFileProduct', 'DE.DWD.CDC.HourlyObservation'}
     expected_count = 13
-
 
 class TestDwdPollenflugAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "dwd-pollenflug"
@@ -460,14 +537,12 @@ class TestDwdPollenflugAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'DE.DWD.Pollenflug.PollenForecast', 'DE.DWD.Pollenflug.Region'}
     expected_count = 2
 
-
 class TestEnvironmentCanadaAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "environment-canada"
     image = "environment-canada-amqp"
     env = {"ENVIRONMENT_CANADA_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'CA.Gov.ECCC.Weather.WeatherObservation', 'CA.Gov.ECCC.Weather.Station'}
     expected_count = 2
-
 
 class TestGeosphereAustriaAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "geosphere-austria"
@@ -476,14 +551,12 @@ class TestGeosphereAustriaAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'at.geosphere.tawes.WeatherStation', 'at.geosphere.tawes.WeatherObservation'}
     expected_count = 2
 
-
 class TestHkoHongKongAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "hko-hong-kong"
     image = "hko-hong-kong-amqp"
     env = {"HKO_HONG_KONG_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'HK.Gov.HKO.Weather.WeatherObservation', 'HK.Gov.HKO.Weather.Station'}
     expected_count = 2
-
 
 class TestJmaJapanAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "jma-japan"
@@ -492,14 +565,12 @@ class TestJmaJapanAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'jp.go.jma.WeatherBulletin'}
     expected_count = 1
 
-
 class TestKmiBelgiumAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "kmi-belgium"
     image = "kmi-belgium-amqp"
     env = {"KMI_BELGIUM_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'BE.Gov.KMI.Weather.Station', 'BE.Gov.KMI.Weather.WeatherObservation'}
     expected_count = 2
-
 
 class TestNoaaNwsAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "noaa-nws"
@@ -508,10 +579,10 @@ class TestNoaaNwsAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'Microsoft.OpenData.US.NOAA.NWS.ObservationStation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherObservation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert'}
     expected_count = 3
 
-
 class TestSmhiWeatherAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "smhi-weather"
     image = "smhi-weather-amqp"
     env = {"SMHI_WEATHER_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'SE.Gov.SMHI.Weather.WeatherObservation', 'SE.Gov.SMHI.Weather.Station'}
     expected_count = 2
+

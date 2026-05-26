@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from billetto_producer_kafka_producer.producer import BillettoEventsEventProducer
+from billetto_producer_kafka_producer.producer import BillettoEventsMqttEventProducer
+from billetto_producer_kafka_producer.producer import BillettoEventsAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +65,38 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Billetto.Events.Event' event to Kafka topic.
     await billetto_events_event_producer.send_billetto_events_event(_event_id = 'TODO: replace me', _startdate = 'TODO: replace me', data = _event)
     print(f"Sent 'Billetto.Events.Event' event: {_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        billetto_events_mqtt_event_producer = BillettoEventsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        billetto_events_mqtt_event_producer = BillettoEventsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Billetto.Events.mqtt.Event ----
+    # TODO: Supply event data for the Billetto.Events.mqtt.Event event
+    _event = Event()
+
+    # sends the 'Billetto.Events.mqtt.Event' event to Kafka topic.
+    await billetto_events_mqtt_event_producer.send_billetto_events_mqtt_event(_event_id = 'TODO: replace me', _startdate = 'TODO: replace me', data = _event)
+    print(f"Sent 'Billetto.Events.mqtt.Event' event: {_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        billetto_events_amqp_event_producer = BillettoEventsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        billetto_events_amqp_event_producer = BillettoEventsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Billetto.Events.amqp.Event ----
+    # TODO: Supply event data for the Billetto.Events.amqp.Event event
+    _event = Event()
+
+    # sends the 'Billetto.Events.amqp.Event' event to Kafka topic.
+    await billetto_events_amqp_event_producer.send_billetto_events_amqp_event(_event_id = 'TODO: replace me', _startdate = 'TODO: replace me', data = _event)
+    print(f"Sent 'Billetto.Events.amqp.Event' event: {_event.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

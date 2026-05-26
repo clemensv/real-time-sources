@@ -21,6 +21,50 @@
         "#/messagegroups/Gov.NIFC.Wildfires"
       ],
       "description": "Kafka producer endpoint for NIFC USA Wildfires CloudEvents on the `nifc-usa-wildfires` topic keyed by `{irwin_id}`."
+    },
+    "Gov.NIFC.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Gov.NIFC.Wildfires.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for NIFC USA Wildfires CloudEvents using wildfire/us/nifc/nifc-usa-wildfires/{state}/{status}/{irwin_id}/incident topics."
+    },
+    "Gov.NIFC.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/nifc-usa-wildfires"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Gov.NIFC.Wildfires.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for NIFC USA Wildfires CloudEvents."
     }
   },
   "messagegroups": {
@@ -52,6 +96,53 @@
         }
       },
       "description": "Events from NIFC USA Wildfires covering U.S. wildfire incidents. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
+    },
+    "Gov.NIFC.Wildfires.mqtt": {
+      "description": "MQTT 5 variant of NIFC wildfire incident events routed by state, lifecycle status, and IRWIN incident id.",
+      "messages": {
+        "Gov.NIFC.Wildfires.mqtt.WildfireIncident": {
+          "name": "WildfireIncident",
+          "basemessageurl": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "wildfire/us/nifc/nifc-usa-wildfires/{state}/{status}/{irwin_id}/incident",
+            "qos": 1,
+            "retain": true,
+            "message_expiry_interval": 604800
+          }
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.amqp": {
+      "description": "AMQP 1.0 variant of NIFC wildfire incident events with IRWIN subject and state/status application properties.",
+      "messages": {
+        "Gov.NIFC.Wildfires.amqp.WildfireIncident": {
+          "name": "WildfireIncident",
+          "basemessageurl": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{irwin_id}",
+                "description": "AMQP message subject matching the IRWIN CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Two-letter US state or territory routing segment."
+              },
+              "status": {
+                "type": "uritemplate",
+                "value": "{status}",
+                "description": "Incident lifecycle status routing segment: active, contained, controlled, or out."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -271,10 +362,20 @@
                             "modified_on_datetime": {
                               "type": "string",
                               "description": "Date and time when the incident record was last modified in the IRWIN system, in ISO 8601 format."
+                            },
+                            "state": {
+                              "type": "string",
+                              "description": "Lowercase two-letter US state or territory code used as the {state} routing segment, derived from the IRWIN POOState value."
+                            },
+                            "status": {
+                              "type": "string",
+                              "description": "Normalized wildfire lifecycle status used as the {status} routing segment. Values are active, contained, controlled, or out, derived from containment, control, and fire-out timestamps."
                             }
                           },
                           "required": [
                             "irwin_id",
+                            "state",
+                            "status",
                             "incident_name",
                             "modified_on_datetime"
                           ]
@@ -309,6 +410,16 @@
                     "name": "irwin_id",
                     "type": "string",
                     "doc": "IRWIN incident identifier, a globally unique GUID assigned by the Integrated Reporting of Wildland-Fire Information (IRWIN) system."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "Lowercase two-letter US state or territory routing segment."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "doc": "Normalized wildfire lifecycle status: active, contained, controlled, or out."
                   },
                   {
                     "name": "incident_name",

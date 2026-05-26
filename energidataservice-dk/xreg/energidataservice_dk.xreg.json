@@ -20,6 +20,54 @@
       "messagegroups": [
         "#/messagegroups/dk.energinet.energidataservice"
       ]
+    },
+    "dk.energinet.energidataservice.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/dk.energinet.energidataservice.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for energidataservice-dk."
+    },
+    "dk.energinet.energidataservice.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/energidataservice-dk"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "energidataservice-dk"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/dk.energinet.energidataservice.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for energidataservice-dk."
     }
   },
   "messagegroups": {
@@ -28,7 +76,7 @@
         "dk.energinet.energidataservice.PowerSystemSnapshot": {
           "name": "PowerSystemSnapshot",
           "envelope": "CloudEvents/1.0",
-          "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet), including CO2 emission intensity, renewable generation (solar, onshore wind, offshore wind), conventional production bands, total cross-border exchange flows, per-interconnector exchange (DK1\u2013DE, DK1\u2013NL, DK1\u2013GB, DK1\u2013NO, DK1\u2013SE, DK1\u2013DK2, DK2\u2013DE, DK2\u2013SE, Bornholm\u2013SE), automatic and manual frequency restoration reserve activation (aFRR, mFRR) per price area, and grid imbalance per price area.",
+          "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet), including CO2 emission intensity, renewable generation (solar, onshore wind, offshore wind), conventional production bands, total cross-border exchange flows, per-interconnector exchange (DK1–DE, DK1–NL, DK1–GB, DK1–NO, DK1–SE, DK1–DK2, DK2–DE, DK2–SE, Bornholm–SE), automatic and manual frequency restoration reserve activation (aFRR, mFRR) per price area, and grid imbalance per price area.",
           "envelopemetadata": {
             "type": {
               "value": "dk.energinet.energidataservice.PowerSystemSnapshot"
@@ -47,7 +95,7 @@
         "dk.energinet.energidataservice.SpotPrice": {
           "name": "SpotPrice",
           "envelope": "CloudEvents/1.0",
-          "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area (DK1 \u2013 Western Denmark, DK2 \u2013 Eastern Denmark). Prices are published in both DKK and EUR.",
+          "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area (DK1 – Western Denmark, DK2 – Eastern Denmark). Prices are published in both DKK and EUR.",
           "envelopemetadata": {
             "type": {
               "value": "dk.energinet.energidataservice.SpotPrice"
@@ -62,6 +110,128 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.SpotPrice"
+        },
+        "dk.energinet.energidataservice.Info": {
+          "name": "Info",
+          "envelope": "CloudEvents/1.0",
+          "description": "Retained reference information for MQTT/AMQP topic discovery.",
+          "envelopemetadata": {
+            "type": {
+              "value": "dk.energinet.energidataservice.Info"
+            },
+            "source": {
+              "value": "https://github.com/clemensv/real-time-sources"
+            },
+            "subject": {
+              "value": "{price_area}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.Info"
+        }
+      }
+    },
+    "dk.energinet.energidataservice.mqtt": {
+      "description": "MQTT 5.0 binary-mode CloudEvents variant of dk.energinet.energidataservice.",
+      "messages": {
+        "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot": {
+          "name": "PowerSystemSnapshot",
+          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/dk/energidataservice/energidataservice-dk/{price_area}/power-system-snapshot",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "dk.energinet.energidataservice.mqtt.SpotPrice": {
+          "name": "SpotPrice",
+          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/dk/energidataservice/energidataservice-dk/{price_area}/spot-price",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "dk.energinet.energidataservice.mqtt.Info": {
+          "name": "Info",
+          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "energy/dk/energidataservice/energidataservice-dk/{price_area}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "dk.energinet.energidataservice.amqp": {
+      "description": "AMQP 1.0 binary-mode CloudEvents variant of dk.energinet.energidataservice.",
+      "messages": {
+        "dk.energinet.energidataservice.amqp.PowerSystemSnapshot": {
+          "name": "PowerSystemSnapshot",
+          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{price_area}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{price_area}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.energinet.energidataservice.amqp.SpotPrice": {
+          "name": "SpotPrice",
+          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{price_area}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{price_area}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.energinet.energidataservice.amqp.Info": {
+          "name": "Info",
+          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{price_area}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{price_area}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
         }
       }
     }
@@ -163,7 +333,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK1\u2013Germany interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_DE'.",
+                              "description": "Electricity exchange flow on the DK1–Germany interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_DE'.",
                               "unit": "MW"
                             },
                             "exchange_dk1_nl": {
@@ -171,7 +341,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK1\u2013Netherlands (COBRAcable) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NL'.",
+                              "description": "Electricity exchange flow on the DK1–Netherlands (COBRAcable) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NL'.",
                               "unit": "MW"
                             },
                             "exchange_dk1_gb": {
@@ -179,7 +349,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK1\u2013Great Britain (Viking Link) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_GB'.",
+                              "description": "Electricity exchange flow on the DK1–Great Britain (Viking Link) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_GB'.",
                               "unit": "MW"
                             },
                             "exchange_dk1_no": {
@@ -187,7 +357,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK1\u2013Norway (Skagerrak) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NO'.",
+                              "description": "Electricity exchange flow on the DK1–Norway (Skagerrak) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NO'.",
                               "unit": "MW"
                             },
                             "exchange_dk1_se": {
@@ -195,7 +365,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK1\u2013Sweden interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_SE'.",
+                              "description": "Electricity exchange flow on the DK1–Sweden interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_SE'.",
                               "unit": "MW"
                             },
                             "exchange_dk1_dk2": {
@@ -203,7 +373,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK1\u2013DK2 (Great Belt) interconnector, in megawatts (MW). Positive = flow from DK1 to DK2, negative = flow from DK2 to DK1. Sourced from 'Exchange_DK1_DK2'.",
+                              "description": "Electricity exchange flow on the DK1–DK2 (Great Belt) interconnector, in megawatts (MW). Positive = flow from DK1 to DK2, negative = flow from DK2 to DK1. Sourced from 'Exchange_DK1_DK2'.",
                               "unit": "MW"
                             },
                             "exchange_dk2_de": {
@@ -211,7 +381,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK2\u2013Germany (Kontek) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_DE'.",
+                              "description": "Electricity exchange flow on the DK2–Germany (Kontek) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_DE'.",
                               "unit": "MW"
                             },
                             "exchange_dk2_se": {
@@ -219,7 +389,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the DK2\u2013Sweden (\u00d8resund) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_SE'.",
+                              "description": "Electricity exchange flow on the DK2–Sweden (Øresund) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_SE'.",
                               "unit": "MW"
                             },
                             "exchange_bornholm_se": {
@@ -227,7 +397,7 @@
                                 "double",
                                 "null"
                               ],
-                              "description": "Electricity exchange flow on the Bornholm\u2013Sweden interconnector, in megawatts (MW). Positive = import to Bornholm, negative = export from Bornholm. Sourced from 'Exchange_Bornholm_SE'.",
+                              "description": "Electricity exchange flow on the Bornholm–Sweden interconnector, in megawatts (MW). Positive = import to Bornholm, negative = export from Bornholm. Sourced from 'Exchange_Bornholm_SE'.",
                               "unit": "MW"
                             },
                             "afrr_activated_dk1": {
@@ -351,6 +521,114 @@
                         }
                       }
                     }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "dk.energinet.energidataservice.Info": {
+          "name": "Info",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/energidataservice-dk/Info",
+                "type": "object",
+                "name": "Info",
+                "description": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope.",
+                "required": [
+                  "info_id",
+                  "name"
+                ],
+                "properties": {
+                  "info_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                  },
+                  "country": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries."
+                  },
+                  "city": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "City segment used in civic-events topic routing, or null when not applicable."
+                  },
+                  "category": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Event category segment used in topic routing, or null when not applicable."
+                  },
+                  "price_area": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Energy market price area or bidding zone represented by this reference record, when applicable."
+                  },
+                  "settlement_date": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "GB settlement date for Elexon retained information topics when applicable."
+                  },
+                  "settlement_period": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "GB settlement period for Elexon retained information topics when applicable."
+                  },
+                  "area_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Electricity control area or utility service area code represented by this record when applicable."
+                  },
+                  "segment": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Ticketmaster classification segment used for wildcard topic routing, when applicable."
+                  },
+                  "entity_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable upstream entity identifier for reference topics, when applicable."
+                  },
+                  "event_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable upstream event identifier for event-scoped reference topics, when applicable."
+                  },
+                  "venue_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Stable venue identifier for venue-scoped civic event topics, when applicable."
                   }
                 }
               }

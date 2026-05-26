@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/eu.jrc.eurdep"
       ]
+    },
+    "eu.jrc.eurdep.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/eu.jrc.eurdep.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for EURDEP radiation CloudEvents using radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/{event} topics."
+    },
+    "eu.jrc.eurdep.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/eurdep-radiation"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/eu.jrc.eurdep.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for EURDEP radiation CloudEvents."
     }
   },
   "messagegroups": {
@@ -66,6 +110,78 @@
           "dataschemauri": "#/schemagroups/eu.jrc.eurdep.jstruct/schemas/eu.jrc.eurdep.DoseRateReading"
         }
       }
+    },
+    "eu.jrc.eurdep.mqtt": {
+      "description": "MQTT 5 variant of EURDEP radiation events with retained QoS-1 topics by country, station, and event type.",
+      "messages": {
+        "eu.jrc.eurdep.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "eu.jrc.eurdep.mqtt.DoseRateReading": {
+          "name": "DoseRateReading",
+          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/dose-rate",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "eu.jrc.eurdep.amqp": {
+      "description": "AMQP 1.0 variant of EURDEP radiation events with station subject and country application property.",
+      "messages": {
+        "eu.jrc.eurdep.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key station identity."
+              }
+            },
+            "application_properties": {
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "ISO 3166-1 alpha-2 country code used for broker-side filtering."
+              }
+            }
+          }
+        },
+        "eu.jrc.eurdep.amqp.DoseRateReading": {
+          "name": "DoseRateReading",
+          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key station identity."
+              }
+            },
+            "application_properties": {
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "ISO 3166-1 alpha-2 country code used for broker-side filtering."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -100,10 +216,6 @@
                               "type": "string",
                               "description": "Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'."
                             },
-                            "country_code": {
-                              "type": "string",
-                              "description": "ISO 3166-1 alpha-2 country code extracted from the first two characters of the station_id. Identifies the country operating the monitoring station. Example: 'AT' for Austria, 'DE' for Germany, 'CZ' for Czech Republic."
-                            },
                             "latitude": {
                               "type": "double",
                               "description": "Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.",
@@ -117,7 +229,10 @@
                               "symbol": "°"
                             },
                             "height_above_sea": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network.",
                               "unit": "m",
                               "symbol": "m"
@@ -129,12 +244,16 @@
                             "site_status_text": {
                               "type": "string",
                               "description": "Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation')."
+                            },
+                            "country": {
+                              "type": "string",
+                              "description": "ISO 3166-1 alpha-2 country code for the station, derived from the first two characters of station_id and used as the {country} routing axis."
                             }
                           },
                           "required": [
                             "station_id",
                             "name",
-                            "country_code",
+                            "country",
                             "latitude",
                             "longitude",
                             "height_above_sea",
@@ -180,7 +299,10 @@
                               "description": "Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join."
                             },
                             "value": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). Null if the station did not report a valid measurement for this interval.",
                               "unit": "uSv/h",
                               "symbol": "µSv/h"
@@ -208,10 +330,15 @@
                             "validated": {
                               "type": "int32",
                               "description": "Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance."
+                            },
+                            "country": {
+                              "type": "string",
+                              "description": "ISO 3166-1 alpha-2 country code for the station, derived from the first two characters of station_id and used as the {country} routing axis."
                             }
                           },
                           "required": [
                             "station_id",
+                            "country",
                             "name",
                             "value",
                             "unit",
@@ -255,9 +382,9 @@
                     "doc": "Human-readable station location name."
                   },
                   {
-                    "name": "country_code",
+                    "name": "country",
                     "type": "string",
-                    "doc": "ISO 3166-1 alpha-2 country code extracted from station_id."
+                    "doc": "ISO 3166-1 alpha-2 country code used as the country routing axis."
                   },
                   {
                     "name": "latitude",
@@ -271,7 +398,10 @@
                   },
                   {
                     "name": "height_above_sea",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Elevation above sea level in meters. Null if unknown.",
                     "default": null
                   },
@@ -307,13 +437,21 @@
                     "doc": "Alphanumeric station identifier from the EURDEP network."
                   },
                   {
+                    "name": "country",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code used as the country routing axis."
+                  },
+                  {
                     "name": "name",
                     "type": "string",
                     "doc": "Human-readable station location name."
                   },
                   {
                     "name": "value",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Gross ambient gamma dose rate in µSv/h. Null if not reported.",
                     "default": null
                   },
