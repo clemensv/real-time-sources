@@ -1,92 +1,130 @@
-# Xceed Nightlife Events Bridge
+# Xceed Nightlife Events feeder
 
-This bridge polls the [Xceed Open Event API](https://docs.xceed.me/) and forwards
-European nightlife and live-entertainment event data as CloudEvents to Apache Kafka.
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
+
+## Why this bridge
+
+This bridge ingests **Xceed Open Event and Offer APIs** and republishes normalized CloudEvents so downstream systems subscribe instead of implementing and maintaining custom source clients.
+
+- Track nightlife and entertainment listings as they are published or updated.
+- Monitor admission/offer changes for demand and pricing analytics.
+- Drive city guides and recommendation systems from normalized event feeds.
+- Send updates to Fabric/Eventhouse for cross-market trend dashboards.
+- Avoid implementing custom Xceed pagination and refresh loops in each consumer.
 
 ## Overview
 
-[Xceed](https://xceed.me) is a European nightlife and ticketing platform covering clubs,
-bars, parties, and festivals. Their public APIs expose event schedules from
-`events.xceed.me` and per-event offer inventories from `offer.xceed.me`, including
-ticket, guest-list, and bottle-service offers with sales-state signals such as
-`isSoldOut` and `isSalesClosed`.
+| Variant | Dockerfile | Image | Default delivery shape |
+|---|---|---|---|
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-xceed:latest` | CloudEvents to Kafka-compatible endpoints |
+| MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-xceed-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
+| AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-xceed-amqp:latest` | CloudEvents over AMQP 1.0 address |
 
-## Event Types
+All variants share:
 
-Two event types are emitted:
+- The same upstream acquisition logic and normalization model.
+- The same xRegistry contract in `xreg/`.
+- The same event-family semantics documented in [EVENTS.md](EVENTS.md).
 
-| Type | Description |
-|------|-------------|
-| `xceed.Event` | Event reference data: schedule, venue, and metadata. Emitted at startup and refreshed periodically. |
-| `xceed.EventAdmission` | Offer telemetry: sales state, normalized price, remaining quantity, and `admission_type` for ticket, guest-list, and bottle-service records. Polled every cycle. |
+## Key features
 
-See [EVENTS.md](EVENTS.md) for the full event catalog.
+- Publishes event reference records and admission updates.
+- Transport parity across Kafka, MQTT, and AMQP container variants.
+- Configurable polling/window controls for upstream API reads.
+- CloudEvents contract generated from xRegistry manifest.
 
-## Data Model
+## Repository layout
 
-- **Events** are the scheduled nightlife or entertainment occurrences, each with a stable
-  UUID (`event_id`), schedule timestamps, venue details, cover image, and an optional
-  external sales link.
-- **Event Admissions** represent normalized Xceed public offers and preserve the upstream
-  offer kind in `admission_type` (for example `ticket`, `guestlist`, or `bottleservice`),
-  alongside `is_sold_out`, `is_sales_closed`, `price`, `currency`, and `remaining`.
-
-## Kafka Keys
-
-| Message group | Kafka key template | Example |
-|---------------|--------------------|---------|
-| `xceed` | `{event_id}` | `297ad280-4fd4-4b9a-870e-b4de6b2588a0` |
-| `xceed.admissions` | `{event_id}/{admission_id}` | `297ad280-.../adm-001` |
-
-## Running
-
-```bash
-pip install .
-
-# Emit events and admission updates
-python -m xceed feed --connection-string "BootstrapServer=localhost:9092;EntityPath=xceed"
+```text
+xceed/
+  xreg/xceed.xreg.json
+  xceed/
+  xceed_amqp/
+  xceed_mqtt/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  README.md
+  CONTAINER.md
+  EVENTS.md
 ```
 
-The bridge scans the newest slice of the public Xceed catalog so it emits current and
-upcoming event offers instead of getting stuck in the historical archive.
+## Prerequisites
 
-See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound connectivity to the upstream source endpoint(s).
+- Network access to your target messaging broker (Kafka, MQTT, or AMQP).
 
-## Public Filter Surface
+## Quick start with Docker
 
-Unlike Ticketmaster and Billetto, the public Xceed `/events` endpoint does not
-present a meaningful set of semantic event filters in live probing. The
-documented and observed upstream query controls are pagination-oriented:
+### Kafka
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-xceed:latest
+```
 
-| Upstream query param | Bridge surface | Meaning |
-|---|---|---|
-| `limit` | `--event-page-size` / `EVENT_PAGE_SIZE` | Number of events requested per `/events` page |
-| `offset` | internal | Pagination cursor the bridge advances automatically |
+### MQTT
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-xceed-mqtt:latest
+```
 
-Live probes against `city`, `country`, and `slug` query params returned the same
-unfiltered result set, so the bridge does **not** expose those as operator
-filters.
+### AMQP
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/xceed" \
+  ghcr.io/clemensv/real-time-sources-xceed-amqp:latest
+```
 
-## Source Files
+## Configuration reference
 
-| File | Description |
-|------|-------------|
-| [xreg/xceed.xreg.json](xreg/xceed.xreg.json) | xRegistry manifest |
-| [xceed/xceed.py](xceed/xceed.py) | Runtime bridge |
-| [xceed_producer/](xceed_producer/) | Generated producer (xrcg 0.10.1) |
-| [tests/](tests/) | Unit tests |
-| [Dockerfile](Dockerfile) | Container image |
-| [CONTAINER.md](CONTAINER.md) | Deployment contract |
-| [EVENTS.md](EVENTS.md) | Event catalog |
+Use [CONTAINER.md](CONTAINER.md) for the full per-image variable matrix. Commonly used knobs:
 
-## Upstream Source
+- **Kafka image:** `CONNECTION_STRING`, `KAFKA_ENABLE_TLS`, `POLLING_INTERVAL`, `EVENT_REFRESH_INTERVAL`, `EVENT_WINDOW_SIZE`, `EVENT_PAGE_SIZE`
+- **MQTT image:** `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`
+- **AMQP image:** `AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `AMQP_ENTRA_CLIENT_ID`, `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY`
 
-- API base: `https://events.xceed.me/v1`
-- Offer base: `https://offer.xceed.me/v1`
-- Documentation: [https://docs.xceed.me/](https://docs.xceed.me/)
-- Authentication: none required for the Open Event API
+## Data model
+
+- `xceed.Event` — public event metadata and schedule fields.
+- `xceed.admissions.EventAdmission` — offer/admission snapshots linked to events.
 
 
-## Transports
+Primary message groups in xRegistry: `xceed`, `xceed.admissions`.
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+## Deploying into Microsoft Fabric
+
+For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source xceed -WorkspaceId <id> -CapacityId <id>
+```
+
+## Deploying into Azure Container Instances
+
+ARM templates currently present in this source folder:
+
+- `azure-template-amqp.json` — AMQP deployment targeting an existing AMQP 1.0 broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-amqp.json)
+- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-mqtt.json)
+- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-with-eventgrid-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Select the transport image that matches your broker and auth model.
+- Use [CONTAINER.md](CONTAINER.md) for complete runtime and deployment options.

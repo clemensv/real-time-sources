@@ -1,67 +1,129 @@
-# Entur Norway SIRI Bridge
+# Entur Norway SIRI feeder
 
-Real-time transit data bridge for [Entur Norway](https://developer.entur.org/) SIRI feeds to Apache Kafka.
+Companion docs:
 
-Subscribes to Entur's SIRI 2.0 REST API feeds:
-- **ET** (Estimated Timetable) — service journey reference data and stop-level predictions
-- **VM** (Vehicle Monitoring) — live vehicle positions
-- **SX** (Situation Exchange) — service disruptions and alerts
+- [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
 
-## Feeds
+> [!NOTE]
+> Entur data is published under NLOD. Keep attribution and license obligations in downstream use.
 
-| CloudEvents type | Description |
-|---|---|
-| `no.entur.DatedServiceJourney` | Reference data: scheduled service journeys |
-| `no.entur.EstimatedVehicleJourney` | Timetable predictions per service journey |
-| `no.entur.MonitoredVehicleJourney` | Live vehicle positions |
-| `no.entur.PtSituationElement` | Service disruptions and situation alerts |
+## Why this bridge
 
-## Usage
+This bridge ingests **Entur real-time SIRI ET/VM/SX feeds** and republishes normalized CloudEvents so downstream systems subscribe instead of implementing and maintaining custom source clients.
 
-```bash
-python -m entur_norway feed --connection-string "BootstrapServer=localhost:9092;EntityPath=entur-norway"
+- Power national or regional public-transport situation rooms with one feed.
+- Blend ETA predictions, vehicle positions, and disruption notices in near real time.
+- Feed transit analytics and passenger-information systems from a normalized contract.
+- Stream alerts and journey updates into Eventhouse/Fabric for SLA and reliability tracking.
+- Reduce bespoke API polling and SIRI parsing in downstream services.
+
+## Overview
+
+| Variant | Dockerfile | Image | Default delivery shape |
+|---|---|---|---|
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-entur-norway:latest` | CloudEvents to Kafka-compatible endpoints |
+| MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
+| AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-entur-norway-amqp:latest` | CloudEvents over AMQP 1.0 address |
+
+All variants share:
+
+- The same upstream acquisition logic and normalization model.
+- The same xRegistry contract in `xreg/`.
+- The same event-family semantics documented in [EVENTS.md](EVENTS.md).
+
+## Key features
+
+- Publishes ET, VM, and SX families as CloudEvents.
+- Consistent contract across Kafka, MQTT, and AMQP builds.
+- Supports batching/pagination controls for Entur payloads.
+- Ready for Event Hubs/Fabric connection-string deployments.
+
+## Repository layout
+
+```text
+entur-norway/
+  xreg/entur-norway.xreg.json
+  entur_norway/
+  entur_norway_amqp/
+  entur_norway_mqtt/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  README.md
+  CONTAINER.md
+  EVENTS.md
 ```
 
-## Environment Variables
+## Prerequisites
 
-| Variable | Description | Default |
-|---|---|---|
-| `CONNECTION_STRING` | Kafka connection string | required |
-| `POLLING_INTERVAL` | Polling interval in seconds | `30` |
-| `MAX_SIZE` | Maximum records per SIRI request | `1000` |
-| `KAFKA_ENABLE_TLS` | Set to `false` for plain Kafka | |
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound connectivity to the upstream source endpoint(s).
+- Network access to your target messaging broker (Kafka, MQTT, or AMQP).
 
-## Data Source
+## Quick start with Docker
 
-- API: <https://api.entur.io/realtime/v1/rest/>
-- Docs: <https://developer.entur.org/pages-real-time-intro>
-- License: NLOD (Norwegian Licence for Open Government Data)
+### Kafka
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-entur-norway:latest
+```
 
-## Transports
+### MQTT
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest
+```
 
-This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+### AMQP
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/entur-norway" \
+  ghcr.io/clemensv/real-time-sources-entur-norway-amqp:latest
+```
 
-The MQTT contract is source-specific: MQTT/5.0 transport variant for Entur Norway SIRI real-time feeds. Non-retained QoS-1 streams route Estimated Timetable, Vehicle Monitoring, and Situation Exchange payloads by raw SIRI identifiers under transit/no/entur/entur-norway/... Missing routing fields are emitted as the literal unknown by the bridge.
+## Configuration reference
 
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/entur-norway.xreg.json`:
+Use [CONTAINER.md](CONTAINER.md) for the full per-image variable matrix. Commonly used knobs:
 
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey` | `no.entur.EstimatedVehicleJourney` | QoS 1, retain=false |
-| `transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey` | `no.entur.MonitoredVehicleJourney` | QoS 1, retain=false |
-| `transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation` | `no.entur.PtSituationElement` | QoS 1, retain=false |
+- **Kafka image:** `CONNECTION_STRING`, `KAFKA_ENABLE_TLS`, `POLLING_INTERVAL`, `STATE_FILE`, `MAX_SIZE`
+- **MQTT image:** `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `MQTT_CONTENT_MODE`
+- **AMQP image:** `AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `AMQP_ENTRA_CLIENT_ID`, `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY`
 
-Four Azure Container Instance deployment shapes are documented for this source:
+## Data model
 
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+- `no.entur.journeys.DatedServiceJourney` — reference journey context.
+- `no.entur.journeys.EstimatedVehicleJourney` — ETA and prediction updates.
+- `no.entur.journeys.MonitoredVehicleJourney` — live vehicle monitoring data.
+- `no.entur.situations.PtSituationElement` — disruption and situation messages.
 
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
 
-## AMQP 1.0 companion
+Primary message groups in xRegistry: `no.entur.journeys`, `no.entur.situations`.
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+## Deploying into Microsoft Fabric
+
+For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source entur-norway -WorkspaceId <id> -CapacityId <id>
+```
+
+## Deploying into Azure Container Instances
+
+ARM templates currently present in this source folder:
+
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Select the transport image that matches your broker and auth model.
+- Use [CONTAINER.md](CONTAINER.md) for complete runtime and deployment options.

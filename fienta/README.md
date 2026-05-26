@@ -1,136 +1,133 @@
-# Fienta Public Events Bridge
+# Fienta Public Events feeder
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
+
+> [!IMPORTANT]
+> Redistribution and downstream use must comply with [Fienta Terms of Service](https://fienta.com/terms).
+
+## Why this bridge
+
+This bridge ingests **Fienta public events API** and republishes normalized CloudEvents so downstream systems subscribe instead of implementing and maintaining custom source clients.
+
+- Track public ticketed events and sale-status transitions across Fienta markets.
+- Drive event-discovery and campaign workflows from near-real-time event changes.
+- Observe sale lifecycle transitions (`onSale`, `soldOut`, `saleEnded`, etc.).
+- Feed analytics platforms with both reference and sale-status telemetry events.
+- Avoid rebuilding paging, polling, and status-dedupe logic in downstream apps.
 
 ## Overview
 
-**Fienta Public Events Bridge** polls the [Fienta](https://fienta.com) public events API for ticketed events across Europe and sends them to a Kafka topic as CloudEvents. The tool tracks previously observed `sale_status` values to detect changes and emit targeted telemetry events.
+| Variant | Dockerfile | Image | Default delivery shape |
+|---|---|---|---|
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-fienta:latest` | CloudEvents to Kafka-compatible endpoints |
+| MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-fienta-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
+| AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-fienta-amqp:latest` | CloudEvents over AMQP 1.0 address |
 
-## Data Source
+All variants share:
 
-Fienta is a European event ticketing platform operating primarily in Estonia, Latvia, Lithuania, and other European countries. The platform exposes a public REST API with no authentication required:
+- The same upstream acquisition logic and normalization model.
+- The same xRegistry contract in `xreg/`.
+- The same event-family semantics documented in [EVENTS.md](EVENTS.md).
 
-- **API Endpoint**: `https://fienta.com/api/v1/public/events`
-- **Update Frequency**: Events update as organizers change event details; sale-status changes occur as tickets sell out or go on sale
-- **Rate Limit**: 80 requests per minute per IP
-- **License**: Public API, data redistribution should comply with [Fienta Terms of Service](https://fienta.com/terms)
+## Key features
 
-## Event Families
+- Emits full event reference records and sale-status change telemetry.
+- Supports upstream country and locale filtering.
+- Shared CloudEvents contract across Kafka, MQTT, and AMQP variants.
+- State-based sale-status change detection for targeted telemetry.
 
-The bridge emits two event types to the same Kafka topic:
+## Repository layout
 
-| Event Type | Role | Description |
-|---|---|---|
-| `Com.Fienta.Event` | Reference | Full public listing metadata — title, schedule, venue, address, organizer contact, images, purchase URL, and sale status |
-| `Com.Fienta.EventSaleStatus` | Telemetry | Sale-status change events — emitted when `sale_status` transitions and stamped with bridge-generated `observed_at` |
-
-### Sale Status Values
-
-| Value | Description |
-|---|---|
-| `onSale` | Tickets are available for purchase |
-| `soldOut` | All tickets have been sold |
-| `notOnSale` | Ticket sales have not yet opened |
-| `saleEnded` | Ticket sales have closed |
-
-## Key Features
-
-- **Polling-based**: Fetches all public events from the Fienta API every 5 minutes.
-- **Reference data emission**: Emits full `Event` records at startup and refreshes hourly so consumers have current public listing metadata.
-- **Sale-status change detection**: Tracks each event's `sale_status` in a local state file and emits `EventSaleStatus` events only when the status changes.
-- **Upstream filter support**: Exposes the public `country` and `locale` query parameters through CLI arguments and environment variables.
-- **Live API alignment**: Maps the real Fienta payload fields (`title`, `starts_at`, `event_status`, `venue`, `buy_tickets_url`, organizer contact fields, and pagination metadata) instead of relying on hypothetical fields that the public API does not publish.
-- **Stable identity model**: Uses the Fienta `id` field as both CloudEvents subject and Kafka key.
-- **Kafka integration**: Sends events to a Kafka topic with SASL PLAIN or plain TLS authentication.
-- **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-
-## Data Model Notes
-
-The public Fienta endpoint is paginated and currently returns 100 events per page together with pagination metadata. The bridge walks all pages on each poll.
-
-The source does not expose an upstream `updated_at` field for public events. `EventSaleStatus` therefore includes an `observed_at` timestamp generated by the bridge when it detects a `sale_status` change.
-
-## Source Files
-
-| File | Description |
-|---|---|
-| [xreg/fienta.xreg.json](xreg/fienta.xreg.json) | xRegistry manifest |
-| [fienta/fienta.py](fienta/fienta.py) | Runtime bridge |
-| [fienta_producer/](fienta_producer/) | Generated producer (xrcg 0.10.1) |
-| [tests/](tests/) | Unit tests |
-| [Dockerfile](Dockerfile) | Container image |
-| [CONTAINER.md](CONTAINER.md) | Deployment contract |
-| [EVENTS.md](EVENTS.md) | Event catalog |
-
-## Installation
-
-The tool requires Python 3.10 or later.
-
-```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/fienta
-pip install ./fienta_producer/fienta_producer_data
-pip install ./fienta_producer/fienta_producer_kafka_producer
-pip install .
+```text
+fienta/
+  xreg/fienta.xreg.json
+  fienta/
+  fienta_amqp/
+  fienta_mqtt/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  README.md
+  CONTAINER.md
+  EVENTS.md
 ```
 
-## How to Use
+## Prerequisites
 
-After installation, run with `python -m fienta feed`.
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound connectivity to the upstream source endpoint(s).
+- Network access to your target messaging broker (Kafka, MQTT, or AMQP).
 
-### Command-Line Arguments
+## Quick start with Docker
 
-- `--connection-string`: Event Hubs / Fabric / plain Kafka connection string (overrides other Kafka parameters)
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers
-- `--kafka-topic`: The Kafka topic to send messages to
-- `--sasl-username`: Username for SASL PLAIN authentication
-- `--sasl-password`: Password for SASL PLAIN authentication
-- `--state-file`: Path to the state file for sale-status deduplication (default: `~/.fienta_state.json`)
-- `--country`: Optional Fienta country filter. Live probes show this expects ISO 3166-1 alpha-2 country codes such as `EE`, `LV`, `LT`, `FI`, `GB`, `DE`, `DK`, `SE`, `NO`, `BE`, `AT`, or `IE`
-- `--locale`: Optional Fienta locale filter such as `en` or `et`
-
-### Example Usage
-
+### Kafka
 ```bash
-python -m fienta feed --connection-string "BootstrapServer=mybroker:9092;EntityPath=fienta"
+docker run --rm \
+  -e CONNECTION_STRING="<connection-string>" -e FIENTA_COUNTRY="EE" -e FIENTA_LOCALE="en" \
+  ghcr.io/clemensv/real-time-sources-fienta:latest
 ```
 
-To limit the feed to one country and one localized URL variant:
-
+### MQTT
 ```bash
-python -m fienta feed \
-  --connection-string "BootstrapServer=mybroker:9092;EntityPath=fienta" \
-  --country EE \
-  --locale en
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-fienta-mqtt:latest
 ```
 
-## Supported API Filters
+### AMQP
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/fienta" \
+  ghcr.io/clemensv/real-time-sources-fienta-amqp:latest
+```
 
-The bridge now exposes the Fienta public-events filters supported by the public
-endpoint:
+## Configuration reference
 
-| API query param | CLI argument | Environment variable |
-|---|---|---|
-| `country` | `--country` | `FIENTA_COUNTRY` |
-| `locale` | `--locale` | `FIENTA_LOCALE` |
+Use [CONTAINER.md](CONTAINER.md) for the full per-image variable matrix. Commonly used knobs:
 
-`country` is live-probed as an ISO 3166-1 alpha-2 code filter. For example,
-`country=EE` returns Estonian events, while values like `Estonia` are ignored by
-the upstream.
+- **Kafka image:** `CONNECTION_STRING`, `KAFKA_ENABLE_TLS`, `FIENTA_STATE_FILE`, `FIENTA_COUNTRY`, `FIENTA_LOCALE`
+- **MQTT image:** `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `FIENTA_COUNTRY`, `FIENTA_LOCALE`
+- **AMQP image:** `AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `FIENTA_COUNTRY`, `FIENTA_LOCALE`
 
-## Environment Variables
+## Data model
 
-| Variable | Description |
-|---|---|
-| `CONNECTION_STRING` | Kafka/Event Hubs/Fabric connection string |
-| `KAFKA_ENABLE_TLS` | Set to `false` to disable TLS (default: `true`) |
-| `FIENTA_STATE_FILE` | Path to the state file (default: `~/.fienta_state.json`) |
-| `FIENTA_COUNTRY` | Optional Fienta `country` filter using ISO 3166-1 alpha-2 country codes |
-| `FIENTA_LOCALE` | Optional Fienta `locale` filter such as `en` or `et` |
+- `Com.Fienta.Event` — public listing metadata (schedule, venue, organizer, links).
+- `Com.Fienta.EventSaleStatus` — status transition telemetry with observed timestamps.
+
+
+Primary message groups in xRegistry: `Com.Fienta`.
+
+## Deploying into Microsoft Fabric
+
+For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source fienta -WorkspaceId <id> -CapacityId <id>
+```
 
 ## Deploying into Azure Container Instances
 
-See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
+ARM templates currently present in this source folder:
 
+- `azure-template-amqp.json` — AMQP deployment targeting an existing AMQP 1.0 broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffienta%2Fazure-template-amqp.json)
+- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffienta%2Fazure-template-mqtt.json)
+- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffienta%2Fazure-template-with-eventgrid-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffienta%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffienta%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffienta%2Fazure-template.json)
 
-## Transports
+## Next steps
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Select the transport image that matches your broker and auth model.
+- Use [CONTAINER.md](CONTAINER.md) for complete runtime and deployment options.

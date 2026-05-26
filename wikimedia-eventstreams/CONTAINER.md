@@ -1,222 +1,95 @@
-# Wikimedia EventStreams bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Wikimedia EventStreams RecentChange container images
 
-This container image bridges Wikimedia Foundation's public
-`recentchange` EventStreams feed into Apache Kafka, Azure Event Hubs, and
-Microsoft Fabric Event Streams as CloudEvents.
+Related docs:
 
-## Wikimedia EventStreams
+- [README.md](README.md) — source context, quick-start flow, and deployment guidance.
+- [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 
-Wikimedia EventStreams is the public streaming interface for structured
-event data emitted by Wikimedia projects. This container targets the
-well-documented `recentchange` stream, which carries edits, new pages, log
-actions, categorization changes, and related page activity across
-Wikipedia, Wikidata, Commons, and sister projects.
+## Why this container
 
-- **Stream endpoint**: `https://stream.wikimedia.org/v2/stream/recentchange`
-- **Protocol**: HTTP EventStreams, consumed as NDJSON
-- **Authentication**: None
-- **License**: Public Wikimedia stream; see upstream project and content
-  licenses for downstream use constraints
+These images package the Wikimedia EventStreams RecentChange bridge runtime so teams can run a production feeder with consistent event contracts across Kafka, MQTT, and AMQP transports.
 
-## Functionality
+## What ships in the box
 
-The bridge opens a long-lived connection to the public recentchange stream,
-normalizes the events into the checked-in xRegistry contract, and writes
-them to the configured Kafka topic as CloudEvents documented in
-[EVENTS.md](EVENTS.md).
+| Image | Dockerfile | Purpose |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest` | `Dockerfile` | Kafka-compatible publishing path |
+| `ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
+| `ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
 
-It reconnects automatically, resumes with `?since=` using the last seen
-event timestamp, and keeps a rolling dedupe cache of recent Wikimedia event
-UUIDs to absorb replay after disconnects.
+## Image contract
 
-## Installing the Container Image
+| Aspect | Kafka | MQTT | AMQP |
+|---|---|---|---|
+| Base image | `python:3.10-slim` | `python:3.10-slim` | `python:3.10-slim` |
+| Default command | `CMD ["python", "-m", "wikimedia_eventstreams", "feed"]` | `CMD ["python", "-m", "wikimedia_eventstreams_mqtt", "feed"]` | `CMD ["python", "-m", "wikimedia_eventstreams_amqp", "feed"]` |
+| Delivery format | CloudEvents to Kafka topic | CloudEvents to MQTT topic tree | CloudEvents to AMQP address |
+| Shared contract | \- | Uses same xRegistry event model | Uses same xRegistry event model |
 
-Pull the image from GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest
-```
-
-## Using the Container Image
-
-### With Azure Event Hubs or Fabric Event Streams
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest
-```
-
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest
-```
-
-### With Plain Kafka for Docker E2E
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='BootstrapServer=host:9092;EntityPath=wikimedia-eventstreams' \
-    -e KAFKA_ENABLE_TLS='false' \
-    ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest
-```
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-Event Hubs / Fabric style connection string. If set, it overrides the
-explicit Kafka arguments.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-Comma-separated Kafka bootstrap servers.
-
-### `KAFKA_TOPIC`
-
-Kafka topic name. Default in the manifest is `wikimedia-eventstreams`.
-
-### `SASL_USERNAME`
-
-SASL PLAIN username for Kafka authentication.
-
-### `SASL_PASSWORD`
-
-SASL PLAIN password for Kafka authentication.
-
-### `KAFKA_ENABLE_TLS`
-
-Set to `false` for plain Kafka. Default: `true`.
-
-### `WIKIMEDIA_EVENTSTREAMS_STATE_FILE`
-
-Path to the local state file used for resume and dedupe. Default:
-`~/.wikimedia_eventstreams_state.json`.
-
-### `WIKIMEDIA_EVENTSTREAMS_FLUSH_INTERVAL`
-
-Flush Kafka every N events. Default: `250`.
-
-### `WIKIMEDIA_EVENTSTREAMS_DEDUPE_SIZE`
-
-Rolling dedupe window size in event IDs. Default: `5000`.
-
-### `WIKIMEDIA_EVENTSTREAMS_MAX_RETRY_DELAY`
-
-Maximum reconnect backoff in seconds. Default: `60`.
-
-### `WIKIMEDIA_EVENTSTREAMS_USER_AGENT`
-
-HTTP `User-Agent` header sent to Wikimedia. Wikimedia asks clients to set a
-clear user agent; the bridge does so by default, and you can override it if
-you need a more specific identifier.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template-with-eventhub.json)
-
-
----
-
-## MQTT 5.0 / Unified-Namespace feeder
-
-A second container image, built from `Dockerfile.mqtt`, publishes the Wikimedia EventStreams `recentchange` feed to an MQTT 5.0 broker on a Unified-Namespace (UNS) topic tree. The Kafka image and contract are unchanged.
-
-### Topic template
-
-```
-social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change
-```
-
-* `{wiki}` – wiki database name (e.g. `enwiki`, `commonswiki`, `wikidatawiki`)
-* `{namespace}` – kebab-case bucket for the MediaWiki namespace number (`main`, `talk`, `file`, `category`, …; unknown values fall through to `ns-<n>`)
-* `{event_id}` – upstream `meta.id`
-
-Non-retained firehose: every publish is **QoS 0** with `retain=false`. Subscribers must be attached before the feeder starts. CloudEvents binary mode – CE attributes (`id`, `source`, `type`, `subject`, `time`, `specversion`) ride as MQTT 5 user properties. `ContentType=application/json`. `subject` equals `{wiki}/{namespace}/{event_id}`.
-
-### Pull & run
+## Kafka image quick start
 
 ```bash
-docker pull ghcr.io/clemensv/real-time-sources/wikimedia-eventstreams-mqtt:latest
-
-docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 \
-  ghcr.io/clemensv/real-time-sources/wikimedia-eventstreams-mqtt:latest
+docker run --rm   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest
 ```
 
-### Environment variables
+## MQTT image quick start
+
+```bash
+docker run --rm   -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-mqtt:latest
+```
+
+## AMQP image quick start
+
+```bash
+docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/wikimedia-eventstreams"   ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest
+```
+
+## Environment variable matrix
+
+### Kafka image (`ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams:latest`)
 
 | Variable | Purpose |
-|----------|---------|
-| `MQTT_BROKER_URL` | `mqtt://host:port` or `mqtts://host:port` |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional broker credentials |
-| `MQTT_ENABLE_TLS` | `true` to force TLS (auto if scheme is `mqtts://`) |
-| `WIKIMEDIA_EVENTSTREAMS_URL` | Override the SSE source (default `https://stream.wikimedia.org/v2/stream/recentchange`) |
-| `WIKIMEDIA_EVENTSTREAMS_USER_AGENT` | Custom User-Agent string |
-| `WIKIMEDIA_EVENTSTREAMS_MAX_EVENTS` | Stop after this many publishes (0 = unbounded) |
-| `WIKIMEDIA_EVENTSTREAMS_MOCK` | `true` to emit a synthetic corpus across namespace buckets then exit (used by Docker E2E) |
+|---|---|
+| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
+| `KAFKA_TOPIC` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_USER_AGENT` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_STATE_FILE` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_DEDUPE_SIZE` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_MAX_RETRY_DELAY` | Core configuration for this image variant. |
 
-### Subscribe examples
+### MQTT image (`ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-mqtt:latest`)
 
-```bash
-# All wikis, all namespaces
-mosquitto_sub -h broker -t 'social/intl/wikimedia/#'
-# Only English Wikipedia main namespace
-mosquitto_sub -h broker -t 'social/intl/wikimedia/wikimedia-eventstreams/enwiki/main/+/recent-change'
-# All file uploads anywhere
-mosquitto_sub -h broker -t 'social/intl/wikimedia/wikimedia-eventstreams/+/file/+/recent-change'
-```
+| Variable | Purpose |
+|---|---|
+| `MQTT_BROKER_URL` | Core configuration for this image variant. |
+| `MQTT_USERNAME` | Core configuration for this image variant. |
+| `MQTT_PASSWORD` | Core configuration for this image variant. |
+| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_URL` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_USER_AGENT` | Core configuration for this image variant. |
 
+### AMQP image (`ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest`)
 
-## AMQP 1.0 container
+| Variable | Purpose |
+|---|---|
+| `AMQP_BROKER_URL` | Core configuration for this image variant. |
+| `AMQP_ADDRESS` | Core configuration for this image variant. |
+| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
+| `AMQP_CONTENT_MODE` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_URL` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_USER_AGENT` | Core configuration for this image variant. |
 
-The AMQP companion image publishes Wikimedia EventStreams CloudEvents to a single broker address. It supports SASL PLAIN for generic AMQP 1.0 brokers and CBS token authentication for Azure Service Bus (`AMQP_AUTH_MODE=entra` for managed identity, `AMQP_AUTH_MODE=sas` for emulator/SAS-key scenarios).
+## Azure ARM deployments
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest
+Only templates that exist in this source folder are listed below.
 
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/wikimedia-eventstreams   -e WIKIMEDIA_EVENTSTREAMS_MOCK=true   ghcr.io/clemensv/real-time-sources-wikimedia-eventstreams-amqp:latest
-```
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template-with-eventhub.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template.json)
 
-### AMQP environment variables
+## Related
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full `amqp://` or `amqps://` URL. Path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URL is supplied. | `localhost` / 5672 or 5671 |
-| `AMQP_ADDRESS` | Queue, topic, or link target address. | `wikimedia-eventstreams` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_TLS` | Force TLS for generic brokers. | `false` |
-| `AMQP_CONTENT_MODE` | CloudEvents AMQP binding mode: `binary` or `structured`. | `binary` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS/Entra authentication. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS key credentials for Service Bus emulator/SAS CBS. | empty |
-
-### Deploy to Azure Service Bus
-
-This template creates a Service Bus namespace and queue, user-assigned managed identity, role assignment for Azure Service Bus Data Sender, Log Analytics workspace, storage file share for state, and an Azure Container Instance running the AMQP image.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Finfra%2Fazure-template-amqp.json)
+- [README.md](README.md)
+- [EVENTS.md](EVENTS.md)
+- `xreg/`
